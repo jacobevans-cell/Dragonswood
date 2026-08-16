@@ -110,9 +110,558 @@ header{
 .item:hover,.student-table tbody tr:hover{
   background:#faf8ff;
 }
+
+/* =========================================================
+   DRAGONSWOOD: WISTERIA ARCANE / COMPETITIVE FANTASY THEME
+   No white cards. No dead space. Purple • Cyan • Gold.
+========================================================= */
+
+:root{
+  --dw-purple:#652DC1;
+  --dw-purple-hot:#8E3CFF;
+  --dw-purple-deep:#24064E;
+  --dw-blue:#02CCFE;
+  --dw-blue-hot:#24E4FF;
+  --dw-blue-deep:#053A5A;
+  --dw-gold:#F4C95D;
+  --dw-gold-hot:#FFE98C;
+  --dw-gold-deep:#8C6217;
+  --dw-ink:#05070D;
+  --dw-panel:#0D1020;
+  --dw-panel-2:#11152A;
+  --dw-panel-3:#171B35;
+  --dw-line:rgba(139,92,246,.34);
+  --dw-text:#F8FAFC;
+  --dw-muted:#B8C2D9;
+}
+
+html{
+  background:#05070D;
+}
+
+body{
+  color:var(--dw-text) !important;
+  background:
+    radial-gradient(circle at 12% 5%, rgba(101,45,193,.34), transparent 24%),
+    radial-gradient(circle at 82% 8%, rgba(2,204,254,.18), transparent 22%),
+    radial-gradient(circle at 48% 88%, rgba(101,45,193,.18), transparent 28%),
+    linear-gradient(180deg,#05070D 0%,#090B16 46%,#070A12 100%) !important;
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+
+/* Magical moving canopy / wisteria haze */
+body::before,
+body::after{
+  content:"";
+  position:fixed;
+  pointer-events:none;
+  z-index:-2;
+  inset:-18%;
+}
+
+body::before{
+  background:
+    radial-gradient(circle at 20% 20%, rgba(142,60,255,.18) 0 4%, transparent 10%),
+    radial-gradient(circle at 32% 34%, rgba(2,204,254,.11) 0 3%, transparent 9%),
+    radial-gradient(circle at 70% 18%, rgba(142,60,255,.16) 0 4%, transparent 10%),
+    radial-gradient(circle at 78% 42%, rgba(2,204,254,.10) 0 3%, transparent 9%),
+    radial-gradient(circle at 55% 70%, rgba(244,201,93,.08) 0 2%, transparent 7%);
+  filter:blur(14px);
+  animation:wisteriaDrift 18s ease-in-out infinite alternate;
+}
+
+body::after{
+  z-index:-1;
+  background:
+    repeating-linear-gradient(115deg,
+      transparent 0 54px,
+      rgba(142,60,255,.035) 55px 57px,
+      transparent 58px 108px),
+    repeating-linear-gradient(70deg,
+      transparent 0 92px,
+      rgba(2,204,254,.028) 93px 95px,
+      transparent 96px 180px);
+  animation:arcaneSweep 28s linear infinite;
+  opacity:.8;
+}
+
+@keyframes wisteriaDrift{
+  0%{transform:translate3d(-2%,-1%,0) scale(1)}
+  50%{transform:translate3d(3%,2%,0) scale(1.06)}
+  100%{transform:translate3d(-1%,4%,0) scale(1.03)}
+}
+@keyframes arcaneSweep{
+  0%{transform:translateX(-4%) translateY(-2%)}
+  50%{transform:translateX(3%) translateY(2%)}
+  100%{transform:translateX(-4%) translateY(-2%)}
+}
+@keyframes borderPulse{
+  0%,100%{box-shadow:0 0 0 1px rgba(101,45,193,.34),0 0 26px rgba(101,45,193,.14),inset 0 0 22px rgba(2,204,254,.025)}
+  50%{box-shadow:0 0 0 1px rgba(2,204,254,.38),0 0 34px rgba(2,204,254,.15),inset 0 0 28px rgba(101,45,193,.04)}
+}
+@keyframes goldShimmer{
+  0%{background-position:-160% 0}
+  100%{background-position:160% 0}
+}
+@keyframes runeFloat{
+  0%,100%{transform:translateY(0) rotate(0deg);opacity:.48}
+  50%{transform:translateY(-10px) rotate(5deg);opacity:.9}
+}
+
+/* Header / identity */
+header{
+  background:
+    radial-gradient(circle at 15% 30%,rgba(142,60,255,.22),transparent 22%),
+    radial-gradient(circle at 85% 40%,rgba(2,204,254,.14),transparent 22%),
+    linear-gradient(110deg,#03050A 0%,#160A2D 45%,#052B42 100%) !important;
+  border-bottom:2px solid var(--dw-gold) !important;
+  box-shadow:0 10px 42px rgba(0,0,0,.48),0 0 30px rgba(101,45,193,.18);
+  position:relative;
+  overflow:hidden;
+}
+
+header::after{
+  content:"✦  ✧  ✦  ✧  ✦";
+  position:absolute;
+  right:4%;
+  top:16px;
+  letter-spacing:18px;
+  color:rgba(244,201,93,.38);
+  font-size:18px;
+  animation:runeFloat 4.8s ease-in-out infinite;
+}
+
+.brand{
+  text-shadow:0 0 18px rgba(2,204,254,.16);
+}
+
+.brand small{
+  color:#D8D4F2 !important;
+  letter-spacing:.9px;
+}
+
+.crest{
+  filter:drop-shadow(0 0 10px rgba(2,204,254,.34)) drop-shadow(0 0 14px rgba(101,45,193,.28)) !important;
+}
+
+.crest-shield{
+  background:
+    linear-gradient(145deg,var(--dw-blue) 0%,#086FA8 38%,var(--dw-purple) 68%,#2B0A5A 100%) !important;
+  border:2px solid var(--dw-gold) !important;
+}
+
+/* Main page atmosphere */
+main,
+.wrap{
+  position:relative;
+}
+
+main::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:94%;
+  height:100%;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg,transparent,rgba(101,45,193,.03),transparent),
+    radial-gradient(circle at 50% 12%,rgba(2,204,254,.04),transparent 24%);
+  z-index:-1;
+}
+
+/* Typography */
+h1,h2,h3,.profile-name,.student-name,.big{
+  color:#FFFFFF !important;
+  text-shadow:0 0 16px rgba(101,45,193,.12);
+}
+
+p,.muted,.sub,.profile-sub,small{
+  color:var(--dw-muted) !important;
+}
+
+.section-title h2,
+.titlebar h2{
+  position:relative;
+  display:inline-block;
+}
+
+.section-title h2::after,
+.titlebar h2::after{
+  content:"";
+  display:block;
+  height:2px;
+  width:68%;
+  margin-top:7px;
+  background:linear-gradient(90deg,var(--dw-gold),var(--dw-purple),transparent);
+  box-shadow:0 0 10px rgba(244,201,93,.25);
+}
+
+/* All cards/panels become dark enchanted glass */
+.card,
+.pet,
+.game,
+.board,
+.login-card,
+.profilebar,
+.modalbox,
+.reward,
+.item,
+.recess-card{
+  background:
+    linear-gradient(145deg,rgba(17,21,42,.95),rgba(8,11,22,.96)) !important;
+  border:1px solid var(--dw-line) !important;
+  color:var(--dw-text) !important;
+  box-shadow:
+    0 18px 40px rgba(0,0,0,.34),
+    inset 0 1px 0 rgba(255,255,255,.035),
+    0 0 20px rgba(101,45,193,.07) !important;
+  backdrop-filter:blur(10px);
+}
+
+.card,
+.pet,
+.profilebar,
+.recess-card{
+  animation:borderPulse 7s ease-in-out infinite;
+}
+
+.card:hover,
+.game:hover,
+.board:hover,
+.item:hover{
+  border-color:rgba(2,204,254,.45) !important;
+  box-shadow:
+    0 18px 48px rgba(0,0,0,.42),
+    0 0 28px rgba(2,204,254,.11),
+    inset 0 0 24px rgba(101,45,193,.04) !important;
+}
+
+/* Inputs / dropdowns */
+input,
+select,
+textarea{
+  background:#090D19 !important;
+  color:#F8FAFC !important;
+  border:1px solid rgba(2,204,254,.22) !important;
+  box-shadow:inset 0 0 12px rgba(0,0,0,.35);
+}
+
+input::placeholder,
+textarea::placeholder{
+  color:#7E8AA5 !important;
+}
+
+select option,
+select optgroup{
+  background:#0B1020;
+  color:#F8FAFC;
+}
+
+/* Tabs & buttons */
+.tab,
+.gray{
+  background:linear-gradient(180deg,#1A2038,#101425) !important;
+  color:#D8E4F7 !important;
+  border:1px solid rgba(101,45,193,.28) !important;
+}
+
+.tab.active,
+.primary,
+.game a{
+  background:
+    linear-gradient(90deg,var(--dw-purple),#4B55DB 44%,var(--dw-blue)) !important;
+  color:white !important;
+  border:1px solid rgba(244,201,93,.42) !important;
+  box-shadow:0 0 18px rgba(101,45,193,.22),inset 0 0 12px rgba(255,255,255,.06);
+}
+
+.primary:hover,
+.tab.active:hover,
+.game a:hover{
+  filter:brightness(1.08);
+  box-shadow:0 0 24px rgba(2,204,254,.22),0 0 24px rgba(101,45,193,.18);
+}
+
+.good{
+  background:linear-gradient(180deg,#0D3A2B,#0A271E) !important;
+  color:#9DF8C8 !important;
+  border:1px solid rgba(53,208,127,.3) !important;
+}
+
+.gold{
+  background:
+    linear-gradient(90deg,#5D4310,#C89A2B,#FFE98C,#C89A2B,#5D4310) !important;
+  background-size:220% 100% !important;
+  color:#160F03 !important;
+  border:1px solid rgba(255,233,140,.7) !important;
+  animation:goldShimmer 5s linear infinite;
+  text-shadow:none !important;
+}
+
+.danger{
+  background:linear-gradient(180deg,#491428,#2A0D18) !important;
+  color:#FFB5C8 !important;
+  border:1px solid rgba(255,80,120,.28) !important;
+}
+
+/* Tables */
+table,
+.student-table{
+  color:#F8FAFC !important;
+}
+
+th,
+.student-table th{
+  background:
+    linear-gradient(90deg,rgba(101,45,193,.28),rgba(2,204,254,.10)) !important;
+  color:#F9F6FF !important;
+  border-bottom:1px solid rgba(244,201,93,.2) !important;
+}
+
+td,
+.student-table td{
+  border-bottom:1px solid rgba(255,255,255,.055) !important;
+}
+
+.student-table tbody tr:hover{
+  background:rgba(101,45,193,.08) !important;
+}
+
+/* Hero/student */
+.hero{
+  position:relative;
+}
+
+.hero h1{
+  text-shadow:0 0 26px rgba(101,45,193,.24);
+}
+
+.hero h1 span{
+  background:linear-gradient(90deg,var(--dw-blue),#8BEAFF,var(--dw-gold));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent !important;
+}
+
+.hero-card{
+  background:
+    linear-gradient(145deg,rgba(21,17,47,.76),rgba(6,17,31,.78)) !important;
+  border:1px solid rgba(244,201,93,.26) !important;
+  box-shadow:0 0 30px rgba(101,45,193,.12);
+}
+
+/* Profile stats */
+.stat{
+  background:linear-gradient(145deg,#101528,#0B0F1D) !important;
+  border:1px solid rgba(244,201,93,.18) !important;
+  box-shadow:inset 0 0 16px rgba(101,45,193,.04);
+}
+
+.stat:nth-of-type(1) b{color:#FF708D !important;text-shadow:0 0 12px rgba(255,112,141,.3)}
+.stat:nth-of-type(2) b{color:var(--dw-gold-hot) !important;text-shadow:0 0 12px rgba(244,201,93,.28)}
+.stat:nth-of-type(3) b{color:var(--dw-blue-hot) !important;text-shadow:0 0 12px rgba(2,204,254,.25)}
+
+/* Reward journey */
+.pethead{
+  background:
+    radial-gradient(circle at 80% 20%,rgba(2,204,254,.12),transparent 22%),
+    linear-gradient(135deg,#160A2D,#3B1576 54%,#073F5E) !important;
+  border-bottom:1px solid rgba(244,201,93,.22);
+}
+
+.track,
+.meter,
+.recess-meter,
+.levelbar{
+  background:#050914 !important;
+  border:1px solid rgba(101,45,193,.22) !important;
+  box-shadow:inset 0 0 14px rgba(0,0,0,.45);
+}
+
+.fill,
+.recess-fill,
+.levelbar div{
+  background:
+    linear-gradient(90deg,var(--dw-purple),var(--dw-blue),var(--dw-gold),var(--dw-blue),var(--dw-purple)) !important;
+  background-size:240% 100% !important;
+  animation:goldShimmer 7s linear infinite;
+  box-shadow:0 0 18px rgba(2,204,254,.2);
+}
+
+.reward{
+  background:linear-gradient(145deg,#101426,#0B0E19) !important;
+}
+
+.reward.unlocked{
+  border-color:rgba(244,201,93,.5) !important;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(244,201,93,.09),transparent 38%),
+    linear-gradient(145deg,#17162A,#0E101E) !important;
+}
+
+.reward.current{
+  outline:2px solid rgba(244,201,93,.7) !important;
+}
+
+/* Games */
+.game{
+  position:relative;
+  overflow:hidden;
+}
+
+.game::after{
+  content:"";
+  position:absolute;
+  inset:auto -20% -70% auto;
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(2,204,254,.08),transparent 65%);
+  pointer-events:none;
+}
+
+.visual{
+  background:
+    radial-gradient(circle at 50% 30%,rgba(142,60,255,.16),transparent 34%),
+    linear-gradient(145deg,#12162B,#090D19) !important;
+  border-bottom:1px solid rgba(2,204,254,.13);
+}
+
+.tag,
+.badge{
+  background:linear-gradient(90deg,rgba(101,45,193,.32),rgba(2,204,254,.15)) !important;
+  color:#EDEBFF !important;
+  border:1px solid rgba(244,201,93,.16) !important;
+}
+
+/* Leaderboards */
+.rank{
+  border-top:1px solid rgba(255,255,255,.055) !important;
+}
+.place{
+  background:linear-gradient(145deg,var(--dw-purple),var(--dw-blue)) !important;
+  color:white !important;
+  box-shadow:0 0 12px rgba(2,204,254,.18);
+}
+.rank:nth-child(2) .place{
+  background:linear-gradient(145deg,#B68318,var(--dw-gold-hot)) !important;
+  color:#211500 !important;
+}
+.score{
+  color:var(--dw-gold-hot) !important;
+  text-shadow:0 0 10px rgba(244,201,93,.22);
+}
+
+/* Second recess */
+.recess-card{
+  background:
+    radial-gradient(circle at 90% 15%,rgba(244,201,93,.08),transparent 24%),
+    linear-gradient(135deg,#1A0B38,#471A8B 54%,#073B59) !important;
+}
+
+.recess-status{
+  background:#0A0D18 !important;
+  color:#F5E9B8 !important;
+  border:1px solid rgba(244,201,93,.28) !important;
+}
+
+/* Modals */
+.modal{
+  background:
+    radial-gradient(circle at 50% 50%,rgba(101,45,193,.12),transparent 45%),
+    rgba(2,3,8,.88) !important;
+  backdrop-filter:blur(8px);
+}
+
+/* Egg */
+.egg-creature{
+  box-shadow:
+    inset -12px -13px 22px rgba(93,55,25,.18),
+    inset 8px 8px 20px rgba(255,255,255,.45),
+    0 0 24px rgba(244,201,93,.18),
+    0 14px 34px rgba(0,0,0,.34) !important;
+}
+.egg-creature::before,
+.egg-creature::after{
+  color:var(--dw-gold-hot) !important;
+  text-shadow:0 0 12px var(--dw-gold);
+}
+
+/* Remove remaining pale surfaces */
+.login-card,
+.profilebar,
+.card,
+.item,
+.reward,
+.game,
+.board,
+.petbody{
+  color:#F8FAFC !important;
+}
+
+.petbody{
+  background:
+    linear-gradient(180deg,rgba(13,16,32,.98),rgba(7,10,19,.98)) !important;
+}
+
+body footer{
+  background:
+    linear-gradient(90deg,#03050A,#180B2D,#04283C) !important;
+  border-top:2px solid var(--dw-gold) !important;
+  box-shadow:0 -10px 34px rgba(101,45,193,.12);
+}
+
+/* Animated wisteria particles */
+.dw-wisteria{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+  overflow:hidden;
+}
+.dw-wisteria span{
+  position:absolute;
+  width:5px;
+  height:11px;
+  border-radius:999px;
+  background:linear-gradient(180deg,rgba(142,60,255,.0),rgba(142,60,255,.72),rgba(2,204,254,.18));
+  box-shadow:0 0 8px rgba(142,60,255,.55);
+  opacity:.35;
+  animation:wisteriaFall linear infinite;
+}
+@keyframes wisteriaFall{
+  0%{transform:translate3d(0,-8vh,0) rotate(0deg);opacity:0}
+  12%{opacity:.45}
+  88%{opacity:.35}
+  100%{transform:translate3d(38px,112vh,0) rotate(180deg);opacity:0}
+}
+
+@media (prefers-reduced-motion: reduce){
+  body::before,body::after,.dw-wisteria span{animation:none !important}
+}
+
 </style></head>
 <body>
-<header><div class="wrap head"><div class="brand" style="display:flex;align-items:center;gap:12px"><div class="crest" aria-hidden="true"><div class="crest-shield"></div></div><div>Dragonswood Teacher Portal<small>PRIVATE CLASSROOM CONTROLS</small></div></div><div id="signed" class="hidden"><span id="who" style="font-size:12px;color:#cbd9e7"></span> <button id="logout" class="gray mini">Sign Out</button></div></div></header>
+<div class="dw-wisteria" aria-hidden="true">
+  <span style="left:6%;animation-duration:17s;animation-delay:-5s"></span>
+  <span style="left:14%;animation-duration:22s;animation-delay:-12s"></span>
+  <span style="left:22%;animation-duration:19s;animation-delay:-8s"></span>
+  <span style="left:31%;animation-duration:25s;animation-delay:-17s"></span>
+  <span style="left:39%;animation-duration:18s;animation-delay:-4s"></span>
+  <span style="left:48%;animation-duration:23s;animation-delay:-14s"></span>
+  <span style="left:57%;animation-duration:20s;animation-delay:-9s"></span>
+  <span style="left:65%;animation-duration:26s;animation-delay:-20s"></span>
+  <span style="left:74%;animation-duration:21s;animation-delay:-11s"></span>
+  <span style="left:82%;animation-duration:18s;animation-delay:-7s"></span>
+  <span style="left:90%;animation-duration:24s;animation-delay:-16s"></span>
+  <span style="left:96%;animation-duration:20s;animation-delay:-3s"></span>
+</div>
+
+<header><div class="wrap head"><div class="brand" style="display:flex;align-items:center;gap:12px"><div class="crest" aria-hidden="true"><div class="crest-shield"></div></div><div>Dragonswood Command Hall<small>EXPLORE ACADEMY • EVANS 4–5 • COMMAND ACCESS</small></div></div><div id="signed" class="hidden"><span id="who" style="font-size:12px;color:#cbd9e7"></span> <button id="logout" class="gray mini">Sign Out</button></div></div></header>
 <main class="wrap">
 <section id="login" class="card login"><h1>Teacher Login</h1><p class="muted">Use your Firebase teacher account.</p><form id="loginForm"><div class="field"><label>Email</label><input id="email" type="email" required autocomplete="username"></div><div class="field"><label>Password</label><input id="password" type="password" required autocomplete="current-password"></div><button class="primary full">SIGN IN</button><div id="error" style="color:#a20d31;margin-top:10px;font-size:13px"></div></form></section>
 
@@ -155,7 +704,7 @@ header{
 </div>
 
 <div id="students" class="panel">
-  <div class="titlebar"><div><h2>🛡️ Student Control Center</h2><p>Manage HP, Gold, XP, level progress, profiles, and group awards.</p></div></div>
+  <div class="titlebar"><div><h2>🛡️ Student Command Center</h2><p>Manage HP, Gold, XP, level progress, profiles, and group awards.</p></div></div>
   <div class="card">
     <h3>Mass Award / Adjustment</h3>
     <div class="groupbox">

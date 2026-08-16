@@ -59,6 +59,191 @@ main{padding:30px 0 60px}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.primary{border:0;border-radius:10px;padding:11px 14px;font-weight:900;background:var(--blue);color:white}.gray{border:0;border-radius:10px;padding:11px 14px;font-weight:900;background:#e8edf3;color:#334155}
 footer{background:var(--navy);color:#cbd5e1;text-align:center;border-top:4px solid var(--red);padding:22px}
 
+
+/* =========================================================
+   CLASS PET EGG + SECOND RECESS
+========================================================= */
+.peticon-shell{
+  min-width:120px;
+  min-height:145px;
+  position:relative;
+  display:grid;
+  place-items:center;
+}
+.egg-creature{
+  width:92px;
+  height:122px;
+  position:relative;
+  border-radius:52% 48% 48% 52% / 62% 62% 38% 38%;
+  background:
+    radial-gradient(circle at 35% 28%,rgba(255,255,255,.95) 0 7%,transparent 8%),
+    radial-gradient(circle at 67% 38%,rgba(255,255,255,.35) 0 5%,transparent 6%),
+    linear-gradient(145deg,#fff8dc 0%,#f3ddb0 45%,#d9b276 100%);
+  border:4px solid rgba(85,55,30,.34);
+  box-shadow:
+    inset -12px -13px 22px rgba(93,55,25,.16),
+    inset 8px 8px 20px rgba(255,255,255,.8),
+    0 12px 28px rgba(0,0,0,.2);
+  transform-origin:50% 82%;
+}
+.egg-creature::before,
+.egg-creature::after{
+  content:"✦";
+  position:absolute;
+  color:#fff0a8;
+  text-shadow:0 0 8px #ffe27a;
+  font-size:16px;
+  animation:sparkleMove 1.8s ease-in-out infinite;
+}
+.egg-creature::before{left:-17px;top:18px}
+.egg-creature::after{right:-14px;top:54px;animation-delay:.8s}
+.egg-face{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  padding-top:25px;
+  font-size:24px;
+  opacity:.7;
+}
+.egg-cracks{
+  position:absolute;
+  inset:4px;
+  width:calc(100% - 8px);
+  height:calc(100% - 8px);
+  overflow:visible;
+}
+.egg-cracks path{
+  fill:none;
+  stroke:#6a432a;
+  stroke-width:3.5;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  filter:drop-shadow(0 1px 0 rgba(255,255,255,.8));
+  stroke-dasharray:120;
+  stroke-dashoffset:120;
+  transition:stroke-dashoffset .5s ease,opacity .5s ease;
+  opacity:0;
+}
+.egg-stage-0{animation:eggWiggle0 4.2s ease-in-out infinite}
+.egg-stage-1{animation:eggWiggle1 3.1s ease-in-out infinite}
+.egg-stage-2{animation:eggWiggle2 2.1s ease-in-out infinite}
+.egg-stage-3{animation:eggWiggle3 1.25s ease-in-out infinite}
+.egg-stage-4{animation:eggWiggle4 .62s ease-in-out infinite}
+.egg-stage-1 #crackOne{stroke-dashoffset:80;opacity:.42}
+.egg-stage-2 #crackOne{stroke-dashoffset:38;opacity:.7}
+.egg-stage-2 #crackTwo{stroke-dashoffset:95;opacity:.35}
+.egg-stage-3 #crackOne{stroke-dashoffset:0;opacity:1}
+.egg-stage-3 #crackTwo{stroke-dashoffset:45;opacity:.75}
+.egg-stage-3 #crackThree{stroke-dashoffset:88;opacity:.45}
+.egg-stage-4 #crackOne,
+.egg-stage-4 #crackTwo,
+.egg-stage-4 #crackThree{stroke-dashoffset:0;opacity:1}
+@keyframes eggWiggle0{
+  0%,90%,100%{transform:rotate(0) translateY(0)}
+  94%{transform:rotate(-1deg) translateY(-1px)}
+  97%{transform:rotate(1deg) translateY(0)}
+}
+@keyframes eggWiggle1{
+  0%,80%,100%{transform:rotate(0) translateY(0)}
+  84%{transform:rotate(-2deg)}
+  88%{transform:rotate(2deg) translateY(-1px)}
+  92%{transform:rotate(-1deg)}
+}
+@keyframes eggWiggle2{
+  0%,62%,100%{transform:rotate(0) translateY(0)}
+  68%{transform:rotate(-4deg) translateY(-2px)}
+  74%{transform:rotate(4deg)}
+  80%{transform:rotate(-3deg) translateY(-1px)}
+  86%{transform:rotate(3deg)}
+}
+@keyframes eggWiggle3{
+  0%,42%,100%{transform:rotate(0) translateY(0)}
+  48%{transform:rotate(-6deg) translateY(-3px)}
+  55%{transform:rotate(6deg)}
+  62%{transform:rotate(-5deg) translateY(-2px)}
+  69%{transform:rotate(5deg)}
+  77%{transform:rotate(-3deg)}
+  85%{transform:rotate(3deg)}
+}
+@keyframes eggWiggle4{
+  0%,100%{transform:rotate(-3deg) translateY(0) scale(1)}
+  20%{transform:rotate(7deg) translateY(-4px) scale(1.02)}
+  40%{transform:rotate(-7deg) translateY(-1px)}
+  60%{transform:rotate(6deg) translateY(-5px) scale(1.03)}
+  80%{transform:rotate(-5deg) translateY(-2px)}
+}
+.hatched-pet{
+  font-size:78px;
+  animation:hatchPop .7s ease-out both,floaty 2.3s ease-in-out .7s infinite;
+}
+
+.recess-card{
+  margin-top:18px;
+  border-radius:20px;
+  overflow:hidden;
+  background:linear-gradient(135deg,#44236f,#7556d8 55%,#075dcc);
+  color:white;
+  border:1px solid rgba(255,255,255,.15);
+  box-shadow:0 12px 28px rgba(57,35,101,.2);
+}
+.recess-inner{
+  padding:20px 22px;
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:18px;
+  align-items:center;
+}
+.recess-card h3{margin:0 0 5px;font-size:25px}
+.recess-card p{margin:0;color:#eee8ff}
+.recess-status{
+  font-weight:1000;
+  font-size:17px;
+  padding:9px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.18);
+  white-space:nowrap;
+}
+.recess-meter{
+  grid-column:1/-1;
+  height:22px;
+  border-radius:999px;
+  overflow:hidden;
+  background:rgba(0,0,0,.22);
+  border:1px solid rgba(255,255,255,.12);
+}
+.recess-fill{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,#ffd66b,#fff3a7,#35d07f);
+  transition:width .4s ease;
+  position:relative;
+}
+.recess-fill::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  width:20%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);
+  animation:meterSweep 2.5s linear infinite;
+}
+.recess-numbers{
+  grid-column:1/-1;
+  display:flex;
+  justify-content:space-between;
+  font-weight:900;
+  font-size:13px;
+  color:#f3efff;
+}
+.recess-earned{
+  animation:pulseGlow 1.3s ease-in-out infinite;
+}
+@media(max-width:650px){
+  .recess-inner{grid-template-columns:1fr}
+  .recess-status{justify-self:start}
+}
+
 /* =========================================================
    DRAGONSWOOD ANIMATION LAYER
 ========================================================= */
@@ -240,12 +425,35 @@ footer{background:var(--navy);color:#cbd5e1;text-align:center;border-top:4px sol
 
   <div class="section-title"><h2>🐾 Our Reward Journey</h2><p>Class points unlock rewards for everyone.</p></div>
   <section class="pet">
-    <div class="pethead"><div><h3 id="headline">Loading our journey…</h3><p id="message">Checking Dragonswood progress.</p></div><div class="peticon-shell"><div class="peticon" id="petIcon">🥚</div></div></div>
+    <div class="pethead"><div><h3 id="headline">Loading our journey…</h3><p id="message">Checking Dragonswood progress.</p></div><div class="peticon-shell">
+      <div class="egg-creature" id="eggCreature" aria-label="Class pet egg">
+        <div class="egg-face">✨</div>
+        <svg class="egg-cracks" viewBox="0 0 100 130" aria-hidden="true">
+          <path id="crackOne" d="M50 24 L43 42 L54 48 L45 64" />
+          <path id="crackTwo" d="M45 64 L60 72 L49 84 L58 99" />
+          <path id="crackThree" d="M54 48 L67 55 L60 72 L74 79" />
+        </svg>
+      </div>
+      <div class="hatched-pet hidden" id="hatchedPet">🐉</div>
+    </div></div>
     <div class="petbody">
       <div class="meterrow"><span>Class Progress</span><span><span id="points">0</span> points</span></div>
       <div class="track"><div class="fill" id="fill"></div></div>
       <div class="rewards" id="rewards"></div>
       <div class="next" id="next">Next reward loading…</div>
+    </div>
+  </section>
+
+  <div class="section-title"><h2>🌤️ Second Recess Today</h2><p>No more asking every seven minutes. The bar has spoken.</p></div>
+  <section class="recess-card" id="recessCard">
+    <div class="recess-inner">
+      <div>
+        <h3 id="recessHeadline">Checking today's second recess…</h3>
+        <p id="recessMessage">This meter resets every new day.</p>
+      </div>
+      <div class="recess-status" id="recessStatus">LOADING</div>
+      <div class="recess-meter"><div class="recess-fill" id="recessFill"></div></div>
+      <div class="recess-numbers"><span id="recessPoints">0 points</span><span id="recessGoal">Goal: 10</span></div>
     </div>
   </section>
 
@@ -498,6 +706,42 @@ function renderProfile(){
   $("hp").textContent=+profile.hp||0;$("gold").textContent=+profile.gold||0;$("xp").textContent=+profile.xp||0;$("levelFill").style.width=li.pct+"%";
 }
 
+
+function localDateKey(){
+  const d=new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+let recessState={points:0,goal:10,dateKey:""};
+
+onSnapshot(doc(db,"classData","secondRecess"),snap=>{
+  const data=snap.exists()?snap.data():{};
+  recessState={
+    points:Number(data.points||0),
+    goal:Math.max(1,Number(data.goal||10)),
+    dateKey:String(data.dateKey||"")
+  };
+  renderSecondRecess();
+});
+
+function renderSecondRecess(){
+  const today=localDateKey();
+  // Old Firebase value is visually treated as reset until the teacher opens the portal.
+  const active=recessState.dateKey===today;
+  const p=active?recessState.points:0;
+  const g=recessState.goal||10;
+  const earned=p>=g;
+
+  $("recessPoints").textContent=`${p} point${p===1?"":"s"}`;
+  $("recessGoal").textContent=`Goal: ${g}`;
+  $("recessFill").style.width=Math.min(100,(p/g)*100)+"%";
+  $("recessStatus").textContent=earned?"✅ SECOND RECESS EARNED":"⏳ NOT EARNED YET";
+  $("recessHeadline").textContent=earned?"Second Recess Is ON!":"Working Toward Second Recess";
+  $("recessMessage").textContent=earned
+    ?"You earned today's second recess. Please stop asking your teacher now."
+    :`${Math.max(0,g-p)} more point${Math.max(0,g-p)===1?"":"s"} needed today. This resets tomorrow.`;
+  $("recessCard").classList.toggle("recess-earned",earned);
+}
+
 onSnapshot(doc(db,"classData","main"),s=>{if(s.exists())classPoints=+s.data().points||0;renderRewards()});
 onSnapshot(collection(db,"rewards"),s=>{rewards=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+a.points||0)-(+b.points||0));renderRewards()});
 onSnapshot(collection(db,"scores"),s=>{scores=s.docs.map(d=>({id:d.id,...d.data()}));renderBoards()});
@@ -515,41 +759,31 @@ function glitterizeStaticIcons(){
 }
 
 function updateEggAnimation(points, rewards){
-  const pet = $("petIcon");
-  if(!pet) return;
-
-  pet.classList.remove("hatch-stage-1","hatch-stage-2","hatch-stage-3","hatch-stage-4","hatched");
+  const egg = $("eggCreature");
+  const pet = $("hatchedPet");
+  if(!egg || !pet) return;
 
   const petGoal = rewards.find(r => String(r.name||"").toLowerCase().includes("class pet"));
   const goal = Number(petGoal?.points || 100);
   const ratio = goal > 0 ? Math.max(0, Math.min(1, points / goal)) : 0;
 
-  // Keep the pet egg while working toward the class pet. It cracks more as students get closer.
-  if(points < goal){
-    pet.textContent = "🥚";
-    pet.classList.add(
-      ratio < .25 ? "hatch-stage-1" :
-      ratio < .5 ? "hatch-stage-2" :
-      ratio < .8 ? "hatch-stage-3" : "hatch-stage-4"
-    );
-
-    let cracks = "";
-    if(ratio >= .25) cracks = "⌁";
-    if(ratio >= .5) cracks = "⌁╱";
-    if(ratio >= .8) cracks = "⌁╱╲";
-
-    let crack = pet.querySelector?.(".crack-overlay");
-    // textContent above removes old children, so recreate overlay if needed
-    if(cracks){
-      crack = document.createElement("span");
-      crack.className="crack-overlay";
-      crack.textContent=cracks;
-      pet.appendChild(crack);
-    }
-  }else{
+  egg.classList.remove("egg-stage-0","egg-stage-1","egg-stage-2","egg-stage-3","egg-stage-4");
+  if(points >= goal){
+    egg.classList.add("hidden");
+    pet.classList.remove("hidden");
     pet.textContent = petGoal?.icon || "🐉";
-    pet.classList.add("hatched");
+    return;
   }
+
+  pet.classList.add("hidden");
+  egg.classList.remove("hidden");
+
+  // The closer the class gets, the more frequently and violently the egg moves.
+  if(ratio < .15) egg.classList.add("egg-stage-0");
+  else if(ratio < .35) egg.classList.add("egg-stage-1");
+  else if(ratio < .60) egg.classList.add("egg-stage-2");
+  else if(ratio < .82) egg.classList.add("egg-stage-3");
+  else egg.classList.add("egg-stage-4");
 }
 
 function renderRewards(){

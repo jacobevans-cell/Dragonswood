@@ -36,6 +36,32 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:9px;borde
 <div class="card"><h2>🐾 Class Points</h2><div class="big" id="points">0</div><div class="meter"><div class="fill" id="fill"></div></div><div class="actions"><input id="reason" class="reason" placeholder="Reason (optional)"><button class="good add" data-n="1">+1</button><button class="good add" data-n="5">+5</button><button class="gold add" data-n="10">+10</button><button class="gray" id="minus">-1</button><button class="gray" id="undo">Undo Last</button></div></div>
 <div class="card"><h2>📜 Reward History</h2><div class="history" id="history"></div></div>
 </div>
+
+<div class="card" style="margin-top:18px">
+  <div class="titlebar" style="margin:0 0 12px">
+    <div><h2>🌤️ Daily Second Recess</h2><p>Independent daily meter. Automatically starts fresh each new day.</p></div>
+    <span class="badge" id="recessDateLabel">TODAY</span>
+  </div>
+  <div class="big" id="recessTeacherPoints">0</div>
+  <div class="meter"><div class="fill" id="recessTeacherFill"></div></div>
+  <div class="actions">
+    <input id="recessTeacherReason" class="reason" placeholder="Reason (optional)">
+    <button class="good recess-add" data-rn="1">+1</button>
+    <button class="good recess-add" data-rn="2">+2</button>
+    <button class="gold recess-add" data-rn="5">+5</button>
+    <button class="gray" id="recessMinus">-1</button>
+    <button class="gray" id="recessReset">Reset Today</button>
+  </div>
+  <div class="actions" style="margin-top:10px">
+    <label style="font-weight:900;font-size:13px;display:flex;align-items:center;gap:7px">
+      Daily Goal
+      <input id="recessGoalInput" type="number" min="1" value="10" style="width:90px">
+    </label>
+    <button class="gray" id="saveRecessGoal">Save Goal</button>
+    <span id="recessTeacherStatus" class="muted" style="align-self:center"></span>
+  </div>
+</div>
+
 <div class="titlebar"><div><h2>🎁 Reward Milestones</h2><p>Add or edit rewards without touching GitHub.</p></div><button id="addReward" class="primary">+ ADD REWARD</button></div>
 <div class="card"><div class="list" id="rewardList"></div></div>
 </div>
@@ -84,7 +110,7 @@ import {getFirestore,doc,getDoc,setDoc,collection,onSnapshot,addDoc,deleteDoc,ge
 const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2", "measurementId": "G-LPRLDGVBD2"},TEACHER="jacobicusjax@gmail.com";
 const normalizedEmail = v => String(v||"").trim().toLowerCase();
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),$=id=>document.getElementById(id);
-let points=0,history=[],rewards=[],scores=[],results=[],students=[];
+let points=0,history=[],rewards=[],scores=[],results=[],students=[],recessState={points:0,goal:10,dateKey:""};
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
 const AVATAR_EMOJI={"dragon-purple":"🐉","dragon-green":"🐲","knight":"🛡️","wizard":"🧙","witch":"🧙‍♀️","princess":"👸","prince":"🤴","ranger":"🏹","phoenix":"🔥","wolf":"🐺","owl":"🦉","crystal":"🔮"};
 function levelInfo(xp){const t=[0,100,250,450,700,1000,1400,1900,2500,3250,4150,5200,6400,7750,9250,10900,12700,14650,16750,19000];let l=1;for(let i=0;i<t.length;i++)if(xp>=t[i])l=i+1;return l}
@@ -153,12 +179,84 @@ onAuthStateChanged(auth, async u => {
 });
 
 function listen(){
+
+ onSnapshot(doc(db,"classData","secondRecess"),async s=>{
+   const today=localDateKey();
+   let data=s.exists()?s.data():{points:0,goal:10,dateKey:today};
+
+   // Teacher portal is the authoritative daily reset point.
+   if(!s.exists() || String(data.dateKey||"")!==today){
+     data={points:0,goal:Math.max(1,Number(data.goal||10)),dateKey:today,updatedAt:serverTimestamp()};
+     await setDoc(doc(db,"classData","secondRecess"),data,{merge:true});
+   }
+
+   recessState={
+     points:Number(data.points||0),
+     goal:Math.max(1,Number(data.goal||10)),
+     dateKey:today
+   };
+   renderTeacherRecess();
+ });
+
  onSnapshot(doc(db,"classData","main"),s=>{if(!s.exists())return;let d=s.data();points=+d.points||0;history=Array.isArray(d.history)?d.history:[];renderPoints()});
  onSnapshot(collection(db,"rewards"),s=>{rewards=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+a.points||0)-(+b.points||0));renderRewards();renderPoints()});
  onSnapshot(collection(db,"scores"),s=>{scores=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+b.score||0)-(+a.score||0));renderScores()});
  onSnapshot(collection(db,"gameResults"),s=>{results=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));renderResults()});
  onSnapshot(collection(db,"students"),s=>{students=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.firstName||"").localeCompare(String(b.firstName||"")));renderStudents()});
 }
+
+function localDateKey(){
+  const d=new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function renderTeacherRecess(){
+  const p=Number(recessState.points||0),g=Math.max(1,Number(recessState.goal||10)),earned=p>=g;
+  $("recessTeacherPoints").textContent=p;
+  $("recessTeacherFill").style.width=Math.min(100,(p/g)*100)+"%";
+  $("recessGoalInput").value=g;
+  $("recessDateLabel").textContent=localDateKey();
+  $("recessTeacherStatus").textContent=earned
+    ?"✅ Second recess earned for today."
+    :`${Math.max(0,g-p)} more point${Math.max(0,g-p)===1?"":"s"} needed.`;
+}
+async function changeRecess(amount,reason){
+  const today=localDateKey();
+  const currentDate=recessState.dateKey===today;
+  const base=currentDate?Number(recessState.points||0):0;
+  const next=Math.max(0,base+amount);
+  await setDoc(doc(db,"classData","secondRecess"),{
+    points:next,
+    goal:Math.max(1,Number(recessState.goal||10)),
+    dateKey:today,
+    lastReason:reason||"Second recess adjustment",
+    updatedAt:serverTimestamp()
+  },{merge:true});
+}
+document.querySelectorAll(".recess-add").forEach(b=>b.onclick=async()=>{
+  await changeRecess(Number(b.dataset.rn||0),$("recessTeacherReason").value.trim());
+  $("recessTeacherReason").value="";
+});
+$("recessMinus").onclick=()=>changeRecess(-1,$("recessTeacherReason").value.trim()||"Teacher adjustment");
+$("recessReset").onclick=async()=>{
+  if(!confirm("Reset today's second recess meter to 0?")) return;
+  await setDoc(doc(db,"classData","secondRecess"),{
+    points:0,
+    goal:Math.max(1,Number(recessState.goal||10)),
+    dateKey:localDateKey(),
+    lastReason:"Manual daily reset",
+    updatedAt:serverTimestamp()
+  },{merge:true});
+};
+$("saveRecessGoal").onclick=async()=>{
+  const goal=Math.max(1,Number($("recessGoalInput").value||10));
+  await setDoc(doc(db,"classData","secondRecess"),{
+    goal,
+    dateKey:localDateKey(),
+    points:recessState.dateKey===localDateKey()?Number(recessState.points||0):0,
+    updatedAt:serverTimestamp()
+  },{merge:true});
+};
+
 async function change(n,reason){let next=Math.max(0,points+n),entry={amount:n,reason:reason||(n>0?"Class reward":"Teacher adjustment"),at:new Date().toISOString()},h=[entry,...history].slice(0,50);await setDoc(doc(db,"classData","main"),{points:next,history:h,updatedAt:serverTimestamp()},{merge:true})}
 document.querySelectorAll(".add").forEach(b=>b.onclick=async()=>{await change(+b.dataset.n,$("reason").value.trim());$("reason").value=""});$("minus").onclick=()=>change(-1,$("reason").value.trim()||"Teacher adjustment");$("undo").onclick=async()=>{if(!history.length)return;let last=history[0];await setDoc(doc(db,"classData","main"),{points:Math.max(0,points-(+last.amount||0)),history:history.slice(1),updatedAt:serverTimestamp()},{merge:true})};
 function renderPoints(){$("points").textContent=points;let max=rewards.length?Math.max(...rewards.map(r=>+r.points||0),100):100;$("fill").style.width=Math.min(100,points/max*100)+"%";$("history").innerHTML=history.length?history.map(h=>`<div class="historyrow"><b>${+h.amount>0?"+":""}${+h.amount||0}</b> — ${esc(h.reason)} <span style="color:#94a3b8">${esc(h.at?new Date(h.at).toLocaleString():"")}</span></div>`).join(""):'<div class="muted">No point changes yet.</div>'}

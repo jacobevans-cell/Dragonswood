@@ -5,85 +5,291 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Dragonswood | Student Portal</title>
 <style>
-*{box-sizing:border-box}:root{--navy:#071a2b;--blue:#075dcc;--green:#35d07f;--red:#ef1245;--gold:#f4b942;--text:#18212f;--muted:#64748b;--line:#dfe6ef}
+*{box-sizing:border-box}
+:root{
+  --navy:#071a2b;--navy2:#0b3458;--blue:#075dcc;--green:#35d07f;--red:#ef1245;
+  --gold:#f4b942;--purple:#7556d8;--paper:#eef4fb;--text:#18212f;--muted:#64748b;--line:#dfe6ef;
+}
 body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(#eef4fb,#f8fafc);color:var(--text)}
-header{background:linear-gradient(120deg,#071a2b,#07385d 58%,#075dcc);color:white;border-bottom:4px solid var(--red)}
-.wrap{width:min(1450px,94%);margin:auto}.top{padding:14px 0;display:flex;gap:12px;align-items:center;font-weight:900;font-size:25px}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+header{background:linear-gradient(120deg,#071a2b,#07385d 58%,#075dcc);color:#fff;border-bottom:4px solid var(--red)}
+.wrap{width:min(1450px,94%);margin:auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:13px 0}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:24px}
 .logo{width:50px;height:50px;border-radius:14px;background:#ffffff18;display:grid;place-items:center;font-size:28px}
-.hero{padding:42px 0 50px;display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:center}
+.brand small{display:block;color:#cbd9e7;font-size:11px;margin-top:3px}
+.account{display:flex;align-items:center;gap:10px}
+.account button{border:0;border-radius:10px;padding:9px 11px;font-weight:900;background:#e8edf3;color:#334155}
+.hero{padding:46px 0 52px;display:grid;grid-template-columns:1.15fr .85fr;gap:24px;align-items:center}
 .hero h1{font-size:clamp(44px,6vw,76px);line-height:.95;margin:0 0 14px}.hero h1 span{color:var(--green)}
 .hero p{color:#dce7f3;font-size:18px;line-height:1.55;max-width:760px}
 .hero-card{background:#ffffff12;border:1px solid #ffffff20;border-radius:18px;padding:18px}
-main{padding:32px 0 60px}h2{font-size:30px;margin:34px 0 6px}.sub{color:var(--muted);margin-bottom:16px}
-.pet{background:white;border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 12px 30px #071a2b12}
-.pethead{background:linear-gradient(135deg,#0b3458,#075dcc);color:white;padding:25px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:15px}
+.hero-card b{display:block;font-size:20px;margin-bottom:6px}
+main{padding:30px 0 60px}
+.login-card{max-width:640px;margin:40px auto;background:white;border:1px solid var(--line);border-radius:22px;padding:28px;box-shadow:0 12px 30px #071a2b14;text-align:center}
+.login-card h2{font-size:32px;margin:0 0 8px}.login-card p{color:var(--muted);line-height:1.5}
+.google{display:inline-flex;align-items:center;gap:10px;border:0;border-radius:12px;padding:12px 18px;background:#fff;border:1px solid #ccd6e3;font-weight:900;box-shadow:0 5px 18px #071a2b0d}
+.google span{font-size:20px}
+.error{color:#a20d31;font-size:13px;margin-top:12px}
+.profilebar{display:grid;grid-template-columns:auto 1fr auto auto auto;gap:12px;align-items:center;background:white;border:1px solid var(--line);border-radius:18px;padding:14px 16px;margin:20px 0;box-shadow:0 8px 24px #071a2b0c}
+.avatar{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font-size:34px;background:linear-gradient(145deg,#dbeafe,#ede9fe);border:3px solid #fff;box-shadow:0 0 0 2px #c7d2fe}
+.profile-name{font-size:22px;font-weight:1000}.profile-sub{color:var(--muted);font-size:13px;margin-top:3px}
+.stat{min-width:84px;border:1px solid var(--line);border-radius:13px;padding:10px;text-align:center;background:#f8fafc}.stat b{display:block;font-size:20px}.stat small{color:var(--muted);font-weight:800}
+.levelbar{margin-top:8px;height:8px;border-radius:999px;background:#e8edf3;overflow:hidden}.levelbar div{height:100%;width:0;background:linear-gradient(90deg,#7556d8,#35d07f)}
+.section-title{margin:34px 0 14px}.section-title h2{font-size:30px;margin:0 0 5px}.section-title p{margin:0;color:var(--muted)}
+.pet{background:white;border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 12px 30px #071a2b10}
+.pethead{background:linear-gradient(135deg,#0b3458,#075dcc);color:white;padding:24px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}
 .pethead h3{font-size:31px;margin:0 0 5px}.pethead p{margin:0;color:#dce7f3}.peticon{font-size:70px}
-.petbody{padding:23px}.meterrow{display:flex;justify-content:space-between;font-weight:900;margin-bottom:10px}
-.track{height:27px;background:#e9eef5;border-radius:999px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,#35d07f,#f4b942);transition:.35s}
-.rewards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:17px}
-.reward{border:1px solid var(--line);border-radius:13px;padding:12px;text-align:center;background:#f8fafc}.reward.unlocked{background:#ecfdf3;border-color:#9fdfb9}.reward.current{outline:3px solid var(--gold)}
-.reward .icon{font-size:27px}.reward b{display:block;margin:5px 0}.reward small{color:var(--muted)}
+.petbody{padding:22px}.meterrow{display:flex;justify-content:space-between;font-weight:900;margin-bottom:9px}.track{height:26px;background:#e9eef5;border-radius:999px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,#35d07f,#f4b942)}
+.rewards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:16px}.reward{border:1px solid var(--line);border-radius:13px;padding:12px;text-align:center;background:#f8fafc}.reward.unlocked{background:#ecfdf3;border-color:#9fdfb9}.reward.current{outline:3px solid var(--gold)}.reward .icon{font-size:27px}.reward b{display:block;margin:5px 0}.reward small{color:var(--muted)}
 .next{margin-top:15px;background:#effbf4;border-left:5px solid var(--green);padding:13px;border-radius:10px;font-weight:800}
 .games,.boards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .game,.board{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 8px 24px #071a2b0e}
 .visual{height:135px;display:grid;place-items:center;font-size:58px;background:linear-gradient(145deg,#edf5ff,#fafcff)}.body{padding:18px}
 .tag{display:inline-block;padding:5px 9px;border-radius:999px;background:#e9f8fa;color:#08798b;font-size:10px;font-weight:900}
 .game h3,.board h3{margin:9px 0 6px}.game p{color:var(--muted);font-size:14px;line-height:1.45}
-.game a{display:block;text-align:center;text-decoration:none;background:var(--blue);color:white;padding:10px;border-radius:9px;font-weight:900;margin-top:12px}
-.game a.soon{background:#94a3b8;pointer-events:none}
-.board{padding:17px}.rank{display:grid;grid-template-columns:32px 1fr auto;gap:8px;padding:9px 0;border-top:1px solid #edf1f5;align-items:center}.rank:first-of-type{border-top:0}
-.place{width:28px;height:28px;border-radius:50%;background:#eef5ff;color:var(--blue);display:grid;place-items:center;font-weight:900}.score{font-weight:900;color:var(--blue)}
+.game a{display:block;text-align:center;text-decoration:none;background:var(--blue);color:#fff;padding:10px;border-radius:9px;font-weight:900;margin-top:12px}.game a.soon{background:#94a3b8;pointer-events:none}
+.board{padding:17px}.rank{display:grid;grid-template-columns:34px 42px 1fr auto;gap:8px;padding:9px 0;border-top:1px solid #edf1f5;align-items:center}.rank:first-of-type{border-top:0}
+.place{width:28px;height:28px;border-radius:50%;background:#eef5ff;color:var(--blue);display:grid;place-items:center;font-weight:900}.miniavatar{font-size:25px;text-align:center}.score{font-weight:900;color:var(--blue)}
+.modal{position:fixed;inset:0;background:#071a2bc4;display:grid;place-items:center;padding:20px;z-index:50}.modalbox{width:min(760px,100%);max-height:92vh;overflow:auto;background:white;border-radius:20px;padding:24px}
+.modalbox h2{margin-top:0}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field label{font-weight:900;font-size:13px}.field input,.field select{padding:11px;border:1px solid #ccd6e3;border-radius:10px}
+.choicegrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.choice{border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center;background:#f8fafc;cursor:pointer}.choice.active{outline:3px solid var(--blue);background:#eef5ff}.choice .big{font-size:30px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.primary{border:0;border-radius:10px;padding:11px 14px;font-weight:900;background:var(--blue);color:white}.gray{border:0;border-radius:10px;padding:11px 14px;font-weight:900;background:#e8edf3;color:#334155}
 footer{background:var(--navy);color:#cbd5e1;text-align:center;border-top:4px solid var(--red);padding:22px}
-@media(max-width:900px){.hero{grid-template-columns:1fr}.games,.boards{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){.games,.boards{grid-template-columns:1fr}}
+@media(max-width:950px){.hero{grid-template-columns:1fr}.profilebar{grid-template-columns:auto 1fr;}.stat{min-width:0}.games,.boards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){.games,.boards,.formgrid,.choicegrid{grid-template-columns:1fr}.profilebar{grid-template-columns:1fr;text-align:center}.avatar{margin:auto}}
 </style>
 </head>
 <body>
-<header><div class="wrap"><div class="top"><div class="logo">🐉</div><div>Dragonswood<div style="font-size:11px;color:#cbd9e7">EVANS 4–5 • STUDENT PORTAL</div></div></div>
-<div class="hero"><div><h1>Journey through <span>Dragonswood</span></h1><p>Play custom learning games, chase class records, and watch our shared rewards grow as we learn and level up together.</p></div><div class="hero-card"><b>🏆 One Class. One Journey.</b><p>Academic wins, teamwork, effort, and strong choices unlock new rewards for everyone.</p><small id="conn">Connecting…</small></div></div></div></header>
-<main class="wrap">
-<h2>🐾 Our Reward Journey</h2><div class="sub">Class points unlock new rewards and experiences.</div>
-<section class="pet"><div class="pethead"><div><h3 id="headline">Loading our journey…</h3><p id="message">Checking Dragonswood progress.</p></div><div class="peticon" id="petIcon">🥚</div></div>
-<div class="petbody"><div class="meterrow"><span>Class Progress</span><span><span id="points">0</span> points</span></div><div class="track"><div class="fill" id="fill"></div></div><div class="rewards" id="rewards"></div><div class="next" id="next">Next reward loading…</div></div></section>
+<header>
+<div class="wrap">
+<div class="top">
+  <div class="brand"><div class="logo">🐉</div><div>Dragonswood<small>EVANS 4–5 • STUDENT PORTAL</small></div></div>
+  <div class="account hidden" id="account"><span id="accountEmail" style="font-size:12px;color:#cbd9e7"></span><button id="profileBtn">Profile</button><button id="signOutBtn">Sign Out</button></div>
+</div>
+<div class="hero">
+  <div><h1>Journey through <span>Dragonswood</span></h1><p>Play custom learning games, build your character, chase records, and help your class unlock new rewards.</p></div>
+  <div class="hero-card"><b>🏆 Your adventure follows you.</b><p>Use your Explore Academy account so your profile, scores, XP, HP, Gold, and game history stay connected to you.</p><small id="conn">Waiting for sign-in…</small></div>
+</div>
+</div>
+</header>
 
-<h2>🎮 Custom Learning Games</h2><div class="sub">Built around what we are learning in class.</div>
-<section class="games">
-<article class="game"><div class="visual">🚀</div><div class="body"><span class="tag">MATH</span><h3>Decimal Deception</h3><p>Complete decimal missions, restore crystals, and escape the station.</p><a href="decimal-deception.html">PLAY</a></div></article>
-<article class="game"><div class="visual">➗</div><div class="body"><span class="tag">MATH SUPPORT</span><h3>Long Division Quest</h3><p>Work through long division one step at a time with targeted support.</p><a href="long-division-quest.html">PLAY</a></div></article>
-<article class="game"><div class="visual">🔤</div><div class="body"><span class="tag">ELA</span><h3>Spelling Practice Lab</h3><p>Study, hear, break apart, and practice spelling words.</p><a href="spelling-practice.html">PLAY</a></div></article>
-<article class="game"><div class="visual">📖</div><div class="body"><span class="tag">READING</span><h3>Class eReader</h3><p>Read digital texts with read-aloud and highlighting support.</p><a class="soon" href="#">COMING SOON</a></div></article>
-<article class="game"><div class="visual">🌦️</div><div class="body"><span class="tag">SCIENCE</span><h3>Science Missions</h3><p>Interactive science investigations and mastery challenges.</p><a class="soon" href="#">COMING SOON</a></div></article>
-<article class="game"><div class="visual">⭐</div><div class="body"><span class="tag">NEXT UP</span><h3>New Dragonswood Challenge</h3><p>New custom games will join the hub as we build them.</p><a class="soon" href="#">COMING SOON</a></div></article>
+<main class="wrap">
+<section id="signedOut" class="login-card">
+  <h2>Enter Dragonswood</h2>
+  <p>Sign in with your Explore Academy Google account.</p>
+  <button class="google" id="googleBtn"><span>G</span> SIGN IN WITH GOOGLE</button>
+  <div class="error" id="loginError"></div>
 </section>
 
-<h2>🏆 Dragonswood Records</h2><div class="sub">Top scores from classroom computers.</div><section class="boards" id="boards"><div class="board"><h3>Loading records…</h3></div></section>
+<section id="signedIn" class="hidden">
+  <div class="profilebar">
+    <div class="avatar" id="avatar">🐉</div>
+    <div>
+      <div class="profile-name" id="displayName">Adventurer</div>
+      <div class="profile-sub" id="profileSub">Loading profile…</div>
+      <div class="levelbar"><div id="levelFill"></div></div>
+    </div>
+    <div class="stat"><b id="hp">10</b><small>❤️ HP</small></div>
+    <div class="stat"><b id="gold">0</b><small>🪙 GOLD</small></div>
+    <div class="stat"><b id="xp">0</b><small>⭐ XP</small></div>
+  </div>
+
+  <div class="section-title"><h2>🐾 Our Reward Journey</h2><p>Class points unlock rewards for everyone.</p></div>
+  <section class="pet">
+    <div class="pethead"><div><h3 id="headline">Loading our journey…</h3><p id="message">Checking Dragonswood progress.</p></div><div class="peticon" id="petIcon">🥚</div></div>
+    <div class="petbody">
+      <div class="meterrow"><span>Class Progress</span><span><span id="points">0</span> points</span></div>
+      <div class="track"><div class="fill" id="fill"></div></div>
+      <div class="rewards" id="rewards"></div>
+      <div class="next" id="next">Next reward loading…</div>
+    </div>
+  </section>
+
+  <div class="section-title"><h2>🎮 Custom Learning Games</h2><p>Games will be connected to your account one by one as we add them.</p></div>
+  <section class="games">
+    <article class="game"><div class="visual">🚀</div><div class="body"><span class="tag">MATH</span><h3>Decimal Deception</h3><p>Complete decimal missions, restore crystals, and escape the station.</p><a href="decimal-deception.html">PLAY</a></div></article>
+    <article class="game"><div class="visual">➗</div><div class="body"><span class="tag">MATH SUPPORT</span><h3>Long Division Quest</h3><p>Work through long division one step at a time with targeted support.</p><a href="long-division-quest.html">PLAY</a></div></article>
+    <article class="game"><div class="visual">🔤</div><div class="body"><span class="tag">ELA</span><h3>Spelling Practice Lab</h3><p>Study, hear, break apart, and practice spelling words.</p><a href="spelling-practice.html">PLAY</a></div></article>
+    <article class="game"><div class="visual">📖</div><div class="body"><span class="tag">READING</span><h3>Class eReader</h3><p>Read digital texts with read-aloud and highlighting support.</p><a class="soon" href="#">COMING SOON</a></div></article>
+    <article class="game"><div class="visual">🌦️</div><div class="body"><span class="tag">SCIENCE</span><h3>Science Missions</h3><p>Interactive science investigations and mastery challenges.</p><a class="soon" href="#">COMING SOON</a></div></article>
+    <article class="game"><div class="visual">⭐</div><div class="body"><span class="tag">NEXT UP</span><h3>New Dragonswood Challenge</h3><p>New custom games will join the hub as we build them.</p><a class="soon" href="#">COMING SOON</a></div></article>
+  </section>
+
+  <div class="section-title"><h2>🏆 Dragonswood Records</h2><p>Top five scores from Firebase-connected games.</p></div>
+  <section class="boards" id="boards"><div class="board"><h3>No records yet</h3></div></section>
+</section>
 </main>
+
+<div id="profileModal" class="modal hidden">
+  <div class="modalbox">
+    <h2 id="profileTitle">Create Your Dragonswood Character</h2>
+    <div class="formgrid">
+      <div class="field"><label>First Name</label><input id="firstName" readonly></div>
+      <div class="field"><label>Grade</label><select id="grade"><option value="">Choose</option><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div>
+      <div class="field"><label>Group</label><select id="group"><option value="">Choose</option><option value="girl">Girls</option><option value="boy">Boys</option></select></div>
+      <div class="field"><label>Fantasy Title</label><select id="titleSelect"></select></div>
+    </div>
+
+    <h3>Choose Your Avatar</h3>
+    <div class="choicegrid" id="avatarChoices"></div>
+
+    <div class="actions">
+      <button class="primary" id="saveProfile">SAVE CHARACTER</button>
+      <button class="gray hidden" id="closeProfile">Close</button>
+    </div>
+    <div class="error" id="profileError"></div>
+  </div>
+</div>
+
 <footer><b>Dragonswood Student Portal</b><br>Learn • Play • Grow • Unlock</footer>
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import {getFirestore,doc,onSnapshot,collection} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-import {getAuth,signInAnonymously,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2"};
-const app=initializeApp(firebaseConfig),db=getFirestore(app),auth=getAuth(app);
-let state={points:0,rewards:[],scores:[]};
-const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
-signInAnonymously(auth).catch(console.error);
-onAuthStateChanged(auth,u=>document.getElementById("conn").textContent=u?"✓ Connected to live Dragonswood data":"Connecting…");
-onSnapshot(doc(db,"classData","main"),s=>{if(s.exists())state.points=Number(s.data().points||0);renderRewards()});
-onSnapshot(collection(db,"rewards"),s=>{state.rewards=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+a.points||0)-(+b.points||0));renderRewards()});
-onSnapshot(collection(db,"scores"),s=>{state.scores=s.docs.map(d=>({id:d.id,...d.data()}));renderBoards()});
+import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {getFirestore,doc,getDoc,setDoc,onSnapshot,collection,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2", "measurementId": "G-LPRLDGVBD2"};
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+const DOMAIN="explore.academy";
+const $=id=>document.getElementById(id);
+let user=null,profile=null,rewards=[],classPoints=0,scores=[];
+
+const TITLES=[
+  {id:"princess",label:"Princess",position:"before"},
+  {id:"prince",label:"Prince",position:"before"},
+  {id:"queen",label:"Queen",position:"before"},
+  {id:"king",label:"King",position:"before"},
+  {id:"witch",label:"Witch",position:"before"},
+  {id:"wizard",label:"Wizard",position:"before"},
+  {id:"knight",label:"Knight",position:"before"},
+  {id:"warrior",label:"Warrior",position:"before"},
+  {id:"ranger",label:"Ranger",position:"before"},
+  {id:"captain",label:"Captain",position:"before"},
+  {id:"dragonslayer",label:"Dragonslayer",position:"afterThe"},
+  {id:"brave",label:"Brave",position:"afterThe"},
+  {id:"fearless",label:"Fearless",position:"afterThe"},
+  {id:"dragonkeeper",label:"Dragon Keeper",position:"afterThe"},
+  {id:"stormcaller",label:"Stormcaller",position:"afterThe"},
+  {id:"phoenixrider",label:"Phoenix Rider",position:"afterThe"},
+  {id:"shadowwalker",label:"Shadow Walker",position:"afterThe"},
+  {id:"dragonwood",label:"of Dragonswood",position:"afterDirect"}
+];
+
+const AVATARS=[
+  {id:"dragon-purple",emoji:"🐉",label:"Purple Dragon"},
+  {id:"dragon-green",emoji:"🐲",label:"Green Dragon"},
+  {id:"knight",emoji:"🛡️",label:"Knight"},
+  {id:"wizard",emoji:"🧙",label:"Wizard"},
+  {id:"witch",emoji:"🧙‍♀️",label:"Witch"},
+  {id:"princess",emoji:"👸",label:"Princess"},
+  {id:"prince",emoji:"🤴",label:"Prince"},
+  {id:"ranger",emoji:"🏹",label:"Ranger"},
+  {id:"phoenix",emoji:"🔥",label:"Phoenix"},
+  {id:"wolf",emoji:"🐺",label:"Wolf"},
+  {id:"owl",emoji:"🦉",label:"Owl"},
+  {id:"crystal",emoji:"🔮",label:"Crystal Mage"}
+];
+
+function esc(v){return String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]))}
+function firstNameFromUser(u){return (u.displayName||u.email.split("@")[0]).trim().split(/\s+/)[0]}
+function formatName(p){
+  const t=TITLES.find(x=>x.id===p.title);
+  if(!t)return p.firstName;
+  if(t.position==="before")return `${t.label} ${p.firstName}`;
+  if(t.position==="afterThe")return `${p.firstName} the ${t.label}`;
+  return `${p.firstName} ${t.label}`;
+}
+function levelInfo(xp){
+  const thresholds=[0,100,250,450,700,1000,1400,1900,2500,3250,4150,5200,6400,7750,9250,10900,12700,14650,16750,19000];
+  let level=1;
+  for(let i=0;i<thresholds.length;i++)if(xp>=thresholds[i])level=i+1;
+  const cur=thresholds[level-1]||0,next=thresholds[level]??(cur+2500);
+  return {level,cur,next,pct:Math.max(0,Math.min(100,(xp-cur)/(next-cur)*100))};
+}
+function avatarEmoji(id){return AVATARS.find(a=>a.id===id)?.emoji||"🐉"}
+
+$("googleBtn").onclick=async()=>{
+  $("loginError").textContent="";
+  try{
+    const provider=new GoogleAuthProvider();
+    provider.setCustomParameters({hd:DOMAIN,prompt:"select_account"});
+    await signInWithPopup(auth,provider);
+  }catch(err){$("loginError").textContent=`Sign in failed: ${err.code||"unknown"}`;console.error(err)}
+};
+$("signOutBtn").onclick=()=>signOut(auth);
+$("profileBtn").onclick=()=>openProfile(true);
+
+onAuthStateChanged(auth,async u=>{
+  user=u;
+  if(!u){
+    $("signedOut").classList.remove("hidden");$("signedIn").classList.add("hidden");$("account").classList.add("hidden");$("conn").textContent="Waiting for sign-in…";return;
+  }
+  const email=(u.email||"").toLowerCase();
+  if(!email.endsWith("@"+DOMAIN)){
+    $("loginError").textContent=`Use your @${DOMAIN} school account.`;
+    await signOut(auth);return;
+  }
+  $("signedOut").classList.add("hidden");$("signedIn").classList.remove("hidden");$("account").classList.remove("hidden");$("accountEmail").textContent=u.email;$("conn").textContent="✓ Connected to your Dragonswood account";
+  const ref=doc(db,"students",u.uid),snap=await getDoc(ref);
+  if(snap.exists()){profile=snap.data();renderProfile();} else {profile=null;openProfile(false);}
+  onSnapshot(ref,s=>{if(s.exists()){profile=s.data();renderProfile();}});
+});
+
+function populateProfileControls(){
+  $("firstName").value=profile?.firstName||firstNameFromUser(user);
+  $("grade").value=profile?.grade||"";
+  $("group").value=profile?.genderGroup||"";
+  $("titleSelect").innerHTML=TITLES.map(t=>`<option value="${t.id}">${t.position==="before"?t.label+" "+$("firstName").value:t.position==="afterThe"?$("firstName").value+" the "+t.label:$("firstName").value+" "+t.label}</option>`).join("");
+  $("titleSelect").value=profile?.title||"princess";
+  $("avatarChoices").innerHTML=AVATARS.map(a=>`<div class="choice ${(profile?.avatar||"dragon-purple")===a.id?"active":""}" data-avatar="${a.id}"><div class="big">${a.emoji}</div><small>${esc(a.label)}</small></div>`).join("");
+  document.querySelectorAll("[data-avatar]").forEach(el=>el.onclick=()=>{document.querySelectorAll("[data-avatar]").forEach(x=>x.classList.remove("active"));el.classList.add("active")});
+}
+function openProfile(editing){
+  $("profileModal").classList.remove("hidden");$("profileTitle").textContent=editing?"Edit Dragonswood Profile":"Create Your Dragonswood Character";$("closeProfile").classList.toggle("hidden",!editing);populateProfileControls();
+}
+$("closeProfile").onclick=()=>$("profileModal").classList.add("hidden");
+$("saveProfile").onclick=async()=>{
+  $("profileError").textContent="";
+  const grade=$("grade").value,genderGroup=$("group").value,title=$("titleSelect").value,avatar=document.querySelector("[data-avatar].active")?.dataset.avatar||"dragon-purple";
+  if(!grade||!genderGroup)return $("profileError").textContent="Choose your grade and group.";
+  const ref=doc(db,"students",user.uid),exists=(await getDoc(ref)).exists();
+  if(!exists){
+    await setDoc(ref,{firstName:firstNameFromUser(user),email:user.email,grade,genderGroup,title,avatar,hp:10,gold:0,xp:0,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
+  }else{
+    await setDoc(ref,{title,avatar,updatedAt:serverTimestamp()},{merge:true});
+    if(profile.grade!==grade||profile.genderGroup!==genderGroup){
+      // Rules intentionally prevent student changes to grade/group after creation.
+      $("profileError").textContent="Grade/group changes must be made by your teacher.";
+      return;
+    }
+  }
+  $("profileModal").classList.add("hidden");
+};
+
+function renderProfile(){
+  if(!profile)return;
+  const li=levelInfo(+profile.xp||0);
+  $("avatar").textContent=avatarEmoji(profile.avatar);$("displayName").textContent=formatName(profile);$("profileSub").textContent=`Level ${li.level} • Grade ${profile.grade} • ${profile.genderGroup==="girl"?"Girls":"Boys"} • ${li.next-(+profile.xp||0)} XP to next level`;
+  $("hp").textContent=+profile.hp||0;$("gold").textContent=+profile.gold||0;$("xp").textContent=+profile.xp||0;$("levelFill").style.width=li.pct+"%";
+}
+
+onSnapshot(doc(db,"classData","main"),s=>{if(s.exists())classPoints=+s.data().points||0;renderRewards()});
+onSnapshot(collection(db,"rewards"),s=>{rewards=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+a.points||0)-(+b.points||0));renderRewards()});
+onSnapshot(collection(db,"scores"),s=>{scores=s.docs.map(d=>({id:d.id,...d.data()}));renderBoards()});
+
 function renderRewards(){
- const p=state.points,r=state.rewards,max=r.length?Math.max(...r.map(x=>+x.points||0),100):100,next=r.find(x=>p<(+x.points||0)),last=[...r].reverse().find(x=>p>=(+x.points||0));
- document.getElementById("points").textContent=p;document.getElementById("fill").style.width=Math.min(100,p/max*100)+"%";
- document.getElementById("petIcon").textContent=last?.icon||"🥚";document.getElementById("headline").textContent=last?`${last.icon||"🎉"} ${last.name} Unlocked!`:"Our Dragonswood Journey";
- document.getElementById("message").textContent=next?`${(+next.points)-p} more points until ${next.name}.`:(r.length?"All current rewards are unlocked!":"Rewards are being prepared.");
- document.getElementById("next").textContent=next?`NEXT: ${next.icon||"🎁"} ${next.name} at ${next.points} points`:"🏆 All current rewards unlocked!";
- document.getElementById("rewards").innerHTML=r.length?r.map(x=>{let g=+x.points||0;return `<div class="reward ${p>=g?'unlocked':''} ${next?.id===x.id?'current':''}"><div class="icon">${esc(x.icon||"🎁")}</div><b>${esc(x.name)}</b><small>${g} points</small></div>`}).join(""):"<div>No rewards added yet.</div>";
+ const p=classPoints,r=rewards,max=r.length?Math.max(...r.map(x=>+x.points||0),100):100,next=r.find(x=>p<(+x.points||0)),last=[...r].reverse().find(x=>p>=(+x.points||0));
+ $("points").textContent=p;$("fill").style.width=Math.min(100,p/max*100)+"%";$("petIcon").textContent=last?.icon||"🥚";$("headline").textContent=last?`${last.icon||"🎉"} ${last.name} Unlocked!`:"Our Dragonswood Journey";$("message").textContent=next?`${(+next.points)-p} more points until ${next.name}.`:(r.length?"All current rewards are unlocked!":"Rewards are being prepared.");$("next").textContent=next?`NEXT: ${next.icon||"🎁"} ${next.name} at ${next.points} points`:"🏆 All current rewards unlocked!";
+ $("rewards").innerHTML=r.length?r.map(x=>{let g=+x.points||0;return `<div class="reward ${p>=g?'unlocked':''} ${next?.id===x.id?'current':''}"><div class="icon">${esc(x.icon||"🎁")}</div><b>${esc(x.name)}</b><small>${g} points</small></div>`}).join(""):"<div>No rewards yet.</div>";
 }
 function renderBoards(){
- const grouped={};state.scores.forEach(s=>{let g=s.gameName||s.game||"Game";(grouped[g]??=[]).push(s)});
- let games=Object.keys(grouped).sort();document.getElementById("boards").innerHTML=games.length?games.map(g=>{let top=grouped[g].sort((a,b)=>(+b.score||0)-(+a.score||0)).slice(0,5);return `<div class="board"><h3>${esc(g)}</h3>${top.map((s,i)=>`<div class="rank"><div class="place">${i+1}</div><div>${esc(s.playerName||"Player")}</div><div class="score">${+s.score||0}</div></div>`).join("")}</div>`}).join(""):'<div class="board"><h3>No records yet</h3><p style="color:#64748b">The first Firebase-connected game will start the leaderboard.</p></div>';
+ const grouped={};scores.forEach(s=>{let g=s.gameName||s.game||"Game";(grouped[g]??=[]).push(s)});
+ const games=Object.keys(grouped).sort();$("boards").innerHTML=games.length?games.map(g=>{let top=grouped[g].sort((a,b)=>(+b.score||0)-(+a.score||0)).slice(0,5);return `<div class="board"><h3>${esc(g)}</h3>${top.map((s,i)=>`<div class="rank"><div class="place">${i+1}</div><div class="miniavatar">${esc(s.avatarEmoji||"🐉")}</div><div>${esc(s.displayName||s.playerName||"Player")}</div><div class="score">${+s.score||0}</div></div>`).join("")}</div>`}).join(""):'<div class="board"><h3>No records yet</h3><p style="color:#64748b">The first connected game will start the leaderboard.</p></div>';
 }
 renderRewards();renderBoards();
 </script>
-</body></html>
+</body>
+</html>

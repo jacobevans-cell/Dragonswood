@@ -6,26 +6,30 @@
 <style>
 *{box-sizing:border-box}:root{--navy:#071a2b;--blue:#075dcc;--green:#35d07f;--red:#ef1245;--gold:#f4b942;--text:#18212f;--muted:#64748b;--line:#dfe6ef}
 body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#eef3f8;color:var(--text)}header{background:linear-gradient(120deg,#071a2b,#07385d 60%,#075dcc);color:#fff;border-bottom:4px solid var(--red)}
-.wrap{width:min(1400px,94%);margin:auto}.head{padding:17px 0;display:flex;justify-content:space-between;gap:16px;align-items:center}.brand{font-size:23px;font-weight:900}.brand small{display:block;color:#cbd9e7;font-size:11px;margin-top:3px}
+.wrap{width:min(1450px,94%);margin:auto}.head{padding:17px 0;display:flex;justify-content:space-between;gap:16px;align-items:center}.brand{font-size:23px;font-weight:900}.brand small{display:block;color:#cbd9e7;font-size:11px;margin-top:3px}
 main{padding:30px 0 60px}.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:21px;box-shadow:0 10px 26px #071a2b10}.login{max-width:520px;margin:45px auto}
-h1,h2{margin-top:0}.muted{color:var(--muted)}.field{display:flex;flex-direction:column;gap:6px;margin:12px 0}.field label{font-weight:800;font-size:13px}input,textarea{padding:11px 12px;border:1px solid #ccd6e3;border-radius:10px;font:inherit}
+h1,h2{margin-top:0}.muted{color:var(--muted)}.field{display:flex;flex-direction:column;gap:6px;margin:12px 0}.field label{font-weight:800;font-size:13px}input,textarea,select{padding:11px 12px;border:1px solid #ccd6e3;border-radius:10px;font:inherit}
 button{border:0;border-radius:10px;padding:10px 13px;font-weight:900;cursor:pointer}.primary{background:var(--blue);color:#fff}.good{background:#dff7e9;color:#126638}.gold{background:#ffe8a6;color:#634500}.gray{background:#e8edf3;color:#334155}.danger{background:#ffe1e8;color:#9b1534}.full{width:100%}.hidden{display:none!important}
 .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.tab{background:#dfe7f0;color:#334155}.tab.active{background:var(--blue);color:#fff}.panel{display:none}.panel.active{display:block}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.big{font-size:58px;font-weight:1000;color:var(--blue)}.meter{height:24px;background:#e8edf3;border-radius:999px;overflow:hidden;margin:13px 0}.fill{height:100%;width:0;background:linear-gradient(90deg,#35d07f,#f4b942)}
 .actions{display:flex;gap:8px;flex-wrap:wrap}.reason{flex:1;min-width:220px}.history{max-height:290px;overflow:auto}.historyrow{padding:9px 0;border-top:1px solid #edf1f5;font-size:13px}.historyrow:first-child{border-top:0}
 .titlebar{display:flex;justify-content:space-between;align-items:end;gap:16px;margin:26px 0 12px}.titlebar h2{margin:0}.titlebar p{margin:4px 0 0;color:var(--muted)}
 .list{display:grid;gap:9px}.item{border:1px solid var(--line);border-radius:12px;padding:11px;display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}.icon{font-size:26px}.item small{display:block;color:var(--muted);margin-top:3px}.mini{padding:7px 9px;font-size:11px}
-.modal{position:fixed;inset:0;background:#071a2baa;display:grid;place-items:center;padding:20px;z-index:20}.modalbox{background:#fff;border-radius:17px;padding:21px;width:min(560px,100%)}
+.student-table{width:100%;border-collapse:collapse;font-size:13px}.student-table th,.student-table td{padding:10px;border-bottom:1px solid #e7ecf2;text-align:left;vertical-align:middle}.student-table th{background:#f8fafc}.student-avatar{font-size:25px}.student-name{font-weight:900}
+.groupbox{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}.groupbox .field{margin:0}
+.modal{position:fixed;inset:0;background:#071a2baa;display:grid;place-items:center;padding:20px;z-index:20}.modalbox{background:#fff;border-radius:17px;padding:21px;width:min(640px,100%);max-height:92vh;overflow:auto}
 table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:9px;border-bottom:1px solid #e7ecf2;text-align:left;white-space:nowrap}th{background:#f8fafc}.tablewrap{overflow:auto}
-@media(max-width:900px){.grid{grid-template-columns:1fr}.head{align-items:flex-start;flex-direction:column}}
+.badge{display:inline-block;padding:4px 7px;border-radius:999px;background:#eef5ff;color:#075dcc;font-weight:900;font-size:11px}
+@media(max-width:950px){.grid{grid-template-columns:1fr}.head{align-items:flex-start;flex-direction:column}.groupbox{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.groupbox{grid-template-columns:1fr}}
 </style></head>
 <body>
 <header><div class="wrap head"><div class="brand">🔐 Dragonswood Teacher Portal<small>PRIVATE CLASSROOM CONTROLS</small></div><div id="signed" class="hidden"><span id="who" style="font-size:12px;color:#cbd9e7"></span> <button id="logout" class="gray mini">Sign Out</button></div></div></header>
 <main class="wrap">
-<section id="login" class="card login"><h1>Teacher Login</h1><p class="muted">Use the teacher account you created in Firebase.</p><form id="loginForm"><div class="field"><label>Email</label><input id="email" type="email" required autocomplete="username"></div><div class="field"><label>Password</label><input id="password" type="password" required autocomplete="current-password"></div><button class="primary full">SIGN IN</button><div id="error" style="color:#a20d31;margin-top:10px;font-size:13px"></div></form></section>
+<section id="login" class="card login"><h1>Teacher Login</h1><p class="muted">Use your Firebase teacher account.</p><form id="loginForm"><div class="field"><label>Email</label><input id="email" type="email" required autocomplete="username"></div><div class="field"><label>Password</label><input id="password" type="password" required autocomplete="current-password"></div><button class="primary full">SIGN IN</button><div id="error" style="color:#a20d31;margin-top:10px;font-size:13px"></div></form></section>
 
 <section id="dash" class="hidden">
-<div class="tabs"><button class="tab active" data-p="rewards">Rewards</button><button class="tab" data-p="scores">Leaderboards</button><button class="tab" data-p="data">Game Data</button></div>
+<div class="tabs"><button class="tab active" data-p="rewards">Class Rewards</button><button class="tab" data-p="students">Students</button><button class="tab" data-p="scores">Leaderboards</button><button class="tab" data-p="data">Game Data</button></div>
 
 <div id="rewards" class="panel active">
 <div class="grid">
@@ -36,38 +40,48 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:9px;borde
 <div class="card"><div class="list" id="rewardList"></div></div>
 </div>
 
+<div id="students" class="panel">
+  <div class="titlebar"><div><h2>🧙 Student Control Center</h2><p>Manage HP, Gold, XP, level progress, profiles, and group awards.</p></div></div>
+  <div class="card">
+    <h3>Mass Award / Adjustment</h3>
+    <div class="groupbox">
+      <div class="field"><label>Group</label><select id="massGroup"><option value="all">Whole Class</option><option value="girl">All Girls</option><option value="boy">All Boys</option><option value="4">All 4th Grade</option><option value="5">All 5th Grade</option></select></div>
+      <div class="field"><label>Stat</label><select id="massStat"><option value="hp">HP</option><option value="gold">Gold</option><option value="xp">XP</option></select></div>
+      <div class="field"><label>Amount</label><input id="massAmount" type="number" value="1"></div>
+      <div class="field"><label>Reason</label><input id="massReason" placeholder="Great teamwork"></div>
+    </div>
+    <div class="actions" style="margin-top:12px"><button id="massApply" class="primary">APPLY TO GROUP</button></div>
+  </div>
+  <div class="titlebar"><div><h2>Student Roster</h2><p>Profiles appear here after students sign in for the first time.</p></div></div>
+  <div class="card tablewrap"><table class="student-table"><thead><tr><th>Avatar</th><th>Student</th><th>Grade</th><th>Group</th><th>Level</th><th>HP</th><th>Gold</th><th>XP</th><th>Manage</th></tr></thead><tbody id="studentRows"></tbody></table></div>
+</div>
+
 <div id="scores" class="panel"><div class="titlebar"><div><h2>🏆 Leaderboard Manager</h2><p>Review or delete submitted scores.</p></div></div><div class="card"><div class="list" id="scoreList"></div></div></div>
 
 <div id="data" class="panel"><div class="titlebar"><div><h2>📊 Academic Game Data</h2><p>Private game results for instructional use.</p></div></div><div class="card tablewrap"><table><thead><tr><th>Player</th><th>Game</th><th>Score</th><th>Accuracy</th><th>Details</th><th>Time</th></tr></thead><tbody id="results"></tbody></table></div></div>
 </section>
 </main>
 
-<div id="modal" class="modal hidden"><div class="modalbox"><h3 id="modalTitle">Add Reward</h3><input type="hidden" id="rid"><div class="field"><label>Name</label><input id="rname"></div><div class="field"><label>Points Required</label><input id="rpoints" type="number" min="1"></div><div class="field"><label>Icon / Emoji</label><input id="ricon" value="🎁"></div><div class="field"><label>Description</label><textarea id="rdesc" rows="3"></textarea></div><div class="actions"><button id="saveReward" class="primary">SAVE REWARD</button><button id="cancel" class="gray">Cancel</button></div></div></div>
+<div id="rewardModal" class="modal hidden"><div class="modalbox"><h3 id="rewardModalTitle">Add Reward</h3><input type="hidden" id="rid"><div class="field"><label>Name</label><input id="rname"></div><div class="field"><label>Points Required</label><input id="rpoints" type="number" min="1"></div><div class="field"><label>Icon / Emoji</label><input id="ricon" value="🎁"></div><div class="field"><label>Description</label><textarea id="rdesc" rows="3"></textarea></div><div class="actions"><button id="saveReward" class="primary">SAVE REWARD</button><button id="cancelReward" class="gray">Cancel</button></div></div></div>
+
+<div id="studentModal" class="modal hidden"><div class="modalbox"><h3>Manage Student</h3><input type="hidden" id="sid"><div class="field"><label>First Name</label><input id="sname"></div><div class="field"><label>Grade</label><select id="sgrade"><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div><div class="field"><label>Group</label><select id="sgroup"><option value="girl">Girls</option><option value="boy">Boys</option></select></div><div class="field"><label>Title ID</label><input id="stitle" placeholder="princess / dragonslayer / wizard"></div><div class="field"><label>Avatar ID</label><input id="savatar" placeholder="dragon-purple / knight / wizard"></div>
+<div class="groupbox"><div class="field"><label>HP</label><input id="shp" type="number"></div><div class="field"><label>Gold</label><input id="sgold" type="number"></div><div class="field"><label>XP</label><input id="sxp" type="number"></div><div class="field"><label>Reason</label><input id="sreason" placeholder="Teacher adjustment"></div></div>
+<div class="actions"><button id="saveStudent" class="primary">SAVE PROFILE</button><button id="cancelStudent" class="gray">Cancel</button></div></div></div>
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {getFirestore,doc,getDoc,setDoc,collection,onSnapshot,addDoc,deleteDoc,getDocs,writeBatch,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2"},TEACHER="jacobicusjax@gmail.com";
+
+const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2", "measurementId": "G-LPRLDGVBD2"},TEACHER="jacobicusjax@gmail.com";
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),$=id=>document.getElementById(id);
-let points=0,history=[],rewards=[],scores=[],results=[];
+let points=0,history=[],rewards=[],scores=[],results=[],students=[];
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
-$("loginForm").onsubmit=async e=>{
-  e.preventDefault();
-  $("error").textContent="";
-  try{
-    await signInWithEmailAndPassword(
-      auth,
-      $("email").value.trim(),
-      $("password").value
-    );
-  }catch(err){
-    console.error("Firebase teacher sign-in error:", err);
-    const code = err?.code || "unknown-error";
-    const message = err?.message || "No additional Firebase message was provided.";
-    $("error").textContent = `Sign in failed: ${code} — ${message}`;
-  }
-};
+const AVATAR_EMOJI={"dragon-purple":"🐉","dragon-green":"🐲","knight":"🛡️","wizard":"🧙","witch":"🧙‍♀️","princess":"👸","prince":"🤴","ranger":"🏹","phoenix":"🔥","wolf":"🐺","owl":"🦉","crystal":"🔮"};
+function levelInfo(xp){const t=[0,100,250,450,700,1000,1400,1900,2500,3250,4150,5200,6400,7750,9250,10900,12700,14650,16750,19000];let l=1;for(let i=0;i<t.length;i++)if(xp>=t[i])l=i+1;return l}
+function displayStudent(s){return s.firstName||s.email||"Student"}
+
+$("loginForm").onsubmit=async e=>{e.preventDefault();$("error").textContent="";try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value)}catch(err){$("error").textContent=`Sign in failed: ${err.code||"unknown"}`;console.error(err)}};
 $("logout").onclick=()=>signOut(auth);
 
 async function seed(){
@@ -82,18 +96,26 @@ function listen(){
  onSnapshot(collection(db,"rewards"),s=>{rewards=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+a.points||0)-(+b.points||0));renderRewards();renderPoints()});
  onSnapshot(collection(db,"scores"),s=>{scores=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+b.score||0)-(+a.score||0));renderScores()});
  onSnapshot(collection(db,"gameResults"),s=>{results=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));renderResults()});
+ onSnapshot(collection(db,"students"),s=>{students=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.firstName||"").localeCompare(String(b.firstName||"")));renderStudents()});
 }
 async function change(n,reason){let next=Math.max(0,points+n),entry={amount:n,reason:reason||(n>0?"Class reward":"Teacher adjustment"),at:new Date().toISOString()},h=[entry,...history].slice(0,50);await setDoc(doc(db,"classData","main"),{points:next,history:h,updatedAt:serverTimestamp()},{merge:true})}
-document.querySelectorAll(".add").forEach(b=>b.onclick=async()=>{await change(+b.dataset.n,$("reason").value.trim());$("reason").value=""});
-$("minus").onclick=()=>change(-1,$("reason").value.trim()||"Teacher adjustment");
-$("undo").onclick=async()=>{if(!history.length)return;let last=history[0];await setDoc(doc(db,"classData","main"),{points:Math.max(0,points-(+last.amount||0)),history:history.slice(1),updatedAt:serverTimestamp()},{merge:true})};
+document.querySelectorAll(".add").forEach(b=>b.onclick=async()=>{await change(+b.dataset.n,$("reason").value.trim());$("reason").value=""});$("minus").onclick=()=>change(-1,$("reason").value.trim()||"Teacher adjustment");$("undo").onclick=async()=>{if(!history.length)return;let last=history[0];await setDoc(doc(db,"classData","main"),{points:Math.max(0,points-(+last.amount||0)),history:history.slice(1),updatedAt:serverTimestamp()},{merge:true})};
 function renderPoints(){$("points").textContent=points;let max=rewards.length?Math.max(...rewards.map(r=>+r.points||0),100):100;$("fill").style.width=Math.min(100,points/max*100)+"%";$("history").innerHTML=history.length?history.map(h=>`<div class="historyrow"><b>${+h.amount>0?"+":""}${+h.amount||0}</b> — ${esc(h.reason)} <span style="color:#94a3b8">${esc(h.at?new Date(h.at).toLocaleString():"")}</span></div>`).join(""):'<div class="muted">No point changes yet.</div>'}
 function renderRewards(){$("rewardList").innerHTML=rewards.length?rewards.map(r=>`<div class="item"><div class="icon">${esc(r.icon||"🎁")}</div><div><b>${esc(r.name)}</b><small>${+r.points||0} points • ${esc(r.description||"")}</small></div><div><button class="gray mini" data-edit="${r.id}">Edit</button> <button class="danger mini" data-del="${r.id}">Delete</button></div></div>`).join(""):'<div class="muted">No rewards yet.</div>';document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openReward(b.dataset.edit));document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>removeReward(b.dataset.del))}
-$("addReward").onclick=()=>openReward();$("cancel").onclick=()=>$("modal").classList.add("hidden");
-function openReward(id=""){let r=rewards.find(x=>x.id===id);$("modal").classList.remove("hidden");$("rid").value=id;$("modalTitle").textContent=r?"Edit Reward":"Add Reward";$("rname").value=r?.name||"";$("rpoints").value=r?.points||"";$("ricon").value=r?.icon||"🎁";$("rdesc").value=r?.description||""}
-$("saveReward").onclick=async()=>{let name=$("rname").value.trim(),pts=+$("rpoints").value;if(!name||!pts)return alert("Enter a reward name and point goal.");let payload={name,points:pts,icon:$("ricon").value.trim()||"🎁",description:$("rdesc").value.trim(),updatedAt:serverTimestamp()},id=$("rid").value;if(id)await setDoc(doc(db,"rewards",id),payload,{merge:true});else await addDoc(collection(db,"rewards"),{...payload,createdAt:serverTimestamp()});$("modal").classList.add("hidden")};
+$("addReward").onclick=()=>openReward();$("cancelReward").onclick=()=>$("rewardModal").classList.add("hidden");
+function openReward(id=""){let r=rewards.find(x=>x.id===id);$("rewardModal").classList.remove("hidden");$("rid").value=id;$("rewardModalTitle").textContent=r?"Edit Reward":"Add Reward";$("rname").value=r?.name||"";$("rpoints").value=r?.points||"";$("ricon").value=r?.icon||"🎁";$("rdesc").value=r?.description||""}
+$("saveReward").onclick=async()=>{let name=$("rname").value.trim(),pts=+$("rpoints").value;if(!name||!pts)return alert("Enter a reward name and point goal.");let payload={name,points:pts,icon:$("ricon").value.trim()||"🎁",description:$("rdesc").value.trim(),updatedAt:serverTimestamp()},id=$("rid").value;if(id)await setDoc(doc(db,"rewards",id),payload,{merge:true});else await addDoc(collection(db,"rewards"),{...payload,createdAt:serverTimestamp()});$("rewardModal").classList.add("hidden")};
 async function removeReward(id){let r=rewards.find(x=>x.id===id);if(confirm(`Delete "${r?.name||"this reward"}"?`))await deleteDoc(doc(db,"rewards",id))}
-function renderScores(){$("scoreList").innerHTML=scores.length?scores.map(s=>`<div class="item"><div class="icon">🏆</div><div><b>${esc(s.playerName||"Player")} — ${+s.score||0}</b><small>${esc(s.gameName||s.game||"Game")}</small></div><div><button class="danger mini" data-sdel="${s.id}">Delete</button></div></div>`).join(""):'<div class="muted">No scores submitted yet.</div>';document.querySelectorAll("[data-sdel]").forEach(b=>b.onclick=async()=>{if(confirm("Delete this score?"))await deleteDoc(doc(db,"scores",b.dataset.sdel))})}
-function renderResults(){$("results").innerHTML=results.length?results.map(r=>`<tr><td>${esc(r.playerName||"Player")}</td><td>${esc(r.gameName||r.game||"Game")}</td><td>${+r.score||0}</td><td>${r.accuracy!=null?esc(r.accuracy)+"%":"—"}</td><td>${esc(r.summary||r.details||"—")}</td><td>${r.createdAt?.seconds?new Date(r.createdAt.seconds*1000).toLocaleString():"—"}</td></tr>`).join(""):'<tr><td colspan="6" class="muted">No academic game results yet.</td></tr>'}
+
+function renderStudents(){$("studentRows").innerHTML=students.length?students.map(s=>`<tr><td class="student-avatar">${AVATAR_EMOJI[s.avatar]||"🐉"}</td><td><span class="student-name">${esc(displayStudent(s))}</span><br><small>${esc(s.email||"")}</small></td><td>${esc(s.grade||"—")}</td><td>${s.genderGroup==="girl"?"Girls":s.genderGroup==="boy"?"Boys":"—"}</td><td><span class="badge">Lv ${levelInfo(+s.xp||0)}</span></td><td>${+s.hp||0}</td><td>${+s.gold||0}</td><td>${+s.xp||0}</td><td><button class="gray mini" data-manage="${s.id}">Manage</button></td></tr>`).join(""):'<tr><td colspan="9" class="muted">No students have created profiles yet.</td></tr>';document.querySelectorAll("[data-manage]").forEach(b=>b.onclick=()=>openStudent(b.dataset.manage))}
+function openStudent(id){let s=students.find(x=>x.id===id);if(!s)return;$("studentModal").classList.remove("hidden");$("sid").value=id;$("sname").value=s.firstName||"";$("sgrade").value=s.grade||"4";$("sgroup").value=s.genderGroup||"girl";$("stitle").value=s.title||"";$("savatar").value=s.avatar||"dragon-purple";$("shp").value=+s.hp||0;$("sgold").value=+s.gold||0;$("sxp").value=+s.xp||0;$("sreason").value=""}
+$("cancelStudent").onclick=()=>$("studentModal").classList.add("hidden");
+$("saveStudent").onclick=async()=>{let id=$("sid").value,s=students.find(x=>x.id===id);if(!s)return;let newHp=+$("shp").value||0,newGold=+$("sgold").value||0,newXp=+$("sxp").value||0;await setDoc(doc(db,"students",id),{firstName:$("sname").value.trim()||s.firstName,grade:$("sgrade").value,genderGroup:$("sgroup").value,title:$("stitle").value.trim(),avatar:$("savatar").value.trim(),hp:newHp,gold:newGold,xp:newXp,updatedAt:serverTimestamp()},{merge:true});let changes=[["hp",newHp-(+s.hp||0)],["gold",newGold-(+s.gold||0)],["xp",newXp-(+s.xp||0)]].filter(x=>x[1]!==0);for(const [stat,amount] of changes)await addDoc(collection(db,"studentTransactions"),{studentId:id,stat,amount,reason:$("sreason").value.trim()||"Teacher adjustment",createdAt:serverTimestamp()});$("studentModal").classList.add("hidden")};
+
+$("massApply").onclick=async()=>{let group=$("massGroup").value,stat=$("massStat").value,amount=+$("massAmount").value||0,reason=$("massReason").value.trim()||"Group award";if(!amount)return alert("Enter a non-zero amount.");let targets=students.filter(s=>group==="all"||(group==="girl"&&s.genderGroup==="girl")||(group==="boy"&&s.genderGroup==="boy")||(group==="4"&&s.grade==="4")||(group==="5"&&s.grade==="5"));if(!targets.length)return alert("No students match that group.");if(!confirm(`Apply ${amount>0?"+":""}${amount} ${stat.toUpperCase()} to ${targets.length} student(s)?`))return;const batch=writeBatch(db);for(const s of targets){const next=Math.max(0,(+s[stat]||0)+amount);batch.set(doc(db,"students",s.id),{[stat]:next,updatedAt:serverTimestamp()},{merge:true});batch.set(doc(collection(db,"studentTransactions")),{studentId:s.id,stat,amount:next-(+s[stat]||0),reason,createdAt:serverTimestamp()})}await batch.commit()};
+
+function renderScores(){$("scoreList").innerHTML=scores.length?scores.map(s=>`<div class="item"><div class="icon">🏆</div><div><b>${esc(s.displayName||s.playerName||"Player")} — ${+s.score||0}</b><small>${esc(s.gameName||s.game||"Game")}</small></div><div><button class="danger mini" data-sdel="${s.id}">Delete</button></div></div>`).join(""):'<div class="muted">No scores submitted yet.</div>';document.querySelectorAll("[data-sdel]").forEach(b=>b.onclick=async()=>{if(confirm("Delete this score?"))await deleteDoc(doc(db,"scores",b.dataset.sdel))})}
+function renderResults(){$("results").innerHTML=results.length?results.map(r=>`<tr><td>${esc(r.displayName||r.playerName||"Player")}</td><td>${esc(r.gameName||r.game||"Game")}</td><td>${+r.score||0}</td><td>${r.accuracy!=null?esc(r.accuracy)+"%":"—"}</td><td>${esc(r.summary||r.details||"—")}</td><td>${r.createdAt?.seconds?new Date(r.createdAt.seconds*1000).toLocaleString():"—"}</td></tr>`).join(""):'<tr><td colspan="6" class="muted">No academic game results yet.</td></tr>'}
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");$(b.dataset.p).classList.add("active")})
-</script></body></html>
+</script>
+</body></html>

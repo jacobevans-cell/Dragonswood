@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dragonswood | Student Portal</title>
+<style>
+*{box-sizing:border-box}:root{--navy:#071a2b;--blue:#075dcc;--green:#35d07f;--red:#ef1245;--gold:#f4b942;--text:#18212f;--muted:#64748b;--line:#dfe6ef}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(#eef4fb,#f8fafc);color:var(--text)}
+header{background:linear-gradient(120deg,#071a2b,#07385d 58%,#075dcc);color:white;border-bottom:4px solid var(--red)}
+.wrap{width:min(1450px,94%);margin:auto}.top{padding:14px 0;display:flex;gap:12px;align-items:center;font-weight:900;font-size:25px}
+.logo{width:50px;height:50px;border-radius:14px;background:#ffffff18;display:grid;place-items:center;font-size:28px}
+.hero{padding:42px 0 50px;display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:center}
+.hero h1{font-size:clamp(44px,6vw,76px);line-height:.95;margin:0 0 14px}.hero h1 span{color:var(--green)}
+.hero p{color:#dce7f3;font-size:18px;line-height:1.55;max-width:760px}
+.hero-card{background:#ffffff12;border:1px solid #ffffff20;border-radius:18px;padding:18px}
+main{padding:32px 0 60px}h2{font-size:30px;margin:34px 0 6px}.sub{color:var(--muted);margin-bottom:16px}
+.pet{background:white;border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 12px 30px #071a2b12}
+.pethead{background:linear-gradient(135deg,#0b3458,#075dcc);color:white;padding:25px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:15px}
+.pethead h3{font-size:31px;margin:0 0 5px}.pethead p{margin:0;color:#dce7f3}.peticon{font-size:70px}
+.petbody{padding:23px}.meterrow{display:flex;justify-content:space-between;font-weight:900;margin-bottom:10px}
+.track{height:27px;background:#e9eef5;border-radius:999px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,#35d07f,#f4b942);transition:.35s}
+.rewards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:17px}
+.reward{border:1px solid var(--line);border-radius:13px;padding:12px;text-align:center;background:#f8fafc}.reward.unlocked{background:#ecfdf3;border-color:#9fdfb9}.reward.current{outline:3px solid var(--gold)}
+.reward .icon{font-size:27px}.reward b{display:block;margin:5px 0}.reward small{color:var(--muted)}
+.next{margin-top:15px;background:#effbf4;border-left:5px solid var(--green);padding:13px;border-radius:10px;font-weight:800}
+.games,.boards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.game,.board{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 8px 24px #071a2b0e}
+.visual{height:135px;display:grid;place-items:center;font-size:58px;background:linear-gradient(145deg,#edf5ff,#fafcff)}.body{padding:18px}
+.tag{display:inline-block;padding:5px 9px;border-radius:999px;background:#e9f8fa;color:#08798b;font-size:10px;font-weight:900}
+.game h3,.board h3{margin:9px 0 6px}.game p{color:var(--muted);font-size:14px;line-height:1.45}
+.game a{display:block;text-align:center;text-decoration:none;background:var(--blue);color:white;padding:10px;border-radius:9px;font-weight:900;margin-top:12px}
+.game a.soon{background:#94a3b8;pointer-events:none}
+.board{padding:17px}.rank{display:grid;grid-template-columns:32px 1fr auto;gap:8px;padding:9px 0;border-top:1px solid #edf1f5;align-items:center}.rank:first-of-type{border-top:0}
+.place{width:28px;height:28px;border-radius:50%;background:#eef5ff;color:var(--blue);display:grid;place-items:center;font-weight:900}.score{font-weight:900;color:var(--blue)}
+footer{background:var(--navy);color:#cbd5e1;text-align:center;border-top:4px solid var(--red);padding:22px}
+@media(max-width:900px){.hero{grid-template-columns:1fr}.games,.boards{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){.games,.boards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="top"><div class="logo">🐉</div><div>Dragonswood<div style="font-size:11px;color:#cbd9e7">EVANS 4–5 • STUDENT PORTAL</div></div></div>
+<div class="hero"><div><h1>Journey through <span>Dragonswood</span></h1><p>Play custom learning games, chase class records, and watch our shared rewards grow as we learn and level up together.</p></div><div class="hero-card"><b>🏆 One Class. One Journey.</b><p>Academic wins, teamwork, effort, and strong choices unlock new rewards for everyone.</p><small id="conn">Connecting…</small></div></div></div></header>
+<main class="wrap">
+<h2>🐾 Our Reward Journey</h2><div class="sub">Class points unlock new rewards and experiences.</div>
+<section class="pet"><div class="pethead"><div><h3 id="headline">Loading our journey…</h3><p id="message">Checking Dragonswood progress.</p></div><div class="peticon" id="petIcon">🥚</div></div>
+<div class="petbody"><div class="meterrow"><span>Class Progress</span><span><span id="points">0</span> points</span></div><div class="track"><div class="fill" id="fill"></div></div><div class="rewards" id="rewards"></div><div class="next" id="next">Next reward loading…</div></div></section>
+
+<h2>🎮 Custom Learning Games</h2><div class="sub">Built around what we are learning in class.</div>
+<section class="games">
+<article class="game"><div class="visual">🚀</div><div class="body"><span class="tag">MATH</span><h3>Decimal Deception</h3><p>Complete decimal missions, restore crystals, and escape the station.</p><a href="decimal-deception.html">PLAY</a></div></article>
+<article class="game"><div class="visual">➗</div><div class="body"><span class="tag">MATH SUPPORT</span><h3>Long Division Quest</h3><p>Work through long division one step at a time with targeted support.</p><a href="long-division-quest.html">PLAY</a></div></article>
+<article class="game"><div class="visual">🔤</div><div class="body"><span class="tag">ELA</span><h3>Spelling Practice Lab</h3><p>Study, hear, break apart, and practice spelling words.</p><a href="spelling-practice.html">PLAY</a></div></article>
+<article class="game"><div class="visual">📖</div><div class="body"><span class="tag">READING</span><h3>Class eReader</h3><p>Read digital texts with read-aloud and highlighting support.</p><a class="soon" href="#">COMING SOON</a></div></article>
+<article class="game"><div class="visual">🌦️</div><div class="body"><span class="tag">SCIENCE</span><h3>Science Missions</h3><p>Interactive science investigations and mastery challenges.</p><a class="soon" href="#">COMING SOON</a></div></article>
+<article class="game"><div class="visual">⭐</div><div class="body"><span class="tag">NEXT UP</span><h3>New Dragonswood Challenge</h3><p>New custom games will join the hub as we build them.</p><a class="soon" href="#">COMING SOON</a></div></article>
+</section>
+
+<h2>🏆 Dragonswood Records</h2><div class="sub">Top scores from classroom computers.</div><section class="boards" id="boards"><div class="board"><h3>Loading records…</h3></div></section>
+</main>
+<footer><b>Dragonswood Student Portal</b><br>Learn • Play • Grow • Unlock</footer>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import {getFirestore,doc,onSnapshot,collection} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {getAuth,signInAnonymously,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+const firebaseConfig={"apiKey": "AIzaSyC918WL0G0gxRKsgcZ-3bXIZjZW_1bvYF", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2"};
+const app=initializeApp(firebaseConfig),db=getFirestore(app),auth=getAuth(app);
+let state={points:0,rewards:[],scores:[]};
+const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
+signInAnonymously(auth).catch(console.error);
+onAuthStateChanged(auth,u=>document.getElementById("conn").textContent=u?"✓ Connected to live Dragonswood data":"Connecting…");
+onSnapshot(doc(db,"classData","main"),s=>{if(s.exists())state.points=Number(s.data().points||0);renderRewards()});
+onSnapshot(collection(db,"rewards"),s=>{state.rewards=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+a.points||0)-(+b.points||0));renderRewards()});
+onSnapshot(collection(db,"scores"),s=>{state.scores=s.docs.map(d=>({id:d.id,...d.data()}));renderBoards()});
+function renderRewards(){
+ const p=state.points,r=state.rewards,max=r.length?Math.max(...r.map(x=>+x.points||0),100):100,next=r.find(x=>p<(+x.points||0)),last=[...r].reverse().find(x=>p>=(+x.points||0));
+ document.getElementById("points").textContent=p;document.getElementById("fill").style.width=Math.min(100,p/max*100)+"%";
+ document.getElementById("petIcon").textContent=last?.icon||"🥚";document.getElementById("headline").textContent=last?`${last.icon||"🎉"} ${last.name} Unlocked!`:"Our Dragonswood Journey";
+ document.getElementById("message").textContent=next?`${(+next.points)-p} more points until ${next.name}.`:(r.length?"All current rewards are unlocked!":"Rewards are being prepared.");
+ document.getElementById("next").textContent=next?`NEXT: ${next.icon||"🎁"} ${next.name} at ${next.points} points`:"🏆 All current rewards unlocked!";
+ document.getElementById("rewards").innerHTML=r.length?r.map(x=>{let g=+x.points||0;return `<div class="reward ${p>=g?'unlocked':''} ${next?.id===x.id?'current':''}"><div class="icon">${esc(x.icon||"🎁")}</div><b>${esc(x.name)}</b><small>${g} points</small></div>`}).join(""):"<div>No rewards added yet.</div>";
+}
+function renderBoards(){
+ const grouped={};state.scores.forEach(s=>{let g=s.gameName||s.game||"Game";(grouped[g]??=[]).push(s)});
+ let games=Object.keys(grouped).sort();document.getElementById("boards").innerHTML=games.length?games.map(g=>{let top=grouped[g].sort((a,b)=>(+b.score||0)-(+a.score||0)).slice(0,5);return `<div class="board"><h3>${esc(g)}</h3>${top.map((s,i)=>`<div class="rank"><div class="place">${i+1}</div><div>${esc(s.playerName||"Player")}</div><div class="score">${+s.score||0}</div></div>`).join("")}</div>`}).join(""):'<div class="board"><h3>No records yet</h3><p style="color:#64748b">The first Firebase-connected game will start the leaderboard.</p></div>';
+}
+renderRewards();renderBoards();
+</script>
+</body></html>

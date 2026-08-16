@@ -213,29 +213,82 @@ function avatarEmoji(id){return AVATARS.find(a=>a.id===id)?.emoji||"🐉"}
 
 $("googleBtn").onclick=async()=>{
   $("loginError").textContent="";
+  $("googleBtn").disabled = true;
+  $("googleBtn").textContent = "SIGNING IN…";
   try{
     const provider=new GoogleAuthProvider();
     provider.setCustomParameters({hd:DOMAIN,prompt:"select_account"});
-    await signInWithPopup(auth,provider);
-  }catch(err){$("loginError").textContent=`Sign in failed: ${err.code||"unknown"}`;console.error(err)}
+    const result = await signInWithPopup(auth,provider);
+    console.log("Google sign-in completed:", result.user?.email);
+  }catch(err){
+    console.error("Student Google sign-in error:", err);
+    $("loginError").textContent=`Sign in failed: ${err.code||"unknown"} — ${err.message||""}`;
+  }finally{
+    $("googleBtn").disabled = false;
+    $("googleBtn").innerHTML = '<span>G</span> SIGN IN WITH GOOGLE';
+  }
 };
 $("signOutBtn").onclick=()=>signOut(auth);
 $("profileBtn").onclick=()=>openProfile(true);
 
 onAuthStateChanged(auth,async u=>{
   user=u;
+
   if(!u){
-    $("signedOut").classList.remove("hidden");$("signedIn").classList.add("hidden");$("account").classList.add("hidden");$("conn").textContent="Waiting for sign-in…";return;
+    $("signedOut").classList.remove("hidden");
+    $("signedIn").classList.add("hidden");
+    $("account").classList.add("hidden");
+    $("conn").textContent="Waiting for sign-in…";
+    return;
   }
-  const email=(u.email||"").toLowerCase();
+
+  const email=String(u.email||"").trim().toLowerCase();
+
+  // Do NOT immediately sign the user back out. Show exactly what account Firebase received.
   if(!email.endsWith("@"+DOMAIN)){
-    $("loginError").textContent=`Use your @${DOMAIN} school account.`;
-    await signOut(auth);return;
+    $("signedOut").classList.remove("hidden");
+    $("signedIn").classList.add("hidden");
+    $("account").classList.remove("hidden");
+    $("accountEmail").textContent=u.email||"Unknown account";
+    $("conn").textContent="Signed in, but this account is not authorized.";
+    $("loginError").textContent=`Firebase signed you in as ${u.email||"an account"}, but Dragonswood only allows @${DOMAIN} school accounts. Use Sign Out, then choose your school account.`;
+    return;
   }
-  $("signedOut").classList.add("hidden");$("signedIn").classList.remove("hidden");$("account").classList.remove("hidden");$("accountEmail").textContent=u.email;$("conn").textContent="✓ Connected to your Dragonswood account";
-  const ref=doc(db,"students",u.uid),snap=await getDoc(ref);
-  if(snap.exists()){profile=snap.data();renderProfile();} else {profile=null;openProfile(false);}
-  onSnapshot(ref,s=>{if(s.exists()){profile=s.data();renderProfile();}});
+
+  $("loginError").textContent="";
+  $("signedOut").classList.add("hidden");
+  $("signedIn").classList.remove("hidden");
+  $("account").classList.remove("hidden");
+  $("accountEmail").textContent=u.email;
+  $("conn").textContent="✓ Connected to your Dragonswood account";
+
+  try{
+    const ref=doc(db,"students",u.uid);
+    const snap=await getDoc(ref);
+
+    if(snap.exists()){
+      profile=snap.data();
+      renderProfile();
+    }else{
+      profile=null;
+      openProfile(false);
+    }
+
+    onSnapshot(ref,s=>{
+      if(s.exists()){
+        profile=s.data();
+        renderProfile();
+      }
+    },err=>{
+      console.error("Student profile listener error:",err);
+      $("conn").textContent=`Profile data error: ${err.code||"unknown"}`;
+    });
+
+  }catch(err){
+    console.error("Student portal startup error:",err);
+    $("conn").textContent=`Signed in, but profile data failed: ${err.code||"unknown"}`;
+    $("loginError").textContent=`Firebase profile error: ${err.code||"unknown"} — ${err.message||""}`;
+  }
 });
 
 function populateProfileControls(){
@@ -253,20 +306,48 @@ function openProfile(editing){
 $("closeProfile").onclick=()=>$("profileModal").classList.add("hidden");
 $("saveProfile").onclick=async()=>{
   $("profileError").textContent="";
-  const grade=$("grade").value,genderGroup=$("group").value,title=$("titleSelect").value,avatar=document.querySelector("[data-avatar].active")?.dataset.avatar||"dragon-purple";
-  if(!grade||!genderGroup)return $("profileError").textContent="Choose your grade and group.";
-  const ref=doc(db,"students",user.uid),exists=(await getDoc(ref)).exists();
-  if(!exists){
-    await setDoc(ref,{firstName:firstNameFromUser(user),email:user.email,grade,genderGroup,title,avatar,hp:10,gold:0,xp:0,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
-  }else{
-    await setDoc(ref,{title,avatar,updatedAt:serverTimestamp()},{merge:true});
-    if(profile.grade!==grade||profile.genderGroup!==genderGroup){
-      // Rules intentionally prevent student changes to grade/group after creation.
-      $("profileError").textContent="Grade/group changes must be made by your teacher.";
+  try{
+    const grade=$("grade").value,
+          genderGroup=$("group").value,
+          title=$("titleSelect").value,
+          avatar=document.querySelector("[data-avatar].active")?.dataset.avatar||"dragon-purple";
+
+    if(!grade||!genderGroup){
+      $("profileError").textContent="Choose your grade and group.";
       return;
     }
+
+    const ref=doc(db,"students",user.uid);
+    const snap=await getDoc(ref);
+    const exists=snap.exists();
+
+    if(!exists){
+      await setDoc(ref,{
+        firstName:firstNameFromUser(user),
+        email:user.email,
+        grade,
+        genderGroup,
+        title,
+        avatar,
+        hp:10,
+        gold:0,
+        xp:0,
+        createdAt:serverTimestamp(),
+        updatedAt:serverTimestamp()
+      });
+    }else{
+      if(profile && (profile.grade!==grade||profile.genderGroup!==genderGroup)){
+        $("profileError").textContent="Grade/group changes must be made by your teacher.";
+        return;
+      }
+      await setDoc(ref,{title,avatar,updatedAt:serverTimestamp()},{merge:true});
+    }
+
+    $("profileModal").classList.add("hidden");
+  }catch(err){
+    console.error("Save student profile error:",err);
+    $("profileError").textContent=`Could not save profile: ${err.code||"unknown"} — ${err.message||""}`;
   }
-  $("profileModal").classList.add("hidden");
 };
 
 function renderProfile(){

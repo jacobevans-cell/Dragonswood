@@ -52,7 +52,22 @@ const firebaseConfig={"apiKey": "AIzaSyC918WL0G0gxRKsgcZ-3bXIZjZW_1bvYF", "authD
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),$=id=>document.getElementById(id);
 let points=0,history=[],rewards=[],scores=[],results=[];
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
-$("loginForm").onsubmit=async e=>{e.preventDefault();$("error").textContent="";try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value)}catch(err){$("error").textContent="Sign in failed. Check email/password.";console.error(err)}};
+$("loginForm").onsubmit=async e=>{
+  e.preventDefault();
+  $("error").textContent="";
+  try{
+    await signInWithEmailAndPassword(
+      auth,
+      $("email").value.trim(),
+      $("password").value
+    );
+  }catch(err){
+    console.error("Firebase teacher sign-in error:", err);
+    const code = err?.code || "unknown-error";
+    const message = err?.message || "No additional Firebase message was provided.";
+    $("error").textContent = `Sign in failed: ${code} — ${message}`;
+  }
+};
 $("logout").onclick=()=>signOut(auth);
 
 async function seed(){

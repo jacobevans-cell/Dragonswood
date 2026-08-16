@@ -63,7 +63,7 @@ footer{background:var(--navy);color:#cbd5e1;text-align:center;border-top:4px sol
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getFirestore,doc,onSnapshot,collection} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 import {getAuth,signInAnonymously,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-const firebaseConfig={"apiKey": "AIzaSyC918WLJoGQgxRKsqcz-3bXIZjZWw_1bwYE", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2"};
+const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2"};
 const app=initializeApp(firebaseConfig),db=getFirestore(app),auth=getAuth(app);
 let state={points:0,rewards:[],scores:[]};
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));

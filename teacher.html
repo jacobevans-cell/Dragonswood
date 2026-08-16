@@ -66,12 +66,20 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:9px;borde
 
 <div id="studentModal" class="modal hidden"><div class="modalbox"><h3>Manage Student</h3><input type="hidden" id="sid"><div class="field"><label>First Name</label><input id="sname"></div><div class="field"><label>Grade</label><select id="sgrade"><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div><div class="field"><label>Group</label><select id="sgroup"><option value="girl">Girls</option><option value="boy">Boys</option></select></div><div class="field"><label>Title ID</label><input id="stitle" placeholder="princess / dragonslayer / wizard"></div><div class="field"><label>Avatar ID</label><input id="savatar" placeholder="dragon-purple / knight / wizard"></div>
 <div class="groupbox"><div class="field"><label>HP</label><input id="shp" type="number"></div><div class="field"><label>Gold</label><input id="sgold" type="number"></div><div class="field"><label>XP</label><input id="sxp" type="number"></div><div class="field"><label>Reason</label><input id="sreason" placeholder="Teacher adjustment"></div></div>
-<div class="actions"><button id="saveStudent" class="primary">SAVE PROFILE</button><button id="cancelStudent" class="gray">Cancel</button></div></div></div>
+<div class="actions">
+  <button id="saveStudent" class="primary">SAVE PROFILE</button>
+  <button id="deleteStudent" class="danger">DELETE STUDENT</button>
+  <button id="cancelStudent" class="gray">Cancel</button>
+</div>
+<div style="margin-top:10px;color:#64748b;font-size:12px;line-height:1.4">
+  Deleting removes this student's Dragonswood profile, stats, transaction history, game results, and leaderboard scores. Their Google school account itself is not deleted.
+</div>
+</div></div>
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import {getFirestore,doc,getDoc,setDoc,collection,onSnapshot,addDoc,deleteDoc,getDocs,writeBatch,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {getFirestore,doc,getDoc,setDoc,collection,onSnapshot,addDoc,deleteDoc,getDocs,writeBatch,serverTimestamp,query,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2", "measurementId": "G-LPRLDGVBD2"},TEACHER="jacobicusjax@gmail.com";
 const normalizedEmail = v => String(v||"").trim().toLowerCase();
@@ -163,6 +171,51 @@ async function removeReward(id){let r=rewards.find(x=>x.id===id);if(confirm(`Del
 function renderStudents(){$("studentRows").innerHTML=students.length?students.map(s=>`<tr><td class="student-avatar">${AVATAR_EMOJI[s.avatar]||"🐉"}</td><td><span class="student-name">${esc(displayStudent(s))}</span><br><small>${esc(s.email||"")}</small></td><td>${esc(s.grade||"—")}</td><td>${s.genderGroup==="girl"?"Girls":s.genderGroup==="boy"?"Boys":"—"}</td><td><span class="badge">Lv ${levelInfo(+s.xp||0)}</span></td><td>${+s.hp||0}</td><td>${+s.gold||0}</td><td>${+s.xp||0}</td><td><button class="gray mini" data-manage="${s.id}">Manage</button></td></tr>`).join(""):'<tr><td colspan="9" class="muted">No students have created profiles yet.</td></tr>';document.querySelectorAll("[data-manage]").forEach(b=>b.onclick=()=>openStudent(b.dataset.manage))}
 function openStudent(id){let s=students.find(x=>x.id===id);if(!s)return;$("studentModal").classList.remove("hidden");$("sid").value=id;$("sname").value=s.firstName||"";$("sgrade").value=s.grade||"4";$("sgroup").value=s.genderGroup||"girl";$("stitle").value=s.title||"";$("savatar").value=s.avatar||"dragon-purple";$("shp").value=+s.hp||0;$("sgold").value=+s.gold||0;$("sxp").value=+s.xp||0;$("sreason").value=""}
 $("cancelStudent").onclick=()=>$("studentModal").classList.add("hidden");
+
+$("deleteStudent").onclick = async () => {
+  const id = $("sid").value;
+  const s = students.find(x => x.id === id);
+  if (!s) return;
+
+  const name = s.firstName || s.email || "this student";
+  const ok = confirm(
+    `Delete ${name} from Dragonswood?\n\n` +
+    `This removes their profile, HP, Gold, XP, transaction history, game results, and leaderboard scores. ` +
+    `Their school Google account will NOT be deleted.\n\n` +
+    `If they sign in again later, they can create a new Dragonswood profile.`
+  );
+  if (!ok) return;
+
+  try {
+    const batch = writeBatch(db);
+
+    // Main student profile.
+    batch.delete(doc(db, "students", id));
+
+    // Student transactions.
+    const txSnap = await getDocs(query(collection(db, "studentTransactions"), where("studentId", "==", id)));
+    txSnap.forEach(d => batch.delete(d.ref));
+
+    // Private academic game results.
+    const resultSnap = await getDocs(query(collection(db, "gameResults"), where("studentId", "==", id)));
+    resultSnap.forEach(d => batch.delete(d.ref));
+
+    // Public leaderboard scores, when they include studentId.
+    const scoreSnap = await getDocs(query(collection(db, "scores"), where("studentId", "==", id)));
+    scoreSnap.forEach(d => batch.delete(d.ref));
+
+    // Optional public leaderboard profile if/when used.
+    batch.delete(doc(db, "leaderboardProfiles", id));
+
+    await batch.commit();
+    $("studentModal").classList.add("hidden");
+    alert(`${name} was removed from Dragonswood.`);
+  } catch (err) {
+    console.error("Delete student error:", err);
+    alert(`Could not delete student: ${err.code || "unknown"} — ${err.message || err}`);
+  }
+};
+
 $("saveStudent").onclick=async()=>{let id=$("sid").value,s=students.find(x=>x.id===id);if(!s)return;let newHp=+$("shp").value||0,newGold=+$("sgold").value||0,newXp=+$("sxp").value||0;await setDoc(doc(db,"students",id),{firstName:$("sname").value.trim()||s.firstName,grade:$("sgrade").value,genderGroup:$("sgroup").value,title:$("stitle").value.trim(),avatar:$("savatar").value.trim(),hp:newHp,gold:newGold,xp:newXp,updatedAt:serverTimestamp()},{merge:true});let changes=[["hp",newHp-(+s.hp||0)],["gold",newGold-(+s.gold||0)],["xp",newXp-(+s.xp||0)]].filter(x=>x[1]!==0);for(const [stat,amount] of changes)await addDoc(collection(db,"studentTransactions"),{studentId:id,stat,amount,reason:$("sreason").value.trim()||"Teacher adjustment",createdAt:serverTimestamp()});$("studentModal").classList.add("hidden")};
 
 $("massApply").onclick=async()=>{let group=$("massGroup").value,stat=$("massStat").value,amount=+$("massAmount").value||0,reason=$("massReason").value.trim()||"Group award";if(!amount)return alert("Enter a non-zero amount.");let targets=students.filter(s=>group==="all"||(group==="girl"&&s.genderGroup==="girl")||(group==="boy"&&s.genderGroup==="boy")||(group==="4"&&s.grade==="4")||(group==="5"&&s.grade==="5"));if(!targets.length)return alert("No students match that group.");if(!confirm(`Apply ${amount>0?"+":""}${amount} ${stat.toUpperCase()} to ${targets.length} student(s)?`))return;const batch=writeBatch(db);for(const s of targets){const next=Math.max(0,(+s[stat]||0)+amount);batch.set(doc(db,"students",s.id),{[stat]:next,updatedAt:serverTimestamp()},{merge:true});batch.set(doc(collection(db,"studentTransactions")),{studentId:s.id,stat,amount:next-(+s[stat]||0),reason,createdAt:serverTimestamp()})}await batch.commit()};

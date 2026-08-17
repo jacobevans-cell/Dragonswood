@@ -547,12 +547,18 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   </div>
   <div class="card quick-consequence-panel">
     <h3>🚫 INDIVIDUAL ELIGIBILITY CONTROLS</h3>
-    <p class="consequence-note">These controls are for one student at a time. Select an individual student in the audience menu above, then block or restore Second Recess / field-trip eligibility.</p>
+    <p class="consequence-note">Choose a student here, then block or restore Second Recess / field-trip eligibility. All bans still clear with the midnight fresh start.</p>
+    <div class="field" style="max-width:420px;margin:10px 0 12px">
+      <label>STUDENT</label>
+      <select id="eligibilityStudentSelect">
+        <option value="">Choose a student…</option>
+      </select>
+    </div>
     <div class="quick-consequence-grid">
       <button class="quick-consequence" id="banRecessBtn"><span class="qc-icon">🌤️🚫</span><b>Ban Second Recess</b><small>Blocks the selected student from the class Second Recess reward.</small><div class="qc-cost">INDIVIDUAL ONLY</div></button>
-      <button class="quick-consequence" id="restoreRecessBtn"><span class="qc-icon">🌤️✅</span><b>Restore Second Recess</b><small>Returns Second Recess eligibility if the student is not knocked out.</small><div class="qc-cost">INDIVIDUAL ONLY</div></button>
+      <button class="quick-consequence" id="restoreRecessBtn"><span class="qc-icon">🌤️✅</span><b>Restore Second Recess</b><small>Restores Second Recess now if the student is not knocked out. Midnight also clears all bans.</small><div class="qc-cost">INDIVIDUAL ONLY</div></button>
       <button class="quick-consequence" id="banTripBtn"><span class="qc-icon">🚌🚫</span><b>Ban Field Trips</b><small>Blocks the selected student from field-trip eligibility.</small><div class="qc-cost">INDIVIDUAL ONLY</div></button>
-      <button class="quick-consequence" id="restoreTripBtn"><span class="qc-icon">🚌✅</span><b>Restore Field Trips</b><small>Returns eligibility if the student is not knocked out.</small><div class="qc-cost">INDIVIDUAL ONLY</div></button>
+      <button class="quick-consequence" id="restoreTripBtn"><span class="qc-icon">🚌✅</span><b>Restore Field Trips</b><small>Restores field-trip eligibility now if the student is not knocked out. Midnight also clears all bans.</small><div class="qc-cost">INDIVIDUAL ONLY</div></button>
     </div>
   </div>
   <div class="card"><h3>MASS AWARD / ADJUSTMENT</h3><div class="groupbox">
@@ -1151,9 +1157,9 @@ async function applyQuickAward(id){const p=QUICK_AWARDS.find(x=>x.id===id);if(!p
 renderQuickAwards();renderQuickConsequences();
 
 function selectedIndividualStudent(){
-  const v=$("quickAwardGroup")?.value||"";
-  if(!v.startsWith("student:")){alert("Choose one individual student first.");return null}
-  return students.find(s=>s.id===v.split(":")[1])||null;
+  const id=$("eligibilityStudentSelect")?.value||"";
+  if(!id){alert("Choose a student in Individual Eligibility Controls first.");return null}
+  return students.find(s=>s.id===id)||null;
 }
 async function setEligibility(field,value,label){
   const s=selectedIndividualStudent();if(!s)return;
@@ -1176,6 +1182,15 @@ function renderMassStudentOptions(){
   const group=$("individualStudentOptions");
   if(!group) return;
   const opts=students.map(s=>{const label=(s.firstName||s.email||"Student")+(s.grade?` • Grade ${s.grade}`:"");return `<option value="student:${s.id}">${esc(label)}</option>`}).join("");group.innerHTML=opts;if($("quickIndividualStudentOptions"))$("quickIndividualStudentOptions").innerHTML=opts;
+  if($("eligibilityStudentSelect")){
+    const current=$("eligibilityStudentSelect").value;
+    $("eligibilityStudentSelect").innerHTML=`<option value="">Choose a student…</option>`+
+      students.map(s=>{
+        const label=(s.firstName||s.email||"Student")+(s.grade?` • Grade ${s.grade}`:"");
+        return `<option value="${s.id}">${esc(label)}</option>`;
+      }).join("");
+    if([...$("eligibilityStudentSelect").options].some(o=>o.value===current))$("eligibilityStudentSelect").value=current;
+  }
 }
 
 function renderStudents(){$("studentRows").innerHTML=students.length?students.map(s=>`<tr><td class="student-avatar">${AVATAR_EMOJI[s.avatar]||"🐉"}</td><td><span class="student-name">${esc(displayStudent(s))}</span><br><small>${esc(s.email||"")}</small></td><td>${esc(s.grade||"—")}</td><td>${s.genderGroup==="girl"?"Girls":s.genderGroup==="boy"?"Boys":"—"}</td><td><span class="badge">Lv ${levelInfo(+s.xp||0)}</span></td><td>${+s.hp||0}</td><td>${isKnockedOut(s)?"💀 KO":"✅ Active"}</td><td>${(s.recessBlocked||isKnockedOut(s))?"🚫":"✅"}</td><td>${(s.fieldTripBlocked||isKnockedOut(s))?"🚫":"✅"}</td><td>${classroomHpMax(levelInfo(+s.xp||0))}</td><td>${+s.gold||0}</td><td>${+s.xp||0}</td><td>${dailyXpState(s).earned} / 150</td><td><button class="gray mini" data-manage="${s.id}">Manage</button></td></tr>`).join(""):'<tr><td colspan="14" class="muted">No students have created profiles yet.</td></tr>';document.querySelectorAll("[data-manage]").forEach(b=>b.onclick=()=>openStudent(b.dataset.manage));renderMassStudentOptions()}

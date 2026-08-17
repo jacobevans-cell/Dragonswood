@@ -525,6 +525,31 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 </style>
 <style id="v28-live-requests">.live-request-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.live-request-box{padding:14px!important}.live-request-list{display:grid;gap:7px;margin-top:9px}.live-request-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:9px;border:1px solid rgba(101,45,193,.35);background:#09081d;border-radius:8px}.live-request-item.out{border-color:rgba(82,239,177,.55)}.live-request-item b{color:#fff0a6}.live-request-item small{display:block;color:#cbbfe0}.live-actions{display:flex;gap:5px;flex-wrap:wrap}.live-actions button{padding:7px 9px}@media(max-width:800px){.live-request-grid{grid-template-columns:1fr}.live-request-item{grid-template-columns:1fr}}
 </style>
+
+<style id="dw-student-checkbox-style">
+.student-check-panel{
+  margin-top:12px;padding:12px;border:1px solid rgba(129,92,246,.45);
+  border-radius:12px;background:rgba(7,10,30,.48)
+}
+.student-check-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:9px}
+.student-check-head b{color:#ffe68b;margin-right:auto}
+.student-check-head button{padding:6px 9px;font-size:11px}
+.student-check-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));
+  gap:7px;max-height:210px;overflow:auto;padding:3px
+}
+.student-check{
+  display:flex;align-items:center;gap:8px;padding:8px 9px;
+  border:1px solid rgba(109,199,255,.22);border-radius:8px;
+  background:rgba(8,16,38,.58);cursor:pointer
+}
+.student-check:hover{border-color:rgba(255,220,105,.55)}
+.student-check input{width:18px;height:18px;accent-color:#8b5cf6}
+.student-check span{font-weight:800;font-size:13px}
+.student-check small{display:block;color:#9fb2cf;font-weight:600;font-size:10px}
+.student-selection-count{color:#9fe8ff;font-size:12px;font-weight:900}
+</style>
+
 </head><body>
 <header class="teacher-head"><div class="shell"><div class="teacher-title">🛡️ DRAGONSWOOD COMMAND<small>EXPLORE ACADEMY • EVANS 4–5 • TEACHER PORTAL</small></div><div id="signed" class="hidden" style="text-align:right"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
 <main class="shell teacher-main">
@@ -549,7 +574,18 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
     <div class="card live-request-box"><h3>⭐ STUDENT RECOGNITION REQUESTS</h3><p class="pace-note">Students can ask you to notice a positive choice. Nothing is awarded until you approve it.</p><div id="pointRequestList" class="live-request-list"><div class="muted">No pending requests.</div></div></div>
   </div>
   <div class="progression-plan"><div><small>LEVEL CAP</small><b>20</b><small>Midyear target</small></div><div><small>LEVEL 20 XP</small><b>12,000</b><small>Daily hard cap 150 XP</small></div><div><small>CLASS HP</small><b>10 → 48</b><small>Grows by level</small></div><div><small>RPG BASE HP</small><b>18 → 94</b><small>Before gear</small></div></div>
-  <div class="card quick-award-panel"><h3>⚡ QUICK AWARDS</h3><p class="pace-note">Pick the audience, then one award. Student XP/Gold/HP changes are logged automatically; class-goal points are added once per award.</p><div class="quick-target-row"><div class="field"><label>AWARD TO</label><select id="quickAwardGroup"><optgroup label="Groups"><option value="all">Whole Class</option><option value="girl">All Girls</option><option value="boy">All Boys</option><option value="4">All 4th Grade</option><option value="5">All 5th Grade</option></optgroup><optgroup label="Individual Students" id="quickIndividualStudentOptions"></optgroup></select></div><div class="pace-note"><b style="color:#ffe68b">PACING:</b> Ordinary good days should land around 80–150 XP. About 130 XP per school day reaches Level 20 around January.</div></div><div class="quick-award-grid" id="quickAwardGrid"></div></div>
+  <div class="card quick-award-panel"><h3>⚡ QUICK AWARDS</h3><p class="pace-note">Pick the audience, then one award. Student XP/Gold/HP changes are logged automatically; class-goal points are added once per award.</p><div class="quick-target-row"><div class="field"><label>AWARD TO</label><select id="quickAwardGroup"><optgroup label="Groups"><option value="all">Whole Class</option><option value="girl">All Girls</option><option value="boy">All Boys</option><option value="4">All 4th Grade</option><option value="5">All 5th Grade</option><option value="selected">☑ Selected Students</option></optgroup><optgroup label="Individual Students" id="quickIndividualStudentOptions"></optgroup></select></div><div class="pace-note"><b style="color:#ffe68b">PACING:</b> Ordinary good days should land around 80–150 XP. About 130 XP per school day reaches Level 20 around January.</div></div>
+<div class="student-check-panel">
+  <div class="student-check-head">
+    <b>☑ SELECT SPECIFIC STUDENTS</b>
+    <span class="student-selection-count" id="quickSelectedCount">0 selected</span>
+    <button type="button" id="quickSelectAll">SELECT ALL</button>
+    <button type="button" class="gray" id="quickClearAll">CLEAR</button>
+  </div>
+  <div class="student-check-grid" id="quickStudentCheckboxes"></div>
+  <div class="pace-note" style="margin-top:8px">Check any students, then choose <b>☑ Selected Students</b> above. The same selection works for Quick Awards and Quick Consequences.</div>
+</div>
+<div class="quick-award-grid" id="quickAwardGrid"></div></div>
   <div class="card quick-consequence-panel">
     <h3>⚠️ QUICK CONSEQUENCES / TAKE AWAYS</h3>
     <p class="consequence-note">Use the same audience selector above, then choose a consequence. These never reduce a stat below 0, and every change is written to the student transaction history.</p>
@@ -572,11 +608,22 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
     </div>
   </div>
   <div class="card"><h3>MASS AWARD / ADJUSTMENT</h3><div class="groupbox">
-    <div class="field"><label>AWARD TO</label><select id="massGroup"><optgroup label="Groups"><option value="all">Whole Class</option><option value="girl">All Girls</option><option value="boy">All Boys</option><option value="4">All 4th Grade</option><option value="5">All 5th Grade</option></optgroup><optgroup label="Individual Students" id="individualStudentOptions"></optgroup></select></div>
+    <div class="field"><label>AWARD TO</label><select id="massGroup"><optgroup label="Groups"><option value="all">Whole Class</option><option value="girl">All Girls</option><option value="boy">All Boys</option><option value="4">All 4th Grade</option><option value="5">All 5th Grade</option><option value="selected">☑ Selected Students</option></optgroup><optgroup label="Individual Students" id="individualStudentOptions"></optgroup></select></div>
     <div class="field"><label>STAT</label><select id="massStat"><option value="hp">HP</option><option value="gold">Gold</option><option value="xp">XP</option></select></div>
     <div class="field"><label>AMOUNT</label><input id="massAmount" type="number" value="1"></div>
     <div class="field"><label>REASON</label><input id="massReason" placeholder="Great teamwork!"></div>
-  </div><div class="actions" style="margin-top:10px"><button onclick="document.getElementById('massAmount').value=1">+1</button><button onclick="document.getElementById('massAmount').value=5">+5</button><button onclick="document.getElementById('massAmount').value=10">+10</button><button onclick="document.getElementById('massAmount').value=-1">-1</button><button id="massApply" style="margin-left:auto">APPLY AWARD</button></div></div>
+  </div>
+<div class="student-check-panel">
+  <div class="student-check-head">
+    <b>☑ MASS AWARD: SELECT STUDENTS</b>
+    <span class="student-selection-count" id="massSelectedCount">0 selected</span>
+    <button type="button" id="massSelectAll">SELECT ALL</button>
+    <button type="button" class="gray" id="massClearAll">CLEAR</button>
+  </div>
+  <div class="student-check-grid" id="massStudentCheckboxes"></div>
+  <div class="pace-note" style="margin-top:8px">Check students here and choose <b>☑ Selected Students</b> in Award To.</div>
+</div>
+<div class="actions" style="margin-top:10px"><button onclick="document.getElementById('massAmount').value=1">+1</button><button onclick="document.getElementById('massAmount').value=5">+5</button><button onclick="document.getElementById('massAmount').value=10">+10</button><button onclick="document.getElementById('massAmount').value=-1">-1</button><button id="massApply" style="margin-left:auto">APPLY AWARD</button></div></div>
   <div class="titlebar"><div><h2>STUDENT ROSTER</h2><p>Profiles appear here after first sign-in.</p></div></div>
   <div class="card" style="overflow:auto"><table class="student-table"><thead><tr><th>AVATAR</th><th>STUDENT</th><th>GRADE</th><th>GROUP</th><th>LEVEL</th><th>HP</th><th>STATUS</th><th>RECESS</th><th>TRIP</th><th>HP MAX</th><th>GOLD</th><th>XP</th><th>MANAGE</th></tr></thead><tbody id="studentRows"></tbody></table></div>
 
@@ -1148,9 +1195,20 @@ async function applyQuickConsequence(id){
     if(newGold!==oldGold)b.set(doc(collection(db,"studentTransactions")),{studentId:s.id,stat:"gold",amount:newGold-oldGold,reason:p.name,category:"consequence",createdAt:serverTimestamp()});
     if(newXp!==oldXp)b.set(doc(collection(db,"studentTransactions")),{studentId:s.id,stat:"xp",amount:newXp-oldXp,reason:p.name,category:"consequence",createdAt:serverTimestamp()});
   }
-  await b.commit();
+  try{
+    await b.commit();
+    window.DWAudio?.negative();
+  }catch(err){
+    console.error("Quick consequence error",err);
+    window.DWAudio?.negative();
+    alert("Could not apply consequence: "+(err.code||err.message||err));
+  }
 }
-function quickTargets(g){if(g.startsWith("student:"))return students.filter(s=>s.id===g.split(":")[1]);return students.filter(s=>g==="all"||(g==="girl"&&s.genderGroup==="girl")||(g==="boy"&&s.genderGroup==="boy")||(g==="4"&&String(s.grade)==="4")||(g==="5"&&String(s.grade)==="5"))}
+function quickTargets(g){
+  if(g==="selected")return selectedCheckboxStudents("quick");
+  if(g.startsWith("student:"))return students.filter(s=>s.id===g.split(":")[1]);
+  return students.filter(s=>g==="all"||(g==="girl"&&s.genderGroup==="girl")||(g==="boy"&&s.genderGroup==="boy")||(g==="4"&&String(s.grade)==="4")||(g==="5"&&String(s.grade)==="5"));
+}
 async function applyQuickAward(id){const p=QUICK_AWARDS.find(x=>x.id===id);if(!p)return;const g=$("quickAwardGroup").value,t=quickTargets(g);if(!t.length)return alert("No students match that group.");const label=$("quickAwardGroup").selectedOptions[0]?.textContent||"selected students";if(!confirm(`${p.name} → ${label}\n\nEach student: up to +${p.xp} XP (daily cap 150), +${p.gold} Gold${p.hp?`, +${p.hp} HP`:""}${p.pt?`\nClass goal: ${pointText(p)}`:""}\n\nApply to ${t.length} student(s)?`))return;const b=writeBatch(db);for(const s of t){
   const ox=+s.xp||0,og=+s.gold||0,oh=+s.hp||0;
   const dead=oh<=0;
@@ -1166,8 +1224,20 @@ async function applyQuickAward(id){const p=QUICK_AWARDS.find(x=>x.id===id);if(!p
   if(cap.granted)b.set(doc(collection(db,"studentTransactions")),{studentId:s.id,stat:"xp",amount:cap.granted,requestedAmount:p.xp,dailyCap:150,reason:p.name,createdAt:serverTimestamp()});
   if(!dead&&p.gold)b.set(doc(collection(db,"studentTransactions")),{studentId:s.id,stat:"gold",amount:p.gold,reason:p.name,createdAt:serverTimestamp()});
   if(nh!==oh)b.set(doc(collection(db,"studentTransactions")),{studentId:s.id,stat:"hp",amount:nh-oh,reason:p.name,createdAt:serverTimestamp()});
-}if(p.pt==="recess"){const today=localDateKey(),base=recessState.dateKey===today?(+recessState.points||0):0;b.set(doc(db,"classData","secondRecess"),{points:base+p.points,goal:Math.max(1,+recessState.goal||20),dateKey:today,updatedAt:serverTimestamp()},{merge:true})}else if(p.pt==="pet")b.set(doc(db,"classData","classPet"),{points:(+petGoalState.points||0)+p.points,goal:Math.max(1,+petGoalState.goal||250),updatedAt:serverTimestamp()},{merge:true});else if(p.pt==="trip")b.set(doc(db,"classData","fieldTrip"),{points:(+tripGoalState.points||0)+p.points,goal:Math.max(1,+tripGoalState.goal||750),updatedAt:serverTimestamp()},{merge:true});else if(p.pt==="universal")b.set(doc(db,"classData","universalPoints"),{points:(+universalPointState.points||0)+p.points,updatedAt:serverTimestamp()},{merge:true});await b.commit()}
+}if(p.pt==="recess"){const today=localDateKey(),base=recessState.dateKey===today?(+recessState.points||0):0;b.set(doc(db,"classData","secondRecess"),{points:base+p.points,goal:Math.max(1,+recessState.goal||20),dateKey:today,updatedAt:serverTimestamp()},{merge:true})}else if(p.pt==="pet")b.set(doc(db,"classData","classPet"),{points:(+petGoalState.points||0)+p.points,goal:Math.max(1,+petGoalState.goal||250),updatedAt:serverTimestamp()},{merge:true});else if(p.pt==="trip")b.set(doc(db,"classData","fieldTrip"),{points:(+tripGoalState.points||0)+p.points,goal:Math.max(1,+tripGoalState.goal||750),updatedAt:serverTimestamp()},{merge:true});else if(p.pt==="universal")b.set(doc(db,"classData","universalPoints"),{points:(+universalPointState.points||0)+p.points,updatedAt:serverTimestamp()},{merge:true});
+try{
+  await b.commit();
+  window.DWAudio?.positive();
+}catch(err){
+  console.error("Quick award error",err);
+  window.DWAudio?.negative();
+  alert("Could not apply quick award: "+(err.code||err.message||err));
+}}
 renderQuickAwards();renderQuickConsequences();
+$("quickSelectAll").onclick=()=>setAllStudentChecks("quick",true);
+$("quickClearAll").onclick=()=>setAllStudentChecks("quick",false);
+$("massSelectAll").onclick=()=>setAllStudentChecks("mass",true);
+$("massClearAll").onclick=()=>setAllStudentChecks("mass",false);
 
 function selectedIndividualStudent(){
   const id=$("eligibilityStudentSelect")?.value||"";
@@ -1191,6 +1261,38 @@ $("banTripBtn").onclick=()=>setEligibility("fieldTripBlocked",true,"Teacher bloc
 $("restoreTripBtn").onclick=()=>setEligibility("fieldTripBlocked",false,"Teacher restored field trips");
 
 
+
+function selectedCheckboxIds(kind){
+  return [...document.querySelectorAll(`#${kind}StudentCheckboxes input[type="checkbox"]:checked`)].map(x=>x.value);
+}
+function selectedCheckboxStudents(kind){
+  const ids=new Set(selectedCheckboxIds(kind));
+  return students.filter(s=>ids.has(s.id));
+}
+function updateStudentCheckCount(kind){
+  const n=selectedCheckboxIds(kind).length;
+  const el=$(kind+"SelectedCount");
+  if(el)el.textContent=`${n} selected`;
+}
+function renderStudentCheckboxes(kind){
+  const box=$(kind+"StudentCheckboxes");
+  if(!box)return;
+  const prior=new Set(selectedCheckboxIds(kind));
+  box.innerHTML=students
+    .slice()
+    .sort((a,b)=>displayStudent(a).localeCompare(displayStudent(b)))
+    .map(s=>`<label class="student-check">
+      <input type="checkbox" value="${s.id}" ${prior.has(s.id)?"checked":""}>
+      <span>${esc(displayStudent(s))}<small>${s.grade?`Grade ${esc(s.grade)}`:""}${s.genderGroup?` • ${s.genderGroup==="girl"?"Girls":"Boys"}`:""}</small></span>
+    </label>`).join("");
+  box.querySelectorAll('input[type="checkbox"]').forEach(cb=>cb.onchange=()=>updateStudentCheckCount(kind));
+  updateStudentCheckCount(kind);
+}
+function setAllStudentChecks(kind,checked){
+  document.querySelectorAll(`#${kind}StudentCheckboxes input[type="checkbox"]`).forEach(cb=>cb.checked=checked);
+  updateStudentCheckCount(kind);
+}
+
 function renderMassStudentOptions(){
   const group=$("individualStudentOptions");
   if(!group) return;
@@ -1204,6 +1306,8 @@ function renderMassStudentOptions(){
       }).join("");
     if([...$("eligibilityStudentSelect").options].some(o=>o.value===current))$("eligibilityStudentSelect").value=current;
   }
+  renderStudentCheckboxes("quick");
+  renderStudentCheckboxes("mass");
 }
 
 function teacherDateKey(){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Phoenix',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}
@@ -1405,20 +1509,87 @@ $("deleteStudent").onclick = async () => {
 
 $("saveStudent").onclick=async()=>{let id=$("sid").value,s=students.find(x=>x.id===id);if(!s)return;let newHp=+$("shp").value||0,newGold=+$("sgold").value||0,newXp=+$("sxp").value||0;await setDoc(doc(db,"students",id),{firstName:$("sname").value.trim()||s.firstName,grade:$("sgrade").value,genderGroup:$("sgroup").value,title:$("stitle").value.trim(),avatar:$("savatar").value.trim(),hp:newHp,gold:newGold,xp:newXp,updatedAt:serverTimestamp()},{merge:true});let changes=[["hp",newHp-(+s.hp||0)],["gold",newGold-(+s.gold||0)],["xp",newXp-(+s.xp||0)]].filter(x=>x[1]!==0);for(const [stat,amount] of changes)await addDoc(collection(db,"studentTransactions"),{studentId:id,stat,amount,reason:$("sreason").value.trim()||"Teacher adjustment",createdAt:serverTimestamp()});$("studentModal").classList.add("hidden")};
 
-$("massApply").onclick=async()=>{let group=$("massGroup").value,stat=$("massStat").value,amount=+$("massAmount").value||0,reason=$("massReason").value.trim()||"Group award";if(!amount)return alert("Enter a non-zero amount.");let targets=group.startsWith("student:")
-  ? students.filter(s=>s.id===group.split(":")[1])
-  : students.filter(s=>group==="all"||(group==="girl"&&s.genderGroup==="girl")||(group==="boy"&&s.genderGroup==="boy")||(group==="4"&&s.grade==="4")||(group==="5"&&s.grade==="5"));if(!targets.length)return alert("No students match that group.");if(!confirm(`Apply ${amount>0?"+":""}${amount} ${stat.toUpperCase()} to ${targets.length} student(s)?`))return;const batch=writeBatch(db);for(const s of targets){
-  if((stat==="xp"||stat==="gold")&&amount>0&&isKnockedOut(s)){continue;}else if(stat==="xp"&&amount>0){
-    const cap=cappedXpAward(s,amount);
-    const next=(+s.xp||0)+cap.granted;
-    batch.set(doc(db,"students",s.id),{xp:next,dailyXpDate:cap.today,dailyXpEarned:cap.earned+cap.granted,updatedAt:serverTimestamp()},{merge:true});
-    batch.set(doc(collection(db,"studentTransactions")),{studentId:s.id,stat:"xp",amount:cap.granted,requestedAmount:amount,dailyCap:150,reason,createdAt:serverTimestamp()});
-  }else{
-    const rawNext=Math.max(0,(+s[stat]||0)+amount),next=stat==="hp"?Math.min(classroomHpMax(levelInfo(+s.xp||0)),rawNext):rawNext;
-    batch.set(doc(db,"students",s.id),{[stat]:next,updatedAt:serverTimestamp()},{merge:true});
-    batch.set(doc(collection(db,"studentTransactions")),{studentId:s.id,stat,amount:next-(+s[stat]||0),reason,createdAt:serverTimestamp()});
+$("massApply").onclick=async()=>{
+  const group=$("massGroup").value;
+  const stat=$("massStat").value;
+  const amount=+$("massAmount").value||0;
+  const reason=$("massReason").value.trim()||(amount>0?"Group award":"Teacher adjustment");
+
+  if(!amount){
+    window.DWAudio?.negative();
+    return alert("Enter a non-zero amount.");
   }
-}await batch.commit()};
+
+  let targets;
+  if(group==="selected"){
+    targets=selectedCheckboxStudents("mass");
+  }else if(group.startsWith("student:")){
+    targets=students.filter(s=>s.id===group.split(":")[1]);
+  }else{
+    targets=students.filter(s=>
+      group==="all"||
+      (group==="girl"&&s.genderGroup==="girl")||
+      (group==="boy"&&s.genderGroup==="boy")||
+      (group==="4"&&String(s.grade)==="4")||
+      (group==="5"&&String(s.grade)==="5")
+    );
+  }
+
+  if(!targets.length){
+    window.DWAudio?.negative();
+    return alert(group==="selected"?"Check at least one student first.":"No students match that group.");
+  }
+
+  const label=group==="selected"
+    ?`${targets.length} selected student${targets.length===1?"":"s"}`
+    :($("massGroup").selectedOptions[0]?.textContent||"selected students");
+
+  if(!confirm(`Apply ${amount>0?"+":""}${amount} ${stat.toUpperCase()} to ${label}?`))return;
+
+  const batch=writeBatch(db);
+  let changed=0;
+
+  for(const s of targets){
+    if((stat==="xp"||stat==="gold")&&amount>0&&isKnockedOut(s)){
+      continue;
+    }
+
+    if(stat==="xp"&&amount>0){
+      const cap=cappedXpAward(s,amount);
+      const next=(+s.xp||0)+cap.granted;
+      batch.set(doc(db,"students",s.id),{
+        xp:next,dailyXpDate:cap.today,dailyXpEarned:cap.earned+cap.granted,updatedAt:serverTimestamp()
+      },{merge:true});
+      batch.set(doc(collection(db,"studentTransactions")),{
+        studentId:s.id,stat:"xp",amount:cap.granted,requestedAmount:amount,dailyCap:150,reason,createdAt:serverTimestamp()
+      });
+      if(cap.granted!==0)changed++;
+    }else{
+      const rawNext=Math.max(0,(+s[stat]||0)+amount);
+      const next=stat==="hp"?Math.min(classroomHpMax(levelInfo(+s.xp||0)),rawNext):rawNext;
+      const actual=next-(+s[stat]||0);
+      batch.set(doc(db,"students",s.id),{[stat]:next,updatedAt:serverTimestamp()},{merge:true});
+      batch.set(doc(collection(db,"studentTransactions")),{
+        studentId:s.id,stat,amount:actual,reason,createdAt:serverTimestamp()
+      });
+      if(actual!==0)changed++;
+    }
+  }
+
+  try{
+    await batch.commit();
+    if(changed>0){
+      if(amount>0)window.DWAudio?.positive();
+      else window.DWAudio?.negative();
+    }else{
+      window.DWAudio?.negative();
+    }
+  }catch(err){
+    console.error("Mass award error",err);
+    window.DWAudio?.negative();
+    alert("Could not apply mass adjustment: "+(err.code||err.message||err));
+  }
+};
 
 
 // ============================================================
@@ -1805,6 +1976,26 @@ document.addEventListener("click",e=>{
   const t=(b.textContent||"").trim().toLowerCase();
   if(/approve|award|save|\+1 xp|restore|add point|mark returned/.test(t)) window.DWAudio?.positive();
   else if(/deny|dismiss|ban|remove|subtract|take away|consequence/.test(t)) window.DWAudio?.negative();
+});
+</script>
+
+
+<script id="dw-explicit-point-button-sounds">
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");
+  if(!b || !window.DWAudio)return;
+
+  // Class-point command buttons whose text is just +1/+2/+5/-1 were previously missed.
+  const isPositive =
+    b.matches(".add,.recess-add") ||
+    (b.matches(".pet-add,.trip-add,.universal-add") && Number(b.dataset.gn||b.dataset.tn||b.dataset.un||0)>0);
+
+  const isNegative =
+    b.id==="minus" || b.id==="recessMinus" ||
+    (b.matches(".pet-add,.trip-add,.universal-add") && Number(b.dataset.gn||b.dataset.tn||b.dataset.un||0)<0);
+
+  if(isPositive)setTimeout(()=>window.DWAudio?.positive(),180);
+  if(isNegative)setTimeout(()=>window.DWAudio?.negative(),180);
 });
 </script>
 

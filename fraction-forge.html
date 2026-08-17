@@ -51,6 +51,148 @@ body.round-3 .panel,body.round-3 .mission-card,body.round-3 .control-panel{borde
 @media(max-width:900px){.game-layout{grid-template-columns:1fr}.coach{position:static}.mission-grid{grid-template-columns:repeat(3,1fr)}.operation-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:600px){.dw-bar{grid-template-columns:1fr auto}.dw-account{grid-column:1/-1;grid-row:2;text-align:left}.account-grid{grid-template-columns:1fr 1fr}.mission-grid{grid-template-columns:1fr 1fr}.operation-grid{grid-template-columns:1fr 1fr}.visual-bars{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.difficulty-row{align-items:stretch;flex-direction:column}}
 </style>
+
+<style id="v29-1-step-visuals">
+.step-visual{
+  min-height:126px;
+  margin:10px 0 12px;
+  padding:12px;
+  border:1px solid #2b5676;
+  border-radius:10px;
+  background:linear-gradient(180deg,rgba(5,18,39,.92),rgba(6,10,30,.88));
+}
+.step-visual-title{
+  font-size:10px;
+  font-weight:1000;
+  letter-spacing:.8px;
+  color:#ffe599;
+  margin-bottom:8px;
+}
+.step-visual-row{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+}
+.math-card{
+  min-width:130px;
+  padding:10px;
+  border:1px solid #3c607e;
+  border-radius:9px;
+  background:#07152b;
+  text-align:center;
+}
+.math-card strong{display:block;color:#fff0a8;font-size:12px;margin-bottom:5px}
+.arrow-big{font-size:28px;color:#ffe477;font-weight:1000}
+.lcd-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+.lcd-list{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:5px;
+}
+.lcd-pill{
+  padding:5px 7px;
+  border-radius:999px;
+  border:1px solid #335b77;
+  color:#d9ebf6;
+  font-size:10px;
+  font-weight:900;
+}
+.lcd-pill.hit{
+  border-color:#ffe26c;
+  color:#ffe991;
+  background:rgba(111,75,16,.25);
+}
+.rename-bar{
+  display:grid;
+  height:34px;
+  border:2px solid #d9eef8;
+  border-radius:6px;
+  overflow:hidden;
+  min-width:190px;
+}
+.rename-piece{
+  border-right:1px solid rgba(255,255,255,.28);
+  background:#123853;
+}
+.rename-piece.filled{background:linear-gradient(180deg,#24c8e6,#19799f)}
+.rename-piece.alt.filled{background:linear-gradient(180deg,#ad69f6,#7737b7)}
+.combine-visual{
+  display:grid;
+  grid-template-columns:auto auto auto;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+}
+.combine-stack{text-align:center}
+.combine-stack small{display:block;color:#a9c6d8;font-size:9px;font-weight:900;margin-bottom:4px}
+.simplify-factor{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 11px;
+  border:1px solid #6a4aa5;
+  border-radius:8px;
+  background:#161032;
+  color:#f2e8ff;
+}
+.kcf{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.kcf-step{
+  padding:9px 11px;
+  border:1px solid #4d6f88;
+  border-radius:8px;
+  background:#08172b;
+  text-align:center;
+}
+.kcf-step b{color:#ffe88b}
+.cross-cancel{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:10px;
+}
+.cancel-mark{
+  color:#ff8297;
+  text-decoration:line-through 3px;
+  text-decoration-color:#ff8297;
+}
+.final-box{
+  text-align:center;
+  padding:12px;
+  border:1px solid #d5ae47;
+  border-radius:10px;
+  background:rgba(107,71,11,.18);
+}
+.final-box .answer{
+  font-size:30px;
+  color:#fff0a6;
+  font-weight:1000;
+}
+.visual-note{
+  margin-top:8px;
+  text-align:center;
+  color:#b9cddd;
+  font-size:10px;
+  line-height:1.35;
+}
+@media(max-width:650px){
+  .lcd-grid{grid-template-columns:1fr}
+  .combine-visual{grid-template-columns:1fr}
+  .cross-cancel{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body class="round-1">
 <div class="app">
@@ -121,6 +263,7 @@ body.round-3 .panel,body.round-3 .mission-card,body.round-3 .control-panel{borde
       </div>
 
       <div class="visual-bars" id="visualBars"></div>
+      <div class="step-visual" id="stepVisual"></div>
       <div class="steps" id="stepTabs"></div>
 
       <div class="step-work">
@@ -219,6 +362,111 @@ function barMarkup(f,label){
 }
 function renderBars(){
   $("visualBars").innerHTML=barMarkup(current.a,"FIRST FRACTION")+barMarkup(current.b,"SECOND FRACTION");
+}
+function miniFrac(f){
+  return `<span style="display:inline-grid;grid-template-rows:auto auto;line-height:1.05;min-width:34px;text-align:center;font-weight:1000">
+    <span style="border-bottom:2px solid currentColor;padding:0 4px 2px">${f.n}</span>
+    <span style="padding:2px 4px 0">${f.d}</span>
+  </span>`;
+}
+function segmentBar(f,total,label,alt=false){
+  const n=Math.round(f.n*(total/f.d));
+  let pieces="";
+  for(let i=0;i<total;i++)pieces+=`<div class="rename-piece ${i<n?"filled":""} ${alt?"alt":""}"></div>`;
+  return `<div class="math-card"><strong>${label}</strong>${miniFrac(f)}
+    <div class="rename-bar" style="grid-template-columns:repeat(${total},1fr);margin-top:8px">${pieces}</div>
+  </div>`;
+}
+function multiples(n,count=8){return Array.from({length:count},(_,i)=>n*(i+1))}
+function renderStepVisual(){
+  if(!current){$("stepVisual").innerHTML="";return}
+  const p=current,key=stepsFor(current)[currentStep].key;
+  let title="",body="",note="";
+  if((p.op==="add"||p.op==="subtract")&&key==="lcd"){
+    const m1=multiples(p.a.d),m2=multiples(p.b.d);
+    title="VISUAL: FIND THE FIRST MATCH";
+    body=`<div class="lcd-grid">
+      <div class="math-card"><strong>Multiples of ${p.a.d}</strong><div class="lcd-list">${m1.map(x=>`<span class="lcd-pill ${x===p.lcd?"hit":""}">${x}</span>`).join("")}</div></div>
+      <div class="math-card"><strong>Multiples of ${p.b.d}</strong><div class="lcd-list">${m2.map(x=>`<span class="lcd-pill ${x===p.lcd?"hit":""}">${x}</span>`).join("")}</div></div>
+    </div>`;
+    note=`The first number both lists share is ${p.lcd}. That is the LCD.`;
+  }else if((p.op==="add"||p.op==="subtract")&&key==="rename"){
+    const left=rawFrac(p.a.n*(p.lcd/p.a.d),p.lcd),right=rawFrac(p.b.n*(p.lcd/p.b.d),p.lcd);
+    title="VISUAL: SAME AMOUNT, SMALLER PIECES";
+    body=`<div class="step-visual-row">
+      ${segmentBar(p.a,p.lcd,"Original 1")}
+      <div class="arrow-big">→</div>
+      ${segmentBar(left,p.lcd,"Renamed 1")}
+      ${segmentBar(p.b,p.lcd,"Original 2",true)}
+      <div class="arrow-big">→</div>
+      ${segmentBar(right,p.lcd,"Renamed 2",true)}
+    </div>`;
+    note="The shaded amount stays the same. Only the number of equal-size pieces changes.";
+  }else if((p.op==="add"||p.op==="subtract")&&key==="combine"){
+    const left=rawFrac(p.a.n*(p.lcd/p.a.d),p.lcd),right=rawFrac(p.b.n*(p.lcd/p.b.d),p.lcd),raw=rawResult(p);
+    title=`VISUAL: ${p.op==="add"?"PUT THE LIKE PIECES TOGETHER":"TAKE AWAY LIKE PIECES"}`;
+    body=`<div class="combine-visual">
+      <div class="combine-stack"><small>FIRST</small>${miniFrac(left)}</div>
+      <div class="arrow-big">${opSymbol(p.op)}</div>
+      <div class="combine-stack"><small>SECOND</small>${miniFrac(right)}</div>
+      <div class="arrow-big">=</div>
+      <div class="combine-stack"><small>RESULT</small>${miniFrac(raw)}</div>
+    </div>`;
+    note=`All pieces are ${p.lcd}ths now, so only the numerators change.`;
+  }else if((p.op==="add"||p.op==="subtract")&&key==="simplify"){
+    const raw=rawResult(p),g=gcd(raw.n,raw.d);
+    title="VISUAL: SHRINK TO SIMPLEST FORM";
+    body=`<div class="step-visual-row">
+      <div class="math-card"><strong>Before</strong>${miniFrac(raw)}</div>
+      <div class="simplify-factor">÷ ${g} on top<br>÷ ${g} on bottom</div>
+      <div class="arrow-big">→</div>
+      <div class="math-card"><strong>Simplified</strong>${miniFrac(p.result)}</div>
+    </div>`;
+    note=`Divide both numerator and denominator by ${g}. The value does not change.`;
+  }else if(p.op==="multiply"&&key==="plan"){
+    title="VISUAL: MULTIPLY STRAIGHT ACROSS";
+    body=`<div class="step-visual-row">
+      <div class="math-card"><strong>Top numbers</strong>${p.a.n} × ${p.b.n}</div>
+      <div class="math-card"><strong>Bottom numbers</strong>${p.a.d} × ${p.b.d}</div>
+    </div>`;
+    note="No common denominator is needed for multiplication.";
+  }else if(p.op==="divide"&&key==="reciprocal"){
+    title="VISUAL: KEEP • CHANGE • FLIP";
+    body=`<div class="kcf">
+      <div class="kcf-step"><b>KEEP</b><br>${miniFrac(p.a)}</div>
+      <div class="arrow-big">÷ → ×</div>
+      <div class="kcf-step"><b>FLIP SECOND</b><br>${miniFrac(p.b)} → ${miniFrac({n:p.b.d,d:p.b.n})}</div>
+    </div>`;
+    note="Only the second fraction flips.";
+  }else if(key==="numprod"){
+    const bn=p.op==="divide"?p.b.d:p.b.n;
+    title="VISUAL: TOP × TOP";
+    body=`<div class="step-visual-row"><div class="math-card"><strong>Numerators</strong>${p.a.n} × ${bn} = ${p.a.n*bn}</div></div>`;
+    note="This becomes the numerator of your unsimplified answer.";
+  }else if(key==="denprod"){
+    const bd=p.op==="divide"?p.b.n:p.b.d;
+    title="VISUAL: BOTTOM × BOTTOM";
+    body=`<div class="step-visual-row"><div class="math-card"><strong>Denominators</strong>${p.a.d} × ${bd} = ${p.a.d*bd}</div></div>`;
+    note="This becomes the denominator of your unsimplified answer.";
+  }else if(key==="simplify"){
+    const raw=rawResult(p),g=gcd(raw.n,raw.d);
+    title="VISUAL: REDUCE THE PRODUCT";
+    body=`<div class="step-visual-row">
+      <div class="math-card"><strong>Before</strong>${miniFrac(raw)}</div>
+      <div class="simplify-factor">÷ ${g}<br>both parts</div>
+      <div class="arrow-big">→</div>
+      <div class="math-card"><strong>After</strong>${miniFrac(p.result)}</div>
+    </div>`;
+    note=`Use the greatest common factor ${g}.`;
+  }else if(key==="final"){
+    title="VISUAL: FINAL FORM";
+    body=`<div class="final-box"><div style="font-size:10px;color:#c7b9db;font-weight:1000;margin-bottom:5px">YOUR TARGET FORMAT</div>
+      <div class="answer">${fmtAnswer(p.result)}</div></div>`;
+    note=Math.abs(p.result.n)>=p.result.d
+      ?"Because the answer is improper, convert it to a mixed number."
+      :"Keep the answer simplified and proper.";
+  }
+  $("stepVisual").innerHTML=`<div class="step-visual-title">${title}</div>${body}<div class="visual-note">${note}</div>`;
 }
 function generateEasy(op){
   if(op==="add"||op==="subtract"){
@@ -325,7 +573,7 @@ function setCoach(title,text,example){
   $("coachTitle").textContent=title;$("coachText").innerHTML=text;$("coachExample").innerHTML=example;
 }
 function renderCurrentStep(){
-  renderSteps();$("feedback").className="feedback";$("feedback").textContent="";
+  renderSteps();renderStepVisual();$("feedback").className="feedback";$("feedback").textContent="";
   const key=stepsFor(current)[currentStep].key,p=current;
   let title="",prompt="",inputs="",coachTitle="",coach="",example="";
   if((p.op==="add"||p.op==="subtract")&&key==="lcd"){

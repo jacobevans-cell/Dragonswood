@@ -378,17 +378,21 @@ function segmentBar(f,total,label,alt=false){
   </div>`;
 }
 function multiples(n,count=8){return Array.from({length:count},(_,i)=>n*(i+1))}
+function multiplesThroughMatch(d, lcd){
+  const count=Math.max(8, Math.ceil(lcd/d));
+  return Array.from({length:count},(_,i)=>d*(i+1));
+}
 function renderStepVisual(){
   if(!current){$("stepVisual").innerHTML="";return}
   const p=current,key=stepsFor(current)[currentStep].key,hard=difficulty==="hard";
   let title="",body="",note="";
   if((p.op==="add"||p.op==="subtract")&&key==="lcd"){
-    const m1=multiples(p.a.d),m2=multiples(p.b.d);
+    const m1=multiplesThroughMatch(p.a.d,p.lcd),m2=multiplesThroughMatch(p.b.d,p.lcd);
     title=hard?"VISUAL: COMPARE THE MULTIPLES":"VISUAL: FIND THE MATCHING MULTIPLES";
     body=`<div class="lcd-grid">
       <div class="math-card"><strong>Multiples of ${p.a.d}</strong><div class="lcd-list">${m1.map(x=>`<span class="lcd-pill ${!hard&&m2.includes(x)?"hit":""}">${x}</span>`).join("")}</div></div>
       <div class="math-card"><strong>Multiples of ${p.b.d}</strong><div class="lcd-list">${m2.map(x=>`<span class="lcd-pill ${!hard&&m1.includes(x)?"hit":""}">${x}</span>`).join("")}</div></div></div>`;
-    note=hard?"No highlighting in Hard mode. Find the smallest number in BOTH lists.":"Matching multiples are highlighted. You still choose the SMALLEST match.";
+    note=hard?"A match is always shown. In Hard mode it is NOT highlighted, so find the smallest number in BOTH lists.":"Matching multiples are highlighted. You still choose the SMALLEST match.";
   }else if((p.op==="add"||p.op==="subtract")&&key==="rename"){
     title="VISUAL: YOU BUILD THE EQUIVALENT FRACTIONS";
     const blank=n=>Array.from({length:n},()=>'<div class="rename-piece"></div>').join("");

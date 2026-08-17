@@ -279,26 +279,6 @@ service cloud.firestore {
       allow create, update, delete: if isTeacher();
     }
 
-
-    // Permanent bathroom visit history.
-    match /bathroomVisits/{visitId} {
-      allow read: if isTeacher()
-                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
-
-      allow create: if isExploreStudent()
-                    && request.resource.data.studentId == request.auth.uid
-                    && request.resource.data.status == "out"
-                    && request.resource.data.dateKey is string;
-
-      allow update: if isExploreStudent()
-                    && resource.data.studentId == request.auth.uid
-                    && request.resource.data.diff(resource.data).affectedKeys()
-                       .hasOnly(['returnedAt','status','updatedAt'])
-                    && request.resource.data.status == "returned";
-
-      allow create, update, delete: if isTeacher();
-    }
-
     match /bathroomRequests/{requestId} {
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid

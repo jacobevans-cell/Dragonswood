@@ -2396,27 +2396,42 @@ function watchBathroom(){
  bathroomUnsub=onSnapshot(doc(db,'bathroomStatus',user.uid),snap=>renderBathroomStudent(snap.exists()?snap.data():null));
 }
 function renderBathroomStudent(d){
- const key=phoenixDateKey(),same=d?.dateKey===key,used=same?(+d?.passesUsed||0):0,active=same&&d?.active===true,credits=same?(+d?.approvalCredits||0):0;
- const card=$('bathroomStudentCard'),txt=$('bathroomStudentStatus'),btn=$('bathroomStudentBtn');if(!card||!txt||!btn)return;
+ const key=phoenixDateKey();
+ const same=d?.dateKey===key;
+ const used=same?(+d?.passesUsed||0):0;
+ const active=same&&d?.active===true;
+ const credits=same?(+d?.approvalCredits||0):0;
+ const card=$('bathroomStudentCard'),txt=$('bathroomStudentStatus'),btn=$('bathroomStudentBtn');
+ if(!card||!txt||!btn)return;
+
  card.classList.toggle('bathroom-active',active);
 
  if(active){
-   txt.textContent=`YOU ARE OUT • ${Math.max(0,3-used)} automatic passes remain today. Tap when you return.`;
-   btn.textContent='✅ I AM BACK IN CLASS';btn.disabled=false;
+   const leftText=d?.leftAtText?` • out since ${d.leftAtText}`:'';
+   txt.textContent=`YOU ARE OUT${leftText} • ${Math.max(0,3-used)} automatic passes remain today. Tap when you return.`;
+   btn.textContent='✅ I AM BACK IN CLASS';
+   btn.disabled=false;
    btn.onclick=async()=>{
      btn.disabled=true;
      try{
-       const visitId=String(d?.activeVisitId||'');
+       const now=new Date();
+       const visits=Array.isArray(d?.visits)?[...d.visits]:[];
+       const activeVisitId=String(d?.activeVisitId||'');
+       const updatedVisits=visits.map(v=>{
+         if(String(v?.id||'')!==activeVisitId)return v;
+         const leftMs=Number(v?.leftMs||0);
+         return {...v,returnedAt:now.toISOString(),returnedText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),durationMinutes:leftMs?Math.max(0,Math.round((now.getTime()-leftMs)/60000)):null,status:'returned'};
+       });
        await setDoc(doc(db,'bathroomStatus',user.uid),{
-         active:false,activeVisitId:'',returnedAt:serverTimestamp(),updatedAt:serverTimestamp()
+         active:false,
+         activeVisitId:'',
+         returnedAt:serverTimestamp(),
+         returnedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
+         visits:updatedVisits,
+         updatedAt:serverTimestamp()
        },{merge:true});
-       if(visitId){
-         await setDoc(doc(db,'bathroomVisits',visitId),{
-           returnedAt:serverTimestamp(),status:'returned',updatedAt:serverTimestamp()
-         },{merge:true});
-       }
      }catch(err){
-       console.warn(err);
+       console.warn('bathroom return',err);
        txt.textContent='Could not check you back in. Please tell your teacher.';
      }finally{btn.disabled=false}
    };
@@ -2425,7 +2440,7 @@ function renderBathroomStudent(d){
 
  txt.textContent=used<3
    ?`${3-used} of 3 automatic passes remaining today.`
-   :(credits>0?`Teacher approved ${credits} extra pass${credits===1?'':'es'}.`:'Your 3 automatic passes are used. Extra trips need teacher approval.');
+   :(credits>0?`${credits} teacher-approved extra pass${credits===1?'':'es'} available.`:'Your 3 automatic passes are used. Extra trips need teacher approval.');
 
  btn.textContent=used<3?'🚻 USE BATHROOM PASS':credits>0?'🚻 USE APPROVED PASS':'🙋 REQUEST EXTRA PASS';
  btn.disabled=false;
@@ -2434,23 +2449,27 @@ function renderBathroomStudent(d){
    btn.disabled=true;
    try{
      if(used<3 || credits>0){
+       const now=new Date();
        const isAuto=used<3;
-       const visitId=user.uid+'_'+key.replaceAll('-','')+'_'+Date.now();
        const nextUsed=isAuto?used+1:used;
        const nextCredits=isAuto?credits:Math.max(0,credits-1);
-
-       await setDoc(doc(db,'bathroomVisits',visitId),{
+       const visitId=user.uid+'_'+Date.now();
+       const priorVisits=same&&Array.isArray(d?.visits)?d.visits:[];
+       const visit={
+         id:visitId,
          studentId:user.uid,
          studentName:studentDisplayName(),
          dateKey:key,
-         visitNumber:nextUsed,
          passType:isAuto?'automatic':'approved-extra',
-         leftAt:serverTimestamp(),
+         passNumber:nextUsed,
+         leftAt:now.toISOString(),
+         leftAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
+         leftMs:now.getTime(),
          returnedAt:null,
-         status:'out',
-         createdAt:serverTimestamp(),
-         updatedAt:serverTimestamp()
-       });
+         returnedText:'',
+         durationMinutes:null,
+         status:'out'
+       };
 
        await setDoc(doc(db,'bathroomStatus',user.uid),{
          studentId:user.uid,
@@ -2461,19 +2480,25 @@ function renderBathroomStudent(d){
          active:true,
          activeVisitId:visitId,
          leftAt:serverTimestamp(),
+         leftAtText:visit.leftAtText,
          returnedAt:null,
+         visits:[...priorVisits,visit].slice(-25),
          updatedAt:serverTimestamp()
        },{merge:true});
      }else{
        const id=user.uid+'_'+Date.now();
        await setDoc(doc(db,'bathroomRequests',id),{
-         studentId:user.uid,studentName:studentDisplayName(),dateKey:key,status:'pending',
-         createdAt:serverTimestamp(),updatedAt:serverTimestamp()
+         studentId:user.uid,
+         studentName:studentDisplayName(),
+         dateKey:key,
+         status:'pending',
+         createdAt:serverTimestamp(),
+         updatedAt:serverTimestamp()
        });
        txt.textContent='Extra bathroom pass requested. Waiting for teacher approval.';
      }
    }catch(err){
-     console.warn(err);
+     console.warn('bathroom pass',err);
      txt.textContent='Could not update the pass. Please tell your teacher.';
    }finally{btn.disabled=false}
  };
@@ -2495,9 +2520,11 @@ async function sendRecognitionRequest(){
    });
    st.textContent='✓ Sent to Mr. Evans for review.';
  }catch(err){
-   console.warn(err);
+   console.warn('recognition request',err);
    st.textContent='Could not send the request. Please tell Mr. Evans.';
- }finally{setTimeout(()=>b.disabled=false,1200)}
+ }finally{
+   setTimeout(()=>b.disabled=false,900);
+ }
 }
 document.getElementById('recognitionRequestBtn')?.addEventListener('click',sendRecognitionRequest);
 
@@ -3374,6 +3401,56 @@ function localDateKey(){
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 }
 let recessState={points:0,goal:20,dateKey:""};
+let petStudentGoalState={points:0,goal:250};
+let tripStudentGoalState={points:0,goal:750};
+let universalStudentState={points:0};
+
+function renderStudentClassGoals(){
+  const today=localDateKey();
+  const rp=recessState.dateKey===today?Math.max(0,Number(recessState.points||0)):0;
+  const rg=Math.max(1,Number(recessState.goal||10));
+  const pp=Math.max(0,Number(petStudentGoalState.points||0));
+  const pg=Math.max(1,Number(petStudentGoalState.goal||250));
+  const tp=Math.max(0,Number(tripStudentGoalState.points||0));
+  const tg=Math.max(1,Number(tripStudentGoalState.goal||750));
+  const up=Math.max(0,Number(universalStudentState.points||0));
+
+  if($("v21RecessPoints"))$("v21RecessPoints").textContent=rp;
+  if($("v21RecessGoal"))$("v21RecessGoal").textContent=rg;
+  if($("v21RecessFill"))$("v21RecessFill").style.width=Math.min(100,(rp/rg)*100)+"%";
+  if($("v21RecessStatus"))$("v21RecessStatus").textContent=rp>=rg?"✅ Second Recess earned today!":`${Math.max(0,rg-rp)} more needed today.`;
+
+  if($("v21PetPoints"))$("v21PetPoints").textContent=pp;
+  if($("v21PetGoal"))$("v21PetGoal").textContent=pg;
+  if($("v21PetFill"))$("v21PetFill").style.width=Math.min(100,(pp/pg)*100)+"%";
+  if($("v21PetStatus"))$("v21PetStatus").textContent=pp>=pg?"✅ Class Pet goal reached!":`${Math.max(0,pg-pp)} more points toward our Class Pet.`;
+
+  if($("v21TripPoints"))$("v21TripPoints").textContent=tp;
+  if($("v21TripGoal"))$("v21TripGoal").textContent=tg;
+  if($("v21TripFill"))$("v21TripFill").style.width=Math.min(100,(tp/tg)*100)+"%";
+  if($("v21TripStatus"))$("v21TripStatus").textContent=tp>=tg?"✅ Field Trip goal reached!":`${Math.max(0,tg-tp)} more Field Trip points needed.`;
+
+  if($("v21UniversalPoints"))$("v21UniversalPoints").textContent=up;
+}
+
+onSnapshot(doc(db,"classData","classPet"),snap=>{
+  const d=snap.exists()?snap.data():{};
+  petStudentGoalState={points:Math.max(0,Number(d.points||0)),goal:Math.max(1,Number(d.goal||250))};
+  renderStudentClassGoals();
+},err=>console.warn("classPet",err));
+
+onSnapshot(doc(db,"classData","fieldTrip"),snap=>{
+  const d=snap.exists()?snap.data():{};
+  tripStudentGoalState={points:Math.max(0,Number(d.points||0)),goal:Math.max(1,Number(d.goal||750))};
+  renderStudentClassGoals();
+},err=>console.warn("fieldTrip",err));
+
+onSnapshot(doc(db,"classData","universalPoints"),snap=>{
+  const d=snap.exists()?snap.data():{};
+  universalStudentState={points:Math.max(0,Number(d.points||0))};
+  renderStudentClassGoals();
+},err=>console.warn("universalPoints",err));
+
 
 onSnapshot(doc(db,"classData","secondRecess"),snap=>{
   const data=snap.exists()?snap.data():{};
@@ -3383,6 +3460,7 @@ onSnapshot(doc(db,"classData","secondRecess"),snap=>{
     dateKey:String(data.dateKey||"")
   };
   renderSecondRecess();
+  renderStudentClassGoals();
 });
 
 function renderSecondRecess(){

@@ -521,7 +521,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 </style>
 
 <style id="v25quick">
-.progression-plan{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}.progression-plan>div{padding:11px;text-align:center;border:1px solid rgba(244,201,93,.25);border-radius:8px;background:rgba(7,6,30,.44)}.progression-plan b{display:block;color:#fff0a6;font-size:20px}.progression-plan small{color:#c6bad9}.quick-award-panel{padding:14px!important;margin-bottom:12px}.quick-target-row{display:grid;grid-template-columns:minmax(220px,.7fr) 1.3fr;gap:10px;align-items:end;margin-bottom:10px}.quick-award-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.quick-award{padding:11px!important;text-align:left;min-height:126px}.quick-award .qa-icon{font-size:25px;display:block}.quick-award b{display:block;color:#fff0a6;margin:3px 0}.quick-award small{display:block;color:#cbbfe0;font-size:9px;line-height:1.25}.quick-award .qa-pay{margin-top:7px;color:#8ff3c1;font-size:9px;font-weight:1000}.qa-point{color:#7eeaff!important}.pace-note{font-size:11px;color:#d9ccef;line-height:1.35}@media(max-width:1050px){.quick-award-grid{grid-template-columns:repeat(2,1fr)}.progression-plan{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){.quick-award-grid,.progression-plan,.quick-target-row{grid-template-columns:1fr}}
+.progression-plan{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}.progression-plan>div{padding:11px;text-align:center;border:1px solid rgba(244,201,93,.25);border-radius:8px;background:rgba(7,6,30,.44)}.progression-plan b{display:block;color:#fff0a6;font-size:20px}.progression-plan small{color:#c6bad9}.quick-award-panel{padding:14px!important;margin-bottom:12px}.quick-target-row{display:grid;grid-template-columns:minmax(220px,.7fr) 1.3fr;gap:10px;align-items:end;margin-bottom:10px}.quick-award-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.quick-award{padding:11px!important;text-align:left;min-height:126px}.quick-award .qa-icon{font-size:25px;display:block}.quick-award b{display:block;color:#fff0a6;margin:3px 0}.quick-award small{display:block;color:#cbbfe0;font-size:9px;line-height:1.25}.quick-award .qa-pay{margin-top:7px;color:#8ff3c1;font-size:9px;font-weight:1000}.quick-consequence-panel{padding:14px!important;margin-bottom:12px;border-color:rgba(255,92,124,.42)!important}.quick-consequence-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.quick-consequence{padding:11px!important;text-align:left;min-height:126px;border-color:rgba(255,92,124,.28)!important;background:linear-gradient(180deg,rgba(54,9,28,.62),rgba(9,7,27,.94))!important}.quick-consequence:hover{border-color:#ff7598!important}.quick-consequence .qc-icon{font-size:25px;display:block}.quick-consequence b{display:block;color:#ffd0dc;margin:3px 0}.quick-consequence small{display:block;color:#d7bdc8;font-size:9px;line-height:1.25}.quick-consequence .qc-cost{margin-top:7px;color:#ff9db5;font-size:9px;font-weight:1000}.consequence-note{font-size:11px;color:#e2c7d0;line-height:1.35}@media(max-width:1050px){.quick-consequence-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){.quick-consequence-grid{grid-template-columns:1fr}}.qa-point{color:#7eeaff!important}.pace-note{font-size:11px;color:#d9ccef;line-height:1.35}@media(max-width:1050px){.quick-award-grid{grid-template-columns:repeat(2,1fr)}.progression-plan{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){.quick-award-grid,.progression-plan,.quick-target-row{grid-template-columns:1fr}}
 </style></head><body>
 <header class="teacher-head"><div class="shell"><div class="teacher-title">🛡️ DRAGONSWOOD COMMAND<small>EXPLORE ACADEMY • EVANS 4–5 • TEACHER PORTAL</small></div><div id="signed" class="hidden" style="text-align:right"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
 <main class="shell teacher-main">
@@ -540,6 +540,11 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 <div id="students" class="panel active">
   <div class="frame bevel command-title"><h2>🧙 STUDENT CONTROL CENTER</h2><p>Manage HP, Gold, XP, level progress, profiles, and group awards.</p></div>  <div class="progression-plan"><div><small>LEVEL CAP</small><b>20</b><small>Midyear target</small></div><div><small>LEVEL 20 XP</small><b>12,000</b><small>Daily hard cap 150 XP</small></div><div><small>CLASS HP</small><b>10 → 48</b><small>Grows by level</small></div><div><small>RPG BASE HP</small><b>18 → 94</b><small>Before gear</small></div></div>
   <div class="card quick-award-panel"><h3>⚡ QUICK AWARDS</h3><p class="pace-note">Pick the audience, then one award. Student XP/Gold/HP changes are logged automatically; class-goal points are added once per award.</p><div class="quick-target-row"><div class="field"><label>AWARD TO</label><select id="quickAwardGroup"><optgroup label="Groups"><option value="all">Whole Class</option><option value="girl">All Girls</option><option value="boy">All Boys</option><option value="4">All 4th Grade</option><option value="5">All 5th Grade</option></optgroup><optgroup label="Individual Students" id="quickIndividualStudentOptions"></optgroup></select></div><div class="pace-note"><b style="color:#ffe68b">PACING:</b> Ordinary good days should land around 80–150 XP. About 130 XP per school day reaches Level 20 around January.</div></div><div class="quick-award-grid" id="quickAwardGrid"></div></div>
+  <div class="card quick-consequence-panel">
+    <h3>⚠️ QUICK CONSEQUENCES / TAKE AWAYS</h3>
+    <p class="consequence-note">Use the same audience selector above, then choose a consequence. These never reduce a stat below 0, and every change is written to the student transaction history.</p>
+    <div class="quick-consequence-grid" id="quickConsequenceGrid"></div>
+  </div>
   <div class="card"><h3>MASS AWARD / ADJUSTMENT</h3><div class="groupbox">
     <div class="field"><label>AWARD TO</label><select id="massGroup"><optgroup label="Groups"><option value="all">Whole Class</option><option value="girl">All Girls</option><option value="boy">All Boys</option><option value="4">All 4th Grade</option><option value="5">All 5th Grade</option></optgroup><optgroup label="Individual Students" id="individualStudentOptions"></optgroup></select></div>
     <div class="field"><label>STAT</label><select id="massStat"><option value="hp">HP</option><option value="gold">Gold</option><option value="xp">XP</option></select></div>
@@ -1053,6 +1058,56 @@ const QUICK_AWARDS=[
 ];
 function pointText(p){return p.pt==="recess"?`🌤️ +${p.points} Recess`:p.pt==="pet"?`🐾 +${p.points} Pet`:p.pt==="trip"?`🚌 +${p.points} Trip`:p.pt==="universal"?`🌟 +${p.points} Universal`:""}
 function renderQuickAwards(){if(!$("quickAwardGrid"))return;$("quickAwardGrid").innerHTML=QUICK_AWARDS.map(p=>`<button class="quick-award" data-qa="${p.id}"><span class="qa-icon">${p.icon}</span><b>${esc(p.name)}</b><small>${esc(p.note)}</small><div class="qa-pay">⭐ +${p.xp} XP · 🪙 +${p.gold}${p.hp?` · ❤️ +${p.hp}`:""}</div>${p.pt?`<div class="qa-pay qa-point">${pointText(p)}</div>`:""}</button>`).join("");document.querySelectorAll("[data-qa]").forEach(b=>b.onclick=()=>applyQuickAward(b.dataset.qa))}
+
+const QUICK_CONSEQUENCES=[
+  {id:"redirect",icon:"↩️",name:"Quick Redirect",note:"Minor reminder after choosing not to follow a direction.",hp:-1,gold:0,xp:0},
+  {id:"notReady",icon:"⏳",name:"Not Ready / Off Task",note:"Repeatedly unprepared or off task after a reminder.",hp:-2,gold:0,xp:0},
+  {id:"transition",icon:"🚶",name:"Poor Transition",note:"Unsafe, disruptive, or repeatedly slow transition.",hp:-2,gold:-2,xp:0},
+  {id:"lunch",icon:"🍎",name:"Lunch Behavior",note:"Behavior at lunch did not meet class expectations.",hp:-3,gold:-3,xp:0},
+  {id:"specials",icon:"🎨",name:"Specials Behavior",note:"Behavior during specials did not represent the class well.",hp:-3,gold:-3,xp:0},
+  {id:"disrespect",icon:"💢",name:"Disrespect / Unkind Choice",note:"Disrespectful language, behavior, or treatment of another person.",hp:-4,gold:-4,xp:0},
+  {id:"unsafe",icon:"⚠️",name:"Unsafe Choice",note:"A choice that created a safety concern.",hp:-5,gold:-5,xp:0},
+  {id:"major",icon:"💔",name:"Major Behavior Incident",note:"Serious or repeated behavior requiring a significant consequence.",hp:-8,gold:-10,xp:0}
+];
+
+function renderQuickConsequences(){
+  if(!$("quickConsequenceGrid"))return;
+  $("quickConsequenceGrid").innerHTML=QUICK_CONSEQUENCES.map(p=>`
+    <button class="quick-consequence" data-qc="${p.id}">
+      <span class="qc-icon">${p.icon}</span>
+      <b>${esc(p.name)}</b>
+      <small>${esc(p.note)}</small>
+      <div class="qc-cost">${p.hp?`❤️ ${p.hp} HP`:""}${p.gold?` · 🪙 ${p.gold} Gold`:""}${p.xp?` · ⭐ ${p.xp} XP`:""}</div>
+    </button>`).join("");
+  document.querySelectorAll("[data-qc]").forEach(b=>b.onclick=()=>applyQuickConsequence(b.dataset.qc));
+}
+
+async function applyQuickConsequence(id){
+  const p=QUICK_CONSEQUENCES.find(x=>x.id===id); if(!p)return;
+  const g=$("quickAwardGroup").value, t=quickTargets(g);
+  if(!t.length)return alert("No students match that group.");
+  const label=$("quickAwardGroup").selectedOptions[0]?.textContent||"selected students";
+  if(!confirm(`${p.name} → ${label}\n\nEach student: ${p.hp||0} HP${p.gold?`, ${p.gold} Gold`:""}${p.xp?`, ${p.xp} XP`:""}\n\nStats will never fall below 0. Apply to ${t.length} student(s)?`))return;
+
+  const b=writeBatch(db);
+  for(const s of t){
+    const oldHp=Number(s.hp||0), oldGold=Number(s.gold||0), oldXp=Number(s.xp||0);
+    const newHp=Math.max(0,oldHp+Number(p.hp||0));
+    const newGold=Math.max(0,oldGold+Number(p.gold||0));
+    const newXp=Math.max(0,oldXp+Number(p.xp||0));
+
+    const patch={updatedAt:serverTimestamp()};
+    if(newHp!==oldHp)patch.hp=newHp;
+    if(newGold!==oldGold)patch.gold=newGold;
+    if(newXp!==oldXp)patch.xp=newXp;
+    b.set(doc(db,"students",s.id),patch,{merge:true});
+
+    if(newHp!==oldHp)b.set(doc(collection(db,"studentTransactions")),{studentId:s.id,stat:"hp",amount:newHp-oldHp,reason:p.name,category:"consequence",createdAt:serverTimestamp()});
+    if(newGold!==oldGold)b.set(doc(collection(db,"studentTransactions")),{studentId:s.id,stat:"gold",amount:newGold-oldGold,reason:p.name,category:"consequence",createdAt:serverTimestamp()});
+    if(newXp!==oldXp)b.set(doc(collection(db,"studentTransactions")),{studentId:s.id,stat:"xp",amount:newXp-oldXp,reason:p.name,category:"consequence",createdAt:serverTimestamp()});
+  }
+  await b.commit();
+}
 function quickTargets(g){if(g.startsWith("student:"))return students.filter(s=>s.id===g.split(":")[1]);return students.filter(s=>g==="all"||(g==="girl"&&s.genderGroup==="girl")||(g==="boy"&&s.genderGroup==="boy")||(g==="4"&&String(s.grade)==="4")||(g==="5"&&String(s.grade)==="5"))}
 async function applyQuickAward(id){const p=QUICK_AWARDS.find(x=>x.id===id);if(!p)return;const g=$("quickAwardGroup").value,t=quickTargets(g);if(!t.length)return alert("No students match that group.");const label=$("quickAwardGroup").selectedOptions[0]?.textContent||"selected students";if(!confirm(`${p.name} → ${label}\n\nEach student: up to +${p.xp} XP (daily cap 150), +${p.gold} Gold${p.hp?`, +${p.hp} HP`:""}${p.pt?`\nClass goal: ${pointText(p)}`:""}\n\nApply to ${t.length} student(s)?`))return;const b=writeBatch(db);for(const s of t){
   const ox=+s.xp||0,og=+s.gold||0,oh=+s.hp||0;
@@ -1069,7 +1124,7 @@ async function applyQuickAward(id){const p=QUICK_AWARDS.find(x=>x.id===id);if(!p
   if(p.gold)b.set(doc(collection(db,"studentTransactions")),{studentId:s.id,stat:"gold",amount:p.gold,reason:p.name,createdAt:serverTimestamp()});
   if(nh!==oh)b.set(doc(collection(db,"studentTransactions")),{studentId:s.id,stat:"hp",amount:nh-oh,reason:p.name,createdAt:serverTimestamp()});
 }if(p.pt==="recess"){const today=localDateKey(),base=recessState.dateKey===today?(+recessState.points||0):0;b.set(doc(db,"classData","secondRecess"),{points:base+p.points,goal:Math.max(1,+recessState.goal||20),dateKey:today,updatedAt:serverTimestamp()},{merge:true})}else if(p.pt==="pet")b.set(doc(db,"classData","classPet"),{points:(+petGoalState.points||0)+p.points,goal:Math.max(1,+petGoalState.goal||250),updatedAt:serverTimestamp()},{merge:true});else if(p.pt==="trip")b.set(doc(db,"classData","fieldTrip"),{points:(+tripGoalState.points||0)+p.points,goal:Math.max(1,+tripGoalState.goal||750),updatedAt:serverTimestamp()},{merge:true});else if(p.pt==="universal")b.set(doc(db,"classData","universalPoints"),{points:(+universalPointState.points||0)+p.points,updatedAt:serverTimestamp()},{merge:true});await b.commit()}
-renderQuickAwards();
+renderQuickAwards();renderQuickConsequences();
 
 function renderMassStudentOptions(){
   const group=$("individualStudentOptions");

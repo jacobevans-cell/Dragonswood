@@ -40,7 +40,47 @@ select option,select optgroup{background:#080718;color:#fff}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.big{font-family:Georgia,serif;font-size:48px;color:var(--gold2)}.meter{height:19px;background:#030510;border:1px solid rgba(2,204,254,.2);border-radius:999px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#6f20d4,#d74dff,var(--cyan),var(--gold2));background-size:220% 100%;animation:shimmer 6s linear infinite}
 .actions{display:flex;gap:7px;flex-wrap:wrap}.reason{flex:1;min-width:170px}.titlebar{display:flex;justify-content:space-between;align-items:end;margin:16px 0 8px}.titlebar h2{margin:0;color:#e0a2ff}.titlebar p{margin:3px 0}.groupbox{display:grid;grid-template-columns:1.2fr .7fr .6fr 1.2fr;gap:9px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:12px;font-weight:900}.student-table,table{width:100%;border-collapse:collapse;font-size:12px}.student-table th,th{padding:9px;background:linear-gradient(90deg,#27104b,#08283b);color:var(--gold2);text-align:left;border-bottom:1px solid rgba(244,201,93,.24)}.student-table td,td{padding:9px;border-bottom:1px solid rgba(255,255,255,.05)}.student-avatar{font-size:25px}.badge{padding:4px 7px;border-radius:999px;background:#241044;color:#f2ddff}.list{display:grid;gap:7px}.item{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;padding:9px;border:1px solid rgba(101,45,193,.32);background:#0a081d}.recess-control{display:grid;grid-template-columns:1.2fr .8fr;gap:10px;margin-top:12px}.modal{position:fixed;inset:0;background:rgba(1,2,8,.9);z-index:50;display:grid;place-items:center;padding:20px}.modalbox{width:min(680px,100%);max-height:92vh;overflow:auto;padding:20px}
 @media(max-width:900px){.tabs{grid-template-columns:repeat(2,1fr)!important}.grid,.recess-control{grid-template-columns:1fr}.groupbox{grid-template-columns:1fr 1fr}}
-</style></head><body>
+</style>
+<style id="dragonswood-v15-background">
+html, body {
+  min-height: 100%;
+  background: #04040f !important;
+}
+body {
+  background:
+    linear-gradient(180deg,
+      rgba(2,3,12,.16) 0%,
+      rgba(2,3,12,.28) 48%,
+      rgba(2,3,12,.52) 100%),
+    url("dragonswood-portal-background.png") center top / cover fixed no-repeat !important;
+}
+/* Keep the picture vivid, but make actual GUI panels readable */
+.topbar, .teacher-head {
+  background: linear-gradient(180deg, rgba(4,4,16,.78), rgba(7,5,22,.62)) !important;
+  backdrop-filter: blur(5px);
+}
+.frame, .bevel, .card, .reward-frame, .recess-side, .profile-card, .stats-card,
+.egg-story, .egg-progress, .tab, .command-title {
+  backdrop-filter: blur(7px);
+}
+/* Only one background image. No extra image pseudo-layers fighting with it. */
+body::after {
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  background:
+    radial-gradient(circle at 18% 16%, rgba(166,76,255,.08), transparent 24%),
+    radial-gradient(circle at 84% 18%, rgba(2,204,254,.06), transparent 22%);
+}
+body > * {
+  position: relative;
+  z-index: 2;
+}
+</style>
+
+</head><body>
 <header class="teacher-head"><div class="shell"><div class="teacher-title">🛡️ DRAGONSWOOD COMMAND<small>EXPLORE ACADEMY • EVANS 4–5 • TEACHER PORTAL</small></div><div id="signed" class="hidden" style="text-align:right"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
 <main class="shell teacher-main">
 <section id="login" class="card" style="max-width:520px;margin:45px auto"><h1>Teacher Login</h1><form id="loginForm"><div class="field"><label>Email</label><input id="email" type="email" required></div><div class="field"><label>Password</label><input id="password" type="password" required></div><button style="width:100%">SIGN IN</button><div id="error" style="color:#ff9db5;margin-top:8px"></div></form></section>

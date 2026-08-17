@@ -78,7 +78,7 @@ html,body{min-height:100%;background:#040410!important}
 body{
  background:
  linear-gradient(180deg,rgba(3,4,14,.12),rgba(3,4,14,.44) 72%,rgba(3,4,14,.72)),
- url("dragonswood-wisteria-castle.jpg") center top / cover fixed no-repeat !important;
+ url("dragonswood-portal-background.png") center top / cover fixed no-repeat !important;
  color:var(--dw-text)!important;
 }
 body::before{
@@ -147,6 +147,46 @@ body>*{position:relative;z-index:2}
  .dashboard{grid-template-columns:1fr!important}.reward-top{grid-template-columns:1fr!important}.rewards{grid-template-columns:repeat(4,1fr)!important}
 }
 @media(max-width:720px){.rewards{grid-template-columns:repeat(2,1fr)!important}.egg-story{grid-template-columns:1fr!important;text-align:center}.bottom-nav{grid-template-columns:repeat(3,1fr)!important}}
+</style>
+
+
+<style id="dragonswood-v15-background">
+html, body {
+  min-height: 100%;
+  background: #04040f !important;
+}
+body {
+  background:
+    linear-gradient(180deg,
+      rgba(2,3,12,.16) 0%,
+      rgba(2,3,12,.28) 48%,
+      rgba(2,3,12,.52) 100%),
+    url("dragonswood-portal-background.png") center top / cover fixed no-repeat !important;
+}
+/* Keep the picture vivid, but make actual GUI panels readable */
+.topbar, .teacher-head {
+  background: linear-gradient(180deg, rgba(4,4,16,.78), rgba(7,5,22,.62)) !important;
+  backdrop-filter: blur(5px);
+}
+.frame, .bevel, .card, .reward-frame, .recess-side, .profile-card, .stats-card,
+.egg-story, .egg-progress, .tab, .command-title {
+  backdrop-filter: blur(7px);
+}
+/* Only one background image. No extra image pseudo-layers fighting with it. */
+body::after {
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  background:
+    radial-gradient(circle at 18% 16%, rgba(166,76,255,.08), transparent 24%),
+    radial-gradient(circle at 84% 18%, rgba(2,204,254,.06), transparent 22%);
+}
+body > * {
+  position: relative;
+  z-index: 2;
+}
 </style>
 
 </head><body>

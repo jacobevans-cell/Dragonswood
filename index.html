@@ -67,7 +67,101 @@ select option,select optgroup{background:#080718;color:#fff}
 .modal{position:fixed;inset:0;background:rgba(1,2,8,.9);z-index:50;display:grid;place-items:center;padding:20px}.modalbox{width:min(760px,100%);max-height:92vh;overflow:auto;padding:20px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:flex;flex-direction:column;gap:5px}.choicegrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.choice{padding:9px;text-align:center;background:#080718;border:1px solid rgba(101,45,193,.35)}.choice.active{border-color:var(--gold)}
 @media(max-width:1100px){.header-grid{grid-template-columns:1fr}.profile-card,.stats-card{max-width:760px;margin:auto;width:100%}.dashboard{grid-template-columns:1fr}.reward-top{grid-template-columns:1fr}.rewards{grid-template-columns:repeat(4,1fr)!important}}
 @media(max-width:720px){.egg-story{grid-template-columns:1fr;text-align:center}.egg-stages{grid-template-columns:repeat(5,1fr)}.rewards{grid-template-columns:repeat(2,1fr)!important}.games,.boards{grid-template-columns:1fr!important}.bottom-nav{grid-template-columns:repeat(2,1fr)}.formgrid,.choicegrid{grid-template-columns:1fr}}
-</style></head><body>
+</style>
+<style id="dragonswood-v13-hud">
+:root{
+  --dw-ink:#050513; --dw-panel:#09091d; --dw-panel2:#100b2d;
+  --dw-purple:#652dc1; --dw-violet:#a52cff; --dw-blue:#02ccfe;
+  --dw-gold:#f4c95d; --dw-gold2:#fff0a0; --dw-line:rgba(244,201,93,.55);
+}
+html,body{background:
+ radial-gradient(circle at 50% -10%,rgba(101,45,193,.28),transparent 34%),
+ radial-gradient(circle at 12% 38%,rgba(2,204,254,.09),transparent 25%),
+ radial-gradient(circle at 88% 45%,rgba(165,44,255,.10),transparent 28%),
+ linear-gradient(180deg,#050411 0%,#08051a 45%,#030711 100%) !important;
+ min-height:100%; overflow-x:hidden}
+body:before,body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1}
+body:before{background-image:
+ radial-gradient(circle,rgba(255,236,146,.7) 0 1px,transparent 1.5px),
+ radial-gradient(circle,rgba(2,204,254,.45) 0 1px,transparent 1.5px);
+ background-size:83px 83px,127px 127px;background-position:12px 20px,53px 74px;
+ opacity:.28;animation:dwStars 12s linear infinite}
+body:after{background:linear-gradient(110deg,transparent 30%,rgba(166,71,255,.06) 45%,rgba(2,204,254,.05) 52%,transparent 68%);background-size:220% 100%;animation:dwShimmer 10s linear infinite}
+@keyframes dwStars{50%{opacity:.5;transform:translateY(-4px)}}
+@keyframes dwShimmer{from{background-position:200% 0}to{background-position:-100% 0}}
+
+body{font-family:Inter,system-ui,sans-serif;color:#f8f3ff}
+h1,h2,h3,.brand-title,.journey-title{font-family:Georgia,"Times New Roman",serif;letter-spacing:.02em}
+main,.wrap,.shell,.container{max-width:1500px!important;margin-inline:auto!important}
+
+/* Unified ornate frame treatment */
+.frame,.bevel,.panel,.card,.reward-card,.recess-card,.journey-card{
+ background:
+ linear-gradient(180deg,rgba(15,12,43,.96),rgba(5,7,25,.98)) padding-box,
+ linear-gradient(120deg,var(--dw-gold),#6e2fc4 28%,#02ccfe 62%,var(--dw-gold)) border-box!important;
+ border:1px solid transparent!important;
+ box-shadow:inset 0 0 24px rgba(92,35,170,.18),0 0 20px rgba(0,0,0,.28)!important;
+}
+
+/* Header becomes a game HUD */
+header,.topbar,.site-header{
+ background:linear-gradient(180deg,rgba(5,5,18,.98),rgba(9,5,28,.96))!important;
+ border-bottom:1px solid rgba(244,201,93,.55)!important;
+ box-shadow:0 10px 30px rgba(0,0,0,.28)!important;
+}
+.brand-title,.logo-title,h1{color:#fff0a0!important;text-shadow:0 2px 0 #7b4d13,0 0 16px rgba(244,201,93,.18)}
+.subtitle,.eyebrow{color:#dc91ff!important}
+
+/* Make visible student summary read like left HUD card */
+#signedIn:not(.hidden) .profile-summary,
+.student-card,.hero-profile{
+ border:1px solid rgba(2,204,254,.6)!important;
+ background:linear-gradient(110deg,rgba(12,8,40,.98),rgba(4,17,38,.98))!important;
+ box-shadow:inset 0 0 22px rgba(2,204,254,.08),0 0 18px rgba(101,45,193,.18)!important;
+}
+
+/* Reward journey: tighter, richer, less "web form" */
+#rewards,.rewards-section,.journey-section{position:relative}
+#rewards:before,.journey-section:before{content:"";position:absolute;inset:-10px;border-radius:24px;pointer-events:none;background:radial-gradient(circle at 15% 30%,rgba(165,44,255,.12),transparent 25%),radial-gradient(circle at 85% 20%,rgba(2,204,254,.08),transparent 24%);filter:blur(6px);z-index:-1}
+.reward-card,.milestone,.reward-item{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.reward-card:hover,.milestone:hover,.reward-item:hover{transform:translateY(-3px);box-shadow:0 0 18px rgba(244,201,93,.18)!important}
+.progress,.progress-track,.bar{background:#020611!important;border:1px solid rgba(2,204,254,.35)!important;box-shadow:inset 0 0 10px #000!important}
+.progress>*,.progress-fill,.bar-fill{background:linear-gradient(90deg,#7228e7,#d735ff 42%,#02ccfe 76%,#ffe36d)!important;box-shadow:0 0 12px rgba(165,44,255,.7)!important}
+
+/* Buttons */
+button,.btn,a.button{
+ background:linear-gradient(135deg,#6b22cf,#8e27df 55%,#087fa7)!important;
+ color:#fff!important;border:1px solid rgba(244,201,93,.65)!important;
+ box-shadow:inset 0 0 10px rgba(255,255,255,.08),0 0 12px rgba(101,45,193,.22)!important;
+ font-weight:800!important}
+button:hover,.btn:hover,a.button:hover{filter:brightness(1.15);transform:translateY(-1px)}
+
+/* Bottom nav becomes one console rail */
+.bottom-nav,.game-nav,nav.bottom{
+ background:linear-gradient(180deg,rgba(8,7,28,.98),rgba(3,5,18,.99))!important;
+ border:1px solid rgba(244,201,93,.5)!important;
+ box-shadow:0 -8px 28px rgba(0,0,0,.35),inset 0 1px rgba(255,255,255,.04)!important}
+.bottom-nav a,.game-nav a,nav.bottom a{border-right:1px solid rgba(101,45,193,.42);color:#ffe995!important}
+
+/* Replace giant dead-space feel with controlled rhythm */
+section{scroll-margin-top:18px}
+#conn{color:#d9d2f3!important;font-size:.9rem!important;opacity:.85;margin:8px auto 14px!important}
+@media (min-width:1000px){
+  .journey-grid,.reward-layout,.main-grid{gap:14px!important}
+}
+@media (max-width:800px){
+  h1,.brand-title,.logo-title{font-size:clamp(2.2rem,12vw,4rem)!important}
+}
+</style>
+
+</head><body>
+<svg width="0" height="0" aria-hidden="true" style="position:absolute">
+<defs>
+ <filter id="dwGlow"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <linearGradient id="dwGold" x1="0" x2="1"><stop stop-color="#fff0a0"/><stop offset=".5" stop-color="#d89b2d"/><stop offset="1" stop-color="#fff0a0"/></linearGradient>
+</defs>
+</svg>
+
 <header class="topbar">
 <div class="shell">
   <div class="accountbar hidden" id="account"><span id="accountEmail"></span><button id="profileBtn">Profile</button><button id="signOutBtn">Sign Out</button></div>

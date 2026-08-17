@@ -2391,6 +2391,38 @@ if($("googleBtn")) $("googleBtn").onclick=async()=>{
 if($("signOutBtn")) $("signOutBtn").onclick=()=>signOut(auth);
 if($("profileBtn")) $("profileBtn").onclick=()=>openProfile(true);
 
+
+function formatPassTimer(ms){
+  const total=Math.max(0,Math.ceil(ms/1000));
+  const m=Math.floor(total/60),s=total%60;
+  return `${m}:${String(s).padStart(2,'0')}`;
+}
+let bathroomTimerInterval=null,snackTimerInterval=null;
+function startBathroomCountdown(startMs){
+  if(bathroomTimerInterval)clearInterval(bathroomTimerInterval);
+  const tick=()=>{
+    const el=$('bathroomStudentStatus');
+    if(!el)return;
+    const remain=5*60*1000-(Date.now()-Number(startMs||Date.now()));
+    const prefix=remain>0?'⏱️ Bathroom time left: ':'⏰ Bathroom time is up: ';
+    el.dataset.timerText=prefix+(remain>0?formatPassTimer(remain):'0:00');
+    if(el.dataset.baseText)el.textContent=el.dataset.baseText+' • '+el.dataset.timerText;
+  };
+  tick(); bathroomTimerInterval=setInterval(tick,1000);
+}
+function startSnackCountdown(startMs){
+  if(snackTimerInterval)clearInterval(snackTimerInterval);
+  const tick=()=>{
+    const el=$('snackStudentStatus');
+    if(!el)return;
+    const remain=5*60*1000-(Date.now()-Number(startMs||Date.now()));
+    const prefix=remain>0?'⏱️ Snack time left: ':'⏰ Snack time is up: ';
+    el.dataset.timerText=prefix+(remain>0?formatPassTimer(remain):'0:00');
+    if(el.dataset.baseText)el.textContent=el.dataset.baseText+' • '+el.dataset.timerText;
+  };
+  tick(); snackTimerInterval=setInterval(tick,1000);
+}
+
 function phoenixDateKey(){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Phoenix',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}
 function studentDisplayName(){return (profile?.firstName||user?.displayName||user?.email?.split('@')[0]||'Student').trim()}
 function studentBathroomGroup(){
@@ -2437,7 +2469,11 @@ function renderBathroomStudent(d){
 
  if(active){
    const leftText=d?.leftAtText?` • out since ${d.leftAtText}`:'';
-   txt.textContent=`YOU ARE OUT${leftText} • ${Math.max(0,3-used)} automatic passes remain today. Tap when you return.`;
+   const activeVisit=(Array.isArray(d?.visits)?d.visits:[]).find(v=>String(v?.id||'')===String(d?.activeVisitId||''))||{};
+   const leftMs=Number(activeVisit?.leftMs||0) || (d?.leftAt?.toMillis?.()||Date.now());
+   txt.dataset.baseText=`YOU ARE OUT${leftText} • ${Math.max(0,3-used)} automatic passes remain today. Tap when you return.`;
+   txt.textContent=txt.dataset.baseText;
+   startBathroomCountdown(leftMs);
    btn.textContent='✅ I AM BACK IN CLASS';
    btn.disabled=false;
 
@@ -2499,6 +2535,7 @@ function renderBathroomStudent(d){
    return;
  }
 
+ if(bathroomTimerInterval){clearInterval(bathroomTimerInterval);bathroomTimerInterval=null}
  const remaining=Math.max(0,3-used);
  let baseText=used<3
    ?`${remaining} of 3 automatic passes remaining today.`
@@ -2646,7 +2683,11 @@ function renderSnackStudent(d){
 
   if(active){
     const start=d?.startedAtText?` • started ${d.startedAtText}`:'';
-    txt.textContent=`SNACK PASS ACTIVE${start} • ${Math.max(0,2-used)} automatic passes remain today.`;
+    const activeVisit=(Array.isArray(d?.visits)?d.visits:[]).find(v=>String(v?.id||'')===String(d?.activeVisitId||''))||{};
+    const startMs=Number(activeVisit?.startedMs||0) || (d?.startedAt?.toMillis?.()||Date.now());
+    txt.dataset.baseText=`SNACK PASS ACTIVE${start} • ${Math.max(0,2-used)} automatic passes remain today.`;
+    txt.textContent=txt.dataset.baseText;
+    startSnackCountdown(startMs);
     btn.textContent='✅ DONE WITH SNACK';
     btn.disabled=false;
     btn.onclick=async()=>{
@@ -2676,6 +2717,7 @@ function renderSnackStudent(d){
     return;
   }
 
+  if(snackTimerInterval){clearInterval(snackTimerInterval);snackTimerInterval=null}
   txt.textContent=used<2
     ?`${2-used} of 2 automatic snack passes remaining today.`
     :(credits>0?`${credits} teacher-approved extra snack pass${credits===1?'':'es'} available.`:'Your 2 automatic snack passes are used. Extra snacks need teacher approval.');

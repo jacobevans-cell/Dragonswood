@@ -550,6 +550,13 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .student-selection-count{color:#9fe8ff;font-size:12px;font-weight:900}
 </style>
 
+
+<style id="dw-pass-timer-style">
+.pass-timer{display:inline-block;margin-top:4px;padding:4px 7px;border-radius:999px;border:1px solid rgba(126,231,255,.4);background:rgba(9,26,47,.75);color:#aef2ff;font-weight:1000;font-size:11px}
+.pass-timer.overdue{border-color:rgba(255,118,118,.65);background:rgba(71,12,20,.78);color:#ffb3b3;animation:dwPulseOverdue 1s ease-in-out infinite}
+@keyframes dwPulseOverdue{50%{filter:brightness(1.35)}}
+</style>
+
 </head><body>
 <header class="teacher-head"><div class="shell"><div class="teacher-title">🛡️ DRAGONSWOOD COMMAND<small>EXPLORE ACADEMY • EVANS 4–5 • TEACHER PORTAL</small></div><div id="signed" class="hidden" style="text-align:right"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
 <main class="shell teacher-main">
@@ -1313,6 +1320,27 @@ function renderMassStudentOptions(){
   renderStudentCheckboxes("mass");
 }
 
+
+function passCountdownLabel(startMs){
+  const remain=5*60*1000-(Date.now()-Number(startMs||Date.now()));
+  return remain>0?`⏱️ ${formatPassTimer(remain)} left`:`⏰ OVER by ${formatPassTimer(Math.abs(remain))}`;
+}
+function formatPassTimer(ms){
+  const total=Math.max(0,Math.floor(ms/1000));
+  const m=Math.floor(total/60),s=total%60;
+  return `${m}:${String(s).padStart(2,'0')}`;
+}
+let teacherPassTimerInterval=null;
+function ensureTeacherPassTimer(){
+  if(teacherPassTimerInterval)return;
+  teacherPassTimerInterval=setInterval(()=>{
+    document.querySelectorAll('[data-live-pass-start]').forEach(el=>{
+      el.textContent=passCountdownLabel(Number(el.dataset.livePassStart||Date.now()));
+      el.classList.toggle('overdue',el.textContent.includes('OVER'));
+    });
+  },1000);
+}
+
 function teacherDateKey(){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Phoenix',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}
 function reqTime(x){try{return x?.createdAt?.toDate?.().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})||''}catch(e){return''}}
 // Request feeds are realtime via onSnapshot above.
@@ -1415,12 +1443,13 @@ window.addEventListener("focus",()=>{
 });
 
 function renderLiveRequests(){
+ ensureTeacherPassTimer();
  setTimeout(dwCheckTeacherAlerts,0);
  const key=teacherDateKey();
 
  const live=bathroomStatuses.filter(x=>x.dateKey===key&&x.active===true);
  const bl=$('bathroomLiveList');
- if(bl)bl.innerHTML=live.length?live.map(x=>`<div class="live-request-item out"><div><b>🚻 ${esc(x.studentName||displayStudent(students.find(s=>s.id===x.id)||{})||'Student')}</b><small>OUT NOW${x.leftAtText?' • left '+esc(x.leftAtText):''} • ${+x.passesUsed||0} automatic pass${(+x.passesUsed||0)===1?'':'es'} used today</small></div><div class="live-actions"><button data-return-bath="${x.id}">MARK RETURNED</button></div></div>`).join(''):'<div class="muted">No students are currently out.</div>';
+ if(bl)bl.innerHTML=live.length?live.map(x=>`<div class="live-request-item out"><div><b>🚻 ${esc(x.studentName||displayStudent(students.find(s=>s.id===x.id)||{})||'Student')}</b><small>OUT NOW${x.leftAtText?' • left '+esc(x.leftAtText):''} • ${+x.passesUsed||0} automatic pass${(+x.passesUsed||0)===1?'':'es'} used today<br><span class="pass-timer" data-live-pass-start="${Number((Array.isArray(x.visits)?x.visits:[]).find(v=>String(v?.id||'')===String(x.activeVisitId||''))?.leftMs||Date.now())}">${passCountdownLabel(Number((Array.isArray(x.visits)?x.visits:[]).find(v=>String(v?.id||'')===String(x.activeVisitId||''))?.leftMs||Date.now()))}</span></small></div><div class="live-actions"><button data-return-bath="${x.id}">MARK RETURNED</button></div></div>`).join(''):'<div class="muted">No students are currently out.</div>';
 
  const pending=bathroomRequests.filter(x=>x.dateKey===key&&x.status==='pending');
  const br=$('bathroomRequestList');
@@ -1429,7 +1458,7 @@ function renderLiveRequests(){
 
  const snackLive=snackStatuses.filter(x=>x.dateKey===key&&x.active===true);
  const sl=$('snackLiveList');
- if(sl)sl.innerHTML=snackLive.length?snackLive.map(x=>`<div class="live-request-item out"><div><b>🍎 ${esc(x.studentName||'Student')}</b><small>SNACK ACTIVE${x.startedAtText?' • started '+esc(x.startedAtText):''} • ${+x.passesUsed||0} automatic pass${(+x.passesUsed||0)===1?'':'es'} used today</small></div><div class="live-actions"><button data-snack-done="${x.id}">MARK DONE</button></div></div>`).join(''):'<div class="muted">No active snack passes.</div>';
+ if(sl)sl.innerHTML=snackLive.length?snackLive.map(x=>`<div class="live-request-item out"><div><b>🍎 ${esc(x.studentName||'Student')}</b><small>SNACK ACTIVE${x.startedAtText?' • started '+esc(x.startedAtText):''} • ${+x.passesUsed||0} automatic pass${(+x.passesUsed||0)===1?'':'es'} used today<br><span class="pass-timer" data-live-pass-start="${Number((Array.isArray(x.visits)?x.visits:[]).find(v=>String(v?.id||'')===String(x.activeVisitId||''))?.startedMs||Date.now())}">${passCountdownLabel(Number((Array.isArray(x.visits)?x.visits:[]).find(v=>String(v?.id||'')===String(x.activeVisitId||''))?.startedMs||Date.now()))}</span></small></div><div class="live-actions"><button data-snack-done="${x.id}">MARK DONE</button></div></div>`).join(''):'<div class="muted">No active snack passes.</div>';
 
  const snackPending=snackRequests.filter(x=>x.dateKey===key&&x.status==='pending');
  const sr=$('snackRequestList');

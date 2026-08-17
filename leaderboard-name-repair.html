@@ -1,10 +1,9 @@
-<!-- force GitHub Pages rebuild -->
+<!-- Dragonswood Leaderboard Repair -->
 <!doctype html>
 <html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>Dragonswood Leaderboard Repair</title>
 
 <style>
@@ -13,46 +12,41 @@ body{
   background:#070616;
   color:#fff8e9;
   font-family:Arial;
-  padding:30px
+  padding:30px;
 }
-
 main{
   max-width:800px;
   margin:auto;
   background:#0d0925;
   border:1px solid #f4c95d;
   border-radius:14px;
-  padding:24px
+  padding:24px;
 }
-
 h1{
   font-family:Georgia;
-  color:#ffe8a0
+  color:#ffe8a0;
 }
-
-.ok{
-  color:#8ff0b6
-}
-
-.bad{
-  color:#ff9db5
-}
-
+.ok{color:#8ff0b6}
+.bad{color:#ff9db5}
 button{
   padding:12px 18px;
   border:1px solid #f4c95d;
   border-radius:8px;
   color:white;
   font-weight:900;
-  background:linear-gradient(90deg,#652dc1,#08789e)
+  background:linear-gradient(90deg,#652dc1,#08789e);
+  cursor:pointer;
 }
-
+button:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
 pre{
   white-space:pre-wrap;
   background:#050411;
   padding:14px;
   border-radius:8px;
-  min-height:90px
+  min-height:90px;
 }
 </style>
 </head>
@@ -68,7 +62,7 @@ This teacher-only utility repairs OLD score records that say “Player”
 by matching each score's studentId to the student's Dragonswood profile.
 </p>
 
-<div id="status">Connecting…</div>
+<div id="status">Connecting to Dragonswood…</div>
 
 <p>
 <button id="repair" disabled>
@@ -101,109 +95,92 @@ import {
 
 
 const firebaseConfig = {
-  apiKey:"AIzaSyC91gWJoG0gxRKsgcz-3bXI7iZly_1bwYE",
-  authDomain:"dragonswood-9289e.firebaseapp.com",
-  projectId:"dragonswood-9289e",
-  storageBucket:"dragonswood-9289e.firebasestorage.app"
+  apiKey: "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE",
+  authDomain: "dragonswood-9289e.firebaseapp.com",
+  projectId: "dragonswood-9289e",
+  storageBucket: "dragonswood-9289e.firebasestorage.app",
+  messagingSenderId: "1064477064695",
+  appId: "1:1064477064695:web:283e1016ee2303d39042f2",
+  measurementId: "G-LPRLDGVBD2"
 };
 
-
 const TEACHER = "jacobicusjax@gmail.com";
-
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-
 const st = document.getElementById("status");
 const btn = document.getElementById("repair");
 const log = document.getElementById("log");
 
-
 let user = null;
-
 
 onAuthStateChanged(auth, u => {
 
   user = u;
 
   if(!u){
-
     st.textContent =
       "Sign into Dragonswood with the teacher account first.";
-
     st.className = "bad";
-
+    btn.disabled = true;
     return;
   }
-
 
   if((u.email || "").toLowerCase() !== TEACHER){
-
     st.textContent =
-      "Teacher account required.";
-
+      "Teacher account required. Currently signed in as: " +
+      (u.email || "unknown");
     st.className = "bad";
-
+    btn.disabled = true;
     return;
   }
-
 
   st.textContent =
     "✓ Teacher connected: " + u.email;
 
   st.className = "ok";
-
   btn.disabled = false;
-
 });
 
 
 btn.onclick = async () => {
 
   btn.disabled = true;
-
-  log.textContent =
-    "Reading students and scores…\n";
-
+  log.textContent = "Reading students and scores…\n";
 
   try {
 
-    const [ss, qs] = await Promise.all([
-
+    const [studentSnap, scoreSnap] = await Promise.all([
       getDocs(collection(db,"students")),
-
       getDocs(collection(db,"scores"))
-
     ]);
 
+    const names = new Map();
 
-    const names = new Map(
+    studentSnap.docs.forEach(d => {
+      const s = d.data();
 
-      ss.docs.map(d => [
+      const name =
+        s.firstName ||
+        s.displayName ||
+        s.playerName ||
+        "";
 
-        d.id,
-
-        d.data().firstName ||
-        d.data().displayName ||
-        ""
-
-      ])
-
-    );
-
+      if(name){
+        names.set(d.id, name);
+      }
+    });
 
     let changed = 0;
     let skipped = 0;
 
     let batch = writeBatch(db);
     let ops = 0;
-
     const commits = [];
 
-
-    for(const d of qs.docs){
+    for(const d of scoreSnap.docs){
 
       const s = d.data();
 
@@ -212,24 +189,14 @@ btn.onclick = async () => {
         s.playerName ||
         "";
 
-
-      /*
-        Only repair records that are missing a real name
-        or still contain the old generic "Player" label.
-      */
-
       if(
         current &&
         current.trim() &&
         current.trim().toLowerCase() !== "player"
       ){
-
         skipped++;
-
         continue;
-
       }
-
 
       const studentId =
         s.studentId ||
@@ -237,76 +204,43 @@ btn.onclick = async () => {
         s.userId ||
         "";
 
-
       if(!studentId){
-
         log.textContent +=
           `Skipped ${d.id}: no studentId\n`;
-
         skipped++;
-
         continue;
-
       }
-
 
       const name = names.get(studentId);
 
-
       if(!name){
-
         log.textContent +=
           `Skipped ${d.id}: no matching student profile\n`;
-
         skipped++;
-
         continue;
-
       }
 
-
-      batch.update(d.ref, {
-
+      batch.update(d.ref,{
         displayName:name,
         playerName:name,
         nameRepairedAt:serverTimestamp()
-
       });
-
 
       changed++;
       ops++;
 
-
-      /*
-        Firestore batches have operation limits.
-        Commit periodically so this remains safe
-        even if Dragonswood eventually contains
-        a ridiculous number of scores.
-      */
-
       if(ops >= 400){
-
         commits.push(batch.commit());
-
         batch = writeBatch(db);
-
         ops = 0;
-
       }
-
     }
-
 
     if(ops > 0){
-
       commits.push(batch.commit());
-
     }
 
-
     await Promise.all(commits);
-
 
     log.textContent +=
       "\nREPAIR COMPLETE\n\n";
@@ -317,25 +251,15 @@ btn.onclick = async () => {
     log.textContent +=
       `Already OK / skipped: ${skipped}\n\n`;
 
-
-    if(changed > 0){
-
-      log.textContent +=
-        "Old leaderboard records now use the student's Dragonswood name.";
-
-    }else{
-
-      log.textContent +=
-        "No leaderboard records needed repair.";
-
-    }
-
+    log.textContent +=
+      changed
+        ? "Old leaderboard records now use the student's Dragonswood name."
+        : "No leaderboard records needed repair.";
 
     st.textContent =
       "✓ Leaderboard repair finished.";
 
     st.className = "ok";
-
 
   } catch(err){
 
@@ -348,13 +272,12 @@ btn.onclick = async () => {
 
     log.textContent +=
       "\nERROR: " +
+      (err?.code || "unknown") +
+      " — " +
       (err?.message || String(err));
-
   }
 
-
   btn.disabled = false;
-
 };
 
 </script>

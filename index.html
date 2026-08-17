@@ -1413,7 +1413,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   position:relative!important;
   margin-top:4px
 }
-.journal-hero-svg{width:315px;height:390px;overflow:visible;filter:drop-shadow(0 12px 11px rgba(0,0,0,.45))}
+.journal-hero-svg{width:340px;height:410px;overflow:visible;filter:drop-shadow(0 14px 13px rgba(0,0,0,.48))}
 .hero-floor{filter:drop-shadow(0 0 14px rgba(58,246,154,.4))}
 .journal-battle-stats{gap:6px!important}
 .journal-battle-stats>div{
@@ -1710,6 +1710,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
         <h2 id="journalName">Adventurer</h2>
         <p id="journalSub">Level 1 Adventurer</p>
         <div class="journal-character-preview" id="journalCharacterPreview"></div>
+        <div id="journalVisualLoadout" style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin:-6px 0 8px"></div>
         <div class="journal-battle-stats">
           <div><small>❤️ HP</small><b id="journalBattleHp">10</b></div>
           <div><small>⚔️ ATK</small><b id="journalBattleAtk">1</b></div>
@@ -2055,56 +2056,231 @@ function journalHeroMarkup(){
   const weapon=equippedItemBySlot("weapon");
   const off=equippedItemBySlot("offhand");
   const back=equippedItemBySlot("back");
+  const accessory=equippedItemBySlot("accessory");
   const aura=equippedItemBySlot("aura");
+
+  const skin=cfg.skin||"#d99b72", hair=cfg.hair||"#3a241d", eyes=cfg.eyes||"#4b2d75";
   const shirt=outfit?.shirtColor||"#8d6a49";
   const pants=outfit?.pantsColor||"#463629";
-  const boot=feet?.shoeColor||"#4a3326";
-  const armorFill=armor?(armor.rarity==="legendary"?"#183b5a":armor.rarity==="epic"?"#5d258b":armor.rarity==="rare"?"#667487":"#805535"):shirt;
+  const shoes=feet?.shoeColor||"#4a3326";
   const auraC=aura?.auraColor||"transparent";
-  const hair=cfg.hair||"#3a241d",skin=cfg.skin||"#d99b72",eyes=cfg.eyes||"#4b2d75";
-  const isLong=String(cfg.hairStyle||"").includes("girl-");
-  const weaponSvg=weapon?`<g transform="translate(201 175) scale(.72)">${itemArt(weapon).replace(/^<svg[^>]*>|<\/svg>$/g,"")}</g>`:"";
-  const offSvg=off?`<g transform="translate(-3 183) scale(.65)">${itemArt(off).replace(/^<svg[^>]*>|<\/svg>$/g,"")}</g>`:"";
-  const headSvg=head?`<g transform="translate(89 8) scale(.46)">${itemArt(head).replace(/^<svg[^>]*>|<\/svg>$/g,"")}</g>`:"";
+  const hairStyle=String(cfg.hairStyle||"");
+  const isGirl=gender==="girl";
+
+  const capeLayer=()=>{
+    if(!back)return "";
+    if(back.id==="gear_dragon_wings") return `
+      <g opacity=".94" filter="url(#gearGlow)">
+        <path d="M124 151Q74 75 27 92q17 33 56 50-34 3-48 36 45 10 85-11z" fill="#291742" stroke="#7eeeff" stroke-width="4"/>
+        <path d="M176 151q50-76 97-59-17 33-56 50 34 3 48 36-45 10-85-11z" fill="#291742" stroke="#7eeeff" stroke-width="4"/>
+        <path d="M78 111l34 42M222 111l-34 42" stroke="#9b64ff" stroke-width="4"/>
+      </g>`;
+    if(back.id==="gear_royal_cape") return `
+      <path d="M91 145q59-28 118 0l16 166-75 39-75-39z" fill="url(#capeGrad)" stroke="#f2c65a" stroke-width="4" opacity=".94"/>
+      <path d="M91 145q59 30 118 0" fill="none" stroke="#ffe17e" stroke-width="5"/>`;
+    return `
+      <g opacity=".96">
+        <rect x="179" y="167" width="58" height="86" rx="18" fill="#6f4a2d" stroke="#c4945e" stroke-width="4"/>
+        <path d="M190 161h36v28h-36z" fill="#4d321f"/>
+        <path d="M190 208h36M208 170v72" stroke="#d1a162" stroke-width="5"/>
+        <circle cx="208" cy="208" r="7" fill="#e0b758"/>
+      </g>`;
+  };
+
+  const armorLayer=()=>{
+    if(!armor){
+      if(outfit?.id==="gear_mage_robe") return `
+        <path d="M100 165q50-24 100 0l20 150-70 30-70-30z" fill="url(#robeGrad)" stroke="#c28cff" stroke-width="4"/>
+        <path d="M122 170l28 37 28-37" fill="none" stroke="#f4d06c" stroke-width="5"/>
+        <path d="M150 205v91" stroke="#8f64c8" stroke-width="4"/>
+        <circle cx="150" cy="214" r="9" fill="#dff6ff" stroke="#e9ca6c" stroke-width="3"/>`;
+      return `
+        <path d="M91 168q16-26 44-30h30q28 4 44 30l-8 111H99z" fill="${shirt}" stroke="#684a30" stroke-width="4"/>
+        <path d="M112 166l38 36 38-36" fill="none" stroke="#efd06c" stroke-width="4" opacity="${outfit?1:.35}"/>
+        <path d="M150 195v72" stroke="#f2d16b" stroke-width="3" opacity="${outfit?1:.25}"/>
+        <rect x="94" y="247" width="112" height="15" rx="5" fill="#5a3825" stroke="#d7a45f" stroke-width="3"/>
+        <rect x="142" y="244" width="16" height="20" rx="3" fill="#d9af58"/>`;
+    }
+
+    if(armor.id==="gear_leather_armor") return `
+      <path d="M92 165q58-31 116 0l-9 113H101z" fill="#70482d" stroke="#c99058" stroke-width="4"/>
+      <path d="M105 171l24 17-9 74h-20M195 171l-24 17 9 74h20" fill="#8b5c37" stroke="#d6a268" stroke-width="3"/>
+      <path d="M128 177h44l12 23-34 21-34-21z" fill="#56321f" stroke="#e0b167" stroke-width="3"/>
+      <path d="M112 226h76" stroke="#d1a162" stroke-width="5"/>`;
+
+    if(armor.id==="gear_chain_armor") return `
+      <path d="M90 164q60-31 120 0l-7 115H97z" fill="url(#chainPattern)" stroke="#d4dde9" stroke-width="4"/>
+      <path d="M112 169l38 28 38-28" fill="none" stroke="#f0d174" stroke-width="5"/>
+      <path d="M150 197v72" stroke="#657181" stroke-width="4"/>
+      <rect x="94" y="246" width="112" height="16" rx="4" fill="#553b28" stroke="#d8ae62" stroke-width="3"/>`;
+
+    if(armor.id==="gear_knight_armor") return `
+      <path d="M88 160q62-34 124 0l-6 119H94z" fill="url(#steelArmor)" stroke="#e9d37c" stroke-width="4"/>
+      <path d="M94 172l-25 28 22 17 21-28zM206 172l25 28-22 17-21-28z" fill="url(#steelArmor)" stroke="#cdd7e3" stroke-width="4"/>
+      <path d="M113 169l37 34 37-34-8 73h-58z" fill="#6d7888" stroke="#f2d371" stroke-width="4"/>
+      <path d="M150 203l17 18-17 18-17-18z" fill="#4da6d6" stroke="#f6df80" stroke-width="4"/>
+      <path d="M105 244h90" stroke="#eff5ff" stroke-width="3" opacity=".7"/>`;
+
+    if(armor.id==="gear_wisteria_armor") return `
+      <path d="M88 158q62-35 124 0l-6 121H94z" fill="url(#wisteriaArmor)" stroke="#ffd96f" stroke-width="5"/>
+      <path d="M94 169l-29 29 24 19 23-31zM206 169l29 29-24 19-23-31z" fill="#58247f" stroke="#d9a4ff" stroke-width="4"/>
+      <path d="M114 168l36 37 36-37-7 72h-58z" fill="#31164f" stroke="#dca8ff" stroke-width="4"/>
+      <path d="M150 198l19 23-19 21-19-21z" fill="#a855f7" stroke="#ffe486" stroke-width="5"/>
+      <path d="M105 245h90" stroke="#ffe486" stroke-width="4"/>`;
+
+    return `
+      <path d="M86 155q64-37 128 0l-4 126H90z" fill="url(#dragonsteelArmor)" stroke="#7eeeff" stroke-width="5"/>
+      <path d="M92 166l-33 31 27 22 26-35zM208 166l33 31-27 22-26-35z" fill="#17233a" stroke="#7eeeff" stroke-width="4"/>
+      <path d="M112 165l38 38 38-38-6 80h-64z" fill="#10243a" stroke="#d9b15e" stroke-width="4"/>
+      <path d="M150 192l22 27-22 24-22-24z" fill="#2e7da1" stroke="#ffe58b" stroke-width="5"/>
+      <path d="M103 246h94" stroke="#8ff3ff" stroke-width="4"/>
+      <path d="M118 172l-13 69M182 172l13 69" stroke="#536b85" stroke-width="3"/>`;
+  };
+
+  const headLayer=()=>{
+    if(!head)return "";
+    if(head.id==="gear_royal_crown") return `
+      <g filter="url(#gearGlow)">
+        <path d="M105 65l8-35 22 24 15-35 15 35 22-24 8 35z" fill="url(#goldGrad)" stroke="#7c460b" stroke-width="4"/>
+        <rect x="104" y="62" width="92" height="16" rx="5" fill="#e9aa29" stroke="#ffe38d" stroke-width="4"/>
+        <circle cx="124" cy="63" r="5" fill="#38d8ff"/><circle cx="150" cy="61" r="6" fill="#b259ff"/><circle cx="176" cy="63" r="5" fill="#38d8ff"/>
+      </g>`;
+    if(head.id==="gear_wizard_hat") return `
+      <g filter="url(#gearGlow)">
+        <path d="M145 8l44 89H98z" fill="#3b1768" stroke="#c889ff" stroke-width="5"/>
+        <ellipse cx="145" cy="99" rx="64" ry="17" fill="#50218a" stroke="#f1c75b" stroke-width="4"/>
+        <path d="M129 48l11 12 12-19" fill="none" stroke="#ffd866" stroke-width="5"/>
+      </g>`;
+    if(head.id==="gear_explorer_cap") return `
+      <path d="M96 73q9-45 54-46 45 1 54 46v13H96z" fill="#376a49" stroke="#87c99a" stroke-width="4"/>
+      <path d="M138 83h79q-12 22-57 20z" fill="#2c533b" stroke="#7ec590" stroke-width="4"/>`;
+    if(head.id==="gear_dragon_helm") return `
+      <g filter="url(#gearGlow)">
+        <path d="M91 92q4-66 59-70 55 4 59 70v18H91z" fill="url(#dragonsteelArmor)" stroke="#7eeeff" stroke-width="5"/>
+        <path d="M103 55L84 32l33 13M197 55l19-23-33 13" fill="#1c2942" stroke="#c995ff" stroke-width="4"/>
+        <path d="M118 79h64v26h-64z" fill="#0b1729" stroke="#86e9ff" stroke-width="4"/>
+        <path d="M128 91h44" stroke="#c9f8ff" stroke-width="5"/>
+      </g>`;
+    return `
+      <g>
+        <path d="M95 92q4-62 55-66 51 4 55 66v15H95z" fill="url(#steelHelm)" stroke="#dfe8f1" stroke-width="5"/>
+        <path d="M145 25h10v82h-10z" fill="#33799f"/>
+        <path d="M111 78h78v26h-78z" fill="#223344" stroke="#9ddfff" stroke-width="4"/>
+        <path d="M126 91h48" stroke="#d7f4ff" stroke-width="5"/>
+      </g>`;
+  };
+
+  const weaponLayer=()=>{
+    if(!weapon)return "";
+    if(weapon.id==="gear_ranger_bow") return `
+      <g transform="translate(195 165) rotate(8)" filter="url(#gearGlow)">
+        <path d="M15 0q56 65 0 136" fill="none" stroke="#6c4726" stroke-width="9" stroke-linecap="round"/>
+        <path d="M18 4v128" stroke="#e7d8b8" stroke-width="2"/>
+        <path d="M18 68h68" stroke="#d3aa57" stroke-width="4"/>
+        <path d="M75 59l16 9-16 9" fill="none" stroke="#e0c074" stroke-width="4"/>
+      </g>`;
+    if(weapon.id==="gear_crystal_staff") return `
+      <g transform="translate(205 151) rotate(8)" filter="url(#gearGlow)">
+        <path d="M18 15v158" stroke="#6e452c" stroke-width="10" stroke-linecap="round"/>
+        <circle cx="18" cy="13" r="25" fill="#247bb0" stroke="#7eeeff" stroke-width="5"/>
+        <circle cx="18" cy="13" r="10" fill="#e9fdff"/>
+      </g>`;
+    const legendary=weapon.id==="gear_dragonslayer";
+    return `
+      <g transform="translate(206 160) rotate(10)" filter="url(#gearGlow)">
+        <path d="M15 0l18 86-17 19L0 86z" fill="${legendary?"url(#flameBlade)":"url(#swordSteel)"}" stroke="${legendary?"#ffb44a":"#cfefff"}" stroke-width="4"/>
+        <path d="M-9 93h49l4 12H-13z" fill="${legendary?"#b86a1b":"#35b7e8"}" stroke="#241c2d" stroke-width="3"/>
+        <rect x="10" y="104" width="12" height="51" rx="5" fill="#6c422b"/>
+        <circle cx="16" cy="161" r="9" fill="${legendary?"#ffca58":"#5ddaff"}" stroke="#372134" stroke-width="3"/>
+      </g>`;
+  };
+
+  const offhandLayer=()=>{
+    if(!off)return "";
+    if(off.id==="gear_spellbook") return `
+      <g transform="translate(27 197) rotate(-13)" filter="url(#gearGlow)">
+        <path d="M0 7q31-13 53 4v69q-22-15-53-4z" fill="#5c267f" stroke="#d699ff" stroke-width="4"/>
+        <path d="M106 7q-31-13-53 4v69q22-15 53-4z" fill="#3c1b67" stroke="#d699ff" stroke-width="4"/>
+        <path d="M53 12v67" stroke="#f2d77f" stroke-width="3"/>
+      </g>`;
+    return `
+      <g transform="translate(19 178)" filter="url(#gearGlow)">
+        <path d="M55 3l53 20v44q0 48-53 67Q2 115 2 67V23z" fill="url(#shieldGrad)" stroke="#ffe17f" stroke-width="5"/>
+        <path d="M55 20v91M24 57h62" stroke="#ead79b" stroke-width="5"/>
+        <path d="M55 33l15 25-15 13-15-13z" fill="#2b6b4c" stroke="#f0c963" stroke-width="4"/>
+      </g>`;
+  };
+
+  const accessoryLayer=()=>accessory?`
+    <g filter="url(#gearGlow)">
+      <path d="M128 158q22 20 44 0" fill="none" stroke="#e7bd5c" stroke-width="4"/>
+      <circle cx="150" cy="178" r="11" fill="${accessory.id==="gear_dragon_amulet"?"#35c9ff":"#58df91"}" stroke="#ffe486" stroke-width="4"/>
+    </g>`:"";
+
   return `<svg class="journal-hero-svg" viewBox="0 0 300 390" aria-label="Equipped Dragonswood hero">
     <defs>
-      <radialGradient id="heroAura"><stop stop-color="${auraC}" stop-opacity=".8"/><stop offset="1" stop-color="${auraC}" stop-opacity="0"/></radialGradient>
-      <linearGradient id="heroArmor" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d8b0ff"/><stop offset=".38" stop-color="${armorFill}"/><stop offset="1" stop-color="#201331"/></linearGradient>
-      <filter id="softGlow"><feGaussianBlur stdDeviation="5"/></filter>
+      <radialGradient id="heroAura"><stop stop-color="${auraC}" stop-opacity=".85"/><stop offset="1" stop-color="${auraC}" stop-opacity="0"/></radialGradient>
+      <linearGradient id="steelArmor" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f4f7fb"/><stop offset=".34" stop-color="#a7b4c5"/><stop offset=".7" stop-color="#596777"/><stop offset="1" stop-color="#d9e1ea"/></linearGradient>
+      <linearGradient id="steelHelm" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eef6ff"/><stop offset=".48" stop-color="#8ba2b8"/><stop offset="1" stop-color="#35485d"/></linearGradient>
+      <linearGradient id="dragonsteelArmor" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#315f78"/><stop offset=".4" stop-color="#121c32"/><stop offset=".75" stop-color="#53206e"/><stop offset="1" stop-color="#0f3854"/></linearGradient>
+      <linearGradient id="wisteriaArmor" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#bb6cff"/><stop offset=".43" stop-color="#642c91"/><stop offset="1" stop-color="#24123f"/></linearGradient>
+      <linearGradient id="robeGrad" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#6c36a7"/><stop offset="1" stop-color="#2a144b"/></linearGradient>
+      <linearGradient id="capeGrad" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8f35d2"/><stop offset=".55" stop-color="#4e176f"/><stop offset="1" stop-color="#1f123f"/></linearGradient>
+      <linearGradient id="goldGrad"><stop stop-color="#fff2a1"/><stop offset=".45" stop-color="#f2b837"/><stop offset="1" stop-color="#a8640b"/></linearGradient>
+      <linearGradient id="swordSteel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f8ffff"/><stop offset=".5" stop-color="#91b9d4"/><stop offset="1" stop-color="#44677e"/></linearGradient>
+      <linearGradient id="flameBlade" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff08a"/><stop offset=".35" stop-color="#ff9d22"/><stop offset=".7" stop-color="#f14921"/><stop offset="1" stop-color="#6d140d"/></linearGradient>
+      <linearGradient id="shieldGrad" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#337e59"/><stop offset=".5" stop-color="#174834"/><stop offset="1" stop-color="#0d281f"/></linearGradient>
+      <pattern id="chainPattern" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#68727d"/><circle cx="3" cy="3" r="4" fill="none" stroke="#c3ccd5" stroke-width="1.8"/><circle cx="9" cy="9" r="4" fill="none" stroke="#c3ccd5" stroke-width="1.8"/></pattern>
+      <filter id="gearGlow"><feGaussianBlur stdDeviation="1.4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <filter id="softGlow"><feGaussianBlur stdDeviation="6"/></filter>
     </defs>
-    <ellipse cx="150" cy="350" rx="104" ry="23" fill="rgba(16,12,38,.85)" stroke="#42d993" stroke-opacity=".5" stroke-width="2" class="hero-floor"/>
-    ${aura?`<ellipse cx="150" cy="188" rx="122" ry="157" fill="url(#heroAura)" opacity=".48" filter="url(#softGlow)"/>`:""}
-    ${back?`<g transform="translate(88 102) scale(.95)" opacity=".86">${itemArt(back).replace(/^<svg[^>]*>|<\/svg>$/g,"")}</g>`:""}
+
+    <ellipse cx="150" cy="356" rx="106" ry="23" fill="rgba(7,12,30,.92)" stroke="#42d993" stroke-opacity=".62" stroke-width="2" class="hero-floor"/>
+    ${aura?`<ellipse cx="150" cy="195" rx="128" ry="166" fill="url(#heroAura)" opacity=".48" filter="url(#softGlow)"/>`:""}
+
+    ${capeLayer()}
+
     <!-- legs -->
-    <path d="M103 267h36v70H97z" fill="${pants}" stroke="#271b19" stroke-width="3"/>
-    <path d="M161 267h36l6 70h-42z" fill="${pants}" stroke="#271b19" stroke-width="3"/>
-    <!-- boots -->
-    <path d="M92 319h50v29H84q-7-13 8-29z" fill="${boot}" stroke="#271b19" stroke-width="4"/>
-    <path d="M158 319h50q15 16 7 29h-57z" fill="${boot}" stroke="#271b19" stroke-width="4"/>
-    ${feet?`<path d="M90 319h54v10H90zM156 319h54v10h-54z" fill="#d0a45c" opacity=".8"/>`:""}
-    <!-- body -->
-    <path d="M88 169q15-22 36-25h52q21 3 36 25l-5 104H93z" fill="${armor? "url(#heroArmor)":shirt}" stroke="${armor?"#e2bd63":"#5f412c"}" stroke-width="${armor?4:3}"/>
-    ${armor?`<path d="M111 173h78l-9 68h-60z" fill="none" stroke="#f0d16d" stroke-width="3"/><path d="M150 177l16 20-16 15-16-15z" fill="#9c5be8" stroke="#ffe486" stroke-width="3"/>`:""}
-    <rect x="91" y="244" width="117" height="13" rx="5" fill="#5a3825" stroke="#d7a45f" stroke-width="2"/>
-    <rect x="143" y="241" width="15" height="19" rx="3" fill="#d9af58"/>
-    <!-- arms -->
-    <path d="M92 176q-25 14-28 67 2 25 19 17 8-5 9-31l15-35z" fill="${skin}" stroke="#9f674c" stroke-width="3"/>
-    <path d="M208 176q25 14 28 67-2 25-19 17-8-5-9-31l-15-35z" fill="${skin}" stroke="#9f674c" stroke-width="3"/>
-    <!-- neck/head -->
-    <rect x="137" y="132" width="26" height="29" rx="10" fill="${skin}"/>
-    ${isLong?`<path d="M93 69q8-44 57-45 49 1 57 45v103q-9 29-29 23l-3-76h-50l-3 76q-20 6-29-23z" fill="${hair}" opacity=".98"/>`:""}
-    <ellipse cx="150" cy="98" rx="57" ry="65" fill="${skin}" stroke="#9f674c" stroke-width="3"/>
-    <!-- hair -->
-    <path d="M94 90q1-59 56-62 56 3 57 62-20-17-35-26-26 22-57 23z" fill="${hair}"/>
-    ${String(cfg.hairStyle||"").includes("cur")?`<circle cx="108" cy="63" r="17" fill="${hair}"/><circle cx="132" cy="45" r="19" fill="${hair}"/><circle cx="158" cy="43" r="20" fill="${hair}"/><circle cx="184" cy="61" r="18" fill="${hair}"/>`:""}
+    <path d="M104 262h38l-4 76H94z" fill="${pants}" stroke="#251817" stroke-width="3"/>
+    <path d="M158 262h38l10 76h-44z" fill="${pants}" stroke="#251817" stroke-width="3"/>
+
+    <!-- boots are real gear now -->
+    <path d="M88 315h55v34H78q-7-14 10-34z" fill="${shoes}" stroke="#271a16" stroke-width="4"/>
+    <path d="M157 315h55q18 20 8 34h-63z" fill="${shoes}" stroke="#271a16" stroke-width="4"/>
+    ${feet?`<path d="M88 313h56v13H88zM156 313h57v13h-57z" fill="${feet.id==="gear_swift_boots"?"#5874b8":"#d0a45c"}" stroke="${feet.id==="gear_swift_boots"?"#7eeeff":"#5e3820"}" stroke-width="3"/>
+    <path d="M91 337h50M160 337h49" stroke="${feet.id==="gear_swift_boots"?"#7eeeff":"#2a1a14"}" stroke-width="4"/>`:""}
+
+    ${armorLayer()}
+
+    <!-- arms layered over torso -->
+    <path d="M94 174q-31 11-35 67 2 31 22 19 10-6 12-34l15-35z" fill="${skin}" stroke="#9f674c" stroke-width="3"/>
+    <path d="M206 174q31 11 35 67-2 31-22 19-10-6-12-34l-15-35z" fill="${skin}" stroke="#9f674c" stroke-width="3"/>
+    ${armor?`<path d="M78 181l29-18 15 24-34 28zM222 181l-29-18-15 24 34 28z" fill="${armor.id.includes("wisteria")?"#642c91":armor.id.includes("dragon")?"#18273d":"url(#steelArmor)"}" stroke="${armor.id.includes("dragon")?"#7eeeff":"#e6c969"}" stroke-width="4"/>`:""}
+
+    <!-- neck and hair-back -->
+    <rect x="137" y="132" width="26" height="32" rx="10" fill="${skin}"/>
+    ${isGirl&&hairStyle.includes("long")?`<path d="M92 69q10-49 58-49t58 49v113q-11 33-34 24l-1-93h-46l-1 93q-23 9-34-24z" fill="${hair}"/>`:""}
+    ${isGirl&&hairStyle.includes("wave")?`<path d="M91 75q8-52 59-52t59 52v112q-12 18-23 5 10-17-2-31 12-18-2-34-8-16-14-16h-36q-6 0-14 16-14 16-2 34-12 14-2 31-11 13-23-5z" fill="${hair}"/>`:""}
+
     <!-- face -->
-    <ellipse cx="128" cy="103" rx="13" ry="17" fill="white"/><ellipse cx="172" cy="103" rx="13" ry="17" fill="white"/>
-    <ellipse cx="128" cy="106" rx="6" ry="9" fill="${eyes}"/><ellipse cx="172" cy="106" rx="6" ry="9" fill="${eyes}"/>
-    <circle cx="130" cy="101" r="2.5" fill="white"/><circle cx="174" cy="101" r="2.5" fill="white"/>
-    <path d="M139 132q11 8 22 0" fill="none" stroke="#b95e69" stroke-width="3" stroke-linecap="round"/>
-    ${headSvg}
-    ${weaponSvg}
-    ${offSvg}
+    <ellipse cx="150" cy="100" rx="58" ry="66" fill="${skin}" stroke="#9f674c" stroke-width="3"/>
+
+    <!-- hairstyle -->
+    <path d="M93 91q2-62 57-66 55 4 57 66-20-17-35-26-26 22-57 23z" fill="${hair}"/>
+    ${hairStyle.includes("cur")?`<circle cx="108" cy="60" r="18" fill="${hair}"/><circle cx="132" cy="43" r="20" fill="${hair}"/><circle cx="158" cy="42" r="21" fill="${hair}"/><circle cx="184" cy="59" r="19" fill="${hair}"/>`:""}
+    ${hairStyle.includes("ponytail")?`<path d="M201 59q47 22 23 83-19-31-41-41z" fill="${hair}" stroke="#2a1b1d" stroke-width="2"/>`:""}
+
+    <!-- face details -->
+    <ellipse cx="127" cy="104" rx="13" ry="17" fill="#fff"/><ellipse cx="173" cy="104" rx="13" ry="17" fill="#fff"/>
+    <ellipse cx="127" cy="107" rx="6" ry="9" fill="${eyes}"/><ellipse cx="173" cy="107" rx="6" ry="9" fill="${eyes}"/>
+    <circle cx="129" cy="102" r="2.5" fill="#fff"/><circle cx="175" cy="102" r="2.5" fill="#fff"/>
+    ${isGirl?`<path d="M113 88l-10-3M187 88l10-3" stroke="#4c292e" stroke-width="3" stroke-linecap="round"/>`:""}
+    <path d="M139 133q11 8 22 0" fill="none" stroke="#b95e69" stroke-width="3" stroke-linecap="round"/>
+
+    ${headLayer()}
+    ${accessoryLayer()}
+    ${weaponLayer()}
+    ${offhandLayer()}
   </svg>`;
 }
 
@@ -2549,6 +2725,10 @@ function renderJournalRpg(){
   const stats=gearStats();
 
   if($("journalCharacterPreview"))$("journalCharacterPreview").innerHTML=journalHeroMarkup();
+  if($("journalVisualLoadout")){
+    const visualSlots=["head","outfit","armor","weapon","offhand","feet","back","accessory","aura"];
+    $("journalVisualLoadout").innerHTML=visualSlots.map(slot=>equippedItemBySlot(slot)).filter(Boolean).map(i=>`<span class="stat-chip ${rarityClass(i)}">${esc(i.name)}</span>`).join("");
+  }
   if($("journalBattleHp"))$("journalBattleHp").textContent=stats.hp;
   if($("journalBattleAtk"))$("journalBattleAtk").textContent=stats.atk;
   if($("journalBattleDef"))$("journalBattleDef").textContent=stats.def;

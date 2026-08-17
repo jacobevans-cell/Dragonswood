@@ -625,11 +625,11 @@ h1 span{color:var(--dw-gold2)}
   </div>
   <div class="dw-reward-strip">
     <div class="dw-reward"><small>DRAGONSWOOD LEVEL</small><b id="dwLevel">—</b></div>
-    <div class="dw-reward"><small>ACCOUNT XP</small><b id="dwAccountXp">—</b></div>
+    <div class="dw-reward"><small>PLAYER XP</small><b id="dwAccountXp">—</b></div>
     <div class="dw-reward"><small>GOLD</small><b id="dwGold">—</b></div>
     <div class="dw-reward"><small>DAILY QUEST REWARD</small><b id="dwDailyReward">Up to 8 XP + 2 Gold</b></div>
   </div>
-  <div class="dw-status" id="dwStatus">Your math mission works exactly the same. Complete all 5 problems to earn today's Dragonswood reward.</div>
+  <div class="dw-status" id="dwStatus">Quest Score tracks this run only. PLAYER XP is your real Dragonswood level progress. Complete all 5 problems to earn today's small account reward.</div>
 
   <h1><span>Long Division</span> Quest</h1>
   <div class="subtitle">DIVIDE • MULTIPLY • SUBTRACT • BRING DOWN</div>
@@ -644,7 +644,7 @@ h1 span{color:var(--dw-gold2)}
 
   <div class="mission-dashboard">
     <div class="mission-card xp-card">
-      <div class="label">Mission XP</div>
+      <div class="label">Quest Score</div>
       <div class="value"><span id="xpValue">0</span> / <span id="xpGoal">400</span> XP</div>
       <div class="xp-track"><div class="xp-fill" id="xpFill"></div></div>
     </div>
@@ -815,8 +815,8 @@ h1 span{color:var(--dw-gold2)}
       missionFinished=true;
       missionComplete.classList.add('show');
       missionSummary.textContent=xp>=XP_GOAL
-        ? `You solved 5 problems and earned ${xp} mission XP. Long Division mission cleared!`
-        : `You solved all 5 problems and earned ${xp} mission XP. Mission complete.`;
+        ? `You solved 5 problems and earned ${xp} quest points. Long Division mission cleared!`
+        : `You solved all 5 problems and earned ${xp} quest points. Mission complete.`;
       if(!dragonswoodMissionReported){
         dragonswoodMissionReported=true;
         const accuracy=totalAttempts===0?1:(correctAttempts/totalAttempts);
@@ -1370,8 +1370,7 @@ onAuthStateChanged(auth,async user=>{
     }
     currentProfile=studentSnap.data();
     const claimId=`${user.uid}_long_division_${localDateKey()}`;
-    const claimSnap=await getDoc(doc(db,"gameResults",claimId));
-    todayAlreadyRewarded=claimSnap.exists();
+    todayAlreadyRewarded=String(currentProfile.lastGameClaimId||"")===claimId;
     renderAccount();
     setStatus(todayAlreadyRewarded
       ?"Today's official Long Division reward is already claimed. You can keep practicing and beating your mission score."

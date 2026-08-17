@@ -1784,6 +1784,33 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .dead-banner{margin:10px 0 0;padding:10px 12px;border:1px solid #ff5e7d;border-radius:10px;background:linear-gradient(90deg,rgba(94,5,29,.86),rgba(31,6,33,.76));color:#ffd6df;font-weight:900;text-align:center}
 @media(max-width:800px){.home-status-row{grid-template-columns:1fr}}
 </style>
+
+<style id="dragonswood-leaderboard-audit-fix">
+#view-leaderboard .boards{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px!important}
+#view-leaderboard .board{
+  padding:16px!important;
+  min-height:170px;
+  background:linear-gradient(145deg,rgba(18,9,48,.78),rgba(3,18,39,.74))!important;
+  border:1px solid rgba(244,201,93,.48)!important;
+  border-radius:12px;
+  box-shadow:0 10px 28px rgba(0,0,0,.32),inset 0 0 22px rgba(101,45,193,.08);
+}
+#view-leaderboard .board h3{margin:0 0 10px;color:#ffe9a0;font-size:21px}
+#view-leaderboard .rank{
+  display:grid;grid-template-columns:38px 42px minmax(0,1fr) auto;
+  gap:9px;align-items:center;padding:8px 9px;margin-top:6px;
+  border:1px solid rgba(101,45,193,.35);border-radius:8px;
+  background:rgba(5,7,25,.52);
+}
+#view-leaderboard .place{
+  width:30px;height:30px;border-radius:50%;display:grid;place-items:center;
+  background:linear-gradient(135deg,#652DC1,#08779c);color:#fff0a1;font-weight:1000
+}
+#view-leaderboard .miniavatar{font-size:25px;text-align:center}
+#view-leaderboard .score{font-family:Georgia,serif;font-weight:1000;color:#ffe36d;font-size:18px}
+@media(max-width:850px){#view-leaderboard .boards{grid-template-columns:1fr!important}}
+</style>
+
 </head><body>
 <header class="topbar">
 <div class="shell">
@@ -1942,11 +1969,13 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   <section class="portal-view" id="view-games" data-page="games">
     <div class="section-title"><div><h2>🎮 Dragonswood Games</h2><p>Custom learning adventures.</p></div></div>
   <section class="games">
+    <article class="frame bevel game"><div class="visual">📜</div><div class="body"><span class="tag">DAILY • MATH + ELA</span><h3>Dragonswood Daily Quest</h3><p>Morning Bell Work + Exit Quest. Today’s school-day adventure unlocks automatically.</p><a class="btn" href="daily-quest.html">ENTER TODAY’S QUEST</a></div></article>
     <article class="frame bevel game"><div class="visual">🚀</div><div class="body"><span class="tag">MATH</span><h3>Decimal Deception</h3><p>Restore crystals through decimal missions.</p><a class="btn" href="decimal-deception.html">PLAY</a></div></article>
     <article class="frame bevel game"><div class="visual">➗</div><div class="body"><span class="tag">MATH</span><h3>Long Division Quest</h3><p>Work through division one step at a time.</p><a class="btn" href="long-division-quest.html">PLAY</a></div></article>
 <article class="frame bevel game"><div class="visual">🍰</div><div class="body"><span class="tag">MATH • LIVE</span><h3>Fraction Forge</h3><p>Add, subtract, multiply, or divide fractions with a full step-by-step Math Coach.</p><a class="btn" href="fraction-forge.html">ENTER QUEST</a></div></article>
     <article class="frame bevel game"><div class="visual">⚗️🐉</div><div class="body"><span class="tag">CRAFTING • BOSS GAME</span><h3>Arcane Forge</h3><p>Combine elements, discover new creations, fill your Crafting Codex, and forge attacks powerful enough to defeat Dragonswood bosses.</p><a class="btn" href="arcane-forge.html">ENTER THE FORGE</a></div></article>
     <article class="frame bevel game"><div class="visual">🔤</div><div class="body"><span class="tag">ELA</span><h3>Spelling Practice</h3><p>Study, hear, and master spelling words.</p><a class="btn" href="spelling-practice.html">PLAY</a></div></article>
+    <article class="frame bevel game"><div class="visual">📖</div><div class="body"><span class="tag">ELA • READER</span><h3>The Witches eReader</h3><p>Continue the class novel with page memory, read-aloud, highlighting, and illustrated scenes.</p><a class="btn" href="witches-reader.html">OPEN READER</a></div></article>
   </section>
   </section>
 
@@ -3222,9 +3251,26 @@ function renderRewards(){ if(!$("points")||!$("rewards")) return;
  $("rewards").innerHTML=r.length?r.map(x=>{let g=+x.points||0;return `<div class="reward ${p>=g?'unlocked':''} ${next?.id===x.id?'current':''}"><div class="icon">${esc(x.icon||"🎁")}</div><b>${esc(x.name)}</b><small>${g} points</small></div>`}).join(""):"<div>No rewards yet.</div>";
  glitterizeStaticIcons();
 }
+function leaderboardName(s){
+  if(s.displayName)return String(s.displayName);
+  if(s.playerName)return String(s.playerName);
+  if(s.firstName)return String(s.firstName);
+  if(s.studentName)return String(s.studentName);
+  const email=String(s.studentEmail||"");
+  if(email){
+    const raw=email.split("@")[0].replace(/[._-]+/g," ").trim();
+    if(raw)return raw.replace(/\b\w/g,c=>c.toUpperCase());
+  }
+  return "Player";
+}
 function renderBoards(){
- const grouped={};scores.forEach(s=>{let g=s.gameName||s.game||"Game";(grouped[g]??=[]).push(s)});
- const games=Object.keys(grouped).sort();$("boards").innerHTML=games.length?games.map(g=>{let top=grouped[g].sort((a,b)=>(+b.score||0)-(+a.score||0)).slice(0,5);return `<div class="board"><h3>${esc(g)}</h3>${top.map((s,i)=>`<div class="rank"><div class="place">${i+1}</div><div class="miniavatar">${esc(s.avatarEmoji||"🐉")}</div><div>${esc(s.displayName||s.playerName||"Player")}</div><div class="score">${+s.score||0}</div></div>`).join("")}</div>`}).join(""):'<div class="board"><h3>No records yet</h3><p style="color:#64748b">The first connected game will start the leaderboard.</p></div>';
+ const grouped={};
+ scores.forEach(s=>{const g=s.gameName||s.game||"Game";(grouped[g]??=[]).push(s)});
+ const games=Object.keys(grouped).sort();
+ $("boards").innerHTML=games.length?games.map(g=>{
+   const top=grouped[g].sort((a,b)=>(+b.score||0)-(+a.score||0)).slice(0,5);
+   return `<div class="board frame bevel"><h3>${esc(g)}</h3>${top.map((s,i)=>`<div class="rank"><div class="place">${i+1}</div><div class="miniavatar">${esc(s.avatarEmoji||"🐉")}</div><div>${esc(leaderboardName(s))}</div><div class="score">${(+s.score||0).toLocaleString()}</div></div>`).join("")}</div>`;
+ }).join(""):'<div class="board frame bevel"><h3>No records yet</h3><p class="muted">The first connected game will start the leaderboard.</p></div>';
  glitterizeStaticIcons();
 }
 

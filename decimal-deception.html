@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Decimal Deception: Escape the Station</title>
+<style>
+  :root{
+    --bg:#090d18;
+    --panel:#121a2a;
+    --panel2:#1b2740;
+    --text:#f7f9ff;
+    --muted:#a9b7d3;
+    --accent:#7fe7ff;
+    --danger:#ff5e7a;
+    --good:#6ef3a5;
+    --gold:#ffd96a;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:radial-gradient(circle at top,#9b63df 0%,#552786 48%,#25113b 100%);
+    color:var(--text);
+    font-family:Inter,system-ui,Arial,sans-serif;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+  }
+  .wrap{width:min(1180px,100%);}
+  .topbar{
+    display:flex;
+    gap:12px;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-bottom:10px;
+  }
+  .title{
+    font-size:clamp(22px,3vw,34px);
+    font-weight:900;
+    letter-spacing:.4px;
+  }
+  .sub{color:var(--muted);font-size:14px}
+  .stats{
+    display:flex;gap:10px;flex-wrap:wrap;
+  }
+  .pill{
+    background:rgba(18,26,42,.95);
+    border:1px solid #2e4165;
+    border-radius:999px;
+    padding:9px 13px;
+    font-weight:800;
+    box-shadow:0 8px 25px rgba(0,0,0,.25);
+  }
+  .game-shell{
+    position:relative;
+    background:#35184f;
+    border:2px solid #2c3f65;
+    border-radius:22px;
+    overflow:hidden;
+    box-shadow:0 24px 80px rgba(0,0,0,.45);
+  }
+  canvas{
+    width:100%;
+    height:auto;
+    display:block;
+    background:#0d1320;
+  }
+  .hud{
+    position:absolute;
+    left:14px;
+    right:14px;
+    top:14px;
+    display:flex;
+    gap:8px;
+    flex-wrap:nowrap;
+    align-items:center;
+    max-width:none;
+    pointer-events:none;
+    overflow:visible;
+  }
+  .hudBox{
+    background:rgba(8,12,21,.82);
+    border:1px solid rgba(126,167,220,.35);
+    backdrop-filter:blur(5px);
+    border-radius:12px;
+    padding:8px 10px;
+    font-size:14px;
+    font-weight:800;
+    white-space:nowrap;
+    flex:0 0 auto;
+  }
+  .hint{
+    position:absolute;
+    bottom:16px;
+    left:50%;
+    transform:translateX(-50%);
+    background:rgba(8,12,21,.92);
+    border:1px solid rgba(127,231,255,.4);
+    border-radius:13px;
+    padding:10px 14px;
+    min-width:250px;
+    text-align:center;
+    font-weight:800;
+    box-shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-top:12px;
+  }
+  button{
+    appearance:none;
+    border:0;
+    border-radius:12px;
+    background:#21345a;
+    color:white;
+    padding:10px 14px;
+    font-size:14px;
+    font-weight:900;
+    cursor:pointer;
+    box-shadow:0 6px 18px rgba(0,0,0,.25);
+  }
+  button:hover{filter:brightness(1.12)}
+  button.primary{background:#2c6e91}
+  button.danger{background:#7c2940}
+  .modalBack{
+    position:absolute;
+    inset:0;
+    background:rgba(3,6,12,.78);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+    z-index:10;
+  }
+  .modal{
+    width:min(540px,95%);
+    background:linear-gradient(180deg,#17223a,#101827);
+    border:2px solid #344d7a;
+    border-radius:20px;
+    padding:22px;
+    box-shadow:0 30px 90px rgba(0,0,0,.55);
+  }
+  .modal h2{margin:0 0 6px;font-size:26px}
+  .modal p{color:#c0cce0;line-height:1.45}
+  .missionTag{
+    display:inline-block;
+    background:#243b64;
+    color:#b8eeff;
+    border:1px solid #476898;
+    padding:5px 9px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:900;
+    margin-bottom:8px;
+  }
+  .question{
+    font-size:clamp(24px,4vw,36px);
+    font-weight:1000;
+    margin:14px 0;
+    text-align:center;
+  }
+  input{
+    width:100%;
+    border:2px solid #38547f;
+    border-radius:12px;
+    background:#0c1424;
+    color:white;
+    padding:13px 14px;
+    font-size:24px;
+    text-align:center;
+    outline:none;
+  }
+  input:focus{border-color:#7fe7ff}
+  .row{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+  }
+  .row button{flex:1}
+  .feedback{
+    min-height:24px;
+    font-weight:900;
+    margin-top:12px;
+    text-align:center;
+  }
+  .small{font-size:12px;color:#90a0bd;text-align:center;margin-top:8px}
+  .win{
+    text-align:center;
+  }
+  .win .big{
+    font-size:52px;
+    margin-bottom:6px;
+  }
+
+  @media(max-width:980px){
+    .hud{
+      gap:6px;
+    }
+    .hudBox,
+    #guideBtn{
+      font-size:12px !important;
+      padding:7px 8px !important;
+    }
+  }
+
+  @media(max-width:820px){
+    .hud{
+      flex-wrap:wrap;
+      align-content:flex-start;
+    }
+  }
+
+  @media(max-width:700px){
+    .hint{font-size:12px;min-width:210px;padding:8px 10px}
+    .hud{max-width:96%}
+    .hudBox{font-size:12px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <div class="title">🚀 Decimal Deception: Escape the Station</div>
+      <div class="sub">Arizona Grade 6 • Decimal Operations • Standard focus: 6.NS.B.3</div>
+    </div>
+    <div class="stats">
+      <div class="pill">Move: WASD / Arrows</div>
+      <div class="pill">Interact: E</div>
+    </div>
+  </div>
+
+  <div class="game-shell" id="shell">
+    <canvas id="game" width="1100" height="650"></canvas>
+
+    <div class="hud">
+      <div class="hudBox" id="livesHud">❤️❤️❤️❤️❤️</div>
+      <div class="hudBox" id="scoreHud">Score: 0</div>
+      <div class="hudBox" id="missionHud">💎 Crystals: 0 / 6</div>
+<div class="hudBox" id="portalHud">🚪 PORTAL LOCKED</div>
+<div class="hudBox" id="levelHud">Level 1: Theme</div>
+<button id="guideBtn" style="pointer-events:auto;background:#5c3a8a;padding:8px 12px;border-radius:12px;white-space:nowrap;flex:0 0 auto;box-shadow:none;">📘 Decimal Guide</button>
+    </div>
+
+    <div class="hint" id="hint">Restore all 6 crystals. Use the Math Scanner when you need help.</div>
+
+
+    <div class="modalBack" id="charBack" style="display:flex; z-index:20;">
+      <div class="modal">
+        <div class="missionTag">CHOOSE YOUR HERO</div>
+        <h2>Pick Your Character</h2>
+        <p>All characters play the same. Pick the one you want to send into an unreasonable amount of decimal danger.</p>
+        <div id="charGrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px;">
+          <button class="charBtn" data-char="unicorn">🦄<br>Unicorn</button>
+          <button class="charBtn" data-char="plumber">🧢<br>Red Plumber</button>
+          <button class="charBtn" data-char="dragon">🐉<br>Dragon</button>
+          <button class="charBtn" data-char="ninja">🥷<br>Ninja</button>
+          <button class="charBtn" data-char="sparkmouse">⚡<br>Spark Mouse</button>
+        </div>
+      </div>
+    </div>
+    
+<div class="modalBack" id="guideBack" style="z-index:18;">
+ <div class="modal" style="width:min(760px,96%);max-height:88vh;overflow:auto;">
+  <div class="missionTag">FREE REFERENCE</div>
+  <h2>📘 Decimal Guide</h2>
+  <p>Use this anytime. It does not cost points.</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left;">
+   <div style="background:#0c1424;border:1px solid #49658d;border-radius:14px;padding:14px;">
+    <b style="font-size:20px;color:#8fe6ff;">➕ ADDITION</b><br><br>
+    <b>1. Line up the decimal points.</b><br>
+    2. Add zeros if needed so place values match.<br>
+    3. Add from right to left.<br>
+    4. Bring the decimal <b>straight down</b> into the answer.
+    <div style="font-family:monospace;font-size:18px;margin-top:10px;background:#111d32;padding:9px;border-radius:9px;">&nbsp;7.50<br>+2.36<br>─────</div>
+   </div>
+   <div style="background:#0c1424;border:1px solid #49658d;border-radius:14px;padding:14px;">
+    <b style="font-size:20px;color:#ff9db0;">➖ SUBTRACTION</b><br><br>
+    <b>1. Line up the decimal points.</b><br>
+    2. Add zeros if needed.<br>
+    3. Subtract from right to left.<br>
+    4. Regroup when needed.<br>
+    5. Bring the decimal <b>straight down</b>.
+    <div style="font-family:monospace;font-size:18px;margin-top:10px;background:#111d32;padding:9px;border-radius:9px;">&nbsp;8.50<br>−3.27<br>─────</div>
+   </div>
+   <div style="background:#0c1424;border:1px solid #49658d;border-radius:14px;padding:14px;">
+    <b style="font-size:20px;color:#ffd86f;">✖ MULTIPLICATION</b><br><br>
+    <b>1. Ignore the decimals first.</b><br>
+    2. Multiply like whole numbers.<br>
+    3. Count the decimal places in <b>both factors</b>.<br>
+    4. Add those counts together.<br>
+    5. Move the decimal in the product that many places <b>from the right</b>.
+    <div style="margin-top:10px;background:#111d32;padding:9px;border-radius:9px;"><b>Remember:</b><br>decimal places + decimal places<br>= places in the product</div>
+   </div>
+   <div style="background:#0c1424;border:1px solid #49658d;border-radius:14px;padding:14px;">
+    <b style="font-size:20px;color:#9df5bb;">➗ DIVISION</b><br><br>
+    <b>1. Look at the divisor first.</b><br>
+    2. Move its decimal right until the divisor is a <b>whole number</b>.<br>
+    3. Move the dividend decimal the <b>same number of places</b>.<br>
+    4. Add zeros if needed.<br>
+    5. Divide normally.<br>
+    6. Bring the decimal <b>straight up</b> into the quotient.
+    <div style="margin-top:10px;background:#111d32;padding:9px;border-radius:9px;"><b>Remember:</b><br>Whatever you do to the divisor's decimal, <b>do the same to the dividend.</b></div>
+   </div>
+  </div>
+  <div style="margin-top:14px;background:#231b39;border:1px solid #7656a4;border-radius:14px;padding:14px;text-align:left;">
+   <b style="font-size:20px;">🧠 DECIMAL CHECK</b><br><br>
+   <b>Addition / Subtraction:</b> decimals line up ↕<br>
+   <b>Multiplication:</b> count decimal places 🔢<br>
+   <b>Division:</b> move both decimals the same amount ↪
+  </div>
+  <button id="guideCloseBtn" class="primary" style="width:100%;margin-top:14px;">Back to the Game</button>
+ </div>
+</div>
+<div class="modalBack" id="questionBack">
+      <div class="modal">
+        <div class="missionTag" id="missionTag">MISSION</div>
+        <h2 id="missionTitle">Console</h2>
+        <p id="missionDesc"></p>
+        <div class="question" id="questionText"></div>
+        <input id="answerInput" inputmode="decimal" placeholder="Type your answer" />
+        <div class="row">
+          <button class="primary" id="submitBtn">Submit Answer</button>
+          <button id="scanBtn">🔍 Scan Problem (-10)</button>
+          <button id="closeBtn">Close</button>
+        </div>
+        <div id="scannerPanel" style="display:none;margin-top:12px;padding:12px 14px;border-radius:12px;background:#0c1424;border:1px solid #49658d;text-align:left;line-height:1.5;"></div>
+        <div class="feedback" id="feedback"></div>
+        <div class="small">Tip: You may use scratch paper. Revolutionary technology, apparently.</div>
+      </div>
+    </div>
+
+    <div class="modalBack" id="endBack">
+      <div class="modal win">
+        <div class="big" id="endIcon">🏆</div>
+        <h2 id="endTitle">Station Escaped!</h2>
+        <p id="endText"></p>
+        <button class="primary" id="restartBtn">Play Again</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" class="danger">Reset Game</button>
+    <button id="muteBtn">Sound: On</button>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+
+const livesHud = document.getElementById('livesHud');
+const scoreHud = document.getElementById('scoreHud');
+const missionHud = document.getElementById('missionHud');
+const portalHud = document.getElementById('portalHud');
+const levelHud = document.getElementById('levelHud');
+const charBack = document.getElementById('charBack');
+const guideBack=document.getElementById('guideBack');
+const guideBtn=document.getElementById('guideBtn');
+const guideCloseBtn=document.getElementById('guideCloseBtn');
+const hint = document.getElementById('hint');
+
+const qBack = document.getElementById('questionBack');
+const missionTag = document.getElementById('missionTag');
+const missionTitle = document.getElementById('missionTitle');
+const missionDesc = document.getElementById('missionDesc');
+const questionText = document.getElementById('questionText');
+const answerInput = document.getElementById('answerInput');
+const feedback = document.getElementById('feedback');
+const submitBtn = document.getElementById('submitBtn');
+const closeBtn = document.getElementById('closeBtn');
+const scanBtn = document.getElementById('scanBtn');
+const scannerPanel = document.getElementById('scannerPanel');
+
+const endBack = document.getElementById('endBack');
+const endIcon = document.getElementById('endIcon');
+const endTitle = document.getElementById('endTitle');
+const endText = document.getElementById('endText');
+
+let muted = false;
+let audioCtx = null;
+
+function beep(freq=440, duration=.08, type='sine'){
+  if(muted) return;
+  try{
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.value = .035;
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start();
+    g.gain.exponentialRampToValueAtTime(.001, audioCtx.currentTime + duration);
+    o.stop(audioCtx.currentTime + duration);
+  }catch(e){}
+}
+
+const state = {
+  lives: 5,
+  score: 30,
+  activeMission: null,
+  gameOver: false,
+  completed: new Set(),
+  keys: {},
+  lastTime: 0,
+  escapeReady: false,
+  hitCooldown: 0,
+  startTime: performance.now(),
+  scanStage: 0,
+  level: 0,
+  character: "unicorn"
+};
+
+const player = {
+  x: 535, y: 545, r: 18, speed: 220,
+  facing: 1
+};
+const shadowBeast={x:900,y:520,r:27,speed:76,active:true};
+const shadowMinion={x:120,y:130,r:19,speed:98,active:false};
+const portal={x:545,y:555,r:34};
+const crystalColors=["#ff667d","#6fdcff","#67f29a","#ffb45f","#c98cff","#ffe36a"];
+const levelThemes=[
+  {name:"Theme", bg:"#35184f", room:["#4a2566","#54286f","#46245f","#512866","#5b2c73","#4d2869","#40204f"], wall:"#5e4580", glow:"#e0a6ff", enemy:"#160b20", eyes:"#c44fff"},
+  {name:"Lava", bg:"#3a0c12", room:["#5b1718","#70201b","#612018","#7a2a16","#6a1a23","#59171c","#44201c"], wall:"#7f3a2c", glow:"#ff9b45", enemy:"#2b0906", eyes:"#ff6a32"},
+  {name:"Air", bg:"#16354a", room:["#245b6a","#2d6a78","#285c6d","#356f7c","#2b6473","#24586c","#214856"], wall:"#5e8394", glow:"#b8f3ff", enemy:"#102833", eyes:"#8de8ff"},
+  {name:"Water", bg:"#0a2e55", room:["#0d4168","#14527a","#0d4a70","#176087","#125675","#0e4766","#0a3c58"], wall:"#3f7394", glow:"#7ddcff", enemy:"#071d35", eyes:"#59c8ff"}
+];
+
+
+const walls = [
+  {x:40,y:70,w:1020,h:18},
+  {x:40,y:590,w:1020,h:18},
+  {x:40,y:70,w:18,h:538},
+  {x:1042,y:70,w:18,h:538},
+
+  {x:330,y:70,w:18,h:185},
+  {x:330,y:325,w:18,h:115},
+  {x:330,y:510,w:18,h:98},
+
+  {x:720,y:70,w:18,h:185},
+  {x:720,y:325,w:18,h:115},
+  {x:720,y:510,w:18,h:98},
+
+  {x:40,y:255,w:210,h:18},
+  {x:120,y:440,w:228,h:18},
+  {x:738,y:255,w:105,h:18},
+  {x:925,y:255,w:135,h:18},
+  {x:738,y:440,w:228,h:18},
+
+  {x:445,y:255,w:210,h:18},
+  {x:445,y:440,w:210,h:18}
+];
+
+const missions = [
+  {
+    id:0, x:170, y:160, room:"Reactor",
+    title:"Reactor Core",
+    desc:"Stabilize the reactor by adding decimals accurately.",
+    op:"add"
+  },
+  {
+    id:1, x:545, y:160, room:"Laboratory",
+    title:"Research Lab",
+    desc:"Restore the lab systems by subtracting decimals.",
+    op:"sub"
+  },
+  {
+    id:2, x:900, y:160, room:"Shields",
+    title:"Shield Array",
+    desc:"Recharge the shields with decimal multiplication.",
+    op:"mul"
+  },
+  {
+    id:3, x:180, y:360, room:"Engines",
+    title:"Engine Control",
+    desc:"Balance the engine output using decimal division.",
+    op:"div"
+  },
+  {
+    id:4, x:900, y:360, room:"Communications",
+    title:"Communications",
+    desc:"Solve a multi-step decimal problem to restore the signal.",
+    op:"multi"
+  },
+  {
+    id:5, x:545, y:360, room:"Command",
+    title:"Command Center",
+    desc:"Complete the mixed decimal challenge to unlock the escape route.",
+    op:"mixed"
+  }
+];
+
+function randInt(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function roundTo(n, places=3){
+  const p = 10**places;
+  return Math.round((n + Number.EPSILON)*p)/p;
+}
+function fmt(n){
+  return Number.isInteger(n) ? String(n) : String(parseFloat(n.toFixed(4)));
+}
+
+function makeProblem(op){
+  if(op==="add"){
+    const a = randInt(120,9999)/100;
+    const b = randInt(10,7999)/1000;
+    return {q:`${fmt(a)} + ${fmt(b)} = ?`, a:roundTo(a+b,4)};
+  }
+  if(op==="sub"){
+    let a = randInt(5000,15000)/100;
+    let b = randInt(100,4999)/100;
+    if(b>a) [a,b]=[b,a];
+    return {q:`${fmt(a)} − ${fmt(b)} = ?`, a:roundTo(a-b,4)};
+  }
+  if(op==="mul"){
+    const a = randInt(120,999)/100;
+    const b = randInt(12,95)/10;
+    return {q:`${fmt(a)} × ${fmt(b)} = ?`, a:roundTo(a*b,4)};
+  }
+  if(op==="div"){
+    const divisor = pick([1.2,1.5,2.4,2.5,3.2,4.5,6.4,7.5]);
+    const quotient = randInt(12,250)/10;
+    const dividend = roundTo(divisor*quotient,3);
+    return {q:`${fmt(dividend)} ÷ ${fmt(divisor)} = ?`, a:roundTo(quotient,4)};
+  }
+  if(op==="multi"){
+    const price = randInt(125,875)/100;
+    const qty = randInt(3,8);
+    const discount = randInt(50,250)/100;
+    const total = price*qty-discount;
+    return {
+      q:`A supply pack costs $${price.toFixed(2)}. The crew buys ${qty} packs and uses a $${discount.toFixed(2)} credit. What is the final cost?`,
+      a:roundTo(total,2)
+    };
+  }
+  const options=["add","sub","mul","div"];
+  return makeProblem(pick(options));
+}
+
+missions.forEach(m => m.problem = makeProblem(m.op));
+
+
+function currentTheme(){ return levelThemes[state.level]; }
+function nextLevel(){
+  if(state.level < levelThemes.length-1){
+    state.level++;
+    state.completed=new Set();
+    state.escapeReady=false;
+    state.hitCooldown=0;
+    player.x=535;player.y=545;
+    shadowBeast.x=900;shadowBeast.y=520;shadowBeast.active=true;
+    shadowMinion.x=120;shadowMinion.y=130;shadowMinion.active=false;
+    missions.forEach(m=>m.problem=makeProblem(m.op));
+    state.score += 250;
+    updateHud();
+    hint.textContent=`LEVEL ${state.level+1}: ${currentTheme().name.toUpperCase()} STATION`;
+    beep(980,.2,'triangle');
+  }else{
+    winGame();
+  }
+}
+function resetGame(){
+  state.lives = 5;
+  state.score = 30;
+  state.activeMission = null;
+  state.gameOver = false;
+  state.completed = new Set();
+  player.x=535; player.y=545;
+  shadowBeast.x=900;shadowBeast.y=520;shadowBeast.active=true;
+  shadowMinion.x=120;shadowMinion.y=130;shadowMinion.active=false;
+  state.level=0;state.escapeReady=false;state.hitCooldown=0;state.startTime=performance.now();
+  missions.forEach(m => m.problem = makeProblem(m.op));
+  qBack.style.display="none";
+  endBack.style.display="none";
+  updateHud();
+}
+
+function updateHud(){
+  livesHud.textContent = (state.lives>0 ? "❤️".repeat(state.lives) : "💀");
+  scoreHud.textContent = `Score: ${state.score}`;
+  missionHud.textContent = `💎 Crystals: ${state.completed.size} / ${missions.length}`;
+  portalHud.textContent=state.escapeReady?(state.level<levelThemes.length-1?"✨ NEXT LEVEL":"✨ FINAL EXIT"):"🚪 PORTAL LOCKED";
+  levelHud.textContent=`Level ${state.level+1}: ${currentTheme().name}`;
+}
+
+function circleRectCollision(cx,cy,r,rect){
+  const nx = Math.max(rect.x, Math.min(cx, rect.x+rect.w));
+  const ny = Math.max(rect.y, Math.min(cy, rect.y+rect.h));
+  const dx = cx-nx, dy=cy-ny;
+  return dx*dx+dy*dy < r*r;
+}
+
+function canMove(nx,ny){
+  if(nx-player.r<0||ny-player.r<0||nx+player.r>canvas.width||ny+player.r>canvas.height) return false;
+  for(const w of walls){
+    if(circleRectCollision(nx,ny,player.r,w)) return false;
+  }
+  return true;
+}
+
+function nearestMission(){
+  let best=null, bestD=9999;
+  for(const m of missions){
+    if(state.completed.has(m.id)) continue;
+    const d=Math.hypot(player.x-m.x, player.y-m.y);
+    if(d<bestD){bestD=d;best=m;}
+  }
+  return {m:best,d:bestD};
+}
+
+function openMission(m){
+  if(state.gameOver || state.completed.has(m.id)) return;
+  state.activeMission = m;
+  missionTag.textContent = `${m.room.toUpperCase()} MISSION`;
+  missionTitle.textContent = m.title;
+  missionDesc.textContent = m.desc;
+  questionText.textContent = m.problem.q;
+  answerInput.value="";
+  feedback.textContent="";
+  state.scanStage=0;
+  scannerPanel.style.display="none";
+  scannerPanel.innerHTML="";
+  scanBtn.textContent="🔍 Scan Problem (-10)";
+  qBack.style.display="flex";
+  setTimeout(()=>answerInput.focus(),50);
+  beep(620,.08,'square');
+}
+
+function closeMission(){
+  qBack.style.display="none";
+  state.activeMission=null;
+  state.scanStage=0;
+  scannerPanel.style.display="none";
+}
+
+
+function decimalPlaces(n){
+  const s=String(n);
+  return s.includes(".") ? s.split(".")[1].length : 0;
+}
+
+function parseBinaryProblem(q){
+  const clean=q.replace("−","-").replace("×","*").replace("÷","/");
+  const match=clean.match(/(-?\d+(?:\.\d+)?)\s*([+\-*\/])\s*(-?\d+(?:\.\d+)?)/);
+  if(!match)return null;
+  return {a:match[1],op:match[2],b:match[3]};
+}
+
+function padded(n, places){
+  const num=Number(n);
+  return num.toFixed(places);
+}
+
+
+function alignedDecimalStack(aStr,bStr,symbol){
+  const aParts=String(aStr).split(".");
+  const bParts=String(bStr).split(".");
+  const maxWhole=Math.max(aParts[0].length,bParts[0].length);
+  const maxDec=Math.max((aParts[1]||"").length,(bParts[1]||"").length);
+
+  const padNum=(s)=>{
+    const parts=String(s).split(".");
+    const whole=parts[0].padStart(maxWhole," ");
+    const dec=(parts[1]||"").padEnd(maxDec,"0");
+    return maxDec>0 ? `${whole}.${dec}` : whole;
+  };
+
+  const top=padNum(aStr);
+  const bottom=padNum(bStr);
+  const line="─".repeat(Math.max(top.length,bottom.length)+2);
+
+  return `
+    <div style="
+      display:inline-grid;
+      grid-template-columns:1.2em auto;
+      column-gap:.35em;
+      font-family:'Courier New',Consolas,monospace;
+      font-size:20px;
+      line-height:1.45;
+      margin-top:8px;
+      background:#111d32;
+      padding:10px 12px;
+      border-radius:9px;
+    ">
+      <div></div><div style="white-space:pre;text-align:right;">${top}</div>
+      <div style="text-align:center;">${symbol}</div><div style="white-space:pre;text-align:right;">${bottom}</div>
+      <div></div><div style="white-space:pre;">${line}</div>
+    </div>`;
+}
+
+function scannerHint(m,stage){
+  const p=parseBinaryProblem(m.problem.q);
+
+  if(m.op==="multi"){
+    if(stage===1){
+      return `<b>🧠 STORY SCAN</b><br>
+      Do not calculate yet.<br>
+      <b>1.</b> What amounts are being combined or repeated?<br>
+      <b>2.</b> What amount is being taken away?<br>
+      <b>3.</b> Decide which operation should happen first.`;
+    }
+    return `<b>🔍 STRONGER SCAN</b><br>
+    Find the cost of all the packs first. Then account for the credit.<br>
+    <b>Think:</b> repeated equal groups → multiplication; credit used → subtraction.`;
+  }
+
+  if(!p){
+    return `<b>🔍 SCAN</b><br>Look at the operation symbol and solve one place value at a time.`;
+  }
+
+  const a=Number(p.a),b=Number(p.b);
+  const da=decimalPlaces(p.a),db=decimalPlaces(p.b);
+
+  if(m.op==="add" || m.op==="sub"){
+    const places=Math.max(da,db);
+    const symbol=m.op==="add"?"+":"−";
+    if(stage===1){
+      return `<b>📍 DECIMAL ALIGNMENT SCAN</b><br>
+      Line up the decimal points before you ${m.op==="add"?"add":"subtract"}.<br>
+      ${alignedDecimalStack(padded(a,places),padded(b,places),symbol)}`;
+    }
+    return `<b>🔍 STRONGER SCAN</b><br>
+    Work from right to left by place value. Keep the decimal point <b>straight down</b> into your answer.`;
+  }
+
+  if(m.op==="mul"){
+    if(stage===1){
+      return `<b>🎯 DECIMAL PLACE SCAN</b><br>
+      <b>${p.a}</b> has <b>${da}</b> decimal place${da===1?"":"s"}.<br>
+      <b>${p.b}</b> has <b>${db}</b> decimal place${db===1?"":"s"}.<br>
+      <b>${da} + ${db} = ${da+db}</b><br>
+      Your final product needs <b>${da+db} decimal place${da+db===1?"":"s"}</b>.`;
+    }
+    const wholeA=p.a.replace(".","");
+    const wholeB=p.b.replace(".","");
+    return `<b>🔍 STRONGER SCAN</b><br>
+    First multiply as if there were no decimals:<br>
+    <b>${wholeA} × ${wholeB}</b><br>
+    Then place the decimal <b>${da+db} place${da+db===1?"":"s"} from the right</b> in your product.`;
+  }
+
+  if(m.op==="div"){
+    if(stage===1){
+      if(db===0){
+        return `<b>➗ DIVISION SCAN</b><br>
+        The divisor <b>${p.b}</b> is already a whole number.<br>
+        Divide normally and bring the decimal in <b>${p.a}</b> straight up into the quotient.`;
+      }
+      const factor=10**db;
+      const newA=a*factor,newB=b*factor;
+      return `<b>↪ DECIMAL MOVE SCAN</b><br>
+      Make the divisor a whole number.<br>
+      <b>${p.b} → ${fmt(newB)}</b> : move ${db} place${db===1?"":"s"} right.<br>
+      Move the dividend the <b>same number of places</b>:<br>
+      <b>${p.a} → ${fmt(newA)}</b>`;
+    }
+    if(db===0){
+      return `<b>🔍 STRONGER SCAN</b><br>
+      Divide normally. When you reach the decimal in the dividend, bring it <b>straight up</b> into the quotient.`;
+    }
+    const factor=10**db;
+    return `<b>🔍 STRONGER SCAN</b><br>
+    Rewrite the problem as:<br>
+    <b>${fmt(a*factor)} ÷ ${fmt(b*factor)}</b><br>
+    Now the divisor is a whole number, so continue with normal long division.`;
+  }
+
+  // Mixed room uses whichever operation was randomly selected.
+  if(m.op==="mixed"){
+    if(p.op==="*"){
+      if(stage===1)return `<b>🎯 DECIMAL PLACE SCAN</b><br>${p.a}: <b>${da}</b> places<br>${p.b}: <b>${db}</b> places<br>Your answer needs <b>${da+db}</b> decimal places total.`;
+      return `<b>🔍 STRONGER SCAN</b><br>Multiply <b>${p.a.replace(".","")} × ${p.b.replace(".","")}</b>, then move the decimal <b>${da+db} places from the right</b>.`;
+    }
+    if(p.op==="/"){
+      if(db>0){
+        const factor=10**db;
+        if(stage===1)return `<b>↪ DECIMAL MOVE SCAN</b><br>Move both decimals <b>${db} place${db===1?"":"s"} right</b> so the divisor becomes a whole number.`;
+        return `<b>🔍 STRONGER SCAN</b><br>Rewrite as <b>${fmt(a*factor)} ÷ ${fmt(b*factor)}</b>.`;
+      }
+      return `<b>➗ DIVISION SCAN</b><br>Bring the decimal straight up into the quotient.`;
+    }
+    const places=Math.max(da,db);
+    const sym=p.op==="+"?"+":"−";
+    if(stage===1)return `<b>📍 DECIMAL ALIGNMENT SCAN</b><br>Line up the decimal points.<br>${alignedDecimalStack(padded(a,places),padded(b,places),sym)}`;
+    return `<b>🔍 STRONGER SCAN</b><br>Work right to left and keep the decimal point aligned in the answer.`;
+  }
+
+  return `<b>🔍 SCAN</b><br>Use place value to decide where the decimal belongs.`;
+}
+
+function useScanner(){
+  const m=state.activeMission;
+  if(!m)return;
+
+  if(state.scanStage>=2){
+    scannerPanel.style.display="block";
+    scannerPanel.innerHTML=scannerHint(m,2);
+    return;
+  }
+
+  if(state.score<10){
+    scannerPanel.style.display="block";
+    scannerPanel.innerHTML=`<b>⚠️ Scanner needs 10 points.</b><br>Solve another mission or try this problem without the scanner.`;
+    return;
+  }
+
+  state.score-=10;
+  state.scanStage++;
+  updateHud();
+  scannerPanel.style.display="block";
+  scannerPanel.innerHTML=scannerHint(m,state.scanStage);
+  scanBtn.textContent=state.scanStage===1?"🔍 Scan Again (-10)":"✓ Full Scan Used";
+  beep(state.scanStage===1?720:820,.08,"sine");
+}
+
+function checkAnswer(){
+  const m=state.activeMission;
+  if(!m) return;
+  const val=parseFloat(answerInput.value);
+  if(Number.isNaN(val)){
+    feedback.textContent="Enter a number first.";
+    feedback.style.color="#ffd96a";
+    return;
+  }
+  const tolerance = 0.0001;
+  if(Math.abs(val-m.problem.a) <= tolerance){
+    state.completed.add(m.id);
+    state.score += 100 + state.lives*10;
+    feedback.textContent = "Correct! System restored.";
+    feedback.style.color="#6ef3a5";
+    beep(880,.1,'sine');
+    setTimeout(()=>{
+      closeMission();
+      updateHud();
+      if(state.completed.size===missions.length){
+        state.escapeReady=true;
+        updateHud();
+        hint.textContent="✨ ALL CRYSTALS RESTORED! Reach the escape portal!";
+        beep(1180,.28,'triangle');
+      }
+    },650);
+  }else{
+    state.lives--;
+    state.score=Math.max(0,state.score-25);
+    feedback.textContent = `Incorrect. You lost 1 life point.`;
+    feedback.style.color="#ff5e7a";
+    beep(160,.18,'sawtooth');
+    updateHud();
+    if(state.lives<=0){
+      setTimeout(()=>loseGame(),550);
+    } else {
+      m.problem = makeProblem(m.op);
+      setTimeout(()=>{
+        questionText.textContent=m.problem.q;
+        answerInput.value="";
+        state.scanStage=0;
+        scannerPanel.style.display="none";
+        scannerPanel.innerHTML="";
+        scanBtn.textContent="🔍 Scan Problem (-10)";
+        feedback.textContent="New problem loaded.";
+        feedback.style.color="#ffd96a";
+        answerInput.focus();
+      },650);
+    }
+  }
+}
+
+function winGame(){
+  state.gameOver=true;
+  endIcon.textContent="🚀";
+  endTitle.textContent="All Stations Escaped!";
+  const seconds=Math.floor((performance.now()-state.startTime)/1000);
+  const mins=Math.floor(seconds/60);
+  const secs=String(seconds%60).padStart(2,"0");
+  endText.textContent=`You cleared all 4 stations and restored all 24 Power Crystals! Lives remaining: ${state.lives}. Final score: ${state.score}. Time: ${mins}:${secs}.`;
+  endBack.style.display="flex";
+  beep(1040,.25,'triangle');
+}
+
+function loseGame(){
+  state.gameOver=true;
+  qBack.style.display="none";
+  endIcon.textContent="💥";
+  endTitle.textContent="Mission Failed";
+  endText.textContent=`The station systems shut down. You completed ${state.completed.size} of 6 missions and scored ${state.score} points.`;
+  endBack.style.display="flex";
+}
+
+function drawRoundedRect(x,y,w,h,r,fill,stroke){
+  ctx.beginPath();
+  ctx.roundRect(x,y,w,h,r);
+  if(fill){ctx.fillStyle=fill;ctx.fill();}
+  if(stroke){ctx.strokeStyle=stroke;ctx.stroke();}
+}
+
+function drawStation(){
+  const th=currentTheme();
+  ctx.fillStyle=th.bg;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  // stars outside
+  ctx.fillStyle="#ffffff";
+  for(let i=0;i<55;i++){
+    const x=(i*197)%1100, y=(i*83)%650;
+    ctx.globalAlpha=.15 + (i%5)*.08;
+    ctx.fillRect(x,y,2,2);
+  }
+  ctx.globalAlpha=1;
+
+  // level ambience
+  if(state.level===1){
+    ctx.fillStyle="rgba(255,90,30,.13)";
+    for(let i=0;i<8;i++){ctx.beginPath();ctx.arc((i*143+performance.now()/20)%1100,560-(i%3)*18,18+(i%2)*8,0,Math.PI*2);ctx.fill();}
+  }else if(state.level===2){
+    ctx.fillStyle="rgba(255,255,255,.12)";
+    for(let i=0;i<10;i++){ctx.beginPath();ctx.ellipse((i*117+performance.now()/35)%1100,120+(i%5)*85,55,12,0,0,Math.PI*2);ctx.fill();}
+  }else if(state.level===3){
+    ctx.strokeStyle="rgba(130,220,255,.18)";
+    for(let i=0;i<12;i++){ctx.beginPath();ctx.arc((i*97)%1100,80+(i%6)*85,14+(i%3)*4,0,Math.PI*2);ctx.stroke();}
+  }
+
+  // rooms
+  const rooms=[
+    [58,88,272,167,"REACTOR",th.room[0]],
+    [348,88,372,167,"LAB",th.room[1]],
+    [738,88,304,167,"SHIELDS",th.room[2]],
+    [58,273,272,167,"ENGINES",th.room[3]],
+    [348,273,372,167,"COMMAND",th.room[4]],
+    [738,273,304,167,"COMMS",th.room[5]],
+    [348,458,372,132,"DOCK",th.room[6]]
+  ];
+  ctx.textAlign="center";
+  ctx.font="900 16px system-ui";
+  rooms.forEach(r=>{
+    drawRoundedRect(r[0],r[1],r[2],r[3],14,r[5],"#29405f");
+    ctx.fillStyle="#7a8cab";
+    ctx.fillText(r[4],r[0]+r[2]/2,r[1]+28);
+  });
+
+  // floor grid
+  ctx.strokeStyle="rgba(130,160,205,.08)";
+  ctx.lineWidth=1;
+  for(let x=70;x<1040;x+=38){ctx.beginPath();ctx.moveTo(x,90);ctx.lineTo(x,588);ctx.stroke();}
+  for(let y=100;y<588;y+=38){ctx.beginPath();ctx.moveTo(60,y);ctx.lineTo(1040,y);ctx.stroke();}
+
+  // walls
+  for(const w of walls){
+    ctx.fillStyle=th.wall;
+    ctx.fillRect(w.x,w.y,w.w,w.h);
+    ctx.fillStyle=th.glow;
+    if(w.w>w.h) ctx.fillRect(w.x,w.y,w.w,4);
+    else ctx.fillRect(w.x,w.y,4,w.h);
+  }
+
+  // door openings highlighted
+  const doors=[
+    [330,255,18,70],[720,255,18,70],[330,440,18,70],[720,440,18,70],
+    [250,255,80,18],[348,255,97,18],[655,255,65,18],[843,255,82,18],[966,440,76,18],
+    [120,440,0,0]
+  ];
+  ctx.fillStyle="rgba(127,231,255,.25)";
+  doors.forEach(d=>{ if(d[2]&&d[3]) ctx.fillRect(d[0],d[1],d[2],d[3]); });
+
+  // consoles
+  missions.forEach(m=>{
+    const done=state.completed.has(m.id);
+    ctx.save();
+    ctx.shadowBlur=done?8:18;
+    ctx.shadowColor=done?"#5df1a1":"#6ee8ff";
+    drawRoundedRect(m.x-28,m.y-20,56,40,9,done?"#214c3a":"#183d55",done?"#67e7a2":"#7fe7ff");
+    ctx.fillStyle=done?"#83f4b5":"#bff7ff";
+    ctx.fillRect(m.x-16,m.y-8,32,12);
+    if(done){
+      ctx.shadowBlur=16;ctx.shadowColor=crystalColors[m.id];ctx.fillStyle=crystalColors[m.id];
+      ctx.beginPath();ctx.moveTo(m.x,m.y-40);ctx.lineTo(m.x+8,m.y-28);ctx.lineTo(m.x,m.y-17);ctx.lineTo(m.x-8,m.y-28);ctx.closePath();ctx.fill();
+    }
+    ctx.restore();
+
+    ctx.fillStyle=done?"#6ef3a5":"#d8fbff";
+    ctx.font="900 12px system-ui";
+    ctx.fillText(done?"COMPLETE":"CONSOLE",m.x,m.y+38);
+  });
+
+  // escape portal
+  ctx.save();
+  const pp=4+Math.sin(performance.now()/170)*4;
+  ctx.shadowBlur=state.escapeReady?20+pp:4;
+  ctx.shadowColor=state.escapeReady?"#e6a6ff":"#555";
+  ctx.strokeStyle=state.escapeReady?"#f0c4ff":"#666b78";
+  ctx.lineWidth=7;
+  ctx.beginPath();ctx.ellipse(portal.x,portal.y,34,20,0,0,Math.PI*2);ctx.stroke();
+  ctx.fillStyle=state.escapeReady?"rgba(214,130,255,.55)":"rgba(70,70,80,.55)";
+  ctx.beginPath();ctx.ellipse(portal.x,portal.y,27,14,0,0,Math.PI*2);ctx.fill();
+  ctx.restore();
+}
+
+function drawPlayer(){
+  ctx.save();
+  if(state.hitCooldown>0&&Math.floor(state.hitCooldown*10)%2===0)ctx.globalAlpha=.35;
+  ctx.translate(player.x,player.y);
+  if(player.facing===-1)ctx.scale(-1,1);
+
+  ctx.fillStyle="rgba(0,0,0,.28)";
+  ctx.beginPath();ctx.ellipse(0,20,21,6,0,0,Math.PI*2);ctx.fill();
+
+  const c=state.character;
+
+  if(c==="unicorn"){
+    const sparkleTime=performance.now()/180;
+    for(let i=0;i<8;i++){
+      const a=i*.9+sparkleTime*.18,rad=22+(i%3)*5,sx=Math.cos(a)*rad,sy=Math.sin(a*1.3)*14-2;
+      ctx.fillStyle=i%2===0?"#ffd6fb":"#fff4a8";ctx.globalAlpha=.55+.35*Math.sin(a+sparkleTime);
+      ctx.fillRect(sx-1.5,sy-1.5,3,3);
+    }
+    ctx.globalAlpha=1;
+    ctx.strokeStyle="#ff74d8";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(-17,4);ctx.quadraticCurveTo(-30,-2,-25,13);ctx.stroke();
+    ctx.fillStyle="#ff9de6";ctx.strokeStyle="#fff";ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(-2,5,18,13,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.ellipse(10,-8,10,12,-.35,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.fillStyle="#fff08a";ctx.beginPath();ctx.moveTo(13,-18);ctx.lineTo(20,-33);ctx.lineTo(18,-16);ctx.closePath();ctx.fill();
+    ctx.fillStyle="#3b2048";ctx.beginPath();ctx.arc(15,-10,2,0,Math.PI*2);ctx.fill();
+  }else if(c==="plumber"){
+    ctx.fillStyle="#d93c45";ctx.fillRect(-12,-16,24,12);
+    ctx.fillStyle="#f1c09b";ctx.beginPath();ctx.arc(0,-5,12,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#2e5cb8";ctx.fillRect(-12,5,24,18);
+    ctx.fillStyle="#d93c45";ctx.fillRect(-14,2,28,8);
+    ctx.fillStyle="#432a1d";ctx.fillRect(2,-3,9,3);
+    ctx.fillStyle="#222";ctx.fillRect(-10,20,8,5);ctx.fillRect(2,20,8,5);
+  }else if(c==="dragon"){
+    ctx.fillStyle="#61d66b";ctx.strokeStyle="#e8ffe8";ctx.lineWidth=2;
+    ctx.beginPath();ctx.ellipse(0,4,19,14,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.arc(11,-8,11,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.fillStyle="#ffe36a";
+    for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(-12+i*10,-7);ctx.lineTo(-8+i*10,-18);ctx.lineTo(-3+i*10,-6);ctx.fill();}
+    ctx.fillStyle="#fff";ctx.beginPath();ctx.moveTo(-8,2);ctx.lineTo(-28,-10);ctx.lineTo(-20,10);ctx.closePath();ctx.fill();
+    ctx.fillStyle="#222";ctx.beginPath();ctx.arc(14,-10,2,0,Math.PI*2);ctx.fill();
+  }else if(c==="ninja"){
+    ctx.fillStyle="#101318";ctx.beginPath();ctx.arc(0,-4,15,0,Math.PI*2);ctx.fill();ctx.fillRect(-13,8,26,18);
+    ctx.fillStyle="#d8b28f";ctx.fillRect(-9,-8,18,7);
+    ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(-5,-5,1.5,0,Math.PI*2);ctx.arc(5,-5,1.5,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle="#c92f47";ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(-14,0);ctx.lineTo(14,0);ctx.stroke();
+  }else{
+    ctx.fillStyle="#ffd84f";ctx.strokeStyle="#fff8b0";ctx.lineWidth=2;
+    ctx.beginPath();ctx.ellipse(0,4,16,14,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.arc(8,-9,10,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.moveTo(2,-17);ctx.lineTo(-2,-30);ctx.lineTo(8,-20);ctx.closePath();ctx.fill();
+    ctx.beginPath();ctx.moveTo(12,-17);ctx.lineTo(18,-28);ctx.lineTo(18,-18);ctx.closePath();ctx.fill();
+    ctx.fillStyle="#d84b45";ctx.beginPath();ctx.arc(14,-7,4,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#222";ctx.beginPath();ctx.arc(9,-11,2,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle="#7d4b25";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(-14,5);ctx.lineTo(-26,-2);ctx.stroke();
+  }
+  ctx.restore();
+}
+
+
+function enemyCanMove(nx,ny,r){
+  if(nx-r<45||ny-r<75||nx+r>1055||ny+r>595)return false;
+  for(const w of walls){
+    if(circleRectCollision(nx,ny,r,w))return false;
+  }
+  return true;
+}
+
+function moveEnemy(e,dt){
+  if(!e.active)return;
+  const dx=player.x-e.x;
+  const dy=player.y-e.y;
+  const d=Math.hypot(dx,dy)||1;
+
+  if(d<400||state.escapeReady){
+    let s=e.speed;
+    if(state.completed.size>=2)s*=1.20;
+    if(state.completed.size>=4)s*=1.10;
+
+    const nx=e.x+(dx/d)*s*dt;
+    const ny=e.y+(dy/d)*s*dt;
+
+    if(enemyCanMove(nx,e.y,e.r))e.x=nx;
+    if(enemyCanMove(e.x,ny,e.r))e.y=ny;
+  }
+
+  if(d<player.r+e.r+3&&state.hitCooldown<=0){
+    state.lives--;
+    state.score=Math.max(0,state.score-40);
+    state.hitCooldown=2.2;
+    beep(120,.22,'sawtooth');
+    updateHud();
+
+    // Push the player away from the enemy so one collision does not become five.
+    const pushX=(player.x-e.x)/(d||1);
+    const pushY=(player.y-e.y)/(d||1);
+    const px=player.x+pushX*55;
+    const py=player.y+pushY*55;
+    if(canMove(px,player.y))player.x=px;
+    if(canMove(player.x,py))player.y=py;
+
+    if(state.lives<=0)loseGame();
+  }
+}
+
+function drawShadow(e,small=false){
+  if(!e.active)return;
+
+  const th=currentTheme();
+  ctx.save();
+  ctx.translate(e.x,e.y);
+
+  const wobble=Math.sin(performance.now()/130)*2;
+
+  ctx.shadowBlur=22;
+  ctx.shadowColor=th.eyes;
+  ctx.fillStyle=th.enemy;
+  ctx.beginPath();
+  ctx.ellipse(0,3,e.r,e.r-3+wobble,0,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.fillStyle=th.eyes;
+  const eyeSpread=small?6:8;
+  ctx.beginPath();
+  ctx.arc(-eyeSpread,-5,small?3:4,0,Math.PI*2);
+  ctx.arc(eyeSpread,-5,small?3:4,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.fillStyle="#fff";
+  ctx.beginPath();
+  ctx.arc(-eyeSpread+1,-6,1.3,0,Math.PI*2);
+  ctx.arc(eyeSpread+1,-6,1.3,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.strokeStyle=th.eyes;
+  ctx.lineWidth=small?3:4;
+  for(let i=0;i<4;i++){
+    ctx.beginPath();
+    ctx.moveTo(-14+i*9,18);
+    ctx.quadraticCurveTo(-19+i*11,28+wobble,-23+i*14,33);
+    ctx.stroke();
+  }
+
+  ctx.restore();
+}
+
+function update(dt){
+  if(state.gameOver || qBack.style.display==="flex" || guideBack.style.display==="flex" || charBack.style.display==="flex") return;
+  state.hitCooldown=Math.max(0,state.hitCooldown-dt);
+  if(state.completed.size>=4)shadowMinion.active=true;
+  moveEnemy(shadowBeast,dt);moveEnemy(shadowMinion,dt);
+  let dx=0,dy=0;
+  if(state.keys["arrowleft"]||state.keys["a"]) dx-=1;
+  if(state.keys["arrowright"]||state.keys["d"]) dx+=1;
+  if(state.keys["arrowup"]||state.keys["w"]) dy-=1;
+  if(state.keys["arrowdown"]||state.keys["s"]) dy+=1;
+
+  if(dx||dy){
+    const len=Math.hypot(dx,dy); dx/=len;dy/=len;
+    if(dx) player.facing=dx>0?1:-1;
+    const nx=player.x+dx*player.speed*dt;
+    const ny=player.y+dy*player.speed*dt;
+    if(canMove(nx,player.y)) player.x=nx;
+    if(canMove(player.x,ny)) player.y=ny;
+  }
+
+  if(state.escapeReady&&Math.hypot(player.x-portal.x,player.y-portal.y)<48){nextLevel();return;}
+  const near=nearestMission();
+  const bd=Math.hypot(player.x-shadowBeast.x,player.y-shadowBeast.y);
+  if(state.escapeReady)hint.textContent=state.level<levelThemes.length-1?"✨ PORTAL OPEN! Reach it to enter the next level!":"✨ FINAL PORTAL OPEN! Escape the station!";
+  else if(bd<145)hint.textContent="⚠️ SHADOW BEAST! RUN!";
+  else if(near.m&&near.d<70)hint.textContent=`Press E to restore ${near.m.title}`;
+  else hint.textContent=`Restore the Power Crystals: ${state.completed.size}/6`;
+}
+
+function render(){
+  drawStation();
+  drawShadow(shadowBeast,false);
+  drawShadow(shadowMinion,true);
+  drawPlayer();
+}
+
+function loop(t){
+  const dt=Math.min(.033,(t-state.lastTime)/1000||0);
+  state.lastTime=t;
+  update(dt);
+  render();
+  requestAnimationFrame(loop);
+}
+
+window.addEventListener("keydown",e=>{
+  const k=e.key.toLowerCase();
+  if(["arrowup","arrowdown","arrowleft","arrowright"," "].includes(k)) e.preventDefault();
+  state.keys[k]=true;
+  if(k==="e" && qBack.style.display!=="flex" && guideBack.style.display!=="flex" && charBack.style.display!=="flex" && !state.gameOver){
+    const near=nearestMission();
+    if(near.m && near.d<70) openMission(near.m);
+  }
+  if(k==="enter" && qBack.style.display==="flex") checkAnswer();
+  if(k==="escape" && qBack.style.display==="flex") closeMission();
+  else if(k==="escape" && guideBack.style.display==="flex") guideBack.style.display="none";
+});
+window.addEventListener("keyup",e=>state.keys[e.key.toLowerCase()]=false);
+
+guideBtn.onclick=()=>{guideBack.style.display="flex";};
+guideCloseBtn.onclick=()=>{guideBack.style.display="none";};
+submitBtn.onclick=checkAnswer;
+scanBtn.onclick=useScanner;
+closeBtn.onclick=closeMission;
+document.getElementById("restartBtn").onclick=resetGame;
+document.getElementById("resetBtn").onclick=()=>{
+  resetGame();
+  charBack.style.display="flex";
+};
+document.getElementById("muteBtn").onclick=()=>{
+  muted=!muted;
+  document.getElementById("muteBtn").textContent=`Sound: ${muted?"Off":"On"}`;
+};
+
+document.querySelectorAll(".charBtn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    state.character=btn.dataset.char;
+    charBack.style.display="none";
+    resetGame();
+  });
+});
+updateHud();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

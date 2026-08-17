@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Spelling Flash Cards</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(135deg,#eef4ff,#f8f3ff);color:#1f2937;display:flex;flex-direction:column;align-items:center}
+header{text-align:center;padding:22px 12px 6px}h1{margin:0 0 7px;font-size:clamp(28px,5vw,42px)}#counter{font-weight:800;color:#64748b}
+.stage{width:min(790px,93vw);height:720px;perspective:1200px;margin:15px 0}.card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s;cursor:pointer}.card.flipped{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:25px;background:white;box-shadow:0 14px 34px #0002;border:4px solid #d8e3f3}
+.front{display:flex;align-items:center;justify-content:center;padding:30px;text-align:center;font-size:clamp(42px,8vw,72px);font-weight:900;color:#2458a6}
+.back{transform:rotateY(180deg);overflow-y:auto;padding:25px 32px;border-color:#ded0ef}.back h2{text-align:center;margin:0 0 13px;font-size:34px;color:#713bb1}
+.row{margin:10px 0}.label{font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.7px;color:#475569;margin-bottom:4px}.value{font-size:18px;line-height:1.4}.large{font-size:23px;font-weight:800}.phonograms{color:#2458a6}
+.phonogram-wrap{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.phonogram-unit{display:inline-flex;align-items:center;justify-content:center;min-width:34px;padding:4px 8px;border-radius:8px;border:2px solid #d7e2f0;background:#fff;color:#334155}
+.phonogram-unit.multi{background:#fff2b8;border-color:#e5bd33;color:#7a5400;box-shadow:0 0 0 2px rgba(229,189,51,.12)}
+.phonogram-divider{color:#94a3b8;font-weight:900}
+.soundbox{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}.sound{background:#eaf2ff;border:2px solid #c8daf7;border-radius:12px;padding:8px 11px;text-align:center;min-width:82px}.chunk{font-size:19px;font-weight:900;color:#2458a6}.said{font-size:14px;color:#475569;margin-top:2px}
+.watch{background:#fff7dc;border:2px solid #f0d983;border-radius:14px;padding:11px 14px;font-size:16px;line-height:1.4}
+.examplebox{display:grid;grid-template-columns:170px 1fr;gap:14px;align-items:center;background:#eef8ff;border:2px solid #b9ddf4;border-radius:16px;padding:12px 14px}
+.picture{min-height:118px;border-radius:14px;background:linear-gradient(145deg,#ffffff,#e8f6ff);display:flex;align-items:center;justify-content:center;font-size:62px;letter-spacing:2px;border:2px solid #d5eaf7;box-shadow:inset 0 0 0 1px #fff}
+.exampletext{font-size:17px;line-height:1.45}
+.exampletext b{color:#2458a6}.watch div+div{margin-top:4px}
+.buttons{display:flex;gap:11px;flex-wrap:wrap;justify-content:center;margin-bottom:9px}button{border:0;border-radius:12px;padding:13px 21px;font-size:17px;font-weight:900;cursor:pointer;color:#fff;background:#2458a6}.next{background:#713bb1}.prev{background:#64748b}.tip{color:#64748b;font-size:14px;margin-bottom:22px}
+.speakbtn{display:inline-flex;align-items:center;gap:7px;border:0;border-radius:10px;padding:8px 12px;margin-top:6px;background:#16803b;color:#fff;font-size:14px;font-weight:900;cursor:pointer}
+.speakbtn:hover{opacity:.9}
+.sound .speak-mini{margin-top:6px;border:0;border-radius:8px;padding:5px 8px;background:#16803b;color:white;font-size:12px;font-weight:800;cursor:pointer}
+.sound .speak-mini:hover{opacity:.9}
+@media(max-width:600px){.stage{height:790px}.back{padding:20px}.large{font-size:20px}.sound{min-width:70px;padding:7px}.value{font-size:16px}.examplebox{grid-template-columns:1fr}.picture{min-height:95px;font-size:54px}}
+
+.mode-screen{width:min(900px,94vw);margin:42px auto;text-align:center}
+.mode-screen h2{font-size:clamp(30px,5vw,48px);margin:0 0 10px;color:#1f3d73}
+.mode-screen p{font-size:18px;color:#64748b;margin:0 auto 28px;max-width:650px;line-height:1.5}
+.mode-grid{display:grid;grid-template-columns:repeat(2,minmax(260px,1fr));gap:20px}
+.mode-card{background:#fff;border-radius:22px;padding:28px 22px;box-shadow:0 12px 30px #0002;border:3px solid #d8e3f3;cursor:pointer;transition:.2s}
+.mode-card:hover{transform:translateY(-3px)}
+.mode-icon{font-size:58px}.mode-card h3{font-size:26px;margin:10px 0 8px}.mode-card p{font-size:15px;margin:0 0 18px}
+.mode-card button{width:100%}
+.hidden{display:none!important}
+.topbar{width:min(900px,94vw);display:flex;justify-content:space-between;align-items:center;gap:12px;margin:14px auto 0}
+.homebtn{background:#475569}
+.test-wrap{width:min(760px,92vw);margin:18px auto 34px}
+.test-card{background:#fff;border-radius:24px;padding:30px;box-shadow:0 14px 34px #0002;border:4px solid #d8e3f3;text-align:center}
+.test-progress{font-weight:900;color:#64748b;margin-bottom:14px}
+.test-word-icon{font-size:70px;margin:8px 0}
+.test-card h2{margin:4px 0 8px;color:#2458a6;font-size:30px}
+.test-instructions{color:#64748b;font-size:16px;margin-bottom:18px}
+.test-audio{background:#16803b;margin:6px}
+.answer-input{width:min(520px,95%);font-size:28px;font-weight:700;text-align:center;padding:14px 16px;border:3px solid #cbd5e1;border-radius:14px;outline:none;margin:10px 0}
+.answer-input:focus{border-color:#2458a6}
+.submitbtn{background:#713bb1;margin-top:8px}
+.feedback{min-height:36px;margin:16px auto 8px;font-size:20px;font-weight:900}
+.feedback.correct{color:#15803d}.feedback.wrong{color:#b91c1c}
+.scoreline{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:14px}
+.scorepill{background:#eef2ff;border-radius:999px;padding:8px 14px;font-weight:800;color:#334155}
+.result-box{background:#fff;border-radius:24px;padding:34px;box-shadow:0 14px 34px #0002;border:4px solid #ded0ef;text-align:center}
+.result-score{font-size:70px;font-weight:900;color:#713bb1;margin:8px 0}
+.missed-list{margin:18px auto 0;max-width:520px;text-align:left;background:#fff7dc;border-radius:14px;padding:14px 18px}
+.missed-list div{padding:5px 0;border-bottom:1px solid #eadba1}.missed-list div:last-child{border-bottom:0}
+@media(max-width:900px){.mode-grid{grid-template-columns:1fr}.topbar{flex-direction:column}.answer-input{font-size:24px}}
+
+
+.game-wrap{width:min(1100px,96vw);margin:16px auto 34px}
+.game-shell{background:#fff;border-radius:24px;box-shadow:0 14px 34px #0002;border:4px solid #d8e3f3;overflow:hidden}
+.game-hud{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;background:#f8fafc;border-bottom:2px solid #e2e8f0}
+.hud-left,.hud-right{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.hudpill{background:#eef2ff;border-radius:999px;padding:8px 12px;font-weight:900;color:#334155}
+.scoreboard{display:flex;gap:8px;align-items:center;background:#fff;border:2px solid #cbd5e1;border-radius:14px;padding:6px 10px;font-weight:900}
+.score-us{color:#15803d}.score-them{color:#b91c1c}.score-vs{color:#64748b;font-size:12px}
+.game-area{position:relative;background:linear-gradient(#9edcff 0 62%,#dff5c8 62% 100%);min-height:510px;overflow:hidden}
+#slingCanvas{display:block;width:100%;height:510px;touch-action:none}
+.spell-panel{padding:18px;background:#fff;border-top:2px solid #e2e8f0;text-align:center}
+.spell-panel h3{margin:0 0 6px;color:#2458a6;font-size:26px}
+.spell-note{color:#64748b;font-size:15px;margin-bottom:10px}
+.game-input{width:min(480px,92%);font-size:26px;font-weight:800;text-align:center;padding:12px;border:3px solid #cbd5e1;border-radius:14px}
+.game-input:focus{outline:none;border-color:#2458a6}
+.game-feedback{min-height:30px;font-size:18px;font-weight:900;margin-top:8px}
+.game-feedback.good{color:#15803d}.game-feedback.bad{color:#b91c1c}
+.power-note{font-weight:900;color:#7c3aed;margin-top:7px}
+.shot-ready{background:#ecfdf5;border:2px solid #86efac;border-radius:14px;padding:12px;margin-top:10px;font-weight:900;color:#166534}
+.level-banner{position:absolute;top:14px;left:50%;transform:translateX(-50%);background:#ffffffde;border:2px solid #cbd5e1;border-radius:14px;padding:8px 14px;font-weight:900;z-index:2}
+.game-results{padding:30px;text-align:center}
+.game-results h2{font-size:34px;color:#713bb1;margin:8px 0}
+.game-results .bigscore{font-size:56px;font-weight:900;color:#2458a6}
+.game-results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:20px auto;max-width:900px}
+.resultstat{background:#f8fafc;border:2px solid #e2e8f0;border-radius:14px;padding:14px}
+.resultstat strong{display:block;font-size:28px;color:#334155}
+.character-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:10px 0 0}
+.charbtn{background:#fff;color:#334155;border:2px solid #cbd5e1;border-radius:12px;padding:8px 12px;font-size:14px}
+.charbtn.active{border-color:#713bb1;box-shadow:0 0 0 3px #e9d5ff}
+@media(max-width:700px){
+  .game-results-grid{grid-template-columns:repeat(2,1fr)}
+  #slingCanvas{height:430px}.game-area{min-height:430px}
+}
+
+
+.sport-choice{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:10px 0 4px}
+.sport-choice button{min-width:170px;background:#fff;color:#334155;border:3px solid #cbd5e1}
+.sport-choice button.active{border-color:#713bb1;background:#f3e8ff;box-shadow:0 0 0 3px #e9d5ff}
+.sports-help{background:#eef8ff;border:2px solid #bae6fd;border-radius:14px;padding:10px 14px;margin:10px auto 0;max-width:700px;color:#0c4a6e;font-weight:800}
+.guide-badge{display:inline-block;background:#dcfce7;border:2px solid #86efac;color:#166534;border-radius:999px;padding:6px 11px;font-size:13px;font-weight:900;margin-top:8px}
+.guide-note{font-size:14px;color:#166534;font-weight:800;margin-top:5px}
+.score-pop{position:fixed;left:50%;top:24%;transform:translate(-50%,-50%) scale(.5);z-index:9999;
+font-size:clamp(42px,8vw,82px);font-weight:1000;color:#fff;text-shadow:0 4px 0 #0005,0 0 24px #0007;
+pointer-events:none;opacity:0}
+.score-pop.show{animation:scorePop .9s ease-out forwards}
+@keyframes scorePop{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.45)}
+  25%{opacity:1;transform:translate(-50%,-50%) scale(1.18)}
+  65%{opacity:1;transform:translate(-50%,-58%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-72%) scale(.92)}
+}
+.confetti-piece{position:fixed;width:10px;height:16px;z-index:9998;pointer-events:none;border-radius:2px;animation:confettiFall 1.2s ease-out forwards}
+@keyframes confettiFall{
+  0%{opacity:1;transform:translate(0,0) rotate(0deg)}
+  100%{opacity:0;transform:translate(var(--dx),260px) rotate(540deg)}
+}
+
+</style></head>
+<body>
+<div id="scorePop" class="score-pop"></div>
+
+<div id="modeScreen" class="mode-screen">
+  <h2>Spelling Practice</h2>
+  <p>Choose how you want to practice today.</p>
+  <div class="mode-grid">
+    <div class="mode-card" onclick="openFlashcards()">
+      <div class="mode-icon">🃏</div>
+      <h3>Flash Cards</h3>
+      <p>Study syllables, sounds, phonograms, pictures, definitions, and read-aloud support.</p>
+      <button type="button">Start Flash Cards</button>
+    </div>
+
+    <div class="mode-card" onclick="openVolleyball()">
+      <div class="mode-icon">🏐</div>
+      <h3>Volleyball Practice</h3>
+      <p>Spell a word to earn a serve. Aim over the net and score by landing in court zones.</p>
+      <button type="button" style="background:#16803b">Play Volleyball</button>
+    </div>
+
+    <div class="mode-card" onclick="openSoccer()">
+      <div class="mode-icon">⚽</div>
+      <h3>Soccer Practice</h3>
+      <p>Choose Ronaldo or Messi, spell a word, then try to beat the goalkeeper.</p>
+      <button type="button" style="background:#b7791f">Play Soccer</button>
+    </div>
+
+    <div class="mode-card" onclick="startTest()">
+      <div class="mode-icon">🎧✏️</div>
+      <h3>Spelling Test</h3>
+      <p>Listen to each word, type the spelling, and see your score at the end.</p>
+      <button type="button" class="secondary">Start Spelling Test</button>
+    </div>
+  </div>
+</div>
+
+<div id="flashMode" class="hidden">
+  <div class="topbar">
+    <button type="button" class="homebtn" onclick="goHome()">← Practice Menu</button>
+    <div style="font-weight:900;color:#64748b">Flash Card Mode</div>
+  </div>
+
+<header><h1>Spelling Flash Cards</h1><div id="counter"></div></header>
+<div class="stage"><div class="card" id="card" onclick="flipCard()">
+<div class="face front" id="front"></div>
+<div class="face back">
+<h2 id="backWord"></h2>
+<div class="row"><div class="label">Syllables</div><div class="value large" id="syllables"></div></div>
+<div class="row">
+      <div class="label">Say the Whole Word</div>
+      <div class="value" id="pronunciation"></div>
+      <button class="speakbtn" type="button" onclick="event.stopPropagation(); speakWholeWord()">🔊 Read Word Aloud</button>
+    </div>
+<div class="row"><div class="label">🔊 Sound It Out</div><div class="soundbox" id="soundbox"></div></div>
+<div class="row"><div class="label">🧩 Phonograms</div><div class="value large phonograms phonogram-wrap" id="phonograms"></div></div>
+<div class="row"><div style="font-size:13px;color:#7a5400;font-weight:800;margin-top:-2px">Yellow = multi-letter phonogram</div></div>
+<div class="row"><div class="label">⭐ Watch For</div><div class="watch" id="watch"></div></div>
+<div class="row"><div class="label">🖼️ Picture Example</div>
+<div class="examplebox">
+  <div class="picture" id="picture"></div>
+  <div class="exampletext" id="example"></div>
+</div></div>
+<div class="row"><div class="label">Definition</div><div class="value" id="definition"></div></div>
+</div></div></div>
+<div class="buttons"><button class="prev" onclick="prevWord()">← Previous</button><button onclick="flipCard()">Flip Card</button><button class="next" id="next" onclick="nextWord()">Next Word →</button></div>
+<div class="tip">Click the card to flip it.</div>
+
+</div>
+
+<div id="testMode" class="hidden">
+  <div class="topbar">
+    <button type="button" class="homebtn" onclick="goHome()">← Practice Menu</button>
+    <div style="font-weight:900;color:#64748b">Spelling Test Mode</div>
+  </div>
+  <div class="test-wrap">
+    <div id="testCard" class="test-card">
+      <div id="testProgress" class="test-progress"></div>
+      <div class="test-word-icon">🎧</div>
+      <h2>Listen & Spell</h2>
+      <div class="test-instructions">Click the speaker, listen carefully, then type the word you hear.</div>
+      <button type="button" class="test-audio" onclick="event.stopPropagation(); speakTestWord()">🔊 Hear the Word</button>
+      <button type="button" class="test-audio" onclick="event.stopPropagation(); speakTestSentence()">💬 Hear a Sentence</button>
+      <br>
+      <input id="answerInput" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type the word">
+      <br>
+      <button id="submitAnswerBtn" type="button" class="submitbtn" onclick="submitTestAnswer()">Check Answer</button>
+      <div id="testFeedback" class="feedback"></div>
+      <div class="scoreline">
+        <div class="scorepill">Correct: <span id="correctCount">0</span></div>
+        <div class="scorepill">Remaining: <span id="remainingCount">20</span></div>
+      </div>
+    </div>
+
+    <div id="resultBox" class="result-box hidden">
+      <div style="font-size:58px">🏆</div>
+      <h2>Spelling Test Complete!</h2>
+      <div id="resultScore" class="result-score"></div>
+      <div id="resultMessage" style="font-size:20px;font-weight:800"></div>
+      <div id="missedList" class="missed-list hidden"></div>
+      <div style="margin-top:20px">
+        <button type="button" onclick="startTest()">Try Again</button>
+        <button type="button" class="homebtn" onclick="goHome()">Practice Menu</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="volleyballMode" class="hidden">
+  <div class="topbar">
+    <button type="button" class="homebtn" onclick="goHome()">← Practice Menu</button>
+    <div style="font-weight:900;color:#64748b">🏐 Volleyball Practice</div>
+  </div>
+
+  <div class="game-wrap">
+    <div class="game-shell">
+      <div class="game-hud">
+        <div class="hud-left">
+          <div class="hudpill">Word: <span id="vbWordNum">1</span>/20</div>
+          <div class="hudpill">⭐ <span id="vbStars">0</span></div>
+        </div>
+        <div class="hud-right">
+          <div class="hudpill">Score: <span id="vbScore">0</span></div>
+          <div class="hudpill">Aces: <span id="vbAces">0</span></div>
+          <div class="scoreboard">
+            <span class="score-us">US <span id="vbUs">0</span></span>
+            <span class="score-vs">VS</span>
+            <span class="score-them">THEM <span id="vbThem">0</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-area">
+        <div class="level-banner" id="vbBanner">🏐 Serve Practice</div>
+        <canvas id="vbCanvas" width="1000" height="510"></canvas>
+      </div>
+
+      <div class="spell-panel" id="vbSpellPanel">
+        <h3>Earn Your Serve</h3>
+        <div class="spell-note">Spell the word correctly, then drag the ball toward the glowing GUIDE circle and release.</div><div class="guide-badge">✨ Guided Aim is ON</div><div class="guide-note">You only need to get close to the guide. The game helps finish the serve.</div>
+        <button type="button" class="test-audio" onclick="speakVBWord()">🔊 Hear Word</button>
+        <button type="button" class="test-audio" onclick="speakVBSentence()">💬 Hear Sentence</button>
+        <br>
+        <input id="vbAnswer" class="game-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type the spelling word">
+        <br>
+        <button id="vbCheckBtn" type="button" class="submitbtn" onclick="checkVBSpelling()">Check Spelling</button>
+        <div id="vbFeedback" class="game-feedback"></div>
+        <div id="vbPowerNote" class="power-note"></div>
+        <div id="vbReady" class="shot-ready hidden">🏐 Serve unlocked! Pull back and aim. Clear the net and land inside the court.</div>
+      </div>
+
+      <div id="vbResults" class="game-results hidden">
+        <div style="font-size:60px">🏆</div>
+        <h2>Volleyball Practice Complete!</h2>
+        <div class="bigscore" id="vbFinalScore">0</div>
+        <div class="game-results-grid">
+          <div class="resultstat"><strong id="vbFinalAccuracy">0%</strong>Spelling Accuracy</div>
+          <div class="resultstat"><strong id="vbFinalStars">0</strong>Spelling Stars</div>
+          <div class="resultstat"><strong id="vbFinalAces">0</strong>Aces</div>
+          <div class="resultstat"><strong id="vbFinalIn">0</strong>Serves In</div>
+          <div class="resultstat"><strong id="vbFinalUsThem">0-0</strong>Us vs Them</div>
+        </div>
+        <button type="button" onclick="openVolleyball()">Play Again</button>
+        <button type="button" class="homebtn" onclick="goHome()">Practice Menu</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="soccerMode" class="hidden">
+  <div class="topbar">
+    <button type="button" class="homebtn" onclick="goHome()">← Practice Menu</button>
+    <div style="font-weight:900;color:#64748b">⚽ Soccer Practice</div>
+  </div>
+
+  <div class="game-wrap">
+    <div class="game-shell">
+      <div class="game-hud">
+        <div class="hud-left">
+          <div class="hudpill">Word: <span id="socWordNum">1</span>/20</div>
+          <div class="hudpill">⭐ <span id="socStars">0</span></div>
+        </div>
+        <div class="hud-right">
+          <div class="hudpill">Score: <span id="socScore">0</span></div>
+          <div class="hudpill">Goals: <span id="socGoals">0</span></div>
+          <div class="scoreboard">
+            <span class="score-us">US <span id="socUs">0</span></span>
+            <span class="score-vs">VS</span>
+            <span class="score-them">THEM <span id="socThem">0</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-area">
+        <div class="level-banner" id="socBanner">⚽ Penalty Practice</div>
+        <canvas id="socCanvas" width="1000" height="510"></canvas>
+      </div>
+
+      <div class="spell-panel" id="socSpellPanel">
+        <h3>Earn Your Shot</h3>
+        <div class="spell-note">Choose your player, spell the word, then drag toward a glowing corner target and release.</div><div class="guide-badge">✨ Guided Aim is ON</div><div class="guide-note">Aim near a target. The shot will get a little help.</div>
+        <div class="sport-choice">
+          <button type="button" id="ronaldoBtn" class="active" onclick="chooseSoccerPlayer('ronaldo')">⚡ Ronaldo</button>
+          <button type="button" id="messiBtn" onclick="chooseSoccerPlayer('messi')">🎯 Messi</button>
+        </div>
+        <div class="sports-help" id="socPlayerHelp">Ronaldo #7 in red shoots. Messi #10 in sky blue and white becomes the goalkeeper.</div>
+        <button type="button" class="test-audio" onclick="speakSocWord()">🔊 Hear Word</button>
+        <button type="button" class="test-audio" onclick="speakSocSentence()">💬 Hear Sentence</button>
+        <br>
+        <input id="socAnswer" class="game-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type the spelling word">
+        <br>
+        <button id="socCheckBtn" type="button" class="submitbtn" onclick="checkSocSpelling()">Check Spelling</button>
+        <div id="socFeedback" class="game-feedback"></div>
+        <div id="socPowerNote" class="power-note"></div>
+        <div id="socReady" class="shot-ready hidden">⚽ Shot unlocked! Pull back, aim for a corner, and release.</div>
+      </div>
+
+      <div id="socResults" class="game-results hidden">
+        <div style="font-size:60px">🏆</div>
+        <h2>Soccer Practice Complete!</h2>
+        <div class="bigscore" id="socFinalScore">0</div>
+        <div class="game-results-grid">
+          <div class="resultstat"><strong id="socFinalAccuracy">0%</strong>Spelling Accuracy</div>
+          <div class="resultstat"><strong id="socFinalStars">0</strong>Spelling Stars</div>
+          <div class="resultstat"><strong id="socFinalGoals">0</strong>Goals</div>
+          <div class="resultstat"><strong id="socFinalSaves">0</strong>Goalie Saves</div>
+          <div class="resultstat"><strong id="socFinalUsThem">0-0</strong>Us vs Them</div>
+        </div>
+        <button type="button" onclick="openSoccer()">Play Again</button>
+        <button type="button" class="homebtn" onclick="goHome()">Practice Menu</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const words=[{"word": "astonishment", "syllables": "as · ton · ish · ment", "pronunciation": "uh-STON-ish-muhnt", "phonograms": "a | s | t | o | n | i | sh | m | e | n | t", "sounds": [["as", "ass"], ["ton", "tahn"], ["ish", "ish"], ["ment", "muhnt"]], "watch": ["sh works together to make the “shhh” sound.", "-ment is a common word ending."], "definition": "A feeling of great surprise or amazement."}, {"word": "tremendous", "syllables": "tre · men · dous", "pronunciation": "truh-MEN-dus", "phonograms": "t | r | e | m | e | n | d | ou | s", "sounds": [["tre", "truh"], ["men", "MEN"], ["dous", "dus"]], "watch": ["The middle syllable MEN gets the strongest beat.", "The ending -ous is common in describing words."], "definition": "Very large, powerful, or impressive."}, {"word": "fortunate", "syllables": "for · tu · nate", "pronunciation": "FOR-chuh-nit", "phonograms": "f | or | t | u | n | a | t | e", "sounds": [["for", "FOR"], ["tu", "chuh"], ["nate", "nit"]], "watch": ["or is a sound chunk you will see in many words.", "The ending is spelled -nate even though we often say it more like “nit.”"], "definition": "Having good luck or a good result."}, {"word": "consequence", "syllables": "con · se · quence", "pronunciation": "KON-suh-kwens", "phonograms": "c | o | n | s | e | qu | e | n | c | e", "sounds": [["con", "KON"], ["se", "suh"], ["quence", "kwens"]], "watch": ["qu works together to make the “kw” sound.", "The final c sounds like /s/ because it comes before e."], "definition": "A result that happens because of an action."}, {"word": "suspicious", "syllables": "sus · pi · cious", "pronunciation": "suh-SPISH-us", "phonograms": "s | u | s | p | i | c | i | ou | s", "sounds": [["sus", "suhs"], ["pi", "SPISH"], ["cious", "us"]], "watch": ["The -cious ending is pronounced like “shus.”", "Watch the spelling: the /sh/ sound is not written with sh here."], "definition": "Feeling that something may be wrong or dishonest."}, {"word": "environment", "syllables": "en · vi · ron · ment", "pronunciation": "en-VY-run-muhnt", "phonograms": "e | n | v | i | r | o | n | m | e | n | t", "sounds": [["en", "en"], ["vi", "VY"], ["ron", "run"], ["ment", "muhnt"]], "watch": ["The vi syllable gets the strongest beat.", "-ment is a common ending. Keep all the letters even when some sounds are quiet."], "definition": "The surroundings where people, animals, or plants live."}, {"word": "immediately", "syllables": "im · me · di · ate · ly", "pronunciation": "ih-MEE-dee-uht-lee", "phonograms": "i | m | m | e | d | i | a | t | e | l | y", "sounds": [["im", "im"], ["me", "MEE"], ["di", "dee"], ["ate", "uht"], ["ly", "lee"]], "watch": ["Remember the double m near the beginning.", "The final y says the long e sound: “ee.”"], "definition": "Right away, without waiting."}, {"word": "magnificent", "syllables": "mag · nif · i · cent", "pronunciation": "mag-NIF-uh-suhnt", "phonograms": "m | a | g | n | i | f | i | c | e | n | t", "sounds": [["mag", "mag"], ["nif", "NIF"], ["i", "uh"], ["cent", "suhnt"]], "watch": ["The c in -cent sounds like /s/ because it comes before e.", "Break this long word into four manageable syllables."], "definition": "Extremely beautiful, impressive, or excellent."}, {"word": "necessary", "syllables": "nec · es · sar · y", "pronunciation": "NESS-uh-ser-ee", "phonograms": "n | e | c | e | s | s | a | r | y", "sounds": [["nec", "NESS"], ["es", "uh"], ["sar", "ser"], ["y", "ee"]], "watch": ["A classic spelling reminder: one c and two s’s.", "The final y says “ee.”"], "definition": "Needed or required."}, {"word": "opportunity", "syllables": "op · por · tu · ni · ty", "pronunciation": "op-er-TOO-nuh-tee", "phonograms": "o | p | p | or | t | u | n | i | t | y", "sounds": [["op", "op"], ["por", "er"], ["tu", "TOO"], ["ni", "nuh"], ["ty", "tee"]], "watch": ["Remember the double p near the beginning.", "The final y says the long e sound."], "definition": "A good chance to do or achieve something."}, {"word": "familiar", "syllables": "fa · mil · iar", "pronunciation": "fuh-MIL-yur", "phonograms": "f | a | m | i | l | i | ar", "sounds": [["fa", "fuh"], ["mil", "MIL"], ["iar", "yur"]], "watch": ["MIL gets the strongest beat when you say the word.", "Do not lose the i before the ending: famil-i-ar."], "definition": "Known because you have seen or experienced it before."}, {"word": "interrupt", "syllables": "in · ter · rupt", "pronunciation": "in-tuh-RUPT", "phonograms": "i | n | t | er | r | u | p | t", "sounds": [["in", "in"], ["ter", "tuh"], ["rupt", "RUPT"]], "watch": ["Remember the double r in the middle.", "RUPT gets the strongest beat."], "definition": "To stop someone or something before it is finished."}, {"word": "exaggerate", "syllables": "ex · ag · ger · ate", "pronunciation": "ig-ZAJ-uh-rayt", "phonograms": "e | x | ag | g | er | a | t | e", "sounds": [["ex", "igz"], ["ag", "AJ"], ["ger", "er"], ["ate", "ayt"]], "watch": ["The x sounds like “gz” in this word.", "The second g makes the “j” sound.", "The final e helps the a say its name: ā."], "definition": "To make something seem greater than it really is."}, {"word": "temperature", "syllables": "tem · per · a · ture", "pronunciation": "TEM-pruh-chur", "phonograms": "t | e | m | p | er | a | t | u | r | e", "sounds": [["tem", "TEM"], ["per", "pruh"], ["a", "uh"], ["ture", "chur"]], "watch": ["People often say this word quickly, so some syllables get squished.", "Keep the spelling chunk -ture at the end."], "definition": "A measure of how hot or cold something is."}, {"word": "government", "syllables": "gov · ern · ment", "pronunciation": "GUV-ern-muhnt", "phonograms": "g | o | v | er | n | m | e | n | t", "sounds": [["gov", "GUV"], ["ern", "ern"], ["ment", "muhnt"]], "watch": ["Do not drop the n when spelling government.", "-ment is a common word ending."], "definition": "The group or system that makes and enforces laws."}, {"word": "privilege", "syllables": "priv · i · lege", "pronunciation": "PRIV-uh-lij", "phonograms": "p | r | i | v | i | l | e | g | e", "sounds": [["priv", "PRIV"], ["i", "uh"], ["lege", "lij"]], "watch": ["The last g sounds like “j” because it comes before e.", "Watch the ending: -lege, not -ledge."], "definition": "A special right, benefit, or advantage."}, {"word": "separate", "syllables": "sep · a · rate", "pronunciation": "SEP-uh-rayt", "phonograms": "s | e | p | a | r | a | t | e", "sounds": [["sep", "SEP"], ["a", "uh"], ["rate", "rayt"]], "watch": ["Remember the a in the middle: sep-a-rate.", "The final e helps the last a say its name: ā."], "definition": "To divide or keep things apart."}, {"word": "especially", "syllables": "es · pe · cial · ly", "pronunciation": "ih-SPESH-uh-lee", "phonograms": "e | s | p | e | c | i | a | l | l | y", "sounds": [["es", "ihs"], ["pe", "PESH"], ["cial", "uhl"], ["ly", "lee"]], "watch": ["The -cial chunk helps make the “shul” sound.", "The final y says “ee.”"], "definition": "More than usual or more than others."}, {"word": "convenient", "syllables": "con · ven · ient", "pronunciation": "kun-VEEN-yuhnt", "phonograms": "c | o | n | v | e | n | i | e | n | t", "sounds": [["con", "kun"], ["ven", "VEEN"], ["ient", "yuhnt"]], "watch": ["VEEN gets the strongest beat.", "Watch the ending carefully: -ient."], "definition": "Easy to use, reach, or do."}, {"word": "recommend", "syllables": "rec · om · mend", "pronunciation": "rek-uh-MEND", "phonograms": "r | e | c | o | m | m | e | n | d", "sounds": [["rec", "rek"], ["om", "uhm"], ["mend", "MEND"]], "watch": ["Remember the double m in the middle.", "MEND gets the strongest beat."], "definition": "To suggest something because you think it is a good choice."}];
+const visualExamples={"astonishment": {"picture": "😲🎩🐇", "example": "The class stared in <b>astonishment</b> when the magician pulled a rabbit from his hat."}, "tremendous": {"picture": "🐘🏆✨", "example": "The elephant showed <b>tremendous</b> strength by moving the heavy log."}, "fortunate": {"picture": "🍀🎟️😊", "example": "Mia felt <b>fortunate</b> when she won the final ticket to the show."}, "consequence": {"picture": "⚽🪟😬", "example": "A broken window was the <b>consequence</b> of kicking the ball indoors."}, "suspicious": {"picture": "🕵️‍♀️👀📦", "example": "The detective became <b>suspicious</b> when the box began moving by itself."}, "environment": {"picture": "🌳🦋🌎", "example": "We protect the <b>environment</b> when we keep parks and rivers clean."}, "immediately": {"picture": "🔥🚨🏃", "example": "When the alarm sounded, everyone left the building <b>immediately</b>."}, "magnificent": {"picture": "🏰🌅✨", "example": "The castle looked <b>magnificent</b> as the sun rose behind it."}, "necessary": {"picture": "🪖🚲✅", "example": "A helmet is <b>necessary</b> for staying safer while riding a bike."}, "opportunity": {"picture": "🎤🌟🙋", "example": "The talent show gave Jay an <b>opportunity</b> to sing on stage."}, "familiar": {"picture": "🏠🐕🙂", "example": "The barking dog sounded <b>familiar</b> because it lived next door."}, "interrupt": {"picture": "✋💬⛔", "example": "Please do not <b>interrupt</b> while someone else is speaking."}, "exaggerate": {"picture": "🐟➡️🐋😄", "example": "Leo liked to <b>exaggerate</b> and claimed the tiny fish was as big as a whale."}, "temperature": {"picture": "🌡️☀️🥵", "example": "The <b>temperature</b> climbed as the afternoon became hotter."}, "government": {"picture": "🏛️📜👥", "example": "The <b>government</b> creates and carries out laws for the community."}, "privilege": {"picture": "🎟️⭐🔑", "example": "Being chosen to lead the assembly was a special <b>privilege</b>."}, "separate": {"picture": "🔴↔️🔵📦", "example": "Please <b>separate</b> the red blocks from the blue blocks."}, "especially": {"picture": "🍦🍫😍", "example": "Nora likes ice cream, <b>especially</b> chocolate."}, "convenient": {"picture": "🎒🚪⏰", "example": "Keeping her backpack by the door was <b>convenient</b> in the morning."}, "recommend": {"picture": "📚👍😊", "example": "I <b>recommend</b> this book because the adventure is exciting."}};
+let i=0;const card=document.getElementById("card");
+function render(){
+ const w=words[i]; card.classList.remove("flipped");
+ front.textContent=w.word; backWord.textContent=w.word; syllables.textContent=w.syllables;
+ pronunciation.textContent=w.pronunciation;
+ const parts=w.phonograms.split("|").map(p=>p.trim()).filter(Boolean);
+ phonograms.innerHTML=parts.map((p,idx)=>{
+   const cls=p.length>1 ? "phonogram-unit multi" : "phonogram-unit";
+   const divider=idx<parts.length-1 ? '<span class="phonogram-divider">|</span>' : '';
+   return `<span class="${cls}" title="${p.length>1 ? 'Multi-letter phonogram' : 'Single-letter phonogram'}">${p}</span>${divider}`;
+ }).join("");
+ definition.textContent=w.definition;
+ const visual=visualExamples[w.word];
+ picture.textContent=visual.picture;
+ example.innerHTML=visual.example;
+ counter.textContent=`Word ${i+1} of ${words.length}`; next.textContent=i===words.length-1?"Start Over ↻":"Next Word →";
+ soundbox.innerHTML=w.sounds.map((s,idx)=>`<div class="sound"><div class="chunk">${s[0]}</div><div class="said">sounds like<br><b>“${s[1]}”</b></div><button class="speak-mini" type="button" onclick="event.stopPropagation(); speakChunk(${idx})">🔊 Hear it</button></div>`).join("");
+ watch.innerHTML=w.watch.map(x=>`<div>⭐ ${x}</div>`).join("");
+}
+function flipCard(){card.classList.toggle("flipped")}
+function nextWord(){i=(i+1)%words.length;render()}
+function prevWord(){i=(i-1+words.length)%words.length;render()}
+document.addEventListener("keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();flipCard()}else if(e.key==="ArrowRight")nextWord();else if(e.key==="ArrowLeft")prevWord()});
+
+function speakText(text, rate=0.85){
+  if(!("speechSynthesis" in window)){
+    alert("Read aloud is not supported in this browser.");
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = rate;
+  utterance.pitch = 1;
+  utterance.volume = 1;
+
+  const voices = window.speechSynthesis.getVoices();
+  const preferred =
+    voices.find(v => /en-US/i.test(v.lang) && /Google|Microsoft|Samantha|Alex/i.test(v.name)) ||
+    voices.find(v => /en-US/i.test(v.lang)) ||
+    voices.find(v => /^en/i.test(v.lang));
+
+  if(preferred) utterance.voice = preferred;
+  window.speechSynthesis.speak(utterance);
+}
+
+function speakWholeWord(){
+  speakText(words[i].word, 0.72);
+}
+
+function speakChunk(index){
+  const chunk = words[i].sounds[index];
+  if(!chunk) return;
+  // Speak the kid-friendly sound approximation shown on the card.
+  speakText(chunk[1].replace(/[“”"]/g,""), 0.7);
+}
+
+
+let testOrder=[], testIndex=0, testCorrect=0, testMissed=[], waitingForNext=false;
+
+function openFlashcards(){
+  document.getElementById("modeScreen").classList.add("hidden");
+  document.getElementById("testMode").classList.add("hidden");
+  document.getElementById("flashMode").classList.remove("hidden");
+  i=0;
+  render();
+}
+
+function goHome(){
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  document.getElementById("flashMode").classList.add("hidden");
+  document.getElementById("testMode").classList.add("hidden");
+  document.getElementById("modeScreen").classList.remove("hidden");
+}
+
+function shuffledIndices(){
+  const arr=words.map((_,idx)=>idx);
+  for(let j=arr.length-1;j>0;j--){
+    const k=Math.floor(Math.random()*(j+1));
+    [arr[j],arr[k]]=[arr[k],arr[j]];
+  }
+  return arr;
+}
+
+function startTest(){
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  testOrder=shuffledIndices();
+  testIndex=0;
+  testCorrect=0;
+  testMissed=[];
+  waitingForNext=false;
+
+  document.getElementById("modeScreen").classList.add("hidden");
+  document.getElementById("flashMode").classList.add("hidden");
+  document.getElementById("testMode").classList.remove("hidden");
+  document.getElementById("testCard").classList.remove("hidden");
+  document.getElementById("resultBox").classList.add("hidden");
+  showTestWord();
+}
+
+function currentTestWord(){
+  return words[testOrder[testIndex]];
+}
+
+function showTestWord(){
+  waitingForNext=false;
+  document.getElementById("testProgress").textContent=`Word ${testIndex+1} of ${words.length}`;
+  document.getElementById("correctCount").textContent=testCorrect;
+  document.getElementById("remainingCount").textContent=words.length-testIndex;
+  const input=document.getElementById("answerInput");
+  input.value="";
+  input.disabled=false;
+  input.focus();
+  document.getElementById("testFeedback").textContent="";
+  document.getElementById("testFeedback").className="feedback";
+  document.getElementById("submitAnswerBtn").textContent="Check Answer";
+  setTimeout(()=>speakTestWord(),250);
+}
+
+function speakTestWord(){
+  speakText(currentTestWord().word,0.72);
+}
+
+function speakTestSentence(){
+  const w=currentTestWord();
+  const visual=visualExamples[w.word];
+  let sentence=visual.example.replace(/<[^>]*>/g,"");
+  speakText(sentence,0.82);
+}
+
+function submitTestAnswer(){
+  if(waitingForNext){
+    nextTestWord();
+    return;
+  }
+
+  const input=document.getElementById("answerInput");
+  const answer=input.value.trim().toLowerCase();
+  if(!answer){
+    document.getElementById("testFeedback").textContent="Type your spelling first.";
+    document.getElementById("testFeedback").className="feedback wrong";
+    return;
+  }
+
+  const correctWord=currentTestWord().word.toLowerCase();
+  const feedback=document.getElementById("testFeedback");
+  input.disabled=true;
+  waitingForNext=true;
+
+  if(answer===correctWord){
+    testCorrect++;
+    feedback.textContent="✓ Correct!";
+    feedback.className="feedback correct";
+  }else{
+    testMissed.push({word:currentTestWord().word,answer:input.value.trim()});
+    feedback.innerHTML=`✗ The correct spelling is <strong>${currentTestWord().word}</strong>.`;
+    feedback.className="feedback wrong";
+  }
+
+  document.getElementById("correctCount").textContent=testCorrect;
+  document.getElementById("submitAnswerBtn").textContent=testIndex===words.length-1 ? "See My Score →" : "Next Word →";
+}
+
+function nextTestWord(){
+  testIndex++;
+  if(testIndex>=words.length){
+    finishTest();
+  }else{
+    showTestWord();
+  }
+}
+
+function finishTest(){
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  document.getElementById("testCard").classList.add("hidden");
+  document.getElementById("resultBox").classList.remove("hidden");
+
+  const pct=Math.round((testCorrect/words.length)*100);
+  document.getElementById("resultScore").textContent=`${testCorrect}/${words.length}`;
+  let message="Keep practicing. Every round helps.";
+  if(pct===100) message="Perfect score! 🌟";
+  else if(pct>=90) message="Excellent spelling! 🌟";
+  else if(pct>=80) message="Strong work!";
+  else if(pct>=70) message="Good progress. Review the missed words.";
+  document.getElementById("resultMessage").textContent=`${pct}% — ${message}`;
+
+  const missed=document.getElementById("missedList");
+  if(testMissed.length){
+    missed.classList.remove("hidden");
+    missed.innerHTML='<div style="font-weight:900;font-size:18px;border:0;margin-bottom:5px">Words to Practice</div>'+
+      testMissed.map(x=>`<div><strong>${x.word}</strong> <span style="color:#64748b">— you typed: ${escapeHtml(x.answer)}</span></div>`).join("");
+  }else{
+    missed.classList.add("hidden");
+    missed.innerHTML="";
+  }
+}
+
+function escapeHtml(text){
+  return text.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+}
+
+document.addEventListener("keydown",e=>{
+  if(!document.getElementById("testMode").classList.contains("hidden") && e.key==="Enter"){
+    e.preventDefault();
+    submitTestAnswer();
+  }
+});
+
+
+// ---------------- VOLLEYBALL + SOCCER PRACTICE ----------------
+function shuffleGameWords(){
+  const a=words.map((_,i)=>i);
+  for(let j=a.length-1;j>0;j--){const k=Math.floor(Math.random()*(j+1));[a[j],a[k]]=[a[k],a[j]]}
+  return a;
+}
+function cpoint(canvas,e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+function rr(c,x,y,w,h,r,fill,stroke){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();if(fill)c.fill();if(stroke)c.stroke()}
+
+
+let audioCtx=null;
+function getAudioCtx(){
+  if(!audioCtx){
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(AC) audioCtx=new AC();
+  }
+  if(audioCtx && audioCtx.state==="suspended") audioCtx.resume();
+  return audioCtx;
+}
+function playPointSound(){
+  const ac=getAudioCtx(); if(!ac)return;
+  const now=ac.currentTime;
+  [523.25,659.25,783.99].forEach((f,idx)=>{
+    const o=ac.createOscillator(),g=ac.createGain();
+    o.type="sine";o.frequency.value=f;
+    g.gain.setValueAtTime(0.0001,now+idx*.07);
+    g.gain.exponentialRampToValueAtTime(.16,now+idx*.07+.015);
+    g.gain.exponentialRampToValueAtTime(0.0001,now+idx*.07+.18);
+    o.connect(g);g.connect(ac.destination);o.start(now+idx*.07);o.stop(now+idx*.07+.2);
+  });
+}
+function playGoalSound(){
+  const ac=getAudioCtx(); if(!ac)return;
+  const now=ac.currentTime;
+  const notes=[392,523.25,659.25,783.99,1046.5];
+  notes.forEach((f,idx)=>{
+    const o=ac.createOscillator(),g=ac.createGain();
+    o.type=idx%2?"square":"sine";o.frequency.value=f;
+    g.gain.setValueAtTime(.0001,now+idx*.055);
+    g.gain.exponentialRampToValueAtTime(idx<3?.12:.18,now+idx*.055+.01);
+    g.gain.exponentialRampToValueAtTime(.0001,now+idx*.055+.22);
+    o.connect(g);g.connect(ac.destination);o.start(now+idx*.055);o.stop(now+idx*.055+.24);
+  });
+}
+function showScorePop(text,confetti=false){
+  const el=document.getElementById("scorePop");
+  el.textContent=text;
+  el.classList.remove("show");
+  void el.offsetWidth;
+  el.classList.add("show");
+  if(confetti){
+    const colors=["#fde047","#60a5fa","#f472b6","#4ade80","#fb7185","#c084fc"];
+    for(let i=0;i<30;i++){
+      const p=document.createElement("div");
+      p.className="confetti-piece";
+      p.style.left=(35+Math.random()*30)+"vw";
+      p.style.top=(16+Math.random()*8)+"vh";
+      p.style.background=colors[i%colors.length];
+      p.style.setProperty("--dx",(Math.random()*420-210)+"px");
+      p.style.animationDelay=(Math.random()*.12)+"s";
+      document.body.appendChild(p);
+      setTimeout(()=>p.remove(),1400);
+    }
+  }
+}
+function drawFootballer(c,x,y,who,goalie=false){
+  c.save();
+  const isR=who==="ronaldo";
+  const jersey=isR?"#b91c1c":"#d9f2ff";
+  const stripe=isR?"#0f7a3a":"#73bde8";
+  const shorts=isR?"#0f5132":"#ffffff";
+  const skin="#d9a06f";
+  const hair=isR?"#2b211b":"#3a2a21";
+
+  // body
+  c.fillStyle=jersey;
+  c.beginPath();c.roundRect(x-20,y-5,40,42,8);c.fill();
+
+  // jersey accent
+  c.fillStyle=stripe;
+  if(isR){
+    c.fillRect(x-20,y-5,8,42);
+  }else{
+    c.fillRect(x-15,y-5,8,42); c.fillRect(x+7,y-5,8,42);
+  }
+
+  // head
+  c.fillStyle=skin;c.beginPath();c.arc(x,y-25,15,0,Math.PI*2);c.fill();
+
+  // hair
+  c.fillStyle=hair;
+  c.beginPath();
+  if(isR){
+    c.moveTo(x-13,y-30);c.quadraticCurveTo(x,y-45,x+13,y-30);c.lineTo(x+10,y-38);c.quadraticCurveTo(x,y-47,x-10,y-38);c.closePath();
+  }else{
+    c.arc(x,y-32,14,Math.PI,Math.PI*2);c.lineTo(x+13,y-23);c.quadraticCurveTo(x,y-18,x-13,y-23);c.closePath();
+  }
+  c.fill();
+
+  // shorts
+  c.fillStyle=shorts;c.fillRect(x-18,y+37,36,18);
+
+  // legs
+  c.strokeStyle=skin;c.lineWidth=7;c.lineCap="round";
+  c.beginPath();c.moveTo(x-10,y+54);c.lineTo(x-13,y+72);c.moveTo(x+10,y+54);c.lineTo(x+13,y+72);c.stroke();
+
+  // arms / goalie pose
+  c.beginPath();
+  if(goalie){
+    c.moveTo(x-19,y+8);c.lineTo(x-38,y-4);c.moveTo(x+19,y+8);c.lineTo(x+38,y-4);
+  }else{
+    c.moveTo(x-19,y+8);c.lineTo(x-30,y+25);c.moveTo(x+19,y+8);c.lineTo(x+30,y+25);
+  }
+  c.stroke();
+
+  // gloves if goalie
+  if(goalie){
+    c.fillStyle="#f8fafc";
+    c.beginPath();c.arc(x-40,y-5,7,0,Math.PI*2);c.arc(x+40,y-5,7,0,Math.PI*2);c.fill();
+  }
+
+  // number
+  c.fillStyle=isR?"#ffffff":"#111827";
+  c.font="900 17px Arial";c.textAlign="center";c.textBaseline="middle";
+  c.fillText(isR?"7":"10",x,y+16);
+  c.restore();
+}
+
+// ---------- VOLLEYBALL ----------
+let vbOrder=[],vbIdx=0,vbScoreVal=0,vbStarsVal=0,vbAcesVal=0,vbInVal=0,vbUsVal=0,vbThemVal=0,vbAttempts=0,vbTotalAttempts=0,vbTotalCorrect=0;
+let vbCanvasEl,vbCtx,vbW=1000,vbH=510,vbBall=null,vbDrag=false,vbFlying=false,vbAnim=false,vbUnlocked=false;
+let vbSX=150,vbSY=360,vbGravity=.24;
+
+function openVolleyball(){
+  window.speechSynthesis&&speechSynthesis.cancel();
+  modeScreen.classList.add("hidden");flashMode.classList.add("hidden");testMode.classList.add("hidden");soccerMode.classList.add("hidden");
+  volleyballMode.classList.remove("hidden");vbResults.classList.add("hidden");vbSpellPanel.classList.remove("hidden");
+  vbOrder=shuffleGameWords();vbIdx=0;vbScoreVal=0;vbStarsVal=0;vbAcesVal=0;vbInVal=0;vbUsVal=0;vbThemVal=0;vbTotalAttempts=0;vbTotalCorrect=0;
+  setupVB();loadVBWord(true);
+}
+function setupVB(){
+  vbCanvasEl=document.getElementById("vbCanvas");vbCtx=vbCanvasEl.getContext("2d");
+  resizeVB();window.addEventListener("resize",resizeVB);
+  vbCanvasEl.onpointerdown=vbDown;vbCanvasEl.onpointermove=vbMove;vbCanvasEl.onpointerup=vbUp;vbCanvasEl.onpointercancel=vbUp;
+}
+function resizeVB(){
+  if(!vbCanvasEl)return;const r=vbCanvasEl.getBoundingClientRect(),d=devicePixelRatio||1;
+  vbCanvasEl.width=Math.max(700,Math.floor(r.width*d));vbCanvasEl.height=Math.floor((r.width<700?430:510)*d);
+  vbCtx.setTransform(d,0,0,d,0,0);vbW=r.width;vbH=r.width<700?430:510;vbSX=vbW*.13;vbSY=vbH*.70;resetVB();drawVB();
+}
+function vbWord(){return words[vbOrder[vbIdx]]}
+function loadVBWord(first=false){
+  vbUnlocked=false;vbAttempts=0;vbFlying=false;vbAnim=false;vbAnswer.value="";vbAnswer.disabled=false;
+  vbFeedback.textContent="";vbFeedback.className="game-feedback";vbPowerNote.textContent="";vbReady.classList.add("hidden");vbCheckBtn.textContent="Check Spelling";
+  vbWordNum.textContent=vbIdx+1;vbStars.textContent=vbStarsVal;vbScore.textContent=vbScoreVal.toLocaleString();vbAces.textContent=vbAcesVal;vbUs.textContent=vbUsVal;vbThem.textContent=vbThemVal;
+  resetVB();drawVB();setTimeout(speakVBWord,first?300:150);vbAnswer.focus();
+}
+function speakVBWord(){speakText(vbWord().word,.72)}
+function speakVBSentence(){speakText(visualExamples[vbWord().word].example.replace(/<[^>]*>/g,""),.82)}
+function checkVBSpelling(){
+  if(vbUnlocked)return;const a=vbAnswer.value.trim().toLowerCase(),t=vbWord().word.toLowerCase();
+  if(!a){vbFeedback.textContent="Type the word first.";vbFeedback.className="game-feedback bad";return}
+  vbAttempts++;vbTotalAttempts++;
+  if(a===t){
+    vbTotalCorrect++;vbUsVal++;playPointSound();showScorePop("US +1");vbUnlocked=true;vbAnswer.disabled=true;const s=vbAttempts===1?3:vbAttempts===2?2:1;vbStarsVal+=s;vbUs.textContent=vbUsVal;
+    vbFeedback.textContent=`✓ Correct! ${"⭐".repeat(s)}`;vbFeedback.className="game-feedback good";
+    vbPowerNote.textContent="🏐 SERVE UNLOCKED!";vbReady.classList.remove("hidden");vbStars.textContent=vbStarsVal;
+  }else{vbThemVal++;playPointSound();showScorePop("THEM +1");vbThem.textContent=vbThemVal;vbFeedback.innerHTML=`Not quite. They get a point! <strong>${vbWord().syllables}</strong>`;vbFeedback.className="game-feedback bad";vbAnswer.value="";vbAnswer.focus();speakVBWord()}
+}
+function resetVB(){vbBall={x:vbSX,y:vbSY,vx:0,vy:0,r:17};vbDrag=false;vbFlying=false}
+function vbDown(e){if(!vbUnlocked||vbFlying||vbAnim)return;const p=cpoint(vbCanvasEl,e);if(Math.hypot(p.x-vbBall.x,p.y-vbBall.y)<42){vbDrag=true;vbCanvasEl.setPointerCapture(e.pointerId)}}
+function vbMove(e){
+  if(!vbDrag)return;const p=cpoint(vbCanvasEl,e);let dx=p.x-vbSX,dy=p.y-vbSY,max=120,l=Math.hypot(dx,dy);
+  if(l>max){dx=dx/l*max;dy=dy/l*max}vbBall.x=vbSX+Math.min(dx,15);vbBall.y=vbSY+dy;drawVB();
+}
+function vbUp(){
+  if(!vbDrag)return;
+
+  // Read the student's drag as AIM only.
+  const pullX=vbSX-vbBall.x;
+  const pullY=vbSY-vbBall.y;
+
+  vbDrag=false;
+  vbFlying=true;
+  vbAnim=true;
+
+  // IMPORTANT: the volleyball launches from the server,
+  // not from wherever the student dragged the aiming ball.
+  vbBall.x=vbSX;
+  vbBall.y=vbSY;
+
+  const targetX=vbW*.80;
+  const targetY=vbH*.80-18;
+  const flightFrames=50;
+
+  const idealVX=(targetX-vbBall.x)/flightFrames;
+  const idealVY=(targetY-vbBall.y-.5*vbGravity*flightFrames*flightFrames)/flightFrames;
+
+  const userVX=Math.max(4,pullX*.12);
+  const userVY=pullY*.10;
+
+  // Strong guidance, but the student's pull still changes the flight.
+  vbBall.vx=idealVX*.86+userVX*.14;
+  vbBall.vy=idealVY*.86+userVY*.14;
+
+  requestAnimationFrame(vbLoop);
+}
+function vbLoop(){
+  if(!vbAnim)return;
+  vbBall.vy+=vbGravity;vbBall.x+=vbBall.vx;vbBall.y+=vbBall.vy;
+  drawVB();
+  const ground=vbH*.80,netX=vbW*.50,netTop=vbH*.43;
+  // Very forgiving net check. Slight clips are allowed so kids can actually play.
+  if(vbBall.x>=netX-5&&vbBall.x<=netX+8&&vbBall.y+vbBall.r>ground-18){
+    vbAnim=false;finishVBServe("net");return;
+  }
+  if(vbBall.y+vbBall.r>=ground){
+    vbAnim=false;
+    const inCourt=vbBall.x>netX+5&&vbBall.x<vbW*.97;
+    if(!inCourt){finishVBServe("out");return}
+    const target=vbBall.x>vbW*.67&&vbBall.x<vbW*.94;
+    const deep=vbBall.x>vbW*.60;
+    finishVBServe(target?"ace":deep?"deep":"in");return;
+  }
+  if(vbBall.x>vbW+60||vbBall.y>vbH+60){vbAnim=false;finishVBServe("out");return}
+  requestAnimationFrame(vbLoop);
+}
+function finishVBServe(result){
+  let msg="",pts=0;
+  if(result==="ace"){vbAcesVal++;vbInVal++;pts=2000;msg="🏐 ACE! Perfect target serve! +2,000";playGoalSound();showScorePop("ACE! 🏐",true)}
+  else if(result==="deep"){vbInVal++;pts=1400;msg="🏐 Deep serve in! +1,400"}
+  else if(result==="in"){vbInVal++;pts=1000;msg="🏐 Serve is IN! +1,000"}
+  else if(result==="net"){pts=250;msg="Net serve. Next word earns another try."}
+  else{pts=250;msg="Out. Next word earns another serve."}
+  vbScoreVal+=pts+(vbAttempts===1?700:vbAttempts===2?400:200);vbScore.textContent=vbScoreVal.toLocaleString();vbAces.textContent=vbAcesVal;vbPowerNote.textContent=msg;
+  setTimeout(()=>{vbIdx++;if(vbIdx>=words.length)finishVB();else loadVBWord()},900);
+}
+function finishVB(){
+  vbSpellPanel.classList.add("hidden");vbResults.classList.remove("hidden");
+  const acc=vbTotalAttempts?Math.round(vbTotalCorrect/vbTotalAttempts*100):0;
+  vbFinalScore.textContent=vbScoreVal.toLocaleString();vbFinalAccuracy.textContent=acc+"%";vbFinalStars.textContent=vbStarsVal;vbFinalAces.textContent=vbAcesVal;vbFinalIn.textContent=vbInVal;vbFinalUsThem.textContent=`${vbUsVal}-${vbThemVal}`;
+}
+function drawVB(){
+  if(!vbCtx)return;
+  const c=vbCtx,ground=vbH*.80,netX=vbW*.50,netTop=vbH*.43;
+  c.clearRect(0,0,vbW,vbH);
+
+  c.fillStyle="#8bd5f5";c.fillRect(0,0,vbW,ground);
+  c.fillStyle="#d6b36a";c.fillRect(0,ground,vbW,vbH-ground);
+
+  // Court
+  c.strokeStyle="#fff";c.lineWidth=4;
+  c.strokeRect(vbW*.08,ground-110,vbW*.84,110);
+  c.beginPath();c.moveTo(netX,ground-110);c.lineTo(netX,ground);c.stroke();
+
+  // Attack lines
+  c.beginPath();
+  c.moveTo(vbW*.34,ground-110);c.lineTo(vbW*.34,ground);
+  c.moveTo(vbW*.66,ground-110);c.lineTo(vbW*.66,ground);
+  c.stroke();
+
+  // Net
+  c.strokeStyle="#334155";c.lineWidth=5;
+  c.beginPath();c.moveTo(netX,ground);c.lineTo(netX,netTop);c.stroke();
+  c.strokeStyle="#fff";c.lineWidth=2;
+  for(let y=netTop;y<ground;y+=12){
+    c.beginPath();c.moveTo(netX-7,y);c.lineTo(netX+7,y);c.stroke();
+  }
+  c.strokeStyle="#fff";c.lineWidth=4;
+  c.beginPath();c.moveTo(netX-20,netTop);c.lineTo(netX+20,netTop);c.stroke();
+
+  // Big target zone
+  c.fillStyle="#fde04766";
+  c.fillRect(vbW*.67,ground-110,vbW*.27,110);
+  c.fillStyle="#713bb1";
+  c.font="900 16px Arial";c.textAlign="center";
+  c.fillText("ACE ZONE",vbW*.805,ground-55);
+
+  // Opposing team, so this actually looks like volleyball
+  c.font="42px Arial";
+  const defenders=[
+    [vbW*.61,ground-70],[vbW*.70,ground-38],[vbW*.79,ground-82],
+    [vbW*.88,ground-42],[vbW*.90,ground-92],[vbW*.63,ground-25]
+  ];
+  defenders.forEach((p,idx)=>c.fillText(idx%2===0?"🧍‍♀️":"🧍",p[0],p[1]));
+
+  // Server
+  c.font="48px Arial";
+  c.fillText("🧑",vbSX,vbSY+58);
+
+  // Guided pull circle
+  if(vbUnlocked&&!vbFlying){
+    const gx=vbSX-82,gy=vbSY-58;
+    c.fillStyle="#22c55e33";
+    c.strokeStyle="#16a34a";
+    c.lineWidth=4;
+    c.beginPath();c.arc(gx,gy,34,0,Math.PI*2);c.fill();c.stroke();
+    c.fillStyle="#166534";c.font="900 13px Arial";c.textAlign="center";
+    c.fillText("PULL HERE",gx,gy+4);
+
+    // Suggested trajectory path
+    const targetX=vbW*.80,targetY=ground-12,flightFrames=48;
+    const vx=(targetX-vbSX)/flightFrames;
+    const vy=(targetY-vbSY-.5*vbGravity*flightFrames*flightFrames)/flightFrames;
+    c.fillStyle="#ffffffdd";
+    for(let t=5;t<flightFrames;t+=4){
+      const x=vbSX+vx*t;
+      const y=vbSY+vy*t+.5*vbGravity*t*t;
+      c.beginPath();c.arc(x,y,3.5,0,Math.PI*2);c.fill();
+    }
+  }
+
+  c.font="36px Arial";
+  c.fillText("🏐",vbBall.x,vbBall.y);
+
+  if(vbUnlocked&&!vbFlying){
+    c.fillStyle="#ffffffdd";rr(c,18,16,360,42,12,true,false);
+    c.fillStyle="#334155";c.font="700 16px Arial";c.textAlign="left";
+    c.fillText("Drag toward PULL HERE • Release • Aim assist helps",34,37);
+  }
+}
+
+// ---------- SOCCER ----------
+let socOrder=[],socIdx=0,socScoreVal=0,socStarsVal=0,socGoalsVal=0,socSavesVal=0,socUsVal=0,socThemVal=0,socAttempts=0,socTotalAttempts=0,socTotalCorrect=0;
+let socPlayer="ronaldo",socCanvasEl,socCtx,socW=1000,socH=510,socBall=null,socDrag=false,socFlying=false,socAnim=false,socUnlocked=false;
+let socSX=150,socSY=360,keeperX=0,keeperDir=1;
+
+function openSoccer(){
+  window.speechSynthesis&&speechSynthesis.cancel();
+  modeScreen.classList.add("hidden");flashMode.classList.add("hidden");testMode.classList.add("hidden");volleyballMode.classList.add("hidden");
+  soccerMode.classList.remove("hidden");socResults.classList.add("hidden");socSpellPanel.classList.remove("hidden");
+  socOrder=shuffleGameWords();socIdx=0;socScoreVal=0;socStarsVal=0;socGoalsVal=0;socSavesVal=0;socUsVal=0;socThemVal=0;socTotalAttempts=0;socTotalCorrect=0;socPlayer="ronaldo";
+  chooseSoccerPlayer("ronaldo");setupSoc();loadSocWord(true);
+}
+function chooseSoccerPlayer(p){
+  socPlayer=p;ronaldoBtn&&ronaldoBtn.classList.toggle("active",p==="ronaldo");messiBtn&&messiBtn.classList.toggle("active",p==="messi");
+  if(socPlayerHelp)socPlayerHelp.textContent=p==="ronaldo"?"Ronaldo #7 in red shoots. Messi #10 in sky blue and white becomes the goalkeeper.":"Messi: more curve and precision, slightly less power.";
+}
+function setupSoc(){
+  socCanvasEl=document.getElementById("socCanvas");socCtx=socCanvasEl.getContext("2d");resizeSoc();window.addEventListener("resize",resizeSoc);
+  socCanvasEl.onpointerdown=socDown;socCanvasEl.onpointermove=socMove;socCanvasEl.onpointerup=socUp;socCanvasEl.onpointercancel=socUp;
+}
+function resizeSoc(){
+  if(!socCanvasEl)return;const r=socCanvasEl.getBoundingClientRect(),d=devicePixelRatio||1;
+  socCanvasEl.width=Math.max(700,Math.floor(r.width*d));socCanvasEl.height=Math.floor((r.width<700?430:510)*d);
+  socCtx.setTransform(d,0,0,d,0,0);socW=r.width;socH=r.width<700?430:510;socSX=socW*.14;socSY=socH*.73;keeperX=socW*.80;resetSoc();drawSoc();
+}
+function socWord(){return words[socOrder[socIdx]]}
+function loadSocWord(first=false){
+  socUnlocked=false;socAttempts=0;socFlying=false;socAnim=false;socAnswer.value="";socAnswer.disabled=false;
+  socFeedback.textContent="";socFeedback.className="game-feedback";socPowerNote.textContent="";socReady.classList.add("hidden");socCheckBtn.textContent="Check Spelling";
+  socWordNum.textContent=socIdx+1;socStars.textContent=socStarsVal;socScore.textContent=socScoreVal.toLocaleString();socGoals.textContent=socGoalsVal;socUs.textContent=socUsVal;socThem.textContent=socThemVal;
+  resetSoc();drawSoc();setTimeout(speakSocWord,first?300:150);socAnswer.focus();
+}
+function speakSocWord(){speakText(socWord().word,.72)}
+function speakSocSentence(){speakText(visualExamples[socWord().word].example.replace(/<[^>]*>/g,""),.82)}
+function checkSocSpelling(){
+  if(socUnlocked)return;const a=socAnswer.value.trim().toLowerCase(),t=socWord().word.toLowerCase();
+  if(!a){socFeedback.textContent="Type the word first.";socFeedback.className="game-feedback bad";return}
+  socAttempts++;socTotalAttempts++;
+  if(a===t){
+    socTotalCorrect++;socUsVal++;playPointSound();showScorePop("US +1");socUnlocked=true;socAnswer.disabled=true;const s=socAttempts===1?3:socAttempts===2?2:1;socStarsVal+=s;socUs.textContent=socUsVal;
+    socFeedback.textContent=`✓ Correct! ${"⭐".repeat(s)}`;socFeedback.className="game-feedback good";socPowerNote.textContent="⚽ SHOT UNLOCKED!";
+    socReady.classList.remove("hidden");socStars.textContent=socStarsVal;
+  }else{socThemVal++;playPointSound();showScorePop("THEM +1");socThem.textContent=socThemVal;socFeedback.innerHTML=`Not quite. They get a point! <strong>${socWord().syllables}</strong>`;socFeedback.className="game-feedback bad";socAnswer.value="";socAnswer.focus();speakSocWord()}
+}
+function resetSoc(){socBall={x:socSX,y:socSY,vx:0,vy:0,r:17};socDrag=false;socFlying=false;keeperX=socW*.80}
+function socDown(e){if(!socUnlocked||socFlying||socAnim)return;const p=cpoint(socCanvasEl,e);if(Math.hypot(p.x-socBall.x,p.y-socBall.y)<42){socDrag=true;socCanvasEl.setPointerCapture(e.pointerId)}}
+function socMove(e){
+  if(!socDrag)return;const p=cpoint(socCanvasEl,e);let dx=p.x-socSX,dy=p.y-socSY,max=120,l=Math.hypot(dx,dy);
+  if(l>max){dx=dx/l*max;dy=dy/l*max}socBall.x=socSX+Math.min(dx,15);socBall.y=socSY+dy;drawSoc();
+}
+function socUp(){
+  if(!socDrag)return;
+
+  const pullX=socSX-socBall.x;
+  const pullY=socSY-socBall.y;
+
+  // Pick a target from the student's vertical aiming direction.
+  const gx=socW*.73,gy=socH*.38,gw=socW*.22,gh=socH*.40;
+  const targetX=gx+gw*.82;
+  const targetY=pullY>0 ? gy+40 : gy+gh*.72;
+  const frames=36;
+
+  socDrag=false;
+  socFlying=true;
+  socAnim=true;
+
+  // Launch from the shooter's foot, not the dragged aiming position.
+  socBall.x=socSX;
+  socBall.y=socSY;
+
+  const idealVX=(targetX-socBall.x)/frames;
+  const idealVY=(targetY-socBall.y)/frames;
+
+  const mult=socPlayer==="ronaldo"?.16:.14;
+  const userVX=Math.max(4,pullX*mult);
+  const userVY=pullY*mult;
+
+  socBall.vx=idealVX*.88+userVX*.12;
+  socBall.vy=idealVY*.88+userVY*.12;
+
+  requestAnimationFrame(socLoop);
+}
+function socLoop(){
+  if(!socAnim)return;
+  // goalie moves while shot is flying
+  const gx=socW*.73,gw=socW*.22;keeperX+=keeperDir*1.25;if(keeperX<gx+35||keeperX>gx+gw-35)keeperDir*=-1;
+  socBall.x+=socBall.vx;socBall.y+=socBall.vy;
+  if(socPlayer==="messi"){socBall.vy*=.994} // a bit more controlled/curved feel
+  drawSoc();
+  const gy=socH*.38,gh=socH*.40;
+  if(socBall.x>=gx&&socBall.x<=gx+gw&&socBall.y>=gy&&socBall.y<=gy+gh){
+    if(Math.hypot(socBall.x-keeperX,socBall.y-(gy+gh*.58))<30){socAnim=false;socSavesVal++;finishSocShot(false,"SAVE!");return}
+    if(socBall.x>=gx-4&&socBall.x<=gx+gw+4&&socBall.y>=gy-4&&socBall.y<=gy+gh+4){socAnim=false;socGoalsVal++;playGoalSound();showScorePop("GOAL! ⚽",true);finishSocShot(true,"GOAL!");return}
+  }
+  if(socBall.x>socW+50||socBall.y<0||socBall.y>socH){socAnim=false;finishSocShot(false,"MISS");return}
+  requestAnimationFrame(socLoop);
+}
+function finishSocShot(goal,label){
+  let pts=goal?1800:350;socScoreVal+=pts+(socAttempts===1?700:socAttempts===2?400:200);
+  socPowerNote.textContent=goal?`⚽ ${label} +1,800`:`${label}. Next word earns another shot.`;
+  socScore.textContent=socScoreVal.toLocaleString();socGoals.textContent=socGoalsVal;
+  setTimeout(()=>{socIdx++;if(socIdx>=words.length)finishSoc();else loadSocWord()},900);
+}
+function finishSoc(){
+  socSpellPanel.classList.add("hidden");socResults.classList.remove("hidden");const acc=socTotalAttempts?Math.round(socTotalCorrect/socTotalAttempts*100):0;
+  socFinalScore.textContent=socScoreVal.toLocaleString();socFinalAccuracy.textContent=acc+"%";socFinalStars.textContent=socStarsVal;socFinalGoals.textContent=socGoalsVal;socFinalSaves.textContent=socSavesVal;socFinalUsThem.textContent=`${socUsVal}-${socThemVal}`;
+}
+function drawSoc(){
+  if(!socCtx)return;
+  const c=socCtx,gx=socW*.73,gy=socH*.38,gw=socW*.22,gh=socH*.40;
+  c.clearRect(0,0,socW,socH);
+
+  c.fillStyle="#8bd5f5";c.fillRect(0,0,socW,socH*.80);
+  c.fillStyle="#72b95f";c.fillRect(0,socH*.80,socW,socH*.20);
+
+  // Goal
+  c.strokeStyle="#fff";c.lineWidth=6;c.strokeRect(gx,gy,gw,gh);
+  c.lineWidth=2;
+  for(let x=gx;x<=gx+gw;x+=18){
+    c.beginPath();c.moveTo(x,gy);c.lineTo(x,gy+gh);c.stroke();
+  }
+  for(let y=gy;y<=gy+gh;y+=18){
+    c.beginPath();c.moveTo(gx,y);c.lineTo(gx+gw,y);c.stroke();
+  }
+
+  // Very obvious scoring targets
+  c.fillStyle="#fde047aa";
+  [[gx+28,gy+28],[gx+gw-28,gy+28],[gx+28,gy+gh-28],[gx+gw-28,gy+gh-28]].forEach(p=>{
+    c.beginPath();c.arc(p[0],p[1],24,0,Math.PI*2);c.fill();
+  });
+
+  // Goalie is the player NOT selected
+  const goalieWho=socPlayer==="ronaldo"?"messi":"ronaldo";
+  drawFootballer(c,keeperX,gy+gh*.58-8,goalieWho,true);
+
+  c.fillStyle="#ffffffdd";
+  rr(c,keeperX-48,gy+gh*.58+54,96,28,9,true,false);
+  c.fillStyle="#1f2937";c.font="900 12px Arial";c.textAlign="center";c.textBaseline="middle";
+  c.fillText(goalieWho==="ronaldo"?"RONALDO #7":"MESSI #10",keeperX,gy+gh*.58+68);
+
+  // Shooter
+  drawFootballer(c,socSX,socSY+4,socPlayer,false);
+  c.fillStyle="#ffffffdd";
+  rr(c,socSX-48,socSY+82,96,28,9,true,false);
+  c.fillStyle="#1f2937";c.font="900 12px Arial";c.textAlign="center";c.textBaseline="middle";
+  c.fillText(socPlayer==="ronaldo"?"RONALDO #7":"MESSI #10",socSX,socSY+96);
+
+  // Guided aim targets near the ball
+  if(socUnlocked&&!socFlying){
+    const topGuide={x:socSX-78,y:socSY-70};
+    const lowGuide={x:socSX-78,y:socSY-18};
+
+    [topGuide,lowGuide].forEach((p,idx)=>{
+      c.fillStyle="#22c55e33";c.strokeStyle="#16a34a";c.lineWidth=4;
+      c.beginPath();c.arc(p.x,p.y,30,0,Math.PI*2);c.fill();c.stroke();
+      c.fillStyle="#166534";c.font="900 12px Arial";c.textAlign="center";
+      c.fillText(idx===0?"TOP CORNER":"LOW CORNER",p.x,p.y+4);
+    });
+
+    // Guide line to top right corner
+    c.setLineDash([7,7]);c.strokeStyle="#ffffffdd";c.lineWidth=3;
+    c.beginPath();c.moveTo(socBall.x,socBall.y);c.lineTo(gx+gw-28,gy+28);c.stroke();
+    c.setLineDash([]);
+  }
+
+  c.font="36px Arial";
+  c.fillText("⚽",socBall.x,socBall.y);
+
+  if(socUnlocked&&!socFlying){
+    c.fillStyle="#ffffffdd";rr(c,18,16,370,42,12,true,false);
+    c.fillStyle="#334155";c.font="700 16px Arial";c.textAlign="left";
+    c.fillText("Pull toward a guide circle • Aim assist helps",34,37);
+  }
+}
+
+goHome=function(){
+  window.speechSynthesis&&window.speechSynthesis.cancel();
+  flashMode.classList.add("hidden");testMode.classList.add("hidden");volleyballMode.classList.add("hidden");soccerMode.classList.add("hidden");modeScreen.classList.remove("hidden");
+};
+document.addEventListener("keydown",e=>{
+  if(e.key!=="Enter")return;
+  if(!volleyballMode.classList.contains("hidden")&&!vbUnlocked){e.preventDefault();checkVBSpelling()}
+  else if(!soccerMode.classList.contains("hidden")&&!socUnlocked){e.preventDefault();checkSocSpelling()}
+});
+
+render();
+</script></body></html>

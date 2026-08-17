@@ -129,7 +129,12 @@ function elaQ(skill,seed,i){const r=hashSeed(seed+i*41),low=skill.toLowerCase();
  else {prompt=`Choose the best word to complete: "The explorer moved ___ through the dark cave."`;answer="carefully";choices=["carefully","careful","cave","explorer"];}
  return {prompt,answer:String(answer),choices:shuffle(r,choices.map(String))};
 }
-function makeQ(task,i){return task.subject==="MATH"?numQ(task.skill,task.seed,i):task.subject==="ELA"?elaQ(task.skill,task.seed,i):(i%2?elaQ(task.skill,task.seed,i):numQ(task.skill,task.seed,i))}
+function makeQ(task,i){
+ const subject=String(task?.subject||"").trim().toUpperCase();
+ if(subject==="MATH") return numQ(task.skill,task.seed,i);
+ if(subject==="ELA") return elaQ(task.skill,task.seed,i);
+ return i%2?elaQ(task.skill,task.seed,i):numQ(task.skill,task.seed,i);
+}
 function renderAccount(){if(!profile)return;$("lvl").textContent=level(Number(profile.xp||0));$("pxp").textContent=Number(profile.xp||0).toLocaleString();$("hp").textContent=Number(profile.hp||0);$("gold").textContent=Number(profile.gold||0).toLocaleString();$("dxp").textContent=`${dailyXp(profile)} / ${CAP}`;$("account").innerHTML=`Connected as <b>${profile.firstName||user?.email||"Adventurer"}</b>${Number(profile.hp||0)<=0?" • 💀 KNOCKED OUT":""}`;}
 function renderLesson(){if(!lesson)return;$("journey").textContent=`${lesson.day} / 182`;$("chapter").textContent=`${lesson.chapterIcon} ${lesson.chapter.toUpperCase()}`;$("title").textContent=lesson.title;$("skills").textContent=`Math: ${lesson.mathSkill} • ELA: ${lesson.elaSkill}`;$("datepill").textContent=`DAY ${lesson.day} • ${lesson.date}`;renderMap();}
 function renderMap(){const now=lesson?.day||1;let s="";for(let i=1;i<=182;i++){s+=`<div class="node ${i<now?"past":i===now?"today":"future"}">${i<now?"✓":i===now?"★":"🔒"}</div>`}$("maptrack").innerHTML=s;setTimeout(()=>document.querySelector(".node.today")?.scrollIntoView({inline:"center",block:"nearest"}),50)}
@@ -210,7 +215,23 @@ function questionVisual(q,t){
 }
 function promptBlock(q,t){return `<div class="prompt">${q.prompt}</div>${questionVisual(q,t)}`}
 
-function renderCurrent(){feedback("","");updateRun();const t=tasks[taskIndex],q=makeQ(t,qIndex);const fn={choice:choiceEngine,dragSort:sortEngine,catcher:catchEngine,tower:towerEngine,ranger:rangerEngine,potion:potionEngine,bridge:bridgeEngine,dragonGate:gateEngine,rune:runeEngine,crystal:crystalEngine,smash:smashEngine}[t.engine]||choiceEngine;fn(q,t)}
+function renderCurrent(){
+ feedback("","");
+ try{
+   const t=tasks?.[taskIndex];
+   if(!t){ if(taskIndex>=tasks.length){finishSession();return;} throw new Error("Quest task missing"); }
+   updateRun();
+   const q=makeQ(t,qIndex);
+   if(!q||!q.prompt||!Array.isArray(q.choices)) throw new Error("Question could not be built");
+   const fn={choice:choiceEngine,dragSort:sortEngine,catcher:catchEngine,tower:towerEngine,ranger:rangerEngine,potion:potionEngine,bridge:bridgeEngine,dragonGate:gateEngine,rune:runeEngine,crystal:crystalEngine,smash:smashEngine}[String(t.engine||"").trim()]||choiceEngine;
+   fn(q,t);
+ }catch(err){
+   console.error("Daily Quest render error",err,tasks?.[taskIndex]);
+   const t=tasks?.[taskIndex]||{subject:"ELA",skill:lesson?.elaSkill||"Language Arts",seed:Date.now()};
+   try{ const q=String(t.subject||"").trim().toUpperCase()==="ELA"?elaQ(t.skill,t.seed||1,qIndex):numQ(t.skill,t.seed||1,qIndex); choiceEngine(q,t); }
+   catch(fallbackErr){ console.error("Fallback render error",fallbackErr); $("arena").innerHTML=`<div class="complete"><h2>QUEST RECOVERY</h2><p>This question failed to load.</p><button class="choice" id="skipBroken">CONTINUE QUEST →</button></div>`; $("skipBroken").onclick=advance; }
+ }
+}
 function choiceEngine(q,t){$("arena").innerHTML=`${promptBlock(q,t)}<div class="choices">${q.choices.map(c=>`<button class="choice">${c}</button>`).join("")}</div>`;document.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{const ok=b.textContent===q.answer;b.classList.add(ok?"good":"bad");award(ok);if(ok)advance()})}
 function sortEngine(q,t){const tokens=shuffle(hashSeed(q.prompt.length+taskIndex*31+qIndex),q.choices);$("arena").innerHTML=`${promptBlock(q,t)}<div class="visual-note">Drag the correct answer to ✅ CORRECT and the others to ❌ DISTRACTORS.</div><div class="tokens">${tokens.map(x=>`<div draggable="true" class="token" data-v="${x}">${x}</div>`).join("")}</div><div class="dragbins"><div class="bin" data-bin="correct"><b>✅ CORRECT</b></div><div class="bin" data-bin="wrong"><b>❌ DISTRACTORS</b></div></div>`;let placed=0;document.querySelectorAll(".token").forEach(x=>x.ondragstart=e=>e.dataTransfer.setData("text",x.dataset.v));document.querySelectorAll(".bin").forEach(bin=>{bin.ondragover=e=>e.preventDefault();bin.ondrop=e=>{e.preventDefault();const v=e.dataTransfer.getData("text"),should=v===q.answer,ok=(bin.dataset.bin==="correct")===should;award(ok);if(!ok)return;const el=[...document.querySelectorAll(".token")].find(x=>x.dataset.v===v);if(el){el.remove();bin.insertAdjacentHTML("beforeend",`<div class="token">${v}</div>`);placed++}if(placed===q.choices.length)advance()}})}
 function catchEngine(q,t){$("arena").innerHTML=`${promptBlock(q,t)}<div class="visual-note">Move the bucket. Catch the correct answer.</div><div class="catchfield" id="cf"><div class="bucket" id="bucket">🪣</div></div>`;const field=$("cf"),bucket=$("bucket");let bx=field.clientWidth/2-60,done=false;const move=x=>{bx=Math.max(0,Math.min(field.clientWidth-120,x-60));bucket.style.left=bx+"px"};field.onpointermove=e=>{if(e.buttons||e.pointerType==="touch"){const r=field.getBoundingClientRect();move(e.clientX-r.left)}};window.onkeydown=e=>{if(!field.isConnected)return;if(e.key==="ArrowLeft")move(bx-25+60);if(e.key==="ArrowRight")move(bx+25+60)};let spawned=0;const choices=shuffle(hashSeed(q.prompt.length),q.choices);function spawn(){if(done)return;if(spawned>=choices.length){spawned=0}const v=choices[spawned++],el=document.createElement("div");el.className="fall";el.textContent=v;el.style.left=(10+Math.random()*Math.max(10,field.clientWidth-140))+"px";field.appendChild(el);let y=-40;const timer=setInterval(()=>{if(done||!el.isConnected){clearInterval(timer);return}y+=4;el.style.top=y+"px";const er=el.getBoundingClientRect(),br=bucket.getBoundingClientRect();if(er.bottom>=br.top&&er.left<br.right&&er.right>br.left){clearInterval(timer);el.remove();const ok=v===q.answer;award(ok);if(ok){done=true;advance();return}setTimeout(spawn,250)}else if(y>field.clientHeight){clearInterval(timer);el.remove();setTimeout(spawn,180)}},30)}spawn()}

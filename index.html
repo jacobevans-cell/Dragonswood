@@ -788,6 +788,188 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 }
 </style>
 
+
+<style id="dragonswood-v18-student-shop">
+/* =========================================================
+   V18 STUDENT SHOP
+========================================================= */
+.student-shop-head{
+  display:grid;
+  grid-template-columns:260px minmax(0,1fr);
+  gap:10px;
+  margin-bottom:10px;
+}
+.shop-wallet{
+  min-height:92px;
+  padding:14px 18px;
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:12px;
+  align-items:center;
+  background:linear-gradient(135deg,rgba(71,23,125,.58),rgba(6,30,47,.52)) !important;
+}
+.wallet-icon{font-size:43px}
+.shop-wallet small{display:block;font-size:10px;font-weight:900;letter-spacing:.9px;color:#d9c9f5}
+.shop-wallet strong{
+  display:block;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:36px;
+  line-height:1;
+  color:var(--gold2);
+}
+.shop-tip{
+  min-height:92px;
+  padding:14px 18px;
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:12px;
+  align-items:center;
+}
+.shop-tip>span{font-size:34px}
+.shop-tip b{display:block;color:var(--gold2);font-family:Georgia,"Times New Roman",serif;font-size:18px}
+.shop-tip small{display:block;margin-top:3px;line-height:1.35}
+
+.student-shop-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+}
+.student-shop-card{
+  min-height:250px;
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 18% 12%,rgba(166,76,255,.15),transparent 25%),
+    linear-gradient(145deg,rgba(22,9,58,.56),rgba(3,18,39,.54)) !important;
+}
+.student-shop-card.sold-out{opacity:.66;filter:saturate(.7)}
+.student-shop-card::after{
+  content:"";
+  position:absolute;
+  inset:auto -30px -38px auto;
+  width:120px;height:120px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(2,204,254,.10),transparent 68%);
+  pointer-events:none;
+}
+.student-shop-icon{
+  width:68px;height:68px;
+  display:grid;place-items:center;
+  font-size:41px;
+  border:1px solid rgba(244,201,93,.48);
+  border-radius:14px;
+  background:rgba(75,24,127,.34);
+  box-shadow:0 0 15px rgba(166,76,255,.18);
+}
+.student-shop-card h3{
+  margin:10px 0 3px;
+  color:var(--gold2);
+  font-size:22px;
+}
+.student-shop-price{
+  color:#ffd96d;
+  font-weight:900;
+  font-size:16px;
+}
+.student-shop-card p{
+  flex:1;
+  line-height:1.42;
+  margin:9px 0 11px;
+  font-size:12px;
+}
+.shop-stock{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  margin-bottom:9px;
+  font-size:10px;
+  color:#d9d1e7;
+}
+.shop-stock span{
+  padding:4px 7px;
+  border-radius:999px;
+  border:1px solid rgba(101,45,193,.34);
+  background:rgba(55,18,91,.29);
+}
+.shop-buy{
+  width:100%;
+  min-height:42px;
+}
+.shop-buy[disabled]{
+  opacity:.48;
+  cursor:not-allowed;
+  filter:saturate(.5);
+}
+.shop-empty{
+  grid-column:1/-1;
+  padding:28px;
+  text-align:center;
+}
+.shop-notice{
+  margin:0 0 10px;
+  padding:10px 12px;
+  border-radius:8px;
+  border:1px solid rgba(244,201,93,.45);
+  background:rgba(33,13,63,.74);
+  color:#fff4c8;
+  font-weight:800;
+}
+.shop-notice.error{
+  border-color:rgba(255,132,167,.55);
+  background:rgba(78,16,40,.78);
+  color:#ffd0dc;
+}
+.shop-history-title{margin-top:16px !important}
+.purchase-history-panel{padding:10px}
+.my-purchase-list{display:grid;gap:7px}
+.my-purchase-row{
+  display:grid;
+  grid-template-columns:auto minmax(160px,1fr) auto auto;
+  gap:10px;
+  align-items:center;
+  padding:9px 10px;
+  border:1px solid rgba(101,45,193,.27);
+  border-radius:8px;
+  background:rgba(5,7,23,.43);
+}
+.my-purchase-icon{
+  width:42px;height:42px;
+  display:grid;place-items:center;
+  font-size:25px;
+  border-radius:10px;
+  background:rgba(75,24,127,.28);
+  border:1px solid rgba(244,201,93,.30);
+}
+.my-purchase-row b{display:block}
+.my-purchase-row small{display:block;margin-top:2px}
+.my-purchase-cost{font-weight:900;color:#ffd96d;white-space:nowrap}
+.my-purchase-status{
+  padding:5px 8px;
+  border-radius:999px;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.my-purchase-status.pending{background:#5a3c11;color:#ffe6a1}
+.my-purchase-status.redeemed{background:#124c39;color:#b9f5d7}
+.my-purchase-status.cancelled{background:#59182f;color:#ffc1d1}
+
+@media(max-width:1000px){
+  .student-shop-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:720px){
+  .student-shop-head,.student-shop-grid{grid-template-columns:1fr}
+  .my-purchase-row{grid-template-columns:auto 1fr}
+  .my-purchase-cost,.my-purchase-status{grid-column:2}
+}
+</style>
+
 </head><body>
 <header class="topbar">
 <div class="shell">
@@ -895,26 +1077,45 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
   <!-- SHOP -->
   <section class="portal-view" id="view-shop" data-page="shop">
-    <div class="section-title"><div><h2>🧰 Dragonswood Shop</h2><p>Spend Gold on classroom rewards, privileges, and future character upgrades.</p></div></div>
-    <div class="feature-grid">
-      <article class="frame bevel feature-card">
-        <div class="feature-icon">🎟️</div>
-        <h3>Classroom Privileges</h3>
-        <p>Gold will be exchangeable for teacher-approved classroom perks.</p>
-        <div class="coming-ribbon">COMING SOON</div>
-      </article>
-      <article class="frame bevel feature-card">
-        <div class="feature-icon">🪄</div>
-        <h3>Character Upgrades</h3>
-        <p>Unlock future avatar accessories, titles, badges, and magical cosmetics.</p>
-        <div class="coming-ribbon">COMING SOON</div>
-      </article>
-      <article class="frame bevel feature-card">
-        <div class="feature-icon">💰</div>
-        <h3>Your Gold</h3>
-        <div class="feature-number"><span id="shopGold">0</span></div>
-        <p>Gold is controlled by your teacher and stays connected to your Dragonswood profile.</p>
-      </article>
+    <div class="section-title">
+      <div>
+        <h2>🧰 Dragonswood Shop</h2>
+        <p>Spend the Gold you earn in Dragonswood. Purchases go to your teacher for redemption.</p>
+      </div>
+    </div>
+
+    <div class="student-shop-head">
+      <div class="frame bevel shop-wallet">
+        <div class="wallet-icon">🪙</div>
+        <div>
+          <small>YOUR GOLD</small>
+          <strong id="shopGold">0</strong>
+        </div>
+      </div>
+
+      <div class="frame bevel shop-tip">
+        <span>✨</span>
+        <div><b>How it works</b><small>Buy an item, your Gold is deducted, and your teacher gets the redemption request.</small></div>
+      </div>
+    </div>
+
+    <div id="studentShopNotice" class="shop-notice hidden"></div>
+
+    <div class="student-shop-grid" id="studentShopItems">
+      <div class="frame bevel shop-empty">Loading Dragonswood Shop…</div>
+    </div>
+
+    <div class="section-title shop-history-title">
+      <div>
+        <h2>📦 My Purchases</h2>
+        <p>Your recent purchases and redemption status.</p>
+      </div>
+    </div>
+
+    <div class="frame bevel purchase-history-panel">
+      <div id="myPurchaseList" class="my-purchase-list">
+        <div class="muted">No purchases yet.</div>
+      </div>
     </div>
   </section>
 
@@ -984,13 +1185,13 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import {getFirestore,doc,getDoc,setDoc,onSnapshot,collection,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {getFirestore,doc,getDoc,setDoc,onSnapshot,collection,serverTimestamp,runTransaction} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2", "measurementId": "G-LPRLDGVBD2"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const DOMAIN="explore.academy";
 const $=id=>document.getElementById(id);
-let user=null,profile=null,rewards=[],classPoints=0,scores=[];
+let user=null,profile=null,rewards=[],classPoints=0,scores=[],shopItems=[],myPurchases=[];
 
 const TITLES=[
   {id:"princess",label:"Princess",position:"before"},
@@ -1211,6 +1412,7 @@ function renderProfile(){
   if($("journalXp")) $("journalXp").textContent=xp;
   if($("journalLevelFill")) $("journalLevelFill").style.width=li.pct+"%";
   if($("journalLevelText")) $("journalLevelText").textContent=`Level ${li.level} • ${Math.round(li.pct)}% toward Level ${li.level+1}`;
+  renderStudentShop();
 }
 
 
@@ -1252,6 +1454,18 @@ function renderSecondRecess(){
 onSnapshot(doc(db,"classData","main"),s=>{if(s.exists())classPoints=+s.data().points||0;renderRewards()});
 onSnapshot(collection(db,"rewards"),s=>{rewards=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+a.points||0)-(+b.points||0));renderRewards()});
 onSnapshot(collection(db,"scores"),s=>{scores=s.docs.map(d=>({id:d.id,...d.data()}));renderBoards()});
+onSnapshot(collection(db,"shopItems"),s=>{
+  shopItems=s.docs.map(d=>({id:d.id,...d.data()}))
+    .filter(i=>i.active!==false)
+    .sort((a,b)=>String(a.name||"").localeCompare(String(b.name||"")));
+  renderStudentShop();
+});
+onSnapshot(collection(db,"purchases"),s=>{
+  myPurchases=s.docs.map(d=>({id:d.id,...d.data()}))
+    .filter(p=>p.studentId===user?.uid)
+    .sort((a,b)=>(b.purchasedAt?.seconds||0)-(a.purchasedAt?.seconds||0));
+  renderStudentShop();
+});
 
 
 function glitterizeStaticIcons(){
@@ -1304,6 +1518,148 @@ function renderBoards(){
  const games=Object.keys(grouped).sort();$("boards").innerHTML=games.length?games.map(g=>{let top=grouped[g].sort((a,b)=>(+b.score||0)-(+a.score||0)).slice(0,5);return `<div class="board"><h3>${esc(g)}</h3>${top.map((s,i)=>`<div class="rank"><div class="place">${i+1}</div><div class="miniavatar">${esc(s.avatarEmoji||"🐉")}</div><div>${esc(s.displayName||s.playerName||"Player")}</div><div class="score">${+s.score||0}</div></div>`).join("")}</div>`}).join(""):'<div class="board"><h3>No records yet</h3><p style="color:#64748b">The first connected game will start the leaderboard.</p></div>';
  glitterizeStaticIcons();
 }
+
+
+// ============================================================
+// STUDENT SHOP
+// Atomic purchase: verifies Gold + stock, deducts Gold,
+// decreases inventory when limited, and creates redemption record.
+// ============================================================
+function showShopNotice(message,type="success"){
+  const box=$("studentShopNotice");
+  if(!box)return;
+  box.textContent=message;
+  box.classList.remove("hidden","error");
+  if(type==="error") box.classList.add("error");
+  clearTimeout(showShopNotice.timer);
+  showShopNotice.timer=setTimeout(()=>box.classList.add("hidden"),5000);
+}
+
+function renderStudentShop(){
+  if($("shopGold")) $("shopGold").textContent=+profile?.gold||0;
+
+  const host=$("studentShopItems");
+  if(host){
+    if(!shopItems.length){
+      host.innerHTML='<div class="frame bevel shop-empty">The Dragonswood Shop is currently empty. Your teacher is preparing inventory.</div>';
+    }else{
+      host.innerHTML=shopItems.map(item=>{
+        const gold=+profile?.gold||0;
+        const cost=Math.max(0,Number(item.cost||0));
+        const limited=item.quantity!==null && item.quantity!==undefined && item.quantity!=="";
+        const quantity=limited?Math.max(0,Number(item.quantity||0)):null;
+        const soldOut=limited && quantity<=0;
+        const affordable=gold>=cost;
+        const disabled=soldOut||!affordable;
+        const buttonText=soldOut?"SOLD OUT":!affordable?`NEED ${cost-gold} MORE GOLD`:"BUY";
+        return `<article class="frame bevel student-shop-card ${soldOut?"sold-out":""}">
+          <div class="student-shop-icon">${esc(item.icon||"🎁")}</div>
+          <h3>${esc(item.name||"Shop Item")}</h3>
+          <div class="student-shop-price">🪙 ${cost} Gold</div>
+          <p>${esc(item.description||"A Dragonswood Shop reward.")}</p>
+          <div class="shop-stock">
+            <span>${limited?`${quantity} available`:"Unlimited"}</span>
+            <span>${affordable?"You can afford this":"Save your Gold"}</span>
+          </div>
+          <button class="shop-buy" data-buy-shop="${item.id}" ${disabled?"disabled":""}>${esc(buttonText)}</button>
+        </article>`;
+      }).join("");
+
+      document.querySelectorAll("[data-buy-shop]").forEach(btn=>{
+        btn.onclick=()=>buyShopItem(btn.dataset.buyShop);
+      });
+    }
+  }
+
+  const purchaseHost=$("myPurchaseList");
+  if(purchaseHost){
+    purchaseHost.innerHTML=myPurchases.length?myPurchases.slice(0,12).map(p=>{
+      const status=p.status||"pending";
+      const when=p.purchasedAt?.seconds?new Date(p.purchasedAt.seconds*1000).toLocaleString():"Recently";
+      return `<div class="my-purchase-row">
+        <div class="my-purchase-icon">${esc(p.itemIcon||"🎁")}</div>
+        <div><b>${esc(p.itemName||"Shop Item")}</b><small>${esc(when)}</small></div>
+        <div class="my-purchase-cost">🪙 ${Number(p.cost||0)}</div>
+        <div class="my-purchase-status ${esc(status)}">${esc(status)}</div>
+      </div>`;
+    }).join(""):'<div class="muted">No purchases yet.</div>';
+  }
+}
+
+async function buyShopItem(itemId){
+  if(!user||!profile)return;
+
+  const item=shopItems.find(x=>x.id===itemId);
+  if(!item)return showShopNotice("That item is no longer available.","error");
+
+  const cost=Math.max(0,Number(item.cost||0));
+  const itemName=item.name||"Shop Item";
+
+  if(!confirm(`Buy "${itemName}" for ${cost} Gold?\n\nYour teacher will receive the redemption request.`))return;
+
+  try{
+    await runTransaction(db,async tx=>{
+      const studentRef=doc(db,"students",user.uid);
+      const itemRef=doc(db,"shopItems",itemId);
+
+      const [studentSnap,itemSnap]=await Promise.all([
+        tx.get(studentRef),
+        tx.get(itemRef)
+      ]);
+
+      if(!studentSnap.exists()) throw new Error("Your Dragonswood profile could not be found.");
+      if(!itemSnap.exists()) throw new Error("That shop item no longer exists.");
+
+      const studentData=studentSnap.data();
+      const currentItem=itemSnap.data();
+
+      if(currentItem.active===false) throw new Error("That shop item is no longer active.");
+
+      const currentGold=Math.max(0,Number(studentData.gold||0));
+      const currentCost=Math.max(0,Number(currentItem.cost||0));
+      if(currentGold<currentCost) throw new Error(`You need ${currentCost-currentGold} more Gold.`);
+
+      const limited=currentItem.quantity!==null && currentItem.quantity!==undefined && currentItem.quantity!=="";
+      const currentQuantity=limited?Math.max(0,Number(currentItem.quantity||0)):null;
+      if(limited && currentQuantity<=0) throw new Error("That item just sold out.");
+
+      // New purchase document ID is created locally, then written inside the transaction.
+      const purchaseRef=doc(collection(db,"purchases"));
+
+      tx.update(studentRef,{
+        gold:currentGold-currentCost,
+        updatedAt:serverTimestamp()
+      });
+
+      if(limited){
+        tx.update(itemRef,{
+          quantity:currentQuantity-1,
+          updatedAt:serverTimestamp()
+        });
+      }
+
+      tx.set(purchaseRef,{
+        studentId:user.uid,
+        studentEmail:user.email||"",
+        displayName:formatName(studentData),
+        avatarEmoji:avatarEmoji(studentData.avatar),
+        itemId,
+        itemName:currentItem.name||"Shop Item",
+        itemIcon:currentItem.icon||"🎁",
+        cost:currentCost,
+        status:"pending",
+        purchasedAt:serverTimestamp(),
+        updatedAt:serverTimestamp()
+      });
+    });
+
+    showShopNotice(`Purchased ${itemName}! Your teacher now has the redemption request.`);
+  }catch(err){
+    console.error("Shop purchase error:",err);
+    showShopNotice(err.message||"Could not complete that purchase.","error");
+  }
+}
+
 
 // ============================================================
 // DRAGONSWOOD PORTAL NAVIGATION

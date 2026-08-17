@@ -1,551 +1,113 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dragonswood | Teacher Portal</title>
-<style>
-*{box-sizing:border-box}:root{--navy:#071a2b;--blue:#02CCFE;--green:#35d07f;--red:#652DC1;--gold:#F4C95D;--text:#18212f;--muted:#64748b;--line:#ddd8ef}
-body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#eef3f8;color:var(--text)}header{background:linear-gradient(120deg,#071a2b,#07385d 60%,#075dcc);color:#fff;border-bottom:4px solid var(--red)}
-.wrap{width:min(1450px,94%);margin:auto}.head{padding:17px 0;display:flex;justify-content:space-between;gap:16px;align-items:center}.brand{font-size:23px;font-weight:900}.brand small{display:block;color:#cbd9e7;font-size:11px;margin-top:3px}
-main{padding:30px 0 60px}.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:21px;box-shadow:0 10px 26px #071a2b10}.login{max-width:520px;margin:45px auto}
-h1,h2{margin-top:0}.muted{color:var(--muted)}.field{display:flex;flex-direction:column;gap:6px;margin:12px 0}.field label{font-weight:800;font-size:13px}input,textarea,select{padding:11px 12px;border:1px solid #ccd6e3;border-radius:10px;font:inherit}
-button{border:0;border-radius:10px;padding:10px 13px;font-weight:900;cursor:pointer}.primary{background:var(--blue);color:#fff}.good{background:#dff7e9;color:#126638}.gold{background:#ffe8a6;color:#634500}.gray{background:#e8edf3;color:#334155}.danger{background:#ffe1e8;color:#9b1534}.full{width:100%}.hidden{display:none!important}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.tab{background:#dfe7f0;color:#334155}.tab.active{background:var(--blue);color:#fff}.panel{display:none}.panel.active{display:block}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.big{font-size:58px;font-weight:1000;color:var(--blue)}.meter{height:24px;background:#e8edf3;border-radius:999px;overflow:hidden;margin:13px 0}.fill{height:100%;width:0;background:linear-gradient(90deg,#35d07f,#f4b942)}
-.actions{display:flex;gap:8px;flex-wrap:wrap}.reason{flex:1;min-width:220px}.history{max-height:290px;overflow:auto}.historyrow{padding:9px 0;border-top:1px solid #edf1f5;font-size:13px}.historyrow:first-child{border-top:0}
-.titlebar{display:flex;justify-content:space-between;align-items:end;gap:16px;margin:26px 0 12px}.titlebar h2{margin:0}.titlebar p{margin:4px 0 0;color:var(--muted)}
-.list{display:grid;gap:9px}.item{border:1px solid var(--line);border-radius:12px;padding:11px;display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}.icon{font-size:26px}.item small{display:block;color:var(--muted);margin-top:3px}.mini{padding:7px 9px;font-size:11px}
-.student-table{width:100%;border-collapse:collapse;font-size:13px}.student-table th,.student-table td{padding:10px;border-bottom:1px solid #e7ecf2;text-align:left;vertical-align:middle}.student-table th{background:#f8fafc}.student-avatar{font-size:25px}.student-name{font-weight:900}
-.groupbox{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}.groupbox .field{margin:0}
-.modal{position:fixed;inset:0;background:#071a2baa;display:grid;place-items:center;padding:20px;z-index:20}.modalbox{background:#fff;border-radius:17px;padding:21px;width:min(640px,100%);max-height:92vh;overflow:auto}
-table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:9px;border-bottom:1px solid #e7ecf2;text-align:left;white-space:nowrap}th{background:#f8fafc}.tablewrap{overflow:auto}
-.badge{display:inline-block;padding:4px 7px;border-radius:999px;background:#eef5ff;color:#075dcc;font-weight:900;font-size:11px}
-@media(max-width:950px){.grid{grid-template-columns:1fr}.head{align-items:flex-start;flex-direction:column}.groupbox{grid-template-columns:1fr 1fr}}
-@media(max-width:600px){.groupbox{grid-template-columns:1fr}}
-
-/* =========================================================
-   DRAGONSWOOD BRAND SYSTEM
-   Purple Heart #652DC1 • Bright Sky Blue #02CCFE • Gold accent
-========================================================= */
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dragonswood Command | Teacher</title><style>
 :root{
-  --dw-purple:#652DC1;
-  --dw-purple-deep:#3c167f;
-  --dw-blue:#02CCFE;
-  --dw-blue-deep:#087ea4;
-  --dw-gold:#F4C95D;
-  --dw-gold-deep:#C89A2B;
-  --dw-navy:#071A2B;
-  --dw-ink:#111827;
+  --purple:#652DC1; --purple-hot:#A84CFF; --purple-deep:#24034E;
+  --cyan:#02CCFE; --cyan-hot:#7EEAFF; --navy:#030512;
+  --gold:#F4C95D; --gold-hot:#FFE8A0; --gold-deep:#9A6514;
+  --panel:rgba(7,8,28,.92); --panel2:rgba(12,8,35,.92);
+  --text:#FFF8E7; --muted:#D3CEE6;
 }
-.crest{
-  width:48px;
-  height:54px;
-  position:relative;
-  flex:0 0 auto;
-  filter:drop-shadow(0 5px 9px rgba(0,0,0,.22));
-}
-.crest-shield{
-  position:absolute;
-  inset:2px 4px 3px;
-  clip-path:polygon(50% 0,92% 12%,88% 66%,50% 100%,12% 66%,8% 12%);
-  background:linear-gradient(145deg,var(--dw-blue),#0a8fcd 58%,var(--dw-purple));
-  border:2px solid var(--dw-gold);
-  box-shadow:inset 0 0 0 2px rgba(255,255,255,.12);
-}
-.crest-shield::before{
-  content:"";
-  position:absolute;
-  width:18px;height:14px;
-  left:50%;top:10px;transform:translateX(-50%);
-  background:var(--dw-gold);
-  clip-path:polygon(50% 0,100% 100%,0 100%);
-  filter:drop-shadow(-8px 12px 0 var(--dw-gold)) drop-shadow(8px 12px 0 var(--dw-gold));
-}
-.crest-shield::after{
-  content:"";
-  position:absolute;
-  left:50%;bottom:8px;transform:translateX(-50%);
-  width:15px;height:15px;border:3px solid rgba(255,255,255,.9);
-  border-radius:50% 50% 45% 45%;
-  box-shadow:0 -9px 0 -5px rgba(255,255,255,.95);
-}
-
+*{box-sizing:border-box}
+html{background:#03040B}
 body{
-  background:
-    radial-gradient(circle at 90% 0%,rgba(2,204,254,.10),transparent 26%),
-    radial-gradient(circle at 0% 35%,rgba(101,45,193,.08),transparent 28%),
-    #f4f2fb;
-}
-header{
-  background:linear-gradient(120deg,var(--dw-navy) 0%,var(--dw-purple-deep) 54%,var(--dw-blue-deep) 100%) !important;
-  border-bottom:4px solid var(--dw-gold) !important;
-}
-.tab.active,.primary{
-  background:linear-gradient(90deg,var(--dw-purple),var(--dw-blue)) !important;
-  color:white !important;
-}
-.tab{
-  border:1px solid #d8d1ef;
-}
-.gold{
-  background:#fff2c6 !important;
-  color:#6b4c00 !important;
-  border:1px solid #e4c15c;
-}
-.card{
-  border-color:#ded8ef;
-}
-.big{color:var(--dw-purple) !important}
-.fill{
-  background:linear-gradient(90deg,var(--dw-blue),var(--dw-purple),var(--dw-gold)) !important;
-}
-.badge{
-  background:#eee8ff !important;
-  color:var(--dw-purple-deep) !important;
-  border:1px solid #d6c8ff;
-}
-.student-table th, th{
-  background:linear-gradient(90deg,#f2efff,#eefbff) !important;
-}
-.item:hover,.student-table tbody tr:hover{
-  background:#faf8ff;
-}
-
-/* ============================================================
-   DRAGONSWOOD RPG WORLD — REFERENCE MATCH
-   Purple / Cyan / Gold • Wisteria • Castle • Dragon • Glow
-============================================================ */
-:root{
- --purple:#652DC1; --purple2:#8E3CFF; --purple3:#2A075E;
- --cyan:#02CCFE; --cyan2:#74E8FF;
- --gold:#F4C95D; --gold2:#FFE9A0; --gold3:#A96E12;
- --ink:#04050B; --panel:#080A18; --panel2:#0D1025;
- --text:#FFF9ED; --muted:#C7C9DB; --line:rgba(244,201,93,.38);
-}
-html{background:#03040a}
-body{
-  color:var(--text)!important;
-  background:#03040a!important;
-  min-height:100vh;
-  position:relative;
-  overflow-x:hidden;
+  margin:0;color:var(--text);font-family:Arial,Helvetica,sans-serif;
+  min-height:100vh;background:#03040B;position:relative;overflow-x:hidden;
 }
 body::before{
-  content:"";
-  position:fixed; inset:0; z-index:-5;
-  background:url("dragonswood-world.jpg") center top / cover fixed no-repeat;
-  filter:saturate(1.12);
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(2,2,10,.12),rgba(2,2,10,.25) 65%,rgba(2,2,10,.6)),
+    url("dragonswood-scene.jpg") center top/cover fixed no-repeat;
 }
 body::after{
-  content:"";
-  position:fixed; inset:0; z-index:-4; pointer-events:none;
+  content:"";position:fixed;inset:-10%;z-index:1;pointer-events:none;
   background:
-    linear-gradient(180deg,rgba(2,3,10,.08),rgba(2,3,10,.28) 45%,rgba(2,3,10,.62)),
-    radial-gradient(circle at 50% 25%,transparent 0 30%,rgba(3,2,12,.20) 72%),
-    radial-gradient(circle at 50% 100%,rgba(101,45,193,.14),transparent 45%);
+    radial-gradient(circle at 16% 12%,rgba(172,64,255,.18),transparent 20%),
+    radial-gradient(circle at 82% 18%,rgba(2,204,254,.12),transparent 20%),
+    linear-gradient(110deg,transparent 35%,rgba(167,64,255,.08) 48%,rgba(2,204,254,.06) 53%,transparent 67%);
+  background-size:auto,auto,220% 100%;
+  mix-blend-mode:screen;animation:magicSweep 12s ease-in-out infinite alternate;
 }
-@keyframes glimmer{0%,100%{opacity:.25;transform:translateY(0) scale(1)}50%{opacity:.85;transform:translateY(-8px) scale(1.15)}}
-@keyframes borderGlow{0%,100%{box-shadow:0 0 0 1px rgba(244,201,93,.28),0 0 20px rgba(101,45,193,.18),inset 0 0 22px rgba(2,204,254,.02)}50%{box-shadow:0 0 0 1px rgba(244,201,93,.55),0 0 32px rgba(2,204,254,.17),inset 0 0 26px rgba(101,45,193,.06)}}
-@keyframes shimmerBar{0%{background-position:0 0}100%{background-position:240% 0}}
-@keyframes sparkleDrift{0%{transform:translateY(110vh) translateX(0) rotate(0);opacity:0}12%{opacity:.8}88%{opacity:.45}100%{transform:translateY(-15vh) translateX(40px) rotate(180deg);opacity:0}}
-
-.dw-stars{position:fixed;inset:0;z-index:-2;pointer-events:none;overflow:hidden}
-.dw-stars i{position:absolute;bottom:-20px;width:4px;height:4px;background:var(--gold2);border-radius:50%;box-shadow:0 0 8px var(--gold);animation:sparkleDrift linear infinite}
-.dw-stars i:nth-child(3n){background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
-.dw-stars i:nth-child(4n){background:#BC71FF;box-shadow:0 0 10px #8E3CFF}
-
-header{
-  background:linear-gradient(180deg,rgba(3,4,12,.93),rgba(13,6,28,.84))!important;
-  border-bottom:1px solid rgba(244,201,93,.52)!important;
-  box-shadow:0 12px 45px rgba(0,0,0,.5)!important;
-  backdrop-filter:blur(9px);
-}
-.wrap{width:min(1500px,94%)!important}
-.brand{
-  font-family:Georgia,"Times New Roman",serif!important;
-  color:var(--gold2)!important;
-  text-shadow:0 0 12px rgba(244,201,93,.24),0 2px 2px #000;
-  letter-spacing:.4px;
-}
-.brand small{color:#D992FF!important;font-family:Arial,sans-serif;letter-spacing:1.1px}
-.crest{filter:drop-shadow(0 0 9px rgba(244,201,93,.55)) drop-shadow(0 0 16px rgba(142,60,255,.35))!important}
-.crest-shield{background:linear-gradient(145deg,#321068,#6C23BB 50%,#052E50)!important;border-color:var(--gold)!important}
-
-.hero{padding:32px 0 36px!important}
-.hero h1{
-  font-family:Georgia,"Times New Roman",serif!important;
-  color:var(--gold2)!important;
-  font-size:clamp(48px,6.2vw,80px)!important;
-  text-shadow:0 0 18px rgba(244,201,93,.28),0 3px 2px #000!important;
-}
-.hero h1 span{
-  color:var(--gold2)!important;
-  -webkit-text-fill-color:var(--gold2)!important;
-  background:none!important;
-}
-.hero p{color:#F1E9FF!important;text-shadow:0 2px 2px #000}
-.hero-card{
-  background:linear-gradient(145deg,rgba(12,8,35,.86),rgba(4,17,31,.84))!important;
-  border:1px solid rgba(244,201,93,.55)!important;
-  box-shadow:0 0 28px rgba(142,60,255,.18),inset 0 0 22px rgba(2,204,254,.04)!important;
-}
-
-main{padding-top:22px!important}
-.card,.pet,.game,.board,.login-card,.profilebar,.modalbox,.recess-card,.item{
-  background:
-    radial-gradient(circle at 50% -20%,rgba(101,45,193,.16),transparent 45%),
-    linear-gradient(145deg,rgba(8,9,26,.96),rgba(4,7,18,.97))!important;
-  border:1px solid rgba(244,201,93,.42)!important;
-  color:var(--text)!important;
-  box-shadow:0 16px 38px rgba(0,0,0,.48),0 0 22px rgba(101,45,193,.12),inset 0 0 26px rgba(2,204,254,.025)!important;
+@keyframes magicSweep{0%{transform:translateX(-2%) scale(1);background-position:0 0,0 0,0% 0}100%{transform:translateX(2%) scale(1.03);background-position:0 0,0 0,200% 0}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 0 1px rgba(244,201,93,.3),0 0 18px rgba(101,45,193,.16)}50%{box-shadow:0 0 0 1px rgba(244,201,93,.62),0 0 34px rgba(2,204,254,.19),0 0 28px rgba(101,45,193,.15)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes floatSpark{0%{transform:translateY(110vh) rotate(0);opacity:0}12%{opacity:.9}90%{opacity:.45}100%{transform:translateY(-12vh) translateX(35px) rotate(180deg);opacity:0}}
+body>*{position:relative;z-index:5}
+.magic-stars{position:fixed;inset:0;z-index:3;pointer-events:none;overflow:hidden}
+.magic-stars i{position:absolute;bottom:-10px;width:4px;height:4px;border-radius:50%;background:var(--gold-hot);box-shadow:0 0 9px var(--gold);animation:floatSpark linear infinite}
+.magic-stars i:nth-child(3n){background:var(--cyan);box-shadow:0 0 11px var(--cyan)}
+.magic-stars i:nth-child(4n){background:#C56BFF;box-shadow:0 0 11px #A84CFF}
+.shell{width:min(1500px,95%);margin:auto}
+.glass{
+  background:linear-gradient(145deg,rgba(11,8,35,.94),rgba(4,7,20,.96));
+  border:1px solid rgba(244,201,93,.42);box-shadow:0 18px 46px rgba(0,0,0,.45),inset 0 0 26px rgba(2,204,254,.025);
   backdrop-filter:blur(8px);
 }
-.card,.pet,.profilebar,.recess-card{animation:borderGlow 6s ease-in-out infinite}
-h1,h2,h3,.profile-name,.student-name,.big{
-  font-family:Georgia,"Times New Roman",serif!important;
-  color:#FFF8E5!important;
-  text-shadow:0 0 10px rgba(244,201,93,.16),0 2px 2px #000!important;
+.ornate{position:relative}
+.ornate::before,.ornate::after{content:"✦";position:absolute;color:var(--gold);text-shadow:0 0 8px var(--gold)}
+.ornate::before{left:10px;top:7px}.ornate::after{right:10px;top:7px}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+button,.btn{
+  border:1px solid rgba(244,201,93,.5);border-radius:8px;padding:10px 14px;font-weight:900;
+  color:white;background:linear-gradient(90deg,#4C159F,#8230D7,#076C9A);box-shadow:0 0 15px rgba(101,45,193,.18)
 }
-p,.muted,.sub,.profile-sub,small{color:var(--muted)!important}
-.section-title h2,.titlebar h2{font-size:32px!important}
-.section-title h2::after,.titlebar h2::after{
-  content:"";display:block;width:72%;height:2px;margin-top:7px;
-  background:linear-gradient(90deg,var(--gold),#B755FF,transparent);box-shadow:0 0 12px rgba(244,201,93,.35)
-}
-
-.profilebar{
-  border-color:rgba(2,204,254,.42)!important;
-  background:linear-gradient(90deg,rgba(12,9,39,.97),rgba(4,18,31,.96))!important
-}
-.avatar{
-  border:3px solid var(--gold)!important;
-  box-shadow:0 0 0 3px #422178,0 0 18px var(--cyan)!important;
-}
-.stat{
-  background:linear-gradient(180deg,rgba(10,12,27,.98),rgba(5,8,18,.98))!important;
-  border:1px solid rgba(244,201,93,.32)!important
-}
-.stat b{font-family:Georgia,serif!important}
-.levelbar,.track,.meter,.recess-meter{
-  background:#030611!important;
-  border:1px solid rgba(2,204,254,.26)!important;
-  box-shadow:inset 0 0 16px #000!important
-}
-.levelbar div,.fill,.recess-fill{
-  background:linear-gradient(90deg,#8E3CFF,#D84FFF,var(--cyan),var(--gold2),#8E3CFF)!important;
-  background-size:240% 100%!important;
-  animation:shimmerBar 5s linear infinite!important;
-  box-shadow:0 0 15px rgba(2,204,254,.32),0 0 18px rgba(142,60,255,.25)!important
-}
-
-.pet{overflow:hidden!important}
-.pethead{
-  background:
-    radial-gradient(circle at 78% 22%,rgba(2,204,254,.12),transparent 24%),
-    linear-gradient(125deg,rgba(50,12,95,.95),rgba(47,26,120,.94) 52%,rgba(4,72,101,.92))!important;
-  border-bottom:1px solid rgba(244,201,93,.42)!important
-}
-.petbody{background:rgba(3,6,16,.92)!important}
-.reward{
-  background:linear-gradient(180deg,rgba(12,12,33,.98),rgba(5,7,18,.98))!important;
-  border:1px solid rgba(142,60,255,.42)!important;
-}
-.reward.current{
-  border-color:var(--gold)!important;
-  outline:1px solid var(--gold)!important;
-  box-shadow:0 0 20px rgba(244,201,93,.24)!important
-}
-.reward.unlocked{background:linear-gradient(180deg,rgba(42,24,55,.96),rgba(9,10,21,.98))!important}
-.next{
-  background:linear-gradient(90deg,rgba(5,80,116,.82),rgba(70,21,97,.86))!important;
-  border-left:4px solid var(--gold)!important;color:var(--gold2)!important
-}
-
-.recess-card{
-  background:
-    radial-gradient(circle at 80% 10%,rgba(244,201,93,.08),transparent 28%),
-    linear-gradient(120deg,rgba(34,7,72,.97),rgba(14,13,47,.97),rgba(5,48,72,.96))!important
-}
-.recess-status{border-color:var(--gold)!important;color:var(--gold2)!important}
-
-.visual{
-  background:radial-gradient(circle at 50% 40%,rgba(101,45,193,.22),transparent 44%),linear-gradient(180deg,#11102A,#050713)!important;
-  border-bottom:1px solid rgba(244,201,93,.22)!important
-}
-.game{border-color:rgba(101,45,193,.5)!important}
-.game:hover{transform:translateY(-3px);border-color:var(--gold)!important;box-shadow:0 20px 46px rgba(0,0,0,.48),0 0 26px rgba(142,60,255,.22)!important}
-.game a,.primary,.tab.active{
-  background:linear-gradient(90deg,#5218A9,#8C2FE7,#076D9D)!important;
-  border:1px solid var(--gold)!important;
-  color:white!important;
-  box-shadow:0 0 16px rgba(142,60,255,.2)!important
-}
-.tab,.gray{
-  background:linear-gradient(180deg,#14152B,#080B18)!important;color:#E9E7F7!important;border:1px solid rgba(142,60,255,.35)!important
-}
-.good{background:linear-gradient(180deg,#06352F,#05211D)!important;color:#84FFD0!important;border:1px solid #14B8A6!important}
-.gold{background:linear-gradient(90deg,#795114,#D69F24,#FFE9A0,#D69F24,#795114)!important;color:#1D1201!important;border:1px solid #FFE9A0!important}
-.danger{background:linear-gradient(180deg,#4B1025,#250712)!important;color:#FF9EB7!important;border:1px solid #D52B5C!important}
-
-input,select,textarea{
-  background:rgba(4,7,18,.96)!important;color:white!important;border:1px solid rgba(2,204,254,.24)!important
-}
+button:hover,.btn:hover{filter:brightness(1.1);box-shadow:0 0 22px rgba(2,204,254,.18)}
+input,select,textarea{background:#050818;color:white;border:1px solid rgba(2,204,254,.26);border-radius:7px;padding:10px 11px}
 select option,select optgroup{background:#080A18;color:white}
-table,.student-table{color:white!important}
-th,.student-table th{background:linear-gradient(90deg,rgba(72,21,120,.46),rgba(4,76,108,.25))!important;color:var(--gold2)!important;border-bottom:1px solid rgba(244,201,93,.28)!important}
-td,.student-table td{border-bottom:1px solid rgba(255,255,255,.06)!important}
-.student-table tbody tr:hover{background:rgba(101,45,193,.12)!important}
-.badge,.tag{background:linear-gradient(90deg,rgba(101,45,193,.4),rgba(2,204,254,.14))!important;color:#F1E9FF!important;border:1px solid rgba(244,201,93,.18)!important}
-.place{background:linear-gradient(145deg,#6B1DC7,#0783B1)!important;color:white!important}
-.score{color:var(--gold2)!important;text-shadow:0 0 9px rgba(244,201,93,.32)}
-.modal{background:rgba(1,2,7,.88)!important;backdrop-filter:blur(10px)}
-footer{background:rgba(2,3,10,.92)!important;border-top:1px solid var(--gold)!important;color:#CFCBE2!important}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;color:#FFF8E7}
+.muted,small,p{color:var(--muted)}
+.goldtext{color:var(--gold-hot)}
+.progress-track{height:17px;background:#030611;border:1px solid rgba(2,204,254,.28);border-radius:999px;overflow:hidden;box-shadow:inset 0 0 12px #000}
+.progress-fill{height:100%;background:linear-gradient(90deg,#7A24DE,#D24DFF,var(--cyan),var(--gold-hot),#7A24DE);background-size:240% 100%;animation:shimmer 5s linear infinite;box-shadow:0 0 15px rgba(2,204,254,.26)}
 
-.egg-creature{box-shadow:0 0 28px rgba(244,201,93,.26),0 14px 34px rgba(0,0,0,.42)!important}
-
-
-/* ============================================================
-   V8 SCENERY VISIBILITY FIX
-   The prior scenic background was trapped behind the root canvas.
-   These rules put it visibly behind the UI, not behind the browser.
-============================================================ */
-
-html{
-  background:#03040A !important;
-}
-
-body{
-  isolation:isolate;
-  background:transparent !important;
-}
-
-/* Real visible scenic world */
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  z-index:0 !important;
-  pointer-events:none;
-  background:
-    linear-gradient(180deg,rgba(2,2,9,.10),rgba(2,2,10,.18) 48%,rgba(2,2,10,.42)),
-    url("dragonswood-world.jpg") center 24% / cover no-repeat !important;
-  filter:saturate(1.23) contrast(1.04) brightness(.88) !important;
-  transform:scale(1.015);
-}
-
-/* Slow magical color shimmer laid over the castle/wisteria art */
-body::after{
-  content:"";
-  position:fixed;
-  inset:-8%;
-  z-index:1 !important;
-  pointer-events:none;
-  background:
-    radial-gradient(circle at 14% 16%,rgba(160,65,255,.17),transparent 22%),
-    radial-gradient(circle at 82% 18%,rgba(2,204,254,.11),transparent 21%),
-    radial-gradient(circle at 50% 62%,rgba(244,201,93,.055),transparent 18%),
-    linear-gradient(115deg,transparent 35%,rgba(136,42,255,.055) 48%,rgba(2,204,254,.045) 54%,transparent 66%);
-  background-size:100% 100%,100% 100%,100% 100%,220% 100%;
-  animation:dwSceneShimmer 13s ease-in-out infinite alternate;
-  mix-blend-mode:screen;
-}
-
-@keyframes dwSceneShimmer{
-  0%{
-    transform:translate3d(-1.5%,-.6%,0) scale(1);
-    background-position:0 0,0 0,0 0,0% 0;
-    opacity:.72;
-  }
-  50%{
-    transform:translate3d(1%,.8%,0) scale(1.025);
-    background-position:0 0,0 0,0 0,100% 0;
-    opacity:1;
-  }
-  100%{
-    transform:translate3d(-.4%,1.2%,0) scale(1.015);
-    background-position:0 0,0 0,0 0,200% 0;
-    opacity:.82;
-  }
-}
-
-/* Put all actual site content above the scenery */
-body > *:not(.dw-stars){
-  position:relative;
-  z-index:5;
-}
-
-/* Keep magical particles between scenery and UI */
-.dw-stars{
-  z-index:3 !important;
-}
-
-/* Reduce giant dead hero area and let the world show through more */
-header{
-  background:linear-gradient(180deg,rgba(3,4,12,.72),rgba(13,6,28,.48)) !important;
-  backdrop-filter:blur(2px) saturate(1.15) !important;
-}
-
-.hero{
-  padding:22px 0 24px !important;
-}
-
-.hero-card{
-  background:linear-gradient(145deg,rgba(7,7,23,.72),rgba(4,14,29,.68)) !important;
-  backdrop-filter:blur(8px) !important;
-}
-
-main{
-  background:transparent !important;
-}
-
-/* Make cards translucent enough to see the fantasy world around and through them */
-.card,.pet,.game,.board,.login-card,.profilebar,.modalbox,.recess-card,.item{
-  background:
-    radial-gradient(circle at 50% -25%,rgba(101,45,193,.14),transparent 48%),
-    linear-gradient(145deg,rgba(8,9,26,.90),rgba(4,7,18,.92)) !important;
-}
-
-.petbody{
-  background:rgba(3,6,16,.87) !important;
-}
-
-.profilebar{
-  background:linear-gradient(90deg,rgba(12,9,39,.88),rgba(4,18,31,.86)) !important;
-}
-
-/* Visible wisteria curtain accents at the upper edges */
-.dw-wisteria-curtain{
-  position:fixed;
-  z-index:4;
-  pointer-events:none;
-  top:0;
-  width:210px;
-  height:52vh;
-  opacity:.72;
-  filter:drop-shadow(0 0 13px rgba(149,70,255,.45));
-}
-.dw-wisteria-curtain.left{
-  left:0;
-  background:
-    radial-gradient(ellipse at 18% 4%,rgba(181,82,255,.8) 0 5px,transparent 6px),
-    radial-gradient(ellipse at 33% 8%,rgba(134,48,231,.72) 0 6px,transparent 7px),
-    radial-gradient(ellipse at 44% 14%,rgba(192,99,255,.72) 0 5px,transparent 6px),
-    repeating-linear-gradient(96deg,transparent 0 17px,rgba(130,48,220,.33) 18px 22px,transparent 23px 39px);
-  mask-image:linear-gradient(to bottom,#000 0 62%,transparent 100%);
-}
-.dw-wisteria-curtain.right{
-  right:0;
-  transform:scaleX(-1);
-  background:
-    radial-gradient(ellipse at 18% 4%,rgba(181,82,255,.8) 0 5px,transparent 6px),
-    radial-gradient(ellipse at 33% 8%,rgba(134,48,231,.72) 0 6px,transparent 7px),
-    radial-gradient(ellipse at 44% 14%,rgba(192,99,255,.72) 0 5px,transparent 6px),
-    repeating-linear-gradient(96deg,transparent 0 17px,rgba(130,48,220,.33) 18px 22px,transparent 23px 39px);
-  mask-image:linear-gradient(to bottom,#000 0 62%,transparent 100%);
-}
-
-@media(max-width:900px){
-  .dw-wisteria-curtain{width:110px;opacity:.52}
-  body::before{background-position:center top !important}
-}
-
-</style></head>
-<body><div class="dw-wisteria-curtain left" aria-hidden="true"></div><div class="dw-wisteria-curtain right" aria-hidden="true"></div>
-<div class="dw-stars" aria-hidden="true">
-<i style="left:4%;animation-duration:17s;animation-delay:-8s"></i><i style="left:11%;animation-duration:21s;animation-delay:-3s"></i>
-<i style="left:18%;animation-duration:14s;animation-delay:-11s"></i><i style="left:25%;animation-duration:19s;animation-delay:-5s"></i>
-<i style="left:34%;animation-duration:23s;animation-delay:-14s"></i><i style="left:42%;animation-duration:16s;animation-delay:-6s"></i>
-<i style="left:51%;animation-duration:20s;animation-delay:-12s"></i><i style="left:59%;animation-duration:18s;animation-delay:-2s"></i>
-<i style="left:68%;animation-duration:22s;animation-delay:-9s"></i><i style="left:76%;animation-duration:15s;animation-delay:-4s"></i>
-<i style="left:84%;animation-duration:24s;animation-delay:-16s"></i><i style="left:93%;animation-duration:18s;animation-delay:-7s"></i>
-</div>
-<header><div class="wrap head"><div class="brand" style="display:flex;align-items:center;gap:12px"><div class="crest" aria-hidden="true"><div class="crest-shield"></div></div><div>DRAGONSWOOD COMMAND<small>PRIVATE CLASSROOM CONTROLS</small></div></div><div id="signed" class="hidden"><span id="who" style="font-size:12px;color:#cbd9e7"></span> <button id="logout" class="gray mini">Sign Out</button></div></div></header>
-<main class="wrap">
-<section id="login" class="card login"><h1>Teacher Login</h1><p class="muted">Use your Firebase teacher account.</p><form id="loginForm"><div class="field"><label>Email</label><input id="email" type="email" required autocomplete="username"></div><div class="field"><label>Password</label><input id="password" type="password" required autocomplete="current-password"></div><button class="primary full">SIGN IN</button><div id="error" style="color:#a20d31;margin-top:10px;font-size:13px"></div></form></section>
-
+.teacher-head{padding:13px 0;background:linear-gradient(180deg,rgba(2,3,12,.88),rgba(20,5,36,.7));border-bottom:1px solid var(--gold)}
+.teacher-brand{display:flex;align-items:center;justify-content:space-between}.teacher-title{font-family:Georgia,serif;color:var(--gold-hot);font-size:39px;text-shadow:0 0 13px rgba(244,201,93,.22)}.teacher-title small{display:block;color:#D48BFF;font-size:15px;text-align:center;letter-spacing:2px;margin-top:4px}
+.teacher-main{padding:17px 0 34px}.tabs{display:grid!important;grid-template-columns:repeat(4,1fr);gap:10px!important;margin:0 0 16px!important}.tab{padding:17px 10px!important;background:rgba(6,7,20,.9)!important;border:1px solid rgba(244,201,93,.38)!important;color:var(--gold-hot)!important;font-family:Georgia,serif;font-size:16px}.tab.active{background:linear-gradient(180deg,rgba(92,23,151,.92),rgba(25,9,56,.96))!important;box-shadow:0 0 20px rgba(164,62,255,.28)!important}
+.panel{display:none}.panel.active{display:block}
+.command-title{padding:12px 16px;border:1px solid rgba(244,201,93,.38);border-radius:7px;margin-bottom:10px;background:rgba(10,7,28,.9)}.command-title h2{font-size:29px;margin:0;color:#DF98FF}.command-title p{margin:3px 0}
+.card{padding:16px;border-radius:7px;background:linear-gradient(145deg,rgba(8,8,26,.96),rgba(4,6,17,.97));border:1px solid rgba(244,201,93,.38);box-shadow:0 15px 38px rgba(0,0,0,.4)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.big{font-size:50px;color:var(--gold-hot);font-family:Georgia,serif}.meter{height:20px;background:#030611;border:1px solid rgba(2,204,254,.25);border-radius:999px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#7A24DE,#D24DFF,var(--cyan),var(--gold-hot));background-size:220% 100%;animation:shimmer 5s linear infinite}
+.actions{display:flex;gap:7px;flex-wrap:wrap}.reason{flex:1;min-width:180px}
+.titlebar{display:flex;justify-content:space-between;align-items:end;margin:18px 0 8px}.titlebar h2{margin:0;color:#E0A2FF}.titlebar p{margin:3px 0}
+.groupbox{display:grid;grid-template-columns:1.2fr .8fr .7fr 1.2fr;gap:10px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:12px;font-weight:900;color:#EDE7FA}
+.student-table,table{width:100%;border-collapse:collapse;font-size:12px}.student-table th,th{padding:9px;background:rgba(76,19,116,.35);color:var(--gold-hot);text-align:left;border-bottom:1px solid rgba(244,201,93,.28)}.student-table td,td{padding:9px;border-bottom:1px solid rgba(255,255,255,.06)}.student-avatar{font-size:25px}.student-name{font-weight:900}.badge{padding:4px 7px;border:1px solid rgba(216,101,255,.45);border-radius:999px;color:#F2D8FF;background:rgba(78,17,116,.28)}
+.list{display:grid;gap:7px}.item{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;padding:9px;border:1px solid rgba(101,45,193,.35);background:rgba(8,8,24,.88);border-radius:5px}.icon{font-size:25px}
+.recess-control{margin-top:15px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal{position:fixed;inset:0;background:rgba(1,2,8,.9);z-index:50;display:grid;place-items:center;padding:20px}.modalbox{width:min(660px,100%);max-height:92vh;overflow:auto;padding:20px;border-radius:8px}
+@media(max-width:900px){.tabs{grid-template-columns:repeat(2,1fr)!important}.grid{grid-template-columns:1fr}.groupbox{grid-template-columns:1fr 1fr}.recess-control{grid-template-columns:1fr}}
+</style></head><body>
+<div class="magic-stars" aria-hidden="true"><i style="left:4%;animation-duration:17s;animation-delay:-8s"></i><i style="left:11%;animation-duration:21s;animation-delay:-3s"></i><i style="left:18%;animation-duration:14s;animation-delay:-11s"></i><i style="left:25%;animation-duration:19s;animation-delay:-5s"></i><i style="left:34%;animation-duration:23s;animation-delay:-14s"></i><i style="left:42%;animation-duration:16s;animation-delay:-6s"></i><i style="left:51%;animation-duration:20s;animation-delay:-12s"></i><i style="left:59%;animation-duration:18s;animation-delay:-2s"></i><i style="left:68%;animation-duration:22s;animation-delay:-9s"></i><i style="left:76%;animation-duration:15s;animation-delay:-4s"></i><i style="left:84%;animation-duration:24s;animation-delay:-16s"></i><i style="left:93%;animation-duration:18s;animation-delay:-7s"></i></div>
+<header class="teacher-head"><div class="shell teacher-brand"><div class="teacher-title">🛡️ DRAGONSWOOD COMMAND<small>TEACHER PORTAL • EXPLORE ACADEMY</small></div><div id="signed" class="hidden"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
+<main class="shell teacher-main">
+<section id="login" class="card" style="max-width:520px;margin:55px auto"><h1>Teacher Login</h1><form id="loginForm"><div class="field"><label>Email</label><input id="email" type="email" required></div><div class="field"><label>Password</label><input id="password" type="password" required></div><button style="width:100%">SIGN IN</button><div id="error" style="color:#ff9db5;margin-top:8px"></div></form></section>
 <section id="dash" class="hidden">
-<div class="tabs"><button class="tab active" data-p="rewards">Class Rewards</button><button class="tab" data-p="students">Students</button><button class="tab" data-p="scores">Leaderboards</button><button class="tab" data-p="data">Game Data</button></div>
+<div class="tabs"><button class="tab active" data-p="students">👥 STUDENTS</button><button class="tab" data-p="rewards">🛡️ CLASS REWARDS</button><button class="tab" data-p="scores">🏆 LEADERBOARDS</button><button class="tab" data-p="data">📊 GAME DATA</button></div>
 
-<div id="rewards" class="panel active">
-<div class="grid">
-<div class="card"><h2>🐾 Class Points</h2><div class="big" id="points">0</div><div class="meter"><div class="fill" id="fill"></div></div><div class="actions"><input id="reason" class="reason" placeholder="Reason (optional)"><button class="good add" data-n="1">+1</button><button class="good add" data-n="5">+5</button><button class="gold add" data-n="10">+10</button><button class="gray" id="minus">-1</button><button class="gray" id="undo">Undo Last</button></div></div>
-<div class="card"><h2>📜 Reward History</h2><div class="history" id="history"></div></div>
+<div id="students" class="panel active">
+  <div class="command-title"><h2>🧙 STUDENT CONTROL CENTER</h2><p>Manage HP, Gold, XP, level progress, profiles, and group awards.</p></div>
+  <div class="card"><h3>MASS AWARD / ADJUSTMENT</h3><div class="groupbox">
+    <div class="field"><label>AWARD TO</label><select id="massGroup"><optgroup label="Groups"><option value="all">Whole Class</option><option value="girl">All Girls</option><option value="boy">All Boys</option><option value="4">All 4th Grade</option><option value="5">All 5th Grade</option></optgroup><optgroup label="Individual Students" id="individualStudentOptions"></optgroup></select></div>
+    <div class="field"><label>STAT</label><select id="massStat"><option value="hp">HP</option><option value="gold">Gold</option><option value="xp">XP</option></select></div>
+    <div class="field"><label>AMOUNT</label><input id="massAmount" type="number" value="1"></div>
+    <div class="field"><label>REASON (OPTIONAL)</label><input id="massReason" placeholder="Great teamwork!"></div>
+  </div><div class="actions" style="margin-top:11px"><button onclick="document.getElementById('massAmount').value=1">+1</button><button onclick="document.getElementById('massAmount').value=5">+5</button><button onclick="document.getElementById('massAmount').value=10">+10</button><button onclick="document.getElementById('massAmount').value=-1" style="background:#441025">-1</button><button id="massApply" style="margin-left:auto">APPLY AWARD</button></div></div>
+  <div class="titlebar"><div><h2>STUDENT ROSTER</h2><p>Profiles appear here after students sign in for the first time.</p></div></div>
+  <div class="card" style="overflow:auto"><table class="student-table"><thead><tr><th>AVATAR</th><th>STUDENT</th><th>GRADE</th><th>GROUP</th><th>LEVEL</th><th>HP</th><th>GOLD</th><th>XP</th><th>MANAGE</th></tr></thead><tbody id="studentRows"></tbody></table></div>
+  <div class="recess-control"><div class="card"><h2>🌤️ SECOND RECESS CONTROL</h2><div class="big" id="recessTeacherPoints">0</div><div class="meter"><div class="fill" id="recessTeacherFill"></div></div><div id="recessTeacherStatus" class="muted"></div><div class="actions" style="margin-top:10px"><input id="recessTeacherReason" class="reason" placeholder="Reason"><button class="recess-add" data-rn="1">+1</button><button class="recess-add" data-rn="2">+2</button><button class="recess-add" data-rn="5">+5</button><button id="recessMinus">-1</button><button id="recessReset">RESET TODAY</button></div></div><div class="card"><h3>TODAY'S GOAL</h3><div class="field"><label>Goal</label><input id="recessGoalInput" type="number" value="10"></div><button id="saveRecessGoal">SAVE GOAL</button><div class="badge" id="recessDateLabel" style="margin-top:10px"></div></div></div>
 </div>
 
-<div class="card" style="margin-top:18px">
-  <div class="titlebar" style="margin:0 0 12px">
-    <div><h2>🌤️ Daily Second Recess</h2><p>Independent daily meter. Automatically starts fresh each new day.</p></div>
-    <span class="badge" id="recessDateLabel">TODAY</span>
-  </div>
-  <div class="big" id="recessTeacherPoints">0</div>
-  <div class="meter"><div class="fill" id="recessTeacherFill"></div></div>
-  <div class="actions">
-    <input id="recessTeacherReason" class="reason" placeholder="Reason (optional)">
-    <button class="good recess-add" data-rn="1">+1</button>
-    <button class="good recess-add" data-rn="2">+2</button>
-    <button class="gold recess-add" data-rn="5">+5</button>
-    <button class="gray" id="recessMinus">-1</button>
-    <button class="gray" id="recessReset">Reset Today</button>
-  </div>
-  <div class="actions" style="margin-top:10px">
-    <label style="font-weight:900;font-size:13px;display:flex;align-items:center;gap:7px">
-      Daily Goal
-      <input id="recessGoalInput" type="number" min="1" value="10" style="width:90px">
-    </label>
-    <button class="gray" id="saveRecessGoal">Save Goal</button>
-    <span id="recessTeacherStatus" class="muted" style="align-self:center"></span>
-  </div>
+<div id="rewards" class="panel">
+  <div class="grid"><div class="card"><h2>CLASS POINTS</h2><div class="big" id="points">0</div><div class="meter"><div class="fill" id="fill"></div></div><div class="actions" style="margin-top:10px"><input id="reason" class="reason" placeholder="Reason (optional)"><button class="add" data-n="1">+1</button><button class="add" data-n="5">+5</button><button class="add" data-n="10">+10</button><button id="minus">-1</button><button id="undo">UNDO LAST</button></div></div><div class="card"><h2>REWARD HISTORY</h2><div id="history"></div></div></div>
+  <div class="titlebar"><div><h2>REWARD MILESTONES</h2><p>Add or edit rewards without touching GitHub.</p></div><button id="addReward">+ ADD REWARD</button></div><div class="card"><div class="list" id="rewardList"></div></div>
 </div>
 
-<div class="titlebar"><div><h2>🎁 Reward Milestones</h2><p>Add or edit rewards without touching GitHub.</p></div><button id="addReward" class="primary">+ ADD REWARD</button></div>
-<div class="card"><div class="list" id="rewardList"></div></div>
-</div>
+<div id="scores" class="panel"><div class="command-title"><h2>🏆 LEADERBOARD MANAGER</h2><p>Review or delete submitted scores.</p></div><div class="card"><div class="list" id="scoreList"></div></div></div>
+<div id="data" class="panel"><div class="command-title"><h2>📊 ACADEMIC GAME DATA</h2><p>Private game results for instructional use.</p></div><div class="card" style="overflow:auto"><table><thead><tr><th>Player</th><th>Game</th><th>Score</th><th>Accuracy</th><th>Details</th><th>Time</th></tr></thead><tbody id="results"></tbody></table></div></div>
+</section></main>
 
-<div id="students" class="panel">
-  <div class="titlebar"><div><h2>🛡️ Student Control Center</h2><p>Manage HP, Gold, XP, level progress, profiles, and group awards.</p></div></div>
-  <div class="card">
-    <h3>Mass Award / Adjustment</h3>
-    <div class="groupbox">
-      <div class="field"><label>Award To</label><select id="massGroup">
-  <optgroup label="Groups">
-    <option value="all">Whole Class</option>
-    <option value="girl">All Girls</option>
-    <option value="boy">All Boys</option>
-    <option value="4">All 4th Grade</option>
-    <option value="5">All 5th Grade</option>
-  </optgroup>
-  <optgroup label="Individual Students" id="individualStudentOptions"></optgroup>
-</select></div>
-      <div class="field"><label>Stat</label><select id="massStat"><option value="hp">HP</option><option value="gold">Gold</option><option value="xp">XP</option></select></div>
-      <div class="field"><label>Amount</label><input id="massAmount" type="number" value="1"></div>
-      <div class="field"><label>Reason</label><input id="massReason" placeholder="Great teamwork"></div>
-    </div>
-    <div class="actions" style="margin-top:12px"><button id="massApply" class="primary">APPLY TO GROUP</button></div>
-  </div>
-  <div class="titlebar"><div><h2>Student Roster</h2><p>Profiles appear here after students sign in for the first time.</p></div></div>
-  <div class="card tablewrap"><table class="student-table"><thead><tr><th>Avatar</th><th>Student</th><th>Grade</th><th>Group</th><th>Level</th><th>HP</th><th>Gold</th><th>XP</th><th>Manage</th></tr></thead><tbody id="studentRows"></tbody></table></div>
-</div>
-
-<div id="scores" class="panel"><div class="titlebar"><div><h2>🏆 Leaderboard Manager</h2><p>Review or delete submitted scores.</p></div></div><div class="card"><div class="list" id="scoreList"></div></div></div>
-
-<div id="data" class="panel"><div class="titlebar"><div><h2>📊 Academic Game Data</h2><p>Private game results for instructional use.</p></div></div><div class="card tablewrap"><table><thead><tr><th>Player</th><th>Game</th><th>Score</th><th>Accuracy</th><th>Details</th><th>Time</th></tr></thead><tbody id="results"></tbody></table></div></div>
-</section>
-</main>
-
-<div id="rewardModal" class="modal hidden"><div class="modalbox"><h3 id="rewardModalTitle">Add Reward</h3><input type="hidden" id="rid"><div class="field"><label>Name</label><input id="rname"></div><div class="field"><label>Points Required</label><input id="rpoints" type="number" min="1"></div><div class="field"><label>Icon / Emoji</label><input id="ricon" value="🎁"></div><div class="field"><label>Description</label><textarea id="rdesc" rows="3"></textarea></div><div class="actions"><button id="saveReward" class="primary">SAVE REWARD</button><button id="cancelReward" class="gray">Cancel</button></div></div></div>
-
-<div id="studentModal" class="modal hidden"><div class="modalbox"><h3>Manage Student</h3><input type="hidden" id="sid"><div class="field"><label>First Name</label><input id="sname"></div><div class="field"><label>Grade</label><select id="sgrade"><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div><div class="field"><label>Group</label><select id="sgroup"><option value="girl">Girls</option><option value="boy">Boys</option></select></div><div class="field"><label>Title ID</label><input id="stitle" placeholder="princess / dragonslayer / wizard"></div><div class="field"><label>Avatar ID</label><input id="savatar" placeholder="dragon-purple / knight / wizard"></div>
-<div class="groupbox"><div class="field"><label>HP</label><input id="shp" type="number"></div><div class="field"><label>Gold</label><input id="sgold" type="number"></div><div class="field"><label>XP</label><input id="sxp" type="number"></div><div class="field"><label>Reason</label><input id="sreason" placeholder="Teacher adjustment"></div></div>
-<div class="actions">
-  <button id="saveStudent" class="primary">SAVE PROFILE</button>
-  <button id="deleteStudent" class="danger">DELETE STUDENT</button>
-  <button id="cancelStudent" class="gray">Cancel</button>
-</div>
-<div style="margin-top:10px;color:#64748b;font-size:12px;line-height:1.4">
-  Deleting removes this student's Dragonswood profile, stats, transaction history, game results, and leaderboard scores. Their Google school account itself is not deleted.
-</div>
-</div></div>
-
+<div id="rewardModal" class="modal hidden"><div class="modalbox card"><h3 id="rewardModalTitle">Add Reward</h3><input type="hidden" id="rid"><div class="field"><label>Name</label><input id="rname"></div><div class="field"><label>Points Required</label><input id="rpoints" type="number"></div><div class="field"><label>Icon</label><input id="ricon" value="🎁"></div><div class="field"><label>Description</label><textarea id="rdesc"></textarea></div><div class="actions"><button id="saveReward">SAVE REWARD</button><button id="cancelReward">Cancel</button></div></div></div>
+<div id="studentModal" class="modal hidden"><div class="modalbox card"><h3>Manage Student</h3><input type="hidden" id="sid"><div class="field"><label>First Name</label><input id="sname"></div><div class="field"><label>Grade</label><select id="sgrade"><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div><div class="field"><label>Group</label><select id="sgroup"><option value="girl">Girls</option><option value="boy">Boys</option></select></div><div class="field"><label>Title ID</label><input id="stitle"></div><div class="field"><label>Avatar ID</label><input id="savatar"></div><div class="groupbox"><div class="field"><label>HP</label><input id="shp" type="number"></div><div class="field"><label>Gold</label><input id="sgold" type="number"></div><div class="field"><label>XP</label><input id="sxp" type="number"></div><div class="field"><label>Reason</label><input id="sreason"></div></div><div class="actions" style="margin-top:12px"><button id="saveStudent">SAVE PROFILE</button><button id="deleteStudent" style="background:#4A1025">DELETE STUDENT</button><button id="cancelStudent">Cancel</button></div></div></div>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
@@ -777,5 +339,4 @@ $("massApply").onclick=async()=>{let group=$("massGroup").value,stat=$("massStat
 function renderScores(){$("scoreList").innerHTML=scores.length?scores.map(s=>`<div class="item"><div class="icon">🏆</div><div><b>${esc(s.displayName||s.playerName||"Player")} — ${+s.score||0}</b><small>${esc(s.gameName||s.game||"Game")}</small></div><div><button class="danger mini" data-sdel="${s.id}">Delete</button></div></div>`).join(""):'<div class="muted">No scores submitted yet.</div>';document.querySelectorAll("[data-sdel]").forEach(b=>b.onclick=async()=>{if(confirm("Delete this score?"))await deleteDoc(doc(db,"scores",b.dataset.sdel))})}
 function renderResults(){$("results").innerHTML=results.length?results.map(r=>`<tr><td>${esc(r.displayName||r.playerName||"Player")}</td><td>${esc(r.gameName||r.game||"Game")}</td><td>${+r.score||0}</td><td>${r.accuracy!=null?esc(r.accuracy)+"%":"—"}</td><td>${esc(r.summary||r.details||"—")}</td><td>${r.createdAt?.seconds?new Date(r.createdAt.seconds*1000).toLocaleString():"—"}</td></tr>`).join(""):'<tr><td colspan="6" class="muted">No academic game results yet.</td></tr>'}
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");$(b.dataset.p).classList.add("active")})
-</script>
-</body></html>
+</script></body></html>

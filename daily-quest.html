@@ -277,7 +277,21 @@ async function finishSession(){
   try{await setDoc(progressRef(sessionName),completionProgress,{merge:true})}
   catch(e){console.warn("completion progress save",e)}
 
-  try{await setDoc(doc(collection(db,"scores")),{studentId:user.uid,studentEmail:user.email||"",game:"daily_quest",gameName:"Dragonswood Daily Quest",session:sessionName,day:lesson.day,dateKey:lesson.date,score,accuracy:Math.round(acc*100),createdAt:serverTimestamp()})}catch(e){console.warn("score",e)}
+  try{await setDoc(doc(collection(db,"scores")),{
+    studentId:user.uid,
+    studentEmail:user.email||"",
+    displayName:profile?.firstName||String(user.email||"").split("@")[0]||"Player",
+    playerName:profile?.firstName||String(user.email||"").split("@")[0]||"Player",
+    avatarEmoji:"🐉",
+    game:"daily_quest",
+    gameName:"Dragonswood Daily Quest",
+    session:sessionName,
+    day:lesson.day,
+    dateKey:lesson.date,
+    score,
+    accuracy:Math.round(acc*100),
+    createdAt:serverTimestamp()
+  })}catch(e){console.warn("score",e)}
 
   try{const existing=await getDoc(doc(db,"gameResults",claimId));if(existing.exists()){$("loot").textContent="✓ ACADEMIC COMPLETION SAVED • RPG reward already claimed for this session.";await refreshSessionCards();return}}catch(e){console.warn("claim check",e)}
 
@@ -288,7 +302,7 @@ async function finishSession(){
   try{
     const batch=writeBatch(db);
     batch.set(doc(db,"gameResults",claimId),{
-      studentId:user.uid,studentEmail:user.email||"",gameId:"daily_quest",gameName:"Dragonswood Daily Quest",status:"complete",
+      studentId:user.uid,studentEmail:user.email||"",displayName:profile?.firstName||String(user.email||"").split("@")[0]||"Player",gameId:"daily_quest",gameName:"Dragonswood Daily Quest",status:"complete",
       dateKey:lesson.date,day:Number(lesson.day||0),session:sessionName,score:Number(score||0),accuracy:Math.round(acc*100),seconds:elapsed,
       mathSkill:String(lesson.mathSkill||""),elaSkill:String(lesson.elaSkill||""),
       summary:`Day ${lesson.day} • ${sessionName==="morning"?"Morning":"Exit"} • ${lesson.mathSkill} + ${lesson.elaSkill} • ${elapsed}s`,

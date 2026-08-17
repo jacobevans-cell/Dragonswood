@@ -80,6 +80,62 @@ body > * {
 }
 </style>
 
+
+<style id="dragonswood-v16-glass-gui">
+/* V16: let the environment breathe through the interface */
+:root{
+  --dw-glass: rgba(5, 4, 24, .56);
+  --dw-glass-deep: rgba(4, 3, 19, .68);
+  --dw-glass-light: rgba(20, 8, 52, .46);
+}
+
+/* Major containers */
+.topbar, .teacher-head {
+  background: linear-gradient(180deg, rgba(4,3,18,.58), rgba(5,3,22,.40)) !important;
+  backdrop-filter: blur(3px) saturate(1.18) !important;
+  -webkit-backdrop-filter: blur(3px) saturate(1.18) !important;
+}
+
+.frame, .bevel, .card, .reward-frame, .recess-side, .profile-card, .stats-card,
+.egg-story, .egg-progress, .tab, .command-title,
+.reward-card, .milestone, .game-card, .student-card, .panel, .modal-content,
+table, thead, tbody, tr, td, th {
+  background-color: var(--dw-glass) !important;
+  backdrop-filter: blur(4px) saturate(1.15) !important;
+  -webkit-backdrop-filter: blur(4px) saturate(1.15) !important;
+}
+
+/* Preserve gradients where useful, but make them translucent */
+.reward-frame, .recess-side, .profile-card, .stats-card, .egg-story, .egg-progress,
+.frame, .card, .bevel {
+  background-image:
+    linear-gradient(135deg, rgba(72,20,122,.24), rgba(3,11,38,.34)) !important;
+}
+
+/* Smaller tiles should feel like glass instead of black slabs */
+.reward-card, .milestone, .game-card, .student-card, .tab {
+  background-image:
+    linear-gradient(180deg, rgba(12,8,40,.50), rgba(3,7,27,.58)) !important;
+}
+
+/* Inputs still need enough contrast to be usable */
+input, select, textarea {
+  background: rgba(2,5,20,.68) !important;
+  backdrop-filter: blur(4px);
+}
+
+/* Keep text legible over the scenery */
+.frame, .card, .bevel, .reward-frame, .recess-side, .profile-card, .stats-card,
+.egg-story, .egg-progress {
+  text-shadow: 0 1px 3px rgba(0,0,0,.85);
+}
+
+/* Let more scenery show between and behind the cards */
+main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
+  background: transparent !important;
+}
+</style>
+
 </head><body>
 <header class="teacher-head"><div class="shell"><div class="teacher-title">🛡️ DRAGONSWOOD COMMAND<small>EXPLORE ACADEMY • EVANS 4–5 • TEACHER PORTAL</small></div><div id="signed" class="hidden" style="text-align:right"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
 <main class="shell teacher-main">

@@ -1565,6 +1565,15 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .journal-hero-svg{overflow:visible}
 </style>
 
+
+<style id="v25-3-armor-polish">
+/* High-tier torso visuals should read richer than starter clothes. */
+.journal-hero-svg [stroke="#7eeeff"],
+.journal-hero-svg [stroke="#ffd96f"]{
+  filter:drop-shadow(0 0 3px rgba(126,238,255,.35));
+}
+</style>
+
 </head><body>
 <header class="topbar">
 <div class="shell">
@@ -2233,55 +2242,86 @@ function journalHeroMarkup(){
   };
 
   const armorLayer=()=>{
+    const outId=String(outfit?.id||"");
+    const armId=String(armor?.id||"");
+    const armorTier=armor?weaponTier(armor):1;
+    const ap=armor?weaponPalette(armor):["#f1d9a8","#8d6a49","#3b2c24"];
+    const [aHi,aMid,aDark]=ap;
+
     if(!armor){
-      if(outfit?.id==="gear_mage_robe") return `
-        <path d="M100 165q50-24 100 0l20 150-70 30-70-30z" fill="url(#robeGrad)" stroke="#c28cff" stroke-width="4"/>
-        <path d="M122 170l28 37 28-37" fill="none" stroke="#f4d06c" stroke-width="5"/>
-        <path d="M150 205v91" stroke="#8f64c8" stroke-width="4"/>
-        <circle cx="150" cy="214" r="9" fill="#dff6ff" stroke="#e9ca6c" stroke-width="3"/>`;
+      if(outId==="gear_mage_robe"||outId.includes("robe")) return `
+        <!-- layered robe: collar, mantle, sash, flared skirt -->
+        <path d="M102 162q48-28 96 0l22 145-70 38-70-38z" fill="url(#robeGrad)" stroke="#c28cff" stroke-width="4"/>
+        <path d="M116 158l34 45 34-45 16 18-28 38h-44l-28-38z" fill="#24123f" stroke="#f4d06c" stroke-width="4"/>
+        <path d="M150 205v92" stroke="#9d70d0" stroke-width="5"/>
+        <path d="M116 237h68" stroke="#e8c65d" stroke-width="7"/>
+        <circle cx="150" cy="214" r="10" fill="#dff6ff" stroke="#e9ca6c" stroke-width="3"/>
+        <path d="M92 286q58 24 116 0" fill="none" stroke="#b47ce0" stroke-width="4" opacity=".8"/>`;
+
+      if(outId.includes("tunic")||outfit) return `
+        <!-- real adventurer tunic: undershirt, shoulder guards, lacing, split hem -->
+        <path d="M94 168q16-25 42-30h28q26 5 42 30l-5 109H99z" fill="${shirt}" stroke="#5a3d28" stroke-width="4"/>
+        <path d="M98 169l25-18 19 17-17 27-33-11zM202 169l-25-18-19 17 17 27 33-11z" fill="${outId.includes("wisteria")?"#53317b":"#7a5839"}" stroke="${outId.includes("wisteria")?"#8feaff":"#d4b06f"}" stroke-width="4"/>
+        <path d="M121 168l29 28 29-28" fill="none" stroke="${outId.includes("wisteria")?"#8feaff":"#efd06c"}" stroke-width="5"/>
+        <path d="M141 186l9 9 9-9M141 203l9 9 9-9M141 220l9 9 9-9" fill="none" stroke="#f1d781" stroke-width="3"/>
+        <rect x="94" y="245" width="112" height="16" rx="5" fill="#54331f" stroke="#d7a45f" stroke-width="3"/>
+        <rect x="141" y="242" width="18" height="22" rx="3" fill="#e0b55d"/>
+        <path d="M111 261h34l5 21 5-21h34l-4 35h-70z" fill="${shirt}" stroke="#5a3d28" stroke-width="3"/>
+        ${outId.includes("wisteria")?`<path d="M107 235h86" stroke="#3ee7ff" stroke-width="3"/><path d="M150 159l17 20-17 18-17-18z" fill="#8b5cf6" stroke="#ffe58a" stroke-width="4"/>`:""}`;
+
       return `
-        <path d="M91 168q16-26 44-30h30q28 4 44 30l-8 111H99z" fill="${shirt}" stroke="#684a30" stroke-width="4"/>
-        <path d="M112 166l38 36 38-36" fill="none" stroke="#efd06c" stroke-width="4" opacity="${outfit?1:.35}"/>
-        <path d="M150 195v72" stroke="#f2d16b" stroke-width="3" opacity="${outfit?1:.25}"/>
-        <rect x="94" y="247" width="112" height="15" rx="5" fill="#5a3825" stroke="#d7a45f" stroke-width="3"/>
-        <rect x="142" y="244" width="16" height="20" rx="3" fill="#d9af58"/>`;
+        <!-- simple peasant starter clothes -->
+        <path d="M95 170q15-23 40-28h30q25 5 40 28l-7 108H102z" fill="${shirt}" stroke="#684a30" stroke-width="4"/>
+        <path d="M126 160l24 25 24-25" fill="none" stroke="#c8a879" stroke-width="3" opacity=".7"/>
+        <rect x="97" y="247" width="106" height="14" rx="5" fill="#5a3825" stroke="#b78a53" stroke-width="3"/>`;
     }
 
-    if(armor.id==="gear_leather_armor") return `
-      <path d="M92 165q58-31 116 0l-9 113H101z" fill="#70482d" stroke="#c99058" stroke-width="4"/>
-      <path d="M105 171l24 17-9 74h-20M195 171l-24 17 9 74h20" fill="#8b5c37" stroke="#d6a268" stroke-width="3"/>
-      <path d="M128 177h44l12 23-34 21-34-21z" fill="#56321f" stroke="#e0b167" stroke-width="3"/>
-      <path d="M112 226h76" stroke="#d1a162" stroke-width="5"/>`;
+    if(armId.includes("leather")) return `
+      <!-- layered leather cuirass -->
+      <path d="M92 163q58-30 116 0l-9 116H101z" fill="#5c3826" stroke="#c99058" stroke-width="4"/>
+      <path d="M101 169l28-17 21 19-16 27-35-11zM199 169l-28-17-21 19 16 27 35-11z" fill="#7a4c2e" stroke="#d6a268" stroke-width="4"/>
+      <path d="M119 178h62l13 25-44 24-44-24z" fill="#3f2419" stroke="#e0b167" stroke-width="3"/>
+      <path d="M112 228h76M118 249h64" stroke="#d1a162" stroke-width="5"/>
+      <circle cx="124" cy="204" r="4" fill="#d8b06b"/><circle cx="176" cy="204" r="4" fill="#d8b06b"/>`;
 
-    if(armor.id==="gear_chain_armor") return `
-      <path d="M90 164q60-31 120 0l-7 115H97z" fill="url(#chainPattern)" stroke="#d4dde9" stroke-width="4"/>
-      <path d="M112 169l38 28 38-28" fill="none" stroke="#f0d174" stroke-width="5"/>
-      <path d="M150 197v72" stroke="#657181" stroke-width="4"/>
-      <rect x="94" y="246" width="112" height="16" rx="4" fill="#553b28" stroke="#d8ae62" stroke-width="3"/>`;
+    if(armId.includes("chain")) return `
+      <!-- chainmail hauberk + pauldrons -->
+      <path d="M90 162q60-31 120 0l-7 117H97z" fill="url(#chainPattern)" stroke="#d4dde9" stroke-width="4"/>
+      <path d="M91 171l32-23 23 20-17 26-42-11zM209 171l-32-23-23 20 17 26 42-11z" fill="#6c7683" stroke="#e1e8ef" stroke-width="4"/>
+      <path d="M116 168l34 32 34-32" fill="none" stroke="#f0d174" stroke-width="5"/>
+      <rect x="95" y="245" width="110" height="15" rx="5" fill="#533824" stroke="#d8ae62" stroke-width="3"/>
+      <path d="M111 260h78l-7 37h-64z" fill="url(#chainPattern)" stroke="#cbd5df" stroke-width="3"/>`;
 
-    if(armor.id==="gear_knight_armor") return `
-      <path d="M88 160q62-34 124 0l-6 119H94z" fill="url(#steelArmor)" stroke="#e9d37c" stroke-width="4"/>
-      <path d="M94 172l-25 28 22 17 21-28zM206 172l25 28-22 17-21-28z" fill="url(#steelArmor)" stroke="#cdd7e3" stroke-width="4"/>
-      <path d="M113 169l37 34 37-34-8 73h-58z" fill="#6d7888" stroke="#f2d371" stroke-width="4"/>
-      <path d="M150 203l17 18-17 18-17-18z" fill="#4da6d6" stroke="#f6df80" stroke-width="4"/>
-      <path d="M105 244h90" stroke="#eff5ff" stroke-width="3" opacity=".7"/>`;
+    if(armId.includes("wisteria")) return `
+      <!-- ornate wisteria guardian plate -->
+      <path d="M88 157q62-36 124 0l-5 124H93z" fill="url(#wisteriaArmor)" stroke="#ffd96f" stroke-width="5"/>
+      <path d="M91 168l-33 27 25 25 36-30-17-28zM209 168l33 27-25 25-36-30 17-28z" fill="#59267f" stroke="#d9a4ff" stroke-width="5"/>
+      <path d="M113 164l37 42 37-42-8 79h-58z" fill="#2c143f" stroke="#dca8ff" stroke-width="4"/>
+      <path d="M150 194l21 25-21 23-21-23z" fill="#a855f7" stroke="#ffe486" stroke-width="5"/>
+      <path d="M110 244h80" stroke="#ffe486" stroke-width="5"/>
+      <path d="M103 210q12 11 23 0M174 210q12 11 23 0" fill="none" stroke="#7eeeff" stroke-width="3"/>
+      <path d="M120 260h60l12 37h-84z" fill="#42205e" stroke="#dba5ff" stroke-width="4"/>`;
 
-    if(armor.id==="gear_wisteria_armor") return `
-      <path d="M88 158q62-35 124 0l-6 121H94z" fill="url(#wisteriaArmor)" stroke="#ffd96f" stroke-width="5"/>
-      <path d="M94 169l-29 29 24 19 23-31zM206 169l29 29-24 19-23-31z" fill="#58247f" stroke="#d9a4ff" stroke-width="4"/>
-      <path d="M114 168l36 37 36-37-7 72h-58z" fill="#31164f" stroke="#dca8ff" stroke-width="4"/>
-      <path d="M150 198l19 23-19 21-19-21z" fill="#a855f7" stroke="#ffe486" stroke-width="5"/>
-      <path d="M105 245h90" stroke="#ffe486" stroke-width="4"/>`;
+    if(armId.includes("dragon")||armId.includes("wyrm")||armorTier>=5) return `
+      <!-- mythic dragon plate: layered chest, massive shoulders, faulds -->
+      <path d="M84 153q66-39 132 0l-3 130H87z" fill="url(#dragonsteelArmor)" stroke="${aHi}" stroke-width="5"/>
+      <path d="M88 165l-37 29 28 29 44-36-18-32zM212 165l37 29-28 29-44-36 18-32z" fill="${aDark}" stroke="${aHi}" stroke-width="5"/>
+      <path d="M108 161l42 44 42-44-7 86h-70z" fill="#0f1f33" stroke="#d9b15e" stroke-width="4"/>
+      <path d="M150 190l24 29-24 27-24-27z" fill="${aMid}" stroke="#ffe58b" stroke-width="5"/>
+      <path d="M103 247h94" stroke="${aHi}" stroke-width="5"/>
+      <path d="M118 167l-14 75M182 167l14 75" stroke="#546b86" stroke-width="4"/>
+      <path d="M105 260h34l11 18 11-18h34l15 38h-120z" fill="${aDark}" stroke="${aHi}" stroke-width="4"/>
+      <path d="M91 180l-19-17 7 28M209 180l19-17-7 28" fill="none" stroke="#b76cff" stroke-width="4"/>`;
 
+    // default knight / paladin plate
     return `
-      <path d="M86 155q64-37 128 0l-4 126H90z" fill="url(#dragonsteelArmor)" stroke="#7eeeff" stroke-width="5"/>
-      <path d="M92 166l-33 31 27 22 26-35zM208 166l33 31-27 22-26-35z" fill="#17233a" stroke="#7eeeff" stroke-width="4"/>
-      <path d="M112 165l38 38 38-38-6 80h-64z" fill="#10243a" stroke="#d9b15e" stroke-width="4"/>
-      <path d="M150 192l22 27-22 24-22-24z" fill="#2e7da1" stroke="#ffe58b" stroke-width="5"/>
-      <path d="M103 246h94" stroke="#8ff3ff" stroke-width="4"/>
-      <path d="M118 172l-13 69M182 172l13 69" stroke="#536b85" stroke-width="3"/>`;
+      <path d="M87 158q63-35 126 0l-5 123H92z" fill="url(#steelArmor)" stroke="${aHi}" stroke-width="5"/>
+      <path d="M92 169l-31 29 25 22 35-32-16-30zM208 169l31 29-25 22-35-32 16-30z" fill="url(#steelArmor)" stroke="${aHi}" stroke-width="4"/>
+      <path d="M111 165l39 40 39-40-8 79h-62z" fill="#677486" stroke="#f2d371" stroke-width="4"/>
+      <path d="M150 198l19 21-19 20-19-20z" fill="${aMid}" stroke="#f6df80" stroke-width="4"/>
+      <path d="M104 245h92" stroke="#eff5ff" stroke-width="4" opacity=".8"/>
+      <path d="M112 260h76l10 36h-96z" fill="#788697" stroke="#d7e0e8" stroke-width="3"/>`;
   };
-
   const headLayer=()=>{
     if(!head)return "";
     if(head.id==="gear_royal_crown") return `
@@ -2331,14 +2371,18 @@ function journalHeroMarkup(){
       <ellipse cx="220" cy="248" rx="12" ry="13" fill="${skin}" stroke="#9f674c" stroke-width="3"/>`;
 
     if(type==="staff") return `
-      <g transform="translate(211 132) rotate(10)" filter="url(#gearGlow)">
-        <path d="M0 42v167" stroke="${tier>=4?pDark:"#6e452c"}" stroke-width="${9+tier}" stroke-linecap="round"/>
-        ${tier>=4?`<path d="M0 42q-24-15-32-38M0 42q24-15 32-38" fill="none" stroke="${pMid}" stroke-width="6"/>`:""}
-        <circle cx="0" cy="30" r="${20+tier*3}" fill="${pMid}" stroke="${pHi}" stroke-width="5"/>
-        <circle cx="0" cy="30" r="${8+tier*2}" fill="${tier>=5?"#fff":pHi}" opacity=".95"/>
-        ${tier>=3?`<path d="M0 -1l7 15 16 2-12 11 3 16-14-8-14 8 3-16-12-11 16-2z" fill="${pHi}" opacity=".78"/>`:""}
-        ${tier>=5?`<circle cx="0" cy="30" r="41" fill="none" stroke="${pHi}" stroke-width="3" opacity=".75"/><circle cx="0" cy="30" r="50" fill="none" stroke="${pMid}" stroke-width="2" opacity=".45"/>`:""}
+      <!-- Staff grip is anchored to the right hand at 219,249. -->
+      <g transform="translate(219 249) rotate(10)" filter="url(#gearGlow)">
+        <path d="M0 18V-122" stroke="${tier>=4?pDark:"#6e452c"}" stroke-width="${9+tier}" stroke-linecap="round"/>
+        <path d="M0 18v55" stroke="${tier>=4?pDark:"#6e452c"}" stroke-width="${9+tier}" stroke-linecap="round"/>
+        ${tier>=4?`<path d="M0-122q-24-15-32-38M0-122q24-15 32-38" fill="none" stroke="${pMid}" stroke-width="6"/>`:""}
+        <circle cx="0" cy="-134" r="${20+tier*3}" fill="${pMid}" stroke="${pHi}" stroke-width="5"/>
+        <circle cx="0" cy="-134" r="${8+tier*2}" fill="${tier>=5?"#fff":pHi}" opacity=".95"/>
+        ${tier>=3?`<path d="M0-165l7 15 16 2-12 11 3 16-14-8-14 8 3-16-12-11 16-2z" fill="${pHi}" opacity=".78"/>`:""}
+        ${tier>=5?`<circle cx="0" cy="-134" r="41" fill="none" stroke="${pHi}" stroke-width="3" opacity=".75"/><circle cx="0" cy="-134" r="50" fill="none" stroke="${pMid}" stroke-width="2" opacity=".45"/>`:""}
+        <path d="M-5-2h10M-5 6h10M-5 14h10" stroke="#d7a45f" stroke-width="2" opacity=".9"/>
       </g>
+      <!-- Hand overlays the shaft so it reads as HELD. -->
       <ellipse cx="219" cy="249" rx="12" ry="13" fill="${skin}" stroke="#9f674c" stroke-width="3"/>
       <path d="M213 247q6 5 13 0" fill="none" stroke="#8d5b46" stroke-width="2" stroke-linecap="round"/>`;
 

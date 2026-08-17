@@ -1204,6 +1204,14 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 @media(max-width:760px){.journal-rpg-layout{grid-template-columns:1fr}.journal-inventory-card{grid-column:auto}.inventory-grid-v23{grid-template-columns:repeat(2,1fr)}}
 </style>
 
+
+<style id="dragonswood-v23-1-nav-fix">
+#portalNav{position:relative!important;z-index:60!important;pointer-events:auto!important}
+#portalNav .portal-tab{position:relative!important;z-index:61!important;pointer-events:auto!important;cursor:pointer!important}
+.portal-view{display:none!important}
+.portal-view.active{display:block!important}
+</style>
+
 </head><body>
 <header class="topbar">
 <div class="shell">
@@ -1240,12 +1248,12 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
   <!-- Persistent Dragonswood navigation -->
   <nav class="frame bevel portal-nav" id="portalNav" aria-label="Dragonswood navigation">
-    <button class="portal-tab active" type="button" data-view="home"><span>🛡️</span><b>HOME</b></button>
-    <button class="portal-tab" type="button" data-view="games"><span>🎮</span><b>GAMES</b></button>
-    <button class="portal-tab" type="button" data-view="shop"><span>🧰</span><b>SHOP</b></button>
-    <button class="portal-tab" type="button" data-view="quests"><span>⚔️</span><b>QUESTS</b></button>
-    <button class="portal-tab" type="button" data-view="leaderboard"><span>🏆</span><b>LEADERBOARD</b></button>
-    <button class="portal-tab" type="button" data-view="journal"><span>📖</span><b>MY JOURNAL</b></button>
+    <button class="portal-tab active" type="button" data-view="home" onclick="DragonswoodNav('home')"><span>🛡️</span><b>HOME</b></button>
+    <button class="portal-tab" type="button" data-view="games" onclick="DragonswoodNav('games')"><span>🎮</span><b>GAMES</b></button>
+    <button class="portal-tab" type="button" data-view="shop" onclick="DragonswoodNav('shop')"><span>🧰</span><b>SHOP</b></button>
+    <button class="portal-tab" type="button" data-view="quests" onclick="DragonswoodNav('quests')"><span>⚔️</span><b>QUESTS</b></button>
+    <button class="portal-tab" type="button" data-view="leaderboard" onclick="DragonswoodNav('leaderboard')"><span>🏆</span><b>LEADERBOARD</b></button>
+    <button class="portal-tab" type="button" data-view="journal" onclick="DragonswoodNav('journal')"><span>📖</span><b>MY JOURNAL</b></button>
   </nav>
 
   <!-- HOME -->
@@ -1433,6 +1441,51 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 <div class="custom-section" data-avatar-panel="hair"><b>Hair color</b><div class="swatches" id="hairColorChoices"></div><b>Hair style</b><div class="hair-options" id="hairStyleChoices"></div></div>
 <div class="custom-section" data-avatar-panel="equipment"><div class="gear-options" id="equipmentChoices"></div><div class="avatar-studio-note">🔒 Locked gear must be earned or purchased first. Click owned gear to equip it. Click equipped gear again to remove it.</div></div></div></div>
 <div style="display:flex;gap:8px;margin-top:13px"><button id="saveProfile">SAVE CHARACTER</button><button id="closeProfile" class="hidden">Close</button></div><div id="profileError" style="color:#ff9db5;margin-top:8px"></div></div></div>
+
+<script id="dragonswood-navigation-core">
+(function(){
+  const views=["home","games","shop","quests","leaderboard","journal"];
+
+  function show(view, updateHash){
+    if(!views.includes(view)) view="home";
+
+    document.querySelectorAll(".portal-view").forEach(function(panel){
+      const active=panel.getAttribute("data-page")===view;
+      panel.classList.toggle("active", active);
+      panel.setAttribute("aria-hidden", active ? "false" : "true");
+    });
+
+    document.querySelectorAll(".portal-tab").forEach(function(tab){
+      const active=tab.getAttribute("data-view")===view;
+      tab.classList.toggle("active",active);
+      tab.setAttribute("aria-current",active?"page":"false");
+    });
+
+    if(updateHash!==false){
+      try{ history.replaceState(null,"","#"+view); }
+      catch(e){ location.hash=view; }
+    }
+  }
+
+  window.DragonswoodNav=function(view){ show(view,true); };
+
+  document.addEventListener("click",function(e){
+    const tab=e.target.closest ? e.target.closest(".portal-tab") : null;
+    if(!tab) return;
+    e.preventDefault();
+    show(tab.getAttribute("data-view")||"home",true);
+  },true);
+
+  window.addEventListener("hashchange",function(){
+    show((location.hash||"#home").slice(1),false);
+  });
+
+  document.addEventListener("DOMContentLoaded",function(){
+    show((location.hash||"#home").slice(1),false);
+  });
+})();
+</script>
+
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
@@ -2137,15 +2190,9 @@ function openPortalView(view, updateHash=true){
   }
 }
 
-document.querySelectorAll(".portal-tab").forEach(tab=>{
-  tab.addEventListener("click",()=>openPortalView(tab.dataset.view));
-});
-
-window.addEventListener("hashchange",()=>{
-  openPortalView(location.hash.replace("#","")||"home",false);
-});
-
-openPortalView(location.hash.replace("#","")||"home",false);
+// Navigation is handled by the Firebase-independent Dragonswood navigation core.
+window.openPortalView=openPortalView;
+if(window.DragonswoodNav) window.DragonswoodNav(location.hash.replace("#","")||"home");
 
 
 renderRewards();renderBoards();glitterizeStaticIcons();

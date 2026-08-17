@@ -2446,7 +2446,8 @@ function renderBathroomStudent(d){
        const slotRef=doc(db,'bathroomSlots',group);
 
        await runTransaction(db,async tx=>{
-         const [statusSnap,slotSnap]=await Promise.all([tx.get(statusRef),tx.get(slotRef)]);
+         const statusSnap=await tx.get(statusRef);
+         const slotSnap=await tx.get(slotRef);
          const current=statusSnap.exists()?statusSnap.data():d||{};
          const visits=Array.isArray(current?.visits)?[...current.visits]:[];
          const activeVisitId=String(current?.activeVisitId||'');
@@ -2521,7 +2522,8 @@ function renderBathroomStudent(d){
        const slotRef=doc(db,'bathroomSlots',group);
 
        await runTransaction(db,async tx=>{
-         const [slotSnap,statusSnap]=await Promise.all([tx.get(slotRef),tx.get(statusRef)]);
+         const slotSnap=await tx.get(slotRef);
+         const statusSnap=await tx.get(statusRef);
          const slot=slotSnap.exists()?slotSnap.data():null;
          const current=statusSnap.exists()?statusSnap.data():d||{};
          const currentSame=current?.dateKey===key;

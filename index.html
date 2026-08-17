@@ -75,7 +75,7 @@ select option,select optgroup{background:#080718;color:#fff}
     <div class="frame bevel profile-card hidden" id="profileStrip">
       <div class="avatar" id="avatar">🐉</div>
       <div><div class="profile-name" id="displayName">Adventurer</div><div class="profile-sub" id="profileSub"></div><div class="progress"><div id="levelFill" style="width:0"></div></div></div>
-      <div class="level-badge">LVL<br><span id="levelShield">1</span></div>
+      <div class="level-badge">LVL<br><span id="levelShield">1</span><span id="levelTop" class="hidden">1</span></div>
     </div>
     <div class="logo-center">
       <div class="logo-mark"><div class="logo-shield"></div></div>
@@ -93,6 +93,7 @@ select option,select optgroup{background:#080718;color:#fff}
 </header>
 
 <main class="shell main">
+<div id="conn" class="muted" style="text-align:center;margin:10px auto 0;max-width:600px">Waiting for sign-in…</div>
 <section id="signedOut" class="frame bevel login-card">
 <h1>Enter Dragonswood</h1><p>Sign in with your Explore Academy Google account.</p><button id="googleBtn">G&nbsp;&nbsp; SIGN IN WITH GOOGLE</button><div id="loginError" style="color:#ff9db5;margin-top:10px"></div>
 </section>
@@ -214,7 +215,7 @@ function levelInfo(xp){
 }
 function avatarEmoji(id){return AVATARS.find(a=>a.id===id)?.emoji||"🐉"}
 
-$("googleBtn").onclick=async()=>{
+if($("googleBtn")) $("googleBtn").onclick=async()=>{
   $("loginError").textContent="";
   $("googleBtn").disabled = true;
   $("googleBtn").textContent = "SIGNING IN…";
@@ -231,8 +232,8 @@ $("googleBtn").onclick=async()=>{
     $("googleBtn").innerHTML = '<span>G</span> SIGN IN WITH GOOGLE';
   }
 };
-$("signOutBtn").onclick=()=>signOut(auth);
-$("profileBtn").onclick=()=>openProfile(true);
+if($("signOutBtn")) $("signOutBtn").onclick=()=>signOut(auth);
+if($("profileBtn")) $("profileBtn").onclick=()=>openProfile(true);
 
 onAuthStateChanged(auth,async u=>{
   user=u;
@@ -241,7 +242,7 @@ onAuthStateChanged(auth,async u=>{
     $("signedOut").classList.remove("hidden");
     $("signedIn").classList.add("hidden"); if(document.getElementById("topStats")) $("topStats").classList.add("hidden"); if(document.getElementById("profileStrip")) $("profileStrip").classList.add("hidden");
     $("account").classList.add("hidden");
-    $("conn").textContent="Waiting for sign-in…";
+    if($("conn")) $("conn").textContent="Waiting for sign-in…";
     return;
   }
 
@@ -253,7 +254,7 @@ onAuthStateChanged(auth,async u=>{
     $("signedIn").classList.add("hidden"); if(document.getElementById("topStats")) $("topStats").classList.add("hidden"); if(document.getElementById("profileStrip")) $("profileStrip").classList.add("hidden");
     $("account").classList.remove("hidden");
     $("accountEmail").textContent=u.email||"Unknown account";
-    $("conn").textContent="Signed in, but this account is not authorized.";
+    if($("conn")) $("conn").textContent="Signed in, but this account is not authorized.";
     $("loginError").textContent=`Firebase signed you in as ${u.email||"an account"}, but Dragonswood only allows @${DOMAIN} school accounts. Use Sign Out, then choose your school account.`;
     return;
   }
@@ -263,7 +264,7 @@ onAuthStateChanged(auth,async u=>{
   $("signedIn").classList.remove("hidden");
   $("account").classList.remove("hidden");
   $("accountEmail").textContent=u.email;
-  $("conn").textContent="✓ Connected to your Dragonswood account";
+  if($("conn")) $("conn").textContent="✓ Connected to your Dragonswood account";
 
   try{
     const ref=doc(db,"students",u.uid);
@@ -284,12 +285,12 @@ onAuthStateChanged(auth,async u=>{
       }
     },err=>{
       console.error("Student profile listener error:",err);
-      $("conn").textContent=`Profile data error: ${err.code||"unknown"}`;
+      if($("conn")) $("conn").textContent=`Profile data error: ${err.code||"unknown"}`;
     });
 
   }catch(err){
     console.error("Student portal startup error:",err);
-    $("conn").textContent=`Signed in, but profile data failed: ${err.code||"unknown"}`;
+    if($("conn")) $("conn").textContent=`Signed in, but profile data failed: ${err.code||"unknown"}`;
     $("loginError").textContent=`Firebase profile error: ${err.code||"unknown"} — ${err.message||""}`;
   }
 });

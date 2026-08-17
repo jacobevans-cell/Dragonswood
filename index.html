@@ -1555,6 +1555,16 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 }
 </style>
 
+
+<style id="v25-2-weapon-scaling">
+.inventory-card-v24.rarity-mythic .item-art svg,
+.inventory-card-v24.rarity-legendary .item-art svg{
+  filter:drop-shadow(0 0 7px color-mix(in srgb,var(--rar) 65%,transparent))
+         drop-shadow(0 7px 5px rgba(0,0,0,.42));
+}
+.journal-hero-svg{overflow:visible}
+</style>
+
 </head><body>
 <header class="topbar">
 <div class="shell">
@@ -2044,6 +2054,40 @@ function currentPlayerLevel(){return levelInfo(Number(profile?.xp||0)).level}
 function isOwnedGear(item){return Array.isArray(profile?.inventory)&&profile.inventory.includes(item.id)}
 function itemStatText(item){const s=item?.stats||{};return [["⚔️",s.atk],["🛡️",s.def],["❤️",s.hp],["✨",s.heal]].filter(x=>Number(x[1]||0)!==0).map(x=>`${x[0]} ${Number(x[1])>0?"+":""}${Number(x[1])}`).join(" ")}
 
+
+function weaponVisualType(item){
+  const id=String(item?.id||"").toLowerCase();
+  const name=String(item?.name||"").toLowerCase();
+  const path=String(item?.classPath||"").toLowerCase();
+  if(name.includes("staff")||name.includes("wand")||path==="magic") return "staff";
+  if(name.includes("bow")||path==="ranger") return "bow";
+  if(name.includes("hammer")||name.includes("maul")) return "hammer";
+  if(name.includes("dagger")) return "dagger";
+  if(name.includes("greatsword")) return "greatsword";
+  if(name.includes("blade")||name.includes("saber")||name.includes("sword")) return "sword";
+  return "sword";
+}
+function weaponTier(item){
+  const rarity=String(item?.rarity||"common").toLowerCase();
+  return ({common:1,uncommon:1,rare:2,epic:3,legendary:4,mythic:5})[rarity]||1;
+}
+function weaponPalette(item){
+  const el=String(item?.element||"").toLowerCase();
+  const palettes={
+    fire:["#fff0a0","#ff8a27","#9d1b17"],
+    ice:["#e9fdff","#66dcff","#1b4e8f"],
+    storm:["#f3f5ff","#58d9ff","#5a3bd2"],
+    light:["#fff8b8","#ffc84c","#b36b0f"],
+    shadow:["#d79cff","#6f35c5","#1c102d"],
+    arcane:["#ffd6ff","#b45cff","#38205f"],
+    nature:["#d9ffaf","#55c96e","#1c5730"],
+    water:["#dffcff","#42bde8","#174d83"],
+    prismatic:["#fff3a8","#a45fff","#1ccde8"],
+    earth:["#ffe0a6","#aa7340","#4a2f20"]
+  };
+  return palettes[el]||["#f4fbff","#88b6d2","#374b63"];
+}
+
 function itemArt(item){
   if(!item)return "";
   const id=item.id||"",slot=item.equipSlot||item.category||"",rar=item.rarity||"common";
@@ -2062,10 +2106,56 @@ function itemArt(item){
     return base(`<g filter="url(#g)" stroke="#301d13" stroke-width="3" stroke-linejoin="round"><path fill="url(#m)" d="M26 23h25v43l13 14-5 17H16l-5-12 14-18z"/><path fill="url(#m)" d="M69 23h24v43l16 16-6 15H64l-5-13 10-18z"/><path fill="${hi}" d="M24 23h29v12H24zM68 23h27v12H68z"/><path fill="#5a361f" d="M15 87h46v11H15zM64 87h41v11H64z"/></g>`);
   }
   if(slot==="weapon"){
-    if(id.includes("bow")) return base(`<g filter="url(#g)" fill="none" stroke-linecap="round"><path d="M38 15Q90 58 39 105" stroke="url(#m)" stroke-width="9"/><path d="M42 18L43 102" stroke="#e8d5b1" stroke-width="2"/><path d="M40 59H101" stroke="${hi}" stroke-width="4"/><path d="M91 52l12 7-12 7" stroke="${hi}" stroke-width="4"/></g>`);
-    if(id.includes("staff")) return base(`<g filter="url(#g)"><path d="M55 96L68 34" stroke="#7c512d" stroke-width="8" stroke-linecap="round"/><circle cx="72" cy="27" r="18" fill="url(#m)" stroke="${hi}" stroke-width="4"/><circle cx="72" cy="27" r="8" fill="#dffbff"/></g>`);
-    return base(`<g filter="url(#g)" transform="rotate(-12 60 60)"><path fill="url(#steel)" stroke="#2c3448" stroke-width="2" d="M57 8l11 48-8 12-8-12z"/><path fill="${hi}" stroke="${dark}" stroke-width="3" d="M39 61h38l4 10H35z"/><rect x="54" y="70" width="9" height="32" rx="4" fill="#6b422b"/><circle cx="58.5" cy="105" r="7" fill="${mid}"/></g>`);
+    const type=weaponVisualType(item),tier=weaponTier(item),pal=weaponPalette(item);
+    const [pHi,pMid,pDark]=pal;
+
+    if(type==="bow") return base(`
+      <g filter="url(#g)" fill="none" stroke-linecap="round">
+        <path d="M35 13Q94 58 35 107" stroke="${tier>=4?pMid:"#6c4726"}" stroke-width="${8+tier}"/>
+        <path d="M40 17L40 103" stroke="#efe0bf" stroke-width="2"/>
+        <path d="M39 60H102" stroke="${pHi}" stroke-width="4"/>
+        <path d="M92 51l13 9-13 9" stroke="${pHi}" stroke-width="4"/>
+        ${tier>=3?`<path d="M47 30l14 8M47 89l14-8" stroke="${pMid}" stroke-width="4"/>`:""}
+        ${tier>=4?`<circle cx="40" cy="60" r="8" stroke="${pHi}" stroke-width="3"/>`:""}
+      </g>`);
+
+    if(type==="staff") return base(`
+      <g filter="url(#g)">
+        <path d="M52 103L67 31" stroke="${tier>=4?pDark:"#7c512d"}" stroke-width="${7+tier}" stroke-linecap="round"/>
+        ${tier>=4?`<path d="M67 31q-18-10-24-23M67 31q18-10 24-23" fill="none" stroke="${pMid}" stroke-width="5"/>`:""}
+        <circle cx="70" cy="25" r="${15+tier*2}" fill="${pMid}" stroke="${pHi}" stroke-width="4"/>
+        <circle cx="70" cy="25" r="${7+tier}" fill="${tier>=5?"#ffffff":pHi}" opacity=".9"/>
+        ${tier>=3?`<path d="M70 2l5 10 11 1-8 8 2 11-10-5-10 5 2-11-8-8 11-1z" fill="${pHi}" opacity=".75"/>`:""}
+        ${tier>=5?`<circle cx="70" cy="25" r="28" fill="none" stroke="${pHi}" stroke-width="2" opacity=".7"/><circle cx="70" cy="25" r="35" fill="none" stroke="${pMid}" stroke-width="2" opacity=".45"/>`:""}
+      </g>`);
+
+    if(type==="hammer") return base(`
+      <g filter="url(#g)" transform="rotate(-13 60 60)">
+        <rect x="55" y="48" width="10" height="58" rx="4" fill="#6b422b"/>
+        <path d="M27 25h66l9 22-12 18H30L18 47z" fill="${pMid}" stroke="${pHi}" stroke-width="4"/>
+        <path d="M38 31h44" stroke="${pHi}" stroke-width="5"/>
+        ${tier>=4?`<path d="M50 20l10-13 10 13M43 58l17 13 17-13" stroke="${pHi}" stroke-width="4" fill="none"/>`:""}
+      </g>`);
+
+    if(type==="dagger") return base(`
+      <g filter="url(#g)">
+        <g transform="translate(22 8) rotate(-9 32 50)"><path d="M32 0l10 52-10 12-10-12z" fill="${pMid}" stroke="${pHi}" stroke-width="3"/><path d="M10 55h44" stroke="${pHi}" stroke-width="6"/><rect x="28" y="58" width="8" height="39" rx="3" fill="#5d3826"/></g>
+        <g transform="translate(60 10) rotate(12 32 50)"><path d="M32 0l10 52-10 12-10-12z" fill="${pDark}" stroke="${pHi}" stroke-width="3"/><path d="M10 55h44" stroke="${pMid}" stroke-width="6"/><rect x="28" y="58" width="8" height="39" rx="3" fill="#5d3826"/></g>
+      </g>`);
+
+    const big=type==="greatsword"||tier>=4;
+    return base(`
+      <g filter="url(#g)" transform="rotate(-10 60 60)">
+        <path fill="${tier>=4?pMid:"url(#steel)"}" stroke="${pHi}" stroke-width="${2+tier/2}"
+              d="${big?"M57 2l14 57-11 14-11-14z":"M57 8l11 48-8 12-8-12z"}"/>
+        <path fill="${pDark}" stroke="${pHi}" stroke-width="3" d="${big?"M31 61h58l6 11H25z":"M39 61h38l4 10H35z"}"/>
+        <rect x="54" y="70" width="10" height="${big?38:32}" rx="4" fill="#6b422b"/>
+        <circle cx="59" cy="${big?111:105}" r="${big?9:7}" fill="${pMid}" stroke="${pHi}" stroke-width="2"/>
+        ${tier>=3?`<path d="M60 15v39" stroke="${pHi}" stroke-width="3" opacity=".7"/>`:""}
+        ${tier>=5?`<path d="M48 27l12-18 12 18-7 9-5-7-5 7z" fill="${pHi}" opacity=".9"/>`:""}
+      </g>`);
   }
+
   if(slot==="offhand"){
     if(id.includes("book")) return base(`<g filter="url(#g)"><path fill="url(#m)" stroke="#2d173d" stroke-width="3" d="M17 27q25-11 43 4v65q-18-14-43-4zM103 27q-25-11-43 4v65q18-14 43-4z"/><path d="M60 31v65" stroke="${hi}" stroke-width="2"/><path d="M29 47h20M29 58h20M72 47h20M72 58h20" stroke="#f7dca3" stroke-width="3"/></g>`);
     return base(`<g filter="url(#g)"><path fill="url(#m)" stroke="${hi}" stroke-width="4" d="M60 12L101 29v30q0 35-41 49Q19 94 19 59V29z"/><path fill="none" stroke="#ffe29a" stroke-width="5" d="M60 24v67M35 52h50"/><path fill="${dark}" d="M60 31l12 21-12 9-12-9z"/></g>`);
@@ -2227,58 +2317,63 @@ function journalHeroMarkup(){
 
   const weaponLayer=()=>{
     if(!weapon)return "";
-    if(weapon.id==="gear_ranger_bow") return `
-      <g transform="translate(195 165) rotate(8)" filter="url(#gearGlow)">
-        <path d="M15 0q56 65 0 136" fill="none" stroke="#6c4726" stroke-width="9" stroke-linecap="round"/>
-        <path d="M18 4v128" stroke="#e7d8b8" stroke-width="2"/>
-        <path d="M18 68h68" stroke="#d3aa57" stroke-width="4"/>
-        <path d="M75 59l16 9-16 9" fill="none" stroke="#e0c074" stroke-width="4"/>
-      </g>`;
-    if(weapon.id==="gear_crystal_staff") return `
-      <g transform="translate(205 151) rotate(8)" filter="url(#gearGlow)">
-        <path d="M18 15v158" stroke="#6e452c" stroke-width="10" stroke-linecap="round"/>
-        <circle cx="18" cy="13" r="25" fill="#247bb0" stroke="#7eeeff" stroke-width="5"/>
-        <circle cx="18" cy="13" r="10" fill="#e9fdff"/>
-      </g>`;
-    const legendary=weapon.id==="gear_dragonslayer";
-    const training=weapon.id==="gear_training_sword";
-    return `
-      <!-- Sword is anchored at the hero's right hand. The blade points
-           up and OUTWARD instead of cutting across the character's torso. -->
-      <g transform="translate(219 249) rotate(28)" filter="url(#gearGlow)">
-        <!-- pommel + grip -->
-        <circle cx="0" cy="24" r="${legendary?8:7}" fill="${legendary?"#ffca58":"#55d9ff"}" stroke="#302038" stroke-width="3"/>
-        <rect x="-5" y="-4" width="10" height="29" rx="4" fill="#6d442a" stroke="#2b1b18" stroke-width="2"/>
-        <path d="M-5 3h10M-5 10h10M-5 17h10" stroke="#d5a259" stroke-width="2" opacity=".8"/>
+    const type=weaponVisualType(weapon),tier=weaponTier(weapon),pal=weaponPalette(weapon);
+    const [pHi,pMid,pDark]=pal;
 
-        <!-- proper crossguard -->
-        <path d="M-27-7Q-13-13 0-8Q13-13 27-7l-4 10H-23z"
-              fill="${legendary?"#b86a1b":training?"#8a7868":"#25aee0"}"
-              stroke="${legendary?"#ffd56f":"#d9f5ff"}" stroke-width="3"/>
-
-        <!-- blade starts ABOVE the hand -->
-        <path d="M-9-8L-14-92L0-117L14-92L9-8L0 2z"
-              fill="${legendary?"url(#flameBlade)":training?"#b9c3cc":"url(#swordSteel)"}"
-              stroke="${legendary?"#ffb44a":training?"#7b8995":"#d8f6ff"}"
-              stroke-width="4" stroke-linejoin="round"/>
-
-        <!-- fuller/highlight gives the blade depth -->
-        <path d="M0-101V-15"
-              stroke="${legendary?"#fff09a":"#f4fdff"}"
-              stroke-width="3" opacity=".72" stroke-linecap="round"/>
-
-        ${legendary?`
-          <path d="M-8-44q-13-18 1-31-2 16 8 21 8-13 4-27 18 17 5 39z"
-                fill="#ff6a22" opacity=".82"/>
-        `:""}
+    if(type==="bow") return `
+      <g transform="translate(194 155) rotate(7)" filter="url(#gearGlow)">
+        <path d="M18 0q66 68 0 143" fill="none" stroke="${tier>=4?pMid:"#6c4726"}" stroke-width="${9+tier}" stroke-linecap="round"/>
+        <path d="M21 4v134" stroke="#eadcbb" stroke-width="2"/>
+        <path d="M21 72h75" stroke="${pHi}" stroke-width="4"/>
+        <path d="M84 62l17 10-17 10" fill="none" stroke="${pHi}" stroke-width="4"/>
+        ${tier>=4?`<circle cx="21" cy="72" r="9" fill="${pDark}" stroke="${pHi}" stroke-width="3"/>`:""}
       </g>
+      <ellipse cx="220" cy="248" rx="12" ry="13" fill="${skin}" stroke="#9f674c" stroke-width="3"/>`;
 
-      <!-- Hand drawn over the grip so the sword looks HELD, not pasted on. -->
-      <ellipse cx="219" cy="249" rx="12" ry="13"
-               fill="${skin}" stroke="#9f674c" stroke-width="3"/>
+    if(type==="staff") return `
+      <g transform="translate(211 132) rotate(10)" filter="url(#gearGlow)">
+        <path d="M0 42v167" stroke="${tier>=4?pDark:"#6e452c"}" stroke-width="${9+tier}" stroke-linecap="round"/>
+        ${tier>=4?`<path d="M0 42q-24-15-32-38M0 42q24-15 32-38" fill="none" stroke="${pMid}" stroke-width="6"/>`:""}
+        <circle cx="0" cy="30" r="${20+tier*3}" fill="${pMid}" stroke="${pHi}" stroke-width="5"/>
+        <circle cx="0" cy="30" r="${8+tier*2}" fill="${tier>=5?"#fff":pHi}" opacity=".95"/>
+        ${tier>=3?`<path d="M0 -1l7 15 16 2-12 11 3 16-14-8-14 8 3-16-12-11 16-2z" fill="${pHi}" opacity=".78"/>`:""}
+        ${tier>=5?`<circle cx="0" cy="30" r="41" fill="none" stroke="${pHi}" stroke-width="3" opacity=".75"/><circle cx="0" cy="30" r="50" fill="none" stroke="${pMid}" stroke-width="2" opacity=".45"/>`:""}
+      </g>
+      <ellipse cx="219" cy="249" rx="12" ry="13" fill="${skin}" stroke="#9f674c" stroke-width="3"/>
+      <path d="M213 247q6 5 13 0" fill="none" stroke="#8d5b46" stroke-width="2" stroke-linecap="round"/>`;
+
+    if(type==="hammer") return `
+      <g transform="translate(218 238) rotate(24)" filter="url(#gearGlow)">
+        <rect x="-6" y="-4" width="12" height="73" rx="5" fill="#694129" stroke="#261813" stroke-width="3"/>
+        <path d="M-38-36h76l13 27-13 22h-76L-51-9z" fill="${pMid}" stroke="${pHi}" stroke-width="5"/>
+        ${tier>=4?`<path d="M-19-26h38M-24 3h48" stroke="${pHi}" stroke-width="4"/>`:""}
+      </g>
+      <ellipse cx="219" cy="249" rx="12" ry="13" fill="${skin}" stroke="#9f674c" stroke-width="3"/>`;
+
+    if(type==="dagger") return `
+      <g transform="translate(215 238) rotate(22)" filter="url(#gearGlow)">
+        <g transform="translate(-13 0) rotate(-7)"><path d="M0-92l12 64L0-13-12-28z" fill="${pMid}" stroke="${pHi}" stroke-width="4"/><path d="M-19-21h38" stroke="${pHi}" stroke-width="6"/><rect x="-5" y="-17" width="10" height="43" rx="4" fill="#653d27"/></g>
+        <g transform="translate(26 7) rotate(14)"><path d="M0-79l11 56L0-10-11-23z" fill="${pDark}" stroke="${pHi}" stroke-width="4"/><path d="M-17-17h34" stroke="${pMid}" stroke-width="6"/><rect x="-5" y="-13" width="10" height="39" rx="4" fill="#653d27"/></g>
+      </g>
+      <ellipse cx="219" cy="249" rx="12" ry="13" fill="${skin}" stroke="#9f674c" stroke-width="3"/>`;
+
+    const big=type==="greatsword"||tier>=4;
+    return `
+      <g transform="translate(219 249) rotate(${big?31:28})" filter="url(#gearGlow)">
+        <circle cx="0" cy="${big?30:24}" r="${tier>=4?9:7}" fill="${pMid}" stroke="#302038" stroke-width="3"/>
+        <rect x="-6" y="-5" width="12" height="${big?37:29}" rx="4" fill="#6d442a" stroke="#2b1b18" stroke-width="2"/>
+        <path d="M-6 3h12M-6 11h12M-6 19h12" stroke="#d5a259" stroke-width="2" opacity=".8"/>
+        <path d="${big?"M-38-10Q-18-18 0-11Q18-18 38-10l-5 12H-33z":"M-27-7Q-13-13 0-8Q13-13 27-7l-4 10H-23z"}"
+              fill="${pDark}" stroke="${pHi}" stroke-width="3"/>
+        <path d="${big?"M-12-10L-19-126L0-157L19-126L12-10L0 4z":"M-9-8L-14-92L0-117L14-92L9-8L0 2z"}"
+              fill="${pMid}" stroke="${pHi}" stroke-width="${tier>=4?5:4}" stroke-linejoin="round"/>
+        <path d="${big?"M0-140V-18":"M0-101V-15"}" stroke="${pHi}" stroke-width="${tier>=4?4:3}" opacity=".78" stroke-linecap="round"/>
+        ${tier>=3?`<path d="M-8 ${big?-83:-60}L0 ${big?-101:-76}L8 ${big?-83:-60}L0 ${big?-67:-47}z" fill="${pHi}" opacity=".78"/>`:""}
+        ${tier>=5?`<path d="M-17 ${big?-115:-84}q17-18 34 0l-9 20L0 ${big?-112:-81}l-8 17z" fill="${pHi}" opacity=".45"/>`:""}
+      </g>
+      <ellipse cx="219" cy="249" rx="12" ry="13" fill="${skin}" stroke="#9f674c" stroke-width="3"/>
       <path d="M213 247q6 5 13 0" fill="none" stroke="#8d5b46" stroke-width="2" stroke-linecap="round"/>`;
   };
-
   const offhandLayer=()=>{
     if(!off)return "";
     if(off.id==="gear_spellbook") return `

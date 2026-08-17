@@ -644,22 +644,82 @@ body footer{
   body::before,body::after,.dw-wisteria span{animation:none !important}
 }
 
+
+/* === DRAGONSWOOD FANTASY WORLD THEME v6 === */
+:root{--dw-purple:#652DC1;--dw-violet:#8E3CFF;--dw-blue:#02CCFE;--dw-gold:#F4C95D;--dw-gold2:#FFEAA0;--dw-night:#050611;--dw-panel:rgba(8,8,24,.78);--dw-panel2:rgba(15,10,38,.88);--dw-line:rgba(184,111,255,.46);--dw-text:#fffaf0;--dw-muted:#cec6e8}
+html{background:#050611!important}body{background:transparent!important;color:var(--dw-text)!important;font-family:Trebuchet MS,Arial,sans-serif!important;min-height:100vh;position:relative;overflow-x:hidden}
+.dw-fantasy-world{position:fixed;inset:0;z-index:-10;overflow:hidden;background:#050611}.dw-world-svg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.25) contrast(1.07)}
+.dw-fantasy-world:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.08),rgba(2,2,10,.18) 40%,rgba(0,0,0,.42));pointer-events:none}
+.dw-wisteria-canopy{position:absolute;top:-40px;width:44%;height:310px;opacity:.92;filter:drop-shadow(0 0 14px rgba(142,60,255,.35));background:
+ radial-gradient(ellipse at 15% 12%,#9f4cff 0 2%,transparent 3%),radial-gradient(ellipse at 25% 22%,#6f2dbd 0 3%,transparent 4%),radial-gradient(ellipse at 36% 12%,#bc5cff 0 2%,transparent 3%),radial-gradient(ellipse at 44% 31%,#7b35d4 0 3%,transparent 4%),radial-gradient(ellipse at 53% 18%,#b45cff 0 2%,transparent 3%),radial-gradient(ellipse at 62% 35%,#6125a7 0 3%,transparent 4%),repeating-linear-gradient(84deg,transparent 0 39px,rgba(87,30,132,.5) 40px 43px,transparent 44px 78px);animation:wisteriaSway 8s ease-in-out infinite alternate}
+.dw-wisteria-canopy:after{content:"";position:absolute;inset:35px 0 -85px;background:repeating-linear-gradient(92deg,transparent 0 32px,rgba(125,47,193,.7) 33px 36px,transparent 37px 68px);mask-image:linear-gradient(to bottom,#000,transparent 88%);filter:blur(.2px)}
+.dw-left{left:-3%;transform-origin:top left}.dw-right{right:-3%;transform:scaleX(-1);transform-origin:top right;animation-delay:-3s}
+@keyframes wisteriaSway{from{translate:0 0;rotate:-1deg}to{translate:0 9px;rotate:1.2deg}}
+.dw-sparkle-field{position:absolute;inset:0;background-image:radial-gradient(circle,#ffe58f 0 1px,transparent 2px),radial-gradient(circle,#02ccfe 0 1px,transparent 2px),radial-gradient(circle,#c874ff 0 1px,transparent 2px);background-size:170px 170px,220px 220px,130px 130px;background-position:0 0,40px 70px,90px 25px;opacity:.6;animation:starsDrift 22s linear infinite}
+@keyframes starsDrift{to{background-position:170px 170px,-180px 290px,220px -105px}}
+.wrap{width:min(1480px,95%)!important}main{background:transparent!important;padding-top:24px!important}
+header{background:linear-gradient(180deg,rgba(3,3,12,.91),rgba(12,5,30,.79))!important;border-bottom:1px solid rgba(244,201,93,.72)!important;box-shadow:0 12px 40px rgba(0,0,0,.4),0 0 35px rgba(101,45,193,.17)!important;backdrop-filter:blur(6px)}
+.brand,.hero h1,.section-title h2,.titlebar h2,h1,h2,h3{font-family:Georgia,'Times New Roman',serif!important;letter-spacing:.02em}.brand{font-size:30px!important;color:var(--dw-gold2)!important;text-shadow:0 0 12px rgba(244,201,93,.18)}.brand small{font-family:Trebuchet MS,Arial,sans-serif!important;color:#dd8cff!important;letter-spacing:1.3px}.hero h1{font-size:clamp(54px,7vw,88px)!important;color:var(--dw-gold2)!important;text-shadow:0 0 17px rgba(244,201,93,.28),0 3px 0 #6b4611}.hero h1 span{color:var(--dw-gold2)!important;-webkit-text-fill-color:var(--dw-gold2)!important}.hero p{color:#efe7ff!important}.hero-card{background:rgba(7,7,24,.64)!important;border:1px solid rgba(244,201,93,.38)!important;box-shadow:inset 0 0 30px rgba(101,45,193,.1),0 0 24px rgba(2,204,254,.06)!important}
+.crest{width:66px!important;height:74px!important}.crest-shield{background:linear-gradient(145deg,#35106e,#652DC1 48%,#072e52)!important;border:3px solid var(--dw-gold)!important;box-shadow:0 0 18px rgba(244,201,93,.24),inset 0 0 16px rgba(2,204,254,.16)!important}
+.card,.pet,.game,.board,.login-card,.profilebar,.modalbox,.item,.reward,.recess-card{background:linear-gradient(160deg,rgba(16,9,42,.90),rgba(3,8,23,.90))!important;border:1px solid rgba(244,201,93,.36)!important;box-shadow:0 0 0 1px rgba(114,48,180,.35),0 16px 40px rgba(0,0,0,.36),inset 0 0 25px rgba(101,45,193,.06)!important;backdrop-filter:blur(8px)}
+.card:before,.pet:before,.profilebar:before,.recess-card:before{content:"✦";position:absolute;color:var(--dw-gold);font-size:12px;opacity:.75;filter:drop-shadow(0 0 7px var(--dw-gold))}.card,.pet,.profilebar,.recess-card{position:relative}.card:before,.profilebar:before{left:10px;top:7px}.pet:before,.recess-card:before{right:12px;top:8px}
+.profilebar{border-color:rgba(2,204,254,.32)!important;background:linear-gradient(100deg,rgba(18,7,44,.9),rgba(4,19,36,.9))!important}.avatar{background:radial-gradient(circle,#e6f6ff 0 55%,#7e49e8 58%,#02ccfe 70%,transparent 72%)!important;border-color:var(--dw-gold)!important;box-shadow:0 0 18px rgba(2,204,254,.33)!important}.profile-name{font-size:28px!important;color:#fff!important}.stat{background:rgba(4,8,20,.8)!important;border:1px solid rgba(244,201,93,.22)!important}.stat b{font-family:Georgia,serif!important}.stat:nth-of-type(1) b{color:#65e6ff!important}.stat:nth-of-type(2) b{color:var(--dw-gold2)!important}.stat:nth-of-type(3) b{color:#d26cff!important}
+.section-title{margin-top:38px!important}.section-title h2,.titlebar h2{color:#f6eaff!important;font-size:32px!important;text-shadow:0 0 13px rgba(172,87,255,.22)}.section-title h2:after,.titlebar h2:after{background:linear-gradient(90deg,var(--dw-gold),#a443ff,transparent)!important}
+.pethead{background:linear-gradient(105deg,rgba(75,17,126,.92),rgba(42,25,127,.88),rgba(0,103,147,.82))!important;min-height:170px}.petbody{background:linear-gradient(180deg,rgba(4,8,24,.94),rgba(3,7,18,.96))!important}.egg-creature{filter:drop-shadow(0 0 18px rgba(244,201,93,.32))}.track,.meter,.levelbar,.recess-meter{background:#020712!important;border:1px solid rgba(128,55,197,.5)!important;box-shadow:inset 0 0 14px rgba(0,0,0,.8),0 0 9px rgba(101,45,193,.12)}.fill,.recess-fill,.levelbar div{background:linear-gradient(90deg,#7e2ee8,#e65cff,#02ccfe,#f4c95d)!important;background-size:200% 100%!important;animation:magicBar 5s linear infinite!important;box-shadow:0 0 16px rgba(2,204,254,.4)}@keyframes magicBar{to{background-position:200% 0}}
+.reward{background:linear-gradient(160deg,rgba(18,13,45,.96),rgba(5,10,25,.96))!important;border-color:rgba(126,65,199,.5)!important}.reward.current{outline:2px solid var(--dw-gold)!important;box-shadow:0 0 18px rgba(244,201,93,.28)!important}.reward.unlocked{background:radial-gradient(circle at 50% 0,rgba(244,201,93,.12),transparent 42%),linear-gradient(160deg,rgba(26,16,49,.96),rgba(5,10,25,.96))!important}.reward .icon{font-size:34px!important}.next{background:linear-gradient(90deg,rgba(9,74,104,.72),rgba(45,12,81,.82))!important;border-left:4px solid var(--dw-gold)!important;color:#ffe9a5!important;box-shadow:inset 0 0 18px rgba(244,201,93,.05)}
+.recess-card{background:radial-gradient(circle at 85% 25%,rgba(2,204,254,.11),transparent 25%),linear-gradient(120deg,rgba(46,10,81,.95),rgba(5,23,42,.96))!important}.recess-status{background:rgba(4,7,18,.84)!important;color:#ffe69b!important;border-color:rgba(244,201,93,.42)!important}
+.game,.board{transition:.25s transform,.25s box-shadow}.game:hover,.board:hover{transform:translateY(-4px);box-shadow:0 0 0 1px rgba(2,204,254,.34),0 18px 48px rgba(0,0,0,.42),0 0 24px rgba(101,45,193,.18)!important}.visual{background:radial-gradient(circle at 50% 20%,rgba(142,60,255,.22),transparent 42%),linear-gradient(160deg,#12102c,#040915)!important;border-bottom:1px solid rgba(244,201,93,.17)}.tag,.badge{background:rgba(64,22,105,.76)!important;color:#f1dcff!important;border:1px solid rgba(2,204,254,.23)!important}.game a,.primary,.tab.active{background:linear-gradient(90deg,#4c168e,#8834e8 40%,#008cb2)!important;border:1px solid rgba(244,201,93,.63)!important;color:white!important;box-shadow:0 0 15px rgba(101,45,193,.22),inset 0 0 9px rgba(255,255,255,.06)}
+.tab,.gray{background:linear-gradient(180deg,rgba(20,15,47,.95),rgba(5,9,22,.95))!important;color:#eee8ff!important;border:1px solid rgba(126,65,199,.45)!important}.gold{background:linear-gradient(90deg,#715016,#d0a238,#ffeaa0,#c99425,#684710)!important;color:#180f01!important;border:1px solid #ffeaa0!important}.good{background:linear-gradient(180deg,#07573c,#063526)!important;color:#9fffd1!important}.danger{background:linear-gradient(180deg,#6c1531,#320919)!important;color:#ffc1d1!important}
+input,select,textarea{background:rgba(2,6,17,.9)!important;color:#fff!important;border:1px solid rgba(138,70,214,.56)!important}select option,select optgroup{background:#080b18!important;color:white!important}input::placeholder,textarea::placeholder{color:#9086aa!important}
+table,.student-table{color:white!important}th,.student-table th{background:linear-gradient(90deg,rgba(86,28,135,.58),rgba(2,76,105,.35))!important;color:#ffeaa0!important;border-color:rgba(244,201,93,.18)!important}td,.student-table td{border-color:rgba(255,255,255,.06)!important}.student-table tbody tr:hover{background:rgba(116,48,189,.11)!important}
+.modal{background:rgba(1,2,7,.85)!important;backdrop-filter:blur(10px)}footer{background:rgba(3,3,12,.92)!important;border-top:1px solid var(--dw-gold)!important;color:#d8d1ee!important}
+/* teacher-specific ornate top nav */.tabs{padding:10px!important;background:rgba(5,6,18,.58)!important;border:1px solid rgba(244,201,93,.2)!important;border-radius:16px!important;box-shadow:0 12px 30px rgba(0,0,0,.24)!important}.tab{min-height:52px!important;padding:12px 18px!important;text-transform:uppercase;letter-spacing:.04em}
+/* keep dense content over scenic art */@media(max-width:800px){.dw-wisteria-canopy{width:70%;opacity:.65}.hero h1{font-size:50px!important}.brand{font-size:24px!important}}
+
 </style></head>
 <body>
-<div class="dw-wisteria" aria-hidden="true">
-  <span style="left:6%;animation-duration:17s;animation-delay:-5s"></span>
-  <span style="left:14%;animation-duration:22s;animation-delay:-12s"></span>
-  <span style="left:22%;animation-duration:19s;animation-delay:-8s"></span>
-  <span style="left:31%;animation-duration:25s;animation-delay:-17s"></span>
-  <span style="left:39%;animation-duration:18s;animation-delay:-4s"></span>
-  <span style="left:48%;animation-duration:23s;animation-delay:-14s"></span>
-  <span style="left:57%;animation-duration:20s;animation-delay:-9s"></span>
-  <span style="left:65%;animation-duration:26s;animation-delay:-20s"></span>
-  <span style="left:74%;animation-duration:21s;animation-delay:-11s"></span>
-  <span style="left:82%;animation-duration:18s;animation-delay:-7s"></span>
-  <span style="left:90%;animation-duration:24s;animation-delay:-16s"></span>
-  <span style="left:96%;animation-duration:20s;animation-delay:-3s"></span>
+<div class="dw-fantasy-world" aria-hidden="true">
+  <svg class="dw-world-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#080414"/><stop offset=".48" stop-color="#170836"/><stop offset="1" stop-color="#05131f"/></linearGradient>
+      <radialGradient id="moon"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#d7d6ff"/><stop offset="1" stop-color="#8d84d7"/></radialGradient>
+      <linearGradient id="hill" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#090d19"/><stop offset=".5" stop-color="#12102b"/><stop offset="1" stop-color="#061521"/></linearGradient>
+      <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <rect width="1600" height="900" fill="url(#sky)"/>
+    <circle cx="1260" cy="175" r="82" fill="url(#moon)" opacity=".82" filter="url(#glow)"/>
+    <g opacity=".8" fill="#7c4dff" filter="url(#glow)">
+      <circle cx="150" cy="150" r="2"/><circle cx="310" cy="100" r="2"/><circle cx="440" cy="205" r="2"/><circle cx="610" cy="120" r="2"/><circle cx="760" cy="185" r="2"/><circle cx="920" cy="90" r="2"/><circle cx="1090" cy="255" r="2"/><circle cx="1400" cy="120" r="2"/>
+    </g>
+    <g opacity=".55" fill="#02ccfe" filter="url(#glow)"><circle cx="220" cy="245" r="2"/><circle cx="530" cy="160" r="2"/><circle cx="840" cy="240" r="2"/><circle cx="1160" cy="110" r="2"/><circle cx="1490" cy="250" r="2"/></g>
+    <!-- distant mountains -->
+    <path d="M0 540 L130 410 240 520 355 360 475 515 620 400 760 520 900 365 1020 520 1175 390 1310 530 1470 400 1600 520 1600 900 0 900Z" fill="#0d0a22" opacity=".8"/>
+    <path d="M0 620 Q180 520 350 590 T700 575 T1050 590 T1400 565 T1700 610 V900 H0Z" fill="url(#hill)"/>
+    <!-- castle left -->
+    <g fill="#090b19" stroke="#3c1c64" stroke-width="3" opacity=".95">
+      <path d="M85 610V410h42v-74h18v74h38v200zm70 0V350h44v-86h18v86h40v260zm100 0V430h42v-60h18v60h38v180z"/>
+      <path d="M110 410l18-30 18 30M180 350l21-34 21 34M278 430l18-30 18 30" fill="#16132b"/>
+    </g>
+    <!-- castle center-right -->
+    <g fill="#080b18" stroke="#5f2598" stroke-width="3" opacity=".96">
+      <path d="M1010 610V365h48v-78h20v78h44v245zm86 0V310h52v-105h22v105h46v300zm104 0V405h44v-68h19v68h40v205z"/>
+      <path d="M1032 365l24-38 24 38M1120 310l28-46 28 46M1221 405l22-35 22 35" fill="#17112c"/>
+    </g>
+    <!-- windows -->
+    <g fill="#f4c95d" opacity=".8" filter="url(#glow)">
+      <rect x="184" y="390" width="8" height="18"/><rect x="204" y="430" width="8" height="18"/><rect x="1118" y="360" width="8" height="18"/><rect x="1148" y="395" width="8" height="18"/><rect x="1040" y="450" width="8" height="18"/><rect x="1240" y="470" width="8" height="18"/>
+    </g>
+    <!-- dragon silhouette -->
+    <g transform="translate(1280 255) scale(1.1)" fill="#080914" stroke="#5b2b88" stroke-width="2" opacity=".82">
+      <path d="M0 30c32-26 67-24 96-6 16 10 29 8 43-1-8 16-20 25-39 28 10 9 17 21 20 37-15-14-31-23-49-26-18 8-37 9-55 2-10 16-23 28-39 35 7-16 9-30 5-44-13-7-26-16-36-29 19 9 36 10 54 4z"/>
+      <path d="M24 25C-5-8-25-22-55-24c25 19 38 39 40 63zM66 24c24-32 46-45 76-44-23 17-38 36-47 61z"/>
+    </g>
+  </svg>
+  <div class="dw-wisteria-canopy dw-left"></div><div class="dw-wisteria-canopy dw-right"></div>
+  <div class="dw-sparkle-field"></div>
 </div>
+
+
 
 <header><div class="wrap head"><div class="brand" style="display:flex;align-items:center;gap:12px"><div class="crest" aria-hidden="true"><div class="crest-shield"></div></div><div>Dragonswood Command Hall<small>EXPLORE ACADEMY • EVANS 4–5 • COMMAND ACCESS</small></div></div><div id="signed" class="hidden"><span id="who" style="font-size:12px;color:#cbd9e7"></span> <button id="logout" class="gray mini">Sign Out</button></div></div></header>
 <main class="wrap">

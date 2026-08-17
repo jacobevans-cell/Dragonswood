@@ -1166,6 +1166,44 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .hair-choice b{font-size:11px;line-height:1.1;text-align:center}
 </style>
 
+
+<style id="dragonswood-v23-items-inventory">
+/* V23 FULL RPG INVENTORY + SHOP */
+.rarity-common{--rar:#a7b0c3}.rarity-uncommon{--rar:#53d88e}.rarity-rare{--rar:#45a9ff}.rarity-epic{--rar:#b569ff}.rarity-legendary{--rar:#ffca56}
+.rarity-label{color:var(--rar,#d5d5d5)!important;font-weight:900;text-transform:uppercase;letter-spacing:.7px}
+.shop-filterbar{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 12px}
+.shop-filterbar button.active{border-color:#ffd86a!important;box-shadow:0 0 13px rgba(244,201,93,.2)}
+.student-shop-card{border-color:color-mix(in srgb,var(--rar,#7b4cba) 50%,transparent)!important}
+.student-shop-card.owned{box-shadow:inset 0 0 25px rgba(68,221,143,.07),0 0 14px rgba(68,221,143,.08)!important}
+.item-level-lock{color:#ffc66c;font-weight:900}
+.stat-chips{display:flex;gap:4px;flex-wrap:wrap;margin:7px 0}
+.stat-chip{font-size:9px;font-weight:900;padding:3px 5px;border-radius:999px;background:rgba(11,8,35,.68);border:1px solid rgba(255,255,255,.13)}
+.journal-rpg-layout{display:grid;grid-template-columns:.78fr .82fr 1.4fr;gap:10px}
+.journal-character-card,.journal-equipment-card,.journal-inventory-card{padding:14px!important;min-height:480px}
+.journal-character-preview{height:300px;display:grid;place-items:center;overflow:hidden;position:relative}
+.journal-character-preview .chibi{transform:scale(.88);transform-origin:center}
+.journal-battle-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.journal-battle-stats>div{text-align:center;padding:7px 3px;border:1px solid rgba(244,201,93,.25);border-radius:7px;background:rgba(6,5,26,.45)}
+.journal-battle-stats b{display:block;font-size:20px;color:#fff0a6}
+.equipment-slot-list{display:grid;gap:6px}
+.equipment-slot-v23{display:grid;grid-template-columns:42px 1fr auto;gap:8px;align-items:center;padding:7px;border:1px solid rgba(101,45,193,.3);border-radius:7px;background:rgba(6,7,28,.44)}
+.equipment-slot-v23 .slot-icon{width:40px;height:40px;display:grid;place-items:center;font-size:23px;border-radius:7px;background:rgba(84,28,132,.35)}
+.equipment-slot-v23 b{display:block;color:#f5e8ff}.equipment-slot-v23 small{display:block;color:#a99dbf}
+.inventory-filters{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.inventory-grid-v23{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;max-height:410px;overflow:auto;padding-right:3px}
+.inventory-card-v23{padding:9px!important;min-height:135px;text-align:center;border-color:color-mix(in srgb,var(--rar,#7b4cba) 48%,transparent)!important}
+.inventory-card-v23 .ico{font-size:30px}.inventory-card-v23 b{display:block;margin:3px 0;color:#fff0a6;font-size:12px}
+.inventory-card-v23 small{display:block;font-size:9px}
+.inventory-card-v23 button{margin-top:6px;padding:5px 7px;font-size:9px}
+.empty-inventory-v23{grid-column:1/-1;padding:35px 10px;text-align:center;color:#a99dbf}
+.aura-ring-v23{position:absolute;z-index:0;inset:35px 15px 25px;border-radius:50%;pointer-events:none;box-shadow:0 0 32px 15px var(--active-aura,transparent),inset 0 0 20px var(--active-aura,transparent);animation:v23Aura 2s ease-in-out infinite}
+@keyframes v23Aura{50%{opacity:.55;transform:scale(1.04)}}
+.chibi .eq-back{position:absolute;z-index:1;right:13px;top:118px;font-size:45px;transform:rotate(10deg)}
+.chibi .eq-aura{display:none}
+@media(max-width:1100px){.journal-rpg-layout{grid-template-columns:1fr 1fr}.journal-inventory-card{grid-column:1/-1}}
+@media(max-width:760px){.journal-rpg-layout{grid-template-columns:1fr}.journal-inventory-card{grid-column:auto}.inventory-grid-v23{grid-template-columns:repeat(2,1fr)}}
+</style>
+
 </head><body>
 <header class="topbar">
 <div class="shell">
@@ -1290,6 +1328,12 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
     </div>
 
     <div id="studentShopNotice" class="shop-notice hidden"></div>
+    <div class="shop-filterbar" id="shopFilterBar">
+      <button class="mini active" data-shop-filter="all">ALL</button>
+      <button class="mini" data-shop-filter="reward">🎟️ REWARDS</button>
+      <button class="mini" data-shop-filter="gear">⚔️ GEAR</button>
+      <button class="mini" data-shop-filter="owned">🎒 OWNED</button>
+    </div>
 
     <div class="student-shop-grid" id="studentShopItems">
       <div class="frame bevel shop-empty">Loading Dragonswood Shop…</div>
@@ -1342,27 +1386,38 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
   <!-- JOURNAL -->
   <section class="portal-view" id="view-journal" data-page="journal">
-    <div class="section-title"><div><h2>📖 My Dragonswood Journal</h2><p>Your character, level, stats, and adventure record.</p></div></div>
-    <div class="journal-grid">
-      <article class="frame bevel journal-hero">
-        <div class="journal-avatar" id="journalAvatar">🐉</div>
-        <div>
-          <div class="journal-label">DRAGONSWOOD ADVENTURER</div>
-          <h2 id="journalName">Adventurer</h2>
-          <p id="journalSub">Your story is just beginning.</p>
+    <div class="section-title"><div><h2>📖 My Dragonswood Journal</h2><p>Your character, equipped gear, battle stats, and permanent inventory.</p></div></div>
+    <div class="journal-rpg-layout">
+      <article class="frame bevel journal-character-card">
+        <div class="journal-label">DRAGONSWOOD ADVENTURER</div>
+        <h2 id="journalName">Adventurer</h2>
+        <p id="journalSub">Level 1 Adventurer</p>
+        <div class="journal-character-preview" id="journalCharacterPreview"></div>
+        <div class="journal-battle-stats">
+          <div><small>❤️ HP</small><b id="journalBattleHp">10</b></div>
+          <div><small>⚔️ ATK</small><b id="journalBattleAtk">1</b></div>
+          <div><small>🛡️ DEF</small><b id="journalBattleDef">0</b></div>
+          <div><small>✨ HEAL</small><b id="journalBattleHeal">0</b></div>
         </div>
+        <button id="journalEditCharacter" style="width:100%;margin-top:10px">EDIT / EQUIP CHARACTER</button>
       </article>
-      <article class="frame bevel journal-stat"><span>💙</span><b id="journalHp">0</b><small>HP</small></article>
-      <article class="frame bevel journal-stat"><span>🪙</span><b id="journalGold">0</b><small>GOLD</small></article>
-      <article class="frame bevel journal-stat"><span>⭐</span><b id="journalXp">0</b><small>XP</small></article>
-      <article class="frame bevel journal-progress">
-        <h3>Level Progress</h3>
-        <div class="progress"><div id="journalLevelFill" style="width:0"></div></div>
-        <p id="journalLevelText">Level 1</p>
+
+      <article class="frame bevel journal-equipment-card">
+        <h3>⚔️ EQUIPPED GEAR</h3>
+        <div class="equipment-slot-list" id="journalEquipmentSlots"></div>
+        <button id="autoEquipBest" style="width:100%;margin-top:10px">✨ AUTO-EQUIP STRONGEST</button>
       </article>
-      <article class="frame bevel journal-progress">
-        <h3>Adventure Record</h3>
-        <p>Game scores, completed quests, badges, and achievements will collect here as Dragonswood grows.</p>
+
+      <article class="frame bevel journal-inventory-card">
+        <h3>🎒 MY INVENTORY</h3>
+        <div class="inventory-filters" id="inventoryFilters">
+          <button class="mini active" data-inv-filter="all">ALL</button>
+          <button class="mini" data-inv-filter="outfit">CLOTHES</button>
+          <button class="mini" data-inv-filter="weapon">WEAPONS</button>
+          <button class="mini" data-inv-filter="armor">ARMOR</button>
+          <button class="mini" data-inv-filter="other">OTHER</button>
+        </div>
+        <div class="inventory-grid-v23" id="journalInventory"></div>
       </article>
     </div>
   </section>
@@ -1381,13 +1436,13 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import {getFirestore,doc,getDoc,setDoc,onSnapshot,collection,serverTimestamp,runTransaction} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {getFirestore,doc,getDoc,setDoc,onSnapshot,collection,serverTimestamp,runTransaction,query,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2", "measurementId": "G-LPRLDGVBD2"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const DOMAIN="explore.academy";
 const $=id=>document.getElementById(id);
-let user=null,profile=null,rewards=[],classPoints=0,scores=[],shopItems=[],myPurchases=[];
+let user=null,profile=null,rewards=[],classPoints=0,scores=[],shopItems=[],myPurchases=[],shopFilter="all",inventoryFilter="all";
 
 const TITLES=[
   {id:"princess",label:"Princess",position:"before"},
@@ -1433,6 +1488,8 @@ const HAIR_STYLES={
   ]
 };
 const STARTER_GEAR={outfit:{id:"peasant",name:"Peasant Tunic",icon:"🧥",slot:"outfit",shirt:"#a98758",stats:{atk:0,def:0,hp:0,heal:0}}};
+const DRAGONSWOOD_STARTER_CATALOG=[{"id":"reward_drawing_break","name":"Drawing Break","icon":"\ud83c\udfa8","cost":25,"kind":"reward","category":"reward","rarity":"common","description":"Earn a short drawing or coloring break."},{"id":"reward_teacher_helper","name":"Teacher Helper","icon":"\ud83e\uddd1\u200d\ud83c\udfeb","cost":35,"kind":"reward","category":"reward","rarity":"common","description":"Be the teacher helper for a class period."},{"id":"reward_sit_friend","name":"Sit by a Friend","icon":"\ud83e\ude91","cost":50,"kind":"reward","category":"reward","rarity":"uncommon","description":"Choose an approved friend to sit by for one class period."},{"id":"reward_music","name":"Music While Working","icon":"\ud83c\udfb5","cost":60,"kind":"reward","category":"reward","rarity":"uncommon","description":"Use approved music during an independent work block."},{"id":"reward_game_time","name":"10 Minutes Game Time","icon":"\ud83c\udfae","cost":75,"kind":"reward","category":"reward","rarity":"rare","description":"Earn 10 minutes of approved classroom game time."},{"id":"reward_teacher_chair","name":"Teacher Chair","icon":"\ud83d\udc51","cost":100,"kind":"reward","category":"reward","rarity":"rare","description":"Use the teacher chair during an approved class period."},{"id":"reward_choose_game","name":"Choose Class Game","icon":"\ud83c\udfb2","cost":150,"kind":"reward","category":"reward","rarity":"epic","description":"Choose from teacher-approved class games."},{"id":"gear_blue_tunic","name":"Azure Adventurer Tunic","icon":"\ud83d\udc55","cost":40,"kind":"gear","category":"outfit","rarity":"common","equipSlot":"outfit","shirtColor":"#2477bd","pantsColor":"#58462f","stats":{"atk":0,"def":1,"hp":0,"heal":0},"description":"A bright blue adventurer tunic. +1 DEF."},{"id":"gear_green_tunic","name":"Forest Ranger Tunic","icon":"\ud83e\udd4b","cost":55,"kind":"gear","category":"outfit","rarity":"uncommon","equipSlot":"outfit","shirtColor":"#2f7b4e","pantsColor":"#493e2c","stats":{"atk":1,"def":1,"hp":0,"heal":0},"description":"Forest-colored travel gear. +1 ATK, +1 DEF."},{"id":"gear_purple_tunic","name":"Wisteria Hero Tunic","icon":"\ud83e\udde5","cost":90,"kind":"gear","category":"outfit","rarity":"rare","equipSlot":"outfit","shirtColor":"#652dc1","pantsColor":"#33255e","stats":{"atk":1,"def":2,"hp":2,"heal":0},"description":"Dragonswood purple formal battle tunic. +1 ATK, +2 DEF, +2 Battle HP."},{"id":"gear_mage_robe","name":"Apprentice Mage Robe","icon":"\ud83e\udd7b","cost":110,"kind":"gear","category":"outfit","rarity":"rare","equipSlot":"outfit","shirtColor":"#4b2a88","pantsColor":"#241644","stats":{"atk":2,"def":1,"hp":1,"heal":2},"description":"A robe stitched with simple healing runes. +2 ATK, +1 DEF, +1 HP, +2 HEAL."},{"id":"gear_explorer_cap","name":"Explorer Cap","icon":"\ud83e\udde2","cost":30,"kind":"gear","category":"head","rarity":"common","equipSlot":"head","stats":{"atk":0,"def":1,"hp":0,"heal":0},"description":"A sturdy travel cap. +1 DEF."},{"id":"gear_wizard_hat","name":"Wizard Hat","icon":"\ud83e\uddd9","cost":75,"kind":"gear","category":"head","rarity":"uncommon","equipSlot":"head","stats":{"atk":2,"def":0,"hp":0,"heal":1},"description":"A pointed apprentice hat. +2 ATK, +1 HEAL."},{"id":"gear_iron_helm","name":"Iron Knight Helm","icon":"\ud83e\ude96","cost":100,"kind":"gear","category":"head","rarity":"rare","equipSlot":"head","stats":{"atk":0,"def":3,"hp":2,"heal":0},"description":"Heavy protection for future battles. +3 DEF, +2 Battle HP."},{"id":"gear_royal_crown","name":"Royal Crown","icon":"\ud83d\udc51","cost":250,"kind":"gear","category":"head","rarity":"epic","equipSlot":"head","requiredLevel":5,"stats":{"atk":2,"def":2,"hp":2,"heal":1},"description":"A crown worthy of a proven Dragonswood hero. Level 5 required."},{"id":"gear_dragon_helm","name":"Dragonsteel Helm","icon":"\ud83d\udc32","cost":450,"kind":"gear","category":"head","rarity":"legendary","equipSlot":"head","requiredLevel":10,"stats":{"atk":2,"def":6,"hp":5,"heal":0},"description":"Legendary dragon-forged head armor. Level 10 required."},{"id":"gear_leather_armor","name":"Leather Armor","icon":"\ud83e\udd4b","cost":70,"kind":"gear","category":"armor","rarity":"common","equipSlot":"armor","stats":{"atk":0,"def":3,"hp":2,"heal":0},"description":"Reliable starter armor. +3 DEF, +2 Battle HP."},{"id":"gear_chain_armor","name":"Chainmail Armor","icon":"\u26d3\ufe0f","cost":140,"kind":"gear","category":"armor","rarity":"uncommon","equipSlot":"armor","requiredLevel":3,"stats":{"atk":0,"def":5,"hp":3,"heal":0},"description":"Interlocking metal protection. Level 3 required. +5 DEF, +3 HP."},{"id":"gear_knight_armor","name":"Knight Armor","icon":"\ud83d\udee1\ufe0f","cost":225,"kind":"gear","category":"armor","rarity":"rare","equipSlot":"armor","requiredLevel":5,"stats":{"atk":0,"def":8,"hp":6,"heal":0},"description":"Full knight protection. Level 5 required. +8 DEF, +6 HP."},{"id":"gear_wisteria_armor","name":"Wisteria Guardian Armor","icon":"\ud83d\udc9c","cost":375,"kind":"gear","category":"armor","rarity":"epic","equipSlot":"armor","requiredLevel":8,"stats":{"atk":2,"def":10,"hp":8,"heal":1},"description":"Purple guardian plate enchanted by Dragonswood. Level 8 required."},{"id":"gear_dragon_armor","name":"Dragonsteel Armor","icon":"\ud83d\udc09","cost":650,"kind":"gear","category":"armor","rarity":"legendary","equipSlot":"armor","requiredLevel":12,"stats":{"atk":4,"def":15,"hp":12,"heal":2},"description":"Legendary armor for Dragonswood champions. Level 12 required."},{"id":"gear_training_sword","name":"Training Sword","icon":"\ud83d\udde1\ufe0f","cost":35,"kind":"gear","category":"weapon","rarity":"common","equipSlot":"weapon","stats":{"atk":2,"def":0,"hp":0,"heal":0},"description":"A safe beginner blade. +2 ATK."},{"id":"gear_ranger_bow","name":"Ranger Bow","icon":"\ud83c\udff9","cost":80,"kind":"gear","category":"weapon","rarity":"uncommon","equipSlot":"weapon","stats":{"atk":4,"def":0,"hp":0,"heal":0},"description":"A balanced bow for ranged attacks. +4 ATK."},{"id":"gear_crystal_staff","name":"Crystal Staff","icon":"\ud83d\udd2e","cost":105,"kind":"gear","category":"weapon","rarity":"rare","equipSlot":"weapon","requiredLevel":3,"stats":{"atk":4,"def":0,"hp":0,"heal":3},"description":"Channels magic and healing. Level 3 required. +4 ATK, +3 HEAL."},{"id":"gear_hero_sword","name":"Hero Sword","icon":"\u2694\ufe0f","cost":160,"kind":"gear","category":"weapon","rarity":"rare","equipSlot":"weapon","requiredLevel":4,"stats":{"atk":7,"def":1,"hp":0,"heal":0},"description":"A sharpened hero blade. Level 4 required. +7 ATK, +1 DEF."},{"id":"gear_dragonslayer","name":"Dragonslayer Blade","icon":"\ud83d\udd25","cost":500,"kind":"gear","category":"weapon","rarity":"legendary","equipSlot":"weapon","requiredLevel":10,"stats":{"atk":14,"def":2,"hp":2,"heal":0},"description":"A legendary weapon for boss battles. Level 10 required."},{"id":"gear_wood_shield","name":"Wooden Shield","icon":"\ud83d\udee1\ufe0f","cost":45,"kind":"gear","category":"offhand","rarity":"common","equipSlot":"offhand","stats":{"atk":0,"def":3,"hp":1,"heal":0},"description":"Simple protection. +3 DEF, +1 HP."},{"id":"gear_knight_shield","name":"Knight Shield","icon":"\ud83d\udd30","cost":120,"kind":"gear","category":"offhand","rarity":"rare","equipSlot":"offhand","requiredLevel":4,"stats":{"atk":0,"def":7,"hp":4,"heal":0},"description":"A reinforced shield. Level 4 required. +7 DEF, +4 HP."},{"id":"gear_spellbook","name":"Spellbook","icon":"\ud83d\udcd5","cost":135,"kind":"gear","category":"offhand","rarity":"rare","equipSlot":"offhand","requiredLevel":4,"stats":{"atk":3,"def":1,"hp":0,"heal":4},"description":"Magic knowledge held in one hand. +3 ATK, +1 DEF, +4 HEAL."},{"id":"gear_adventure_boots","name":"Adventurer Boots","icon":"\ud83e\udd7e","cost":45,"kind":"gear","category":"feet","rarity":"common","equipSlot":"feet","shoeColor":"#68462f","stats":{"atk":0,"def":1,"hp":1,"heal":0},"description":"Better boots for long quests. +1 DEF, +1 HP."},{"id":"gear_swift_boots","name":"Swift Boots","icon":"\ud83d\udc62","cost":125,"kind":"gear","category":"feet","rarity":"rare","equipSlot":"feet","requiredLevel":4,"shoeColor":"#333b64","stats":{"atk":2,"def":2,"hp":1,"heal":0},"description":"Enchanted boots for agile heroes. +2 ATK, +2 DEF, +1 HP."},{"id":"gear_adventure_pack","name":"Adventurer Pack","icon":"\ud83c\udf92","cost":55,"kind":"gear","category":"back","rarity":"common","equipSlot":"back","stats":{"atk":0,"def":1,"hp":2,"heal":0},"description":"Carries supplies for a longer adventure. +1 DEF, +2 HP."},{"id":"gear_royal_cape","name":"Royal Cape","icon":"\ud83e\uddb8","cost":180,"kind":"gear","category":"back","rarity":"epic","equipSlot":"back","requiredLevel":5,"stats":{"atk":2,"def":2,"hp":3,"heal":1},"description":"A heroic cape with a small magical blessing. Level 5 required."},{"id":"gear_dragon_wings","name":"Dragon Wings","icon":"\ud83e\udebd","cost":500,"kind":"gear","category":"back","rarity":"legendary","equipSlot":"back","requiredLevel":10,"stats":{"atk":5,"def":4,"hp":5,"heal":2},"description":"Legendary wings for veteran adventurers. Level 10 required."},{"id":"gear_healing_charm","name":"Healing Charm","icon":"\ud83d\udc9a","cost":85,"kind":"gear","category":"accessory","rarity":"uncommon","equipSlot":"accessory","stats":{"atk":0,"def":0,"hp":2,"heal":4},"description":"Improves future healing abilities. +2 HP, +4 HEAL."},{"id":"gear_dragon_amulet","name":"Dragon Amulet","icon":"\ud83d\udc8e","cost":200,"kind":"gear","category":"accessory","rarity":"epic","equipSlot":"accessory","requiredLevel":5,"stats":{"atk":3,"def":3,"hp":4,"heal":2},"description":"A balanced enchanted relic. Level 5 required."},{"id":"gear_fire_aura","name":"Phoenix Flame Aura","icon":"\ud83d\udd25","cost":275,"kind":"gear","category":"aura","rarity":"epic","equipSlot":"aura","requiredLevel":6,"auraColor":"#ff7a33","stats":{"atk":4,"def":0,"hp":1,"heal":2},"description":"A fiery aura that favors offense. Level 6 required."},{"id":"gear_wisteria_aura","name":"Wisteria Star Aura","icon":"\u2728","cost":300,"kind":"gear","category":"aura","rarity":"epic","equipSlot":"aura","requiredLevel":6,"auraColor":"#a64cff","stats":{"atk":2,"def":2,"hp":2,"heal":3},"description":"A glowing purple aura balanced across battle stats."},{"id":"gear_dragon_aura","name":"Dragonfire Aura","icon":"\ud83c\udf0c","cost":700,"kind":"gear","category":"aura","rarity":"legendary","equipSlot":"aura","requiredLevel":15,"auraColor":"#02ccfe","stats":{"atk":7,"def":7,"hp":7,"heal":4},"description":"A legendary end-game aura. Level 15 required."}];
+
 let avatarDraft=null;
 
 
@@ -1539,13 +1596,23 @@ function gearStats(){
   const eq=avatarDraft?.equipped||{}; let out={atk:1,def:0,hp:10,heal:0};
   Object.values(eq).forEach(id=>{const item=shopItems.find(x=>x.id===id); const st=item?.stats||{}; out.atk+=Number(st.atk||0);out.def+=Number(st.def||0);out.hp+=Number(st.hp||0);out.heal+=Number(st.heal||0)}); return out;
 }
-function gearVisual(slot){const id=avatarDraft?.equipped?.[slot];const item=shopItems.find(x=>x.id===id);return item?.icon||""}
+function gearVisual(slot){const id=(avatarDraft?.equipped||profile?.equipped||{})?.[slot];const item=shopItems.find(x=>x.id===id);return item?.icon||""}
+function gearItem(slot){const id=(avatarDraft?.equipped||profile?.equipped||{})?.[slot];return shopItems.find(x=>x.id===id)}
+function rarityClass(item){return `rarity-${item?.rarity||"common"}`}
+function currentPlayerLevel(){return levelInfo(Number(profile?.xp||0)).level}
+function isOwnedGear(item){return Array.isArray(profile?.inventory)&&profile.inventory.includes(item.id)}
+function itemStatText(item){const s=item?.stats||{};return [["⚔️",s.atk],["🛡️",s.def],["❤️",s.hp],["✨",s.heal]].filter(x=>Number(x[1]||0)!==0).map(x=>`${x[0]} ${Number(x[1])>0?"+":""}${Number(x[1])}`).join(" ")}
 function chibiMarkup(config=defaultAvatarConfig(),small=false){
-  const shirt=(()=>{const id=avatarDraft?.equipped?.outfit;return shopItems.find(x=>x.id===id)?.shirtColor||"#a98758"})();
+  const outf=gearItem("outfit");
+  const feet=gearItem("feet");
+  const aura=gearItem("aura");
+  const shirt=outf?.shirtColor||"#a98758";
+  const pants=outf?.pantsColor||"#5b4635";
+  const shoes=feet?.shoeColor||"#4b3529";
   const gender=($("group")?.value||profile?.genderGroup||"boy")==="girl"?"girl":"boy";
   if(small)return `<span class="mini-face" style="--skin:${config.skin}"></span><span class="mini-hair" style="--hair:${config.hair}"></span><span class="mini-body" style="--shirt:${shirt}"></span>`;
-  return `<div class="chibi" data-gender="${gender}" data-hair-style="${esc(config.hairStyle||"boy-swept")}" style="--skin:${config.skin};--hair:${config.hair};--eyes:${config.eyes};--shirt:${shirt}">
-    <span class="hair-back"></span>
+  return `<div class="chibi" data-gender="${gender}" data-hair-style="${esc(config.hairStyle||"boy-swept")}" style="--skin:${config.skin};--hair:${config.hair};--eyes:${config.eyes};--shirt:${shirt};--pants:${pants};--shoes:${shoes};--active-aura:${aura?.auraColor||"transparent"}">
+    <span class="aura-ring-v23"></span><span class="equip eq-back">${gearVisual("back")}</span><span class="hair-back"></span>
     <span class="ear l"></span><span class="ear r"></span>
     <span class="head"></span>
     <span class="hair"></span>
@@ -1570,8 +1637,18 @@ function renderAvatarStudio(){
   if(!styles.some(h=>h.id===c.hairStyle)) c.hairStyle=styles[0].id;
   $("hairStyleChoices").innerHTML=styles.map(h=>`<button type="button" class="studio-option hair-choice ${c.hairStyle===h.id?"active":""}" data-hair-style="${h.id}"><span class="hair-choice-head" data-style="${h.id}"><i></i></span><b>${h.label}</b></button>`).join("");
   $("hairStyleChoices").style.setProperty("--preview-hair",c.hair);
-  const owned=new Set(profile?.inventory||[]); const gear=shopItems.filter(i=>i.kind==="gear"||i.equipSlot);
-  $("equipmentChoices").innerHTML=`<div class="studio-option active"><span class="gear-icon">🧥</span>Peasant Tunic<small style="display:block">Starter outfit</small></div>`+gear.map(i=>{const isOwned=owned.has(i.id);const equipped=Object.values(avatarDraft.equipped||{}).includes(i.id);return `<button type="button" class="studio-option ${equipped?"active":""} ${isOwned?"":"locked"}" data-equip-id="${i.id}" ${isOwned?"":"disabled"}><span class="gear-icon">${esc(i.icon||"🎁")}</span>${esc(i.name)}<small style="display:block">${isOwned?(equipped?"EQUIPPED":"Owned"):`🔒 ${Number(i.cost||0)} Gold`}</small></button>`}).join("");
+  const owned=new Set(profile?.inventory||[]);
+  const gear=shopItems.filter(i=>i.kind==="gear"||i.equipSlot).sort((a,b)=>String(a.equipSlot||"").localeCompare(String(b.equipSlot||""))||Number(a.cost||0)-Number(b.cost||0));
+  const lvl=currentPlayerLevel();
+  $("equipmentChoices").innerHTML=`<div class="studio-option active"><span class="gear-icon">🧥</span>Peasant Tunic<small style="display:block">Starter outfit</small></div>`+gear.map(i=>{
+    const isOwned=owned.has(i.id),equipped=Object.values(avatarDraft.equipped||{}).includes(i.id),levelOK=lvl>=Number(i.requiredLevel||1);
+    return `<button type="button" class="studio-option ${rarityClass(i)} ${equipped?"active":""} ${isOwned?"":"locked"}" data-equip-id="${i.id}" ${isOwned&&levelOK?"":"disabled"}>
+      <span class="gear-icon">${esc(i.icon||"🎁")}</span>${esc(i.name)}
+      <small class="rarity-label" style="display:block">${esc(i.rarity||"common")}</small>
+      <small style="display:block">${isOwned?(levelOK?(equipped?"EQUIPPED":"Owned"):`🔒 Level ${i.requiredLevel}`):`🔒 ${Number(i.cost||0)} Gold`}</small>
+      <small>${esc(itemStatText(i))}</small>
+    </button>`;
+  }).join("");
   document.querySelectorAll("[data-av-key]").forEach(b=>b.onclick=()=>{c[b.dataset.avKey]=b.dataset.avValue;renderAvatarStudio()});
   document.querySelectorAll("[data-hair-style]").forEach(b=>b.onclick=()=>{c.hairStyle=b.dataset.hairStyle;renderAvatarStudio()});
   document.querySelectorAll("[data-equip-id]").forEach(b=>b.onclick=()=>{const item=shopItems.find(x=>x.id===b.dataset.equipId);if(!item)return;const slot=item.equipSlot||"accessory";avatarDraft.equipped[slot]=avatarDraft.equipped[slot]===item.id?null:item.id;renderAvatarStudio()});
@@ -1667,6 +1744,7 @@ function renderProfile(){
   if($("journalLevelFill")) $("journalLevelFill").style.width=li.pct+"%";
   if($("journalLevelText")) $("journalLevelText").textContent=`Level ${li.level} • ${Math.round(li.pct)}% toward Level ${li.level+1}`;
   renderStudentShop();
+  renderJournalRpg();
 }
 
 
@@ -1713,10 +1791,10 @@ onSnapshot(collection(db,"shopItems"),s=>{
     .filter(i=>i.active!==false)
     .sort((a,b)=>String(a.name||"").localeCompare(String(b.name||"")));
   renderStudentShop();
+  renderJournalRpg();
 });
-onSnapshot(collection(db,"purchases"),s=>{
+onSnapshot(query(collection(db,"purchases"),where("studentId","==",u.uid)),s=>{
   myPurchases=s.docs.map(d=>({id:d.id,...d.data()}))
-    .filter(p=>p.studentId===user?.uid)
     .sort((a,b)=>(b.purchasedAt?.seconds||0)-(a.purchasedAt?.seconds||0));
   renderStudentShop();
 });
@@ -1761,7 +1839,7 @@ function updateEggAnimation(points, rewards){
   else egg.classList.add("egg-stage-4");
 }
 
-function renderRewards(){
+function renderRewards(){ if(!$("points")||!$("rewards")) return;
  const p=classPoints,r=rewards,max=r.length?Math.max(...r.map(x=>+x.points||0),100):100,next=r.find(x=>p<(+x.points||0)),last=[...r].reverse().find(x=>p>=(+x.points||0));
  $("points").textContent=p;$("fill").style.width=Math.min(100,p/max*100)+"%";updateEggAnimation(p,r); const petGoal=r.find(x=>String(x.name||"").toLowerCase().includes("class pet")); const pg=Number(petGoal?.points||100); if(document.getElementById("eggPercent")) $("eggPercent").textContent=Math.min(100,Math.round(p/pg*100))+"%";$("headline").textContent=last?`${last.icon||"🎉"} ${last.name} Unlocked!`:"Our Dragonswood Journey";$("message").textContent=next?`${(+next.points)-p} more points until ${next.name}.`:(r.length?"All current rewards are unlocked!":"Rewards are being prepared.");$("next").textContent=next?`NEXT: ${next.icon||"🎁"} ${next.name} at ${next.points} points`:"🏆 All current rewards unlocked!";
  $("rewards").innerHTML=r.length?r.map(x=>{let g=+x.points||0;return `<div class="reward ${p>=g?'unlocked':''} ${next?.id===x.id?'current':''}"><div class="icon">${esc(x.icon||"🎁")}</div><b>${esc(x.name)}</b><small>${g} points</small></div>`}).join(""):"<div>No rewards yet.</div>";
@@ -1797,19 +1875,31 @@ function renderStudentShop(){
     if(!shopItems.length){
       host.innerHTML='<div class="frame bevel shop-empty">The Dragonswood Shop is currently empty. Your teacher is preparing inventory.</div>';
     }else{
-      host.innerHTML=shopItems.map(item=>{
+      const visible=shopItems.filter(item=>{
+        if(shopFilter==="all")return true;
+        if(shopFilter==="reward")return item.kind!=="gear"&&!item.equipSlot;
+        if(shopFilter==="gear")return item.kind==="gear"||!!item.equipSlot;
+        if(shopFilter==="owned")return (item.kind==="gear"||item.equipSlot)&&isOwnedGear(item);
+        return true;
+      });
+      host.innerHTML=visible.length?visible.map(item=>{
         const gold=+profile?.gold||0;
         const cost=Math.max(0,Number(item.cost||0));
         const limited=item.quantity!==null && item.quantity!==undefined && item.quantity!=="";
         const quantity=limited?Math.max(0,Number(item.quantity||0)):null;
         const soldOut=limited && quantity<=0;
         const affordable=gold>=cost;
-        const disabled=soldOut||!affordable;
-        const buttonText=soldOut?"SOLD OUT":!affordable?`NEED ${cost-gold} MORE GOLD`:"BUY";
-        return `<article class="frame bevel student-shop-card ${soldOut?"sold-out":""}">
+        const gear=item.kind==="gear"||!!item.equipSlot;
+        const owned=gear&&isOwnedGear(item);
+        const levelOK=currentPlayerLevel()>=Number(item.requiredLevel||1);
+        const disabled=soldOut||!affordable||owned||!levelOK;
+        const buttonText=owned?"OWNED":!levelOK?`LEVEL ${item.requiredLevel} REQUIRED`:soldOut?"SOLD OUT":!affordable?`NEED ${cost-gold} MORE GOLD`:"BUY";
+        return `<article class="frame bevel student-shop-card ${rarityClass(item)} ${soldOut?"sold-out":""} ${owned?"owned":""}">
           <div class="student-shop-icon">${esc(item.icon||"🎁")}</div>
           <h3>${esc(item.name||"Shop Item")}</h3>
-          <div class="student-shop-price">🪙 ${cost} Gold</div>${item.kind==="gear"||item.equipSlot?`<div class="shop-stock"><span>⚔️ ${esc(item.equipSlot||"gear")}</span><span>ATK +${Number(item.stats?.atk||0)} • DEF +${Number(item.stats?.def||0)}</span></div>`:""}
+          <div class="student-shop-price">🪙 ${cost} Gold</div>
+          <div class="rarity-label">${esc(item.rarity||"common")} ${gear?"GEAR":"REWARD"}</div>
+          ${gear?`<div class="stat-chips">${itemStatText(item).split(" ").reduce((a,x,i,arr)=>{if(i%2===0)a.push(`<span class="stat-chip">${x} ${arr[i+1]||""}</span>`);return a},[]).join("")}</div><div class="shop-stock"><span>⚔️ ${esc(item.equipSlot||"gear")}</span><span>${Number(item.requiredLevel||1)>1?`Level ${item.requiredLevel}+`:"No level requirement"}</span></div>`:""}
           <p>${esc(item.description||"A Dragonswood Shop reward.")}</p>
           <div class="shop-stock">
             <span>${limited?`${quantity} available`:"Unlimited"}</span>
@@ -1817,7 +1907,7 @@ function renderStudentShop(){
           </div>
           <button class="shop-buy" data-buy-shop="${item.id}" ${disabled?"disabled":""}>${esc(buttonText)}</button>
         </article>`;
-      }).join("");
+      }).join(""):'<div class="frame bevel shop-empty">No items in this category yet.</div>';
 
       document.querySelectorAll("[data-buy-shop]").forEach(btn=>{
         btn.onclick=()=>buyShopItem(btn.dataset.buyShop);
@@ -1849,7 +1939,10 @@ async function buyShopItem(itemId){
   const cost=Math.max(0,Number(item.cost||0));
   const itemName=item.name||"Shop Item";
 
-  if(!confirm(`Buy "${itemName}" for ${cost} Gold?\n\nYour teacher will receive the redemption request.`))return;
+  const isGearPurchase=item.kind==="gear"||!!item.equipSlot;
+  if(isGearPurchase&&isOwnedGear(item))return showShopNotice("You already own that gear.","error");
+  if(currentPlayerLevel()<Number(item.requiredLevel||1))return showShopNotice(`Reach Level ${item.requiredLevel} before buying this item.`,"error");
+  if(!confirm(isGearPurchase?`Buy "${itemName}" for ${cost} Gold?\n\nIt will be added permanently to your Inventory.`:`Buy "${itemName}" for ${cost} Gold?\n\nYour teacher will receive the redemption request.`))return;
 
   try{
     await runTransaction(db,async tx=>{
@@ -1912,12 +2005,106 @@ async function buyShopItem(itemId){
       });
     });
 
-    showShopNotice(`Purchased ${itemName}! Your teacher now has the redemption request.`);
+    showShopNotice(isGearPurchase?`Purchased ${itemName}! It is now in My Journal → Inventory.`:`Purchased ${itemName}! Your teacher now has the redemption request.`);
   }catch(err){
     console.error("Shop purchase error:",err);
     showShopNotice(err.message||"Could not complete that purchase.","error");
   }
 }
+
+
+
+// ============================================================
+// V23 SHOP FILTERS + JOURNAL INVENTORY / EQUIPMENT
+// ============================================================
+document.querySelectorAll("[data-shop-filter]").forEach(b=>b.onclick=()=>{
+  shopFilter=b.dataset.shopFilter;
+  document.querySelectorAll("[data-shop-filter]").forEach(x=>x.classList.toggle("active",x===b));
+  renderStudentShop();
+});
+document.querySelectorAll("[data-inv-filter]").forEach(b=>b.onclick=()=>{
+  inventoryFilter=b.dataset.invFilter;
+  document.querySelectorAll("[data-inv-filter]").forEach(x=>x.classList.toggle("active",x===b));
+  renderJournalRpg();
+});
+
+const SLOT_LABELS={
+  head:["🪖","Head"],outfit:["👕","Outfit"],armor:["🛡️","Armor"],weapon:["⚔️","Weapon"],
+  offhand:["🔰","Offhand"],feet:["🥾","Feet"],back:["🎒","Back"],accessory:["💎","Accessory"],aura:["✨","Aura"]
+};
+
+function renderJournalRpg(){
+  if(!profile)return;
+  const oldDraft=avatarDraft;
+  avatarDraft={config:{...defaultAvatarConfig(),...(profile.avatarConfig||{})},equipped:{...(profile.equipped||{})}};
+  const stats=gearStats();
+
+  if($("journalCharacterPreview"))$("journalCharacterPreview").innerHTML=chibiMarkup(avatarDraft.config);
+  if($("journalBattleHp"))$("journalBattleHp").textContent=stats.hp;
+  if($("journalBattleAtk"))$("journalBattleAtk").textContent=stats.atk;
+  if($("journalBattleDef"))$("journalBattleDef").textContent=stats.def;
+  if($("journalBattleHeal"))$("journalBattleHeal").textContent=stats.heal;
+
+  if($("journalEquipmentSlots")){
+    $("journalEquipmentSlots").innerHTML=Object.entries(SLOT_LABELS).map(([slot,[ico,label]])=>{
+      const item=gearItem(slot);
+      return `<div class="equipment-slot-v23 ${item?rarityClass(item):""}">
+        <div class="slot-icon">${item?.icon||ico}</div>
+        <div><b>${item?esc(item.name):label}</b><small>${item?`${esc(item.rarity||"common")} • ${esc(itemStatText(item)||"Cosmetic")}`:"Empty "+label+" slot"}</small></div>
+        ${item?`<button class="mini" data-journal-unequip="${slot}">REMOVE</button>`:""}
+      </div>`;
+    }).join("");
+  }
+
+  let owned=(profile.inventory||[]).map(id=>shopItems.find(x=>x.id===id)).filter(Boolean);
+  if(inventoryFilter==="outfit")owned=owned.filter(x=>["outfit","feet","head"].includes(x.equipSlot));
+  else if(inventoryFilter==="weapon")owned=owned.filter(x=>x.equipSlot==="weapon"||x.equipSlot==="offhand");
+  else if(inventoryFilter==="armor")owned=owned.filter(x=>x.equipSlot==="armor");
+  else if(inventoryFilter==="other")owned=owned.filter(x=>["back","accessory","aura"].includes(x.equipSlot));
+
+  if($("journalInventory")){
+    $("journalInventory").innerHTML=owned.length?owned.map(item=>{
+      const equipped=Object.values(profile.equipped||{}).includes(item.id);
+      return `<div class="frame bevel inventory-card-v23 ${rarityClass(item)}">
+        <div class="ico">${esc(item.icon||"🎒")}</div>
+        <b>${esc(item.name)}</b>
+        <small class="rarity-label">${esc(item.rarity||"common")}</small>
+        <small>${esc(itemStatText(item)||"Cosmetic")}</small>
+        <button class="mini" data-journal-equip="${item.id}">${equipped?"UNEQUIP":"EQUIP"}</button>
+      </div>`;
+    }).join(""):`<div class="empty-inventory-v23">🎒 Your inventory is empty in this category.<br>Earn Gold and visit the Shop.</div>`;
+  }
+
+  document.querySelectorAll("[data-journal-equip]").forEach(b=>b.onclick=async()=>{
+    const item=shopItems.find(x=>x.id===b.dataset.journalEquip);if(!item)return;
+    const eq={...(profile.equipped||{})},slot=item.equipSlot||"accessory";
+    eq[slot]=eq[slot]===item.id?null:item.id;
+    try{await setDoc(doc(db,"students",user.uid),{equipped:eq,updatedAt:serverTimestamp()},{merge:true});}
+    catch(e){console.error(e);showShopNotice("Could not equip that item.","error")}
+  });
+  document.querySelectorAll("[data-journal-unequip]").forEach(b=>b.onclick=async()=>{
+    const eq={...(profile.equipped||{})};eq[b.dataset.journalUnequip]=null;
+    await setDoc(doc(db,"students",user.uid),{equipped:eq,updatedAt:serverTimestamp()},{merge:true});
+  });
+
+  avatarDraft=oldDraft;
+}
+
+if($("journalEditCharacter"))$("journalEditCharacter").onclick=()=>openProfile(true);
+if($("autoEquipBest"))$("autoEquipBest").onclick=async()=>{
+  const owned=(profile?.inventory||[]).map(id=>shopItems.find(x=>x.id===id)).filter(Boolean);
+  const slots={};
+  Object.keys(SLOT_LABELS).forEach(slot=>{
+    const options=owned.filter(x=>x.equipSlot===slot&&currentPlayerLevel()>=Number(x.requiredLevel||1));
+    options.sort((a,b)=>{
+      const score=i=>Number(i.stats?.atk||0)+Number(i.stats?.def||0)+Number(i.stats?.hp||0)+Number(i.stats?.heal||0);
+      return score(b)-score(a);
+    });
+    if(options[0])slots[slot]=options[0].id;
+  });
+  await setDoc(doc(db,"students",user.uid),{equipped:slots,updatedAt:serverTimestamp()},{merge:true});
+  showShopNotice("Strongest owned gear equipped.");
+};
 
 
 // ============================================================

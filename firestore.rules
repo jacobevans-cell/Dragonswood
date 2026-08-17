@@ -9,6 +9,8 @@ service cloud.firestore {
     match /classData/{docId} { allow read: if true; allow write: if isTeacher(); }
     match /rewards/{rewardId} { allow read: if true; allow write: if isTeacher(); }
 
+    // V23: avatarConfig, equipped, and inventory support the layered RPG character.
+    // Classroom HP/XP remain protected from student edits.
     match /students/{studentId} {
       allow read: if isTeacher() || isOwner(studentId);
       allow create: if isExploreStudent() && isOwner(studentId)

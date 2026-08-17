@@ -1747,6 +1747,34 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 }
 </style>
 
+
+<style id="v27-7-home-equipped-avatar">
+.home-hero-avatar{
+  width:175px;
+  height:205px;
+  overflow:visible;
+}
+.home-hero-avatar>svg{
+  width:175px!important;
+  height:205px!important;
+  max-width:none!important;
+  overflow:visible!important;
+}
+.home-hero-avatar-wrap{
+  min-height:210px;
+}
+@media(max-width:820px){
+  .home-hero-avatar{width:145px;height:178px}
+  .home-hero-avatar>svg{width:145px!important;height:178px!important}
+  .home-hero-avatar-wrap{min-height:180px}
+}
+@media(max-width:560px){
+  .home-hero-avatar{width:155px;height:185px;margin:auto}
+  .home-hero-avatar>svg{width:155px!important;height:185px!important}
+  .home-hero-avatar-wrap{min-height:190px}
+}
+</style>
+
 </head><body>
 <header class="topbar">
 <div class="shell">
@@ -2968,10 +2996,8 @@ function renderProfile(){
 
   // HOME character dashboard: identity + progress only, no equipment controls.
   if($("homeHeroAvatar")){
-    $("homeHeroAvatar").innerHTML=chibiMarkup(
-      {...defaultAvatarConfig(),...(profile.avatarConfig||{})},
-      true
-    );
+    // HOME is display-only, but it mirrors the fully equipped Journal character.
+    $("homeHeroAvatar").innerHTML=journalHeroMarkup();
   }
   if($("homeHeroName"))$("homeHeroName").textContent=display;
   if($("homeHeroLevel"))$("homeHeroLevel").textContent=li.level;

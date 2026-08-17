@@ -1942,6 +1942,17 @@ function levelInfo(xp){
   return {level,cur,next,pct:level>=20?100:Math.max(0,Math.min(100,(xp-cur)/(next-cur)*100))};
 }
 function classroomHpMax(level){return 10+(Math.max(1,Math.min(20,Number(level||1)))-1)*2}
+const DRAGONSWOOD_DAILY_XP_CAP=150;
+function dragonswoodDateKey(){
+  const d=new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function normalizedDailyXp(p){
+  if(!p)return 0;
+  return String(p.dailyXpDate||"")===dragonswoodDateKey()
+    ? Math.max(0,Math.min(DRAGONSWOOD_DAILY_XP_CAP,Number(p.dailyXpEarned||0)))
+    : 0;
+}
 function baseBattleStats(level){
  level=Math.max(1,Math.min(20,Number(level||1)));
  return {hp:18+(level-1)*4,atk:2+Math.floor((level-1)*.60),def:Math.floor((level-1)*.35),heal:Math.floor((level-1)*.25)};
@@ -2722,10 +2733,18 @@ function renderProfile(){
 
   if($("avatar")){$("avatar").classList.add("mini-chibi");$("avatar").innerHTML=chibiMarkup({...defaultAvatarConfig(),...(profile.avatarConfig||{})},true)}
   if($("displayName"))$("displayName").textContent=display;
-  if($("profileSub"))$("profileSub").textContent=li.level>=20?`Level 20 MAX • Grade ${profile.grade} • Dragonswood Champion`:`Level ${li.level} • Grade ${profile.grade} • ${profile.genderGroup==="girl"?"Girls":"Boys"} • ${li.next-xp} XP to next level`;
+  if($("profileSub")){
+    const daily=normalizedDailyXp(profile);
+    $("profileSub").textContent=li.level>=20
+      ? `Level 20 MAX • Grade ${profile.grade} • Dragonswood Champion • Daily XP ${daily}/150`
+      : `Level ${li.level} • Grade ${profile.grade} • ${profile.genderGroup==="girl"?"Girls":"Boys"} • ${li.next-xp} XP to next level • Daily XP ${daily}/150`;
+  }
   if($("hp"))$("hp").textContent=hp;
   if($("gold"))$("gold").textContent=gold;
   if($("xp"))$("xp").textContent=xp;
+  const dailyXp=normalizedDailyXp(profile);
+  if($("dailyXp"))$("dailyXp").textContent=`${dailyXp} / 150`;
+  if($("journalDailyXp"))$("journalDailyXp").textContent=`${dailyXp} / 150`;
   if($("levelFill"))$("levelFill").style.width=li.pct+"%";
   if($("levelShield"))$("levelShield").textContent=li.level;
   if($("levelTop"))$("levelTop").textContent=li.level;

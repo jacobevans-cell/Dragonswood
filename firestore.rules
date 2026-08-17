@@ -1,66 +1,173 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    function isSignedIn(){ return request.auth != null; }
-    function isTeacher(){ return isSignedIn() && request.auth.token.email == "jacobicusjax@gmail.com"; }
-    function isExploreStudent(){ return isSignedIn() && request.auth.token.email != null && request.auth.token.email.matches('.*@explore[.]academy$'); }
-    function isOwner(uid){ return isSignedIn() && request.auth.uid == uid; }
 
-    match /classData/{docId} { allow read: if true; allow write: if isTeacher(); }
-    match /rewards/{rewardId} { allow read: if true; allow write: if isTeacher(); }
+    function isSignedIn() {
+      return request.auth != null;
+    }
 
-    // V23: avatarConfig, equipped, and inventory support the layered RPG character.
-    // Classroom HP/XP remain protected from student edits.
+    function isTeacher() {
+      return request.auth != null
+        && request.auth.token.email == "jacobicusjax@gmail.com";
+    }
+
+    function isExploreStudent() {
+      return request.auth != null
+        && request.auth.token.email != null
+        && request.auth.token.email.matches('.*@explore[.]academy$');
+    }
+
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    match /classData/{docId} {
+      allow read: if true;
+      allow write: if isTeacher();
+    }
+
+    match /rewards/{rewardId} {
+      allow read: if true;
+      allow write: if isTeacher();
+    }
+
     match /students/{studentId} {
       allow read: if isTeacher() || isOwner(studentId);
-      allow create: if isExploreStudent() && isOwner(studentId)
-        && request.resource.data.hp == 10 && request.resource.data.gold == 0 && request.resource.data.xp == 0;
-      allow update: if isTeacher() || (isOwner(studentId) && isExploreStudent()
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-          'title','avatar','avatarConfig','equipped','inventory','gold','updatedAt'
-        ])
-        && request.resource.data.gold <= resource.data.gold
-        && request.resource.data.xp == resource.data.xp
-        && request.resource.data.hp == resource.data.hp);
-      allow delete: if isTeacher();
+
+      allow create: if isExploreStudent()
+                    && isOwner(studentId)
+                    && request.resource.data.hp == 10
+                    && request.resource.data.gold == 0
+                    && request.resource.data.xp == 0;
+
+      // Student character customization.
+      allow update: if isOwner(studentId)
+                    && isExploreStudent()
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['title','avatar','avatarConfig','equipped','updatedAt']);
+
+      // Shop purchase may only reduce own Gold.
+      allow update: if isOwner(studentId)
+                    && isExploreStudent()
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['gold','inventory','updatedAt'])
+                    && request.resource.data.gold is number
+                    && request.resource.data.gold >= 0
+                    && request.resource.data.gold <= resource.data.gold;
+
+      // Verified academic-game reward.
+      // The game must atomically CREATE the matching gameResults document.
+      allow update: if isOwner(studentId)
+                    && isExploreStudent()
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['xp','gold','dailyXpDate','dailyXpEarned','lastGameClaimId','updatedAt'])
+                    && request.resource.data.lastGameClaimId is string
+                    && request.resource.data.dailyXpDate is string
+                    && request.resource.data.dailyXpEarned is number
+                    && request.resource.data.dailyXpEarned >= 0
+                    && request.resource.data.dailyXpEarned <= 150
+                    && (
+                      request.resource.data.dailyXpDate == resource.data.dailyXpDate
+                      ? request.resource.data.dailyXpEarned >= resource.data.dailyXpEarned
+                      : request.resource.data.dailyXpEarned >= 0
+                    )
+                    && getAfter(/databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)).data.studentId == request.auth.uid
+                    && getAfter(/databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)).data.status == "complete"
+                    && getAfter(/databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)).data.xpAward is number
+                    && getAfter(/databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)).data.xpAward >= 0
+                    && getAfter(/databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)).data.xpAward <= 10
+                    && getAfter(/databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)).data.goldAward is number
+                    && getAfter(/databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)).data.goldAward >= 0
+                    && getAfter(/databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)).data.goldAward <= 3
+                    && request.resource.data.xp
+                       == resource.data.xp
+                          + getAfter(/databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)).data.xpAward
+                    && request.resource.data.dailyXpEarned
+                       == (
+                         request.resource.data.dailyXpDate == resource.data.dailyXpDate
+                         ? resource.data.dailyXpEarned
+                         : 0
+                       )
+                          + getAfter(/databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)).data.xpAward
+                    && request.resource.data.gold
+                       == resource.data.gold
+                          + getAfter(/databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)).data.goldAward;
+
+      allow update, delete: if isTeacher();
     }
 
-    match /leaderboardProfiles/{studentId} { allow read: if isSignedIn(); allow create, update, delete: if isTeacher(); }
-    match /scores/{scoreId} {
-      allow read: if true;
-      allow create: if isSignedIn() && request.resource.data.score is number && request.resource.data.score >= 0 && request.resource.data.score <= 100000;
-      allow update, delete: if isTeacher();
-    }
-    match /gameResults/{resultId} {
-      allow create: if isSignedIn() && request.resource.data.studentId == request.auth.uid;
-      allow read: if isTeacher() || (isSignedIn() && resource.data.studentId == request.auth.uid);
-      allow update, delete: if isTeacher();
-    }
-    match /studentTransactions/{transactionId} {
-      allow read: if isTeacher() || (isSignedIn() && resource.data.studentId == request.auth.uid);
+    match /leaderboardProfiles/{studentId} {
+      allow read: if isSignedIn();
       allow create, update, delete: if isTeacher();
     }
-    match /games/{gameId} { allow read: if true; allow write: if isTeacher(); }
+
+    match /scores/{scoreId} {
+      allow read: if true;
+      allow create: if isSignedIn()
+                    && request.resource.data.score is number
+                    && request.resource.data.score >= 0
+                    && request.resource.data.score <= 100000;
+      allow update, delete: if isTeacher();
+    }
+
+    match /gameResults/{resultId} {
+      allow create: if isExploreStudent()
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.status == "complete"
+                    && request.resource.data.xpAward is number
+                    && request.resource.data.xpAward >= 0
+                    && request.resource.data.xpAward <= 10
+                    && request.resource.data.goldAward is number
+                    && request.resource.data.goldAward >= 0
+                    && request.resource.data.goldAward <= 3;
+
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+
+      allow update, delete: if isTeacher();
+    }
+
+    match /studentTransactions/{transactionId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+      allow create, update, delete: if isTeacher();
+    }
+
+    match /games/{gameId} {
+      allow read: if true;
+      allow write: if isTeacher();
+    }
 
     match /shopItems/{itemId} {
       allow read: if isSignedIn();
       allow create, delete: if isTeacher();
-      allow update: if isTeacher() || (isExploreStudent()
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['quantity','updatedAt'])
-        && resource.data.quantity is number
-        && request.resource.data.quantity == resource.data.quantity - 1
-        && request.resource.data.quantity >= 0);
+      allow update: if isTeacher();
+
+      allow update: if isExploreStudent()
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['quantity','updatedAt'])
+                    && resource.data.quantity is number
+                    && request.resource.data.quantity is number
+                    && request.resource.data.quantity == resource.data.quantity - 1
+                    && request.resource.data.quantity >= 0;
     }
 
     match /purchases/{purchaseId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+
       allow create: if isExploreStudent()
-        && request.resource.data.studentId == request.auth.uid
-        && request.resource.data.cost is number
-        && request.resource.data.cost >= 0;
-      allow read: if isTeacher() || (isSignedIn() && resource.data.studentId == request.auth.uid);
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.cost is number
+                    && request.resource.data.cost >= 0
+                    && request.resource.data.status == "pending";
+
       allow update, delete: if isTeacher();
     }
 
-    match /{document=**} { allow read, write: if false; }
+    match /{document=**} {
+      allow read, write: if false;
+    }
   }
 }

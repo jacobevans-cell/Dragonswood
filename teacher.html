@@ -303,8 +303,154 @@ footer{background:rgba(2,3,10,.92)!important;border-top:1px solid var(--gold)!im
 
 .egg-creature{box-shadow:0 0 28px rgba(244,201,93,.26),0 14px 34px rgba(0,0,0,.42)!important}
 
+
+/* ============================================================
+   V8 SCENERY VISIBILITY FIX
+   The prior scenic background was trapped behind the root canvas.
+   These rules put it visibly behind the UI, not behind the browser.
+============================================================ */
+
+html{
+  background:#03040A !important;
+}
+
+body{
+  isolation:isolate;
+  background:transparent !important;
+}
+
+/* Real visible scenic world */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:0 !important;
+  pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(2,2,9,.10),rgba(2,2,10,.18) 48%,rgba(2,2,10,.42)),
+    url("dragonswood-world.jpg") center 24% / cover no-repeat !important;
+  filter:saturate(1.23) contrast(1.04) brightness(.88) !important;
+  transform:scale(1.015);
+}
+
+/* Slow magical color shimmer laid over the castle/wisteria art */
+body::after{
+  content:"";
+  position:fixed;
+  inset:-8%;
+  z-index:1 !important;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 14% 16%,rgba(160,65,255,.17),transparent 22%),
+    radial-gradient(circle at 82% 18%,rgba(2,204,254,.11),transparent 21%),
+    radial-gradient(circle at 50% 62%,rgba(244,201,93,.055),transparent 18%),
+    linear-gradient(115deg,transparent 35%,rgba(136,42,255,.055) 48%,rgba(2,204,254,.045) 54%,transparent 66%);
+  background-size:100% 100%,100% 100%,100% 100%,220% 100%;
+  animation:dwSceneShimmer 13s ease-in-out infinite alternate;
+  mix-blend-mode:screen;
+}
+
+@keyframes dwSceneShimmer{
+  0%{
+    transform:translate3d(-1.5%,-.6%,0) scale(1);
+    background-position:0 0,0 0,0 0,0% 0;
+    opacity:.72;
+  }
+  50%{
+    transform:translate3d(1%,.8%,0) scale(1.025);
+    background-position:0 0,0 0,0 0,100% 0;
+    opacity:1;
+  }
+  100%{
+    transform:translate3d(-.4%,1.2%,0) scale(1.015);
+    background-position:0 0,0 0,0 0,200% 0;
+    opacity:.82;
+  }
+}
+
+/* Put all actual site content above the scenery */
+body > *:not(.dw-stars){
+  position:relative;
+  z-index:5;
+}
+
+/* Keep magical particles between scenery and UI */
+.dw-stars{
+  z-index:3 !important;
+}
+
+/* Reduce giant dead hero area and let the world show through more */
+header{
+  background:linear-gradient(180deg,rgba(3,4,12,.72),rgba(13,6,28,.48)) !important;
+  backdrop-filter:blur(2px) saturate(1.15) !important;
+}
+
+.hero{
+  padding:22px 0 24px !important;
+}
+
+.hero-card{
+  background:linear-gradient(145deg,rgba(7,7,23,.72),rgba(4,14,29,.68)) !important;
+  backdrop-filter:blur(8px) !important;
+}
+
+main{
+  background:transparent !important;
+}
+
+/* Make cards translucent enough to see the fantasy world around and through them */
+.card,.pet,.game,.board,.login-card,.profilebar,.modalbox,.recess-card,.item{
+  background:
+    radial-gradient(circle at 50% -25%,rgba(101,45,193,.14),transparent 48%),
+    linear-gradient(145deg,rgba(8,9,26,.90),rgba(4,7,18,.92)) !important;
+}
+
+.petbody{
+  background:rgba(3,6,16,.87) !important;
+}
+
+.profilebar{
+  background:linear-gradient(90deg,rgba(12,9,39,.88),rgba(4,18,31,.86)) !important;
+}
+
+/* Visible wisteria curtain accents at the upper edges */
+.dw-wisteria-curtain{
+  position:fixed;
+  z-index:4;
+  pointer-events:none;
+  top:0;
+  width:210px;
+  height:52vh;
+  opacity:.72;
+  filter:drop-shadow(0 0 13px rgba(149,70,255,.45));
+}
+.dw-wisteria-curtain.left{
+  left:0;
+  background:
+    radial-gradient(ellipse at 18% 4%,rgba(181,82,255,.8) 0 5px,transparent 6px),
+    radial-gradient(ellipse at 33% 8%,rgba(134,48,231,.72) 0 6px,transparent 7px),
+    radial-gradient(ellipse at 44% 14%,rgba(192,99,255,.72) 0 5px,transparent 6px),
+    repeating-linear-gradient(96deg,transparent 0 17px,rgba(130,48,220,.33) 18px 22px,transparent 23px 39px);
+  mask-image:linear-gradient(to bottom,#000 0 62%,transparent 100%);
+}
+.dw-wisteria-curtain.right{
+  right:0;
+  transform:scaleX(-1);
+  background:
+    radial-gradient(ellipse at 18% 4%,rgba(181,82,255,.8) 0 5px,transparent 6px),
+    radial-gradient(ellipse at 33% 8%,rgba(134,48,231,.72) 0 6px,transparent 7px),
+    radial-gradient(ellipse at 44% 14%,rgba(192,99,255,.72) 0 5px,transparent 6px),
+    repeating-linear-gradient(96deg,transparent 0 17px,rgba(130,48,220,.33) 18px 22px,transparent 23px 39px);
+  mask-image:linear-gradient(to bottom,#000 0 62%,transparent 100%);
+}
+
+@media(max-width:900px){
+  .dw-wisteria-curtain{width:110px;opacity:.52}
+  body::before{background-position:center top !important}
+}
+
 </style></head>
-<body>
+<body><div class="dw-wisteria-curtain left" aria-hidden="true"></div><div class="dw-wisteria-curtain right" aria-hidden="true"></div>
 <div class="dw-stars" aria-hidden="true">
 <i style="left:4%;animation-duration:17s;animation-delay:-8s"></i><i style="left:11%;animation-duration:21s;animation-delay:-3s"></i>
 <i style="left:18%;animation-duration:14s;animation-delay:-11s"></i><i style="left:25%;animation-duration:19s;animation-delay:-5s"></i>

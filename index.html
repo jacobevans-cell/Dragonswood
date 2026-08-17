@@ -380,6 +380,73 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 }
 </style>
 
+
+<style id="dragonswood-v16-2-pet-choice-preview">
+/* Replace the tiny sparkle placeholder with a clear three-pet choice preview. */
+.pet-choice-preview{
+  width:118px;
+  min-height:112px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  place-items:center;
+  gap:5px;
+  padding:9px 5px;
+  position:relative;
+}
+.pet-choice-preview::before{
+  content:"PET CHOICES";
+  position:absolute;
+  top:-4px;
+  left:50%;
+  transform:translateX(-50%);
+  white-space:nowrap;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.8px;
+  color:var(--gold2);
+  opacity:.82;
+}
+.pet-choice{
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  font-size:25px;
+  line-height:1;
+  border:1px solid rgba(244,201,93,.45);
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(101,45,193,.52),rgba(5,5,24,.38));
+  box-shadow:0 0 12px rgba(166,76,255,.28);
+  filter:drop-shadow(0 0 5px rgba(244,201,93,.24));
+}
+.pet-spider{font-size:23px}
+.pet-axolotl{
+  font-size:0;
+}
+.pet-axolotl::before{
+  content:"";
+  width:28px;
+  height:18px;
+  display:block;
+  border-radius:48% 52% 45% 45%;
+  background:
+    radial-gradient(circle at 32% 43%,#1c1230 0 1.5px,transparent 2px),
+    radial-gradient(circle at 68% 43%,#1c1230 0 1.5px,transparent 2px),
+    radial-gradient(ellipse at center,#f7a8d9 0 54%,#d66fbb 56% 100%);
+  box-shadow:
+    -12px -5px 0 -7px #ff7fcf,
+    -12px 0 0 -7px #ff7fcf,
+    -12px 5px 0 -7px #ff7fcf,
+    12px -5px 0 -7px #ff7fcf,
+    12px 0 0 -7px #ff7fcf,
+    12px 5px 0 -7px #ff7fcf,
+    0 0 9px rgba(255,127,207,.55);
+}
+@media(max-width:720px){
+  .pet-choice-preview{margin:auto}
+}
+</style>
+
 </head><body>
 <header class="topbar">
 <div class="shell">
@@ -418,7 +485,12 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
       <div class="reward-top">
         <div class="frame bevel egg-story">
           <div class="egg-big">
-            <div class="peticon-shell"><div class="egg-creature" id="eggCreature"><div class="egg-face">✨</div><svg class="egg-cracks" viewBox="0 0 100 130"><path id="crackOne" d="M50 24 L43 42 L54 48 L45 64"/><path id="crackTwo" d="M45 64 L60 72 L49 84 L58 99"/><path id="crackThree" d="M54 48 L67 55 L60 72 L74 79"/></svg></div><div class="hatched-pet hidden" id="hatchedPet">🐉</div></div>
+            <div class="pet-choice-preview" id="petChoicePreview" aria-label="Pet choices: lizard, jumping spider, and axolotl">
+  <span class="pet-choice pet-lizard" title="Lizard">🦎</span>
+  <span class="pet-choice pet-spider" title="Jumping Spider">🕷️</span>
+  <span class="pet-choice pet-axolotl" title="Axolotl">🦎</span>
+</div>
+<div class="peticon-shell hidden" id="eggPetProgress"><div class="egg-creature" id="eggCreature"><div class="egg-face">✨</div><svg class="egg-cracks" viewBox="0 0 100 130"><path id="crackOne" d="M50 24 L43 42 L54 48 L45 64"/><path id="crackTwo" d="M45 64 L60 72 L49 84 L58 99"/><path id="crackThree" d="M54 48 L67 55 L60 72 L74 79"/></svg></div><div class="hatched-pet hidden" id="hatchedPet">🐉</div></div>
           </div>
           <div class="egg-copy"><h3 id="headline">Our Dragonswood Journey</h3><p id="message">Loading progress…</p><p class="goal">Choose Our Pet Type!</p></div>
         </div>

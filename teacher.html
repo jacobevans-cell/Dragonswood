@@ -493,6 +493,24 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 }
 </style>
 
+
+<style id="dragonswood-v21-goal-command">
+.goal-command-grid-v21{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
+.goal-control-v21{padding:17px!important;min-height:300px;display:flex;flex-direction:column}
+.goal-control-v21 .goal-symbol{font-size:38px}
+.goal-control-v21 h3{margin:4px 0;color:#fff0a6}
+.goal-control-v21 .goal-big{font-size:38px;font-weight:1000;margin:4px 0}
+.goal-control-v21 .goal-note{font-size:11px;min-height:30px}
+.goal-actions-v21{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.goal-actions-v21 button{padding:8px 4px}
+.goal-settings-v21{display:grid;grid-template-columns:1fr auto;gap:6px;margin-top:auto;padding-top:10px}
+.universal-command-v21{margin-top:12px;padding:16px!important;display:grid;grid-template-columns:auto 1fr 1.5fr;gap:14px;align-items:center}
+.universal-command-v21 .universal-big{font-size:38px;font-weight:1000;color:#fff0a6}
+.universal-award-v21,.universal-spend-v21{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.universal-spend-v21 select,.universal-spend-v21 input{width:auto;min-width:95px}
+@media(max-width:950px){.goal-command-grid-v21{grid-template-columns:1fr}.universal-command-v21{grid-template-columns:1fr}}
+</style>
+
 </head><body>
 <header class="teacher-head"><div class="shell"><div class="teacher-title">🛡️ DRAGONSWOOD COMMAND<small>EXPLORE ACADEMY • EVANS 4–5 • TEACHER PORTAL</small></div><div id="signed" class="hidden" style="text-align:right"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
 <main class="shell teacher-main">
@@ -501,7 +519,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 <div class="frame bevel tabs command-tabs">
   <button class="tab active" data-p="students">👥 STUDENTS</button>
   <button class="tab" data-p="rewards">🛡️ CLASS REWARDS</button>
-  <button class="tab" data-p="recess">🌤️ SECOND RECESS</button>
+  <button class="tab" data-p="recess">🏰 CLASS GOALS</button>
   <button class="tab" data-p="shop">🧰 SHOP</button>
   <button class="tab" data-p="quests">⚔️ QUESTS</button>
   <button class="tab" data-p="scores">🏆 LEADERBOARDS</button>
@@ -528,48 +546,77 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
 <div id="recess" class="panel">
   <div class="frame bevel command-title">
-    <h2>🌤️ SECOND RECESS COMMAND</h2>
-    <p>A completely independent daily meter. Students can see it; only you control it.</p>
+    <h2>🏰 CLASS GOAL COMMAND</h2>
+    <p>Recess, Class Pet, and Field Trip now have independent point banks. Universal Points can be saved and assigned to any goal.</p>
   </div>
 
-  <div class="recess-command-grid">
-    <div class="card recess-main-card">
-      <div class="recess-kicker">TODAY'S SECOND RECESS</div>
-      <div class="recess-number" id="recessTeacherPoints">0</div>
+  <div class="goal-command-grid-v21">
+    <div class="card goal-control-v21">
+      <div class="goal-symbol">🌤️</div><h3>SECOND RECESS</h3>
+      <div class="goal-big" id="recessTeacherPoints">0</div>
       <div class="meter large-meter"><div class="fill" id="recessTeacherFill"></div></div>
-      <div id="recessTeacherStatus" class="recess-status">Loading today's goal…</div>
-
-      <div class="field" style="margin-top:16px">
-        <label>REASON / NOTE</label>
-        <input id="recessTeacherReason" class="reason" placeholder="Great transitions, teamwork, everyone ready on time…">
+      <div class="goal-note" id="recessTeacherStatus">Loading…</div>
+      <div class="goal-actions-v21">
+        <button class="recess-add" data-rn="1">+1</button><button class="recess-add" data-rn="2">+2</button><button class="recess-add" data-rn="5">+5</button><button id="recessMinus" class="danger-soft">−1</button>
       </div>
-
-      <div class="recess-award-buttons">
-        <button class="recess-add" data-rn="1">+1</button>
-        <button class="recess-add" data-rn="2">+2</button>
-        <button class="recess-add" data-rn="5">+5</button>
-        <button id="recessMinus" class="danger-soft">−1</button>
-      </div>
+      <div class="goal-settings-v21"><input id="recessGoalInput" type="number" min="1" value="10"><button id="saveRecessGoal">SET GOAL</button></div>
+      <div class="muted" style="margin-top:7px">Daily reset • <span id="recessDateLabel">—</span></div>
+      <button id="recessReset" class="danger-soft" style="margin-top:8px">RESET TODAY</button>
+      <input id="recessTeacherReason" type="hidden">
     </div>
 
-    <div class="card recess-settings-card">
-      <h3>⚙️ TODAY'S SETTINGS</h3>
-      <div class="field">
-        <label>POINT GOAL</label>
-        <input id="recessGoalInput" type="number" min="1" value="10">
+    <div class="card goal-control-v21">
+      <div class="goal-symbol">🐾</div><h3>CLASS PET</h3>
+      <div class="goal-big" id="petTeacherPoints">0</div>
+      <div class="meter large-meter"><div class="fill" id="petTeacherFill"></div></div>
+      <div class="goal-note" id="petTeacherStatus">Loading…</div>
+      <div class="goal-actions-v21">
+        <button class="pet-add" data-gn="1">+1</button><button class="pet-add" data-gn="2">+2</button><button class="pet-add" data-gn="5">+5</button><button class="pet-add danger-soft" data-gn="-1">−1</button>
       </div>
-      <button id="saveRecessGoal" style="width:100%;margin-top:10px">SAVE GOAL</button>
+      <div class="goal-settings-v21"><input id="petGoalInput" type="number" min="1" value="100"><button id="savePetGoal">SET GOAL</button></div>
+      <button id="petReset" class="danger-soft" style="margin-top:8px">RESET PET POINTS</button>
+    </div>
 
-      <div class="recess-date-box">
-        <small>ACTIVE DATE</small>
-        <b id="recessDateLabel">—</b>
+    <div class="card goal-control-v21">
+      <div class="goal-symbol">🚌</div><h3>FIELD TRIP</h3>
+      <div class="goal-big" id="tripTeacherPoints">0</div>
+      <div class="meter large-meter"><div class="fill" id="tripTeacherFill"></div></div>
+      <div class="goal-note" id="tripTeacherStatus">Loading…</div>
+      <div class="goal-actions-v21">
+        <button class="trip-add" data-gn="1">+1</button><button class="trip-add" data-gn="2">+2</button><button class="trip-add" data-gn="5">+5</button><button class="trip-add danger-soft" data-gn="-1">−1</button>
       </div>
+      <div class="goal-settings-v21"><input id="tripGoalInput" type="number" min="1" value="250"><button id="saveTripGoal">SET GOAL</button></div>
+      <button id="tripReset" class="danger-soft" style="margin-top:8px">RESET FIELD TRIP POINTS</button>
+    </div>
+  </div>
 
-      <button id="recessReset" class="danger-soft" style="width:100%;margin-top:12px">RESET TODAY TO 0</button>
+  <div class="card universal-command-v21">
+    <div><div style="font-size:38px">🌟</div><b>UNIVERSAL POINT BANK</b></div>
+    <div>
+      <div class="universal-big" id="universalTeacherPoints">0</div>
+      <div class="universal-award-v21">
+        <span class="muted">AWARD:</span>
+        <button class="universal-add" data-un="1">+1</button>
+        <button class="universal-add" data-un="2">+2</button>
+        <button class="universal-add" data-un="5">+5</button>
+        <button class="universal-add danger-soft" data-un="-1">−1</button>
+      </div>
+    </div>
+    <div>
+      <b>ASSIGN UNIVERSAL POINTS</b>
+      <div class="universal-spend-v21" style="margin-top:7px">
+        <input id="universalSpendAmount" type="number" min="1" value="1">
+        <select id="universalDestination">
+          <option value="secondRecess">🌤️ Second Recess</option>
+          <option value="classPet">🐾 Class Pet</option>
+          <option value="fieldTrip">🚌 Field Trip</option>
+        </select>
+        <button id="spendUniversal">ASSIGN</button>
+      </div>
+      <div class="muted" style="margin-top:6px">Assigning moves points out of Universal and into the selected goal.</div>
     </div>
   </div>
 </div>
-
 
 <div id="shop" class="panel">
   <div class="frame bevel command-title">
@@ -692,7 +739,7 @@ import {getFirestore,doc,getDoc,setDoc,collection,onSnapshot,addDoc,deleteDoc,ge
 const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2", "measurementId": "G-LPRLDGVBD2"},TEACHER="jacobicusjax@gmail.com";
 const normalizedEmail = v => String(v||"").trim().toLowerCase();
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),$=id=>document.getElementById(id);
-let points=0,history=[],rewards=[],scores=[],results=[],students=[],shopItems=[],purchases=[],recessState={points:0,goal:10,dateKey:""};
+let points=0,history=[],rewards=[],scores=[],results=[],students=[],shopItems=[],purchases=[],recessState={points:0,goal:10,dateKey:""},petGoalState={points:0,goal:100},tripGoalState={points:0,goal:250},universalPointState={points:0};
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
 const AVATAR_EMOJI={"dragon-purple":"🐉","dragon-green":"🐲","knight":"🛡️","wizard":"🧙","witch":"🧙‍♀️","princess":"👸","prince":"🤴","ranger":"🏹","phoenix":"🔥","wolf":"🐺","owl":"🦉","crystal":"🔮"};
 function levelInfo(xp){const t=[0,100,250,450,700,1000,1400,1900,2500,3250,4150,5200,6400,7750,9250,10900,12700,14650,16750,19000];let l=1;for(let i=0;i<t.length;i++)if(xp>=t[i])l=i+1;return l}
@@ -715,6 +762,12 @@ $("logout").onclick=()=>signOut(auth);
 
 async function seed(){
  const m=doc(db,"classData","main"),ms=await getDoc(m);if(!ms.exists())await setDoc(m,{points:0,history:[],updatedAt:serverTimestamp()});
+ const goalSeeds=[
+   ["classPet",{points:0,goal:100}],
+   ["fieldTrip",{points:0,goal:250}],
+   ["universalPoints",{points:0}]
+ ];
+ for(const [id,data] of goalSeeds){const r=doc(db,"classData",id),s=await getDoc(r);if(!s.exists())await setDoc(r,{...data,updatedAt:serverTimestamp()});}
  const rs=await getDocs(collection(db,"rewards"));if(rs.empty){const defs=[["Choose Our Pet Type",20,"🐾","Vote on the kind of class pet we want."],["Vote on Pet Names",40,"🗳️","Earn a class naming vote."],["Plan the Habitat",60,"🏠","Design what our pet will need."],["Choose Pet Jobs",80,"⭐","Create classroom pet responsibilities."],["CLASS PET",100,"🐹","Our class pet is officially unlocked!"],["Free-Time Game Reward",150,"🎮","Unlock special class free-time game time."],["Movie & Snack",200,"🍿","Celebrate with a class movie and snack."],["Class Field Trip",250,"🚌","A major class reward milestone."]],b=writeBatch(db);defs.forEach(r=>b.set(doc(collection(db,"rewards")),{name:r[0],points:r[1],icon:r[2],description:r[3],createdAt:serverTimestamp()}));await b.commit()}
 }
 
@@ -780,6 +833,23 @@ function listen(){
    renderTeacherRecess();
  });
 
+
+ onSnapshot(doc(db,"classData","classPet"),s=>{
+   const d=s.exists()?s.data():{};
+   petGoalState={points:Math.max(0,Number(d.points||0)),goal:Math.max(1,Number(d.goal||100))};
+   renderPersistentGoal("pet",petGoalState);
+ });
+ onSnapshot(doc(db,"classData","fieldTrip"),s=>{
+   const d=s.exists()?s.data():{};
+   tripGoalState={points:Math.max(0,Number(d.points||0)),goal:Math.max(1,Number(d.goal||250))};
+   renderPersistentGoal("trip",tripGoalState);
+ });
+ onSnapshot(doc(db,"classData","universalPoints"),s=>{
+   const d=s.exists()?s.data():{};
+   universalPointState={points:Math.max(0,Number(d.points||0))};
+   if($("universalTeacherPoints"))$("universalTeacherPoints").textContent=universalPointState.points;
+ });
+
  onSnapshot(doc(db,"classData","main"),s=>{if(!s.exists())return;let d=s.data();points=+d.points||0;history=Array.isArray(d.history)?d.history:[];renderPoints()});
  onSnapshot(collection(db,"rewards"),s=>{rewards=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+a.points||0)-(+b.points||0));renderRewards();renderPoints()});
  onSnapshot(collection(db,"scores"),s=>{scores=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+b.score||0)-(+a.score||0));renderScores()});
@@ -839,6 +909,53 @@ $("saveRecessGoal").onclick=async()=>{
     points:recessState.dateKey===localDateKey()?Number(recessState.points||0):0,
     updatedAt:serverTimestamp()
   },{merge:true});
+};
+
+function renderPersistentGoal(prefix,state){
+  const p=Math.max(0,Number(state.points||0)),g=Math.max(1,Number(state.goal||1)),earned=p>=g;
+  if($(prefix+"TeacherPoints"))$(prefix+"TeacherPoints").textContent=p;
+  if($(prefix+"TeacherFill"))$(prefix+"TeacherFill").style.width=Math.min(100,(p/g)*100)+"%";
+  if($(prefix+"GoalInput"))$(prefix+"GoalInput").value=g;
+  if($(prefix+"TeacherStatus"))$(prefix+"TeacherStatus").textContent=earned?`✅ Goal reached!`:`${Math.max(0,g-p)} more point${Math.max(0,g-p)===1?"":"s"} needed.`;
+}
+async function changePersistentGoal(docId,state,amount){
+  const next=Math.max(0,Number(state.points||0)+Number(amount||0));
+  await setDoc(doc(db,"classData",docId),{points:next,goal:Math.max(1,Number(state.goal||1)),updatedAt:serverTimestamp()},{merge:true});
+}
+document.querySelectorAll(".pet-add").forEach(b=>b.onclick=()=>changePersistentGoal("classPet",petGoalState,Number(b.dataset.gn||0)));
+document.querySelectorAll(".trip-add").forEach(b=>b.onclick=()=>changePersistentGoal("fieldTrip",tripGoalState,Number(b.dataset.gn||0)));
+$("savePetGoal").onclick=()=>setDoc(doc(db,"classData","classPet"),{goal:Math.max(1,Number($("petGoalInput").value||100)),updatedAt:serverTimestamp()},{merge:true});
+$("saveTripGoal").onclick=()=>setDoc(doc(db,"classData","fieldTrip"),{goal:Math.max(1,Number($("tripGoalInput").value||250)),updatedAt:serverTimestamp()},{merge:true});
+$("petReset").onclick=async()=>{if(confirm("Reset Class Pet points to 0?"))await setDoc(doc(db,"classData","classPet"),{points:0,updatedAt:serverTimestamp()},{merge:true});};
+$("tripReset").onclick=async()=>{if(confirm("Reset Field Trip points to 0?"))await setDoc(doc(db,"classData","fieldTrip"),{points:0,updatedAt:serverTimestamp()},{merge:true});};
+
+document.querySelectorAll(".universal-add").forEach(b=>b.onclick=async()=>{
+  const next=Math.max(0,Number(universalPointState.points||0)+Number(b.dataset.un||0));
+  await setDoc(doc(db,"classData","universalPoints"),{points:next,updatedAt:serverTimestamp()},{merge:true});
+});
+
+$("spendUniversal").onclick=async()=>{
+  const amount=Math.max(1,Math.floor(Number($("universalSpendAmount").value||1)));
+  const available=Math.max(0,Number(universalPointState.points||0));
+  if(amount>available){alert(`Only ${available} Universal Point${available===1?" is":"s are"} available.`);return;}
+  const dest=$("universalDestination").value;
+  const map={
+    secondRecess:{state:recessState,goal:10},
+    classPet:{state:petGoalState,goal:100},
+    fieldTrip:{state:tripGoalState,goal:250}
+  };
+  const target=map[dest];
+  if(!target)return;
+  const batch=writeBatch(db);
+  batch.set(doc(db,"classData","universalPoints"),{points:available-amount,updatedAt:serverTimestamp()},{merge:true});
+  if(dest==="secondRecess"){
+    const today=localDateKey();
+    const base=recessState.dateKey===today?Number(recessState.points||0):0;
+    batch.set(doc(db,"classData","secondRecess"),{points:base+amount,goal:Math.max(1,Number(recessState.goal||10)),dateKey:today,updatedAt:serverTimestamp()},{merge:true});
+  }else{
+    batch.set(doc(db,"classData",dest),{points:Number(target.state.points||0)+amount,goal:Math.max(1,Number(target.state.goal||target.goal)),updatedAt:serverTimestamp()},{merge:true});
+  }
+  await batch.commit();
 };
 
 async function change(n,reason){let next=Math.max(0,points+n),entry={amount:n,reason:reason||(n>0?"Class reward":"Teacher adjustment"),at:new Date().toISOString()},h=[entry,...history].slice(0,50);await setDoc(doc(db,"classData","main"),{points:next,history:h,updatedAt:serverTimestamp()},{merge:true})}

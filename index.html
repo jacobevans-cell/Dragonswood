@@ -971,67 +971,23 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 </style>
 
 
-<style id="dragonswood-v19-avatar-maker">
-/* V19 — AVATAR MAKER 2.0 + RPG FOUNDATION */
-.avatar-builder{
-  display:grid;grid-template-columns:minmax(280px,.8fr) minmax(420px,1.5fr);gap:12px;margin-top:12px
-}
-.avatar-stage,.avatar-controls{padding:16px}
-.avatar-stage{
-  min-height:460px;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:radial-gradient(circle at 50% 32%,rgba(166,76,255,.20),transparent 34%),
-             linear-gradient(145deg,rgba(25,8,60,.60),rgba(3,24,43,.56)) !important
-}
-.avatar-paperdoll{
-  width:230px;height:310px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
-  filter:drop-shadow(0 15px 10px rgba(0,0,0,.45))
-}
-.av-head{width:92px;height:92px;border-radius:48% 48% 45% 45%;position:relative;z-index:4;margin-top:12px;
-  background:var(--skin,#c98b62);border:3px solid rgba(42,19,48,.8)}
-.av-hair{position:absolute;left:50%;top:4px;transform:translateX(-50%);width:100px;height:58px;z-index:6;
-  background:var(--hair,#4a2c20);border-radius:55% 55% 28% 28%  / 70% 70% 30% 30%}
-.av-hair.short{height:42px}.av-hair.long{height:105px;border-radius:50% 50% 35% 35%}
-.av-hair.curly{height:55px;background:
- radial-gradient(circle at 15% 55%,var(--hair) 0 16px,transparent 17px),
- radial-gradient(circle at 35% 30%,var(--hair) 0 19px,transparent 20px),
- radial-gradient(circle at 58% 28%,var(--hair) 0 20px,transparent 21px),
- radial-gradient(circle at 82% 50%,var(--hair) 0 18px,transparent 19px)}
-.av-eyes{position:absolute;top:43px;left:20px;right:20px;display:flex;justify-content:space-between;z-index:7}
-.av-eye{width:12px;height:12px;border-radius:50%;background:var(--eyes,#4f6b45);border:3px solid #fff;box-shadow:0 0 0 1px #1c1320}
-.av-mouth{position:absolute;left:50%;bottom:17px;transform:translateX(-50%);width:22px;height:8px;border-bottom:3px solid #713b45;border-radius:50%}
-.av-neck{width:30px;height:25px;background:var(--skin);margin-top:-8px;z-index:2}
-.av-body{width:128px;height:112px;position:relative;z-index:3;border-radius:24px 24px 12px 12px;
-  background:var(--shirt,#8b6b45);border:3px solid rgba(42,19,48,.75)}
-.av-body:before,.av-body:after{content:"";position:absolute;top:10px;width:36px;height:104px;background:var(--skin);border:3px solid rgba(42,19,48,.7);border-radius:20px}
-.av-body:before{left:-31px;transform:rotate(7deg)}.av-body:after{right:-31px;transform:rotate(-7deg)}
-.av-legs{width:112px;height:105px;display:flex;gap:12px;z-index:2}
-.av-leg{flex:1;background:var(--pants,#5b4a3a);border:3px solid rgba(42,19,48,.75);border-radius:5px 5px 15px 15px;position:relative}
-.av-leg:after{content:"";position:absolute;bottom:-14px;left:-4px;width:54px;height:25px;border-radius:14px 14px 8px 8px;background:var(--shoes,#49362a);border:3px solid rgba(42,19,48,.75)}
-.av-slot{position:absolute;z-index:10;font-size:38px;filter:drop-shadow(0 2px 2px #000)}
-.av-headgear{top:-10px;left:50%;transform:translateX(-50%);font-size:52px}
-.av-weapon{left:-52px;top:128px;transform:rotate(-18deg)}
-.av-shield{right:-57px;top:130px}
-.av-back{right:-46px;top:78px;z-index:1;font-size:52px}
-.av-aura{position:absolute;inset:20px 5px 5px;border-radius:50%;z-index:0;box-shadow:0 0 35px 13px var(--aura,transparent),inset 0 0 25px var(--aura,transparent);animation:auraPulse 2.2s ease-in-out infinite}
-@keyframes auraPulse{50%{opacity:.58;transform:scale(1.035)}}
-.peasant-label{margin-top:5px;color:#e2c9ff;font-size:11px;font-weight:900;letter-spacing:1px}
-.rpg-statbar{width:100%;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:13px}
-.rpg-stat{padding:8px 5px;text-align:center;border:1px solid rgba(244,201,93,.35);border-radius:7px;background:rgba(8,6,27,.48)}
-.rpg-stat b{display:block;color:var(--gold2);font-size:20px}.rpg-stat small{font-weight:900}
-.avatar-control-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
-.avatar-control-tabs button{padding:7px 10px;font-size:10px}.avatar-control-tabs button.active{border-color:var(--gold)!important;background:linear-gradient(90deg,#652dc1,#3f197f)!important}
-.avatar-option-panel{display:none}.avatar-option-panel.active{display:block}
-.avatar-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
-.avatar-option{
- min-height:72px;padding:8px 5px!important;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
- background:rgba(12,7,36,.56)!important;border:1px solid rgba(101,45,193,.45)!important
-}
-.avatar-option span{font-size:24px}.avatar-option small{font-size:9px}.avatar-option.selected{border-color:var(--gold)!important;box-shadow:0 0 12px rgba(244,201,93,.25)}
-.avatar-option.locked{opacity:.42;cursor:not-allowed}
-.avatar-note{margin-top:10px;padding:9px;border:1px solid rgba(244,201,93,.3);border-radius:7px;background:rgba(75,23,122,.20);font-size:11px}
-.inventory-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-.inventory-item{min-height:105px;padding:10px;text-align:center}.inventory-item .ico{font-size:31px}.inventory-item b{display:block;color:var(--gold2);margin-top:4px}.inventory-item small{display:block;margin-top:3px}
-@media(max-width:900px){.avatar-builder{grid-template-columns:1fr}.avatar-options,.inventory-grid{grid-template-columns:repeat(2,1fr)}}
+<style id="dragonswood-v21-three-goals">
+.goal-command-student{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
+.goal-card-v21{padding:16px!important;position:relative;overflow:hidden;min-height:205px}
+.goal-card-v21:after{content:"";position:absolute;inset:auto -30px -55px auto;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(164,92,255,.16),transparent 68%);pointer-events:none}
+.goal-card-v21 .goal-icon{font-size:38px;filter:drop-shadow(0 0 9px rgba(244,201,93,.28))}
+.goal-card-v21 h3{margin:5px 0 2px;color:#fff0a6;font-size:20px}
+.goal-card-v21 p{margin:0 0 10px;font-size:11px;color:#ddd1f5}
+.goal-card-v21 .goal-numbers{display:flex;justify-content:space-between;align-items:end;margin:8px 0 5px;font-weight:900}
+.goal-card-v21 .goal-numbers strong{font-size:26px;color:#fff}
+.goal-card-v21 .goal-numbers span{font-size:11px;color:#d8c7ef}
+.goal-card-v21 .goal-status{margin-top:8px;font-size:11px;font-weight:900;color:#d8c7ef}
+.goal-card-v21.earned{box-shadow:0 0 24px rgba(244,201,93,.18),inset 0 0 22px rgba(244,201,93,.06)!important}
+.universal-bank-v21{margin-top:12px;padding:11px 15px!important;display:flex;gap:12px;align-items:center;justify-content:center;text-align:center}
+.universal-bank-v21 .star{font-size:28px;animation:universalStar 1.8s ease-in-out infinite}
+.universal-bank-v21 strong{color:#fff0a6;font-size:22px}
+@keyframes universalStar{50%{transform:scale(1.16) rotate(7deg);filter:drop-shadow(0 0 9px #f4c95d)}}
+@media(max-width:850px){.goal-command-student{grid-template-columns:1fr}}
 </style>
 
 </head><body>
@@ -1080,53 +1036,47 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
   <!-- HOME -->
   <section class="portal-view active" id="view-home" data-page="home">
-    <div class="section-title"><div><h2>🐾 Our Reward Journey</h2><p>Class points unlock rewards for everyone.</p></div></div>
-  <div class="dashboard">
-    <section class="frame bevel reward-frame">
-      <div class="reward-top">
-        <div class="frame bevel egg-story">
-          <div class="egg-big">
-            <div class="pet-choice-preview" id="petChoicePreview" aria-label="Pet choices: lizard, jumping spider, and axolotl">
-  <div class="pet-option pet-lizard-option" title="Lizard">
-    <div class="pet-art" aria-hidden="true">🦎</div>
-    <div class="pet-nameplate">LIZARD</div>
-  </div>
-  <div class="pet-option pet-spider-option" title="Jumping Spider">
-    <div class="pet-art" aria-hidden="true">🕷️</div>
-    <div class="pet-nameplate">JUMPING SPIDER</div>
-  </div>
-  <div class="pet-option pet-axolotl-option" title="Axolotl">
-    <div class="pet-art" aria-hidden="true"><span class="axolotl-art"></span></div>
-    <div class="pet-nameplate">AXOLOTL</div>
-  </div>
-</div>
-<div class="peticon-shell hidden" id="eggPetProgress"><div class="egg-creature" id="eggCreature"><div class="egg-face">✨</div><svg class="egg-cracks" viewBox="0 0 100 130"><path id="crackOne" d="M50 24 L43 42 L54 48 L45 64"/><path id="crackTwo" d="M45 64 L60 72 L49 84 L58 99"/><path id="crackThree" d="M54 48 L67 55 L60 72 L74 79"/></svg></div><div class="hatched-pet hidden" id="hatchedPet">🐉</div></div>
-          </div>
-          <div class="egg-copy"><h3 id="headline">Our Dragonswood Journey</h3><p id="message">Loading progress…</p><p class="goal">Choose Our Pet Type!</p></div>
-        </div>
-        <div class="frame bevel egg-progress">
-          <h3>EGG PROGRESS <span id="eggPercent" style="float:right;color:var(--gold2)">0%</span></h3>
-          <div class="progress"><div id="fill" style="width:0"></div></div>
-          <div class="egg-stages">
-            <div class="egg-stage"><div class="e">🥚</div><b>0%</b><small>A new beginning</small></div>
-            <div class="egg-stage"><div class="e">🥚</div><b>25%</b><small>Tiny cracks</small></div>
-            <div class="egg-stage"><div class="e">🥚</div><b>50%</b><small>It's starting!</small></div>
-            <div class="egg-stage"><div class="e">🐣</div><b>75%</b><small>Almost there!</small></div>
-            <div class="egg-stage"><div class="e">✨</div><b>100%</b><small>Hatch Day!</small></div>
-          </div>
-        </div>
+    <div class="section-title">
+      <div>
+        <h2>🏰 Dragonswood Class Goals</h2>
+        <p>Three separate quests. Each point type advances only its matching goal; Universal Points can help any one of them.</p>
       </div>
-      <div style="display:flex;justify-content:space-between;margin:10px 4px 2px;font-weight:900"><span>Class Progress</span><span><span id="points">0</span> points</span></div>
-      <div class="rewards" id="rewards"></div>
-      <div class="next" id="next">Next reward loading…</div>
-    </section>
+    </div>
 
-    <aside class="frame bevel recess-side" id="recessCard">
-      <div><h2>🌤️ SECOND RECESS TODAY</h2><p>Earn points with great behavior, teamwork, and kindness!</p><p id="recessMessage">The class earns Second Recess when we fill the bar!</p></div>
-      <div class="goalbox"><b>TODAY'S GOAL</b><strong id="recessGoal">10</strong><div class="progress" style="margin-top:9px"><div id="recessFill" style="width:0"></div></div><span id="recessPoints">0 points</span></div>
-      <div class="needbox"><span>WE NEED</span><strong id="recessNeed">10</strong><span>MORE POINTS!</span><div id="recessStatus" class="hidden"></div><div id="recessHeadline" class="hidden"></div></div>
-    </aside>
-  </div>
+    <div class="goal-command-student">
+      <article class="frame bevel goal-card-v21" id="studentRecessGoalCard">
+        <div class="goal-icon">🌤️</div>
+        <h3>SECOND RECESS</h3>
+        <p>Resets every school day.</p>
+        <div class="goal-numbers"><strong id="v21RecessPoints">0</strong><span>GOAL <b id="v21RecessGoal">10</b></span></div>
+        <div class="progress"><div id="v21RecessFill" style="width:0"></div></div>
+        <div class="goal-status" id="v21RecessStatus">Loading today's progress…</div>
+      </article>
+
+      <article class="frame bevel goal-card-v21" id="studentPetGoalCard">
+        <div class="goal-icon">🐾</div>
+        <h3>CLASS PET</h3>
+        <p>Pet Points stay here until the class reaches the goal.</p>
+        <div class="goal-numbers"><strong id="v21PetPoints">0</strong><span>GOAL <b id="v21PetGoal">100</b></span></div>
+        <div class="progress"><div id="v21PetFill" style="width:0"></div></div>
+        <div class="goal-status" id="v21PetStatus">Building toward our class pet…</div>
+      </article>
+
+      <article class="frame bevel goal-card-v21" id="studentTripGoalCard">
+        <div class="goal-icon">🚌</div>
+        <h3>FIELD TRIP</h3>
+        <p>Field Trip Points stay here until the class reaches the goal.</p>
+        <div class="goal-numbers"><strong id="v21TripPoints">0</strong><span>GOAL <b id="v21TripGoal">250</b></span></div>
+        <div class="progress"><div id="v21TripFill" style="width:0"></div></div>
+        <div class="goal-status" id="v21TripStatus">The adventure fund is growing…</div>
+      </article>
+    </div>
+
+    <div class="frame bevel universal-bank-v21">
+      <div class="star">🌟</div>
+      <div><small>UNIVERSAL POINT BANK</small><br><strong id="v21UniversalPoints">0</strong> <span class="muted">available</span></div>
+      <div class="muted">Universal Points can be assigned by your teacher to Recess, Class Pet, or Field Trip.</div>
+    </div>
   </section>
 
   <!-- GAMES -->
@@ -1214,68 +1164,29 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   <section class="boards" id="boards"></section>
   </section>
 
-  <!-- JOURNAL / CHARACTER HUB -->
+  <!-- JOURNAL -->
   <section class="portal-view" id="view-journal" data-page="journal">
-    <div class="section-title"><div><h2>📖 My Dragonswood Journal</h2><p>Build your adventurer, equip earned gear, and prepare for future battles.</p></div></div>
-
-    <div class="avatar-builder">
-      <article class="frame bevel avatar-stage">
-        <div class="avatar-paperdoll" id="avatarPaperdoll">
-          <div class="av-aura" id="avAura"></div>
-          <div class="av-slot av-back" id="avBack"></div>
-          <div class="av-head" id="avHead"><div class="av-hair short" id="avHair"></div><div class="av-eyes"><i class="av-eye"></i><i class="av-eye"></i></div><div class="av-mouth"></div></div>
-          <div class="av-slot av-headgear" id="avHeadgear"></div>
-          <div class="av-neck"></div>
-          <div class="av-body" id="avBody"></div>
-          <div class="av-slot av-weapon" id="avWeapon"></div>
-          <div class="av-slot av-shield" id="avShield"></div>
-          <div class="av-legs"><div class="av-leg"></div><div class="av-leg"></div></div>
-        </div>
-        <div class="peasant-label" id="outfitLabel">STARTING GEAR: PEASANT CLOTHES</div>
-        <h2 id="journalName">Adventurer</h2>
-        <p id="journalSub">Level 1 Adventurer</p>
-        <div class="rpg-statbar">
-          <div class="rpg-stat"><small>❤️ BATTLE HP</small><b id="battleHp">10</b></div>
-          <div class="rpg-stat"><small>⚔️ ATK</small><b id="battleAtk">1</b></div>
-          <div class="rpg-stat"><small>🛡️ DEF</small><b id="battleDef">0</b></div>
-          <div class="rpg-stat"><small>✨ HEAL</small><b id="battleHeal">0</b></div>
+    <div class="section-title"><div><h2>📖 My Dragonswood Journal</h2><p>Your character, level, stats, and adventure record.</p></div></div>
+    <div class="journal-grid">
+      <article class="frame bevel journal-hero">
+        <div class="journal-avatar" id="journalAvatar">🐉</div>
+        <div>
+          <div class="journal-label">DRAGONSWOOD ADVENTURER</div>
+          <h2 id="journalName">Adventurer</h2>
+          <p id="journalSub">Your story is just beginning.</p>
         </div>
       </article>
-
-      <article class="frame bevel avatar-controls">
-        <div class="avatar-control-tabs">
-          <button type="button" class="active" data-avatar-tab="person">🧑 PERSON</button>
-          <button type="button" data-avatar-tab="clothes">👕 CLOTHES</button>
-          <button type="button" data-avatar-tab="gear">⚔️ GEAR</button>
-          <button type="button" data-avatar-tab="inventory">🎒 INVENTORY</button>
-        </div>
-
-        <div class="avatar-option-panel active" data-avatar-panel="person">
-          <h3>Free Character Customization</h3>
-          <p class="muted">Your appearance is yours. Gear and fancy clothing must be earned.</p>
-          <div class="field"><label>SKIN TONE</label><div class="avatar-options" id="skinOptions"></div></div>
-          <div class="field"><label>HAIR STYLE</label><div class="avatar-options" id="hairStyleOptions"></div></div>
-          <div class="field"><label>HAIR COLOR</label><div class="avatar-options" id="hairColorOptions"></div></div>
-          <div class="field"><label>EYE COLOR</label><div class="avatar-options" id="eyeColorOptions"></div></div>
-          <button id="saveAvatar2" style="margin-top:12px">SAVE MY CHARACTER</button>
-        </div>
-
-        <div class="avatar-option-panel" data-avatar-panel="clothes">
-          <h3>Clothing</h3>
-          <div class="avatar-note">Every adventurer begins in plain peasant clothes. Better shirts, trousers, boots, robes, and armor will come from the Shop, quests, achievements, loot, and bosses.</div>
-          <div class="inventory-grid" id="clothingInventory"></div>
-        </div>
-
-        <div class="avatar-option-panel" data-avatar-panel="gear">
-          <h3>Equipment Slots</h3>
-          <div class="avatar-note">Future gear can change Battle HP, ATK, DEF, and HEAL. These are RPG battle stats and do not change your teacher-controlled classroom HP.</div>
-          <div class="inventory-grid" id="gearInventory"></div>
-        </div>
-
-        <div class="avatar-option-panel" data-avatar-panel="inventory">
-          <h3>My Inventory</h3>
-          <div class="inventory-grid" id="fullInventory"></div>
-        </div>
+      <article class="frame bevel journal-stat"><span>💙</span><b id="journalHp">0</b><small>HP</small></article>
+      <article class="frame bevel journal-stat"><span>🪙</span><b id="journalGold">0</b><small>GOLD</small></article>
+      <article class="frame bevel journal-stat"><span>⭐</span><b id="journalXp">0</b><small>XP</small></article>
+      <article class="frame bevel journal-progress">
+        <h3>Level Progress</h3>
+        <div class="progress"><div id="journalLevelFill" style="width:0"></div></div>
+        <p id="journalLevelText">Level 1</p>
+      </article>
+      <article class="frame bevel journal-progress">
+        <h3>Adventure Record</h3>
+        <p>Game scores, completed quests, badges, and achievements will collect here as Dragonswood grows.</p>
       </article>
     </div>
   </section>
@@ -1516,7 +1427,6 @@ function renderProfile(){
   if($("journalLevelFill")) $("journalLevelFill").style.width=li.pct+"%";
   if($("journalLevelText")) $("journalLevelText").textContent=`Level ${li.level} • ${Math.round(li.pct)}% toward Level ${li.level+1}`;
   renderStudentShop();
-  renderAvatar2();
 }
 
 
@@ -1763,156 +1673,6 @@ async function buyShopItem(itemId){
     showShopNotice(err.message||"Could not complete that purchase.","error");
   }
 }
-
-
-
-// ============================================================
-// AVATAR MAKER 2.0 + RPG CHARACTER FOUNDATION
-// Free: physical appearance.
-// Earned: clothing, armor, weapons, accessories, back items, auras.
-// Classroom HP remains separate from battle stats.
-// ============================================================
-const AV2={
-  skin:[
-    ["#f6d3bd","Light"],["#e8b996","Warm"],["#c98b62","Tan"],["#a86d49","Brown"],
-    ["#7b4b35","Deep"],["#563225","Dark"]
-  ],
-  hairColors:[
-    ["#201814","Black"],["#4a2c20","Brown"],["#8a5a32","Chestnut"],["#d2a85f","Blonde"],
-    ["#a53b2f","Red"],["#5d3b78","Purple"]
-  ],
-  eyeColors:[
-    ["#4f6b45","Green"],["#4b6f9d","Blue"],["#754c2d","Brown"],["#444444","Gray"]
-  ],
-  hairStyles:[["short","Short"],["long","Long"],["curly","Curly"],["short","Cropped"]]
-};
-
-const STARTER_EQUIPMENT={
-  shirt:{id:"peasant_shirt",name:"Peasant Shirt",slot:"shirt",icon:"👕",color:"#8b6b45",starter:true},
-  pants:{id:"peasant_trousers",name:"Peasant Trousers",slot:"pants",icon:"👖",color:"#5b4a3a",starter:true},
-  shoes:{id:"worn_shoes",name:"Worn Shoes",slot:"shoes",icon:"👞",color:"#49362a",starter:true}
-};
-
-function avatar2Data(){
-  const a=profile?.avatar2||{};
-  return {
-    skin:a.skin||"#c98b62",
-    hairStyle:a.hairStyle||"short",
-    hairColor:a.hairColor||"#4a2c20",
-    eyeColor:a.eyeColor||"#4f6b45",
-    equipped:a.equipped||{shirt:"peasant_shirt",pants:"peasant_trousers",shoes:"worn_shoes"},
-    inventory:Array.isArray(a.inventory)?a.inventory:[]
-  };
-}
-
-function allOwnedGear(){
-  const a=avatar2Data();
-  const starter=Object.values(STARTER_EQUIPMENT);
-  return [...starter,...a.inventory];
-}
-
-function itemById(id){return allOwnedGear().find(x=>x.id===id)}
-
-function battleStats(){
-  const a=avatar2Data(), eq=a.equipped||{};
-  const base={hp:10,atk:1,def:0,heal:0};
-  Object.values(eq).forEach(id=>{
-    const it=itemById(id);
-    if(!it)return;
-    const s=it.stats||{};
-    base.hp+=Number(s.hp||0);base.atk+=Number(s.atk||0);base.def+=Number(s.def||0);base.heal+=Number(s.heal||0);
-  });
-  return base;
-}
-
-function renderAvatar2(){
-  if(!profile)return;
-  const a=avatar2Data(), eq=a.equipped||{};
-  const shirt=itemById(eq.shirt)||STARTER_EQUIPMENT.shirt;
-  const pants=itemById(eq.pants)||STARTER_EQUIPMENT.pants;
-  const shoes=itemById(eq.shoes)||STARTER_EQUIPMENT.shoes;
-  document.documentElement.style.setProperty("--skin",a.skin);
-  document.documentElement.style.setProperty("--hair",a.hairColor);
-  document.documentElement.style.setProperty("--eyes",a.eyeColor);
-  document.documentElement.style.setProperty("--shirt",shirt.color||"#8b6b45");
-  document.documentElement.style.setProperty("--pants",pants.color||"#5b4a3a");
-  document.documentElement.style.setProperty("--shoes",shoes.color||"#49362a");
-  if($("avHair")) $("avHair").className="av-hair "+a.hairStyle;
-
-  const head=itemById(eq.head),weapon=itemById(eq.weapon),shield=itemById(eq.offhand),back=itemById(eq.back),aura=itemById(eq.aura);
-  if($("avHeadgear")) $("avHeadgear").textContent=head?.icon||"";
-  if($("avWeapon")) $("avWeapon").textContent=weapon?.icon||"";
-  if($("avShield")) $("avShield").textContent=shield?.icon||"";
-  if($("avBack")) $("avBack").textContent=back?.icon||"";
-  document.documentElement.style.setProperty("--aura",aura?.color||"transparent");
-
-  const s=battleStats();
-  if($("battleHp")) $("battleHp").textContent=s.hp;
-  if($("battleAtk")) $("battleAtk").textContent=s.atk;
-  if($("battleDef")) $("battleDef").textContent=s.def;
-  if($("battleHeal")) $("battleHeal").textContent=s.heal;
-  if($("outfitLabel")){
-    const starterOnly=!Object.keys(eq).some(k=>!["shirt","pants","shoes"].includes(k)&&eq[k]);
-    $("outfitLabel").textContent=starterOnly?"STARTING GEAR: PEASANT CLOTHES":"EQUIPPED ADVENTURE GEAR";
-  }
-  renderAvatarChoices();
-  renderInventories();
-}
-
-function choiceButtons(items,current,kind){
-  return items.map(([value,label])=>`<button type="button" class="avatar-option ${current===value?"selected":""}" data-av-kind="${kind}" data-av-value="${value}" ${kind==="skin"||kind==="hairColor"||kind==="eyeColor"?`style="box-shadow:inset 0 -8px 0 ${value}"`:""}><span>${kind==="hairStyle"?"💇":"◆"}</span><small>${label}</small></button>`).join("");
-}
-
-function renderAvatarChoices(){
-  const a=avatar2Data();
-  if($("skinOptions")) $("skinOptions").innerHTML=choiceButtons(AV2.skin,a.skin,"skin");
-  if($("hairStyleOptions")) $("hairStyleOptions").innerHTML=choiceButtons(AV2.hairStyles,a.hairStyle,"hairStyle");
-  if($("hairColorOptions")) $("hairColorOptions").innerHTML=choiceButtons(AV2.hairColors,a.hairColor,"hairColor");
-  if($("eyeColorOptions")) $("eyeColorOptions").innerHTML=choiceButtons(AV2.eyeColors,a.eyeColor,"eyeColor");
-  document.querySelectorAll("[data-av-kind]").forEach(b=>b.onclick=()=>{
-    const a2=avatar2Data(); a2[b.dataset.avKind]=b.dataset.avValue;
-    profile.avatar2=a2; renderAvatar2();
-  });
-}
-
-function gearCard(it){
-  const a=avatar2Data(), equipped=Object.values(a.equipped||{}).includes(it.id);
-  const stats=it.stats||{};
-  const statText=[stats.hp?`❤️ +${stats.hp}`:"",stats.atk?`⚔️ +${stats.atk}`:"",stats.def?`🛡️ +${stats.def}`:"",stats.heal?`✨ +${stats.heal}`:""].filter(Boolean).join(" ");
-  return `<div class="frame bevel inventory-item"><div class="ico">${esc(it.icon||"🎒")}</div><b>${esc(it.name)}</b><small>${esc(it.slot||"item")}${statText?" • "+esc(statText):""}</small>${it.slot?`<button class="mini" data-equip="${it.id}" style="margin-top:7px">${equipped?"EQUIPPED":"EQUIP"}</button>`:""}</div>`;
-}
-
-function renderInventories(){
-  const owned=allOwnedGear();
-  const clothes=owned.filter(x=>["shirt","pants","shoes"].includes(x.slot));
-  const gear=owned.filter(x=>!["shirt","pants","shoes"].includes(x.slot));
-  if($("clothingInventory")) $("clothingInventory").innerHTML=clothes.map(gearCard).join("");
-  if($("gearInventory")) $("gearInventory").innerHTML=gear.length?gear.map(gearCard).join(""):'<div class="muted">No earned gear yet. Your peasant era continues.</div>';
-  if($("fullInventory")) $("fullInventory").innerHTML=owned.map(gearCard).join("");
-  document.querySelectorAll("[data-equip]").forEach(b=>b.onclick=async()=>{
-    const it=itemById(b.dataset.equip); if(!it)return;
-    const a=avatar2Data(); a.equipped[it.slot]=it.id; profile.avatar2=a; renderAvatar2();
-    try{await setDoc(doc(db,"students",user.uid),{avatar2:a,updatedAt:serverTimestamp()},{merge:true});}
-    catch(e){console.error(e);alert("Could not equip that item yet. Firebase rules will need the Avatar 2.0 profile field enabled.");}
-  });
-}
-
-document.querySelectorAll("[data-avatar-tab]").forEach(b=>b.onclick=()=>{
-  document.querySelectorAll("[data-avatar-tab]").forEach(x=>x.classList.toggle("active",x===b));
-  document.querySelectorAll("[data-avatar-panel]").forEach(x=>x.classList.toggle("active",x.dataset.avatarPanel===b.dataset.avatarTab));
-});
-
-if($("saveAvatar2")) $("saveAvatar2").onclick=async()=>{
-  if(!user||!profile)return;
-  const a=avatar2Data();
-  try{
-    await setDoc(doc(db,"students",user.uid),{avatar2:a,updatedAt:serverTimestamp()},{merge:true});
-    showShopNotice("Character saved.");
-  }catch(e){
-    console.error(e);
-    alert("Avatar 2.0 is ready, but Firebase rules must allow the avatar2 field before it can save.");
-  }
-};
 
 
 // ============================================================

@@ -1073,4 +1073,179 @@ document.addEventListener("keydown",e=>{
 });
 
 render();
-</script></body></html>
+</script>
+<script id="dragonswood-sound-engine">
+(() => {
+  if (window.DWAudio) return;
+
+  const KEY = "dragonswoodSoundsEnabledV1";
+  let ctx = null;
+  let unlocked = false;
+  let enabled = localStorage.getItem(KEY) !== "off";
+  const lastPlayed = {positive:0, negative:0, bathroom:0, notice:0};
+
+  function getCtx(){
+    if(!enabled) return null;
+    try{
+      if(!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if(ctx.state === "suspended") ctx.resume();
+      unlocked = true;
+      updateBadge();
+      return ctx;
+    }catch(e){ return null; }
+  }
+
+  function tone(freq, start=0, duration=.16, type="sine", gain=.07){
+    const ac = getCtx();
+    if(!ac) return;
+    try{
+      const o = ac.createOscillator();
+      const g = ac.createGain();
+      o.type = type;
+      o.frequency.setValueAtTime(freq, ac.currentTime + start);
+      g.gain.setValueAtTime(.0001, ac.currentTime + start);
+      g.gain.exponentialRampToValueAtTime(gain, ac.currentTime + start + .015);
+      g.gain.exponentialRampToValueAtTime(.0001, ac.currentTime + start + duration);
+      o.connect(g); g.connect(ac.destination);
+      o.start(ac.currentTime + start);
+      o.stop(ac.currentTime + start + duration + .03);
+    }catch(e){}
+  }
+
+  function canPlay(kind, gap=220){
+    if(!enabled || !unlocked) return false;
+    const now = Date.now();
+    if(now - (lastPlayed[kind]||0) < gap) return false;
+    lastPlayed[kind] = now;
+    return true;
+  }
+
+  function positive(){
+    if(!canPlay("positive",260)) return;
+    tone(523.25,0,.13,"sine",.065);
+    tone(659.25,.09,.14,"sine",.07);
+    tone(783.99,.18,.22,"sine",.075);
+  }
+
+  function negative(){
+    if(!canPlay("negative",280)) return;
+    tone(233.08,0,.17,"triangle",.07);
+    tone(174.61,.14,.25,"triangle",.075);
+  }
+
+  function bathroom(){
+    if(!canPlay("bathroom",850)) return;
+    // Intentionally distinct from normal success/failure sounds.
+    tone(659.25,0,.18,"sine",.10);
+    tone(880,.20,.20,"sine",.115);
+    tone(659.25,.44,.30,"sine",.10);
+  }
+
+  function notice(){
+    if(!canPlay("notice",500)) return;
+    tone(523.25,0,.13,"sine",.06);
+    tone(783.99,.15,.22,"sine",.075);
+  }
+
+  function setEnabled(v){
+    enabled = !!v;
+    localStorage.setItem(KEY, enabled ? "on" : "off");
+    if(enabled) getCtx();
+    updateBadge();
+  }
+
+  let badge = null;
+  function updateBadge(){
+    if(!badge) return;
+    if(!enabled){
+      badge.textContent = "🔇 Sounds Off";
+      badge.dataset.state = "off";
+    }else if(unlocked){
+      badge.textContent = "🔔 Alerts Armed";
+      badge.dataset.state = "armed";
+    }else{
+      badge.textContent = "🔔 Click to Arm Sounds";
+      badge.dataset.state = "locked";
+    }
+  }
+
+  function addTeacherBadge(){
+    if(!document.body || document.getElementById("dwSoundBadge")) return;
+    badge = document.createElement("button");
+    badge.id = "dwSoundBadge";
+    badge.type = "button";
+    badge.setAttribute("aria-label","Toggle Dragonswood sounds");
+    Object.assign(badge.style,{
+      position:"fixed", right:"14px", bottom:"14px", zIndex:"99999",
+      border:"1px solid rgba(255,220,105,.85)", borderRadius:"999px",
+      padding:"9px 13px", fontWeight:"900", cursor:"pointer",
+      color:"#fff7cc", background:"linear-gradient(90deg,#632fc4,#087da1)",
+      boxShadow:"0 6px 20px rgba(0,0,0,.35)", fontSize:"13px"
+    });
+    badge.onclick = (e) => {
+      e.preventDefault(); e.stopPropagation();
+      if(enabled && unlocked) setEnabled(false);
+      else setEnabled(true);
+    };
+    document.body.appendChild(badge);
+    updateBadge();
+  }
+
+  // Browsers require one user gesture before background-tab audio is permitted.
+  ["pointerdown","keydown","touchstart"].forEach(ev=>{
+    window.addEventListener(ev,()=>{ if(enabled) getCtx(); },{passive:true});
+  });
+
+  window.DWAudio = {
+    positive, negative, bathroom, notice, unlock:getCtx,
+    setEnabled, isEnabled:()=>enabled, isUnlocked:()=>unlocked,
+    addTeacherBadge
+  };
+})();
+</script>
+
+
+<script id="dragonswood-feedback-sounds">
+(() => {
+  if(window.__dwFeedbackSoundsInstalled) return;
+  window.__dwFeedbackSoundsInstalled = true;
+
+  const last = new WeakMap();
+  const good = /\b(correct|success|successful|great|excellent|earned|awarded|approved|saved|complete|completed|victory|won|win|level up|leveled up|unlocked|purchased|perfect|nice work|well done|sent to mr\. evans|back in class)\b/i;
+  const bad  = /\b(wrong|incorrect|failed|failure|denied|dismissed|banned|blocked|could not|can't|cannot|not enough|try again|lost|defeat|error|permission[- ]denied)\b/i;
+
+  function candidate(el){
+    if(!(el instanceof Element)) return null;
+    return el.closest(
+      '.feedback,.status,.message,.notice,.toast,.result,.alert,' +
+      '[id*="feedback" i],[id*="status" i],[id*="message" i],[id*="result" i]'
+    );
+  }
+
+  function inspect(el){
+    const box = candidate(el);
+    if(!box) return;
+    const text = (box.innerText || box.textContent || "").trim();
+    if(!text || last.get(box) === text) return;
+    last.set(box,text);
+    if(bad.test(text)) window.DWAudio?.negative();
+    else if(good.test(text)) window.DWAudio?.positive();
+  }
+
+  const obs = new MutationObserver(records=>{
+    for(const r of records){
+      inspect(r.target instanceof Element ? r.target : r.target.parentElement);
+      for(const n of r.addedNodes || []) if(n instanceof Element) inspect(n);
+    }
+  });
+
+  function start(){
+    if(!document.body) return;
+    obs.observe(document.body,{subtree:true,childList:true,characterData:true});
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",start,{once:true});
+  else start();
+})();
+</script>
+
+</body></html>

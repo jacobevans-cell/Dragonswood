@@ -1956,6 +1956,9 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
           <div class="student-life-card" id="bathroomStudentCard">
             <h3>🚻 Bathroom Pass</h3><p id="bathroomStudentStatus">Loading your passes…</p><button id="bathroomStudentBtn" type="button">LOADING…</button>
           </div>
+          <div class="student-life-card" id="snackStudentCard">
+            <h3>🍎 Snack Pass</h3><p id="snackStudentStatus">Loading your snack passes…</p><button id="snackStudentBtn" type="button">LOADING…</button>
+          </div>
           <div class="student-life-card">
             <h3>⭐ Request Recognition</h3><p>Think Mr. Evans missed something positive? Send a quick request. You do not award yourself the point.</p>
             <div class="request-row"><select id="recognitionReason"><option>Great Effort</option><option>Ready & Working</option><option>Kindness</option><option>Leadership</option><option>Helped Someone</option><option>Academic Win</option><option>Other Positive Choice</option></select><button id="recognitionRequestBtn" type="button">REQUEST</button></div><p id="recognitionRequestStatus"></p>
@@ -2280,7 +2283,7 @@ const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "auth
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const DOMAIN="explore.academy";
 const $=id=>document.getElementById(id);
-let bathroomUnsub=null,bathroomSlotUnsub=null,bathroomSlotData=null;
+let bathroomUnsub=null,bathroomSlotUnsub=null,bathroomSlotData=null,snackUnsub=null;
 let user=null,profile=null,rewards=[],classPoints=0,scores=[],shopItems=[],myPurchases=[],shopFilter="all",shopSort="level",inventoryFilter="all",profileUnsub=null,purchasesUnsub=null;
 
 const TITLES=[
@@ -2621,6 +2624,104 @@ function renderBathroomStudent(d){
    }finally{btn.disabled=false}
  };
 }
+
+function watchSnack(){
+  if(snackUnsub){try{snackUnsub()}catch(e){} snackUnsub=null}
+  if(!user)return;
+  snackUnsub=onSnapshot(
+    doc(db,'snackStatus',user.uid),
+    snap=>renderSnackStudent(snap.exists()?snap.data():null),
+    err=>console.warn("snack status",err)
+  );
+}
+function renderSnackStudent(d){
+  const key=phoenixDateKey();
+  const same=d?.dateKey===key;
+  const used=same?(+d?.passesUsed||0):0;
+  const active=same&&d?.active===true;
+  const credits=same?(+d?.approvalCredits||0):0;
+  const card=$('snackStudentCard'),txt=$('snackStudentStatus'),btn=$('snackStudentBtn');
+  if(!card||!txt||!btn)return;
+  card.classList.toggle('bathroom-active',active);
+
+  if(active){
+    const start=d?.startedAtText?` • started ${d.startedAtText}`:'';
+    txt.textContent=`SNACK PASS ACTIVE${start} • ${Math.max(0,2-used)} automatic passes remain today.`;
+    btn.textContent='✅ DONE WITH SNACK';
+    btn.disabled=false;
+    btn.onclick=async()=>{
+      btn.disabled=true;
+      try{
+        const now=new Date();
+        const visits=Array.isArray(d?.visits)?[...d.visits]:[];
+        const activeVisitId=String(d?.activeVisitId||'');
+        const updated=visits.map(v=>{
+          if(String(v?.id||'')!==activeVisitId)return v;
+          const startMs=Number(v?.startedMs||0);
+          return {...v,endedAt:now.toISOString(),endedText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
+            durationMinutes:startMs?Math.max(0,Math.round((now.getTime()-startMs)/60000)):null,status:'done'};
+        });
+        await setDoc(doc(db,'snackStatus',user.uid),{
+          active:false,activeVisitId:'',endedAt:serverTimestamp(),
+          endedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
+          visits:updated,updatedAt:serverTimestamp()
+        },{merge:true});
+        window.DWAudio?.positive();
+      }catch(err){
+        console.warn('snack done',err);
+        txt.textContent='Could not end snack pass. Please tell your teacher.';
+        window.DWAudio?.negative();
+      }finally{btn.disabled=false}
+    };
+    return;
+  }
+
+  txt.textContent=used<2
+    ?`${2-used} of 2 automatic snack passes remaining today.`
+    :(credits>0?`${credits} teacher-approved extra snack pass${credits===1?'':'es'} available.`:'Your 2 automatic snack passes are used. Extra snacks need teacher approval.');
+
+  btn.textContent=used<2?'🍎 USE SNACK PASS':credits>0?'🍎 USE APPROVED SNACK PASS':'🙋 REQUEST EXTRA SNACK PASS';
+  btn.disabled=false;
+  btn.onclick=async()=>{
+    btn.disabled=true;
+    try{
+      if(used<2||credits>0){
+        const now=new Date(),id=user.uid+'_'+Date.now();
+        const currentSame=d?.dateKey===key;
+        const currentUsed=currentSame?(+d?.passesUsed||0):0;
+        const currentCredits=currentSame?(+d?.approvalCredits||0):0;
+        const auto=currentUsed<2;
+        const nextUsed=auto?currentUsed+1:currentUsed;
+        const nextCredits=auto?currentCredits:Math.max(0,currentCredits-1);
+        const prior=currentSame&&Array.isArray(d?.visits)?d.visits:[];
+        const visit={id,studentId:user.uid,studentName:studentDisplayName(),dateKey:key,
+          passType:auto?'automatic':'approved-extra',passNumber:nextUsed,
+          startedAt:now.toISOString(),startedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
+          startedMs:now.getTime(),endedAt:null,endedText:'',durationMinutes:null,status:'active'};
+        await setDoc(doc(db,'snackStatus',user.uid),{
+          studentId:user.uid,studentName:studentDisplayName(),dateKey:key,
+          passesUsed:nextUsed,approvalCredits:nextCredits,active:true,activeVisitId:id,
+          startedAt:serverTimestamp(),startedAtText:visit.startedAtText,endedAt:null,
+          visits:[...prior,visit].slice(-20),updatedAt:serverTimestamp()
+        },{merge:true});
+        window.DWAudio?.positive();
+      }else{
+        const id=user.uid+'_'+Date.now();
+        await setDoc(doc(db,'snackRequests',id),{
+          studentId:user.uid,studentName:studentDisplayName(),dateKey:key,status:'pending',
+          createdAt:serverTimestamp(),updatedAt:serverTimestamp()
+        });
+        txt.textContent='Extra snack pass requested. Waiting for teacher approval.';
+        window.DWAudio?.positive();
+      }
+    }catch(err){
+      console.warn('snack pass',err);
+      txt.textContent='Could not update snack pass. Please tell your teacher.';
+      window.DWAudio?.negative();
+    }finally{btn.disabled=false}
+  };
+}
+
 async function sendRecognitionRequest(){
  const b=$('recognitionRequestBtn'),st=$('recognitionRequestStatus');
  if(!user||!b)return;
@@ -2687,6 +2788,7 @@ onAuthStateChanged(auth,async u=>{
   try{
     const ref=doc(db,"students",u.uid);
     watchBathroom();
+    watchSnack();
     const snap=await getDoc(ref);
     if(snap.exists()){
       profile=snap.data();

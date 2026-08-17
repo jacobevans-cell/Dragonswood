@@ -571,6 +571,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
     <div class="card live-request-box"><h3>🚻 LIVE BATHROOM</h3><p class="pace-note">Students currently out appear here instantly. Each student gets 3 automatic passes per day; extras come here for approval.</p><div id="bathroomLiveList" class="live-request-list"><div class="muted">No students out.</div></div><h4>EXTRA PASS REQUESTS</h4><div id="bathroomRequestList" class="live-request-list"><div class="muted">No pending requests.</div></div>
 <h4>TODAY'S BATHROOM HISTORY</h4>
 <div id="bathroomHistoryList" class="live-request-list"><div class="muted">No bathroom visits recorded today.</div></div></div>
+    <div class="card live-request-box"><h3>🍎 LIVE SNACK PASSES</h3><p class="pace-note">Each student gets 2 automatic snack passes per day. After that, extra snack passes require your approval.</p><div id="snackLiveList" class="live-request-list"><div class="muted">No active snack passes.</div></div><h4>EXTRA SNACK REQUESTS</h4><div id="snackRequestList" class="live-request-list"><div class="muted">No pending snack requests.</div></div><h4>TODAY'S SNACK HISTORY</h4><div id="snackHistoryList" class="live-request-list"><div class="muted">No snack passes recorded today.</div></div></div>
     <div class="card live-request-box"><h3>⭐ STUDENT RECOGNITION REQUESTS</h3><p class="pace-note">Students can ask you to notice a positive choice. Nothing is awarded until you approve it.</p><div id="pointRequestList" class="live-request-list"><div class="muted">No pending requests.</div></div></div>
   </div>
   <div class="progression-plan"><div><small>LEVEL CAP</small><b>20</b><small>Midyear target</small></div><div><small>LEVEL 20 XP</small><b>12,000</b><small>Daily hard cap 150 XP</small></div><div><small>CLASS HP</small><b>10 → 48</b><small>Grows by level</small></div><div><small>RPG BASE HP</small><b>18 → 94</b><small>Before gear</small></div></div>
@@ -848,7 +849,7 @@ import {getFirestore,doc,getDoc,setDoc,collection,onSnapshot,addDoc,deleteDoc,ge
 const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2", "measurementId": "G-LPRLDGVBD2"},TEACHER="jacobicusjax@gmail.com";
 const normalizedEmail = v => String(v||"").trim().toLowerCase();
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),$=id=>document.getElementById(id);
-let points=0,history=[],rewards=[],scores=[],results=[],students=[],shopItems=[],purchases=[],bathroomStatuses=[],bathroomRequests=[],pointRequests=[],recessState={points:0,goal:20,dateKey:""},petGoalState={points:0,goal:250},tripGoalState={points:0,goal:750},universalPointState={points:0};
+let points=0,history=[],rewards=[],scores=[],results=[],students=[],shopItems=[],purchases=[],bathroomStatuses=[],bathroomRequests=[],snackStatuses=[],snackRequests=[],pointRequests=[],recessState={points:0,goal:20,dateKey:""},petGoalState={points:0,goal:250},tripGoalState={points:0,goal:750},universalPointState={points:0};
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
 const AVATAR_EMOJI={"dragon-purple":"🐉","dragon-green":"🐲","knight":"🛡️","wizard":"🧙","witch":"🧙‍♀️","princess":"👸","prince":"🤴","ranger":"🏹","phoenix":"🔥","wolf":"🐺","owl":"🦉","crystal":"🔮"};
 const DRAGONSWOOD_XP_THRESHOLDS=[0,200,450,750,1100,1500,1950,2450,3000,3600,4250,4950,5700,6500,7350,8250,9200,10200,11100,12000];
@@ -997,6 +998,8 @@ function listen(){
  onSnapshot(collection(db,"students"),s=>{students=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.firstName||"").localeCompare(String(b.firstName||"")));renderStudents();renderShop()});
 onSnapshot(collection(db,"bathroomStatus"),s=>{bathroomStatuses=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("bathroomStatus listener",e));
 onSnapshot(collection(db,"bathroomRequests"),s=>{bathroomRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("bathroomRequests listener",e));
+onSnapshot(collection(db,"snackStatus"),s=>{snackStatuses=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("snackStatus listener",e));
+onSnapshot(collection(db,"snackRequests"),s=>{snackRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("snackRequests listener",e));
 onSnapshot(collection(db,"pointRequests"),s=>{pointRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("pointRequests listener",e));
  onSnapshot(collection(db,"shopItems"),s=>{shopItems=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
       const levelA=Math.max(1,Number(a.requiredLevel||1));
@@ -1312,25 +1315,8 @@ function renderMassStudentOptions(){
 
 function teacherDateKey(){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Phoenix',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}
 function reqTime(x){try{return x?.createdAt?.toDate?.().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})||''}catch(e){return''}}
-async function refreshStudentRequests(){
- try{
-   const [bs,br,pr]=await Promise.all([
-     getDocs(collection(db,'bathroomStatus')),
-     getDocs(collection(db,'bathroomRequests')),
-     getDocs(collection(db,'pointRequests'))
-   ]);
-   bathroomStatuses=bs.docs.map(d=>({id:d.id,...d.data()}));
-   bathroomRequests=br.docs.map(d=>({id:d.id,...d.data()}));
-   pointRequests=pr.docs.map(d=>({id:d.id,...d.data()}));
-   renderLiveRequests();
- }catch(err){
-   console.warn('student request refresh',err);
-   const box=$('pointRequestList');
-   if(box&&String(err?.code||'').includes('permission'))box.innerHTML='<div class="muted">Request feed permission error. Refresh after Firebase rules are published.</div>';
- }
-}
-setTimeout(refreshStudentRequests,800);
-setInterval(refreshStudentRequests,5000);
+// Request feeds are realtime via onSnapshot above.
+function refreshStudentRequests(){ /* intentionally no polling: realtime listeners are the source of truth */ }
 
 function visitClock(ts){
  try{return ts?.toDate?.().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})||'—'}
@@ -1350,6 +1336,8 @@ let dwAlertBaselineReady=false;
 let dwAlertOutKeys=new Set();
 let dwAlertBathroomRequestIds=new Set();
 let dwAlertRecognitionIds=new Set();
+let dwAlertSnackActiveIds=new Set();
+let dwAlertSnackRequestIds=new Set();
 
 function dwCurrentOutKeys(){
   const key=teacherDateKey();
@@ -1367,6 +1355,14 @@ function dwCurrentBathroomRequests(){
       .map(x=>String(x.id))
   );
 }
+function dwCurrentSnackActive(){
+  const key=teacherDateKey();
+  return new Set(snackStatuses.filter(x=>x.dateKey===key&&x.active===true).map(x=>String(x.activeVisitId||x.id)));
+}
+function dwCurrentSnackRequests(){
+  const key=teacherDateKey();
+  return new Set(snackRequests.filter(x=>x.dateKey===key&&x.status==="pending").map(x=>String(x.id)));
+}
 function dwCurrentRecognitionRequests(){
   return new Set(
     pointRequests
@@ -1378,15 +1374,21 @@ function dwCheckTeacherAlerts(){
   const outNow=dwCurrentOutKeys();
   const bathReqNow=dwCurrentBathroomRequests();
   const pointNow=dwCurrentRecognitionRequests();
+  const snackNow=dwCurrentSnackActive();
+  const snackReqNow=dwCurrentSnackRequests();
 
   if(dwAlertBaselineReady){
     const newBathroomOut=[...outNow].some(x=>!dwAlertOutKeys.has(x));
     const newBathroomReq=[...bathReqNow].some(x=>!dwAlertBathroomRequestIds.has(x));
     const newRecognition=[...pointNow].some(x=>!dwAlertRecognitionIds.has(x));
+    const newSnack=[...snackNow].some(x=>!dwAlertSnackActiveIds.has(x)) || [...snackReqNow].some(x=>!dwAlertSnackRequestIds.has(x));
 
     if(newBathroomOut || newBathroomReq){
       window.DWAudio?.bathroom();
       try{document.title="🚻 BATHROOM ALERT • Dragonswood Teacher"}catch(e){}
+    }else if(newSnack){
+      window.DWAudio?.notice();
+      try{document.title="🍎 SNACK ALERT • Dragonswood Teacher"}catch(e){}
     }else if(newRecognition){
       window.DWAudio?.notice();
       try{document.title="⭐ NEW REQUEST • Dragonswood Teacher"}catch(e){}
@@ -1396,18 +1398,20 @@ function dwCheckTeacherAlerts(){
   dwAlertOutKeys=outNow;
   dwAlertBathroomRequestIds=bathReqNow;
   dwAlertRecognitionIds=pointNow;
+  dwAlertSnackActiveIds=snackNow;
+  dwAlertSnackRequestIds=snackReqNow;
   dwAlertBaselineReady=true;
 }
 
 document.addEventListener("visibilitychange",()=>{
   if(!document.hidden){
     try{document.title="Dragonswood Teacher Portal"}catch(e){}
-    setTimeout(()=>{ try{refreshStudentRequests()}catch(e){} },100);
+    
   }
 });
 window.addEventListener("focus",()=>{
   try{document.title="Dragonswood Teacher Portal"}catch(e){}
-  setTimeout(()=>{ try{refreshStudentRequests()}catch(e){} },100);
+  
 });
 
 function renderLiveRequests(){
@@ -1421,6 +1425,24 @@ function renderLiveRequests(){
  const pending=bathroomRequests.filter(x=>x.dateKey===key&&x.status==='pending');
  const br=$('bathroomRequestList');
  if(br)br.innerHTML=pending.length?pending.map(x=>`<div class="live-request-item"><div><b>🙋 ${esc(x.studentName||'Student')}</b><small>Extra bathroom pass requested ${reqTime(x)}</small></div><div class="live-actions"><button data-bath-approve="${x.id}">APPROVE</button><button class="danger-soft" data-bath-deny="${x.id}">DENY</button></div></div>`).join(''):'<div class="muted">No pending extra-pass requests.</div>';
+
+
+ const snackLive=snackStatuses.filter(x=>x.dateKey===key&&x.active===true);
+ const sl=$('snackLiveList');
+ if(sl)sl.innerHTML=snackLive.length?snackLive.map(x=>`<div class="live-request-item out"><div><b>🍎 ${esc(x.studentName||'Student')}</b><small>SNACK ACTIVE${x.startedAtText?' • started '+esc(x.startedAtText):''} • ${+x.passesUsed||0} automatic pass${(+x.passesUsed||0)===1?'':'es'} used today</small></div><div class="live-actions"><button data-snack-done="${x.id}">MARK DONE</button></div></div>`).join(''):'<div class="muted">No active snack passes.</div>';
+
+ const snackPending=snackRequests.filter(x=>x.dateKey===key&&x.status==='pending');
+ const sr=$('snackRequestList');
+ if(sr)sr.innerHTML=snackPending.length?snackPending.map(x=>`<div class="live-request-item"><div><b>🍎 ${esc(x.studentName||'Student')}</b><small>Extra snack pass requested ${reqTime(x)}</small></div><div class="live-actions"><button data-snack-approve="${x.id}">APPROVE</button><button class="danger-soft" data-snack-deny="${x.id}">DENY</button></div></div>`).join(''):'<div class="muted">No pending snack requests.</div>';
+
+ const snackVisits=[];
+ snackStatuses.forEach(status=>{
+   if(status.dateKey!==key)return;
+   (Array.isArray(status.visits)?status.visits:[]).forEach(v=>snackVisits.push({...v,fallbackName:status.studentName}));
+ });
+ snackVisits.sort((a,b)=>Number(b.startedMs||0)-Number(a.startedMs||0));
+ const sh=$('snackHistoryList');
+ if(sh)sh.innerHTML=snackVisits.length?snackVisits.map(v=>`<div class="live-request-item"><div><b>🍎 ${esc(v.studentName||v.fallbackName||'Student')}</b><small>${esc(v.passType==='approved-extra'?'Approved extra pass':'Automatic pass')} • START ${esc(v.startedAtText||'—')} • ${v.status==='done'?'DONE '+esc(v.endedText||'—'):'ACTIVE'}${Number.isFinite(Number(v.durationMinutes))&&v.durationMinutes!==null?' • '+Number(v.durationMinutes)+' min':''}</small></div></div>`).join(''):'<div class="muted">No snack passes recorded today.</div>';
 
  const pointPending=pointRequests.filter(x=>x.status==='pending');
  const pr=$('pointRequestList');
@@ -1479,6 +1501,21 @@ function renderLiveRequests(){
  document.querySelectorAll('[data-point-approve]').forEach(b=>b.onclick=()=>approvePoint(b.dataset.pointApprove,true));
  document.querySelectorAll('[data-point-deny]').forEach(b=>b.onclick=()=>approvePoint(b.dataset.pointDeny,false));
 }
+async function approveSnack(id,yes){
+ const r=snackRequests.find(x=>x.id===id);if(!r)return;
+ if(yes){
+   const sr=doc(db,'snackStatus',r.studentId),snap=await getDoc(sr),d=snap.exists()?snap.data():{},same=d.dateKey===teacherDateKey();
+   await setDoc(sr,{
+     studentId:r.studentId,studentName:r.studentName,dateKey:teacherDateKey(),
+     passesUsed:same?(+d.passesUsed||2):2,
+     approvalCredits:(same?(+d.approvalCredits||0):0)+1,
+     active:same&&d.active===true,updatedAt:serverTimestamp()
+   },{merge:true});
+ }
+ await setDoc(doc(db,'snackRequests',id),{status:yes?'approved':'denied',reviewedAt:serverTimestamp()},{merge:true});
+ if(yes)window.DWAudio?.positive();else window.DWAudio?.negative();
+}
+
 async function approveBathroom(id,yes){const r=bathroomRequests.find(x=>x.id===id);if(!r)return;if(yes){const sr=doc(db,'bathroomStatus',r.studentId),snap=await getDoc(sr),d=snap.exists()?snap.data():{},same=d.dateKey===teacherDateKey();await setDoc(sr,{studentId:r.studentId,studentName:r.studentName,dateKey:teacherDateKey(),passesUsed:same?(+d.passesUsed||3):3,approvalCredits:(same?(+d.approvalCredits||0):0)+1,active:same&&d.active===true,updatedAt:serverTimestamp()},{merge:true})}await setDoc(doc(db,'bathroomRequests',id),{status:yes?'approved':'denied',reviewedAt:serverTimestamp()},{merge:true})}
 async function approvePoint(id,yes){const r=pointRequests.find(x=>x.id===id);if(!r)return;if(yes){const st=students.find(x=>x.id===r.studentId);if(st){await setDoc(doc(db,'students',st.id),{xp:(+st.xp||0)+1,updatedAt:serverTimestamp()},{merge:true});await addDoc(collection(db,'studentTransactions'),{studentId:st.id,studentName:displayStudent(st),stat:'xp',amount:1,reason:'Student recognition request: '+(r.reason||'Positive choice'),createdAt:serverTimestamp()})}}await setDoc(doc(db,'pointRequests',id),{status:yes?'approved':'dismissed',reviewedAt:serverTimestamp()},{merge:true})}
 

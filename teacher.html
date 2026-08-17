@@ -635,7 +635,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
       <h2>SHOP INVENTORY</h2>
       <p>Items can be turned on/off without deleting them.</p>
     </div>
-    <button id="addShopItem">+ ADD SHOP ITEM</button>
+    <button id="seedRpgGear">⚔️ LOAD STARTER RPG GEAR</button> <button id="addShopItem">+ ADD SHOP ITEM</button>
   </div>
 
   <div class="shop-grid" id="shopItemList"></div>
@@ -711,6 +711,8 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
         <input id="shopQuantity" type="number" min="0" placeholder="Blank = unlimited">
       </div>
     </div>
+
+    <div class="formgrid" style="margin-top:10px"><div class="field"><label>ITEM TYPE</label><select id="shopKind"><option value="reward">Real-world Reward</option><option value="gear">Avatar / RPG Gear</option></select></div><div class="field"><label>EQUIPMENT SLOT</label><select id="shopSlot"><option value="">None</option><option value="head">Hat / Helmet</option><option value="outfit">Outfit</option><option value="armor">Armor</option><option value="weapon">Weapon</option><option value="offhand">Shield / Off-hand</option><option value="accessory">Accessory</option></select></div></div><div class="formgrid" style="margin-top:10px"><div class="field"><label>ATK BONUS</label><input id="shopAtk" type="number" value="0"></div><div class="field"><label>DEF BONUS</label><input id="shopDef" type="number" value="0"></div><div class="field"><label>MAX HP BONUS</label><input id="shopHp" type="number" value="0"></div><div class="field"><label>HEAL BONUS</label><input id="shopHeal" type="number" value="0"></div></div>
 
     <div class="field" style="margin-top:10px">
       <label>DESCRIPTION</label>
@@ -1066,7 +1068,7 @@ function renderShop(){
         <p class="shop-description">${esc(item.description||"No description yet.")}</p>
         <div class="shop-item-meta">
           <span class="shop-pill">${item.active===false?"HIDDEN":"ACTIVE"}</span>
-          <span class="shop-pill">${esc(stockLabel)}</span>
+          <span class="shop-pill">${esc(stockLabel)}</span><span class="shop-pill">${item.kind==="gear"?`⚔️ ${esc(item.equipSlot||"gear")}`:"🎟️ reward"}</span>
         </div>
         <div class="shop-item-actions">
           <button class="gray mini" data-shop-edit="${item.id}">EDIT</button>
@@ -1141,10 +1143,29 @@ function openShopItem(id=""){
   $("shopCost").value=item?.cost??10;
   $("shopQuantity").value=item?.quantity==null?"":item.quantity;
   $("shopDescription").value=item?.description||"";
+  $("shopKind").value=item?.kind||"reward"; $("shopSlot").value=item?.equipSlot||""; $("shopAtk").value=item?.stats?.atk||0; $("shopDef").value=item?.stats?.def||0; $("shopHp").value=item?.stats?.hp||0; $("shopHeal").value=item?.stats?.heal||0;
   $("shopActive").checked=item?.active!==false;
   $("deleteShopItem").classList.toggle("hidden",!item);
 }
 
+const RPG_STARTER_GEAR=[
+ {id:"leather_cap",name:"Leather Adventurer Cap",icon:"🧢",cost:25,equipSlot:"head",stats:{atk:0,def:1,hp:0,heal:0}},
+ {id:"iron_helm",name:"Iron Knight Helm",icon:"⛑️",cost:70,equipSlot:"head",stats:{atk:0,def:3,hp:2,heal:0}},
+ {id:"apprentice_hat",name:"Apprentice Wizard Hat",icon:"🧙",cost:55,equipSlot:"head",stats:{atk:2,def:0,hp:0,heal:1}},
+ {id:"blue_tunic",name:"Blue Hero Tunic",icon:"👕",cost:35,equipSlot:"outfit",shirtColor:"#2878b8",stats:{atk:0,def:1,hp:1,heal:0}},
+ {id:"royal_tunic",name:"Royal Purple Tunic",icon:"🧥",cost:80,equipSlot:"outfit",shirtColor:"#652dc1",stats:{atk:1,def:2,hp:2,heal:0}},
+ {id:"leather_armor",name:"Leather Armor",icon:"🥋",cost:60,equipSlot:"armor",stats:{atk:0,def:3,hp:2,heal:0}},
+ {id:"knight_armor",name:"Knight Armor",icon:"🦺",cost:130,equipSlot:"armor",stats:{atk:0,def:6,hp:5,heal:0}},
+ {id:"wood_sword",name:"Training Sword",icon:"🗡️",cost:30,equipSlot:"weapon",stats:{atk:2,def:0,hp:0,heal:0}},
+ {id:"hero_sword",name:"Hero Sword",icon:"⚔️",cost:100,equipSlot:"weapon",stats:{atk:6,def:0,hp:0,heal:0}},
+ {id:"wood_shield",name:"Wooden Shield",icon:"🛡️",cost:45,equipSlot:"offhand",stats:{atk:0,def:3,hp:1,heal:0}},
+ {id:"healing_charm",name:"Healing Charm",icon:"💚",cost:75,equipSlot:"accessory",stats:{atk:0,def:0,hp:2,heal:3}},
+ {id:"dragon_amulet",name:"Dragon Amulet",icon:"💎",cost:150,equipSlot:"accessory",stats:{atk:3,def:2,hp:3,heal:1}}
+];
+$("seedRpgGear").onclick=async()=>{
+ if(!confirm("Load the 12 starter Avatar/RPG gear items into the Dragonswood Shop? Existing items with the same IDs will be updated."))return;
+ const batch=writeBatch(db); RPG_STARTER_GEAR.forEach(i=>batch.set(doc(db,"shopItems",i.id),{...i,kind:"gear",description:`Equip this ${i.equipSlot} in the Avatar Studio.`,active:true,quantity:null,updatedAt:serverTimestamp()},{merge:true})); await batch.commit(); alert("Starter RPG gear loaded!");
+};
 $("addShopItem").onclick=()=>openShopItem();
 $("cancelShopItem").onclick=()=>$("shopModal").classList.add("hidden");
 $("shopIcon").oninput=()=>$("shopIconPreview").textContent=$("shopIcon").value.trim()||"🎁";
@@ -1165,6 +1186,8 @@ $("saveShopItem").onclick=async()=>{
     description:$("shopDescription").value.trim(),
     active:$("shopActive").checked,
     quantity,
+    kind:$("shopKind").value, equipSlot:$("shopSlot").value||null,
+    stats:{atk:Number($("shopAtk").value||0),def:Number($("shopDef").value||0),hp:Number($("shopHp").value||0),heal:Number($("shopHeal").value||0)},
     updatedAt:serverTimestamp()
   };
 

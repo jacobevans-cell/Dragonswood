@@ -67,6 +67,10 @@ select option,select optgroup{background:#080718;color:#fff}
 .modal{position:fixed;inset:0;background:rgba(1,2,8,.9);z-index:50;display:grid;place-items:center;padding:20px}.modalbox{width:min(760px,100%);max-height:92vh;overflow:auto;padding:20px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:flex;flex-direction:column;gap:5px}.choicegrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.choice{padding:9px;text-align:center;background:#080718;border:1px solid rgba(101,45,193,.35)}.choice.active{border-color:var(--gold)}
 @media(max-width:1100px){.header-grid{grid-template-columns:1fr}.profile-card,.stats-card{max-width:760px;margin:auto;width:100%}.dashboard{grid-template-columns:1fr}.reward-top{grid-template-columns:1fr}.rewards{grid-template-columns:repeat(4,1fr)!important}}
 @media(max-width:720px){.egg-story{grid-template-columns:1fr;text-align:center}.egg-stages{grid-template-columns:repeat(5,1fr)}.rewards{grid-template-columns:repeat(2,1fr)!important}.games,.boards{grid-template-columns:1fr!important}.bottom-nav{grid-template-columns:repeat(2,1fr)}.formgrid,.choicegrid{grid-template-columns:1fr}}
+
+/* ===== V22 LAYERED CHIBI AVATAR STUDIO ===== */
+.avatar-studio{display:grid;grid-template-columns:minmax(250px,330px) 1fr;gap:18px;margin-top:10px}.avatar-preview-card{background:linear-gradient(180deg,rgba(30,13,63,.72),rgba(4,8,30,.74));border:1px solid rgba(255,214,92,.55);border-radius:18px;padding:14px;text-align:center}.avatar-preview-card h3{margin:0 0 8px;color:#ffe88b}.chibi{position:relative;width:220px;height:300px;margin:0 auto;filter:drop-shadow(0 12px 18px rgba(0,0,0,.35))}.chibi .head{position:absolute;z-index:4;width:128px;height:118px;border-radius:48% 48% 46% 46%;left:46px;top:35px;background:var(--skin,#d99b72);box-shadow:inset 0 -8px rgba(110,60,40,.10)}.chibi .ear{position:absolute;z-index:3;width:24px;height:36px;border-radius:50%;top:79px;background:var(--skin,#d99b72)}.chibi .ear.l{left:34px}.chibi .ear.r{right:34px}.chibi .hair{position:absolute;z-index:6;left:43px;top:26px;width:134px;height:67px;background:var(--hair,#3a241d);border-radius:58% 58% 38% 38%;clip-path:polygon(0 0,100% 0,100% 72%,87% 52%,78% 83%,65% 55%,52% 83%,39% 55%,25% 82%,13% 54%,0 76%)}.chibi[data-hair-style="short"] .hair{height:58px;clip-path:polygon(0 0,100% 0,100% 78%,82% 58%,68% 80%,52% 57%,36% 82%,18% 59%,0 80%)}.chibi[data-hair-style="curly"] .hair{height:78px;border-radius:50%;clip-path:none;box-shadow:-13px 20px 0 -3px var(--hair),13px 20px 0 -3px var(--hair)}.chibi[data-hair-style="long"] .hair{height:145px;border-radius:48% 48% 40% 40%;clip-path:none}.chibi .eye{position:absolute;z-index:7;top:88px;width:22px;height:27px;border-radius:50%;background:#fff}.chibi .eye:after{content:"";position:absolute;width:12px;height:17px;border-radius:50%;background:var(--eyes,#4b2d75);left:5px;top:5px;box-shadow:inset 3px 3px rgba(255,255,255,.35)}.chibi .eye.l{left:73px}.chibi .eye.r{right:73px}.chibi .mouth{position:absolute;z-index:7;left:101px;top:126px;width:22px;height:9px;border-bottom:3px solid #9a4658;border-radius:50%}.chibi .neck{position:absolute;z-index:2;left:94px;top:139px;width:32px;height:28px;background:var(--skin)}.chibi .body{position:absolute;z-index:3;left:61px;top:155px;width:98px;height:92px;background:var(--shirt,#a98758);border-radius:30px 30px 18px 18px;border:2px solid rgba(255,255,255,.12)}.chibi .belt{position:absolute;z-index:7;left:64px;top:224px;width:92px;height:11px;background:#4a3022;border-radius:5px}.chibi .leg{position:absolute;z-index:2;top:235px;width:34px;height:55px;background:var(--pants,#6d5b45);border-radius:0 0 13px 13px}.chibi .leg.l{left:72px}.chibi .leg.r{right:72px}.chibi .boot{position:absolute;z-index:4;top:276px;width:42px;height:20px;background:#3a2a22;border-radius:10px 10px 13px 13px}.chibi .boot.l{left:65px}.chibi .boot.r{right:65px}.chibi .arm{position:absolute;z-index:2;top:164px;width:28px;height:80px;background:var(--skin);border-radius:16px}.chibi .arm.l{left:45px;transform:rotate(8deg)}.chibi .arm.r{right:45px;transform:rotate(-8deg)}.chibi .equip{position:absolute;z-index:10;display:grid;place-items:center;text-shadow:0 2px 4px #000}.chibi .eq-head{font-size:50px;left:82px;top:0}.chibi .eq-weapon{font-size:62px;right:5px;top:142px;transform:rotate(-18deg)}.chibi .eq-offhand{font-size:53px;left:3px;top:160px}.chibi .eq-accessory{font-size:32px;right:36px;top:118px}.chibi .eq-armor{z-index:8;font-size:76px;left:72px;top:150px;opacity:.92}.avatar-controls{min-width:0}.avatar-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.avatar-tab{padding:8px 13px;font-size:13px}.avatar-tab.active{outline:2px solid #ffe36d}.custom-section{display:none}.custom-section.active{display:block}.swatches{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 15px}.swatch{width:40px;height:40px;border-radius:50%;border:2px solid rgba(255,255,255,.4);cursor:pointer}.swatch.active{outline:3px solid #ffe36d;outline-offset:2px}.hair-options,.gear-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.studio-option{background:rgba(4,7,29,.64);border:1px solid #4a287c;border-radius:10px;padding:9px;color:#eee;text-align:center;cursor:pointer}.studio-option.active{border-color:#ffd95a;box-shadow:0 0 12px rgba(255,213,74,.25)}.studio-option.locked{opacity:.42;cursor:not-allowed}.studio-option .gear-icon{font-size:28px;display:block}.avatar-statline{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:9px}.avatar-statline div{background:rgba(0,0,0,.28);border:1px solid #382264;border-radius:8px;padding:7px;font-size:12px}.avatar-statline b{display:block;color:#ffe36d;font-size:18px}.avatar-studio-note{font-size:12px;color:#cfc8e4;margin-top:8px}.avatar.mini-chibi,.journal-avatar.mini-chibi{font-size:0;overflow:hidden;position:relative;background:linear-gradient(#bfe9ff,#e7d8ff)}.mini-face{width:58%;height:58%;border-radius:48%;background:var(--skin);position:absolute;left:21%;top:18%}.mini-hair{position:absolute;left:18%;top:10%;width:64%;height:34%;border-radius:50% 50% 35% 35%;background:var(--hair)}.mini-body{position:absolute;left:27%;bottom:-4%;width:46%;height:40%;border-radius:35% 35% 0 0;background:var(--shirt)}
+@media(max-width:760px){.avatar-studio{grid-template-columns:1fr}.chibi{transform:scale(.86);margin-top:-18px;margin-bottom:-18px}.hair-options,.gear-options{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 <style id="v14-immersive-clean">
 :root{
@@ -1195,7 +1199,13 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
 </main>
 
-<div id="profileModal" class="modal hidden"><div class="modalbox frame bevel"><h2 id="profileTitle">Create Your Dragonswood Character</h2><div class="formgrid"><div class="field"><label>First Name</label><input id="firstName" readonly></div><div class="field"><label>Grade</label><select id="grade"><option value="">Choose</option><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div><div class="field"><label>Group</label><select id="group"><option value="">Choose</option><option value="girl">Girls</option><option value="boy">Boys</option></select></div><div class="field"><label>Fantasy Title</label><select id="titleSelect"></select></div></div><h3>Choose Your Avatar</h3><div class="choicegrid" id="avatarChoices"></div><div style="display:flex;gap:8px;margin-top:13px"><button id="saveProfile">SAVE CHARACTER</button><button id="closeProfile" class="hidden">Close</button></div><div id="profileError" style="color:#ff9db5;margin-top:8px"></div></div></div>
+<div id="profileModal" class="modal hidden"><div class="modalbox frame bevel" style="max-width:980px"><h2 id="profileTitle">Create Your Dragonswood Character</h2><div class="formgrid"><div class="field"><label>First Name</label><input id="firstName" readonly></div><div class="field"><label>Grade</label><select id="grade"><option value="">Choose</option><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div><div class="field"><label>Group</label><select id="group"><option value="">Choose</option><option value="girl">Girls</option><option value="boy">Boys</option></select></div><div class="field"><label>Fantasy Title</label><select id="titleSelect"></select></div></div>
+<div class="avatar-studio"><div class="avatar-preview-card"><h3>Your Hero</h3><div id="avatarPreview"></div><div class="avatar-statline"><div><b id="statAtk">1</b>ATK</div><div><b id="statDef">0</b>DEF</div><div><b id="statHp">10</b>MAX HP</div><div><b id="statHeal">0</b>HEAL</div></div><div class="avatar-studio-note">Everyone begins in simple peasant clothes. Armor, hats, weapons and special outfits are earned in Dragonswood.</div></div>
+<div class="avatar-controls"><div class="avatar-tabs"><button type="button" class="avatar-tab active" data-avatar-tab="look">LOOK</button><button type="button" class="avatar-tab" data-avatar-tab="hair">HAIR</button><button type="button" class="avatar-tab" data-avatar-tab="equipment">EQUIPMENT</button></div>
+<div class="custom-section active" data-avatar-panel="look"><b>Skin tone</b><div class="swatches" id="skinChoices"></div><b>Eye color</b><div class="swatches" id="eyeChoices"></div></div>
+<div class="custom-section" data-avatar-panel="hair"><b>Hair color</b><div class="swatches" id="hairColorChoices"></div><b>Hair style</b><div class="hair-options" id="hairStyleChoices"></div></div>
+<div class="custom-section" data-avatar-panel="equipment"><div class="gear-options" id="equipmentChoices"></div><div class="avatar-studio-note">🔒 Locked gear must be earned or purchased first. Click owned gear to equip it. Click equipped gear again to remove it.</div></div></div></div>
+<div style="display:flex;gap:8px;margin-top:13px"><button id="saveProfile">SAVE CHARACTER</button><button id="closeProfile" class="hidden">Close</button></div><div id="profileError" style="color:#ff9db5;margin-top:8px"></div></div></div>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
@@ -1228,20 +1238,14 @@ const TITLES=[
   {id:"dragonwood",label:"of Dragonswood",position:"afterDirect"}
 ];
 
-const AVATARS=[
-  {id:"dragon-purple",emoji:"🐉",label:"Purple Dragon"},
-  {id:"dragon-green",emoji:"🐲",label:"Green Dragon"},
-  {id:"knight",emoji:"🛡️",label:"Knight"},
-  {id:"wizard",emoji:"🧙",label:"Wizard"},
-  {id:"witch",emoji:"🧙‍♀️",label:"Witch"},
-  {id:"princess",emoji:"👸",label:"Princess"},
-  {id:"prince",emoji:"🤴",label:"Prince"},
-  {id:"ranger",emoji:"🏹",label:"Ranger"},
-  {id:"phoenix",emoji:"🔥",label:"Phoenix"},
-  {id:"wolf",emoji:"🐺",label:"Wolf"},
-  {id:"owl",emoji:"🦉",label:"Owl"},
-  {id:"crystal",emoji:"🔮",label:"Crystal Mage"}
-];
+const AVATARS=[{id:"chibi",emoji:"🧑",label:"Dragonswood Hero"}];
+const SKINS=["#f7d7bd","#eab98f","#d99b72","#b97855","#8d553b","#5f382b"];
+const HAIRS=["#211713","#4b2e23","#7b4b2a","#b7793f","#d7b36a","#171b2e","#5b2b69","#9b3b54"];
+const EYES=["#4b2d75","#2f5e91","#39705a","#6b4327","#343434"];
+const HAIR_STYLES=[{id:"short",label:"Short"},{id:"swept",label:"Swept"},{id:"curly",label:"Curly"},{id:"long",label:"Long"}];
+const STARTER_GEAR={outfit:{id:"peasant",name:"Peasant Tunic",icon:"🧥",slot:"outfit",shirt:"#a98758",stats:{atk:0,def:0,hp:0,heal:0}}};
+let avatarDraft=null;
+
 
 function esc(v){return String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]))}
 function firstNameFromUser(u){return (u.displayName||u.email.split("@")[0]).trim().split(/\s+/)[0]}
@@ -1259,7 +1263,7 @@ function levelInfo(xp){
   const cur=thresholds[level-1]||0,next=thresholds[level]??(cur+2500);
   return {level,cur,next,pct:Math.max(0,Math.min(100,(xp-cur)/(next-cur)*100))};
 }
-function avatarEmoji(id){return AVATARS.find(a=>a.id===id)?.emoji||"🐉"}
+function avatarEmoji(id){return "🧑"}
 
 if($("googleBtn")) $("googleBtn").onclick=async()=>{
   $("loginError").textContent="";
@@ -1341,14 +1345,34 @@ onAuthStateChanged(auth,async u=>{
   }
 });
 
+function defaultAvatarConfig(){return {skin:"#d99b72",hair:"#3a241d",eyes:"#4b2d75",hairStyle:"swept"}}
+function gearStats(){
+  const eq=avatarDraft?.equipped||{}; let out={atk:1,def:0,hp:10,heal:0};
+  Object.values(eq).forEach(id=>{const item=shopItems.find(x=>x.id===id); const st=item?.stats||{}; out.atk+=Number(st.atk||0);out.def+=Number(st.def||0);out.hp+=Number(st.hp||0);out.heal+=Number(st.heal||0)}); return out;
+}
+function gearVisual(slot){const id=avatarDraft?.equipped?.[slot];const item=shopItems.find(x=>x.id===id);return item?.icon||""}
+function chibiMarkup(config=defaultAvatarConfig(),small=false){
+  const shirt=(()=>{const id=avatarDraft?.equipped?.outfit;return shopItems.find(x=>x.id===id)?.shirtColor||"#a98758"})();
+  if(small)return `<span class="mini-face" style="--skin:${config.skin}"></span><span class="mini-hair" style="--hair:${config.hair}"></span><span class="mini-body" style="--shirt:${shirt}"></span>`;
+  return `<div class="chibi" data-hair-style="${esc(config.hairStyle||"swept")}" style="--skin:${config.skin};--hair:${config.hair};--eyes:${config.eyes};--shirt:${shirt}"><span class="ear l"></span><span class="ear r"></span><span class="hair"></span><span class="head"></span><span class="eye l"></span><span class="eye r"></span><span class="mouth"></span><span class="neck"></span><span class="arm l"></span><span class="arm r"></span><span class="body"></span><span class="belt"></span><span class="leg l"></span><span class="leg r"></span><span class="boot l"></span><span class="boot r"></span><span class="equip eq-armor">${gearVisual("armor")}</span><span class="equip eq-head">${gearVisual("head")}</span><span class="equip eq-weapon">${gearVisual("weapon")}</span><span class="equip eq-offhand">${gearVisual("offhand")}</span><span class="equip eq-accessory">${gearVisual("accessory")}</span></div>`;
+}
+function renderAvatarStudio(){
+  const c=avatarDraft.config; $("avatarPreview").innerHTML=chibiMarkup(c);
+  const stats=gearStats(); $("statAtk").textContent=stats.atk;$("statDef").textContent=stats.def;$("statHp").textContent=stats.hp;$("statHeal").textContent=stats.heal;
+  const sw=(id,arr,key)=>{$(id).innerHTML=arr.map(v=>`<button type="button" class="swatch ${c[key]===v?"active":""}" style="background:${v}" data-av-key="${key}" data-av-value="${v}" aria-label="${key}"></button>`).join("")};
+  sw("skinChoices",SKINS,"skin");sw("eyeChoices",EYES,"eyes");sw("hairColorChoices",HAIRS,"hair");
+  $("hairStyleChoices").innerHTML=HAIR_STYLES.map(h=>`<button type="button" class="studio-option ${c.hairStyle===h.id?"active":""}" data-hair-style="${h.id}">${h.label}</button>`).join("");
+  const owned=new Set(profile?.inventory||[]); const gear=shopItems.filter(i=>i.kind==="gear"||i.equipSlot);
+  $("equipmentChoices").innerHTML=`<div class="studio-option active"><span class="gear-icon">🧥</span>Peasant Tunic<small style="display:block">Starter outfit</small></div>`+gear.map(i=>{const isOwned=owned.has(i.id);const equipped=Object.values(avatarDraft.equipped||{}).includes(i.id);return `<button type="button" class="studio-option ${equipped?"active":""} ${isOwned?"":"locked"}" data-equip-id="${i.id}" ${isOwned?"":"disabled"}><span class="gear-icon">${esc(i.icon||"🎁")}</span>${esc(i.name)}<small style="display:block">${isOwned?(equipped?"EQUIPPED":"Owned"):`🔒 ${Number(i.cost||0)} Gold`}</small></button>`}).join("");
+  document.querySelectorAll("[data-av-key]").forEach(b=>b.onclick=()=>{c[b.dataset.avKey]=b.dataset.avValue;renderAvatarStudio()});
+  document.querySelectorAll("[data-hair-style]").forEach(b=>b.onclick=()=>{c.hairStyle=b.dataset.hairStyle;renderAvatarStudio()});
+  document.querySelectorAll("[data-equip-id]").forEach(b=>b.onclick=()=>{const item=shopItems.find(x=>x.id===b.dataset.equipId);if(!item)return;const slot=item.equipSlot||"accessory";avatarDraft.equipped[slot]=avatarDraft.equipped[slot]===item.id?null:item.id;renderAvatarStudio()});
+}
 function populateProfileControls(){
-  $("firstName").value=profile?.firstName||firstNameFromUser(user);
-  $("grade").value=profile?.grade||"";
-  $("group").value=profile?.genderGroup||"";
-  $("titleSelect").innerHTML=TITLES.map(t=>`<option value="${t.id}">${t.position==="before"?t.label+" "+$("firstName").value:t.position==="afterThe"?$("firstName").value+" the "+t.label:$("firstName").value+" "+t.label}</option>`).join("");
-  $("titleSelect").value=profile?.title||"princess";
-  $("avatarChoices").innerHTML=AVATARS.map(a=>`<div class="choice ${(profile?.avatar||"dragon-purple")===a.id?"active":""}" data-avatar="${a.id}"><div class="big">${a.emoji}</div><small>${esc(a.label)}</small></div>`).join("");
-  document.querySelectorAll("[data-avatar]").forEach(el=>el.onclick=()=>{document.querySelectorAll("[data-avatar]").forEach(x=>x.classList.remove("active"));el.classList.add("active")});
+  $("firstName").value=profile?.firstName||firstNameFromUser(user);$("grade").value=profile?.grade||"";$("group").value=profile?.genderGroup||"";
+  $("titleSelect").innerHTML=TITLES.map(t=>`<option value="${t.id}">${t.position==="before"?t.label+" "+$("firstName").value:t.position==="afterThe"?$("firstName").value+" the "+t.label:$("firstName").value+" "+t.label}</option>`).join("");$("titleSelect").value=profile?.title||"princess";
+  avatarDraft={config:{...defaultAvatarConfig(),...(profile?.avatarConfig||{})},equipped:{...(profile?.equipped||{})}}; renderAvatarStudio();
+  document.querySelectorAll("[data-avatar-tab]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-avatar-tab]").forEach(x=>x.classList.remove("active"));document.querySelectorAll("[data-avatar-panel]").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelector(`[data-avatar-panel="${b.dataset.avatarTab}"]`).classList.add("active")});
 }
 function openProfile(editing){
   $("profileModal").classList.remove("hidden");$("profileTitle").textContent=editing?"Edit Dragonswood Profile":"Create Your Dragonswood Character";$("closeProfile").classList.toggle("hidden",!editing);populateProfileControls();
@@ -1360,7 +1384,7 @@ $("saveProfile").onclick=async()=>{
     const grade=$("grade").value,
           genderGroup=$("group").value,
           title=$("titleSelect").value,
-          avatar=document.querySelector("[data-avatar].active")?.dataset.avatar||"dragon-purple";
+          avatar="chibi", avatarConfig=avatarDraft?.config||defaultAvatarConfig(), equipped=avatarDraft?.equipped||{};
 
     if(!grade||!genderGroup){
       $("profileError").textContent="Choose your grade and group.";
@@ -1378,7 +1402,7 @@ $("saveProfile").onclick=async()=>{
         grade,
         genderGroup,
         title,
-        avatar,
+        avatar, avatarConfig, equipped, inventory:[],
         hp:10,
         gold:0,
         xp:0,
@@ -1390,7 +1414,7 @@ $("saveProfile").onclick=async()=>{
         $("profileError").textContent="Grade/group changes must be made by your teacher.";
         return;
       }
-      await setDoc(ref,{title,avatar,updatedAt:serverTimestamp()},{merge:true});
+      await setDoc(ref,{title,avatar,avatarConfig,equipped,updatedAt:serverTimestamp()},{merge:true});
     }
 
     $("profileModal").classList.add("hidden");
@@ -1405,7 +1429,7 @@ function renderProfile(){
   const li=levelInfo(+profile.xp||0);
   const display=formatName(profile);
   const hp=+profile.hp||0, gold=+profile.gold||0, xp=+profile.xp||0;
-  $("avatar").textContent=avatarEmoji(profile.avatar);
+  $("avatar").classList.add("mini-chibi"); $("avatar").innerHTML=chibiMarkup({...defaultAvatarConfig(),...(profile.avatarConfig||{})},true);
   $("displayName").textContent=display;
   $("profileSub").textContent=`Level ${li.level} • Grade ${profile.grade} • ${profile.genderGroup==="girl"?"Girls":"Boys"} • ${li.next-xp} XP to next level`;
   $("hp").textContent=hp;
@@ -1418,7 +1442,7 @@ function renderProfile(){
   // Mirror the same Firebase profile into the new portal screens.
   if($("shopGold")) $("shopGold").textContent=gold;
   if($("questXp")) $("questXp").textContent=xp;
-  if($("journalAvatar")) $("journalAvatar").textContent=avatarEmoji(profile.avatar);
+  if($("journalAvatar")){ $("journalAvatar").classList.add("mini-chibi"); $("journalAvatar").innerHTML=chibiMarkup({...defaultAvatarConfig(),...(profile.avatarConfig||{})},true); }
   if($("journalName")) $("journalName").textContent=display;
   if($("journalSub")) $("journalSub").textContent=`Level ${li.level} • Grade ${profile.grade} • ${profile.genderGroup==="girl"?"Girls":"Boys"} • ${li.next-xp} XP to next level`;
   if($("journalHp")) $("journalHp").textContent=hp;
@@ -1569,7 +1593,7 @@ function renderStudentShop(){
         return `<article class="frame bevel student-shop-card ${soldOut?"sold-out":""}">
           <div class="student-shop-icon">${esc(item.icon||"🎁")}</div>
           <h3>${esc(item.name||"Shop Item")}</h3>
-          <div class="student-shop-price">🪙 ${cost} Gold</div>
+          <div class="student-shop-price">🪙 ${cost} Gold</div>${item.kind==="gear"||item.equipSlot?`<div class="shop-stock"><span>⚔️ ${esc(item.equipSlot||"gear")}</span><span>ATK +${Number(item.stats?.atk||0)} • DEF +${Number(item.stats?.def||0)}</span></div>`:""}
           <p>${esc(item.description||"A Dragonswood Shop reward.")}</p>
           <div class="shop-stock">
             <span>${limited?`${quantity} available`:"Unlimited"}</span>
@@ -1640,8 +1664,11 @@ async function buyShopItem(itemId){
       // New purchase document ID is created locally, then written inside the transaction.
       const purchaseRef=doc(collection(db,"purchases"));
 
+      const isGear=currentItem.kind==="gear"||!!currentItem.equipSlot;
+      const currentInventory=Array.isArray(studentData.inventory)?studentData.inventory:[];
       tx.update(studentRef,{
         gold:currentGold-currentCost,
+        ...(isGear?{inventory:[...new Set([...currentInventory,itemId])]}:{}),
         updatedAt:serverTimestamp()
       });
 
@@ -1661,7 +1688,9 @@ async function buyShopItem(itemId){
         itemName:currentItem.name||"Shop Item",
         itemIcon:currentItem.icon||"🎁",
         cost:currentCost,
-        status:"pending",
+        status:(currentItem.kind==="gear"||currentItem.equipSlot)?"owned":"pending",
+        itemKind:currentItem.kind||"reward",
+        equipSlot:currentItem.equipSlot||null,
         purchasedAt:serverTimestamp(),
         updatedAt:serverTimestamp()
       });

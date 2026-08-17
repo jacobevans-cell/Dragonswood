@@ -15,8 +15,7 @@ body{
 body::before{
   content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    linear-gradient(180deg,rgba(2,2,10,.12),rgba(2,2,10,.25) 65%,rgba(2,2,10,.6)),
-    url("dw-deep-scene.jpg") center top/cover fixed no-repeat;
+    linear-gradient(180deg,rgba(2,2,10,.12),rgba(2,2,10,.25) 65%,rgba(2,2,10,.6));
 }
 body::after{
   content:"";position:fixed;inset:-10%;z-index:1;pointer-events:none;
@@ -83,15 +82,13 @@ h1,h2,h3{font-family:Georgia,"Times New Roman",serif;color:#FFF8E7}
 body::before,body::after{display:none !important}
 body{
   background:
-    linear-gradient(180deg,rgba(3,4,12,.12),rgba(3,4,12,.75)),
-    url("dw-deep-scene.jpg") center top / cover fixed no-repeat !important;
+    linear-gradient(180deg,rgba(3,4,12,.12),rgba(3,4,12,.75));
 }
 .teacher-head{
   min-height:200px;
   padding:24px 0 30px !important;
   background:
-    linear-gradient(180deg,rgba(2,3,12,.08),rgba(10,4,25,.72)),
-    url("dw-hero.jpg") center 8% / cover no-repeat !important;
+    linear-gradient(180deg,rgba(2,3,12,.08),rgba(10,4,25,.72));
   border-bottom:1px solid rgba(244,201,93,.55) !important;
 }
 .teacher-brand{
@@ -111,8 +108,7 @@ body{
 }
 .command-title{
   background:
-    linear-gradient(90deg,rgba(32,7,68,.86),rgba(7,10,28,.82)),
-    url("dw-reward-scene.jpg") center 60% / cover no-repeat !important;
+    linear-gradient(90deg,rgba(32,7,68,.86),rgba(7,10,28,.82));
 }
 .card{
   background:linear-gradient(145deg,rgba(7,8,26,.90),rgba(3,6,17,.94)) !important;
@@ -128,15 +124,472 @@ body{
 }
 .recess-control .card:first-child{
   background:
-    linear-gradient(90deg,rgba(34,7,72,.88),rgba(6,26,44,.84)),
-    url("dw-reward-scene.jpg") center 74% / cover no-repeat !important;
+    linear-gradient(90deg,rgba(34,7,72,.88),rgba(6,26,44,.84));
 }
 @media(max-width:980px){
   .groupbox{grid-template-columns:1fr 1fr !important}
 }
 
+
+/* =========================================================
+   V11 DRAGONSWOOD — UNIFIED GUI, NO BACKGROUND IMAGES
+   One continuous interface. No wallpaper. No scenic JPEGs.
+========================================================= */
+
+:root{
+  --dw-bg:#05030d;
+  --dw-bg2:#0a0618;
+  --dw-panel:#0b0a1f;
+  --dw-panel2:#12102b;
+  --dw-panel3:#17123a;
+  --dw-purple:#652DC1;
+  --dw-purple2:#9A48FF;
+  --dw-cyan:#02CCFE;
+  --dw-cyan2:#79ECFF;
+  --dw-gold:#F4C95D;
+  --dw-gold2:#FFE9A0;
+  --dw-line:rgba(244,201,93,.42);
+  --dw-softline:rgba(126,78,216,.34);
+  --dw-text:#fff8e8;
+  --dw-muted:#c7c2d9;
+}
+
+html{
+  background:var(--dw-bg) !important;
+}
+
+body{
+  background:
+    radial-gradient(circle at 15% 0%,rgba(101,45,193,.20),transparent 22%),
+    radial-gradient(circle at 85% 4%,rgba(2,204,254,.10),transparent 20%),
+    linear-gradient(180deg,#05030d 0%,#090516 42%,#05030d 100%) !important;
+  color:var(--dw-text) !important;
+  min-height:100vh;
+}
+
+/* Kill all full-page image/world layers */
+body::before,
+body::after,
+.main::before,
+.student-top::after,
+.dw-wisteria-curtain,
+.magic-stars,
+.dw-stars{
+  display:none !important;
+}
+
+/* The whole app reads as one connected fantasy console */
+.student-top,
+.teacher-head{
+  background:
+    radial-gradient(circle at 18% 20%,rgba(154,72,255,.12),transparent 28%),
+    radial-gradient(circle at 82% 25%,rgba(2,204,254,.08),transparent 24%),
+    linear-gradient(180deg,#090518 0%,#070411 100%) !important;
+  border-bottom:1px solid rgba(244,201,93,.50) !important;
+  box-shadow:none !important;
+}
+
+.student-top{
+  min-height:auto !important;
+  padding:16px 0 14px !important;
+}
+
+.teacher-head{
+  min-height:auto !important;
+  padding:16px 0 14px !important;
+}
+
+.shell,
+.wrap{
+  width:min(1500px,94%) !important;
+  margin:auto !important;
+}
+
+/* Continuous app panel */
+.main,
+.teacher-main{
+  background:transparent !important;
+  padding-top:14px !important;
+}
+
+#signedIn,
+#dash{
+  position:relative;
+}
+
+#signedIn::before,
+#dash::before{
+  content:"";
+  position:absolute;
+  inset:-8px;
+  z-index:-1;
+  border-radius:18px;
+  background:
+    linear-gradient(180deg,rgba(15,9,35,.66),rgba(5,4,15,.56));
+  border:1px solid rgba(101,45,193,.20);
+  box-shadow:0 0 45px rgba(71,27,126,.08);
+}
+
+/* Core panels all share the same material */
+.glass,
+.card,
+.pet,
+.game,
+.board,
+.profilebar,
+.profile-strip,
+.login-card,
+.modalbox,
+.reward,
+.item,
+.reward-frame,
+.recess-card,
+.recess-wide,
+.command-title,
+.tabs,
+.bottom-nav,
+.egg-panel,
+.egg-progress-panel{
+  background:
+    linear-gradient(145deg,rgba(15,12,39,.98),rgba(7,6,20,.99)) !important;
+  border:1px solid var(--dw-softline) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.025),
+    inset 0 0 20px rgba(101,45,193,.025),
+    0 8px 22px rgba(0,0,0,.24) !important;
+  backdrop-filter:none !important;
+}
+
+/* Gold edges used sparingly */
+.reward-frame,
+.recess-wide,
+.profile-strip,
+.command-title,
+.tabs{
+  border-color:rgba(244,201,93,.42) !important;
+}
+
+/* Top student GUI */
+.brand-grid{
+  display:grid !important;
+  grid-template-columns:90px minmax(0,1fr) auto !important;
+  gap:16px !important;
+  align-items:center !important;
+}
+
+.big-crest{
+  width:82px !important;
+  height:92px !important;
+  filter:drop-shadow(0 0 8px rgba(244,201,93,.24)) !important;
+}
+
+.big-crest .shield{
+  width:72px !important;
+  height:86px !important;
+}
+
+.brand-name{
+  font-size:clamp(46px,5vw,72px) !important;
+  line-height:.92 !important;
+  white-space:normal !important;
+  color:var(--dw-gold2) !important;
+  text-shadow:0 0 10px rgba(244,201,93,.16),0 2px 1px #000 !important;
+}
+
+.brand-sub{
+  color:#d98cff !important;
+  font-size:clamp(14px,1.3vw,18px) !important;
+}
+
+.motto{
+  color:var(--dw-gold2) !important;
+  margin-top:7px !important;
+}
+
+.top-stats{
+  margin-top:0 !important;
+  grid-template-columns:repeat(4,82px) !important;
+  gap:7px !important;
+}
+
+.top-stat{
+  height:82px !important;
+  background:linear-gradient(180deg,#0d0b24,#080719) !important;
+  border:1px solid rgba(244,201,93,.28) !important;
+}
+
+.accountbar{
+  position:static !important;
+  justify-content:flex-end;
+  margin:0 auto 8px;
+  width:min(1500px,94%);
+  background:transparent !important;
+  border:0 !important;
+  padding:0 !important;
+}
+
+/* Profile becomes a clean HUD row */
+.profile-strip{
+  margin-top:12px !important;
+  grid-template-columns:auto minmax(0,1fr) auto !important;
+  border-radius:10px !important;
+}
+
+.avatar{
+  background:#edf6ff !important;
+}
+
+/* Section headings connect to the GUI */
+.section-head{
+  margin:18px 0 9px !important;
+  padding-left:4px;
+}
+
+.section-head::after{
+  width:100% !important;
+  background:linear-gradient(90deg,var(--dw-gold),var(--dw-purple2),transparent 72%) !important;
+}
+
+/* Reward section: fixed, disciplined two-column HUD */
+.reward-frame{
+  padding:14px !important;
+  border-radius:12px !important;
+  overflow:hidden !important;
+}
+
+.reward-main{
+  display:grid !important;
+  grid-template-columns:minmax(280px,32%) minmax(0,68%) !important;
+  gap:12px !important;
+  align-items:stretch !important;
+}
+
+.egg-panel,
+.egg-progress-panel{
+  min-height:260px !important;
+  padding:18px !important;
+  border-radius:9px !important;
+}
+
+.egg-panel{
+  grid-template-columns:120px minmax(0,1fr) !important;
+}
+
+.egg-copy h3{
+  font-size:clamp(25px,2vw,34px) !important;
+  line-height:1.05 !important;
+}
+
+.egg-progress-panel h3{
+  font-size:clamp(21px,1.7vw,28px) !important;
+}
+
+.egg-stage .eggmini{
+  font-size:clamp(30px,2.8vw,46px) !important;
+}
+
+/* Reward milestone cards */
+.rewards{
+  display:grid !important;
+  grid-template-columns:repeat(7,minmax(0,1fr)) !important;
+  gap:7px !important;
+  margin-top:10px !important;
+}
+
+.reward{
+  min-height:124px !important;
+  padding:10px 6px !important;
+  border-radius:8px !important;
+}
+
+.reward.current{
+  border-color:var(--dw-gold) !important;
+  box-shadow:0 0 15px rgba(244,201,93,.14) !important;
+}
+
+.next{
+  background:
+    linear-gradient(90deg,#073149,#241046,#120c2a) !important;
+  border-left:4px solid var(--dw-gold) !important;
+  color:var(--dw-gold2) !important;
+}
+
+/* Second Recess is part of same GUI */
+.recess-wide,
+.recess-card{
+  background:
+    linear-gradient(90deg,#1a0b39 0%,#12102d 52%,#073044 100%) !important;
+  border-radius:10px !important;
+}
+
+/* Games: compact dashboard cards */
+.games{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:12px !important;
+}
+
+.game{
+  min-height:220px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  overflow:hidden !important;
+  border-radius:9px !important;
+}
+
+.visual{
+  height:92px !important;
+  flex:0 0 92px !important;
+  background:
+    radial-gradient(circle at 50% 35%,rgba(101,45,193,.16),transparent 45%),
+    linear-gradient(180deg,#141033,#09071b) !important;
+}
+
+.game .body{
+  padding:13px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  flex:1 !important;
+}
+
+.game .body p{flex:1}
+.game a{margin-top:auto}
+
+/* Boards */
+.boards{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:12px !important;
+}
+
+.board{
+  padding:14px !important;
+  border-radius:9px !important;
+}
+
+/* Bottom navigation becomes integrated toolbar */
+.bottom-nav{
+  position:static !important;
+  margin-top:16px !important;
+  padding:7px !important;
+  border-radius:10px !important;
+  grid-template-columns:repeat(6,1fr) !important;
+  background:linear-gradient(180deg,#0b091f,#060515) !important;
+}
+
+.navtile{
+  background:linear-gradient(180deg,#100d29,#09071c) !important;
+  border:1px solid rgba(101,45,193,.34) !important;
+  min-height:74px;
+}
+
+/* Teacher portal unified */
+.teacher-brand{
+  align-items:center !important;
+}
+
+.teacher-title{
+  font-size:clamp(34px,3.4vw,50px) !important;
+}
+
+.teacher-main{
+  padding-top:14px !important;
+}
+
+.tabs{
+  position:static !important;
+  padding:7px !important;
+  border-radius:10px !important;
+  grid-template-columns:repeat(4,1fr) !important;
+}
+
+.tab{
+  padding:13px 9px !important;
+  background:linear-gradient(180deg,#100d29,#09071c) !important;
+}
+
+.tab.active{
+  background:linear-gradient(90deg,#5218a9,#7826ca,#075e86) !important;
+}
+
+.command-title{
+  margin-top:10px !important;
+  border-radius:9px !important;
+}
+
+.card{
+  border-radius:9px !important;
+}
+
+.groupbox{
+  grid-template-columns:minmax(210px,1.2fr) minmax(130px,.75fr) minmax(110px,.6fr) minmax(210px,1.15fr) !important;
+}
+
+.recess-control{
+  grid-template-columns:1.3fr .7fr !important;
+}
+
+/* Inputs feel integrated */
+input,select,textarea{
+  background:#080719 !important;
+  border:1px solid rgba(2,204,254,.20) !important;
+  color:white !important;
+}
+
+/* Buttons */
+button,.btn{
+  background:linear-gradient(90deg,#4b149f,#7224c7,#075c84) !important;
+  border:1px solid rgba(244,201,93,.38) !important;
+  color:white !important;
+}
+
+button:hover,.btn:hover{
+  filter:brightness(1.08);
+}
+
+/* Level bars and progress */
+.progress-track,
+.levelbar,
+.track,
+.meter,
+.recess-meter{
+  background:#030510 !important;
+  border:1px solid rgba(2,204,254,.20) !important;
+}
+
+.progress-fill,
+.levelbar div,
+.fill,
+.recess-fill{
+  background:
+    linear-gradient(90deg,var(--dw-purple),var(--dw-purple2),var(--dw-cyan),var(--dw-gold),var(--dw-purple)) !important;
+  background-size:220% 100% !important;
+  animation:shimmerBar 6s linear infinite !important;
+}
+
+/* Responsive */
+@media(max-width:1100px){
+  .brand-grid{grid-template-columns:80px 1fr !important}
+  .top-stats{grid-column:1/-1 !important;grid-template-columns:repeat(4,1fr) !important}
+  .reward-main{grid-template-columns:1fr !important}
+  .rewards{grid-template-columns:repeat(4,1fr) !important}
+  .groupbox{grid-template-columns:1fr 1fr !important}
+}
+@media(max-width:760px){
+  .brand-grid{grid-template-columns:1fr !important;text-align:center}
+  .big-crest{margin:auto}
+  .profile-strip{grid-template-columns:1fr !important;text-align:center}
+  .avatar{margin:auto}
+  .egg-panel{grid-template-columns:1fr !important;text-align:center}
+  .rewards{grid-template-columns:repeat(2,1fr) !important}
+  .games,.boards{grid-template-columns:1fr !important}
+  .bottom-nav{grid-template-columns:repeat(2,1fr) !important}
+  .tabs{grid-template-columns:repeat(2,1fr) !important}
+  .recess-control{grid-template-columns:1fr !important}
+}
+
 </style></head><body>
-<div class="magic-stars" aria-hidden="true"><i style="left:4%;animation-duration:17s;animation-delay:-8s"></i><i style="left:11%;animation-duration:21s;animation-delay:-3s"></i><i style="left:18%;animation-duration:14s;animation-delay:-11s"></i><i style="left:25%;animation-duration:19s;animation-delay:-5s"></i><i style="left:34%;animation-duration:23s;animation-delay:-14s"></i><i style="left:42%;animation-duration:16s;animation-delay:-6s"></i><i style="left:51%;animation-duration:20s;animation-delay:-12s"></i><i style="left:59%;animation-duration:18s;animation-delay:-2s"></i><i style="left:68%;animation-duration:22s;animation-delay:-9s"></i><i style="left:76%;animation-duration:15s;animation-delay:-4s"></i><i style="left:84%;animation-duration:24s;animation-delay:-16s"></i><i style="left:93%;animation-duration:18s;animation-delay:-7s"></i></div>
+
 <header class="teacher-head"><div class="shell teacher-brand"><div class="teacher-title">🛡️ DRAGONSWOOD COMMAND<small>TEACHER PORTAL • EXPLORE ACADEMY</small></div><div id="signed" class="hidden"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
 <main class="shell teacher-main">
 <section id="login" class="card" style="max-width:520px;margin:55px auto"><h1>Teacher Login</h1><form id="loginForm"><div class="field"><label>Email</label><input id="email" type="email" required></div><div class="field"><label>Password</label><input id="password" type="password" required></div><button style="width:100%">SIGN IN</button><div id="error" style="color:#ff9db5;margin-top:8px"></div></form></section>

@@ -136,12 +136,377 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 }
 </style>
 
+
+<style id="dragonswood-v18-command-center">
+/* ======================================================
+   V18 — DRAGONSWOOD TEACHER COMMAND CENTER
+====================================================== */
+
+.teacher-head{
+  padding:10px 0 8px !important;
+  background:linear-gradient(180deg,rgba(4,3,18,.56),rgba(6,3,23,.36)) !important;
+  backdrop-filter:blur(5px) saturate(1.15);
+}
+
+.teacher-title{
+  font-size:clamp(34px,4vw,50px) !important;
+  text-shadow:0 2px 2px #000,0 0 16px rgba(244,201,93,.22);
+}
+
+.teacher-main{padding-top:10px !important}
+
+.command-tabs{
+  position:sticky;
+  top:6px;
+  z-index:40;
+  grid-template-columns:repeat(7,minmax(0,1fr)) !important;
+  gap:5px !important;
+  padding:6px !important;
+  background:linear-gradient(180deg,rgba(7,5,27,.84),rgba(3,5,18,.82)) !important;
+  backdrop-filter:blur(10px) saturate(1.2) !important;
+}
+
+.command-tabs .tab{
+  min-width:0;
+  min-height:54px;
+  padding:7px 5px !important;
+  font-size:11px;
+  line-height:1.12;
+}
+
+.command-tabs .tab.active{
+  box-shadow:0 0 16px rgba(166,76,255,.32),inset 0 0 14px rgba(255,255,255,.05) !important;
+}
+
+.command-title{
+  margin-top:8px;
+  background:linear-gradient(100deg,rgba(52,13,98,.54),rgba(3,40,59,.43)) !important;
+}
+
+.card{
+  background-image:linear-gradient(135deg,rgba(34,11,73,.31),rgba(2,14,37,.38)) !important;
+}
+
+.danger-soft{
+  background:linear-gradient(90deg,#651637,#8e1e49) !important;
+  border-color:rgba(255,153,180,.48) !important;
+}
+
+.gray{
+  background:linear-gradient(90deg,#30334a,#3d4862) !important;
+}
+
+/* Dedicated Second Recess screen */
+.recess-command-grid{
+  display:grid;
+  grid-template-columns:1.5fr .65fr;
+  gap:12px;
+}
+
+.recess-main-card{
+  min-height:310px;
+  padding:24px;
+  background:
+    radial-gradient(circle at 18% 20%,rgba(166,76,255,.14),transparent 28%),
+    linear-gradient(135deg,rgba(42,11,86,.47),rgba(2,36,53,.43)) !important;
+}
+
+.recess-kicker{
+  color:#d791ff;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:1.1px;
+}
+
+.recess-number{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:82px;
+  line-height:1;
+  color:var(--gold2);
+  margin:8px 0 14px;
+  text-shadow:0 0 18px rgba(244,201,93,.22);
+}
+
+.large-meter{height:24px}
+
+.recess-status{
+  margin-top:10px;
+  color:#f5edff;
+  font-weight:800;
+}
+
+.recess-award-buttons{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-top:12px;
+}
+
+.recess-award-buttons button{
+  min-height:48px;
+  font-size:17px;
+}
+
+.recess-settings-card{padding:22px}
+
+.recess-date-box{
+  margin-top:18px;
+  padding:12px;
+  border:1px solid rgba(244,201,93,.35);
+  background:rgba(12,7,33,.44);
+  border-radius:8px;
+}
+.recess-date-box small{display:block}
+.recess-date-box b{display:block;color:var(--gold2);margin-top:3px}
+
+/* Shop */
+.shop-summary-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.shop-summary-card{
+  min-height:105px;
+  display:grid;
+  grid-template-columns:auto 1fr;
+  grid-template-rows:1fr 1fr;
+  align-items:center;
+  column-gap:10px;
+}
+.shop-summary-card span{
+  grid-row:1/3;
+  font-size:40px;
+}
+.shop-summary-card b{
+  align-self:end;
+  font-family:Georgia,"Times New Roman",serif;
+  color:var(--gold2);
+  font-size:32px;
+}
+.shop-summary-card small{
+  align-self:start;
+  font-weight:900;
+}
+
+.shop-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+}
+
+.shop-item-card{
+  position:relative;
+  min-height:205px;
+  padding:16px;
+  display:grid;
+  grid-template-columns:62px 1fr;
+  grid-template-rows:auto auto 1fr auto;
+  gap:4px 12px;
+  background:
+    linear-gradient(145deg,rgba(35,11,76,.48),rgba(3,18,42,.49)) !important;
+}
+
+.shop-item-card.inactive{
+  opacity:.62;
+  filter:saturate(.6);
+}
+
+.shop-item-icon{
+  grid-row:1/4;
+  width:58px;
+  height:58px;
+  display:grid;
+  place-items:center;
+  font-size:36px;
+  border-radius:12px;
+  border:1px solid rgba(244,201,93,.43);
+  background:rgba(74,24,124,.32);
+  box-shadow:0 0 14px rgba(166,76,255,.16);
+}
+
+.shop-item-card h3{
+  margin:0;
+  color:var(--gold2);
+  font-size:20px;
+}
+
+.shop-price{
+  color:#ffd96b;
+  font-weight:900;
+}
+
+.shop-description{
+  grid-column:2;
+  margin:4px 0;
+  line-height:1.35;
+  font-size:12px;
+}
+
+.shop-item-meta{
+  grid-column:1/-1;
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  margin-top:8px;
+}
+
+.shop-pill{
+  padding:4px 7px;
+  border-radius:999px;
+  background:rgba(88,27,145,.35);
+  border:1px solid rgba(166,76,255,.32);
+  font-size:10px;
+  font-weight:900;
+}
+
+.shop-item-actions{
+  grid-column:1/-1;
+  display:flex;
+  gap:7px;
+  margin-top:8px;
+}
+
+.purchase-list{
+  display:grid;
+  gap:8px;
+}
+
+.purchase-row{
+  display:grid;
+  grid-template-columns:auto minmax(150px,1.1fr) minmax(150px,1fr) auto auto;
+  gap:10px;
+  align-items:center;
+  padding:10px;
+  border:1px solid rgba(101,45,193,.28);
+  background:rgba(7,7,24,.46);
+  border-radius:8px;
+}
+
+.purchase-avatar{
+  width:42px;height:42px;
+  display:grid;place-items:center;
+  border-radius:50%;
+  background:rgba(101,45,193,.30);
+  border:1px solid rgba(244,201,93,.38);
+  font-size:23px;
+}
+
+.purchase-status{
+  padding:5px 8px;
+  border-radius:999px;
+  font-size:10px;
+  font-weight:900;
+  text-transform:uppercase;
+}
+.purchase-status.pending{background:#5c3b0d;color:#ffe69b}
+.purchase-status.redeemed{background:#124b37;color:#aef0cf}
+.purchase-status.cancelled{background:#5b1830;color:#ffb4c7}
+
+.modal-heading{
+  display:flex;
+  align-items:start;
+  justify-content:space-between;
+  gap:10px;
+}
+.modal-heading small{color:#d48cff;font-weight:900;letter-spacing:1px}
+.modal-heading h3{margin:3px 0 0}
+
+.shop-form-grid{
+  display:grid;
+  grid-template-columns:120px 1.5fr .8fr .8fr;
+  gap:10px;
+  align-items:end;
+}
+
+.shop-icon-field{position:relative}
+.shop-icon-preview{
+  margin-top:8px;
+  width:70px;height:70px;
+  display:grid;place-items:center;
+  font-size:40px;
+  border:1px solid var(--gold);
+  background:rgba(83,24,140,.32);
+  border-radius:12px;
+}
+
+.shop-toggle-row{
+  margin-top:12px;
+  padding:10px;
+  border:1px solid rgba(101,45,193,.30);
+  border-radius:8px;
+  background:rgba(5,6,20,.40);
+}
+.toggle-label{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  font-weight:900;
+  color:var(--gold2);
+}
+.toggle-label input{
+  width:19px;
+  height:19px;
+}
+
+/* Quest placeholder */
+.feature-placeholder-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+.placeholder-card{
+  min-height:250px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+.placeholder-card>div{font-size:52px}
+.placeholder-card h3{color:var(--gold2);margin:10px 0 6px}
+.placeholder-card p{max-width:320px;line-height:1.45}
+.placeholder-card span{
+  margin-top:12px;
+  padding:5px 9px;
+  border:1px solid rgba(244,201,93,.4);
+  border-radius:999px;
+  color:#ffe7a0;
+  font-size:10px;
+  font-weight:900;
+}
+
+@media(max-width:1100px){
+  .command-tabs{grid-template-columns:repeat(4,1fr) !important;position:relative;top:auto}
+  .shop-grid{grid-template-columns:repeat(2,1fr)}
+  .recess-command-grid{grid-template-columns:1fr}
+  .feature-placeholder-grid{grid-template-columns:1fr}
+}
+
+@media(max-width:760px){
+  .command-tabs{grid-template-columns:repeat(2,1fr) !important}
+  .shop-summary-grid,.shop-grid{grid-template-columns:1fr}
+  .shop-form-grid{grid-template-columns:1fr 1fr}
+  .purchase-row{grid-template-columns:auto 1fr}
+  .purchase-row>*:nth-child(n+3){grid-column:2}
+  .recess-award-buttons{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+
 </head><body>
 <header class="teacher-head"><div class="shell"><div class="teacher-title">🛡️ DRAGONSWOOD COMMAND<small>EXPLORE ACADEMY • EVANS 4–5 • TEACHER PORTAL</small></div><div id="signed" class="hidden" style="text-align:right"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
 <main class="shell teacher-main">
 <section id="login" class="card" style="max-width:520px;margin:45px auto"><h1>Teacher Login</h1><form id="loginForm"><div class="field"><label>Email</label><input id="email" type="email" required></div><div class="field"><label>Password</label><input id="password" type="password" required></div><button style="width:100%">SIGN IN</button><div id="error" style="color:#ff9db5;margin-top:8px"></div></form></section>
 <section id="dash" class="hidden">
-<div class="frame bevel tabs"><button class="tab active" data-p="students">👥 STUDENTS</button><button class="tab" data-p="rewards">🛡️ CLASS REWARDS</button><button class="tab" data-p="scores">🏆 LEADERBOARDS</button><button class="tab" data-p="data">📊 GAME DATA</button></div>
+<div class="frame bevel tabs command-tabs">
+  <button class="tab active" data-p="students">👥 STUDENTS</button>
+  <button class="tab" data-p="rewards">🛡️ CLASS REWARDS</button>
+  <button class="tab" data-p="recess">🌤️ SECOND RECESS</button>
+  <button class="tab" data-p="shop">🧰 SHOP</button>
+  <button class="tab" data-p="quests">⚔️ QUESTS</button>
+  <button class="tab" data-p="scores">🏆 LEADERBOARDS</button>
+  <button class="tab" data-p="data">📊 GAME DATA</button>
+</div>
 
 <div id="students" class="panel active">
   <div class="frame bevel command-title"><h2>🧙 STUDENT CONTROL CENTER</h2><p>Manage HP, Gold, XP, level progress, profiles, and group awards.</p></div>
@@ -153,12 +518,109 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   </div><div class="actions" style="margin-top:10px"><button onclick="document.getElementById('massAmount').value=1">+1</button><button onclick="document.getElementById('massAmount').value=5">+5</button><button onclick="document.getElementById('massAmount').value=10">+10</button><button onclick="document.getElementById('massAmount').value=-1">-1</button><button id="massApply" style="margin-left:auto">APPLY AWARD</button></div></div>
   <div class="titlebar"><div><h2>STUDENT ROSTER</h2><p>Profiles appear here after first sign-in.</p></div></div>
   <div class="card" style="overflow:auto"><table class="student-table"><thead><tr><th>AVATAR</th><th>STUDENT</th><th>GRADE</th><th>GROUP</th><th>LEVEL</th><th>HP</th><th>GOLD</th><th>XP</th><th>MANAGE</th></tr></thead><tbody id="studentRows"></tbody></table></div>
-  <div class="recess-control"><div class="card"><h2>🌤️ SECOND RECESS CONTROL</h2><div class="big" id="recessTeacherPoints">0</div><div class="meter"><div class="fill" id="recessTeacherFill"></div></div><div id="recessTeacherStatus" class="muted"></div><div class="actions" style="margin-top:10px"><input id="recessTeacherReason" class="reason" placeholder="Reason"><button class="recess-add" data-rn="1">+1</button><button class="recess-add" data-rn="2">+2</button><button class="recess-add" data-rn="5">+5</button><button id="recessMinus">-1</button><button id="recessReset">RESET TODAY</button></div></div><div class="card"><h3>TODAY'S GOAL</h3><div class="field"><label>Goal</label><input id="recessGoalInput" type="number" value="10"></div><button id="saveRecessGoal">SAVE GOAL</button><div class="badge" id="recessDateLabel" style="margin-top:10px"></div></div></div>
+
 </div>
 
 <div id="rewards" class="panel">
   <div class="grid"><div class="card"><h2>CLASS POINTS</h2><div class="big" id="points">0</div><div class="meter"><div class="fill" id="fill"></div></div><div class="actions" style="margin-top:10px"><input id="reason" class="reason" placeholder="Reason (optional)"><button class="add" data-n="1">+1</button><button class="add" data-n="5">+5</button><button class="add" data-n="10">+10</button><button id="minus">-1</button><button id="undo">UNDO LAST</button></div></div><div class="card"><h2>REWARD HISTORY</h2><div id="history"></div></div></div>
   <div class="titlebar"><div><h2>REWARD MILESTONES</h2><p>Add or edit rewards without touching GitHub.</p></div><button id="addReward">+ ADD REWARD</button></div><div class="card"><div class="list" id="rewardList"></div></div>
+</div>
+
+<div id="recess" class="panel">
+  <div class="frame bevel command-title">
+    <h2>🌤️ SECOND RECESS COMMAND</h2>
+    <p>A completely independent daily meter. Students can see it; only you control it.</p>
+  </div>
+
+  <div class="recess-command-grid">
+    <div class="card recess-main-card">
+      <div class="recess-kicker">TODAY'S SECOND RECESS</div>
+      <div class="recess-number" id="recessTeacherPoints">0</div>
+      <div class="meter large-meter"><div class="fill" id="recessTeacherFill"></div></div>
+      <div id="recessTeacherStatus" class="recess-status">Loading today's goal…</div>
+
+      <div class="field" style="margin-top:16px">
+        <label>REASON / NOTE</label>
+        <input id="recessTeacherReason" class="reason" placeholder="Great transitions, teamwork, everyone ready on time…">
+      </div>
+
+      <div class="recess-award-buttons">
+        <button class="recess-add" data-rn="1">+1</button>
+        <button class="recess-add" data-rn="2">+2</button>
+        <button class="recess-add" data-rn="5">+5</button>
+        <button id="recessMinus" class="danger-soft">−1</button>
+      </div>
+    </div>
+
+    <div class="card recess-settings-card">
+      <h3>⚙️ TODAY'S SETTINGS</h3>
+      <div class="field">
+        <label>POINT GOAL</label>
+        <input id="recessGoalInput" type="number" min="1" value="10">
+      </div>
+      <button id="saveRecessGoal" style="width:100%;margin-top:10px">SAVE GOAL</button>
+
+      <div class="recess-date-box">
+        <small>ACTIVE DATE</small>
+        <b id="recessDateLabel">—</b>
+      </div>
+
+      <button id="recessReset" class="danger-soft" style="width:100%;margin-top:12px">RESET TODAY TO 0</button>
+    </div>
+  </div>
+</div>
+
+
+<div id="shop" class="panel">
+  <div class="frame bevel command-title">
+    <h2>🧰 DRAGONSWOOD SHOP MANAGER</h2>
+    <p>Create Gold-priced rewards once here. The student Shop will read these directly from Firebase.</p>
+  </div>
+
+  <div class="shop-summary-grid">
+    <div class="card shop-summary-card"><span>🧰</span><b id="shopItemCount">0</b><small>SHOP ITEMS</small></div>
+    <div class="card shop-summary-card"><span>✨</span><b id="shopActiveCount">0</b><small>ACTIVE</small></div>
+    <div class="card shop-summary-card"><span>📦</span><b id="shopPendingCount">0</b><small>PENDING REDEMPTIONS</small></div>
+  </div>
+
+  <div class="titlebar">
+    <div>
+      <h2>SHOP INVENTORY</h2>
+      <p>Items can be turned on/off without deleting them.</p>
+    </div>
+    <button id="addShopItem">+ ADD SHOP ITEM</button>
+  </div>
+
+  <div class="shop-grid" id="shopItemList"></div>
+
+  <div class="titlebar">
+    <div>
+      <h2>REDEMPTION QUEUE</h2>
+      <p>Student purchases will appear here after the student Shop is connected.</p>
+    </div>
+    <select id="purchaseFilter" style="max-width:190px">
+      <option value="pending">Pending</option>
+      <option value="all">All Purchases</option>
+      <option value="redeemed">Redeemed</option>
+      <option value="cancelled">Cancelled</option>
+    </select>
+  </div>
+
+  <div class="card">
+    <div id="purchaseQueue" class="purchase-list"></div>
+  </div>
+</div>
+
+<div id="quests" class="panel">
+  <div class="frame bevel command-title">
+    <h2>⚔️ QUEST COMMAND</h2>
+    <p>The Quest system is the next build after Shop. This tab is reserved now so the Command Center architecture stays stable.</p>
+  </div>
+  <div class="feature-placeholder-grid">
+    <div class="card placeholder-card"><div>📜</div><h3>Daily Quests</h3><p>Create short academic or behavior missions with XP / Gold rewards.</p><span>COMING NEXT</span></div>
+    <div class="card placeholder-card"><div>⭐</div><h3>Bonus Missions</h3><p>Optional challenges for students who want to earn more XP.</p><span>COMING NEXT</span></div>
+    <div class="card placeholder-card"><div>✅</div><h3>Approvals</h3><p>Review student submissions and approve completion from one queue.</p><span>COMING NEXT</span></div>
+  </div>
 </div>
 
 <div id="scores" class="panel"><div class="frame bevel command-title"><h2>🏆 LEADERBOARD MANAGER</h2><p>Review or delete submitted scores.</p></div><div class="card"><div class="list" id="scoreList"></div></div></div>
@@ -167,6 +629,61 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
 <div id="rewardModal" class="modal hidden"><div class="modalbox card"><h3 id="rewardModalTitle">Add Reward</h3><input type="hidden" id="rid"><div class="field"><label>Name</label><input id="rname"></div><div class="field"><label>Points Required</label><input id="rpoints" type="number"></div><div class="field"><label>Icon</label><input id="ricon" value="🎁"></div><div class="field"><label>Description</label><textarea id="rdesc"></textarea></div><div class="actions"><button id="saveReward">SAVE REWARD</button><button id="cancelReward">Cancel</button></div></div></div>
 <div id="studentModal" class="modal hidden"><div class="modalbox card"><h3>Manage Student</h3><input type="hidden" id="sid"><div class="field"><label>First Name</label><input id="sname"></div><div class="field"><label>Grade</label><select id="sgrade"><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div><div class="field"><label>Group</label><select id="sgroup"><option value="girl">Girls</option><option value="boy">Boys</option></select></div><div class="field"><label>Title ID</label><input id="stitle"></div><div class="field"><label>Avatar ID</label><input id="savatar"></div><div class="groupbox"><div class="field"><label>HP</label><input id="shp" type="number"></div><div class="field"><label>Gold</label><input id="sgold" type="number"></div><div class="field"><label>XP</label><input id="sxp" type="number"></div><div class="field"><label>Reason</label><input id="sreason"></div></div><div class="actions" style="margin-top:10px"><button id="saveStudent">SAVE PROFILE</button><button id="deleteStudent">DELETE STUDENT</button><button id="cancelStudent">Cancel</button></div></div></div>
+
+<div id="shopModal" class="modal hidden">
+  <div class="modalbox card shop-modal-box">
+    <div class="modal-heading">
+      <div>
+        <small>DRAGONSWOOD SHOP</small>
+        <h3 id="shopModalTitle">Add Shop Item</h3>
+      </div>
+      <button id="cancelShopItem" class="gray mini">✕</button>
+    </div>
+
+    <input type="hidden" id="shopId">
+
+    <div class="shop-form-grid">
+      <div class="field shop-icon-field">
+        <label>ICON</label>
+        <input id="shopIcon" value="🎁" maxlength="12">
+        <div class="shop-icon-preview" id="shopIconPreview">🎁</div>
+      </div>
+
+      <div class="field">
+        <label>ITEM NAME</label>
+        <input id="shopName" placeholder="Homework Pass">
+      </div>
+
+      <div class="field">
+        <label>GOLD COST</label>
+        <input id="shopCost" type="number" min="0" value="10">
+      </div>
+
+      <div class="field">
+        <label>QUANTITY</label>
+        <input id="shopQuantity" type="number" min="0" placeholder="Blank = unlimited">
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:10px">
+      <label>DESCRIPTION</label>
+      <textarea id="shopDescription" rows="3" placeholder="What does the student receive?"></textarea>
+    </div>
+
+    <div class="shop-toggle-row">
+      <label class="toggle-label">
+        <input id="shopActive" type="checkbox" checked>
+        <span>ACTIVE IN STUDENT SHOP</span>
+      </label>
+    </div>
+
+    <div class="actions" style="margin-top:14px">
+      <button id="saveShopItem">SAVE SHOP ITEM</button>
+      <button id="deleteShopItem" class="danger-soft hidden">DELETE ITEM</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
@@ -175,7 +692,7 @@ import {getFirestore,doc,getDoc,setDoc,collection,onSnapshot,addDoc,deleteDoc,ge
 const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2", "measurementId": "G-LPRLDGVBD2"},TEACHER="jacobicusjax@gmail.com";
 const normalizedEmail = v => String(v||"").trim().toLowerCase();
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),$=id=>document.getElementById(id);
-let points=0,history=[],rewards=[],scores=[],results=[],students=[],recessState={points:0,goal:10,dateKey:""};
+let points=0,history=[],rewards=[],scores=[],results=[],students=[],shopItems=[],purchases=[],recessState={points:0,goal:10,dateKey:""};
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
 const AVATAR_EMOJI={"dragon-purple":"🐉","dragon-green":"🐲","knight":"🛡️","wizard":"🧙","witch":"🧙‍♀️","princess":"👸","prince":"🤴","ranger":"🏹","phoenix":"🔥","wolf":"🐺","owl":"🦉","crystal":"🔮"};
 function levelInfo(xp){const t=[0,100,250,450,700,1000,1400,1900,2500,3250,4150,5200,6400,7750,9250,10900,12700,14650,16750,19000];let l=1;for(let i=0;i<t.length;i++)if(xp>=t[i])l=i+1;return l}
@@ -267,7 +784,9 @@ function listen(){
  onSnapshot(collection(db,"rewards"),s=>{rewards=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+a.points||0)-(+b.points||0));renderRewards();renderPoints()});
  onSnapshot(collection(db,"scores"),s=>{scores=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+b.score||0)-(+a.score||0));renderScores()});
  onSnapshot(collection(db,"gameResults"),s=>{results=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));renderResults()});
- onSnapshot(collection(db,"students"),s=>{students=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.firstName||"").localeCompare(String(b.firstName||"")));renderStudents()});
+ onSnapshot(collection(db,"students"),s=>{students=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.firstName||"").localeCompare(String(b.firstName||"")));renderStudents();renderShop()});
+ onSnapshot(collection(db,"shopItems"),s=>{shopItems=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.name||"").localeCompare(String(b.name||"")));renderShop()});
+ onSnapshot(collection(db,"purchases"),s=>{purchases=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.purchasedAt?.seconds||0)-(a.purchasedAt?.seconds||0));renderShop();});
 }
 
 function localDateKey(){
@@ -394,6 +913,162 @@ $("saveStudent").onclick=async()=>{let id=$("sid").value,s=students.find(x=>x.id
 $("massApply").onclick=async()=>{let group=$("massGroup").value,stat=$("massStat").value,amount=+$("massAmount").value||0,reason=$("massReason").value.trim()||"Group award";if(!amount)return alert("Enter a non-zero amount.");let targets=group.startsWith("student:")
   ? students.filter(s=>s.id===group.split(":")[1])
   : students.filter(s=>group==="all"||(group==="girl"&&s.genderGroup==="girl")||(group==="boy"&&s.genderGroup==="boy")||(group==="4"&&s.grade==="4")||(group==="5"&&s.grade==="5"));if(!targets.length)return alert("No students match that group.");if(!confirm(`Apply ${amount>0?"+":""}${amount} ${stat.toUpperCase()} to ${targets.length} student(s)?`))return;const batch=writeBatch(db);for(const s of targets){const next=Math.max(0,(+s[stat]||0)+amount);batch.set(doc(db,"students",s.id),{[stat]:next,updatedAt:serverTimestamp()},{merge:true});batch.set(doc(collection(db,"studentTransactions")),{studentId:s.id,stat,amount:next-(+s[stat]||0),reason,createdAt:serverTimestamp()})}await batch.commit()};
+
+
+// ============================================================
+// DRAGONSWOOD SHOP MANAGER
+// Teacher creates inventory here; student Shop will read shopItems.
+// ============================================================
+function purchaseStudentName(p){
+  if(p.displayName) return p.displayName;
+  const s=students.find(x=>x.id===p.studentId);
+  return s?.firstName || p.studentName || "Student";
+}
+
+function purchaseAvatar(p){
+  const s=students.find(x=>x.id===p.studentId);
+  return AVATAR_EMOJI[s?.avatar] || p.avatarEmoji || "🐉";
+}
+
+function renderShop(){
+  const activeCount=shopItems.filter(i=>i.active!==false).length;
+  const pendingCount=purchases.filter(p=>(p.status||"pending")==="pending").length;
+
+  if($("shopItemCount")) $("shopItemCount").textContent=shopItems.length;
+  if($("shopActiveCount")) $("shopActiveCount").textContent=activeCount;
+  if($("shopPendingCount")) $("shopPendingCount").textContent=pendingCount;
+
+  if($("shopItemList")){
+    $("shopItemList").innerHTML=shopItems.length?shopItems.map(item=>{
+      const qty=item.quantity==null||item.quantity===""?null:Number(item.quantity);
+      const stockLabel=qty==null?"Unlimited":`${Math.max(0,qty)} in stock`;
+      return `<article class="card shop-item-card ${item.active===false?"inactive":""}">
+        <div class="shop-item-icon">${esc(item.icon||"🎁")}</div>
+        <h3>${esc(item.name||"Shop Item")}</h3>
+        <div class="shop-price">🪙 ${Number(item.cost||0)} Gold</div>
+        <p class="shop-description">${esc(item.description||"No description yet.")}</p>
+        <div class="shop-item-meta">
+          <span class="shop-pill">${item.active===false?"HIDDEN":"ACTIVE"}</span>
+          <span class="shop-pill">${esc(stockLabel)}</span>
+        </div>
+        <div class="shop-item-actions">
+          <button class="gray mini" data-shop-edit="${item.id}">EDIT</button>
+          <button class="mini" data-shop-toggle="${item.id}">${item.active===false?"ACTIVATE":"HIDE"}</button>
+        </div>
+      </article>`;
+    }).join(""):`<div class="card muted">No shop items yet. Add the first Dragonswood Shop item.</div>`;
+
+    document.querySelectorAll("[data-shop-edit]").forEach(b=>b.onclick=()=>openShopItem(b.dataset.shopEdit));
+    document.querySelectorAll("[data-shop-toggle]").forEach(b=>b.onclick=async()=>{
+      const item=shopItems.find(x=>x.id===b.dataset.shopToggle);
+      if(!item)return;
+      await setDoc(doc(db,"shopItems",item.id),{active:item.active===false,updatedAt:serverTimestamp()},{merge:true});
+    });
+  }
+
+  renderPurchaseQueue();
+}
+
+function renderPurchaseQueue(){
+  if(!$("purchaseQueue")) return;
+  const filter=$("purchaseFilter")?.value||"pending";
+  const list=purchases.filter(p=>filter==="all"||(p.status||"pending")===filter);
+
+  $("purchaseQueue").innerHTML=list.length?list.map(p=>{
+    const status=p.status||"pending";
+    const when=p.purchasedAt?.seconds?new Date(p.purchasedAt.seconds*1000).toLocaleString():"—";
+    return `<div class="purchase-row">
+      <div class="purchase-avatar">${esc(purchaseAvatar(p))}</div>
+      <div><b>${esc(purchaseStudentName(p))}</b><small>${esc(p.studentEmail||"")}</small></div>
+      <div><b>${esc(p.itemName||"Shop Item")}</b><small>🪙 ${Number(p.cost||0)} Gold • ${esc(when)}</small></div>
+      <span class="purchase-status ${esc(status)}">${esc(status)}</span>
+      <div class="actions">
+        ${status==="pending"?`<button class="mini" data-redeem="${p.id}">REDEEM</button><button class="danger-soft mini" data-cancel-purchase="${p.id}">CANCEL</button>`:""}
+      </div>
+    </div>`;
+  }).join(""):`<div class="muted">No ${filter==="all"?"":filter+" "}purchases yet.</div>`;
+
+  document.querySelectorAll("[data-redeem]").forEach(b=>b.onclick=async()=>{
+    const p=purchases.find(x=>x.id===b.dataset.redeem);
+    if(!p)return;
+    if(!confirm(`Mark ${p.itemName||"this item"} as redeemed for ${purchaseStudentName(p)}?`))return;
+    await setDoc(doc(db,"purchases",p.id),{
+      status:"redeemed",
+      redeemedAt:serverTimestamp(),
+      redeemedBy:TEACHER,
+      updatedAt:serverTimestamp()
+    },{merge:true});
+  });
+
+  document.querySelectorAll("[data-cancel-purchase]").forEach(b=>b.onclick=async()=>{
+    const p=purchases.find(x=>x.id===b.dataset.cancelPurchase);
+    if(!p)return;
+    if(!confirm(`Cancel this purchase for ${purchaseStudentName(p)}?\n\nNOTE: automatic Gold refunds will be added when we wire the student purchasing flow.`))return;
+    await setDoc(doc(db,"purchases",p.id),{
+      status:"cancelled",
+      cancelledAt:serverTimestamp(),
+      cancelledBy:TEACHER,
+      updatedAt:serverTimestamp()
+    },{merge:true});
+  });
+}
+
+function openShopItem(id=""){
+  const item=shopItems.find(x=>x.id===id);
+  $("shopModal").classList.remove("hidden");
+  $("shopId").value=id;
+  $("shopModalTitle").textContent=item?"Edit Shop Item":"Add Shop Item";
+  $("shopIcon").value=item?.icon||"🎁";
+  $("shopIconPreview").textContent=item?.icon||"🎁";
+  $("shopName").value=item?.name||"";
+  $("shopCost").value=item?.cost??10;
+  $("shopQuantity").value=item?.quantity==null?"":item.quantity;
+  $("shopDescription").value=item?.description||"";
+  $("shopActive").checked=item?.active!==false;
+  $("deleteShopItem").classList.toggle("hidden",!item);
+}
+
+$("addShopItem").onclick=()=>openShopItem();
+$("cancelShopItem").onclick=()=>$("shopModal").classList.add("hidden");
+$("shopIcon").oninput=()=>$("shopIconPreview").textContent=$("shopIcon").value.trim()||"🎁";
+$("purchaseFilter").onchange=renderPurchaseQueue;
+
+$("saveShopItem").onclick=async()=>{
+  const name=$("shopName").value.trim();
+  const cost=Math.max(0,Number($("shopCost").value||0));
+  const qtyRaw=$("shopQuantity").value.trim();
+  const quantity=qtyRaw===""?null:Math.max(0,Number(qtyRaw||0));
+
+  if(!name)return alert("Enter a shop item name.");
+
+  const payload={
+    name,
+    icon:$("shopIcon").value.trim()||"🎁",
+    cost,
+    description:$("shopDescription").value.trim(),
+    active:$("shopActive").checked,
+    quantity,
+    updatedAt:serverTimestamp()
+  };
+
+  const id=$("shopId").value;
+  if(id){
+    await setDoc(doc(db,"shopItems",id),payload,{merge:true});
+  }else{
+    await addDoc(collection(db,"shopItems"),{...payload,createdAt:serverTimestamp()});
+  }
+  $("shopModal").classList.add("hidden");
+};
+
+$("deleteShopItem").onclick=async()=>{
+  const id=$("shopId").value;
+  const item=shopItems.find(x=>x.id===id);
+  if(!item)return;
+  if(!confirm(`Delete "${item.name}" from the Dragonswood Shop?\n\nPurchase history will remain intact.`))return;
+  await deleteDoc(doc(db,"shopItems",id));
+  $("shopModal").classList.add("hidden");
+};
+
 
 function renderScores(){$("scoreList").innerHTML=scores.length?scores.map(s=>`<div class="item"><div class="icon">🏆</div><div><b>${esc(s.displayName||s.playerName||"Player")} — ${+s.score||0}</b><small>${esc(s.gameName||s.game||"Game")}</small></div><div><button class="danger mini" data-sdel="${s.id}">Delete</button></div></div>`).join(""):'<div class="muted">No scores submitted yet.</div>';document.querySelectorAll("[data-sdel]").forEach(b=>b.onclick=async()=>{if(confirm("Delete this score?"))await deleteDoc(doc(db,"scores",b.dataset.sdel))})}
 function renderResults(){$("results").innerHTML=results.length?results.map(r=>`<tr><td>${esc(r.displayName||r.playerName||"Player")}</td><td>${esc(r.gameName||r.game||"Game")}</td><td>${+r.score||0}</td><td>${r.accuracy!=null?esc(r.accuracy)+"%":"—"}</td><td>${esc(r.summary||r.details||"—")}</td><td>${r.createdAt?.seconds?new Date(r.createdAt.seconds*1000).toLocaleString():"—"}</td></tr>`).join(""):'<tr><td colspan="6" class="muted">No academic game results yet.</td></tr>'}

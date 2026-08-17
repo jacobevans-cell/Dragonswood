@@ -1574,6 +1574,14 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 }
 </style>
 
+
+<style id="v25-4-helmet-polish">
+.journal-hero-svg g[filter="url(#gearGlow)"]{
+  transform-box:fill-box;
+  transform-origin:center;
+}
+</style>
+
 </head><body>
 <header class="topbar">
 <div class="shell">
@@ -2324,37 +2332,109 @@ function journalHeroMarkup(){
   };
   const headLayer=()=>{
     if(!head)return "";
-    if(head.id==="gear_royal_crown") return `
+    const hid=String(head.id||"").toLowerCase();
+    const hname=String(head.name||"").toLowerCase();
+    const tier=weaponTier(head);
+    const pal=weaponPalette(head);
+    const [hHi,hMid,hDark]=pal;
+
+    // Crown family
+    if(hid.includes("crown")||hname.includes("crown")){
+      return `
       <g filter="url(#gearGlow)">
-        <path d="M105 65l8-35 22 24 15-35 15 35 22-24 8 35z" fill="url(#goldGrad)" stroke="#7c460b" stroke-width="4"/>
-        <rect x="104" y="62" width="92" height="16" rx="5" fill="#e9aa29" stroke="#ffe38d" stroke-width="4"/>
-        <circle cx="124" cy="63" r="5" fill="#38d8ff"/><circle cx="150" cy="61" r="6" fill="#b259ff"/><circle cx="176" cy="63" r="5" fill="#38d8ff"/>
+        <path d="M104 72l7-39 23 24 16-38 16 38 23-24 7 39z"
+              fill="${tier>=5?"url(#goldGrad)":hMid}" stroke="${tier>=4?"#fff0a2":"#7c4710"}" stroke-width="4"/>
+        <rect x="101" y="68" width="98" height="17" rx="5" fill="${tier>=4?"#d99b20":hDark}" stroke="${hHi}" stroke-width="4"/>
+        <circle cx="123" cy="69" r="5" fill="${tier>=4?"#4ae7ff":hHi}"/>
+        <circle cx="150" cy="66" r="${tier>=5?8:6}" fill="${tier>=5?"#ffffff":hMid}" stroke="${hHi}" stroke-width="2"/>
+        <circle cx="177" cy="69" r="5" fill="${tier>=4?"#b561ff":hHi}"/>
+        ${tier>=4?`<path d="M119 40l9-15 8 16M181 40l-9-15-8 16" stroke="${hHi}" stroke-width="4" fill="none"/>`:""}
+        ${tier>=5?`
+          <circle cx="150" cy="66" r="18" fill="none" stroke="${hHi}" stroke-width="2" opacity=".65"/>
+          <path d="M150 9l5 11 12 1-9 8 3 12-11-6-11 6 3-12-9-8 12-1z" fill="${hHi}" opacity=".85"/>
+        `:""}
       </g>`;
-    if(head.id==="gear_wizard_hat") return `
+    }
+
+    // Wizard / mage hats
+    if(hid.includes("wizard")||hname.includes("hat")&&String(head.classPath||"")==="magic"){
+      return `
       <g filter="url(#gearGlow)">
-        <path d="M145 8l44 89H98z" fill="#3b1768" stroke="#c889ff" stroke-width="5"/>
-        <ellipse cx="145" cy="99" rx="64" ry="17" fill="#50218a" stroke="#f1c75b" stroke-width="4"/>
-        <path d="M129 48l11 12 12-19" fill="none" stroke="#ffd866" stroke-width="5"/>
+        <path d="M147 4l48 96H95z" fill="${hDark}" stroke="${hHi}" stroke-width="5"/>
+        <ellipse cx="147" cy="101" rx="68" ry="18" fill="${hMid}" stroke="${tier>=4?"#f3cf63":hHi}" stroke-width="4"/>
+        <path d="M128 50l12 13 13-21" fill="none" stroke="${tier>=4?"#ffd866":hHi}" stroke-width="5"/>
+        ${tier>=3?`<path d="M170 25l5 9 10 1-8 7 2 10-9-5-9 5 2-10-8-7 10-1z" fill="${hHi}" opacity=".85"/>`:""}
+        ${tier>=5?`<path d="M110 90q37 16 74 0" fill="none" stroke="${hHi}" stroke-width="4"/><circle cx="147" cy="55" r="13" fill="${hMid}" stroke="${hHi}" stroke-width="3"/>`:""}
       </g>`;
-    if(head.id==="gear_explorer_cap") return `
-      <path d="M96 73q9-45 54-46 45 1 54 46v13H96z" fill="#376a49" stroke="#87c99a" stroke-width="4"/>
-      <path d="M138 83h79q-12 22-57 20z" fill="#2c533b" stroke="#7ec590" stroke-width="4"/>`;
-    if(head.id==="gear_dragon_helm") return `
+    }
+
+    // Ranger / explorer hats
+    if(hid.includes("ranger")||hid.includes("explorer")||String(head.classPath||"")==="ranger"){
+      return `
       <g filter="url(#gearGlow)">
-        <path d="M91 92q4-66 59-70 55 4 59 70v18H91z" fill="url(#dragonsteelArmor)" stroke="#7eeeff" stroke-width="5"/>
-        <path d="M103 55L84 32l33 13M197 55l19-23-33 13" fill="#1c2942" stroke="#c995ff" stroke-width="4"/>
-        <path d="M118 79h64v26h-64z" fill="#0b1729" stroke="#86e9ff" stroke-width="4"/>
-        <path d="M128 91h44" stroke="#c9f8ff" stroke-width="5"/>
+        <path d="M96 74q9-46 54-47 45 1 54 47v13H96z"
+              fill="${hMid}" stroke="${hHi}" stroke-width="4"/>
+        <path d="M136 84h84q-15 22-60 21z" fill="${hDark}" stroke="${hHi}" stroke-width="4"/>
+        <path d="M174 50q20-18 34-11-10 17-30 24z" fill="${tier>=3?hHi:"#d9b75c"}" stroke="${hDark}" stroke-width="3"/>
+        ${tier>=4?`<path d="M106 67h87" stroke="${hHi}" stroke-width="4"/><circle cx="149" cy="54" r="7" fill="#f6d567"/>`:""}
       </g>`;
+    }
+
+    // Dragon helmets get a full silhouette change.
+    if(hid.includes("dragon")||hname.includes("dragon")||hid.includes("wyrm")){
+      return `
+      <g filter="url(#gearGlow)">
+        <path d="M88 97q4-70 62-75 58 5 62 75v20H88z" fill="url(#dragonsteelArmor)" stroke="${hHi}" stroke-width="5"/>
+        <path d="M103 57L79 29l41 15M197 57l24-28-41 15" fill="${hDark}" stroke="${tier>=4?"#c995ff":hHi}" stroke-width="4"/>
+        <path d="M115 79h70v31h-70z" fill="#091526" stroke="${hHi}" stroke-width="4"/>
+        <path d="M126 93h48" stroke="#d7f8ff" stroke-width="5"/>
+        <path d="M147 22h7v94h-7z" fill="${hMid}" opacity=".9"/>
+        ${tier>=4?`
+          <path d="M98 100l-17 20M202 100l17 20" stroke="${hHi}" stroke-width="5"/>
+          <path d="M109 64l-12-18M191 64l12-18" stroke="${hHi}" stroke-width="4"/>
+        `:""}
+        ${tier>=5?`
+          <path d="M111 37l14-20 8 24M189 37l-14-20-8 24" fill="${hMid}" stroke="${hHi}" stroke-width="4"/>
+          <path d="M150 58l14 18-14 15-14-15z" fill="${hMid}" stroke="#ffe58a" stroke-width="4"/>
+        `:""}
+      </g>`;
+    }
+
+    // Wolf / beast helms
+    if(hid.includes("wolf")||hname.includes("wolf")){
+      return `
+      <g filter="url(#gearGlow)">
+        <path d="M95 95q4-62 55-68 51 6 55 68v16H95z" fill="${hMid}" stroke="${hHi}" stroke-width="5"/>
+        <path d="M106 49L93 17l31 22M194 49l13-32-31 22" fill="${hDark}" stroke="${hHi}" stroke-width="4"/>
+        <path d="M119 79h62v28h-62z" fill="${hDark}" stroke="${hHi}" stroke-width="4"/>
+        <path d="M132 91h36" stroke="#e8f8ff" stroke-width="5"/>
+      </g>`;
+    }
+
+    // Iron / knight / war helmets
+    if(hid.includes("helm")||hid.includes("iron")||String(head.classPath||"")==="warrior"){
+      return `
+      <g filter="url(#gearGlow)">
+        <path d="M92 97q4-66 58-71 54 5 58 71v18H92z"
+              fill="${tier>=4?"url(#dragonsteelArmor)":"url(#steelHelm)"}"
+              stroke="${tier>=4?hHi:"#dfe8f1"}" stroke-width="5"/>
+        <path d="M145 25h10v90h-10z" fill="${tier>=4?hMid:"#33799f"}"/>
+        <path d="M108 80h84v29h-84z" fill="${tier>=4?"#111a2b":"#223344"}" stroke="${hHi}" stroke-width="4"/>
+        <path d="M125 94h50" stroke="${tier>=4?hHi:"#d7f4ff"}" stroke-width="5"/>
+        ${tier>=3?`<path d="M105 71l-15-17M195 71l15-17" stroke="${hHi}" stroke-width="4"/>`:""}
+        ${tier>=4?`<path d="M105 38l15-15 9 20M195 38l-15-15-9 20" fill="${hDark}" stroke="${hHi}" stroke-width="4"/>`:""}
+        ${tier>=5?`<path d="M150 49l13 17-13 14-13-14z" fill="${hMid}" stroke="#ffe58a" stroke-width="4"/>`:""}
+      </g>`;
+    }
+
+    // Fallback enchanted headpiece
     return `
-      <g>
-        <path d="M95 92q4-62 55-66 51 4 55 66v15H95z" fill="url(#steelHelm)" stroke="#dfe8f1" stroke-width="5"/>
-        <path d="M145 25h10v82h-10z" fill="#33799f"/>
-        <path d="M111 78h78v26h-78z" fill="#223344" stroke="#9ddfff" stroke-width="4"/>
-        <path d="M126 91h48" stroke="#d7f4ff" stroke-width="5"/>
+      <g filter="url(#gearGlow)">
+        <path d="M99 83q13-50 51-50 38 0 51 50v18H99z" fill="${hMid}" stroke="${hHi}" stroke-width="4"/>
+        <path d="M112 78h76" stroke="${hHi}" stroke-width="5"/>
+        ${tier>=3?`<circle cx="150" cy="55" r="11" fill="${hDark}" stroke="${hHi}" stroke-width="4"/>`:""}
       </g>`;
   };
-
   const weaponLayer=()=>{
     if(!weapon)return "";
     const type=weaponVisualType(weapon),tier=weaponTier(weapon),pal=weaponPalette(weapon);

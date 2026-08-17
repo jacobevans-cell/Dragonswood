@@ -246,6 +246,56 @@ service cloud.firestore {
       allow update, delete: if isTeacher();
     }
 
+
+    // Digital bathroom pass state. Students may manage only their own daily status.
+    match /bathroomStatus/{studentId} {
+      allow read: if isTeacher() || isOwner(studentId);
+      allow create: if isOwner(studentId)
+                    && isExploreStudent()
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.passesUsed == 1
+                    && request.resource.data.approvalCredits == 0
+                    && request.resource.data.active == true;
+      allow update: if isOwner(studentId)
+                    && isExploreStudent()
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.passesUsed is number
+                    && request.resource.data.passesUsed >= 0
+                    && request.resource.data.passesUsed <= 3
+                    && request.resource.data.approvalCredits is number
+                    && request.resource.data.approvalCredits >= 0
+                    && request.resource.data.active is bool
+                    && (
+                      (request.resource.data.dateKey == resource.data.dateKey
+                       && request.resource.data.passesUsed >= resource.data.passesUsed
+                       && request.resource.data.passesUsed <= resource.data.passesUsed + 1
+                       && request.resource.data.approvalCredits <= resource.data.approvalCredits)
+                      ||
+                      (request.resource.data.dateKey != resource.data.dateKey
+                       && request.resource.data.passesUsed == 1
+                       && request.resource.data.approvalCredits == 0
+                       && request.resource.data.active == true)
+                    );
+      allow create, update, delete: if isTeacher();
+    }
+
+    match /bathroomRequests/{requestId} {
+      allow create: if isExploreStudent()
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.status == "pending";
+      allow read: if isTeacher() || (isSignedIn() && resource.data.studentId == request.auth.uid);
+      allow update, delete: if isTeacher();
+    }
+
+    match /pointRequests/{requestId} {
+      allow create: if isExploreStudent()
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.status == "pending"
+                    && request.resource.data.reason is string;
+      allow read: if isTeacher() || (isSignedIn() && resource.data.studentId == request.auth.uid);
+      allow update, delete: if isTeacher();
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

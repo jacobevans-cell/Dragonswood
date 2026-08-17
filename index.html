@@ -1840,6 +1840,10 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 }
 </style>
 
+
+<style id="v28-student-requests">
+.student-life-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.student-life-card{padding:14px;border:1px solid rgba(244,201,93,.35);border-radius:12px;background:linear-gradient(145deg,rgba(21,9,48,.9),rgba(3,19,37,.92))}.student-life-card h3{margin:0 0 5px;color:#ffe8a0}.student-life-card p{margin:4px 0;color:#cfc5dc;font-size:11px}.student-life-card button{margin-top:9px;width:100%;padding:11px;font-weight:1000}.bathroom-active{border-color:#52efb1!important;box-shadow:0 0 20px rgba(82,239,177,.15)}.request-row{display:grid;grid-template-columns:1fr auto;gap:7px;margin-top:8px}.request-row select{min-width:0}@media(max-width:760px){.student-life-grid{grid-template-columns:1fr}.request-row{grid-template-columns:1fr}}
+</style>
 </head><body>
 <header class="topbar">
 <div class="shell">
@@ -1946,6 +1950,15 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
           <div class="home-status-card" id="homeTripStatus">
             <span>🚌</span>
             <div><small>FIELD TRIPS</small><b id="homeTripStatusText">ELIGIBLE</b><p id="homeTripStatusSub">You are currently eligible.</p></div>
+          </div>
+        </div>
+        <div class="student-life-grid">
+          <div class="student-life-card" id="bathroomStudentCard">
+            <h3>🚻 Bathroom Pass</h3><p id="bathroomStudentStatus">Loading your passes…</p><button id="bathroomStudentBtn" type="button">LOADING…</button>
+          </div>
+          <div class="student-life-card">
+            <h3>⭐ Request Recognition</h3><p>Think Mr. Evans missed something positive? Send a quick request. You do not award yourself the point.</p>
+            <div class="request-row"><select id="recognitionReason"><option>Great Effort</option><option>Ready & Working</option><option>Kindness</option><option>Leadership</option><option>Helped Someone</option><option>Academic Win</option><option>Other Positive Choice</option></select><button id="recognitionRequestBtn" type="button">REQUEST</button></div><p id="recognitionRequestStatus"></p>
           </div>
         </div>
       </div>
@@ -2267,6 +2280,7 @@ const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "auth
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const DOMAIN="explore.academy";
 const $=id=>document.getElementById(id);
+let bathroomUnsub=null;
 let user=null,profile=null,rewards=[],classPoints=0,scores=[],shopItems=[],myPurchases=[],shopFilter="all",shopSort="level",inventoryFilter="all",profileUnsub=null,purchasesUnsub=null;
 
 const TITLES=[
@@ -2374,6 +2388,25 @@ if($("googleBtn")) $("googleBtn").onclick=async()=>{
 if($("signOutBtn")) $("signOutBtn").onclick=()=>signOut(auth);
 if($("profileBtn")) $("profileBtn").onclick=()=>openProfile(true);
 
+function phoenixDateKey(){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Phoenix',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}
+function studentDisplayName(){return (profile?.firstName||user?.displayName||user?.email?.split('@')[0]||'Student').trim()}
+function watchBathroom(){
+ if(bathroomUnsub){try{bathroomUnsub()}catch(e){} bathroomUnsub=null}
+ if(!user)return;
+ bathroomUnsub=onSnapshot(doc(db,'bathroomStatus',user.uid),snap=>renderBathroomStudent(snap.exists()?snap.data():null));
+}
+function renderBathroomStudent(d){
+ const key=phoenixDateKey(),same=d?.dateKey===key,used=same?(+d?.passesUsed||0):0,active=same&&d?.active===true,credits=same?(+d?.approvalCredits||0):0;
+ const card=$('bathroomStudentCard'),txt=$('bathroomStudentStatus'),btn=$('bathroomStudentBtn');if(!card||!txt||!btn)return;
+ card.classList.toggle('bathroom-active',active);
+ if(active){txt.textContent=`YOU ARE OUT • ${Math.max(0,3-used)} automatic passes remain today. Tap when you return.`;btn.textContent='✅ I AM BACK IN CLASS';btn.disabled=false;btn.onclick=()=>setDoc(doc(db,'bathroomStatus',user.uid),{active:false,returnedAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});return}
+ txt.textContent=used<3?`${3-used} of 3 automatic passes remaining today.`:(credits>0?`Teacher approved ${credits} extra pass${credits===1?'':'es'}.`:'Your 3 automatic passes are used. Extra trips need teacher approval.');
+ btn.textContent=used<3?'🚻 USE BATHROOM PASS':credits>0?'🚻 USE APPROVED PASS':'🙋 REQUEST EXTRA PASS';btn.disabled=false;
+ btn.onclick=async()=>{btn.disabled=true;try{if(used<3){await setDoc(doc(db,'bathroomStatus',user.uid),{studentId:user.uid,studentName:studentDisplayName(),dateKey:key,passesUsed:used+1,approvalCredits:credits,active:true,leftAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true})}else if(credits>0){await setDoc(doc(db,'bathroomStatus',user.uid),{studentId:user.uid,studentName:studentDisplayName(),dateKey:key,passesUsed:used,approvalCredits:credits-1,active:true,leftAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true})}else{const id=user.uid+'_'+Date.now();await setDoc(doc(db,'bathroomRequests',id),{studentId:user.uid,studentName:studentDisplayName(),dateKey:key,status:'pending',createdAt:serverTimestamp()});txt.textContent='Extra bathroom pass requested. Waiting for teacher approval.'}}catch(e){txt.textContent='Could not update the pass. Please tell your teacher.'}finally{btn.disabled=false}}
+}
+async function sendRecognitionRequest(){const b=$('recognitionRequestBtn'),st=$('recognitionRequestStatus');if(!user||!b)return;b.disabled=true;try{const id=user.uid+'_'+Date.now();await setDoc(doc(db,'pointRequests',id),{studentId:user.uid,studentName:studentDisplayName(),reason:$('recognitionReason')?.value||'Positive choice',status:'pending',createdAt:serverTimestamp()});st.textContent='✓ Sent to Mr. Evans for review.'}catch(e){st.textContent='Could not send the request. Please tell Mr. Evans.'}finally{setTimeout(()=>b.disabled=false,1200)}}
+document.getElementById('recognitionRequestBtn')?.addEventListener('click',sendRecognitionRequest);
+
 onAuthStateChanged(auth,async u=>{
   user=u;
   if(profileUnsub){try{profileUnsub()}catch(e){} profileUnsub=null}
@@ -2414,6 +2447,7 @@ onAuthStateChanged(auth,async u=>{
 
   try{
     const ref=doc(db,"students",u.uid);
+    watchBathroom();
     const snap=await getDoc(ref);
     if(snap.exists()){
       profile=snap.data();

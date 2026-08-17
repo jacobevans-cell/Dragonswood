@@ -1,20 +1,8 @@
-FIREBASE RULE CHANGE FOR AVATAR MAKER 2.0
+DRAGONSWOOD v28 FIREBASE RULES UPDATE
 
-In the students/{studentId} student-owned update rule, avatar2 must be allowed.
-Use this affectedKeys list:
+1. Open Firebase Console > Firestore Database > Rules.
+2. Replace the entire rules editor with the contents of firestore.rules from this package.
+3. Click Publish.
+4. Then upload the HTML files to GitHub.
 
-.hasOnly([
-  'title',
-  'avatar',
-  'avatar2',
-  'updatedAt'
-]);
-
-avatar2 stores:
-- free physical appearance
-- owned inventory
-- equipped item IDs
-
-IMPORTANT:
-The future Gear Shop will move inventory granting to a safer transaction model.
-V19 establishes the character/equipment data model and visual builder first.
+New collections: bathroomStatus, bathroomRequests, pointRequests.

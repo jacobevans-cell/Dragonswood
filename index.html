@@ -1495,7 +1495,7 @@ const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "auth
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const DOMAIN="explore.academy";
 const $=id=>document.getElementById(id);
-let user=null,profile=null,rewards=[],classPoints=0,scores=[],shopItems=[],myPurchases=[],shopFilter="all",inventoryFilter="all";
+let user=null,profile=null,rewards=[],classPoints=0,scores=[],shopItems=[],myPurchases=[],shopFilter="all",inventoryFilter="all",profileUnsub=null,purchasesUnsub=null;
 
 const TITLES=[
   {id:"princess",label:"Princess",position:"before"},
@@ -1586,25 +1586,32 @@ if($("profileBtn")) $("profileBtn").onclick=()=>openProfile(true);
 
 onAuthStateChanged(auth,async u=>{
   user=u;
+  if(profileUnsub){try{profileUnsub()}catch(e){} profileUnsub=null}
+  if(purchasesUnsub){try{purchasesUnsub()}catch(e){} purchasesUnsub=null}
+  myPurchases=[];
 
   if(!u){
+    profile=null;
     $("signedOut").classList.remove("hidden");
-    $("signedIn").classList.add("hidden"); if(document.getElementById("topStats")) $("topStats").classList.add("hidden"); if(document.getElementById("profileStrip")) $("profileStrip").classList.add("hidden");
+    $("signedIn").classList.add("hidden");
+    if($("topStats"))$("topStats").classList.add("hidden");
+    if($("profileStrip"))$("profileStrip").classList.add("hidden");
     $("account").classList.add("hidden");
-    if($("conn")) $("conn").textContent="Waiting for sign-in…";
+    if($("conn"))$("conn").textContent="Waiting for sign-in…";
     return;
   }
 
   const email=String(u.email||"").trim().toLowerCase();
-
-  // Do NOT immediately sign the user back out. Show exactly what account Firebase received.
   if(!email.endsWith("@"+DOMAIN)){
+    profile=null;
     $("signedOut").classList.remove("hidden");
-    $("signedIn").classList.add("hidden"); if(document.getElementById("topStats")) $("topStats").classList.add("hidden"); if(document.getElementById("profileStrip")) $("profileStrip").classList.add("hidden");
+    $("signedIn").classList.add("hidden");
+    if($("topStats"))$("topStats").classList.add("hidden");
+    if($("profileStrip"))$("profileStrip").classList.add("hidden");
     $("account").classList.remove("hidden");
     $("accountEmail").textContent=u.email||"Unknown account";
-    if($("conn")) $("conn").textContent="Signed in, but this account is not authorized.";
-    $("loginError").textContent=`Firebase signed you in as ${u.email||"an account"}, but Dragonswood only allows @${DOMAIN} school accounts. Use Sign Out, then choose your school account.`;
+    if($("conn"))$("conn").textContent="Signed in, but this account is not authorized.";
+    $("loginError").textContent=`Firebase signed you in as ${u.email||"an account"}, but Dragonswood only allows @${DOMAIN} school accounts.`;
     return;
   }
 
@@ -1613,12 +1620,11 @@ onAuthStateChanged(auth,async u=>{
   $("signedIn").classList.remove("hidden");
   $("account").classList.remove("hidden");
   $("accountEmail").textContent=u.email;
-  if($("conn")) $("conn").textContent="✓ Connected to your Dragonswood account";
+  if($("conn"))$("conn").textContent="✓ Connected to your Dragonswood account";
 
   try{
     const ref=doc(db,"students",u.uid);
     const snap=await getDoc(ref);
-
     if(snap.exists()){
       profile=snap.data();
       renderProfile();
@@ -1627,19 +1633,36 @@ onAuthStateChanged(auth,async u=>{
       openProfile(false);
     }
 
-    onSnapshot(ref,s=>{
-      if(s.exists()){
-        profile=s.data();
+    profileUnsub=onSnapshot(ref,s=>{
+      if(!s.exists())return;
+      profile=s.data();
+      try{
         renderProfile();
+        if($("conn"))$("conn").textContent="✓ Connected to your Dragonswood account";
+      }catch(err){
+        console.error("Profile render error:",err);
+        if($("conn"))$("conn").textContent=`Profile loaded; display error: ${err.message||"unknown"}`;
       }
     },err=>{
       console.error("Student profile listener error:",err);
-      if($("conn")) $("conn").textContent=`Profile data error: ${err.code||"unknown"}`;
+      if($("conn"))$("conn").textContent=`Profile data error: ${err.code||"unknown"}`;
     });
 
+    purchasesUnsub=onSnapshot(
+      query(collection(db,"purchases"),where("studentId","==",u.uid)),
+      s=>{
+        myPurchases=s.docs.map(d=>({id:d.id,...d.data()}))
+          .sort((x,y)=>(y.purchasedAt?.seconds||0)-(x.purchasedAt?.seconds||0));
+        renderStudentShop();
+      },
+      err=>{
+        console.error("Student purchase listener error:",err);
+        showShopNotice(`Purchase history error: ${err.code||"unknown"}`,"error");
+      }
+    );
   }catch(err){
     console.error("Student portal startup error:",err);
-    if($("conn")) $("conn").textContent=`Signed in, but profile data failed: ${err.code||"unknown"}`;
+    if($("conn"))$("conn").textContent=`Signed in, but profile data failed: ${err.code||"unknown"} — ${err.message||""}`;
     $("loginError").textContent=`Firebase profile error: ${err.code||"unknown"} — ${err.message||""}`;
   }
 });
@@ -1649,8 +1672,8 @@ function gearStats(){
   const eq=avatarDraft?.equipped||{}; let out={atk:1,def:0,hp:10,heal:0};
   Object.values(eq).forEach(id=>{const item=shopItems.find(x=>x.id===id); const st=item?.stats||{}; out.atk+=Number(st.atk||0);out.def+=Number(st.def||0);out.hp+=Number(st.hp||0);out.heal+=Number(st.heal||0)}); return out;
 }
-function gearVisual(slot){const id=(avatarDraft?.equipped||profile?.equipped||{})?.[slot];const item=shopItems.find(x=>x.id===id);return item?.icon||""}
-function gearItem(slot){const id=(avatarDraft?.equipped||profile?.equipped||{})?.[slot];return shopItems.find(x=>x.id===id)}
+function gearVisual(slot){const id=(avatarDraft?.equipped||profile?.equipped||{})?.[slot];const item=shopItems.find(x=>x.id===id)||DRAGONSWOOD_STARTER_CATALOG.find(x=>x.id===id);return item?.icon||""}
+function gearItem(slot){const id=(avatarDraft?.equipped||profile?.equipped||{})?.[slot];return shopItems.find(x=>x.id===id)||DRAGONSWOOD_STARTER_CATALOG.find(x=>x.id===id)}
 function rarityClass(item){return `rarity-${item?.rarity||"common"}`}
 function currentPlayerLevel(){return levelInfo(Number(profile?.xp||0)).level}
 function isOwnedGear(item){return Array.isArray(profile?.inventory)&&profile.inventory.includes(item.id)}
@@ -1772,30 +1795,23 @@ $("saveProfile").onclick=async()=>{
 
 function renderProfile(){
   if(!profile)return;
-  const li=levelInfo(+profile.xp||0);
-  const display=formatName(profile);
-  const hp=+profile.hp||0, gold=+profile.gold||0, xp=+profile.xp||0;
-  $("avatar").classList.add("mini-chibi"); $("avatar").innerHTML=chibiMarkup({...defaultAvatarConfig(),...(profile.avatarConfig||{})},true);
-  $("displayName").textContent=display;
-  $("profileSub").textContent=`Level ${li.level} • Grade ${profile.grade} • ${profile.genderGroup==="girl"?"Girls":"Boys"} • ${li.next-xp} XP to next level`;
-  $("hp").textContent=hp;
-  $("gold").textContent=gold;
-  $("xp").textContent=xp;
-  $("levelFill").style.width=li.pct+"%";
-  if(document.getElementById("levelShield")) $("levelShield").textContent=li.level;
-  if(document.getElementById("levelTop")) $("levelTop").textContent=li.level;
+  const li=levelInfo(+profile.xp||0),display=formatName(profile);
+  const hp=+profile.hp||0,gold=+profile.gold||0,xp=+profile.xp||0;
 
-  // Mirror the same Firebase profile into the new portal screens.
-  if($("shopGold")) $("shopGold").textContent=gold;
-  if($("questXp")) $("questXp").textContent=xp;
-  if($("journalAvatar")){ $("journalAvatar").classList.add("mini-chibi"); $("journalAvatar").innerHTML=chibiMarkup({...defaultAvatarConfig(),...(profile.avatarConfig||{})},true); }
-  if($("journalName")) $("journalName").textContent=display;
-  if($("journalSub")) $("journalSub").textContent=`Level ${li.level} • Grade ${profile.grade} • ${profile.genderGroup==="girl"?"Girls":"Boys"} • ${li.next-xp} XP to next level`;
-  if($("journalHp")) $("journalHp").textContent=hp;
-  if($("journalGold")) $("journalGold").textContent=gold;
-  if($("journalXp")) $("journalXp").textContent=xp;
-  if($("journalLevelFill")) $("journalLevelFill").style.width=li.pct+"%";
-  if($("journalLevelText")) $("journalLevelText").textContent=`Level ${li.level} • ${Math.round(li.pct)}% toward Level ${li.level+1}`;
+  if($("avatar")){$("avatar").classList.add("mini-chibi");$("avatar").innerHTML=chibiMarkup({...defaultAvatarConfig(),...(profile.avatarConfig||{})},true)}
+  if($("displayName"))$("displayName").textContent=display;
+  if($("profileSub"))$("profileSub").textContent=`Level ${li.level} • Grade ${profile.grade} • ${profile.genderGroup==="girl"?"Girls":"Boys"} • ${li.next-xp} XP to next level`;
+  if($("hp"))$("hp").textContent=hp;
+  if($("gold"))$("gold").textContent=gold;
+  if($("xp"))$("xp").textContent=xp;
+  if($("levelFill"))$("levelFill").style.width=li.pct+"%";
+  if($("levelShield"))$("levelShield").textContent=li.level;
+  if($("levelTop"))$("levelTop").textContent=li.level;
+  if($("shopGold"))$("shopGold").textContent=gold;
+  if($("questXp"))$("questXp").textContent=xp;
+  if($("journalName"))$("journalName").textContent=display;
+  if($("journalSub"))$("journalSub").textContent=`Level ${li.level} • Grade ${profile.grade} • ${profile.genderGroup==="girl"?"Girls":"Boys"} • ${li.next-xp} XP to next level`;
+
   renderStudentShop();
   renderJournalRpg();
 }
@@ -1818,6 +1834,7 @@ onSnapshot(doc(db,"classData","secondRecess"),snap=>{
 });
 
 function renderSecondRecess(){
+  if(!$("recessPoints")||!$("recessGoal")||!$("recessFill")||!$("recessStatus")||!$("recessHeadline")||!$("recessMessage")||!$("recessCard"))return;
   const today=localDateKey();
   // Old Firebase value is visually treated as reset until the teacher opens the portal.
   const active=recessState.dateKey===today;
@@ -1846,12 +1863,6 @@ onSnapshot(collection(db,"shopItems"),s=>{
   renderStudentShop();
   renderJournalRpg();
 });
-onSnapshot(query(collection(db,"purchases"),where("studentId","==",u.uid)),s=>{
-  myPurchases=s.docs.map(d=>({id:d.id,...d.data()}))
-    .sort((a,b)=>(b.purchasedAt?.seconds||0)-(a.purchasedAt?.seconds||0));
-  renderStudentShop();
-});
-
 
 function glitterizeStaticIcons(){
   document.querySelectorAll(".logo,.avatar,.reward .icon,.visual,.miniavatar").forEach(el=>{
@@ -2058,6 +2069,8 @@ async function buyShopItem(itemId){
       });
     });
 
+    const freshProfile=await getDoc(doc(db,"students",user.uid));
+    if(freshProfile.exists()){profile=freshProfile.data();renderProfile()}
     showShopNotice(isGearPurchase?`Purchased ${itemName}! It is now in My Journal → Inventory.`:`Purchased ${itemName}! Your teacher now has the redemption request.`);
   }catch(err){
     console.error("Shop purchase error:",err);
@@ -2109,7 +2122,7 @@ function renderJournalRpg(){
     }).join("");
   }
 
-  let owned=(profile.inventory||[]).map(id=>shopItems.find(x=>x.id===id)).filter(Boolean);
+  let owned=(Array.isArray(profile.inventory)?profile.inventory:[]).map(id=>shopItems.find(x=>x.id===id)||DRAGONSWOOD_STARTER_CATALOG.find(x=>x.id===id)).filter(Boolean);
   if(inventoryFilter==="outfit")owned=owned.filter(x=>["outfit","feet","head"].includes(x.equipSlot));
   else if(inventoryFilter==="weapon")owned=owned.filter(x=>x.equipSlot==="weapon"||x.equipSlot==="offhand");
   else if(inventoryFilter==="armor")owned=owned.filter(x=>x.equipSlot==="armor");

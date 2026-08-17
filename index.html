@@ -2612,7 +2612,7 @@ function renderBathroomStudent(d){
        if(code.includes('permission-denied')){
          txt.textContent='Bathroom pass permission blocked. Teacher needs to publish the newest Firestore rules.';
        }else{
-         txt.textContent='Could not update the pass. Please tell your teacher.';
+         txt.textContent='ERROR: '+(err?.code||'no-code')+' — '+(err?.message||String(err));
        }
      }
      window.DWAudio?.negative();

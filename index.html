@@ -358,7 +358,7 @@ function renderProfile(){
   if(!profile)return;
   const li=levelInfo(+profile.xp||0);
   $("avatar").textContent=avatarEmoji(profile.avatar);$("displayName").textContent=formatName(profile);$("profileSub").textContent=`Level ${li.level} • Grade ${profile.grade} • ${profile.genderGroup==="girl"?"Girls":"Boys"} • ${li.next-(+profile.xp||0)} XP to next level`;
-  $("hp").textContent=+profile.hp||0;$("gold").textContent=+profile.gold||0;$("xp").textContent=+profile.xp||0;$("levelFill").style.width=li.pct+"%"; if(document.getElementById("levelShield")) $("levelShield").textContent=li.level; if(document.getElementById("levelTop")) $("levelTop").textContent=li.level; if(document.getElementById("levelShield")) $("levelShield").textContent=li.level;
+  $("hp").textContent=+profile.hp||0;$("gold").textContent=+profile.gold||0;$("xp").textContent=+profile.xp||0;$("levelFill").style.width=li.pct+"%"; if(document.getElementById("levelShield")) $("levelShield").textContent=li.level; if(document.getElementById("levelTop")) $("levelTop").textContent=li.level;
 }
 
 
@@ -389,7 +389,7 @@ function renderSecondRecess(){
   $("recessPoints").textContent=`${p} point${p===1?"":"s"}`;
   $("recessGoal").textContent=`Goal: ${g}`;
   $("recessFill").style.width=Math.min(100,(p/g)*100)+"%";
-  $("recessStatus").textContent=earned?"✅ SECOND RECESS EARNED":"⏳ NOT EARNED YET"; if(document.getElementById("recessNeed")) $("recessNeed").textContent=Math.max(0,g-p); if(document.getElementById("recessNeed")) $("recessNeed").textContent=Math.max(0,g-p);
+  $("recessStatus").textContent=earned?"✅ SECOND RECESS EARNED":"⏳ NOT EARNED YET"; if(document.getElementById("recessNeed")) $("recessNeed").textContent=Math.max(0,g-p);
   $("recessHeadline").textContent=earned?"Second Recess Is ON!":"Working Toward Second Recess";
   $("recessMessage").textContent=earned
     ?"You earned today's second recess. Please stop asking your teacher now."
@@ -443,7 +443,7 @@ function updateEggAnimation(points, rewards){
 
 function renderRewards(){
  const p=classPoints,r=rewards,max=r.length?Math.max(...r.map(x=>+x.points||0),100):100,next=r.find(x=>p<(+x.points||0)),last=[...r].reverse().find(x=>p>=(+x.points||0));
- $("points").textContent=p;$("fill").style.width=Math.min(100,p/max*100)+"%";updateEggAnimation(p,r); const petGoal=r.find(x=>String(x.name||"").toLowerCase().includes("class pet")); const pg=Number(petGoal?.points||100); if(document.getElementById("eggPercent")) $("eggPercent").textContent=Math.min(100,Math.round(p/pg*100))+"%"; const petGoal=r.find(x=>String(x.name||"").toLowerCase().includes("class pet")); const pg=Number(petGoal?.points||100); if(document.getElementById("eggPercent")) $("eggPercent").textContent=Math.min(100,Math.round(p/pg*100))+"%";$("headline").textContent=last?`${last.icon||"🎉"} ${last.name} Unlocked!`:"Our Dragonswood Journey";$("message").textContent=next?`${(+next.points)-p} more points until ${next.name}.`:(r.length?"All current rewards are unlocked!":"Rewards are being prepared.");$("next").textContent=next?`NEXT: ${next.icon||"🎁"} ${next.name} at ${next.points} points`:"🏆 All current rewards unlocked!";
+ $("points").textContent=p;$("fill").style.width=Math.min(100,p/max*100)+"%";updateEggAnimation(p,r); const petGoal=r.find(x=>String(x.name||"").toLowerCase().includes("class pet")); const pg=Number(petGoal?.points||100); if(document.getElementById("eggPercent")) $("eggPercent").textContent=Math.min(100,Math.round(p/pg*100))+"%";$("headline").textContent=last?`${last.icon||"🎉"} ${last.name} Unlocked!`:"Our Dragonswood Journey";$("message").textContent=next?`${(+next.points)-p} more points until ${next.name}.`:(r.length?"All current rewards are unlocked!":"Rewards are being prepared.");$("next").textContent=next?`NEXT: ${next.icon||"🎁"} ${next.name} at ${next.points} points`:"🏆 All current rewards unlocked!";
  $("rewards").innerHTML=r.length?r.map(x=>{let g=+x.points||0;return `<div class="reward ${p>=g?'unlocked':''} ${next?.id===x.id?'current':''}"><div class="icon">${esc(x.icon||"🎁")}</div><b>${esc(x.name)}</b><small>${g} points</small></div>`}).join(""):"<div>No rewards yet.</div>";
  glitterizeStaticIcons();
 }

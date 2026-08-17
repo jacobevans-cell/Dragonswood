@@ -245,6 +245,141 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 }
 </style>
 
+
+<style id="dragonswood-v16-1-wrap-fix">
+/* ============================================
+   V16.1 — TEXT WRAP / PANEL WIDTH FIX
+   Do not split words in the fantasy HUD.
+============================================ */
+
+/* The old rule used overflow-wrap:anywhere, which is why
+   "Dragonswood" could become "Dragonswo / od". Kill that. */
+.egg-copy h3,
+.egg-copy p,
+.egg-copy .goal,
+.reward b,
+.reward small,
+.recess-side h2,
+.recess-side p,
+.section-title h2,
+.section-title p,
+.profile-name,
+.profile-sub,
+.navtile,
+.game h3,
+.game p {
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+  hyphens: none !important;
+}
+
+/* Give the story panel enough real width to hold normal words. */
+.reward-top {
+  grid-template-columns: 360px minmax(0, 1fr) !important;
+}
+
+.egg-story {
+  grid-template-columns: 118px minmax(215px, 1fr) !important;
+  gap: 15px !important;
+  padding: 15px 16px !important;
+}
+
+.egg-copy {
+  min-width: 215px !important;
+  overflow: visible !important;
+}
+
+.egg-copy h3 {
+  font-size: 24px !important;
+  line-height: 1.08 !important;
+  max-width: 220px;
+  margin-bottom: 12px !important;
+}
+
+.egg-copy p {
+  font-size: 14px !important;
+  line-height: 1.42 !important;
+  max-width: 230px;
+}
+
+.egg-copy .goal {
+  display: block;
+  max-width: 230px;
+  white-space: normal;
+}
+
+/* Reward labels may wrap at spaces, but never break a word. */
+.reward {
+  padding-left: 7px !important;
+  padding-right: 7px !important;
+}
+
+.reward b {
+  line-height: 1.12 !important;
+  text-wrap: balance;
+}
+
+.reward small {
+  white-space: nowrap;
+}
+
+/* Second Recess can use two clean lines instead of ugly breaks. */
+.recess-side h2 {
+  line-height: 1.08 !important;
+  text-wrap: balance;
+}
+
+/* Keep the title row from squeezing its own text. */
+.section-title > div {
+  flex: 0 0 auto;
+  min-width: max-content;
+}
+
+/* At smaller widths, stack the story/progress panels before
+   resorting to destructive word wrapping. */
+@media (max-width: 1320px) {
+  .reward-top {
+    grid-template-columns: 330px minmax(0, 1fr) !important;
+  }
+  .egg-story {
+    grid-template-columns: 105px minmax(200px, 1fr) !important;
+  }
+}
+
+@media (max-width: 1120px) {
+  .reward-top {
+    grid-template-columns: 1fr !important;
+  }
+  .egg-story {
+    grid-template-columns: 125px minmax(0, 1fr) !important;
+  }
+  .egg-copy {
+    min-width: 0 !important;
+  }
+  .egg-copy h3,
+  .egg-copy p,
+  .egg-copy .goal {
+    max-width: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .egg-story {
+    grid-template-columns: 1fr !important;
+    text-align: center;
+  }
+  .egg-copy h3,
+  .egg-copy p,
+  .egg-copy .goal {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .section-title > div {
+    min-width: 0;
+  }
+}
+</style>
+
 </head><body>
 <header class="topbar">
 <div class="shell">

@@ -100,7 +100,7 @@ service cloud.firestore {
                        ).data.xpAward >= 0
                     && getAfter(
                          /databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)
-                       ).data.xpAward <= 10
+                       ).data.xpAward <= 12
                     && getAfter(
                          /databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)
                        ).data.goldAward is number
@@ -154,7 +154,7 @@ service cloud.firestore {
                     && request.resource.data.status == "complete"
                     && request.resource.data.xpAward is number
                     && request.resource.data.xpAward >= 0
-                    && request.resource.data.xpAward <= 10
+                    && request.resource.data.xpAward <= 12
                     && request.resource.data.goldAward is number
                     && request.resource.data.goldAward >= 0
                     && request.resource.data.goldAward <= 3;

@@ -628,6 +628,17 @@ h1 span{color:var(--dw-gold2)}
 .mission-card:has(#questScoreValue) .value{color:#ffe98a}
 </style>
 
+<style id="v27-4-round-themes">
+body.round-1{--round:#b88756;--round2:#f0d4aa;--rglow:rgba(184,135,86,.25)}
+body.round-2{--round:#59b9e8;--round2:#c8f4ff;--rglow:rgba(65,173,230,.30)}
+body.round-3{--round:#b35cff;--round2:#f3c8ff;--rglow:rgba(179,92,255,.32)}
+body.round-1 .top,body.round-1 .mission-card,body.round-1 .panel,body.round-1 .coach{border-color:rgba(190,145,90,.55)!important}
+body.round-2 .top,body.round-2 .mission-card,body.round-2 .panel,body.round-2 .coach{border-color:rgba(80,190,240,.62)!important;box-shadow:0 0 18px rgba(80,190,240,.08)}
+body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .coach{border-color:rgba(190,100,255,.66)!important;box-shadow:0 0 20px rgba(190,100,255,.11)}
+.round-card .value,.round-sub{color:var(--round2)}
+.round-sub{margin-top:5px;font-size:10px;font-weight:1000;text-transform:uppercase;letter-spacing:.7px}
+.round-banner{margin:0 0 12px;padding:10px 14px;border:1px solid var(--round);border-radius:10px;background:linear-gradient(90deg,var(--rglow),rgba(5,8,28,.72));color:var(--round2);font-weight:1000;text-align:center;letter-spacing:.5px}
+</style>
 </head>
 <body>
 
@@ -643,7 +654,8 @@ h1 span{color:var(--dw-gold2)}
     <div class="dw-reward"><small>GOLD</small><b id="dwGold">—</b></div>
     <div class="dw-reward"><small>PER QUEST REWARD</small><b id="dwDailyReward">5–8 XP + 1–2 Gold</b></div>
   </div>
-  <div class="dw-status" id="dwStatus">PLAYER XP THIS RUN grows your Dragonswood level. QUEST HIGH SCORE is just for competing and beating your best score. Complete quests repeatedly until the 150 Player XP daily cap.</div>
+  <div class="dw-status" id="dwStatus">Three rounds • 10 problems each. Peasant Training → Warrior Trial → Mage Trial. Each new round palette-swaps and earns slightly more Player XP.</div>
+  <div class="round-banner" id="roundBanner">🪵 ROUND 1 • PEASANT • Reward up to 8 Player XP</div>
 
   <h1><span>Long Division</span> Quest</h1>
   <div class="subtitle">DIVIDE • MULTIPLY • SUBTRACT • BRING DOWN</div>
@@ -665,12 +677,16 @@ h1 span{color:var(--dw-gold2)}
     </div>
     <div class="mission-card">
       <div class="label">🏆 QUEST HIGH SCORE</div>
-      <div class="value"><span id="questScoreValue">0</span> / 400</div>
+      <div class="value"><span id="questScoreValue">0</span> / 800</div>
       <div style="margin-top:6px;color:var(--muted);font-size:11px">This is your game score only. It does NOT affect player level.</div>
     </div>
     <div class="mission-card">
       <div class="label">Problems</div>
-      <div class="value"><span id="problemCount">0</span> / 5</div>
+      <div class="value"><span id="problemCount">0</span> / 10</div>
+    </div>    <div class="mission-card round-card">
+      <div class="label">ROUND</div>
+      <div class="value"><span id="roundValue">1</span> / 3</div>
+      <div class="round-sub" id="roundName">Peasant Training</div>
     </div>
     <div class="mission-card">
       <div class="label">Accuracy</div>
@@ -773,6 +789,9 @@ h1 span{color:var(--dw-gold2)}
   const xpFill = document.getElementById('xpFill');
   const questScoreValue = document.getElementById('questScoreValue');
   const problemCount = document.getElementById('problemCount');
+  const roundValue = document.getElementById('roundValue');
+  const roundName = document.getElementById('roundName');
+  const roundBanner = document.getElementById('roundBanner');
   const accuracyValue = document.getElementById('accuracyValue');
   const hintsUsedValue = document.getElementById('hintsUsedValue');
   const streakValue = document.getElementById('streakValue');
@@ -798,10 +817,14 @@ h1 span{color:var(--dw-gold2)}
   let problem, tasks=[], taskIndex=-1, solved=0, credited=false;
   let board = { quotient:['','',''], rows:[] };
 
-  const MISSION_PROBLEMS = 5;
-  const XP_GOAL = 400;
+  const PROBLEMS_PER_ROUND = 10;
+  const TOTAL_ROUNDS = 3;
+  const SCORE_GOAL_PER_ROUND = 800;
   let xp = 0;
   let missionSolved = 0;
+  let currentRound = 1;
+  let roundSolved = 0;
+  let roundScoreStart = 0;
   let streak = 0;
   let totalAttempts = 0;
   let correctAttempts = 0;
@@ -813,28 +836,46 @@ h1 span{color:var(--dw-gold2)}
   let dragonswoodMissionReported = false;
 
   function levelInfo(){
-    if(missionSolved >= 5 && xp >= XP_GOAL) return {num:4,name:'MASTER'};
-    if(xp >= 275) return {num:3,name:'EXPERT'};
-    if(xp >= 150) return {num:2,name:'SKILLED'};
+    const roundScore=xp-roundScoreStart;
+    if(roundSolved >= PROBLEMS_PER_ROUND && roundScore >= SCORE_GOAL_PER_ROUND) return {num:4,name:'MASTER'};
+    if(roundScore >= 550) return {num:3,name:'EXPERT'};
+    if(roundScore >= 300) return {num:2,name:'SKILLED'};
     return {num:1,name:'ROOKIE'};
   }
+  function roundXpTarget(round=currentRound){
+    return round===1?8:round===2?10:12;
+  }
   function playerXpThisRun(){
-    const solvedXp=Math.min(MISSION_PROBLEMS,missionSolved);
-    if(missionSolved < MISSION_PROBLEMS) return solvedXp;
+    const base=Math.floor(roundSolved/2);
+    if(roundSolved < PROBLEMS_PER_ROUND) return base;
     const accuracy=totalAttempts===0 ? 1 : (correctAttempts/totalAttempts);
     let bonus=0;
     if(accuracy>=0.90) bonus+=2;
     else if(accuracy>=0.75) bonus+=1;
     if(hintsUsed===0) bonus+=1;
-    return Math.min(8,solvedXp+bonus);
+    return Math.min(roundXpTarget(),base+bonus+(currentRound-1));
+  }
+  function roundThemeInfo(round=currentRound){
+    if(round===1)return {name:"Peasant Training",icon:"🪵",label:"PEASANT"};
+    if(round===2)return {name:"Warrior Trial",icon:"⚔️",label:"WARRIOR"};
+    return {name:"Mage Trial",icon:"🔮",label:"MAGE"};
+  }
+  function applyRoundTheme(){
+    document.body.classList.remove("round-1","round-2","round-3");
+    document.body.classList.add(`round-${currentRound}`);
+    const t=roundThemeInfo();
+    if(roundValue)roundValue.textContent=currentRound;
+    if(roundName)roundName.textContent=t.name;
+    if(roundBanner)roundBanner.textContent=`${t.icon} ROUND ${currentRound} • ${t.label} • Reward up to ${roundXpTarget()} Player XP`;
   }
 
   function updateMissionUI(){
     const runXp=playerXpThisRun();
     xpValue.textContent=`+${runXp} XP`;
     xpFill.style.width=Math.min(100,(runXp/8)*100)+'%';
-    questScoreValue.textContent=xp;
-    problemCount.textContent=missionSolved;
+    questScoreValue.textContent=xp-roundScoreStart;
+    problemCount.textContent=roundSolved;
+    applyRoundTheme();
     const acc=totalAttempts===0 ? 100 : Math.round((correctAttempts/totalAttempts)*100);
     accuracyValue.textContent=acc+'%';
     hintsUsedValue.textContent=hintsUsed;
@@ -842,16 +883,18 @@ h1 span{color:var(--dw-gold2)}
     const level=levelInfo();
     levelBadge.textContent=`LEVEL ${level.num} • ${level.name}`;
 
-    if(missionSolved>=MISSION_PROBLEMS){
+    if(roundSolved>=PROBLEMS_PER_ROUND){
       missionFinished=true;
       missionComplete.classList.add('show');
-      missionSummary.textContent=`You solved all 5 problems • +${playerXpThisRun()} Dragonswood Player XP • Quest Score: ${xp}/400.`;
+      missionSummary.textContent=`Round ${currentRound} complete • ${roundSolved}/${PROBLEMS_PER_ROUND} problems • +${playerXpThisRun()} Dragonswood Player XP • Quest High Score: ${xp-roundScoreStart}/${SCORE_GOAL_PER_ROUND}.`;
       if(!dragonswoodMissionReported){
         dragonswoodMissionReported=true;
         const accuracy=totalAttempts===0?1:(correctAttempts/totalAttempts);
         window.dispatchEvent(new CustomEvent("dragonswood-long-division-complete",{detail:{
           missionXp:xp,
           playerXpEarned:playerXpThisRun(),
+          round:currentRound,
+          roundScore:xp-roundScoreStart,
           solved:missionSolved,
           totalAttempts,
           correctAttempts,
@@ -1289,13 +1332,14 @@ h1 span{color:var(--dw-gold2)}
     xp+=bonus;
     starsValue.textContent=stars;
     missionSolved++;
+    roundSolved++;
 
     stepTitle.textContent='PROBLEM COMPLETE';
     stepText.textContent=`You placed every digit yourself. Rating: ${stars}`;
     cellInstruction.textContent=`${bonusText}. Check: ${problem.quotient} × ${problem.divisor} = ${problem.dividend}.`;
     cellFeedback.textContent=`✓ ${stars}  •  +1 PLAYER XP  •  +${bonus} HIGH-SCORE POINTS`;
     cellFeedback.style.color='#7ed957';
-    progress.textContent=`PROBLEM ${missionSolved} OF ${MISSION_PROBLEMS} COMPLETE`;
+    progress.textContent=`PROBLEM ${roundSolved} OF ${PROBLEMS_PER_ROUND} COMPLETE`;
     nextBtn.textContent='SOLVED';
     nextBtn.disabled=true;
 
@@ -1307,10 +1351,10 @@ h1 span{color:var(--dw-gold2)}
 
     updateMissionUI();
 
-    if(missionSolved < MISSION_PROBLEMS){
+    if(roundSolved < PROBLEMS_PER_ROUND){
       newBtn.textContent='NEXT MISSION PROBLEM';
     }else{
-      newBtn.textContent='START NEW MISSION';
+      newBtn.textContent=currentRound<TOTAL_ROUNDS?'START NEXT ROUND':'START NEW 3-ROUND QUEST';
     }
   }
 
@@ -1318,21 +1362,39 @@ h1 span{color:var(--dw-gold2)}
   nextBtn.addEventListener('click',start);
   newBtn.addEventListener('click',()=>{
     if(missionFinished){
-      xp=0;
-      missionSolved=0;
-      streak=0;
-      totalAttempts=0;
-      correctAttempts=0;
-      hintsUsed=0;
       missionFinished=false;
       dragonswoodMissionReported=false;
       missionComplete.classList.remove('show');
-      starsValue.textContent='★★★';
-      newBtn.textContent='NEW RANDOM PROBLEM';
+      if(currentRound<TOTAL_ROUNDS){
+        currentRound++;
+        roundSolved=0;
+        roundScoreStart=xp;
+        streak=0;
+        totalAttempts=0;
+        correctAttempts=0;
+        hintsUsed=0;
+        starsValue.textContent='★★★';
+        newBtn.textContent='NEW RANDOM PROBLEM';
+        applyRoundTheme();
+      }else{
+        currentRound=1;
+        xp=0;
+        missionSolved=0;
+        roundSolved=0;
+        roundScoreStart=0;
+        streak=0;
+        totalAttempts=0;
+        correctAttempts=0;
+        hintsUsed=0;
+        starsValue.textContent='★★★';
+        newBtn.textContent='NEW RANDOM PROBLEM';
+        applyRoundTheme();
+      }
     }
     makeProblem();
   });
 
+  applyRoundTheme();
   updateMissionUI();
   makeProblem();
 })();
@@ -1413,7 +1475,7 @@ onAuthStateChanged(auth,async user=>{
 window.addEventListener("dragonswood-long-division-complete",async event=>{
   const d=event.detail||{};
   const accuracy=Math.max(0,Math.min(1,Number(d.accuracy||0)));
-  const rewardXp=Math.max(5,Math.min(8,Number(d.playerXpEarned||5)));
+  const rewardXp=Math.max(5,Math.min(12,Number(d.playerXpEarned||5)));
   const rewardGold=Math.max(1,Math.min(2,1+(accuracy>=0.90&&Number(d.hintsUsed||0)===0?1:0)));
   const dailyBefore=profileDailyXp(currentProfile);
   const dailyRemaining=Math.max(0,DRAGONSWOOD_DAILY_XP_CAP-dailyBefore);
@@ -1438,7 +1500,9 @@ window.addEventListener("dragonswood-long-division-complete",async event=>{
       gameName:"Long Division Quest",
       status:"complete",
       dateKey:localDateKey(),
-      problemsSolved:Number(d.solved||5),
+      problemsSolved:PROBLEMS_PER_ROUND,
+      round:Number(d.round||1),
+      roundScore:Number(d.roundScore||0),
       missionXp:Number(d.missionXp||0),
       accuracy:Math.round(accuracy*100),
       hintsUsed:Number(d.hintsUsed||0),

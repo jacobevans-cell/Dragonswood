@@ -1444,11 +1444,34 @@ function renderLiveRequests(){
    const updated=visits.map(v=>{
      if(String(v?.id||'')!==activeVisitId)return v;
      const leftMs=Number(v?.leftMs||0);
-     return {...v,returnedAt:now.toISOString(),returnedText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),durationMinutes:leftMs?Math.max(0,Math.round((now.getTime()-leftMs)/60000)):null,status:'returned'};
+     return {...v,
+       returnedAt:now.toISOString(),
+       returnedText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
+       durationMinutes:leftMs?Math.max(0,Math.round((now.getTime()-leftMs)/60000)):null,
+       status:'returned'
+     };
    });
-   await setDoc(doc(db,'bathroomStatus',b.dataset.returnBath),{
-     active:false,activeVisitId:'',returnedAt:serverTimestamp(),returnedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),visits:updated,updatedAt:serverTimestamp()
+
+   const group=status.genderGroup==="girl"?"girl":"boy";
+   const batch=writeBatch(db);
+   batch.set(doc(db,'bathroomStatus',b.dataset.returnBath),{
+     active:false,
+     activeVisitId:'',
+     returnedAt:serverTimestamp(),
+     returnedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
+     visits:updated,
+     updatedAt:serverTimestamp()
    },{merge:true});
+   batch.set(doc(db,'bathroomSlots',group),{
+     group,
+     occupied:false,
+     studentId:'',
+     studentName:'',
+     releasedAt:serverTimestamp(),
+     updatedAt:serverTimestamp()
+   },{merge:true});
+   await batch.commit();
+   window.DWAudio?.positive();
  });
 
  document.querySelectorAll('[data-bath-approve]').forEach(b=>b.onclick=()=>approveBathroom(b.dataset.bathApprove,true));

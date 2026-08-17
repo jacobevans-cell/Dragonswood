@@ -247,6 +247,51 @@ service cloud.firestore {
     }
 
 
+
+    // One live bathroom slot per student group.
+    // Student pass activation uses a Firestore transaction, so two students
+    // from the same group cannot successfully claim the slot at the same time.
+    match /bathroomSlots/{groupId} {
+      allow read: if isTeacher()
+                  || (
+                    isExploreStudent()
+                    && get(/databases/$(database)/documents/students/$(request.auth.uid)).data.genderGroup == groupId
+                  );
+
+      allow create: if isExploreStudent()
+                    && (groupId == "boy" || groupId == "girl")
+                    && request.resource.data.group == groupId
+                    && request.resource.data.occupied == true
+                    && request.resource.data.studentId == request.auth.uid
+                    && get(/databases/$(database)/documents/students/$(request.auth.uid)).data.genderGroup == groupId;
+
+      allow update: if isExploreStudent()
+                    && (groupId == "boy" || groupId == "girl")
+                    && request.resource.data.group == groupId
+                    && get(/databases/$(database)/documents/students/$(request.auth.uid)).data.genderGroup == groupId
+                    && (
+                      // Claim an available slot, reclaim one's own slot,
+                      // or claim a slot whose stored school-day key is different.
+                      (
+                        request.resource.data.occupied == true
+                        && request.resource.data.studentId == request.auth.uid
+                        && (
+                          resource.data.occupied == false
+                          || resource.data.studentId == request.auth.uid
+                          || resource.data.dateKey != request.resource.data.dateKey
+                        )
+                      )
+                      ||
+                      // Only the current owner may release their own slot.
+                      (
+                        request.resource.data.occupied == false
+                        && resource.data.studentId == request.auth.uid
+                      )
+                    );
+
+      allow create, update, delete: if isTeacher();
+    }
+
     // Digital bathroom pass state. Students may manage only their own daily status.
     match /bathroomStatus/{studentId} {
       allow read: if isTeacher() || isOwner(studentId);

@@ -2280,7 +2280,7 @@ const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "auth
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const DOMAIN="explore.academy";
 const $=id=>document.getElementById(id);
-let bathroomUnsub=null;
+let bathroomUnsub=null,bathroomSlotUnsub=null,bathroomSlotData=null;
 let user=null,profile=null,rewards=[],classPoints=0,scores=[],shopItems=[],myPurchases=[],shopFilter="all",shopSort="level",inventoryFilter="all",profileUnsub=null,purchasesUnsub=null;
 
 const TITLES=[
@@ -2390,10 +2390,33 @@ if($("profileBtn")) $("profileBtn").onclick=()=>openProfile(true);
 
 function phoenixDateKey(){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Phoenix',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}
 function studentDisplayName(){return (profile?.firstName||user?.displayName||user?.email?.split('@')[0]||'Student').trim()}
+function studentBathroomGroup(){
+  return profile?.genderGroup==="girl"?"girl":"boy";
+}
+function bathroomGroupLabel(g){
+  return g==="girl"?"Girls":"Boys";
+}
 function watchBathroom(){
- if(bathroomUnsub){try{bathroomUnsub()}catch(e){} bathroomUnsub=null}
- if(!user)return;
- bathroomUnsub=onSnapshot(doc(db,'bathroomStatus',user.uid),snap=>renderBathroomStudent(snap.exists()?snap.data():null));
+  if(bathroomUnsub){try{bathroomUnsub()}catch(e){} bathroomUnsub=null}
+  if(bathroomSlotUnsub){try{bathroomSlotUnsub()}catch(e){} bathroomSlotUnsub=null}
+  bathroomSlotData=null;
+  if(!user)return;
+
+  bathroomUnsub=onSnapshot(
+    doc(db,'bathroomStatus',user.uid),
+    snap=>renderBathroomStudent(snap.exists()?snap.data():null),
+    err=>console.warn("bathroom status",err)
+  );
+
+  const group=studentBathroomGroup();
+  bathroomSlotUnsub=onSnapshot(
+    doc(db,'bathroomSlots',group),
+    snap=>{
+      bathroomSlotData=snap.exists()?snap.data():null;
+      getDoc(doc(db,'bathroomStatus',user.uid)).then(s=>renderBathroomStudent(s.exists()?s.data():null)).catch(()=>{});
+    },
+    err=>console.warn("bathroom slot",err)
+  );
 }
 function renderBathroomStudent(d){
  const key=phoenixDateKey();
@@ -2401,6 +2424,9 @@ function renderBathroomStudent(d){
  const used=same?(+d?.passesUsed||0):0;
  const active=same&&d?.active===true;
  const credits=same?(+d?.approvalCredits||0):0;
+ const group=studentBathroomGroup();
+ const slotOccupied=bathroomSlotData?.dateKey===key && bathroomSlotData?.occupied===true;
+ const slotMine=slotOccupied && bathroomSlotData?.studentId===user?.uid;
  const card=$('bathroomStudentCard'),txt=$('bathroomStudentStatus'),btn=$('bathroomStudentBtn');
  if(!card||!txt||!btn)return;
 
@@ -2411,36 +2437,73 @@ function renderBathroomStudent(d){
    txt.textContent=`YOU ARE OUT${leftText} • ${Math.max(0,3-used)} automatic passes remain today. Tap when you return.`;
    btn.textContent='✅ I AM BACK IN CLASS';
    btn.disabled=false;
+
    btn.onclick=async()=>{
      btn.disabled=true;
      try{
        const now=new Date();
-       const visits=Array.isArray(d?.visits)?[...d.visits]:[];
-       const activeVisitId=String(d?.activeVisitId||'');
-       const updatedVisits=visits.map(v=>{
-         if(String(v?.id||'')!==activeVisitId)return v;
-         const leftMs=Number(v?.leftMs||0);
-         return {...v,returnedAt:now.toISOString(),returnedText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),durationMinutes:leftMs?Math.max(0,Math.round((now.getTime()-leftMs)/60000)):null,status:'returned'};
+       const statusRef=doc(db,'bathroomStatus',user.uid);
+       const slotRef=doc(db,'bathroomSlots',group);
+
+       await runTransaction(db,async tx=>{
+         const [statusSnap,slotSnap]=await Promise.all([tx.get(statusRef),tx.get(slotRef)]);
+         const current=statusSnap.exists()?statusSnap.data():d||{};
+         const visits=Array.isArray(current?.visits)?[...current.visits]:[];
+         const activeVisitId=String(current?.activeVisitId||'');
+         const updatedVisits=visits.map(v=>{
+           if(String(v?.id||'')!==activeVisitId)return v;
+           const leftMs=Number(v?.leftMs||0);
+           return {...v,
+             returnedAt:now.toISOString(),
+             returnedText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
+             durationMinutes:leftMs?Math.max(0,Math.round((now.getTime()-leftMs)/60000)):null,
+             status:'returned'
+           };
+         });
+
+         tx.set(statusRef,{
+           active:false,
+           activeVisitId:'',
+           returnedAt:serverTimestamp(),
+           returnedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
+           visits:updatedVisits,
+           updatedAt:serverTimestamp()
+         },{merge:true});
+
+         if(slotSnap.exists()){
+           const slot=slotSnap.data();
+           if(slot.studentId===user.uid){
+             tx.set(slotRef,{
+               group,
+               occupied:false,
+               studentId:'',
+               studentName:'',
+               releasedAt:serverTimestamp(),
+               updatedAt:serverTimestamp()
+             },{merge:true});
+           }
+         }
        });
-       await setDoc(doc(db,'bathroomStatus',user.uid),{
-         active:false,
-         activeVisitId:'',
-         returnedAt:serverTimestamp(),
-         returnedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
-         visits:updatedVisits,
-         updatedAt:serverTimestamp()
-       },{merge:true});
+
+       window.DWAudio?.positive();
      }catch(err){
        console.warn('bathroom return',err);
        txt.textContent='Could not check you back in. Please tell your teacher.';
+       window.DWAudio?.negative();
      }finally{btn.disabled=false}
    };
    return;
  }
 
- txt.textContent=used<3
-   ?`${3-used} of 3 automatic passes remaining today.`
+ const remaining=Math.max(0,3-used);
+ let baseText=used<3
+   ?`${remaining} of 3 automatic passes remaining today.`
    :(credits>0?`${credits} teacher-approved extra pass${credits===1?'':'es'} available.`:'Your 3 automatic passes are used. Extra trips need teacher approval.');
+
+ if(slotOccupied&&!slotMine){
+   baseText+=` ⏳ Another ${group==="girl"?"girl":"boy"} is currently out. Your pass will NOT be used until the ${bathroomGroupLabel(group)} slot is available.`;
+ }
+ txt.textContent=baseText;
 
  btn.textContent=used<3?'🚻 USE BATHROOM PASS':credits>0?'🚻 USE APPROVED PASS':'🙋 REQUEST EXTRA PASS';
  btn.disabled=false;
@@ -2454,52 +2517,100 @@ function renderBathroomStudent(d){
        const nextUsed=isAuto?used+1:used;
        const nextCredits=isAuto?credits:Math.max(0,credits-1);
        const visitId=user.uid+'_'+Date.now();
-       const priorVisits=same&&Array.isArray(d?.visits)?d.visits:[];
-       const visit={
-         id:visitId,
-         studentId:user.uid,
-         studentName:studentDisplayName(),
-         dateKey:key,
-         passType:isAuto?'automatic':'approved-extra',
-         passNumber:nextUsed,
-         leftAt:now.toISOString(),
-         leftAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
-         leftMs:now.getTime(),
-         returnedAt:null,
-         returnedText:'',
-         durationMinutes:null,
-         status:'out'
-       };
+       const statusRef=doc(db,'bathroomStatus',user.uid);
+       const slotRef=doc(db,'bathroomSlots',group);
 
-       await setDoc(doc(db,'bathroomStatus',user.uid),{
-         studentId:user.uid,
-         studentName:studentDisplayName(),
-         dateKey:key,
-         passesUsed:nextUsed,
-         approvalCredits:nextCredits,
-         active:true,
-         activeVisitId:visitId,
-         leftAt:serverTimestamp(),
-         leftAtText:visit.leftAtText,
-         returnedAt:null,
-         visits:[...priorVisits,visit].slice(-25),
-         updatedAt:serverTimestamp()
-       },{merge:true});
+       await runTransaction(db,async tx=>{
+         const [slotSnap,statusSnap]=await Promise.all([tx.get(slotRef),tx.get(statusRef)]);
+         const slot=slotSnap.exists()?slotSnap.data():null;
+         const current=statusSnap.exists()?statusSnap.data():d||{};
+         const currentSame=current?.dateKey===key;
+         const currentUsed=currentSame?(+current?.passesUsed||0):0;
+         const currentCredits=currentSame?(+current?.approvalCredits||0):0;
+
+         // Atomic lock: only one student in this group may own today's slot.
+         if(slot && slot.dateKey===key && slot.occupied===true && slot.studentId!==user.uid){
+           throw new Error("BATHROOM_SLOT_OCCUPIED");
+         }
+
+         const actuallyAuto=currentUsed<3;
+         if(!actuallyAuto && currentCredits<=0){
+           throw new Error("NO_PASS_AVAILABLE");
+         }
+
+         const realNextUsed=actuallyAuto?currentUsed+1:currentUsed;
+         const realNextCredits=actuallyAuto?currentCredits:Math.max(0,currentCredits-1);
+         const priorVisits=currentSame&&Array.isArray(current?.visits)?current.visits:[];
+         const visit={
+           id:visitId,
+           studentId:user.uid,
+           studentName:studentDisplayName(),
+           group,
+           dateKey:key,
+           passType:actuallyAuto?'automatic':'approved-extra',
+           passNumber:realNextUsed,
+           leftAt:now.toISOString(),
+           leftAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
+           leftMs:now.getTime(),
+           returnedAt:null,
+           returnedText:'',
+           durationMinutes:null,
+           status:'out'
+         };
+
+         tx.set(slotRef,{
+           group,
+           dateKey:key,
+           occupied:true,
+           studentId:user.uid,
+           studentName:studentDisplayName(),
+           activeVisitId:visitId,
+           claimedAt:serverTimestamp(),
+           updatedAt:serverTimestamp()
+         },{merge:true});
+
+         tx.set(statusRef,{
+           studentId:user.uid,
+           studentName:studentDisplayName(),
+           genderGroup:group,
+           dateKey:key,
+           passesUsed:realNextUsed,
+           approvalCredits:realNextCredits,
+           active:true,
+           activeVisitId:visitId,
+           leftAt:serverTimestamp(),
+           leftAtText:visit.leftAtText,
+           returnedAt:null,
+           visits:[...priorVisits,visit].slice(-25),
+           updatedAt:serverTimestamp()
+         },{merge:true});
+       });
+
+       window.DWAudio?.positive();
      }else{
        const id=user.uid+'_'+Date.now();
        await setDoc(doc(db,'bathroomRequests',id),{
          studentId:user.uid,
          studentName:studentDisplayName(),
+         genderGroup:group,
          dateKey:key,
          status:'pending',
          createdAt:serverTimestamp(),
          updatedAt:serverTimestamp()
        });
        txt.textContent='Extra bathroom pass requested. Waiting for teacher approval.';
+       window.DWAudio?.positive();
      }
    }catch(err){
      console.warn('bathroom pass',err);
-     txt.textContent='Could not update the pass. Please tell your teacher.';
+     if(String(err?.message||'').includes('BATHROOM_SLOT_OCCUPIED')){
+       txt.textContent=`⏳ Another ${group==="girl"?"girl":"boy"} is already out. Your bathroom pass was NOT used. Try again when they return.`;
+     }else if(String(err?.message||'').includes('NO_PASS_AVAILABLE')){
+       txt.textContent='Your automatic passes are used. Request an extra pass from your teacher.';
+     }else{
+       txt.textContent='Could not update the pass. Please tell your teacher.';
+     }
+     window.DWAudio?.negative();
    }finally{btn.disabled=false}
  };
 }

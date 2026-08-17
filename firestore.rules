@@ -249,29 +249,23 @@ service cloud.firestore {
 
 
     // One live bathroom slot per student group.
-    // Student pass activation uses a Firestore transaction, so two students
-    // from the same group cannot successfully claim the slot at the same time.
+    // IMPORTANT: slot access is intentionally based on the slot document's
+    // studentId, not on reading /students/{uid}. This avoids Firestore
+    // permission failures when older student profiles do not yet contain
+    // genderGroup.
     match /bathroomSlots/{groupId} {
-      allow read: if isTeacher()
-                  || (
-                    isExploreStudent()
-                    && get(/databases/$(database)/documents/students/$(request.auth.uid)).data.genderGroup == groupId
-                  );
+      allow read: if isTeacher() || isExploreStudent();
 
       allow create: if isExploreStudent()
                     && (groupId == "boy" || groupId == "girl")
                     && request.resource.data.group == groupId
                     && request.resource.data.occupied == true
-                    && request.resource.data.studentId == request.auth.uid
-                    && get(/databases/$(database)/documents/students/$(request.auth.uid)).data.genderGroup == groupId;
+                    && request.resource.data.studentId == request.auth.uid;
 
       allow update: if isExploreStudent()
                     && (groupId == "boy" || groupId == "girl")
                     && request.resource.data.group == groupId
-                    && get(/databases/$(database)/documents/students/$(request.auth.uid)).data.genderGroup == groupId
                     && (
-                      // Claim an available slot, reclaim one's own slot,
-                      // or claim a slot whose stored school-day key is different.
                       (
                         request.resource.data.occupied == true
                         && request.resource.data.studentId == request.auth.uid
@@ -282,7 +276,6 @@ service cloud.firestore {
                         )
                       )
                       ||
-                      // Only the current owner may release their own slot.
                       (
                         request.resource.data.occupied == false
                         && resource.data.studentId == request.auth.uid

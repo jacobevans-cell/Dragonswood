@@ -2608,7 +2608,12 @@ function renderBathroomStudent(d){
      }else if(String(err?.message||'').includes('NO_PASS_AVAILABLE')){
        txt.textContent='Your automatic passes are used. Request an extra pass from your teacher.';
      }else{
-       txt.textContent='Could not update the pass. Please tell your teacher.';
+       const code=String(err?.code||'');
+       if(code.includes('permission-denied')){
+         txt.textContent='Bathroom pass permission blocked. Teacher needs to publish the newest Firestore rules.';
+       }else{
+         txt.textContent='Could not update the pass. Please tell your teacher.';
+       }
      }
      window.DWAudio?.negative();
    }finally{btn.disabled=false}

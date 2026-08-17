@@ -994,6 +994,133 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 @media(max-width:850px){.goal-command-student{grid-template-columns:1fr}}
 </style>
 
+
+<style id="dragonswood-v22-1-hair-fix">
+/* V22.1 — REAL BOY/GIRL CHIBI HAIR SHAPES */
+.chibi .hair-back{
+  position:absolute;z-index:2;left:39px;top:26px;width:142px;height:82px;
+  background:transparent;pointer-events:none
+}
+.chibi .hair{
+  z-index:6;left:42px;top:23px;width:136px;height:72px;
+  background:var(--hair);border-radius:60% 60% 34% 34%;
+  clip-path:none;box-shadow:none
+}
+.chibi .hair:before,.chibi .hair:after,.chibi .hair-back:before,.chibi .hair-back:after{
+  content:"";position:absolute;background:var(--hair);display:block
+}
+
+/* Face distinction follows the student's chosen Boys/Girls group. */
+.chibi[data-gender="boy"] .head{border-radius:48% 48% 43% 43%}
+.chibi[data-gender="girl"] .head{width:124px;left:48px;border-radius:50% 50% 48% 48%}
+.chibi[data-gender="boy"] .body{width:102px;left:59px}
+.chibi[data-gender="girl"] .body{width:94px;left:63px;border-radius:34px 34px 18px 18px}
+.chibi .brow{position:absolute;z-index:8;top:80px;width:26px;height:5px;border-radius:50%;background:color-mix(in srgb,var(--hair) 80%,#111)}
+.chibi .brow.l{left:69px;transform:rotate(-4deg)} .chibi .brow.r{right:69px;transform:rotate(4deg)}
+.chibi[data-gender="girl"] .eye{height:29px}
+.chibi .lash{display:none;position:absolute;z-index:9;top:86px;width:10px;height:3px;background:#2a1822;border-radius:4px}
+.chibi[data-gender="girl"] .lash{display:block}
+.chibi .lash.l{left:66px;transform:rotate(-22deg)} .chibi .lash.r{right:66px;transform:rotate(22deg)}
+.chibi[data-gender="girl"] .mouth{width:24px;border-bottom-color:#b54d67}
+.chibi[data-gender="boy"] .mouth{width:20px;border-bottom-color:#91495b}
+
+/* ---------- BOYS ---------- */
+.chibi[data-hair-style="boy-short"] .hair{
+  height:57px;border-radius:58% 58% 28% 28%;
+  clip-path:polygon(2% 15%,16% 2%,33% 8%,47% 0,62% 8%,80% 3%,98% 18%,96% 72%,82% 60%,72% 82%,58% 58%,43% 82%,29% 59%,14% 76%,2% 66%)
+}
+.chibi[data-hair-style="boy-swept"] .hair{
+  height:67px;border-radius:62% 55% 35% 32%;
+  clip-path:polygon(0 24%,10% 7%,31% 5%,50% 0,76% 8%,99% 29%,96% 72%,78% 56%,62% 66%,48% 55%,31% 76%,18% 63%,4% 78%)
+}
+.chibi[data-hair-style="boy-swept"] .hair:after{
+  right:-4px;top:11px;width:49px;height:31px;border-radius:75% 20% 70% 18%;transform:rotate(18deg)
+}
+.chibi[data-hair-style="boy-textured"] .hair{
+  height:65px;border-radius:55% 55% 32% 32%;
+  clip-path:polygon(0 36%,10% 12%,23% 20%,30% 2%,43% 17%,52% 0,64% 17%,76% 3%,83% 21%,96% 10%,100% 45%,92% 74%,77% 58%,65% 79%,51% 58%,38% 81%,24% 58%,10% 75%)
+}
+.chibi[data-hair-style="boy-curls"] .hair{
+  height:58px;top:27px;border-radius:45%;
+  background:
+   radial-gradient(circle at 10% 66%,var(--hair) 0 18px,transparent 19px),
+   radial-gradient(circle at 27% 34%,var(--hair) 0 22px,transparent 23px),
+   radial-gradient(circle at 49% 27%,var(--hair) 0 24px,transparent 25px),
+   radial-gradient(circle at 70% 35%,var(--hair) 0 22px,transparent 23px),
+   radial-gradient(circle at 91% 63%,var(--hair) 0 18px,transparent 19px)
+}
+.chibi[data-hair-style="boy-crop"] .hair{
+  top:30px;height:43px;border-radius:58% 58% 22% 22%;
+  clip-path:polygon(0 32%,12% 12%,28% 4%,49% 0,72% 5%,91% 17%,100% 38%,96% 76%,79% 65%,64% 77%,49% 66%,33% 79%,17% 65%,3% 77%)
+}
+
+/* ---------- GIRLS ---------- */
+.chibi[data-hair-style="girl-bob"] .hair-back{
+  background:var(--hair);height:126px;top:27px;border-radius:52% 52% 43% 43%;
+}
+.chibi[data-hair-style="girl-bob"] .hair{
+  height:68px;border-radius:58% 58% 28% 28%;
+  clip-path:polygon(0 8%,100% 8%,100% 74%,84% 60%,71% 85%,58% 58%,47% 82%,34% 58%,21% 81%,6% 63%)
+}
+.chibi[data-hair-style="girl-long"] .hair-back{
+  background:var(--hair);left:35px;width:150px;height:202px;top:27px;border-radius:50% 50% 32% 32%;
+}
+.chibi[data-hair-style="girl-long"] .hair{
+  height:66px;border-radius:58% 58% 30% 30%;
+  clip-path:polygon(0 8%,100% 8%,100% 71%,84% 59%,72% 81%,59% 56%,47% 82%,35% 57%,21% 82%,5% 63%)
+}
+.chibi[data-hair-style="girl-waves"] .hair-back{
+  background:var(--hair);left:32px;width:156px;height:190px;top:30px;border-radius:48% 48% 35% 35%;
+  clip-path:polygon(3% 0,97% 0,100% 86%,90% 100%,78% 88%,66% 100%,54% 88%,42% 100%,30% 88%,17% 100%,2% 87%)
+}
+.chibi[data-hair-style="girl-waves"] .hair{height:72px;border-radius:60% 60% 30% 30%}
+.chibi[data-hair-style="girl-ponytail"] .hair{
+  height:66px;border-radius:60% 60% 30% 30%;
+  clip-path:polygon(0 12%,100% 10%,98% 73%,82% 60%,69% 82%,54% 58%,40% 82%,26% 57%,12% 77%,2% 66%)
+}
+.chibi[data-hair-style="girl-ponytail"] .hair-back:after{
+  display:block;right:-39px;top:20px;width:70px;height:126px;border-radius:52% 48% 58% 42%;transform:rotate(-16deg);
+  box-shadow:inset 8px 0 rgba(255,255,255,.035)
+}
+.chibi[data-hair-style="girl-curls"] .hair-back{
+  left:29px;width:162px;height:177px;top:31px;
+  background:
+   radial-gradient(circle at 13% 24%,var(--hair) 0 28px,transparent 29px),
+   radial-gradient(circle at 9% 52%,var(--hair) 0 30px,transparent 31px),
+   radial-gradient(circle at 15% 80%,var(--hair) 0 28px,transparent 29px),
+   radial-gradient(circle at 87% 24%,var(--hair) 0 28px,transparent 29px),
+   radial-gradient(circle at 91% 52%,var(--hair) 0 30px,transparent 31px),
+   radial-gradient(circle at 85% 80%,var(--hair) 0 28px,transparent 29px)
+}
+.chibi[data-hair-style="girl-curls"] .hair{
+  top:27px;height:61px;
+  background:
+   radial-gradient(circle at 11% 65%,var(--hair) 0 20px,transparent 21px),
+   radial-gradient(circle at 31% 33%,var(--hair) 0 24px,transparent 25px),
+   radial-gradient(circle at 52% 26%,var(--hair) 0 25px,transparent 26px),
+   radial-gradient(circle at 73% 35%,var(--hair) 0 23px,transparent 24px),
+   radial-gradient(circle at 91% 64%,var(--hair) 0 20px,transparent 21px)
+}
+.chibi[data-hair-style="girl-sidepart"] .hair-back{
+  background:var(--hair);left:36px;width:148px;height:171px;top:27px;border-radius:52% 52% 35% 35%
+}
+.chibi[data-hair-style="girl-sidepart"] .hair{
+  height:78px;border-radius:65% 50% 34% 28%;
+  clip-path:polygon(0 18%,15% 3%,40% 0,61% 7%,84% 22%,100% 44%,96% 74%,80% 60%,67% 79%,56% 55%,44% 70%,34% 42%,21% 70%,7% 74%)
+}
+
+/* Hairstyle chooser previews instead of text-only mystery buttons. */
+.hair-options{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.hair-choice{min-height:105px!important;display:flex!important;flex-direction:column;align-items:center;gap:6px}
+.hair-choice-head{position:relative;display:block;width:58px;height:58px;border-radius:50%;background:#d99b72;border:2px solid rgba(255,255,255,.18);overflow:visible}
+.hair-choice-head i{position:absolute;left:5px;top:3px;width:48px;height:27px;background:var(--preview-hair,#4b2e23);border-radius:60% 60% 32% 32%}
+.hair-choice-head[data-style^="girl-"] i{height:39px}
+.hair-choice-head[data-style="girl-long"] i,.hair-choice-head[data-style="girl-waves"] i,.hair-choice-head[data-style="girl-sidepart"] i{height:53px;border-radius:55% 55% 38% 38%}
+.hair-choice-head[data-style="girl-ponytail"] i:after{content:"";position:absolute;right:-16px;top:9px;width:23px;height:39px;background:inherit;border-radius:50%;transform:rotate(-18deg)}
+.hair-choice-head[data-style$="curls"] i{border-radius:46%;box-shadow:-7px 7px 0 -2px var(--preview-hair,#4b2e23),7px 7px 0 -2px var(--preview-hair,#4b2e23)}
+.hair-choice b{font-size:12px}
+</style>
+
 </head><body>
 <header class="topbar">
 <div class="shell">
@@ -1242,7 +1369,23 @@ const AVATARS=[{id:"chibi",emoji:"🧑",label:"Dragonswood Hero"}];
 const SKINS=["#f7d7bd","#eab98f","#d99b72","#b97855","#8d553b","#5f382b"];
 const HAIRS=["#211713","#4b2e23","#7b4b2a","#b7793f","#d7b36a","#171b2e","#5b2b69","#9b3b54"];
 const EYES=["#4b2d75","#2f5e91","#39705a","#6b4327","#343434"];
-const HAIR_STYLES=[{id:"short",label:"Short"},{id:"swept",label:"Swept"},{id:"curly",label:"Curly"},{id:"long",label:"Long"}];
+const HAIR_STYLES={
+  boy:[
+    {id:"boy-short",label:"Short"},
+    {id:"boy-swept",label:"Swept"},
+    {id:"boy-textured",label:"Textured"},
+    {id:"boy-curls",label:"Curls"},
+    {id:"boy-crop",label:"Cropped"}
+  ],
+  girl:[
+    {id:"girl-bob",label:"Bob"},
+    {id:"girl-long",label:"Long"},
+    {id:"girl-waves",label:"Waves"},
+    {id:"girl-ponytail",label:"Ponytail"},
+    {id:"girl-curls",label:"Curls"},
+    {id:"girl-sidepart",label:"Side Part"}
+  ]
+};
 const STARTER_GEAR={outfit:{id:"peasant",name:"Peasant Tunic",icon:"🧥",slot:"outfit",shirt:"#a98758",stats:{atk:0,def:0,hp:0,heal:0}}};
 let avatarDraft=null;
 
@@ -1345,7 +1488,7 @@ onAuthStateChanged(auth,async u=>{
   }
 });
 
-function defaultAvatarConfig(){return {skin:"#d99b72",hair:"#3a241d",eyes:"#4b2d75",hairStyle:"swept"}}
+function defaultAvatarConfig(){return {skin:"#d99b72",hair:"#3a241d",eyes:"#4b2d75",hairStyle:"boy-swept"}}
 function gearStats(){
   const eq=avatarDraft?.equipped||{}; let out={atk:1,def:0,hp:10,heal:0};
   Object.values(eq).forEach(id=>{const item=shopItems.find(x=>x.id===id); const st=item?.stats||{}; out.atk+=Number(st.atk||0);out.def+=Number(st.def||0);out.hp+=Number(st.hp||0);out.heal+=Number(st.heal||0)}); return out;
@@ -1353,15 +1496,34 @@ function gearStats(){
 function gearVisual(slot){const id=avatarDraft?.equipped?.[slot];const item=shopItems.find(x=>x.id===id);return item?.icon||""}
 function chibiMarkup(config=defaultAvatarConfig(),small=false){
   const shirt=(()=>{const id=avatarDraft?.equipped?.outfit;return shopItems.find(x=>x.id===id)?.shirtColor||"#a98758"})();
+  const gender=($("group")?.value||profile?.genderGroup||"boy")==="girl"?"girl":"boy";
   if(small)return `<span class="mini-face" style="--skin:${config.skin}"></span><span class="mini-hair" style="--hair:${config.hair}"></span><span class="mini-body" style="--shirt:${shirt}"></span>`;
-  return `<div class="chibi" data-hair-style="${esc(config.hairStyle||"swept")}" style="--skin:${config.skin};--hair:${config.hair};--eyes:${config.eyes};--shirt:${shirt}"><span class="ear l"></span><span class="ear r"></span><span class="hair"></span><span class="head"></span><span class="eye l"></span><span class="eye r"></span><span class="mouth"></span><span class="neck"></span><span class="arm l"></span><span class="arm r"></span><span class="body"></span><span class="belt"></span><span class="leg l"></span><span class="leg r"></span><span class="boot l"></span><span class="boot r"></span><span class="equip eq-armor">${gearVisual("armor")}</span><span class="equip eq-head">${gearVisual("head")}</span><span class="equip eq-weapon">${gearVisual("weapon")}</span><span class="equip eq-offhand">${gearVisual("offhand")}</span><span class="equip eq-accessory">${gearVisual("accessory")}</span></div>`;
+  return `<div class="chibi" data-gender="${gender}" data-hair-style="${esc(config.hairStyle||"boy-swept")}" style="--skin:${config.skin};--hair:${config.hair};--eyes:${config.eyes};--shirt:${shirt}">
+    <span class="hair-back"></span>
+    <span class="ear l"></span><span class="ear r"></span>
+    <span class="head"></span>
+    <span class="hair"></span>
+    <span class="brow l"></span><span class="brow r"></span>
+    <span class="eye l"></span><span class="eye r"></span>
+    <span class="lash l"></span><span class="lash r"></span>
+    <span class="mouth"></span><span class="neck"></span>
+    <span class="arm l"></span><span class="arm r"></span><span class="body"></span><span class="belt"></span>
+    <span class="leg l"></span><span class="leg r"></span><span class="boot l"></span><span class="boot r"></span>
+    <span class="equip eq-armor">${gearVisual("armor")}</span><span class="equip eq-head">${gearVisual("head")}</span>
+    <span class="equip eq-weapon">${gearVisual("weapon")}</span><span class="equip eq-offhand">${gearVisual("offhand")}</span>
+    <span class="equip eq-accessory">${gearVisual("accessory")}</span>
+  </div>`;
 }
 function renderAvatarStudio(){
   const c=avatarDraft.config; $("avatarPreview").innerHTML=chibiMarkup(c);
   const stats=gearStats(); $("statAtk").textContent=stats.atk;$("statDef").textContent=stats.def;$("statHp").textContent=stats.hp;$("statHeal").textContent=stats.heal;
   const sw=(id,arr,key)=>{$(id).innerHTML=arr.map(v=>`<button type="button" class="swatch ${c[key]===v?"active":""}" style="background:${v}" data-av-key="${key}" data-av-value="${v}" aria-label="${key}"></button>`).join("")};
   sw("skinChoices",SKINS,"skin");sw("eyeChoices",EYES,"eyes");sw("hairColorChoices",HAIRS,"hair");
-  $("hairStyleChoices").innerHTML=HAIR_STYLES.map(h=>`<button type="button" class="studio-option ${c.hairStyle===h.id?"active":""}" data-hair-style="${h.id}">${h.label}</button>`).join("");
+  const gender=($("group")?.value||profile?.genderGroup||"boy")==="girl"?"girl":"boy";
+  const styles=HAIR_STYLES[gender];
+  if(!styles.some(h=>h.id===c.hairStyle)) c.hairStyle=styles[0].id;
+  $("hairStyleChoices").innerHTML=styles.map(h=>`<button type="button" class="studio-option hair-choice ${c.hairStyle===h.id?"active":""}" data-hair-style="${h.id}"><span class="hair-choice-head" data-style="${h.id}"><i></i></span><b>${h.label}</b></button>`).join("");
+  $("hairStyleChoices").style.setProperty("--preview-hair",c.hair);
   const owned=new Set(profile?.inventory||[]); const gear=shopItems.filter(i=>i.kind==="gear"||i.equipSlot);
   $("equipmentChoices").innerHTML=`<div class="studio-option active"><span class="gear-icon">🧥</span>Peasant Tunic<small style="display:block">Starter outfit</small></div>`+gear.map(i=>{const isOwned=owned.has(i.id);const equipped=Object.values(avatarDraft.equipped||{}).includes(i.id);return `<button type="button" class="studio-option ${equipped?"active":""} ${isOwned?"":"locked"}" data-equip-id="${i.id}" ${isOwned?"":"disabled"}><span class="gear-icon">${esc(i.icon||"🎁")}</span>${esc(i.name)}<small style="display:block">${isOwned?(equipped?"EQUIPPED":"Owned"):`🔒 ${Number(i.cost||0)} Gold`}</small></button>`}).join("");
   document.querySelectorAll("[data-av-key]").forEach(b=>b.onclick=()=>{c[b.dataset.avKey]=b.dataset.avValue;renderAvatarStudio()});
@@ -1374,6 +1536,14 @@ function populateProfileControls(){
   avatarDraft={config:{...defaultAvatarConfig(),...(profile?.avatarConfig||{})},equipped:{...(profile?.equipped||{})}}; renderAvatarStudio();
   document.querySelectorAll("[data-avatar-tab]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-avatar-tab]").forEach(x=>x.classList.remove("active"));document.querySelectorAll("[data-avatar-panel]").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelector(`[data-avatar-panel="${b.dataset.avatarTab}"]`).classList.add("active")});
 }
+if($("group")) $("group").addEventListener("change",()=>{
+  if(!avatarDraft)return;
+  const gender=$("group").value==="girl"?"girl":"boy";
+  const styles=HAIR_STYLES[gender];
+  if(!styles.some(h=>h.id===avatarDraft.config.hairStyle)) avatarDraft.config.hairStyle=styles[0].id;
+  renderAvatarStudio();
+});
+
 function openProfile(editing){
   $("profileModal").classList.remove("hidden");$("profileTitle").textContent=editing?"Edit Dragonswood Profile":"Create Your Dragonswood Character";$("closeProfile").classList.toggle("hidden",!editing);populateProfileControls();
 }

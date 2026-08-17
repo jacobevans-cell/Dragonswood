@@ -1,610 +1,61 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dragonswood Command | Teacher</title><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dragonswood Command</title><style>
 :root{
-  --purple:#652DC1; --purple-hot:#A84CFF; --purple-deep:#24034E;
-  --cyan:#02CCFE; --cyan-hot:#7EEAFF; --navy:#030512;
-  --gold:#F4C95D; --gold-hot:#FFE8A0; --gold-deep:#9A6514;
-  --panel:rgba(7,8,28,.92); --panel2:rgba(12,8,35,.92);
-  --text:#FFF8E7; --muted:#D3CEE6;
+ --bg:#05030c;--bg2:#090516;--panel:#0b0819;--panel2:#110b25;
+ --purple:#652DC1;--purple2:#9d48ff;--cyan:#02CCFE;--cyan2:#77edff;
+ --gold:#F4C95D;--gold2:#ffe8a0;--gold3:#a56c13;--text:#fff8e9;--muted:#c7c1d5;
 }
 *{box-sizing:border-box}
-html{background:#03040B}
-body{
-  margin:0;color:var(--text);font-family:Arial,Helvetica,sans-serif;
-  min-height:100vh;background:#03040B;position:relative;overflow-x:hidden;
-}
-body::before{
-  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:
-    linear-gradient(180deg,rgba(2,2,10,.12),rgba(2,2,10,.25) 65%,rgba(2,2,10,.6));
-}
-body::after{
-  content:"";position:fixed;inset:-10%;z-index:1;pointer-events:none;
-  background:
-    radial-gradient(circle at 16% 12%,rgba(172,64,255,.18),transparent 20%),
-    radial-gradient(circle at 82% 18%,rgba(2,204,254,.12),transparent 20%),
-    linear-gradient(110deg,transparent 35%,rgba(167,64,255,.08) 48%,rgba(2,204,254,.06) 53%,transparent 67%);
-  background-size:auto,auto,220% 100%;
-  mix-blend-mode:screen;animation:magicSweep 12s ease-in-out infinite alternate;
-}
-@keyframes magicSweep{0%{transform:translateX(-2%) scale(1);background-position:0 0,0 0,0% 0}100%{transform:translateX(2%) scale(1.03);background-position:0 0,0 0,200% 0}}
-@keyframes glowPulse{0%,100%{box-shadow:0 0 0 1px rgba(244,201,93,.3),0 0 18px rgba(101,45,193,.16)}50%{box-shadow:0 0 0 1px rgba(244,201,93,.62),0 0 34px rgba(2,204,254,.19),0 0 28px rgba(101,45,193,.15)}}
-@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-@keyframes floatSpark{0%{transform:translateY(110vh) rotate(0);opacity:0}12%{opacity:.9}90%{opacity:.45}100%{transform:translateY(-12vh) translateX(35px) rotate(180deg);opacity:0}}
-body>*{position:relative;z-index:5}
-.magic-stars{position:fixed;inset:0;z-index:3;pointer-events:none;overflow:hidden}
-.magic-stars i{position:absolute;bottom:-10px;width:4px;height:4px;border-radius:50%;background:var(--gold-hot);box-shadow:0 0 9px var(--gold);animation:floatSpark linear infinite}
-.magic-stars i:nth-child(3n){background:var(--cyan);box-shadow:0 0 11px var(--cyan)}
-.magic-stars i:nth-child(4n){background:#C56BFF;box-shadow:0 0 11px #A84CFF}
-.shell{width:min(1500px,95%);margin:auto}
-.glass{
-  background:linear-gradient(145deg,rgba(11,8,35,.94),rgba(4,7,20,.96));
-  border:1px solid rgba(244,201,93,.42);box-shadow:0 18px 46px rgba(0,0,0,.45),inset 0 0 26px rgba(2,204,254,.025);
-  backdrop-filter:blur(8px);
-}
-.ornate{position:relative}
-.ornate::before,.ornate::after{content:"✦";position:absolute;color:var(--gold);text-shadow:0 0 8px var(--gold)}
-.ornate::before{left:10px;top:7px}.ornate::after{right:10px;top:7px}
+html{background:var(--bg)}
+body{margin:0;background:
+ radial-gradient(circle at 50% 0%,rgba(101,45,193,.12),transparent 26%),
+ linear-gradient(180deg,#05030c,#090516 48%,#05030c);color:var(--text);font-family:Arial,Helvetica,sans-serif;min-height:100vh}
 button,input,select,textarea{font:inherit}
 button{cursor:pointer}
 .hidden{display:none!important}
-button,.btn{
-  border:1px solid rgba(244,201,93,.5);border-radius:8px;padding:10px 14px;font-weight:900;
-  color:white;background:linear-gradient(90deg,#4C159F,#8230D7,#076C9A);box-shadow:0 0 15px rgba(101,45,193,.18)
-}
-button:hover,.btn:hover{filter:brightness(1.1);box-shadow:0 0 22px rgba(2,204,254,.18)}
-input,select,textarea{background:#050818;color:white;border:1px solid rgba(2,204,254,.26);border-radius:7px;padding:10px 11px}
-select option,select optgroup{background:#080A18;color:white}
-h1,h2,h3{font-family:Georgia,"Times New Roman",serif;color:#FFF8E7}
-.muted,small,p{color:var(--muted)}
-.goldtext{color:var(--gold-hot)}
-.progress-track{height:17px;background:#030611;border:1px solid rgba(2,204,254,.28);border-radius:999px;overflow:hidden;box-shadow:inset 0 0 12px #000}
-.progress-fill{height:100%;background:linear-gradient(90deg,#7A24DE,#D24DFF,var(--cyan),var(--gold-hot),#7A24DE);background-size:240% 100%;animation:shimmer 5s linear infinite;box-shadow:0 0 15px rgba(2,204,254,.26)}
-
-.teacher-head{padding:13px 0;background:linear-gradient(180deg,rgba(2,3,12,.88),rgba(20,5,36,.7));border-bottom:1px solid var(--gold)}
-.teacher-brand{display:flex;align-items:center;justify-content:space-between}.teacher-title{font-family:Georgia,serif;color:var(--gold-hot);font-size:39px;text-shadow:0 0 13px rgba(244,201,93,.22)}.teacher-title small{display:block;color:#D48BFF;font-size:15px;text-align:center;letter-spacing:2px;margin-top:4px}
-.teacher-main{padding:17px 0 34px}.tabs{display:grid!important;grid-template-columns:repeat(4,1fr);gap:10px!important;margin:0 0 16px!important}.tab{padding:17px 10px!important;background:rgba(6,7,20,.9)!important;border:1px solid rgba(244,201,93,.38)!important;color:var(--gold-hot)!important;font-family:Georgia,serif;font-size:16px}.tab.active{background:linear-gradient(180deg,rgba(92,23,151,.92),rgba(25,9,56,.96))!important;box-shadow:0 0 20px rgba(164,62,255,.28)!important}
-.panel{display:none}.panel.active{display:block}
-.command-title{padding:12px 16px;border:1px solid rgba(244,201,93,.38);border-radius:7px;margin-bottom:10px;background:rgba(10,7,28,.9)}.command-title h2{font-size:29px;margin:0;color:#DF98FF}.command-title p{margin:3px 0}
-.card{padding:16px;border-radius:7px;background:linear-gradient(145deg,rgba(8,8,26,.96),rgba(4,6,17,.97));border:1px solid rgba(244,201,93,.38);box-shadow:0 15px 38px rgba(0,0,0,.4)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.big{font-size:50px;color:var(--gold-hot);font-family:Georgia,serif}.meter{height:20px;background:#030611;border:1px solid rgba(2,204,254,.25);border-radius:999px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#7A24DE,#D24DFF,var(--cyan),var(--gold-hot));background-size:220% 100%;animation:shimmer 5s linear infinite}
-.actions{display:flex;gap:7px;flex-wrap:wrap}.reason{flex:1;min-width:180px}
-.titlebar{display:flex;justify-content:space-between;align-items:end;margin:18px 0 8px}.titlebar h2{margin:0;color:#E0A2FF}.titlebar p{margin:3px 0}
-.groupbox{display:grid;grid-template-columns:1.2fr .8fr .7fr 1.2fr;gap:10px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:12px;font-weight:900;color:#EDE7FA}
-.student-table,table{width:100%;border-collapse:collapse;font-size:12px}.student-table th,th{padding:9px;background:rgba(76,19,116,.35);color:var(--gold-hot);text-align:left;border-bottom:1px solid rgba(244,201,93,.28)}.student-table td,td{padding:9px;border-bottom:1px solid rgba(255,255,255,.06)}.student-avatar{font-size:25px}.student-name{font-weight:900}.badge{padding:4px 7px;border:1px solid rgba(216,101,255,.45);border-radius:999px;color:#F2D8FF;background:rgba(78,17,116,.28)}
-.list{display:grid;gap:7px}.item{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;padding:9px;border:1px solid rgba(101,45,193,.35);background:rgba(8,8,24,.88);border-radius:5px}.icon{font-size:25px}
-.recess-control{margin-top:15px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.modal{position:fixed;inset:0;background:rgba(1,2,8,.9);z-index:50;display:grid;place-items:center;padding:20px}.modalbox{width:min(660px,100%);max-height:92vh;overflow:auto;padding:20px;border-radius:8px}
-@media(max-width:900px){.tabs{grid-template-columns:repeat(2,1fr)!important}.grid{grid-template-columns:1fr}.groupbox{grid-template-columns:1fr 1fr}.recess-control{grid-template-columns:1fr}}
-
-/* =========================================================
-   V10 TEACHER COMMAND IMMERSIVE WORLD
-========================================================= */
-body::before,body::after{display:none !important}
-body{
-  background:
-    linear-gradient(180deg,rgba(3,4,12,.12),rgba(3,4,12,.75));
-}
-.teacher-head{
-  min-height:200px;
-  padding:24px 0 30px !important;
-  background:
-    linear-gradient(180deg,rgba(2,3,12,.08),rgba(10,4,25,.72));
-  border-bottom:1px solid rgba(244,201,93,.55) !important;
-}
-.teacher-brand{
-  align-items:start !important;
-}
-.teacher-title{
-  font-size:clamp(40px,4vw,62px) !important;
-  text-shadow:0 0 18px rgba(244,201,93,.28),0 3px 2px #000 !important;
-}
-.teacher-main{padding-top:18px !important}
-.tabs{
-  position:sticky;top:8px;z-index:15;
-  background:rgba(3,4,14,.82);
-  padding:8px;border:1px solid rgba(244,201,93,.28);
-  backdrop-filter:blur(10px);
-  border-radius:8px
-}
-.command-title{
-  background:
-    linear-gradient(90deg,rgba(32,7,68,.86),rgba(7,10,28,.82));
-}
-.card{
-  background:linear-gradient(145deg,rgba(7,8,26,.90),rgba(3,6,17,.94)) !important;
-  backdrop-filter:blur(8px)
-}
-.groupbox{
-  grid-template-columns:minmax(220px,1.25fr) minmax(130px,.75fr) minmax(120px,.65fr) minmax(220px,1.2fr) !important;
-  gap:12px !important
-}
-.student-table{
-  table-layout:auto;
-  min-width:850px;
-}
-.recess-control .card:first-child{
-  background:
-    linear-gradient(90deg,rgba(34,7,72,.88),rgba(6,26,44,.84));
-}
-@media(max-width:980px){
-  .groupbox{grid-template-columns:1fr 1fr !important}
-}
-
-
-/* =========================================================
-   V11 DRAGONSWOOD — UNIFIED GUI, NO BACKGROUND IMAGES
-   One continuous interface. No wallpaper. No scenic JPEGs.
-========================================================= */
-
-:root{
-  --dw-bg:#05030d;
-  --dw-bg2:#0a0618;
-  --dw-panel:#0b0a1f;
-  --dw-panel2:#12102b;
-  --dw-panel3:#17123a;
-  --dw-purple:#652DC1;
-  --dw-purple2:#9A48FF;
-  --dw-cyan:#02CCFE;
-  --dw-cyan2:#79ECFF;
-  --dw-gold:#F4C95D;
-  --dw-gold2:#FFE9A0;
-  --dw-line:rgba(244,201,93,.42);
-  --dw-softline:rgba(126,78,216,.34);
-  --dw-text:#fff8e8;
-  --dw-muted:#c7c2d9;
-}
-
-html{
-  background:var(--dw-bg) !important;
-}
-
-body{
-  background:
-    radial-gradient(circle at 15% 0%,rgba(101,45,193,.20),transparent 22%),
-    radial-gradient(circle at 85% 4%,rgba(2,204,254,.10),transparent 20%),
-    linear-gradient(180deg,#05030d 0%,#090516 42%,#05030d 100%) !important;
-  color:var(--dw-text) !important;
-  min-height:100vh;
-}
-
-/* Kill all full-page image/world layers */
-body::before,
-body::after,
-.main::before,
-.student-top::after,
-.dw-wisteria-curtain,
-.magic-stars,
-.dw-stars{
-  display:none !important;
-}
-
-/* The whole app reads as one connected fantasy console */
-.student-top,
-.teacher-head{
-  background:
-    radial-gradient(circle at 18% 20%,rgba(154,72,255,.12),transparent 28%),
-    radial-gradient(circle at 82% 25%,rgba(2,204,254,.08),transparent 24%),
-    linear-gradient(180deg,#090518 0%,#070411 100%) !important;
-  border-bottom:1px solid rgba(244,201,93,.50) !important;
-  box-shadow:none !important;
-}
-
-.student-top{
-  min-height:auto !important;
-  padding:16px 0 14px !important;
-}
-
-.teacher-head{
-  min-height:auto !important;
-  padding:16px 0 14px !important;
-}
-
-.shell,
-.wrap{
-  width:min(1500px,94%) !important;
-  margin:auto !important;
-}
-
-/* Continuous app panel */
-.main,
-.teacher-main{
-  background:transparent !important;
-  padding-top:14px !important;
-}
-
-#signedIn,
-#dash{
-  position:relative;
-}
-
-#signedIn::before,
-#dash::before{
-  content:"";
-  position:absolute;
-  inset:-8px;
-  z-index:-1;
-  border-radius:18px;
-  background:
-    linear-gradient(180deg,rgba(15,9,35,.66),rgba(5,4,15,.56));
-  border:1px solid rgba(101,45,193,.20);
-  box-shadow:0 0 45px rgba(71,27,126,.08);
-}
-
-/* Core panels all share the same material */
-.glass,
-.card,
-.pet,
-.game,
-.board,
-.profilebar,
-.profile-strip,
-.login-card,
-.modalbox,
-.reward,
-.item,
-.reward-frame,
-.recess-card,
-.recess-wide,
-.command-title,
-.tabs,
-.bottom-nav,
-.egg-panel,
-.egg-progress-panel{
-  background:
-    linear-gradient(145deg,rgba(15,12,39,.98),rgba(7,6,20,.99)) !important;
-  border:1px solid var(--dw-softline) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.025),
-    inset 0 0 20px rgba(101,45,193,.025),
-    0 8px 22px rgba(0,0,0,.24) !important;
-  backdrop-filter:none !important;
-}
-
-/* Gold edges used sparingly */
-.reward-frame,
-.recess-wide,
-.profile-strip,
-.command-title,
-.tabs{
-  border-color:rgba(244,201,93,.42) !important;
-}
-
-/* Top student GUI */
-.brand-grid{
-  display:grid !important;
-  grid-template-columns:90px minmax(0,1fr) auto !important;
-  gap:16px !important;
-  align-items:center !important;
-}
-
-.big-crest{
-  width:82px !important;
-  height:92px !important;
-  filter:drop-shadow(0 0 8px rgba(244,201,93,.24)) !important;
-}
-
-.big-crest .shield{
-  width:72px !important;
-  height:86px !important;
-}
-
-.brand-name{
-  font-size:clamp(46px,5vw,72px) !important;
-  line-height:.92 !important;
-  white-space:normal !important;
-  color:var(--dw-gold2) !important;
-  text-shadow:0 0 10px rgba(244,201,93,.16),0 2px 1px #000 !important;
-}
-
-.brand-sub{
-  color:#d98cff !important;
-  font-size:clamp(14px,1.3vw,18px) !important;
-}
-
-.motto{
-  color:var(--dw-gold2) !important;
-  margin-top:7px !important;
-}
-
-.top-stats{
-  margin-top:0 !important;
-  grid-template-columns:repeat(4,82px) !important;
-  gap:7px !important;
-}
-
-.top-stat{
-  height:82px !important;
-  background:linear-gradient(180deg,#0d0b24,#080719) !important;
-  border:1px solid rgba(244,201,93,.28) !important;
-}
-
-.accountbar{
-  position:static !important;
-  justify-content:flex-end;
-  margin:0 auto 8px;
-  width:min(1500px,94%);
-  background:transparent !important;
-  border:0 !important;
-  padding:0 !important;
-}
-
-/* Profile becomes a clean HUD row */
-.profile-strip{
-  margin-top:12px !important;
-  grid-template-columns:auto minmax(0,1fr) auto !important;
-  border-radius:10px !important;
-}
-
-.avatar{
-  background:#edf6ff !important;
-}
-
-/* Section headings connect to the GUI */
-.section-head{
-  margin:18px 0 9px !important;
-  padding-left:4px;
-}
-
-.section-head::after{
-  width:100% !important;
-  background:linear-gradient(90deg,var(--dw-gold),var(--dw-purple2),transparent 72%) !important;
-}
-
-/* Reward section: fixed, disciplined two-column HUD */
-.reward-frame{
-  padding:14px !important;
-  border-radius:12px !important;
-  overflow:hidden !important;
-}
-
-.reward-main{
-  display:grid !important;
-  grid-template-columns:minmax(280px,32%) minmax(0,68%) !important;
-  gap:12px !important;
-  align-items:stretch !important;
-}
-
-.egg-panel,
-.egg-progress-panel{
-  min-height:260px !important;
-  padding:18px !important;
-  border-radius:9px !important;
-}
-
-.egg-panel{
-  grid-template-columns:120px minmax(0,1fr) !important;
-}
-
-.egg-copy h3{
-  font-size:clamp(25px,2vw,34px) !important;
-  line-height:1.05 !important;
-}
-
-.egg-progress-panel h3{
-  font-size:clamp(21px,1.7vw,28px) !important;
-}
-
-.egg-stage .eggmini{
-  font-size:clamp(30px,2.8vw,46px) !important;
-}
-
-/* Reward milestone cards */
-.rewards{
-  display:grid !important;
-  grid-template-columns:repeat(7,minmax(0,1fr)) !important;
-  gap:7px !important;
-  margin-top:10px !important;
-}
-
-.reward{
-  min-height:124px !important;
-  padding:10px 6px !important;
-  border-radius:8px !important;
-}
-
-.reward.current{
-  border-color:var(--dw-gold) !important;
-  box-shadow:0 0 15px rgba(244,201,93,.14) !important;
-}
-
-.next{
-  background:
-    linear-gradient(90deg,#073149,#241046,#120c2a) !important;
-  border-left:4px solid var(--dw-gold) !important;
-  color:var(--dw-gold2) !important;
-}
-
-/* Second Recess is part of same GUI */
-.recess-wide,
-.recess-card{
-  background:
-    linear-gradient(90deg,#1a0b39 0%,#12102d 52%,#073044 100%) !important;
-  border-radius:10px !important;
-}
-
-/* Games: compact dashboard cards */
-.games{
-  display:grid !important;
-  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
-  gap:12px !important;
-}
-
-.game{
-  min-height:220px !important;
-  display:flex !important;
-  flex-direction:column !important;
-  overflow:hidden !important;
-  border-radius:9px !important;
-}
-
-.visual{
-  height:92px !important;
-  flex:0 0 92px !important;
-  background:
-    radial-gradient(circle at 50% 35%,rgba(101,45,193,.16),transparent 45%),
-    linear-gradient(180deg,#141033,#09071b) !important;
-}
-
-.game .body{
-  padding:13px !important;
-  display:flex !important;
-  flex-direction:column !important;
-  flex:1 !important;
-}
-
-.game .body p{flex:1}
-.game a{margin-top:auto}
-
-/* Boards */
-.boards{
-  display:grid !important;
-  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
-  gap:12px !important;
-}
-
-.board{
-  padding:14px !important;
-  border-radius:9px !important;
-}
-
-/* Bottom navigation becomes integrated toolbar */
-.bottom-nav{
-  position:static !important;
-  margin-top:16px !important;
-  padding:7px !important;
-  border-radius:10px !important;
-  grid-template-columns:repeat(6,1fr) !important;
-  background:linear-gradient(180deg,#0b091f,#060515) !important;
-}
-
-.navtile{
-  background:linear-gradient(180deg,#100d29,#09071c) !important;
-  border:1px solid rgba(101,45,193,.34) !important;
-  min-height:74px;
-}
-
-/* Teacher portal unified */
-.teacher-brand{
-  align-items:center !important;
-}
-
-.teacher-title{
-  font-size:clamp(34px,3.4vw,50px) !important;
-}
-
-.teacher-main{
-  padding-top:14px !important;
-}
-
-.tabs{
-  position:static !important;
-  padding:7px !important;
-  border-radius:10px !important;
-  grid-template-columns:repeat(4,1fr) !important;
-}
-
-.tab{
-  padding:13px 9px !important;
-  background:linear-gradient(180deg,#100d29,#09071c) !important;
-}
-
-.tab.active{
-  background:linear-gradient(90deg,#5218a9,#7826ca,#075e86) !important;
-}
-
-.command-title{
-  margin-top:10px !important;
-  border-radius:9px !important;
-}
-
-.card{
-  border-radius:9px !important;
-}
-
-.groupbox{
-  grid-template-columns:minmax(210px,1.2fr) minmax(130px,.75fr) minmax(110px,.6fr) minmax(210px,1.15fr) !important;
-}
-
-.recess-control{
-  grid-template-columns:1.3fr .7fr !important;
-}
-
-/* Inputs feel integrated */
-input,select,textarea{
-  background:#080719 !important;
-  border:1px solid rgba(2,204,254,.20) !important;
-  color:white !important;
-}
-
-/* Buttons */
-button,.btn{
-  background:linear-gradient(90deg,#4b149f,#7224c7,#075c84) !important;
-  border:1px solid rgba(244,201,93,.38) !important;
-  color:white !important;
-}
-
-button:hover,.btn:hover{
-  filter:brightness(1.08);
-}
-
-/* Level bars and progress */
-.progress-track,
-.levelbar,
-.track,
-.meter,
-.recess-meter{
-  background:#030510 !important;
-  border:1px solid rgba(2,204,254,.20) !important;
-}
-
-.progress-fill,
-.levelbar div,
-.fill,
-.recess-fill{
-  background:
-    linear-gradient(90deg,var(--dw-purple),var(--dw-purple2),var(--dw-cyan),var(--dw-gold),var(--dw-purple)) !important;
-  background-size:220% 100% !important;
-  animation:shimmerBar 6s linear infinite !important;
-}
-
-/* Responsive */
-@media(max-width:1100px){
-  .brand-grid{grid-template-columns:80px 1fr !important}
-  .top-stats{grid-column:1/-1 !important;grid-template-columns:repeat(4,1fr) !important}
-  .reward-main{grid-template-columns:1fr !important}
-  .rewards{grid-template-columns:repeat(4,1fr) !important}
-  .groupbox{grid-template-columns:1fr 1fr !important}
-}
-@media(max-width:760px){
-  .brand-grid{grid-template-columns:1fr !important;text-align:center}
-  .big-crest{margin:auto}
-  .profile-strip{grid-template-columns:1fr !important;text-align:center}
-  .avatar{margin:auto}
-  .egg-panel{grid-template-columns:1fr !important;text-align:center}
-  .rewards{grid-template-columns:repeat(2,1fr) !important}
-  .games,.boards{grid-template-columns:1fr !important}
-  .bottom-nav{grid-template-columns:repeat(2,1fr) !important}
-  .tabs{grid-template-columns:repeat(2,1fr) !important}
-  .recess-control{grid-template-columns:1fr !important}
-}
-
+.shell{width:min(1500px,95%);margin:auto}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;margin-top:0}
+p,small,.muted{color:var(--muted)}
+@keyframes glow{0%,100%{box-shadow:0 0 0 1px rgba(244,201,93,.25),0 0 18px rgba(101,45,193,.12)}50%{box-shadow:0 0 0 1px rgba(244,201,93,.52),0 0 30px rgba(2,204,254,.14)}}
+@keyframes shimmer{0%{background-position:-180% 0}100%{background-position:180% 0}}
+.frame{
+ background:linear-gradient(145deg,rgba(11,8,28,.98),rgba(5,6,18,.99));
+ border:1px solid rgba(244,201,93,.46);position:relative;
+ box-shadow:inset 0 0 0 1px rgba(101,45,193,.13),0 12px 30px rgba(0,0,0,.35)
+}
+.frame::before,.frame::after{content:"✦";position:absolute;color:var(--gold);text-shadow:0 0 8px rgba(244,201,93,.65);font-size:12px}
+.frame::before{left:7px;top:5px}.frame::after{right:7px;top:5px}
+.bevel{border-radius:10px;clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px)}
+.progress{height:18px;border-radius:999px;overflow:hidden;background:#030510;border:1px solid rgba(2,204,254,.23);box-shadow:inset 0 0 12px #000}
+.progress>div{height:100%;background:linear-gradient(90deg,#6f20d4,#d74dff,var(--cyan),var(--gold2),#6f20d4);background-size:220% 100%;animation:shimmer 6s linear infinite;box-shadow:0 0 15px rgba(2,204,254,.25)}
+.btn,button{border:1px solid rgba(244,201,93,.4);border-radius:8px;padding:9px 13px;font-weight:900;color:#fff;background:linear-gradient(90deg,#5318a8,#7926cc,#075e86)}
+button:hover,.btn:hover{filter:brightness(1.08)}
+input,select,textarea{background:#070615;color:white;border:1px solid rgba(2,204,254,.2);border-radius:7px;padding:10px 11px}
+select option,select optgroup{background:#080718;color:#fff}
+
+.teacher-head{padding:14px 0;border-bottom:1px solid rgba(244,201,93,.36)}
+.teacher-title{text-align:center;font-family:Georgia,serif;color:var(--gold2);font-size:44px}.teacher-title small{display:block;color:#d58cff;font-size:14px;letter-spacing:1.4px;margin-top:4px}
+.teacher-main{padding:16px 0 30px}.tabs{display:grid!important;grid-template-columns:repeat(4,1fr);gap:7px!important;padding:7px!important;margin-bottom:13px!important}.tab{font-family:Georgia,serif;color:var(--gold2)!important;background:linear-gradient(180deg,#100d29,#090718)!important;border:1px solid rgba(101,45,193,.33)!important;padding:13px 8px!important}.tab.active{background:linear-gradient(90deg,#5016a2,#7624c9,#075d84)!important;border-color:var(--gold)!important}
+.panel{display:none}.panel.active{display:block}.command-title{padding:12px 15px;margin-bottom:10px}.command-title h2{font-size:28px;margin:0;color:#e0a2ff}.command-title p{margin:3px 0}
+.card{padding:15px;border-radius:9px;background:linear-gradient(145deg,#0d0a23,#070617);border:1px solid rgba(244,201,93,.35);box-shadow:0 10px 24px rgba(0,0,0,.25)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.big{font-family:Georgia,serif;font-size:48px;color:var(--gold2)}.meter{height:19px;background:#030510;border:1px solid rgba(2,204,254,.2);border-radius:999px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#6f20d4,#d74dff,var(--cyan),var(--gold2));background-size:220% 100%;animation:shimmer 6s linear infinite}
+.actions{display:flex;gap:7px;flex-wrap:wrap}.reason{flex:1;min-width:170px}.titlebar{display:flex;justify-content:space-between;align-items:end;margin:16px 0 8px}.titlebar h2{margin:0;color:#e0a2ff}.titlebar p{margin:3px 0}.groupbox{display:grid;grid-template-columns:1.2fr .7fr .6fr 1.2fr;gap:9px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:12px;font-weight:900}.student-table,table{width:100%;border-collapse:collapse;font-size:12px}.student-table th,th{padding:9px;background:linear-gradient(90deg,#27104b,#08283b);color:var(--gold2);text-align:left;border-bottom:1px solid rgba(244,201,93,.24)}.student-table td,td{padding:9px;border-bottom:1px solid rgba(255,255,255,.05)}.student-avatar{font-size:25px}.badge{padding:4px 7px;border-radius:999px;background:#241044;color:#f2ddff}.list{display:grid;gap:7px}.item{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;padding:9px;border:1px solid rgba(101,45,193,.32);background:#0a081d}.recess-control{display:grid;grid-template-columns:1.2fr .8fr;gap:10px;margin-top:12px}.modal{position:fixed;inset:0;background:rgba(1,2,8,.9);z-index:50;display:grid;place-items:center;padding:20px}.modalbox{width:min(680px,100%);max-height:92vh;overflow:auto;padding:20px}
+@media(max-width:900px){.tabs{grid-template-columns:repeat(2,1fr)!important}.grid,.recess-control{grid-template-columns:1fr}.groupbox{grid-template-columns:1fr 1fr}}
 </style></head><body>
-
-<header class="teacher-head"><div class="shell teacher-brand"><div class="teacher-title">🛡️ DRAGONSWOOD COMMAND<small>TEACHER PORTAL • EXPLORE ACADEMY</small></div><div id="signed" class="hidden"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
+<header class="teacher-head"><div class="shell"><div class="teacher-title">🛡️ DRAGONSWOOD COMMAND<small>EXPLORE ACADEMY • EVANS 4–5 • TEACHER PORTAL</small></div><div id="signed" class="hidden" style="text-align:right"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
 <main class="shell teacher-main">
-<section id="login" class="card" style="max-width:520px;margin:55px auto"><h1>Teacher Login</h1><form id="loginForm"><div class="field"><label>Email</label><input id="email" type="email" required></div><div class="field"><label>Password</label><input id="password" type="password" required></div><button style="width:100%">SIGN IN</button><div id="error" style="color:#ff9db5;margin-top:8px"></div></form></section>
+<section id="login" class="card" style="max-width:520px;margin:45px auto"><h1>Teacher Login</h1><form id="loginForm"><div class="field"><label>Email</label><input id="email" type="email" required></div><div class="field"><label>Password</label><input id="password" type="password" required></div><button style="width:100%">SIGN IN</button><div id="error" style="color:#ff9db5;margin-top:8px"></div></form></section>
 <section id="dash" class="hidden">
-<div class="tabs"><button class="tab active" data-p="students">👥 STUDENTS</button><button class="tab" data-p="rewards">🛡️ CLASS REWARDS</button><button class="tab" data-p="scores">🏆 LEADERBOARDS</button><button class="tab" data-p="data">📊 GAME DATA</button></div>
+<div class="frame bevel tabs"><button class="tab active" data-p="students">👥 STUDENTS</button><button class="tab" data-p="rewards">🛡️ CLASS REWARDS</button><button class="tab" data-p="scores">🏆 LEADERBOARDS</button><button class="tab" data-p="data">📊 GAME DATA</button></div>
 
 <div id="students" class="panel active">
-  <div class="command-title"><h2>🧙 STUDENT CONTROL CENTER</h2><p>Manage HP, Gold, XP, level progress, profiles, and group awards.</p></div>
+  <div class="frame bevel command-title"><h2>🧙 STUDENT CONTROL CENTER</h2><p>Manage HP, Gold, XP, level progress, profiles, and group awards.</p></div>
   <div class="card"><h3>MASS AWARD / ADJUSTMENT</h3><div class="groupbox">
     <div class="field"><label>AWARD TO</label><select id="massGroup"><optgroup label="Groups"><option value="all">Whole Class</option><option value="girl">All Girls</option><option value="boy">All Boys</option><option value="4">All 4th Grade</option><option value="5">All 5th Grade</option></optgroup><optgroup label="Individual Students" id="individualStudentOptions"></optgroup></select></div>
     <div class="field"><label>STAT</label><select id="massStat"><option value="hp">HP</option><option value="gold">Gold</option><option value="xp">XP</option></select></div>
     <div class="field"><label>AMOUNT</label><input id="massAmount" type="number" value="1"></div>
-    <div class="field"><label>REASON (OPTIONAL)</label><input id="massReason" placeholder="Great teamwork!"></div>
-  </div><div class="actions" style="margin-top:11px"><button onclick="document.getElementById('massAmount').value=1">+1</button><button onclick="document.getElementById('massAmount').value=5">+5</button><button onclick="document.getElementById('massAmount').value=10">+10</button><button onclick="document.getElementById('massAmount').value=-1" style="background:#441025">-1</button><button id="massApply" style="margin-left:auto">APPLY AWARD</button></div></div>
-  <div class="titlebar"><div><h2>STUDENT ROSTER</h2><p>Profiles appear here after students sign in for the first time.</p></div></div>
+    <div class="field"><label>REASON</label><input id="massReason" placeholder="Great teamwork!"></div>
+  </div><div class="actions" style="margin-top:10px"><button onclick="document.getElementById('massAmount').value=1">+1</button><button onclick="document.getElementById('massAmount').value=5">+5</button><button onclick="document.getElementById('massAmount').value=10">+10</button><button onclick="document.getElementById('massAmount').value=-1">-1</button><button id="massApply" style="margin-left:auto">APPLY AWARD</button></div></div>
+  <div class="titlebar"><div><h2>STUDENT ROSTER</h2><p>Profiles appear here after first sign-in.</p></div></div>
   <div class="card" style="overflow:auto"><table class="student-table"><thead><tr><th>AVATAR</th><th>STUDENT</th><th>GRADE</th><th>GROUP</th><th>LEVEL</th><th>HP</th><th>GOLD</th><th>XP</th><th>MANAGE</th></tr></thead><tbody id="studentRows"></tbody></table></div>
   <div class="recess-control"><div class="card"><h2>🌤️ SECOND RECESS CONTROL</h2><div class="big" id="recessTeacherPoints">0</div><div class="meter"><div class="fill" id="recessTeacherFill"></div></div><div id="recessTeacherStatus" class="muted"></div><div class="actions" style="margin-top:10px"><input id="recessTeacherReason" class="reason" placeholder="Reason"><button class="recess-add" data-rn="1">+1</button><button class="recess-add" data-rn="2">+2</button><button class="recess-add" data-rn="5">+5</button><button id="recessMinus">-1</button><button id="recessReset">RESET TODAY</button></div></div><div class="card"><h3>TODAY'S GOAL</h3><div class="field"><label>Goal</label><input id="recessGoalInput" type="number" value="10"></div><button id="saveRecessGoal">SAVE GOAL</button><div class="badge" id="recessDateLabel" style="margin-top:10px"></div></div></div>
 </div>
@@ -614,12 +65,12 @@ button:hover,.btn:hover{
   <div class="titlebar"><div><h2>REWARD MILESTONES</h2><p>Add or edit rewards without touching GitHub.</p></div><button id="addReward">+ ADD REWARD</button></div><div class="card"><div class="list" id="rewardList"></div></div>
 </div>
 
-<div id="scores" class="panel"><div class="command-title"><h2>🏆 LEADERBOARD MANAGER</h2><p>Review or delete submitted scores.</p></div><div class="card"><div class="list" id="scoreList"></div></div></div>
-<div id="data" class="panel"><div class="command-title"><h2>📊 ACADEMIC GAME DATA</h2><p>Private game results for instructional use.</p></div><div class="card" style="overflow:auto"><table><thead><tr><th>Player</th><th>Game</th><th>Score</th><th>Accuracy</th><th>Details</th><th>Time</th></tr></thead><tbody id="results"></tbody></table></div></div>
+<div id="scores" class="panel"><div class="frame bevel command-title"><h2>🏆 LEADERBOARD MANAGER</h2><p>Review or delete submitted scores.</p></div><div class="card"><div class="list" id="scoreList"></div></div></div>
+<div id="data" class="panel"><div class="frame bevel command-title"><h2>📊 ACADEMIC GAME DATA</h2><p>Private game results for instructional use.</p></div><div class="card" style="overflow:auto"><table><thead><tr><th>Player</th><th>Game</th><th>Score</th><th>Accuracy</th><th>Details</th><th>Time</th></tr></thead><tbody id="results"></tbody></table></div></div>
 </section></main>
 
 <div id="rewardModal" class="modal hidden"><div class="modalbox card"><h3 id="rewardModalTitle">Add Reward</h3><input type="hidden" id="rid"><div class="field"><label>Name</label><input id="rname"></div><div class="field"><label>Points Required</label><input id="rpoints" type="number"></div><div class="field"><label>Icon</label><input id="ricon" value="🎁"></div><div class="field"><label>Description</label><textarea id="rdesc"></textarea></div><div class="actions"><button id="saveReward">SAVE REWARD</button><button id="cancelReward">Cancel</button></div></div></div>
-<div id="studentModal" class="modal hidden"><div class="modalbox card"><h3>Manage Student</h3><input type="hidden" id="sid"><div class="field"><label>First Name</label><input id="sname"></div><div class="field"><label>Grade</label><select id="sgrade"><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div><div class="field"><label>Group</label><select id="sgroup"><option value="girl">Girls</option><option value="boy">Boys</option></select></div><div class="field"><label>Title ID</label><input id="stitle"></div><div class="field"><label>Avatar ID</label><input id="savatar"></div><div class="groupbox"><div class="field"><label>HP</label><input id="shp" type="number"></div><div class="field"><label>Gold</label><input id="sgold" type="number"></div><div class="field"><label>XP</label><input id="sxp" type="number"></div><div class="field"><label>Reason</label><input id="sreason"></div></div><div class="actions" style="margin-top:12px"><button id="saveStudent">SAVE PROFILE</button><button id="deleteStudent" style="background:#4A1025">DELETE STUDENT</button><button id="cancelStudent">Cancel</button></div></div></div>
+<div id="studentModal" class="modal hidden"><div class="modalbox card"><h3>Manage Student</h3><input type="hidden" id="sid"><div class="field"><label>First Name</label><input id="sname"></div><div class="field"><label>Grade</label><select id="sgrade"><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div><div class="field"><label>Group</label><select id="sgroup"><option value="girl">Girls</option><option value="boy">Boys</option></select></div><div class="field"><label>Title ID</label><input id="stitle"></div><div class="field"><label>Avatar ID</label><input id="savatar"></div><div class="groupbox"><div class="field"><label>HP</label><input id="shp" type="number"></div><div class="field"><label>Gold</label><input id="sgold" type="number"></div><div class="field"><label>XP</label><input id="sxp" type="number"></div><div class="field"><label>Reason</label><input id="sreason"></div></div><div class="actions" style="margin-top:10px"><button id="saveStudent">SAVE PROFILE</button><button id="deleteStudent">DELETE STUDENT</button><button id="cancelStudent">Cancel</button></div></div></div>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";

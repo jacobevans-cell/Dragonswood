@@ -543,7 +543,9 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 <div id="students" class="panel active">
   <div class="frame bevel command-title"><h2>🧙 STUDENT CONTROL CENTER</h2><p>Manage HP, Gold, XP, level progress, profiles, and group awards.</p></div>
   <div class="live-request-grid">
-    <div class="card live-request-box"><h3>🚻 LIVE BATHROOM</h3><p class="pace-note">Students currently out appear here instantly. Each student gets 3 automatic passes per day; extras come here for approval.</p><div id="bathroomLiveList" class="live-request-list"><div class="muted">No students out.</div></div><h4>EXTRA PASS REQUESTS</h4><div id="bathroomRequestList" class="live-request-list"><div class="muted">No pending requests.</div></div></div>
+    <div class="card live-request-box"><h3>🚻 LIVE BATHROOM</h3><p class="pace-note">Students currently out appear here instantly. Each student gets 3 automatic passes per day; extras come here for approval.</p><div id="bathroomLiveList" class="live-request-list"><div class="muted">No students out.</div></div><h4>EXTRA PASS REQUESTS</h4><div id="bathroomRequestList" class="live-request-list"><div class="muted">No pending requests.</div></div>
+<h4>TODAY'S BATHROOM HISTORY</h4>
+<div id="bathroomHistoryList" class="live-request-list"><div class="muted">No bathroom visits recorded today.</div></div></div>
     <div class="card live-request-box"><h3>⭐ STUDENT RECOGNITION REQUESTS</h3><p class="pace-note">Students can ask you to notice a positive choice. Nothing is awarded until you approve it.</p><div id="pointRequestList" class="live-request-list"><div class="muted">No pending requests.</div></div></div>
   </div>
   <div class="progression-plan"><div><small>LEVEL CAP</small><b>20</b><small>Midyear target</small></div><div><small>LEVEL 20 XP</small><b>12,000</b><small>Daily hard cap 150 XP</small></div><div><small>CLASS HP</small><b>10 → 48</b><small>Grows by level</small></div><div><small>RPG BASE HP</small><b>18 → 94</b><small>Before gear</small></div></div>
@@ -799,7 +801,7 @@ import {getFirestore,doc,getDoc,setDoc,collection,onSnapshot,addDoc,deleteDoc,ge
 const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2", "measurementId": "G-LPRLDGVBD2"},TEACHER="jacobicusjax@gmail.com";
 const normalizedEmail = v => String(v||"").trim().toLowerCase();
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),$=id=>document.getElementById(id);
-let points=0,history=[],rewards=[],scores=[],results=[],students=[],shopItems=[],purchases=[],recessState={points:0,goal:20,dateKey:""},petGoalState={points:0,goal:250},tripGoalState={points:0,goal:750},universalPointState={points:0};
+let points=0,history=[],rewards=[],scores=[],results=[],students=[],shopItems=[],purchases=[],bathroomStatuses=[],bathroomRequests=[],pointRequests=[],bathroomVisits=[],recessState={points:0,goal:20,dateKey:""},petGoalState={points:0,goal:250},tripGoalState={points:0,goal:750},universalPointState={points:0};
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
 const AVATAR_EMOJI={"dragon-purple":"🐉","dragon-green":"🐲","knight":"🛡️","wizard":"🧙","witch":"🧙‍♀️","princess":"👸","prince":"🤴","ranger":"🏹","phoenix":"🔥","wolf":"🐺","owl":"🦉","crystal":"🔮"};
 const DRAGONSWOOD_XP_THRESHOLDS=[0,200,450,750,1100,1500,1950,2450,3000,3600,4250,4950,5700,6500,7350,8250,9200,10200,11100,12000];
@@ -946,9 +948,10 @@ function listen(){
  onSnapshot(collection(db,"scores"),s=>{scores=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+b.score||0)-(+a.score||0));renderScores()});
  onSnapshot(collection(db,"gameResults"),s=>{results=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));renderResults()});
  onSnapshot(collection(db,"students"),s=>{students=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.firstName||"").localeCompare(String(b.firstName||"")));renderStudents();renderShop()});
-onSnapshot(collection(db,"bathroomStatus"),s=>{bathroomStatuses=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()});
-onSnapshot(collection(db,"bathroomRequests"),s=>{bathroomRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()});
-onSnapshot(collection(db,"pointRequests"),s=>{pointRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()});
+onSnapshot(collection(db,"bathroomStatus"),s=>{bathroomStatuses=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("bathroomStatus listener",e));
+onSnapshot(collection(db,"bathroomRequests"),s=>{bathroomRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("bathroomRequests listener",e));
+onSnapshot(collection(db,"pointRequests"),s=>{pointRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("pointRequests listener",e));
+onSnapshot(collection(db,"bathroomVisits"),s=>{bathroomVisits=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("bathroomVisits listener",e));
  onSnapshot(collection(db,"shopItems"),s=>{shopItems=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
       const levelA=Math.max(1,Number(a.requiredLevel||1));
       const levelB=Math.max(1,Number(b.requiredLevel||1));
@@ -1206,13 +1209,59 @@ function renderMassStudentOptions(){
 
 function teacherDateKey(){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Phoenix',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}
 function reqTime(x){try{return x?.createdAt?.toDate?.().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})||''}catch(e){return''}}
+async function refreshStudentRequests(){
+ try{
+   const [bs,br,pr,bv]=await Promise.all([
+     getDocs(collection(db,'bathroomStatus')),
+     getDocs(collection(db,'bathroomRequests')),
+     getDocs(collection(db,'pointRequests')),
+     getDocs(collection(db,'bathroomVisits'))
+   ]);
+   bathroomStatuses=bs.docs.map(d=>({id:d.id,...d.data()}));
+   bathroomRequests=br.docs.map(d=>({id:d.id,...d.data()}));
+   pointRequests=pr.docs.map(d=>({id:d.id,...d.data()}));
+   bathroomVisits=bv.docs.map(d=>({id:d.id,...d.data()}));
+   renderLiveRequests();
+ }catch(err){console.warn('student request refresh',err)}
+}
+setTimeout(refreshStudentRequests,800);
+setInterval(refreshStudentRequests,5000);
+
+function visitClock(ts){
+ try{return ts?.toDate?.().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})||'—'}
+ catch(e){return'—'}
+}
+function visitDuration(v){
+ try{
+   const a=v?.leftAt?.toDate?.(),b=v?.returnedAt?.toDate?.()||new Date();
+   if(!a)return'';
+   return Math.max(0,Math.round((b-a)/60000))+' min';
+ }catch(e){return''}
+}
+
 function renderLiveRequests(){
  const key=teacherDateKey();
  const live=bathroomStatuses.filter(x=>x.dateKey===key&&x.active===true);
  const bl=$('bathroomLiveList');if(bl)bl.innerHTML=live.length?live.map(x=>`<div class="live-request-item out"><div><b>🚻 ${esc(x.studentName||displayStudent(students.find(s=>s.id===x.id)||{})||'Student')}</b><small>OUT NOW • pass ${+x.passesUsed||0} of 3${(+x.approvalCredits||0)>0?' • '+x.approvalCredits+' extra approved':''}</small></div><div class="live-actions"><button data-return-bath="${x.id}">MARK RETURNED</button></div></div>`).join(''):'<div class="muted">No students are currently out.</div>';
  const pending=bathroomRequests.filter(x=>x.dateKey===key&&x.status==='pending');const br=$('bathroomRequestList');if(br)br.innerHTML=pending.length?pending.map(x=>`<div class="live-request-item"><div><b>🙋 ${esc(x.studentName||'Student')}</b><small>Extra bathroom pass requested ${reqTime(x)}</small></div><div class="live-actions"><button data-bath-approve="${x.id}">APPROVE</button><button class="danger-soft" data-bath-deny="${x.id}">DENY</button></div></div>`).join(''):'<div class="muted">No pending extra-pass requests.</div>';
  const points=pointRequests.filter(x=>x.status==='pending');const pr=$('pointRequestList');if(pr)pr.innerHTML=points.length?points.map(x=>`<div class="live-request-item"><div><b>⭐ ${esc(x.studentName||'Student')}</b><small>${esc(x.reason||'Positive choice')} • ${reqTime(x)}</small></div><div class="live-actions"><button data-point-approve="${x.id}">APPROVE +1 XP</button><button class="danger-soft" data-point-deny="${x.id}">DISMISS</button></div></div>`).join(''):'<div class="muted">No pending recognition requests.</div>';
- document.querySelectorAll('[data-return-bath]').forEach(b=>b.onclick=()=>setDoc(doc(db,'bathroomStatus',b.dataset.returnBath),{active:false,returnedAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true}));
+ const visits=bathroomVisits.filter(x=>x.dateKey===key).sort((a,b)=>(b.leftAt?.seconds||0)-(a.leftAt?.seconds||0));
+ const vh=$('bathroomHistoryList');
+ if(vh)vh.innerHTML=visits.length
+   ?visits.map(v=>`<div class="live-request-item"><div><b>🚻 ${esc(v.studentName||'Student')}</b><small>${esc(v.passType==='approved-extra'?'Approved extra pass':'Automatic pass')} • OUT ${visitClock(v.leftAt)} • ${v.status==='returned'?'BACK '+visitClock(v.returnedAt):'OUT NOW'}${visitDuration(v)?' • '+visitDuration(v):''}</small></div></div>`).join('')
+   :'<div class="muted">No bathroom visits recorded today.</div>';
+ document.querySelectorAll('[data-return-bath]').forEach(b=>b.onclick=async()=>{
+   const st=bathroomStatuses.find(x=>x.id===b.dataset.returnBath);
+   const visitId=String(st?.activeVisitId||'');
+   await setDoc(doc(db,'bathroomStatus',b.dataset.returnBath),{
+     active:false,activeVisitId:'',returnedAt:serverTimestamp(),updatedAt:serverTimestamp()
+   },{merge:true});
+   if(visitId){
+     await setDoc(doc(db,'bathroomVisits',visitId),{
+       status:'returned',returnedAt:serverTimestamp(),updatedAt:serverTimestamp()
+     },{merge:true});
+   }
+ });
  document.querySelectorAll('[data-bath-approve]').forEach(b=>b.onclick=()=>approveBathroom(b.dataset.bathApprove,true));document.querySelectorAll('[data-bath-deny]').forEach(b=>b.onclick=()=>approveBathroom(b.dataset.bathDeny,false));
  document.querySelectorAll('[data-point-approve]').forEach(b=>b.onclick=()=>approvePoint(b.dataset.pointApprove,true));document.querySelectorAll('[data-point-deny]').forEach(b=>b.onclick=()=>approvePoint(b.dataset.pointDeny,false));
 }

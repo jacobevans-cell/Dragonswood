@@ -2399,12 +2399,106 @@ function renderBathroomStudent(d){
  const key=phoenixDateKey(),same=d?.dateKey===key,used=same?(+d?.passesUsed||0):0,active=same&&d?.active===true,credits=same?(+d?.approvalCredits||0):0;
  const card=$('bathroomStudentCard'),txt=$('bathroomStudentStatus'),btn=$('bathroomStudentBtn');if(!card||!txt||!btn)return;
  card.classList.toggle('bathroom-active',active);
- if(active){txt.textContent=`YOU ARE OUT • ${Math.max(0,3-used)} automatic passes remain today. Tap when you return.`;btn.textContent='✅ I AM BACK IN CLASS';btn.disabled=false;btn.onclick=()=>setDoc(doc(db,'bathroomStatus',user.uid),{active:false,returnedAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});return}
- txt.textContent=used<3?`${3-used} of 3 automatic passes remaining today.`:(credits>0?`Teacher approved ${credits} extra pass${credits===1?'':'es'}.`:'Your 3 automatic passes are used. Extra trips need teacher approval.');
- btn.textContent=used<3?'🚻 USE BATHROOM PASS':credits>0?'🚻 USE APPROVED PASS':'🙋 REQUEST EXTRA PASS';btn.disabled=false;
- btn.onclick=async()=>{btn.disabled=true;try{if(used<3){await setDoc(doc(db,'bathroomStatus',user.uid),{studentId:user.uid,studentName:studentDisplayName(),dateKey:key,passesUsed:used+1,approvalCredits:credits,active:true,leftAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true})}else if(credits>0){await setDoc(doc(db,'bathroomStatus',user.uid),{studentId:user.uid,studentName:studentDisplayName(),dateKey:key,passesUsed:used,approvalCredits:credits-1,active:true,leftAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true})}else{const id=user.uid+'_'+Date.now();await setDoc(doc(db,'bathroomRequests',id),{studentId:user.uid,studentName:studentDisplayName(),dateKey:key,status:'pending',createdAt:serverTimestamp()});txt.textContent='Extra bathroom pass requested. Waiting for teacher approval.'}}catch(e){txt.textContent='Could not update the pass. Please tell your teacher.'}finally{btn.disabled=false}}
+
+ if(active){
+   txt.textContent=`YOU ARE OUT • ${Math.max(0,3-used)} automatic passes remain today. Tap when you return.`;
+   btn.textContent='✅ I AM BACK IN CLASS';btn.disabled=false;
+   btn.onclick=async()=>{
+     btn.disabled=true;
+     try{
+       const visitId=String(d?.activeVisitId||'');
+       await setDoc(doc(db,'bathroomStatus',user.uid),{
+         active:false,activeVisitId:'',returnedAt:serverTimestamp(),updatedAt:serverTimestamp()
+       },{merge:true});
+       if(visitId){
+         await setDoc(doc(db,'bathroomVisits',visitId),{
+           returnedAt:serverTimestamp(),status:'returned',updatedAt:serverTimestamp()
+         },{merge:true});
+       }
+     }catch(err){
+       console.warn(err);
+       txt.textContent='Could not check you back in. Please tell your teacher.';
+     }finally{btn.disabled=false}
+   };
+   return;
+ }
+
+ txt.textContent=used<3
+   ?`${3-used} of 3 automatic passes remaining today.`
+   :(credits>0?`Teacher approved ${credits} extra pass${credits===1?'':'es'}.`:'Your 3 automatic passes are used. Extra trips need teacher approval.');
+
+ btn.textContent=used<3?'🚻 USE BATHROOM PASS':credits>0?'🚻 USE APPROVED PASS':'🙋 REQUEST EXTRA PASS';
+ btn.disabled=false;
+
+ btn.onclick=async()=>{
+   btn.disabled=true;
+   try{
+     if(used<3 || credits>0){
+       const isAuto=used<3;
+       const visitId=user.uid+'_'+key.replaceAll('-','')+'_'+Date.now();
+       const nextUsed=isAuto?used+1:used;
+       const nextCredits=isAuto?credits:Math.max(0,credits-1);
+
+       await setDoc(doc(db,'bathroomVisits',visitId),{
+         studentId:user.uid,
+         studentName:studentDisplayName(),
+         dateKey:key,
+         visitNumber:nextUsed,
+         passType:isAuto?'automatic':'approved-extra',
+         leftAt:serverTimestamp(),
+         returnedAt:null,
+         status:'out',
+         createdAt:serverTimestamp(),
+         updatedAt:serverTimestamp()
+       });
+
+       await setDoc(doc(db,'bathroomStatus',user.uid),{
+         studentId:user.uid,
+         studentName:studentDisplayName(),
+         dateKey:key,
+         passesUsed:nextUsed,
+         approvalCredits:nextCredits,
+         active:true,
+         activeVisitId:visitId,
+         leftAt:serverTimestamp(),
+         returnedAt:null,
+         updatedAt:serverTimestamp()
+       },{merge:true});
+     }else{
+       const id=user.uid+'_'+Date.now();
+       await setDoc(doc(db,'bathroomRequests',id),{
+         studentId:user.uid,studentName:studentDisplayName(),dateKey:key,status:'pending',
+         createdAt:serverTimestamp(),updatedAt:serverTimestamp()
+       });
+       txt.textContent='Extra bathroom pass requested. Waiting for teacher approval.';
+     }
+   }catch(err){
+     console.warn(err);
+     txt.textContent='Could not update the pass. Please tell your teacher.';
+   }finally{btn.disabled=false}
+ };
 }
-async function sendRecognitionRequest(){const b=$('recognitionRequestBtn'),st=$('recognitionRequestStatus');if(!user||!b)return;b.disabled=true;try{const id=user.uid+'_'+Date.now();await setDoc(doc(db,'pointRequests',id),{studentId:user.uid,studentName:studentDisplayName(),reason:$('recognitionReason')?.value||'Positive choice',status:'pending',createdAt:serverTimestamp()});st.textContent='✓ Sent to Mr. Evans for review.'}catch(e){st.textContent='Could not send the request. Please tell Mr. Evans.'}finally{setTimeout(()=>b.disabled=false,1200)}}
+async function sendRecognitionRequest(){
+ const b=$('recognitionRequestBtn'),st=$('recognitionRequestStatus');
+ if(!user||!b)return;
+ b.disabled=true;
+ try{
+   const id=user.uid+'_'+Date.now();
+   await setDoc(doc(db,'pointRequests',id),{
+     studentId:user.uid,
+     studentName:studentDisplayName(),
+     dateKey:phoenixDateKey(),
+     reason:$('recognitionReason')?.value||'Positive choice',
+     status:'pending',
+     createdAt:serverTimestamp(),
+     updatedAt:serverTimestamp()
+   });
+   st.textContent='✓ Sent to Mr. Evans for review.';
+ }catch(err){
+   console.warn(err);
+   st.textContent='Could not send the request. Please tell Mr. Evans.';
+ }finally{setTimeout(()=>b.disabled=false,1200)}
+}
 document.getElementById('recognitionRequestBtn')?.addEventListener('click',sendRecognitionRequest);
 
 onAuthStateChanged(auth,async u=>{

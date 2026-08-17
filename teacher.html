@@ -1525,24 +1525,71 @@ function renderLiveRequests(){
    window.DWAudio?.positive();
  });
 
+ document.querySelectorAll('[data-snack-done]').forEach(b=>b.onclick=async()=>{
+   const status=snackStatuses.find(x=>x.id===b.dataset.snackDone);
+   if(!status)return;
+   const now=new Date(),activeId=String(status.activeVisitId||'');
+   const visits=(Array.isArray(status.visits)?status.visits:[]).map(v=>{
+     if(String(v?.id||'')!==activeId)return v;
+     const startMs=Number(v?.startedMs||0);
+     return {...v,
+       endedAt:now.toISOString(),
+       endedText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
+       durationMinutes:startMs?Math.max(0,Math.round((now.getTime()-startMs)/60000)):null,
+       status:'done'
+     };
+   });
+   try{
+     await setDoc(doc(db,'snackStatus',b.dataset.snackDone),{
+       active:false,activeVisitId:'',endedAt:serverTimestamp(),
+       endedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
+       visits,updatedAt:serverTimestamp()
+     },{merge:true});
+     window.DWAudio?.positive();
+   }catch(err){
+     console.error("Mark snack done error",err);
+     window.DWAudio?.negative();
+     alert("Could not mark snack done: "+(err.code||err.message||err));
+   }
+ });
+ document.querySelectorAll('[data-snack-approve]').forEach(b=>b.onclick=()=>approveSnack(b.dataset.snackApprove,true));
+ document.querySelectorAll('[data-snack-deny]').forEach(b=>b.onclick=()=>approveSnack(b.dataset.snackDeny,false));
+
  document.querySelectorAll('[data-bath-approve]').forEach(b=>b.onclick=()=>approveBathroom(b.dataset.bathApprove,true));
  document.querySelectorAll('[data-bath-deny]').forEach(b=>b.onclick=()=>approveBathroom(b.dataset.bathDeny,false));
  document.querySelectorAll('[data-point-approve]').forEach(b=>b.onclick=()=>approvePoint(b.dataset.pointApprove,true));
  document.querySelectorAll('[data-point-deny]').forEach(b=>b.onclick=()=>approvePoint(b.dataset.pointDeny,false));
 }
 async function approveSnack(id,yes){
- const r=snackRequests.find(x=>x.id===id);if(!r)return;
- if(yes){
-   const sr=doc(db,'snackStatus',r.studentId),snap=await getDoc(sr),d=snap.exists()?snap.data():{},same=d.dateKey===teacherDateKey();
-   await setDoc(sr,{
-     studentId:r.studentId,studentName:r.studentName,dateKey:teacherDateKey(),
-     passesUsed:same?(+d.passesUsed||2):2,
-     approvalCredits:(same?(+d.approvalCredits||0):0)+1,
-     active:same&&d.active===true,updatedAt:serverTimestamp()
+ const r=snackRequests.find(x=>x.id===id);
+ if(!r)return;
+ try{
+   if(yes){
+     const sr=doc(db,'snackStatus',r.studentId);
+     const snap=await getDoc(sr);
+     const d=snap.exists()?snap.data():{};
+     const same=d.dateKey===teacherDateKey();
+     await setDoc(sr,{
+       studentId:r.studentId,
+       studentName:r.studentName,
+       dateKey:teacherDateKey(),
+       passesUsed:same?(+d.passesUsed||2):2,
+       approvalCredits:(same?(+d.approvalCredits||0):0)+1,
+       active:same&&d.active===true,
+       updatedAt:serverTimestamp()
+     },{merge:true});
+   }
+   await setDoc(doc(db,'snackRequests',id),{
+     status:yes?'approved':'denied',
+     reviewedAt:serverTimestamp()
    },{merge:true});
+   if(yes)window.DWAudio?.positive();
+   else window.DWAudio?.negative();
+ }catch(err){
+   console.error("Snack request review error",err);
+   window.DWAudio?.negative();
+   alert("Could not "+(yes?"approve":"deny")+" snack pass: "+(err.code||err.message||err));
  }
- await setDoc(doc(db,'snackRequests',id),{status:yes?'approved':'denied',reviewedAt:serverTimestamp()},{merge:true});
- if(yes)window.DWAudio?.positive();else window.DWAudio?.negative();
 }
 
 async function approveBathroom(id,yes){const r=bathroomRequests.find(x=>x.id===id);if(!r)return;if(yes){const sr=doc(db,'bathroomStatus',r.studentId),snap=await getDoc(sr),d=snap.exists()?snap.data():{},same=d.dateKey===teacherDateKey();await setDoc(sr,{studentId:r.studentId,studentName:r.studentName,dateKey:teacherDateKey(),passesUsed:same?(+d.passesUsed||3):3,approvalCredits:(same?(+d.approvalCredits||0):0)+1,active:same&&d.active===true,updatedAt:serverTimestamp()},{merge:true})}await setDoc(doc(db,'bathroomRequests',id),{status:yes?'approved':'denied',reviewedAt:serverTimestamp()},{merge:true})}

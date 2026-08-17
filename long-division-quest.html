@@ -614,6 +614,20 @@ h1 span{color:var(--dw-gold2)}
 }
 </style>
 
+
+<style id="v27-3-score-clarity">
+.xp-card{
+  border-color:#1ec8ff!important;
+  box-shadow:0 0 0 1px rgba(30,200,255,.16),0 0 18px rgba(30,200,255,.08)!important;
+}
+.mission-card .label{letter-spacing:.8px}
+.mission-card:has(#questScoreValue){
+  border-color:#f4c95d!important;
+  box-shadow:0 0 0 1px rgba(244,201,93,.14),0 0 18px rgba(244,201,93,.08)!important;
+}
+.mission-card:has(#questScoreValue) .value{color:#ffe98a}
+</style>
+
 </head>
 <body>
 
@@ -627,9 +641,9 @@ h1 span{color:var(--dw-gold2)}
     <div class="dw-reward"><small>DRAGONSWOOD LEVEL</small><b id="dwLevel">—</b></div>
     <div class="dw-reward"><small>PLAYER XP</small><b id="dwAccountXp">—</b></div>
     <div class="dw-reward"><small>GOLD</small><b id="dwGold">—</b></div>
-    <div class="dw-reward"><small>DAILY QUEST REWARD</small><b id="dwDailyReward">Up to 8 XP + 2 Gold</b></div>
+    <div class="dw-reward"><small>PER QUEST REWARD</small><b id="dwDailyReward">5–8 XP + 1–2 Gold</b></div>
   </div>
-  <div class="dw-status" id="dwStatus">Quest Score tracks this run only. PLAYER XP is your real Dragonswood level progress. Complete all 5 problems to earn today's small account reward.</div>
+  <div class="dw-status" id="dwStatus">PLAYER XP THIS RUN grows your Dragonswood level. QUEST HIGH SCORE is just for competing and beating your best score. Complete quests repeatedly until the 150 Player XP daily cap.</div>
 
   <h1><span>Long Division</span> Quest</h1>
   <div class="subtitle">DIVIDE • MULTIPLY • SUBTRACT • BRING DOWN</div>
@@ -644,9 +658,15 @@ h1 span{color:var(--dw-gold2)}
 
   <div class="mission-dashboard">
     <div class="mission-card xp-card">
-      <div class="label">Quest Score</div>
-      <div class="value"><span id="xpValue">0</span> / <span id="xpGoal">400</span> XP</div>
+      <div class="label">🐉 PLAYER XP THIS RUN</div>
+      <div class="value"><span id="xpValue">+0 XP</span></div>
       <div class="xp-track"><div class="xp-fill" id="xpFill"></div></div>
+      <div style="margin-top:6px;color:var(--muted);font-size:11px">This is real Dragonswood level XP earned from this quest.</div>
+    </div>
+    <div class="mission-card">
+      <div class="label">🏆 QUEST HIGH SCORE</div>
+      <div class="value"><span id="questScoreValue">0</span> / 400</div>
+      <div style="margin-top:6px;color:var(--muted);font-size:11px">This is your game score only. It does NOT affect player level.</div>
     </div>
     <div class="mission-card">
       <div class="label">Problems</div>
@@ -750,8 +770,8 @@ h1 span{color:var(--dw-gold2)}
   const progress = document.getElementById('progress');
   const scoreEl = document.getElementById('score');
   const xpValue = document.getElementById('xpValue');
-  const xpGoal = document.getElementById('xpGoal');
   const xpFill = document.getElementById('xpFill');
+  const questScoreValue = document.getElementById('questScoreValue');
   const problemCount = document.getElementById('problemCount');
   const accuracyValue = document.getElementById('accuracyValue');
   const hintsUsedValue = document.getElementById('hintsUsedValue');
@@ -798,11 +818,22 @@ h1 span{color:var(--dw-gold2)}
     if(xp >= 150) return {num:2,name:'SKILLED'};
     return {num:1,name:'ROOKIE'};
   }
+  function playerXpThisRun(){
+    const solvedXp=Math.min(MISSION_PROBLEMS,missionSolved);
+    if(missionSolved < MISSION_PROBLEMS) return solvedXp;
+    const accuracy=totalAttempts===0 ? 1 : (correctAttempts/totalAttempts);
+    let bonus=0;
+    if(accuracy>=0.90) bonus+=2;
+    else if(accuracy>=0.75) bonus+=1;
+    if(hintsUsed===0) bonus+=1;
+    return Math.min(8,solvedXp+bonus);
+  }
 
   function updateMissionUI(){
-    xpValue.textContent=xp;
-    xpGoal.textContent=XP_GOAL;
-    xpFill.style.width=Math.min(100,(xp/XP_GOAL)*100)+'%';
+    const runXp=playerXpThisRun();
+    xpValue.textContent=`+${runXp} XP`;
+    xpFill.style.width=Math.min(100,(runXp/8)*100)+'%';
+    questScoreValue.textContent=xp;
     problemCount.textContent=missionSolved;
     const acc=totalAttempts===0 ? 100 : Math.round((correctAttempts/totalAttempts)*100);
     accuracyValue.textContent=acc+'%';
@@ -814,14 +845,13 @@ h1 span{color:var(--dw-gold2)}
     if(missionSolved>=MISSION_PROBLEMS){
       missionFinished=true;
       missionComplete.classList.add('show');
-      missionSummary.textContent=xp>=XP_GOAL
-        ? `You solved 5 problems and earned ${xp} quest points. Long Division mission cleared!`
-        : `You solved all 5 problems and earned ${xp} quest points. Mission complete.`;
+      missionSummary.textContent=`You solved all 5 problems • +${playerXpThisRun()} Dragonswood Player XP • Quest Score: ${xp}/400.`;
       if(!dragonswoodMissionReported){
         dragonswoodMissionReported=true;
         const accuracy=totalAttempts===0?1:(correctAttempts/totalAttempts);
         window.dispatchEvent(new CustomEvent("dragonswood-long-division-complete",{detail:{
           missionXp:xp,
+          playerXpEarned:playerXpThisRun(),
           solved:missionSolved,
           totalAttempts,
           correctAttempts,
@@ -1242,7 +1272,7 @@ h1 span{color:var(--dw-gold2)}
     else if(problemMistakes===1) stars='★★';
 
     let bonus=20;
-    let bonusText='+20 problem XP';
+    let bonusText='+20 high-score points';
 
     if(problemMistakes===0){
       streak++;
@@ -1263,7 +1293,7 @@ h1 span{color:var(--dw-gold2)}
     stepTitle.textContent='PROBLEM COMPLETE';
     stepText.textContent=`You placed every digit yourself. Rating: ${stars}`;
     cellInstruction.textContent=`${bonusText}. Check: ${problem.quotient} × ${problem.divisor} = ${problem.dividend}.`;
-    cellFeedback.textContent=`✓ ${stars}  •  +${bonus} BONUS XP`;
+    cellFeedback.textContent=`✓ ${stars}  •  +1 PLAYER XP  •  +${bonus} HIGH-SCORE POINTS`;
     cellFeedback.style.color='#7ed957';
     progress.textContent=`PROBLEM ${missionSolved} OF ${MISSION_PROBLEMS} COMPLETE`;
     nextBtn.textContent='SOLVED';
@@ -1317,7 +1347,7 @@ const firebaseConfig={"apiKey":"AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE","authDo
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const DOMAIN="explore.academy";
 const XP_THRESHOLDS=[0,200,450,750,1100,1500,1950,2450,3000,3600,4250,4950,5700,6500,7350,8250,9200,10200,11100,12000];
-let currentUser=null,currentProfile=null,todayAlreadyRewarded=false;
+let currentUser=null,currentProfile=null;
 const DRAGONSWOOD_DAILY_XP_CAP=150;
 function profileDailyXp(p){
   const today=localDateKey();
@@ -1348,7 +1378,7 @@ function renderAccount(){
   $("dwAccount").dataset.dailyXp=`${daily} / 150`;
   const name=currentProfile.firstName||currentUser?.email||"Dragonswood Adventurer";
   $("dwAccount").innerHTML=`Connected as <b>${name}</b> • Daily XP ${profileDailyXp(currentProfile)} / 150 • Academic rewards save to Dragonswood`;
-  $("dwDailyReward").textContent=todayAlreadyRewarded?"Practice Only Today":"Up to 8 XP + 2 Gold";
+  $("dwDailyReward").textContent=todayAlreadyRewarded?"Practice Only Today":"5–8 XP + 1–2 Gold";
 }
 
 onAuthStateChanged(auth,async user=>{
@@ -1369,12 +1399,11 @@ onAuthStateChanged(auth,async user=>{
       return;
     }
     currentProfile=studentSnap.data();
-    const claimId=`${user.uid}_long_division_${localDateKey()}`;
-    todayAlreadyRewarded=String(currentProfile.lastGameClaimId||"")===claimId;
     renderAccount();
-    setStatus(todayAlreadyRewarded
-      ?"Today's official Long Division reward is already claimed. You can keep practicing and beating your mission score."
-      :"Connected. Finish all 5 problems for today's official Long Division XP + Gold reward.","good");
+    const daily=profileDailyXp(currentProfile);
+    setStatus(daily>=DRAGONSWOOD_DAILY_XP_CAP
+      ?`Connected. You have reached today's ${DRAGONSWOOD_DAILY_XP_CAP} Player XP cap. You can still practice Long Division and earn Gold.`
+      :"Connected. Every completed 5-problem quest can earn Player XP until you reach today's 150 XP cap.","good");
   }catch(err){
     console.error(err);
     setStatus(`Dragonswood connection error: ${err.code||err.message||"unknown"}`,"error");
@@ -1384,7 +1413,7 @@ onAuthStateChanged(auth,async user=>{
 window.addEventListener("dragonswood-long-division-complete",async event=>{
   const d=event.detail||{};
   const accuracy=Math.max(0,Math.min(1,Number(d.accuracy||0)));
-  const rewardXp=Math.max(4,Math.min(8,4+Math.floor(accuracy*3)+(Number(d.hintsUsed||0)===0?1:0)));
+  const rewardXp=Math.max(5,Math.min(8,Number(d.playerXpEarned||5)));
   const rewardGold=Math.max(1,Math.min(2,1+(accuracy>=0.90&&Number(d.hintsUsed||0)===0?1:0)));
   const dailyBefore=profileDailyXp(currentProfile);
   const dailyRemaining=Math.max(0,DRAGONSWOOD_DAILY_XP_CAP-dailyBefore);
@@ -1395,13 +1424,7 @@ window.addEventListener("dragonswood-long-division-complete",async event=>{
     loot.textContent="Mission complete • Sign in through Dragonswood to save account rewards.";
     return;
   }
-  if(todayAlreadyRewarded){
-    loot.textContent="Practice run complete • Today's Dragonswood reward was already claimed.";
-    setStatus("Practice result complete. Your official daily Long Division reward was already earned.","warn");
-    return;
-  }
-
-  const claimId=`${currentUser.uid}_long_division_${localDateKey()}`;
+  const claimId=`${currentUser.uid}_long_division_${localDateKey()}_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
   try{
     const latest=await getDoc(doc(db,"students",currentUser.uid));
     if(!latest.exists())throw new Error("Student profile not found");
@@ -1437,10 +1460,11 @@ window.addEventListener("dragonswood-long-division-complete",async event=>{
 
     await batch.commit();
     currentProfile={...p,xp:oldXp+cappedRewardXp,gold:oldGold+rewardGold,dailyXpDate:localDateKey(),dailyXpEarned:dailyBefore+cappedRewardXp,lastGameClaimId:claimId};
-    todayAlreadyRewarded=true;
     renderAccount();
     loot.textContent=cappedRewardXp>0?`🐉 DRAGONSWOOD REWARD: +${cappedRewardXp} XP • +${rewardGold} Gold`:`🐉 DAILY XP CAP REACHED • +${rewardGold} Gold`;
-    setStatus(cappedRewardXp>0?`Saved! Long Division Quest awarded +${cappedRewardXp} XP and +${rewardGold} Gold. Daily XP: ${dailyBefore+cappedRewardXp}/150.`:`Saved! You are already at the 150 XP daily cap. Gold was still awarded.`,"good");
+    setStatus(cappedRewardXp>0
+      ?`Saved! This quest awarded +${cappedRewardXp} Player XP and +${rewardGold} Gold. Daily XP: ${dailyBefore+cappedRewardXp}/150. You may complete another quest and keep earning until the cap.`
+      :`Saved! You are already at the 150 Player XP daily cap. This quest still awarded +${rewardGold} Gold.`,"good");
   }catch(err){
     console.error(err);
     if(String(err.code||"").includes("permission-denied")){

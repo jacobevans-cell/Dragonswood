@@ -141,21 +141,38 @@ function renderMap(){const now=lesson?.day||1;let s="";for(let i=1;i<=182;i++){s
 
 function progressId(session){return `${user.uid}_${lesson.date}_${session}`}
 function progressRef(session){return doc(db,"dailyQuestProgress",progressId(session))}
+function localProgressKey(session){return `dragonswood_dailyquest_${user?.uid||"anon"}_${lesson?.date||"date"}_${session}`}
+function saveLocalProgress(session,data){try{localStorage.setItem(localProgressKey(session),JSON.stringify(data))}catch(e){}}
+function readLocalProgress(session){try{const x=localStorage.getItem(localProgressKey(session));return x?JSON.parse(x):null}catch(e){return null}}
 async function readProgress(session){
-  try{const s=await getDoc(progressRef(session));return s.exists()?{id:s.id,...s.data()}:null}
-  catch(e){console.warn("progress read",e);return null}
+  // Firestore is the source of truth. Local storage is an immediate backup for refresh/offline hiccups.
+  try{
+    const s=await getDoc(progressRef(session));
+    if(s.exists()){const data={id:s.id,...s.data()};saveLocalProgress(session,data);return data}
+  }catch(e){console.warn("progress read",e)}
+  const local=readLocalProgress(session);
+  if(local)return local;
+  // If the one-time RPG result exists, the session definitely finished even if an older progress write failed.
+  try{
+    const claimId=`${user.uid}_dailyquest_${lesson.date}_${session}`;
+    const r=await getDoc(doc(db,"gameResults",claimId));
+    if(r.exists()){const d=r.data();const done={studentId:user.uid,dateKey:lesson.date,day:Number(lesson.day||0),session,status:"complete",taskIndex:999,qIndex:0,score:Number(d.score||0),correct:0,attempts:0,accuracy:Number(d.accuracy||0),seconds:Number(d.seconds||0)};saveLocalProgress(session,done);return done}
+  }catch(e){console.warn("result completion check",e)}
+  return null
 }
 async function saveProgress(extra={}){
   if(!user||!lesson||!sessionName)return;
-  try{
-    await setDoc(progressRef(sessionName),{
-      studentId:user.uid,studentEmail:user.email||"",dateKey:lesson.date,day:Number(lesson.day||0),
-      session:sessionName,status:"in_progress",taskIndex:Number(taskIndex||0),qIndex:Number(qIndex||0),
-      score:Number(score||0),correct:Number(correct||0),attempts:Number(attempts||0),
-      mathSkill:String(lesson.mathSkill||""),elaSkill:String(lesson.elaSkill||""),
-      updatedAt:serverTimestamp(),...extra
-    },{merge:true});
-  }catch(e){console.warn("progress save",e)}
+  const payload={
+    studentId:user.uid,studentEmail:user.email||"",dateKey:lesson.date,day:Number(lesson.day||0),
+    session:sessionName,status:"in_progress",taskIndex:Number(taskIndex||0),qIndex:Number(qIndex||0),
+    score:Number(score||0),correct:Number(correct||0),attempts:Number(attempts||0),
+    mathSkill:String(lesson.mathSkill||""),elaSkill:String(lesson.elaSkill||""),
+    updatedAt:serverTimestamp(),...extra
+  };
+  // Save locally FIRST so refresh cannot erase the student's place while Firestore is writing.
+  saveLocalProgress(sessionName,{...payload,updatedAt:Date.now()});
+  try{await setDoc(progressRef(sessionName),payload,{merge:true})}
+  catch(e){console.warn("progress save",e)}
 }
 async function refreshSessionCards(){
   if(!lesson||!user)return;
@@ -172,7 +189,7 @@ async function refreshSessionCards(){
 
 async function loadToday(){let key=dateKey();const isTeacher=String(user?.email||"").toLowerCase()===TEACHER;const q=new URLSearchParams(location.search).get("date");if(isTeacher&&q)key=q;try{const snap=await getDoc(doc(db,"dailyQuests",key));if(!snap.exists()){status("No student quest is scheduled for today. Enjoy the suspicious silence.","warn");$("morningCard").classList.add("locked");$("exitCard").classList.add("locked");$("morningBtn").disabled=$("exitBtn").disabled=true;return}lesson=snap.data();renderLesson();await refreshSessionCards();status(Number(profile.hp||0)<=0?"💀 You may complete today's academics, but knocked-out players earn no Player XP or Gold until revival.":"Today's quest is unlocked. Future quests remain sealed by Dragonswood server time.","good");}catch(err){console.error(err);status(`Today's quest is sealed or unavailable: ${err.code||err.message||"permission denied"}`,"bad");$("morningBtn").disabled=$("exitBtn").disabled=true}}
 onAuthStateChanged(auth,async u=>{user=u;if(!u){status("Open Daily Quest from your signed-in Dragonswood portal.","warn");return}if(!String(u.email||"").toLowerCase().endsWith("@"+DOMAIN)&&String(u.email||"").toLowerCase()!==TEACHER){status("Daily Quest requires an Explore Academy account.","bad");return}try{const s=await getDoc(doc(db,"students",u.uid));if(s.exists())profile=s.data();renderAccount();await loadToday()}catch(e){status("Dragonswood profile error: "+(e.code||e.message),"bad")}});
-$("morningBtn").onclick=()=>startSession("morning");$("exitBtn").onclick=()=>startSession("exit");$("closePlay").onclick=()=>{$("playModal").classList.remove("show")};
+$("morningBtn").onclick=()=>startSession("morning");$("exitBtn").onclick=()=>startSession("exit");$("closePlay").onclick=async()=>{if(sessionName&&taskIndex<tasks.length)await saveProgress();$("playModal").classList.remove("show")};
 async function startSession(name){
   sessionName=name;tasks=name==="morning"?lesson.morning:lesson.exit;
   sessionProgress=await readProgress(name);
@@ -250,12 +267,15 @@ async function finishSession(){
   $("prog").style.width="100%";
   $("arena").innerHTML=`<div class="complete"><h2>QUEST COMPLETE!</h2><p>High Score: <b>${score.toLocaleString()}</b> • Accuracy: <b>${Math.round(acc*100)}%</b></p><div class="loot" id="loot">Saving Dragonswood results…</div><p>Your academic completion is saved even if your RPG character is knocked out.</p></div>`;
 
-  await setDoc(progressRef(sessionName),{
+  const completionProgress={
     studentId:user.uid,studentEmail:user.email||"",dateKey:lesson.date,day:Number(lesson.day||0),session:sessionName,
     status:"complete",taskIndex:tasks.length,qIndex:0,score:Number(score||0),correct:Number(correct||0),attempts:Number(attempts||0),
     accuracy:Math.round(acc*100),seconds:elapsed,mathSkill:String(lesson.mathSkill||""),elaSkill:String(lesson.elaSkill||""),
     completedAt:serverTimestamp(),updatedAt:serverTimestamp()
-  },{merge:true});
+  };
+  saveLocalProgress(sessionName,{...completionProgress,completedAt:Date.now(),updatedAt:Date.now()});
+  try{await setDoc(progressRef(sessionName),completionProgress,{merge:true})}
+  catch(e){console.warn("completion progress save",e)}
 
   try{await setDoc(doc(collection(db,"scores")),{studentId:user.uid,studentEmail:user.email||"",game:"daily_quest",gameName:"Dragonswood Daily Quest",session:sessionName,day:lesson.day,dateKey:lesson.date,score,accuracy:Math.round(acc*100),createdAt:serverTimestamp()})}catch(e){console.warn("score",e)}
 

@@ -1474,6 +1474,12 @@ onAuthStateChanged(auth,async user=>{
 
 window.addEventListener("dragonswood-long-division-complete",async event=>{
   const d=event.detail||{};
+  if(currentProfile && Number(currentProfile.hp||0)<=0){
+    const loot=$("dwLoot");
+    if(loot)loot.textContent="💀 KNOCKED OUT • Practice complete, but no Player XP or Gold can be earned until revival.";
+    setStatus("You completed the math quest, but knocked-out players cannot earn XP or Gold until they revive with 1 HP.","warn");
+    return;
+  }
   const accuracy=Math.max(0,Math.min(1,Number(d.accuracy||0)));
   const rewardXp=Math.max(5,Math.min(12,Number(d.playerXpEarned||5)));
   const rewardGold=Math.max(1,Math.min(2,1+(accuracy>=0.90&&Number(d.hintsUsed||0)===0?1:0)));

@@ -1775,6 +1775,15 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 }
 </style>
 
+<style id="v28-health-lock">
+.home-status-row{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:10px}
+.home-status-card{display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:center;padding:10px;border-radius:10px;border:1px solid rgba(95,210,141,.38);background:rgba(4,18,28,.68)}
+.home-status-card>span{font-size:24px}.home-status-card small{display:block;color:#bcb1cc;font-size:8px;font-weight:1000;letter-spacing:.8px}.home-status-card b{display:block;color:#aaf0c2;font-size:14px;margin-top:1px}.home-status-card p{margin:2px 0 0;color:#cfc5dc;font-size:9px;line-height:1.25}
+.home-status-card.blocked{border-color:rgba(255,82,113,.62);background:rgba(60,7,24,.66);box-shadow:0 0 14px rgba(255,50,92,.10)}
+.home-status-card.blocked b{color:#ff9eb1}
+.dead-banner{margin:10px 0 0;padding:10px 12px;border:1px solid #ff5e7d;border-radius:10px;background:linear-gradient(90deg,rgba(94,5,29,.86),rgba(31,6,33,.76));color:#ffd6df;font-weight:900;text-align:center}
+@media(max-width:800px){.home-status-row{grid-template-columns:1fr}}
+</style>
 </head><body>
 <header class="topbar">
 <div class="shell">
@@ -1866,6 +1875,21 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
             <span>⬆️</span>
             <small>TO NEXT LEVEL</small>
             <b id="homeHeroXpNext">200 XP</b>
+          </div>
+        </div>
+
+        <div class="home-status-row">
+          <div class="home-status-card" id="homeHealthStatus">
+            <span>❤️</span>
+            <div><small>ADVENTURE STATUS</small><b id="homeHealthStatusText">ACTIVE</b><p id="homeHealthStatusSub">You can earn XP and Gold.</p></div>
+          </div>
+          <div class="home-status-card" id="homeRecessStatus">
+            <span>🌤️</span>
+            <div><small>SECOND RECESS</small><b id="homeRecessStatusText">ELIGIBLE</b><p id="homeRecessStatusSub">You may join if the class earns it.</p></div>
+          </div>
+          <div class="home-status-card" id="homeTripStatus">
+            <span>🚌</span>
+            <div><small>FIELD TRIPS</small><b id="homeTripStatusText">ELIGIBLE</b><p id="homeTripStatusSub">You are currently eligible.</p></div>
           </div>
         </div>
       </div>
@@ -2013,7 +2037,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
   <!-- JOURNAL -->
   <section class="portal-view" id="view-journal" data-page="journal">
-    <div class="section-title"><div><h2>📖 My Dragonswood Journal</h2><p>Your character, equipped gear, battle stats, and permanent inventory.</p></div></div>
+    <div class="section-title"><div><h2>📖 My Dragonswood Journal</h2><p>Your character, equipped gear, battle stats, and permanent inventory.</p></div></div><div id="journalKnockoutNotice" class="dead-banner hidden">💀 KNOCKED OUT • You cannot earn XP or Gold and you are blocked from Second Recess / field trips until revival.</div>
     <div class="journal-rpg-layout">
       <article class="frame bevel journal-character-card">
         <div class="journal-label">DRAGONSWOOD ADVENTURER</div>
@@ -2969,6 +2993,62 @@ $("saveProfile").onclick=async()=>{
   }
 };
 
+
+function isStudentKnockedOut(p=profile){return Number(p?.hp||0)<=0}
+function studentRecessBlocked(p=profile){return !!p?.recessBlocked || isStudentKnockedOut(p)}
+function studentTripBlocked(p=profile){return !!p?.fieldTripBlocked || isStudentKnockedOut(p)}
+function nextMidnightArizona(){
+  // Arizona is UTC-7 year-round. Calculate the next Phoenix midnight.
+  const now=new Date();
+  const phoenixNow=new Date(now.getTime()-7*60*60*1000);
+  const y=phoenixNow.getUTCFullYear(),m=phoenixNow.getUTCMonth(),d=phoenixNow.getUTCDate();
+  return new Date(Date.UTC(y,m,d+1,7,0,0,0));
+}
+async function attemptAutoRevive(){
+  if(!user||!profile||Number(profile.hp||0)>0)return;
+  const due=profile.nextAutoReviveAt?.toDate?profile.nextAutoReviveAt.toDate():null;
+  if(!due || new Date()<due)return;
+  try{
+    await setDoc(doc(db,"students",user.uid),{
+      hp:1,
+      recessBlocked:false,
+      fieldTripBlocked:false,
+      knockoutReason:"",
+      nextAutoReviveAt:null,
+      lastAutoReviveAt:serverTimestamp(),
+      updatedAt:serverTimestamp()
+    },{merge:true});
+  }catch(err){
+    console.warn("Auto revive pending:",err.code||err.message||err);
+  }
+}
+function renderStudentEligibility(){
+  if(!profile)return;
+  const dead=isStudentKnockedOut(profile);
+  const recess=studentRecessBlocked(profile);
+  const trip=studentTripBlocked(profile);
+  const healthCard=$("homeHealthStatus"), recessCard=$("homeRecessStatus"), tripCard=$("homeTripStatus");
+  [healthCard,recessCard,tripCard].forEach(x=>x&&x.classList.remove("blocked"));
+
+  if($("homeHealthStatusText"))$("homeHealthStatusText").textContent=dead?"KNOCKED OUT":"ACTIVE";
+  if($("homeHealthStatusSub"))$("homeHealthStatusSub").textContent=dead
+    ?"You cannot earn Player XP or Gold until you revive with 1 HP."
+    :"You can earn Player XP and Gold.";
+  if(dead&&healthCard)healthCard.classList.add("blocked");
+
+  if($("homeRecessStatusText"))$("homeRecessStatusText").textContent=recess?"BANNED":"ELIGIBLE";
+  if($("homeRecessStatusSub"))$("homeRecessStatusSub").textContent=recess
+    ?(dead?"Knocked-out players cannot attend Second Recess.":"Your teacher has blocked you from Second Recess.")
+    :"You may join if the class earns it.";
+  if(recess&&recessCard)recessCard.classList.add("blocked");
+
+  if($("homeTripStatusText"))$("homeTripStatusText").textContent=trip?"BANNED":"ELIGIBLE";
+  if($("homeTripStatusSub"))$("homeTripStatusSub").textContent=trip
+    ?(dead?"Knocked-out players are blocked from field trips until revival.":"You are currently blocked from field trips.")
+    :"You are currently eligible.";
+  if(trip&&tripCard)tripCard.classList.add("blocked");
+}
+
 function renderProfile(){
   if(!profile)return;
   const li=levelInfo(+profile.xp||0),display=formatName(profile);
@@ -3022,11 +3102,14 @@ function renderProfile(){
     if($("homeHeroXpFill"))$("homeHeroXpFill").style.width=`${li.pct}%`;
     if($("homeHeroXpNext"))$("homeHeroXpNext").textContent=`${remaining.toLocaleString()} XP`;
   }
+  if($("journalKnockoutNotice"))$("journalKnockoutNotice").classList.toggle("hidden",!isStudentKnockedOut(profile));
   if($("journalName"))$("journalName").textContent=display;
   if($("journalSub"))$("journalSub").textContent=`Level ${li.level} • Grade ${profile.grade} • ${profile.genderGroup==="girl"?"Girls":"Boys"} • ${li.next-xp} XP to next level`;
 
+  renderStudentEligibility();
   renderStudentShop();
   renderJournalRpg();
+  attemptAutoRevive();
 }
 
 

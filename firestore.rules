@@ -72,6 +72,7 @@ service cloud.firestore {
       // exact bounded reward stored in the matching gameResults record.
       allow update: if isOwner(studentId)
                     && isExploreStudent()
+                    && resource.data.hp > 0
                     && request.resource.data.diff(resource.data).affectedKeys()
                        .hasOnly([
                          'xp',
@@ -131,6 +132,28 @@ service cloud.firestore {
                               /databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)
                             ).data.goldAward;
 
+      
+      // Automatic revive: a knocked-out student may self-heal to exactly 1 HP
+      // only after the teacher-defined nextAutoReviveAt timestamp.
+      allow update: if isOwner(studentId)
+                    && isExploreStudent()
+                    && resource.data.hp == 0
+                    && resource.data.nextAutoReviveAt is timestamp
+                    && request.time >= resource.data.nextAutoReviveAt
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly([
+                         'hp',
+                         'recessBlocked',
+                         'fieldTripBlocked',
+                         'knockoutReason',
+                         'nextAutoReviveAt',
+                         'lastAutoReviveAt',
+                         'updatedAt'
+                       ])
+                    && request.resource.data.hp == 1
+                    && request.resource.data.recessBlocked == false
+                    && request.resource.data.fieldTripBlocked == false;
+
       allow update, delete: if isTeacher();
     }
 
@@ -151,6 +174,7 @@ service cloud.firestore {
     match /gameResults/{resultId} {
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid
+                    && get(/databases/$(database)/documents/students/$(request.auth.uid)).data.hp > 0
                     && request.resource.data.status == "complete"
                     && request.resource.data.xpAward is number
                     && request.resource.data.xpAward >= 0

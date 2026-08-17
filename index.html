@@ -523,6 +523,271 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 }
 </style>
 
+
+<style id="dragonswood-v17-portal-pages">
+/* ==========================================================
+   V17 — TRUE STUDENT PORTAL
+   Persistent top navigation + separate in-page portal screens.
+========================================================== */
+
+.portal-nav{
+  position:sticky;
+  top:6px;
+  z-index:35;
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:5px;
+  margin:4px 0 12px;
+  padding:6px;
+  background:
+    linear-gradient(180deg,rgba(8,6,30,.80),rgba(3,5,19,.78)) !important;
+  backdrop-filter:blur(10px) saturate(1.25) !important;
+  -webkit-backdrop-filter:blur(10px) saturate(1.25) !important;
+  box-shadow:
+    0 8px 25px rgba(0,0,0,.30),
+    inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+
+.portal-tab{
+  appearance:none;
+  min-width:0;
+  min-height:62px;
+  padding:7px 5px !important;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  border:1px solid rgba(101,45,193,.45) !important;
+  border-radius:6px;
+  background:
+    linear-gradient(180deg,rgba(15,10,46,.70),rgba(5,6,24,.72)) !important;
+  color:var(--gold2) !important;
+  font-family:Georgia,"Times New Roman",serif;
+  text-shadow:0 1px 2px #000;
+  box-shadow:inset 0 0 12px rgba(101,45,193,.08) !important;
+  transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease, background .16s ease;
+}
+
+.portal-tab span{
+  display:block;
+  font-size:25px;
+  line-height:1;
+}
+
+.portal-tab b{
+  font-size:12px;
+  letter-spacing:.3px;
+}
+
+.portal-tab:hover{
+  transform:translateY(-2px);
+  border-color:rgba(244,201,93,.75) !important;
+  box-shadow:
+    inset 0 0 16px rgba(101,45,193,.15),
+    0 0 15px rgba(166,76,255,.22) !important;
+}
+
+.portal-tab.active{
+  border-color:var(--gold) !important;
+  background:
+    linear-gradient(135deg,rgba(93,22,177,.90),rgba(54,14,110,.88) 55%,rgba(4,93,126,.84)) !important;
+  box-shadow:
+    inset 0 0 16px rgba(255,255,255,.07),
+    0 0 16px rgba(166,76,255,.35),
+    0 0 8px rgba(244,201,93,.22) !important;
+}
+
+.portal-view{
+  display:none;
+  opacity:0;
+  transform:translateY(7px);
+}
+
+.portal-view.active{
+  display:block;
+  animation:portalViewIn .24s ease forwards;
+}
+
+@keyframes portalViewIn{
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* The HOME dashboard no longer needs its old fake navigation row. */
+.portal-view .bottom-nav{
+  display:none !important;
+}
+
+/* Games has its own screen now. */
+#view-games .section-title,
+#view-leaderboard .section-title{
+  margin-top:4px !important;
+}
+
+#view-games .games{
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+}
+
+/* Future sections */
+.feature-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+}
+
+.feature-card{
+  min-height:235px;
+  padding:22px 18px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  background:
+    linear-gradient(145deg,rgba(23,9,57,.58),rgba(3,12,34,.60)) !important;
+  backdrop-filter:blur(7px) saturate(1.2) !important;
+}
+
+.feature-icon{
+  font-size:58px;
+  line-height:1;
+  margin-bottom:10px;
+  filter:drop-shadow(0 0 10px rgba(166,76,255,.35));
+}
+
+.feature-card h3{
+  margin:0 0 8px;
+  color:var(--gold2);
+  font-size:23px;
+}
+
+.feature-card p{
+  max-width:330px;
+  line-height:1.45;
+  margin:0;
+}
+
+.feature-number{
+  margin:6px 0;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:58px;
+  font-weight:900;
+  color:var(--gold2);
+  text-shadow:0 0 14px rgba(244,201,93,.25);
+}
+
+.coming-ribbon{
+  margin-top:18px;
+  padding:6px 12px;
+  border:1px solid rgba(244,201,93,.5);
+  border-radius:999px;
+  background:rgba(84,19,145,.42);
+  color:#ffe8a0;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.8px;
+}
+
+/* Journal */
+.journal-grid{
+  display:grid;
+  grid-template-columns:2fr repeat(3,1fr);
+  gap:10px;
+}
+
+.journal-hero{
+  grid-row:span 2;
+  min-height:210px;
+  padding:20px;
+  display:grid;
+  grid-template-columns:100px 1fr;
+  gap:17px;
+  align-items:center;
+  background:
+    linear-gradient(135deg,rgba(59,17,111,.62),rgba(4,42,68,.56)) !important;
+}
+
+.journal-avatar{
+  width:92px;
+  height:92px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:rgba(230,246,255,.90);
+  border:3px solid var(--gold);
+  box-shadow:
+    0 0 0 3px rgba(101,45,193,.75),
+    0 0 20px rgba(2,204,254,.25);
+  font-size:46px;
+}
+
+.journal-label{
+  color:#d68cff;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:1.2px;
+}
+
+.journal-hero h2{
+  margin:4px 0 5px;
+  color:var(--gold2);
+  font-size:31px;
+}
+
+.journal-hero p{margin:0}
+
+.journal-stat{
+  min-height:100px;
+  padding:12px;
+  display:grid;
+  place-items:center;
+  text-align:center;
+}
+
+.journal-stat span{font-size:27px}
+.journal-stat b{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:29px;
+  color:var(--gold2);
+}
+.journal-stat small{font-weight:900}
+
+.journal-progress{
+  grid-column:span 3;
+  padding:15px 18px;
+}
+
+.journal-progress h3{margin-bottom:9px}
+.journal-progress p{margin-bottom:0}
+
+/* Cleaner page title placement */
+.portal-view > .section-title:first-child{
+  margin-top:5px !important;
+}
+
+/* Mobile/tablet */
+@media(max-width:1000px){
+  .portal-nav{
+    grid-template-columns:repeat(3,1fr);
+    position:relative;
+    top:auto;
+  }
+  .feature-grid{grid-template-columns:1fr}
+  .journal-grid{grid-template-columns:repeat(3,1fr)}
+  .journal-hero{grid-column:1/-1;grid-row:auto}
+  .journal-progress{grid-column:1/-1}
+}
+
+@media(max-width:620px){
+  .portal-nav{grid-template-columns:repeat(2,1fr)}
+  .portal-tab{min-height:55px}
+  .journal-grid{grid-template-columns:1fr}
+  .journal-stat,.journal-progress,.journal-hero{grid-column:auto}
+  .journal-hero{grid-template-columns:1fr;text-align:center}
+  .journal-avatar{margin:auto}
+}
+</style>
+
 </head><body>
 <header class="topbar">
 <div class="shell">
@@ -554,8 +819,22 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 <h1>Enter Dragonswood</h1><p>Sign in with your Explore Academy Google account.</p><button id="googleBtn">G&nbsp;&nbsp; SIGN IN WITH GOOGLE</button><div id="loginError" style="color:#ff9db5;margin-top:10px"></div>
 </section>
 
+
 <section id="signedIn" class="hidden">
-  <div class="section-title"><div><h2>🐾 Our Reward Journey</h2><p>Class points unlock rewards for everyone.</p></div></div>
+
+  <!-- Persistent Dragonswood navigation -->
+  <nav class="frame bevel portal-nav" id="portalNav" aria-label="Dragonswood navigation">
+    <button class="portal-tab active" type="button" data-view="home"><span>🛡️</span><b>HOME</b></button>
+    <button class="portal-tab" type="button" data-view="games"><span>🎮</span><b>GAMES</b></button>
+    <button class="portal-tab" type="button" data-view="shop"><span>🧰</span><b>SHOP</b></button>
+    <button class="portal-tab" type="button" data-view="quests"><span>⚔️</span><b>QUESTS</b></button>
+    <button class="portal-tab" type="button" data-view="leaderboard"><span>🏆</span><b>LEADERBOARD</b></button>
+    <button class="portal-tab" type="button" data-view="journal"><span>📖</span><b>MY JOURNAL</b></button>
+  </nav>
+
+  <!-- HOME -->
+  <section class="portal-view active" id="view-home" data-page="home">
+    <div class="section-title"><div><h2>🐾 Our Reward Journey</h2><p>Class points unlock rewards for everyone.</p></div></div>
   <div class="dashboard">
     <section class="frame bevel reward-frame">
       <div class="reward-top">
@@ -602,21 +881,103 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
       <div class="needbox"><span>WE NEED</span><strong id="recessNeed">10</strong><span>MORE POINTS!</span><div id="recessStatus" class="hidden"></div><div id="recessHeadline" class="hidden"></div></div>
     </aside>
   </div>
+  </section>
 
-  <nav class="frame bevel bottom-nav">
-    <div class="navtile"><span>🛡️</span>HOME</div><div class="navtile"><span>🎮</span>GAMES</div><div class="navtile"><span>🧰</span>SHOP</div><div class="navtile"><span>⚔️</span>QUESTS</div><div class="navtile"><span>🏆</span>LEADERBOARD</div><div class="navtile"><span>📖</span>MY JOURNAL</div>
-  </nav>
-
-  <div class="section-title"><div><h2>🎮 Dragonswood Games</h2><p>Custom learning adventures.</p></div></div>
+  <!-- GAMES -->
+  <section class="portal-view" id="view-games" data-page="games">
+    <div class="section-title"><div><h2>🎮 Dragonswood Games</h2><p>Custom learning adventures.</p></div></div>
   <section class="games">
     <article class="frame bevel game"><div class="visual">🚀</div><div class="body"><span class="tag">MATH</span><h3>Decimal Deception</h3><p>Restore crystals through decimal missions.</p><a class="btn" href="decimal-deception.html">PLAY</a></div></article>
     <article class="frame bevel game"><div class="visual">➗</div><div class="body"><span class="tag">MATH</span><h3>Long Division Quest</h3><p>Work through division one step at a time.</p><a class="btn" href="long-division-quest.html">PLAY</a></div></article>
     <article class="frame bevel game"><div class="visual">🔤</div><div class="body"><span class="tag">ELA</span><h3>Spelling Practice</h3><p>Study, hear, and master spelling words.</p><a class="btn" href="spelling-practice.html">PLAY</a></div></article>
   </section>
+  </section>
 
-  <div class="section-title"><div><h2>🏆 Leaderboard</h2><p>Top five scores from connected games.</p></div></div>
+  <!-- SHOP -->
+  <section class="portal-view" id="view-shop" data-page="shop">
+    <div class="section-title"><div><h2>🧰 Dragonswood Shop</h2><p>Spend Gold on classroom rewards, privileges, and future character upgrades.</p></div></div>
+    <div class="feature-grid">
+      <article class="frame bevel feature-card">
+        <div class="feature-icon">🎟️</div>
+        <h3>Classroom Privileges</h3>
+        <p>Gold will be exchangeable for teacher-approved classroom perks.</p>
+        <div class="coming-ribbon">COMING SOON</div>
+      </article>
+      <article class="frame bevel feature-card">
+        <div class="feature-icon">🪄</div>
+        <h3>Character Upgrades</h3>
+        <p>Unlock future avatar accessories, titles, badges, and magical cosmetics.</p>
+        <div class="coming-ribbon">COMING SOON</div>
+      </article>
+      <article class="frame bevel feature-card">
+        <div class="feature-icon">💰</div>
+        <h3>Your Gold</h3>
+        <div class="feature-number"><span id="shopGold">0</span></div>
+        <p>Gold is controlled by your teacher and stays connected to your Dragonswood profile.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- QUESTS -->
+  <section class="portal-view" id="view-quests" data-page="quests">
+    <div class="section-title"><div><h2>⚔️ Dragonswood Quests</h2><p>Challenges, assignments, and bonus missions will live here.</p></div></div>
+    <div class="feature-grid quests-grid">
+      <article class="frame bevel feature-card quest-card">
+        <div class="feature-icon">📜</div>
+        <h3>Daily Quests</h3>
+        <p>Short teacher-assigned challenges that can reward XP or Gold.</p>
+        <div class="coming-ribbon">QUEST BOARD OPENING SOON</div>
+      </article>
+      <article class="frame bevel feature-card quest-card">
+        <div class="feature-icon">🗡️</div>
+        <h3>Bonus Missions</h3>
+        <p>Optional academic challenges for students who want to push farther.</p>
+        <div class="coming-ribbon">COMING SOON</div>
+      </article>
+      <article class="frame bevel feature-card quest-card">
+        <div class="feature-icon">⭐</div>
+        <h3>Your XP</h3>
+        <div class="feature-number"><span id="questXp">0</span></div>
+        <p>Complete future quests and teacher challenges to build your adventure level.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- LEADERBOARD -->
+  <section class="portal-view" id="view-leaderboard" data-page="leaderboard">
+    <div class="section-title"><div><h2>🏆 Leaderboard</h2><p>Top five scores from connected games.</p></div></div>
   <section class="boards" id="boards"></section>
+  </section>
+
+  <!-- JOURNAL -->
+  <section class="portal-view" id="view-journal" data-page="journal">
+    <div class="section-title"><div><h2>📖 My Dragonswood Journal</h2><p>Your character, level, stats, and adventure record.</p></div></div>
+    <div class="journal-grid">
+      <article class="frame bevel journal-hero">
+        <div class="journal-avatar" id="journalAvatar">🐉</div>
+        <div>
+          <div class="journal-label">DRAGONSWOOD ADVENTURER</div>
+          <h2 id="journalName">Adventurer</h2>
+          <p id="journalSub">Your story is just beginning.</p>
+        </div>
+      </article>
+      <article class="frame bevel journal-stat"><span>💙</span><b id="journalHp">0</b><small>HP</small></article>
+      <article class="frame bevel journal-stat"><span>🪙</span><b id="journalGold">0</b><small>GOLD</small></article>
+      <article class="frame bevel journal-stat"><span>⭐</span><b id="journalXp">0</b><small>XP</small></article>
+      <article class="frame bevel journal-progress">
+        <h3>Level Progress</h3>
+        <div class="progress"><div id="journalLevelFill" style="width:0"></div></div>
+        <p id="journalLevelText">Level 1</p>
+      </article>
+      <article class="frame bevel journal-progress">
+        <h3>Adventure Record</h3>
+        <p>Game scores, completed quests, badges, and achievements will collect here as Dragonswood grows.</p>
+      </article>
+    </div>
+  </section>
+
 </section>
+
 </main>
 
 <div id="profileModal" class="modal hidden"><div class="modalbox frame bevel"><h2 id="profileTitle">Create Your Dragonswood Character</h2><div class="formgrid"><div class="field"><label>First Name</label><input id="firstName" readonly></div><div class="field"><label>Grade</label><select id="grade"><option value="">Choose</option><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div><div class="field"><label>Group</label><select id="group"><option value="">Choose</option><option value="girl">Girls</option><option value="boy">Boys</option></select></div><div class="field"><label>Fantasy Title</label><select id="titleSelect"></select></div></div><h3>Choose Your Avatar</h3><div class="choicegrid" id="avatarChoices"></div><div style="display:flex;gap:8px;margin-top:13px"><button id="saveProfile">SAVE CHARACTER</button><button id="closeProfile" class="hidden">Close</button></div><div id="profileError" style="color:#ff9db5;margin-top:8px"></div></div></div>
@@ -827,8 +1188,29 @@ $("saveProfile").onclick=async()=>{
 function renderProfile(){
   if(!profile)return;
   const li=levelInfo(+profile.xp||0);
-  $("avatar").textContent=avatarEmoji(profile.avatar);$("displayName").textContent=formatName(profile);$("profileSub").textContent=`Level ${li.level} • Grade ${profile.grade} • ${profile.genderGroup==="girl"?"Girls":"Boys"} • ${li.next-(+profile.xp||0)} XP to next level`;
-  $("hp").textContent=+profile.hp||0;$("gold").textContent=+profile.gold||0;$("xp").textContent=+profile.xp||0;$("levelFill").style.width=li.pct+"%"; if(document.getElementById("levelShield")) $("levelShield").textContent=li.level; if(document.getElementById("levelTop")) $("levelTop").textContent=li.level;
+  const display=formatName(profile);
+  const hp=+profile.hp||0, gold=+profile.gold||0, xp=+profile.xp||0;
+  $("avatar").textContent=avatarEmoji(profile.avatar);
+  $("displayName").textContent=display;
+  $("profileSub").textContent=`Level ${li.level} • Grade ${profile.grade} • ${profile.genderGroup==="girl"?"Girls":"Boys"} • ${li.next-xp} XP to next level`;
+  $("hp").textContent=hp;
+  $("gold").textContent=gold;
+  $("xp").textContent=xp;
+  $("levelFill").style.width=li.pct+"%";
+  if(document.getElementById("levelShield")) $("levelShield").textContent=li.level;
+  if(document.getElementById("levelTop")) $("levelTop").textContent=li.level;
+
+  // Mirror the same Firebase profile into the new portal screens.
+  if($("shopGold")) $("shopGold").textContent=gold;
+  if($("questXp")) $("questXp").textContent=xp;
+  if($("journalAvatar")) $("journalAvatar").textContent=avatarEmoji(profile.avatar);
+  if($("journalName")) $("journalName").textContent=display;
+  if($("journalSub")) $("journalSub").textContent=`Level ${li.level} • Grade ${profile.grade} • ${profile.genderGroup==="girl"?"Girls":"Boys"} • ${li.next-xp} XP to next level`;
+  if($("journalHp")) $("journalHp").textContent=hp;
+  if($("journalGold")) $("journalGold").textContent=gold;
+  if($("journalXp")) $("journalXp").textContent=xp;
+  if($("journalLevelFill")) $("journalLevelFill").style.width=li.pct+"%";
+  if($("journalLevelText")) $("journalLevelText").textContent=`Level ${li.level} • ${Math.round(li.pct)}% toward Level ${li.level+1}`;
 }
 
 
@@ -922,5 +1304,47 @@ function renderBoards(){
  const games=Object.keys(grouped).sort();$("boards").innerHTML=games.length?games.map(g=>{let top=grouped[g].sort((a,b)=>(+b.score||0)-(+a.score||0)).slice(0,5);return `<div class="board"><h3>${esc(g)}</h3>${top.map((s,i)=>`<div class="rank"><div class="place">${i+1}</div><div class="miniavatar">${esc(s.avatarEmoji||"🐉")}</div><div>${esc(s.displayName||s.playerName||"Player")}</div><div class="score">${+s.score||0}</div></div>`).join("")}</div>`}).join(""):'<div class="board"><h3>No records yet</h3><p style="color:#64748b">The first connected game will start the leaderboard.</p></div>';
  glitterizeStaticIcons();
 }
+
+// ============================================================
+// DRAGONSWOOD PORTAL NAVIGATION
+// Keeps the student signed in while changing portal screens.
+// ============================================================
+const PORTAL_VIEWS=["home","games","shop","quests","leaderboard","journal"];
+
+function openPortalView(view, updateHash=true){
+  if(!PORTAL_VIEWS.includes(view)) view="home";
+
+  document.querySelectorAll(".portal-view").forEach(panel=>{
+    panel.classList.toggle("active",panel.dataset.page===view);
+  });
+
+  document.querySelectorAll(".portal-tab").forEach(tab=>{
+    const active=tab.dataset.view===view;
+    tab.classList.toggle("active",active);
+    tab.setAttribute("aria-current",active?"page":"false");
+  });
+
+  if(updateHash){
+    history.replaceState(null,"","#"+view);
+  }
+
+  // Keep page changes feeling like an app, not six miles of scrolling.
+  const nav=document.getElementById("portalNav");
+  if(nav && window.scrollY > nav.offsetTop+120){
+    nav.scrollIntoView({behavior:"smooth",block:"start"});
+  }
+}
+
+document.querySelectorAll(".portal-tab").forEach(tab=>{
+  tab.addEventListener("click",()=>openPortalView(tab.dataset.view));
+});
+
+window.addEventListener("hashchange",()=>{
+  openPortalView(location.hash.replace("#","")||"home",false);
+});
+
+openPortalView(location.hash.replace("#","")||"home",false);
+
+
 renderRewards();renderBoards();glitterizeStaticIcons();
 </script></body></html>

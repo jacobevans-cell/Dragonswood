@@ -2021,10 +2021,8 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 </div>
 
     <section class="dw31-grid" style="margin:14px 0">
-      <div class="frame bevel dw31-card"><div class="dw31-muted">📍 RIGHT NOW</div><div class="dw31-now" id="dw31HomeNow">Loading schedule…</div><div class="dw31-next" id="dw31HomeNext"></div></div>
-      <div class="frame bevel dw31-card"><div class="dw31-muted">📅 COMING UP</div><div id="dw31HomeUpcoming" class="dw31-upcoming"></div></div>
-    </section>
-<h2>🏰 Dragonswood Class Goals</h2>
+      <div class="frame bevel dw31-card">
+Dragonswood Class Goals</h2>
         <p>Three separate quests. Each point type advances only its matching goal; Universal Points can help any one of them.</p>
       </div>
     </div>
@@ -4605,6 +4603,27 @@ renderRewards();renderBoards();glitterizeStaticIcons();
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",start,{once:true});
   else start();
+})();
+</script>
+
+
+<script id="dw-poll-nav-fix">
+(function(){
+  function openPoll(){
+    if(typeof window.DragonswoodNav==='function'){
+      try{ window.DragonswoodNav('poll'); return; }catch(e){}
+    }
+    document.querySelectorAll('.portal-view').forEach(v=>v.classList.remove('active'));
+    const p=document.getElementById('view-poll');
+    if(p)p.classList.add('active');
+    document.querySelectorAll('.portal-tab').forEach(b=>b.classList.toggle('active',b.dataset.view==='poll'));
+  }
+  document.addEventListener('click',function(e){
+    const btn=e.target.closest('.portal-tab[data-view="poll"]');
+    if(!btn)return;
+    e.preventDefault();
+    openPoll();
+  });
 })();
 </script>
 

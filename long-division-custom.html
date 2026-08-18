@@ -639,7 +639,28 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
 .round-sub{margin-top:5px;font-size:10px;font-weight:1000;text-transform:uppercase;letter-spacing:.7px}
 .round-banner{margin:0 0 12px;padding:10px 14px;border:1px solid var(--round);border-radius:10px;background:linear-gradient(90deg,var(--rglow),rgba(5,8,28,.72));color:var(--round2);font-weight:1000;text-align:center;letter-spacing:.5px}
 </style>
-\n<style id="dw-custom-long-division-style">\n.custom-problem-box{margin:12px 0 16px;padding:14px;border:1px solid rgba(255,226,105,.55);border-radius:12px;background:linear-gradient(90deg,rgba(92,45,193,.15),rgba(2,204,254,.08))}.custom-problem-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}.custom-problem-grid label{display:grid;gap:5px;font-size:11px;font-weight:900}.custom-problem-grid input{padding:11px;border-radius:8px;border:1px solid #34536d;background:#07111f;color:#fff;font-size:20px;font-weight:900}.custom-problem-error{min-height:18px;margin-top:7px;color:#ff9aa8;font-weight:900;font-size:12px}@media(max-width:720px){.custom-problem-grid{grid-template-columns:1fr 1fr}.custom-problem-grid button{grid-column:1/-1}}\n</style>\n</head>
+\n<style id="dw-custom-long-division-style">\n.custom-problem-box{margin:12px 0 16px;padding:14px;border:1px solid rgba(255,226,105,.55);border-radius:12px;background:linear-gradient(90deg,rgba(92,45,193,.15),rgba(2,204,254,.08))}.custom-problem-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}.custom-problem-grid label{display:grid;gap:5px;font-size:11px;font-weight:900}.custom-problem-grid input{padding:11px;border-radius:8px;border:1px solid #34536d;background:#07111f;color:#fff;font-size:20px;font-weight:900}.custom-problem-error{min-height:18px;margin-top:7px;color:#ff9aa8;font-weight:900;font-size:12px}@media(max-width:720px){.custom-problem-grid{grid-template-columns:1fr 1fr}.custom-problem-grid button{grid-column:1/-1}}\n</style>\n
+<style id="long-division-alignment-v34">
+/* One shared place-value geometry for quotient, dividend, and every work row. */
+#qGrid,#dGrid,.work-row{
+  --ld-cols:3;
+  display:grid !important;
+  grid-template-columns:repeat(var(--ld-cols),72px) !important;
+  column-gap:2px !important;
+  justify-content:start !important;
+  width:max-content !important;
+  margin-left:0 !important;
+  margin-right:0 !important;
+}
+#qGrid .quotient-cell,#dGrid .digit-cell,.work-row .work-cell{
+  width:72px !important;
+  min-width:72px !important;
+  max-width:72px !important;
+  box-sizing:border-box !important;
+}
+</style>
+
+</head>
 <body>
 
 <div class="app">
@@ -938,8 +959,9 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
   function renderBase(){
     divisorBox.textContent=problem.divisor;
     dGrid.innerHTML='';
-    dGrid.style.gridTemplateColumns=`repeat(${String(problem.dividend).length}, 1fr)`;
-    qGrid.style.gridTemplateColumns=`repeat(${String(problem.dividend).length}, 1fr)`;
+    const ldCols=String(problem.dividend).length;
+    dGrid.style.setProperty('--ld-cols',ldCols);
+    qGrid.style.setProperty('--ld-cols',ldCols);
     String(problem.dividend).split('').forEach(d=>{
       const c=document.createElement('div');
       c.className='digit-cell';
@@ -1078,7 +1100,7 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
       }
       const row=document.createElement('div');
       row.className='work-row '+r.kind+(r.subtract?' subtract':'');
-      row.style.gridTemplateColumns=`repeat(${String(problem.dividend).length}, 1fr)`;
+      row.style.setProperty('--ld-cols',String(problem.dividend).length);
       r.cells.forEach((v,col)=>{
         const c=document.createElement('div');
         const active=activeTask && activeTask.target==='row' && activeTask.rowIndex===rowIndex && activeTask.col===col;

@@ -1862,7 +1862,20 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 @media(max-width:850px){.dw-dash-grid{grid-template-columns:1fr}.schedule-block{grid-template-columns:76px 1fr}}
 </style>
 
-\n<style id="dw-v31-integrated-style">\n.portal-nav{overflow-x:auto;scrollbar-width:thin}.portal-nav .portal-tab{min-width:150px}\n.dw31-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.dw31-card{padding:16px}.dw31-now{font-size:27px;font-weight:1000;color:#ffe79a;margin:5px 0}.dw31-muted{color:#c5bfd4;font-size:12px}.dw31-next{margin-top:10px;padding:9px;border:1px solid rgba(2,204,254,.35);border-radius:9px;background:rgba(2,204,254,.08)}\n.dw31-list{display:grid;gap:8px}.dw31-row{padding:10px;border:1px solid rgba(101,45,193,.35);border-radius:9px;background:rgba(5,7,23,.5)}.dw31-row.now{border-color:#02ccfe;box-shadow:0 0 15px rgba(2,204,254,.2)}.dw31-row.done{opacity:.48}.dw31-row b{color:#ffe79a}.dw31-row small{display:block;color:#c5bfd4;margin-top:2px}\n.dw31-days{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:12px 0}.dw31-day{padding:9px;text-align:center;border:1px solid #51436f;border-radius:8px}.dw31-day.done{border-color:#62dfa8;background:rgba(26,107,78,.27)}\n.dw31-filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}.dw31-filters button.active{outline:2px solid #ffe36d}.dw31-upcoming{display:grid;gap:7px;margin-top:8px}\n@media(max-width:850px){.dw31-grid{grid-template-columns:1fr}.portal-nav .portal-tab{min-width:125px}}\n</style>\n</head><body>
+\n<style id="dw-v31-integrated-style">\n.portal-nav{overflow-x:auto;scrollbar-width:thin}.portal-nav .portal-tab{min-width:150px}\n.dw31-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.dw31-card{padding:16px}.dw31-now{font-size:27px;font-weight:1000;color:#ffe79a;margin:5px 0}.dw31-muted{color:#c5bfd4;font-size:12px}.dw31-next{margin-top:10px;padding:9px;border:1px solid rgba(2,204,254,.35);border-radius:9px;background:rgba(2,204,254,.08)}\n.dw31-list{display:grid;gap:8px}.dw31-row{padding:10px;border:1px solid rgba(101,45,193,.35);border-radius:9px;background:rgba(5,7,23,.5)}.dw31-row.now{border-color:#02ccfe;box-shadow:0 0 15px rgba(2,204,254,.2)}.dw31-row.done{opacity:.48}.dw31-row b{color:#ffe79a}.dw31-row small{display:block;color:#c5bfd4;margin-top:2px}\n.dw31-days{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:12px 0}.dw31-day{padding:9px;text-align:center;border:1px solid #51436f;border-radius:8px}.dw31-day.done{border-color:#62dfa8;background:rgba(26,107,78,.27)}\n.dw31-filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}.dw31-filters button.active{outline:2px solid #ffe36d}.dw31-upcoming{display:grid;gap:7px;margin-top:8px}\n@media(max-width:850px){.dw31-grid{grid-template-columns:1fr}.portal-nav .portal-tab{min-width:125px}}\n</style>\n
+<style id="dw-poll-style">
+.poll-card{padding:16px}
+.poll-question{font-size:24px;font-weight:1000;color:#ffe89a;margin:4px 0 12px}
+.poll-options{display:grid;gap:9px}
+.poll-option{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:11px;border:1px solid rgba(101,45,193,.4);border-radius:10px;background:rgba(5,7,23,.52)}
+.poll-option button{width:100%;text-align:left}
+.poll-bar-wrap{height:10px;border-radius:999px;background:#07111f;overflow:hidden;margin-top:6px}
+.poll-bar{height:100%;background:linear-gradient(90deg,#6b38d6,#02ccfe);width:0%}
+.poll-results{font-size:12px;color:#b9c6df;font-weight:800}
+.poll-status{margin-top:9px;color:#b9c6df}
+</style>
+
+</head><body>
 <header class="topbar">
 <div class="shell">
   <div class="accountbar hidden" id="account"><span id="accountEmail"></span><button id="profileBtn">Profile</button><button id="signOutBtn">Sign Out</button></div>
@@ -2814,6 +2827,64 @@ function dw31RenderJob(){
 function dw31StartIntegration(){if(dw31IntegrationStarted||!user)return;dw31IntegrationStarted=true;onSnapshot(doc(db,'classData','classJobs'),s=>{dw31JobsConfig=s.exists()?s.data():{};dw31RenderJob();},e=>console.warn('jobs listener',e));onSnapshot(doc(db,'classData','classSchedule'),s=>{dw31ScheduleConfig=s.exists()?s.data():{};dw31RenderSchedule();},e=>console.warn('schedule listener',e));onSnapshot(collection(db,'classCalendarEvents'),s=>{dw31Events=s.docs.map(d=>({id:d.id,...d.data()}));dw31RenderCalendar();},e=>console.warn('calendar listener',e));onSnapshot(doc(db,'studentJobWeeks',user.uid+'_'+dw31WeekKey()),s=>{dw31JobWeek=s.exists()?s.data():null;dw31RenderJob();},e=>console.warn('job week listener',e));dw31RenderSchedule();dw31RenderCalendar();dw31RenderJob();setInterval(dw31RenderSchedule,30000);}
 document.addEventListener('click',e=>{const b=e.target.closest('#dw31CalFilters button');if(!b)return;document.querySelectorAll('#dw31CalFilters button').forEach(x=>x.classList.remove('active'));b.classList.add('active');dw31RenderCalendar(b.dataset.cat||'all');});
 
+
+let activePoll=null,activePollVotes={},myPollVote=null,pollDocUnsub=null,pollVotesUnsub=null;
+function renderStudentPoll(){
+  const empty=$('pollEmpty'),live=$('pollLive'),q=$('pollQuestion'),opts=$('pollOptions'),status=$('pollStudentStatus');
+  if(!empty||!live)return;
+  if(!activePoll || activePoll.active!==true){
+    empty.style.display='block';live.style.display='none';empty.textContent='No active poll right now.';return;
+  }
+  empty.style.display='none';live.style.display='block';
+  q.textContent=activePoll.question||'Class Poll';
+  const choices=Array.isArray(activePoll.choices)?activePoll.choices:[];
+  const counts=choices.map((_,i)=>Object.values(activePollVotes).filter(v=>Number(v.choiceIndex)===i).length);
+  const total=counts.reduce((a,b)=>a+b,0);
+  opts.innerHTML=choices.map((choice,i)=>{
+    const pct=total?Math.round(counts[i]/total*100):0;
+    const voted=myPollVote&&Number(myPollVote.choiceIndex)===i;
+    return `<div class="poll-option">
+      <div>
+        <button type="button" data-poll-choice="${i}" ${myPollVote?'disabled':''}>${voted?'✅ ':''}${choice}</button>
+        <div class="poll-bar-wrap"><div class="poll-bar" style="width:${pct}%"></div></div>
+      </div>
+      <div class="poll-results">${counts[i]} • ${pct}%</div>
+    </div>`;
+  }).join('');
+  status.textContent=myPollVote?`You voted. Live total: ${total} vote${total===1?'':'s'}.`:`Choose one answer. Live total: ${total} vote${total===1?'':'s'}.`;
+  document.querySelectorAll('[data-poll-choice]').forEach(b=>b.onclick=async()=>{
+    if(myPollVote||!user)return;
+    const choiceIndex=Number(b.dataset.pollChoice);
+    try{
+      await setDoc(doc(db,'classPollVotes',activePoll.id+'_'+user.uid),{
+        pollId:activePoll.id,studentId:user.uid,studentName:studentDisplayName(),choiceIndex,
+        createdAt:serverTimestamp(),updatedAt:serverTimestamp()
+      });
+      window.DWAudio?.positive();
+    }catch(e){console.warn('poll vote',e);window.DWAudio?.negative();alert('Could not save your vote.');}
+  });
+}
+function watchStudentPoll(){
+  if(!user)return;
+  if(pollDocUnsub){try{pollDocUnsub()}catch(e){}}
+  pollDocUnsub=onSnapshot(doc(db,'classData','activePoll'),snap=>{
+    activePoll=snap.exists()?snap.data():null;
+    if(pollVotesUnsub){try{pollVotesUnsub()}catch(e){} pollVotesUnsub=null}
+    activePollVotes={};myPollVote=null;
+    if(activePoll?.active===true && activePoll?.id){
+      pollVotesUnsub=onSnapshot(query(collection(db,'classPollVotes'),where('pollId','==',activePoll.id)),s=>{
+        activePollVotes={};
+        s.docs.forEach(d=>{
+          const v={id:d.id,...d.data()};activePollVotes[d.id]=v;
+          if(v.studentId===user.uid)myPollVote=v;
+        });
+        renderStudentPoll();
+      },e=>console.warn('poll votes listener',e));
+    }
+    renderStudentPoll();
+  },e=>console.warn('active poll listener',e));
+}
+
 function watchSnack(){
   if(snackUnsub){try{snackUnsub()}catch(e){} snackUnsub=null}
   if(!user)return;
@@ -2983,6 +3054,7 @@ onAuthStateChanged(auth,async u=>{
     const ref=doc(db,"students",u.uid);
     watchBathroom();
     watchSnack();
+    watchStudentPoll();
     dw31StartIntegration();
     watchV29Integration();
     const snap=await getDoc(ref);

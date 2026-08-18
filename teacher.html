@@ -564,7 +564,22 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 @media(max-width:900px){.v29-grid{grid-template-columns:1fr}.v29-form{grid-template-columns:1fr}}
 </style>
 
-\n<style id="dw-v31-teacher-style">\n.command-tabs{overflow-x:auto}.command-tabs .tab{min-width:130px}.dw31t-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:12px}.dw31t-row{padding:9px;border:1px solid rgba(101,45,193,.3);border-radius:9px;background:rgba(5,7,23,.5);margin:6px 0}.dw31t-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.dw31t-form .full{grid-column:1/-1}.dw31t-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}@media(max-width:900px){.dw31t-grid{grid-template-columns:1fr}.dw31t-form{grid-template-columns:1fr}}\n</style>\n</head><body>
+\n<style id="dw-v31-teacher-style">\n.command-tabs{overflow-x:auto}.command-tabs .tab{min-width:130px}.dw31t-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:12px}.dw31t-row{padding:9px;border:1px solid rgba(101,45,193,.3);border-radius:9px;background:rgba(5,7,23,.5);margin:6px 0}.dw31t-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.dw31t-form .full{grid-column:1/-1}.dw31t-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}@media(max-width:900px){.dw31t-grid{grid-template-columns:1fr}.dw31t-form{grid-template-columns:1fr}}\n</style>\n
+<style id="dw-poll-picker-teacher-style">
+.poll-admin-grid,.picker-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.poll-choice-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin:6px 0}
+.live-poll-results{display:grid;gap:8px}
+.live-poll-result{padding:9px;border:1px solid rgba(101,45,193,.35);border-radius:9px}
+.live-poll-bar{height:10px;border-radius:999px;background:#07111f;overflow:hidden;margin-top:5px}
+.live-poll-fill{height:100%;background:linear-gradient(90deg,#6b38d6,#02ccfe)}
+.picker-output{min-height:130px;padding:14px;border-radius:10px;border:1px solid rgba(255,226,105,.4);background:rgba(5,7,23,.55)}
+.picked-name{font-size:28px;font-weight:1000;color:#ffe89a;text-align:center;padding:24px}
+.group-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.group-card{padding:10px;border:1px solid rgba(101,45,193,.35);border-radius:9px;background:rgba(5,7,23,.5)}
+@media(max-width:850px){.poll-admin-grid,.picker-grid{grid-template-columns:1fr}}
+</style>
+
+</head><body>
 <header class="teacher-head"><div class="shell"><div class="teacher-title">🛡️ DRAGONSWOOD COMMAND<small>EXPLORE ACADEMY • EVANS 4–5 • TEACHER PORTAL</small></div><div id="signed" class="hidden" style="text-align:right"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
 <main class="shell teacher-main">
 <section id="login" class="card" style="max-width:520px;margin:45px auto"><h1>Teacher Login</h1><form id="loginForm"><div class="field"><label>Email</label><input id="email" type="email" required></div><div class="field"><label>Password</label><input id="password" type="password" required></div><button style="width:100%">SIGN IN</button><div id="error" style="color:#ff9db5;margin-top:8px"></div></form></section>
@@ -766,6 +781,49 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
       <div class="v29-actions"><button id="calSave">ADD EVENT</button><button id="calClear" class="gray">CLEAR</button></div>
     </div>
     <div class="card"><h3>EVENTS</h3><div id="teacherCalendarList" class="v29-list"></div></div>
+  </div>
+</div>
+
+
+<div id="poll" class="panel">
+  <div class="titlebar"><div><h2>📊 LIVE CLASS POLL</h2><p>Create a question, add choices, and watch student votes tally instantly.</p></div></div>
+  <div class="poll-admin-grid">
+    <div class="card">
+      <h3>CREATE POLL</h3>
+      <input id="pollQuestionInput" placeholder="Type your question" style="width:100%">
+      <div id="pollChoiceEditor">
+        <div class="poll-choice-row"><input class="poll-choice-input" placeholder="Choice 1"><button class="gray poll-remove-choice" type="button">×</button></div>
+        <div class="poll-choice-row"><input class="poll-choice-input" placeholder="Choice 2"><button class="gray poll-remove-choice" type="button">×</button></div>
+      </div>
+      <div class="actions"><button id="pollAddChoice" type="button">+ ADD CHOICE</button><button id="pollLaunch" type="button">LAUNCH POLL</button><button id="pollClose" class="danger-soft" type="button">CLOSE POLL</button></div>
+    </div>
+    <div class="card">
+      <h3>LIVE RESULTS</h3>
+      <div id="teacherPollTitle" class="muted">No active poll.</div>
+      <div id="teacherPollResults" class="live-poll-results"></div>
+    </div>
+  </div>
+</div>
+
+<div id="picker" class="panel">
+  <div class="titlebar"><div><h2>🎲 RANDOM STUDENT & GROUP PICKER</h2><p>Pick one student or instantly split the class into random groups.</p></div></div>
+  <div class="picker-grid">
+    <div class="card">
+      <h3>RANDOM STUDENT</h3>
+      <p class="pace-note">Uses the current student roster.</p>
+      <button id="pickOneStudent" type="button">🎲 PICK A STUDENT</button>
+      <div class="picker-output" id="singleStudentOutput"><div class="muted">No student picked yet.</div></div>
+    </div>
+    <div class="card">
+      <h3>RANDOM GROUPS</h3>
+      <div class="actions">
+        <button class="groupSizeBtn" data-size="2">GROUPS OF 2</button>
+        <button class="groupSizeBtn" data-size="3">GROUPS OF 3</button>
+        <button class="groupSizeBtn" data-size="4">GROUPS OF 4</button>
+        <button class="groupSizeBtn" data-size="5">GROUPS OF 5</button>
+      </div>
+      <div class="picker-output"><div class="group-grid" id="groupOutput"><div class="muted">Choose a group size.</div></div></div>
+    </div>
   </div>
 </div>
 
@@ -1463,6 +1521,86 @@ function dw31RenderScheduleEditor(){const box=$('dw31SchedList');if(!box)return;
 function dw31RenderTeacherEvents(){const box=$('dw31TeacherEvents');if(!box)return;box.innerHTML=dw31TEvents.slice().sort((a,b)=>String(a.startDate).localeCompare(String(b.startDate))).map(e=>`<div class="dw31t-row"><b>${e.icon||'📅'} ${esc(e.title||'Event')}</b><small>${e.startDate||''}${e.startTime?' • '+e.startTime:''} • ${e.category||'school'}</small><div class="dw31t-actions"><button data-dw31-edit="${e.id}">EDIT</button><button class="danger-soft" data-dw31-del="${e.id}">DELETE</button></div></div>`).join('');document.querySelectorAll('[data-dw31-del]').forEach(b=>b.onclick=async()=>{if(confirm('Delete this event?'))await deleteDoc(doc(db,'classCalendarEvents',b.dataset.dw31Del));});document.querySelectorAll('[data-dw31-edit]').forEach(b=>b.onclick=()=>{const e=dw31TEvents.find(x=>x.id===b.dataset.dw31Edit);if(!e)return;dw31EditingEvent=e.id;$('dw31CalTitle').value=e.title||'';$('dw31CalStart').value=e.startDate||'';$('dw31CalEnd').value=e.endDate||e.startDate||'';$('dw31CalStartTime').value=e.startTime||'';$('dw31CalEndTime').value=e.endTime||'';$('dw31CalCategory').value=e.category||'school';$('dw31CalIcon').value=e.icon||'📅';$('dw31CalSave').textContent='UPDATE EVENT';});}
 async function dw31SeedDefaults(){const [j,s,e]=await Promise.all([getDoc(doc(db,'classData','classJobs')),getDoc(doc(db,'classData','classSchedule')),getDocs(collection(db,'classCalendarEvents'))]);if(!j.exists())await setDoc(doc(db,'classData','classJobs'),{jobs:DW31T_JOBS,assignments:{},updatedAt:serverTimestamp()});if(!s.exists())await setDoc(doc(db,'classData','classSchedule'),{days:DW31T_SCHEDULE,updatedAt:serverTimestamp()});if(e.empty){const b=writeBatch(db);DW31T_EVENTS.forEach(x=>b.set(doc(db,'classCalendarEvents',x.id),{...x,createdAt:serverTimestamp(),updatedAt:serverTimestamp()}));await b.commit();}}
 
+
+let teacherActivePoll=null,teacherPollVotes=[];
+function renderTeacherPoll(){
+  const title=$('teacherPollTitle'),box=$('teacherPollResults');
+  if(!title||!box)return;
+  if(!teacherActivePoll||teacherActivePoll.active!==true){
+    title.textContent='No active poll.';box.innerHTML='';return;
+  }
+  title.textContent=teacherActivePoll.question||'Active Poll';
+  const choices=Array.isArray(teacherActivePoll.choices)?teacherActivePoll.choices:[];
+  const counts=choices.map((_,i)=>teacherPollVotes.filter(v=>Number(v.choiceIndex)===i).length);
+  const total=counts.reduce((a,b)=>a+b,0);
+  box.innerHTML=choices.map((c,i)=>{
+    const pct=total?Math.round(counts[i]/total*100):0;
+    return `<div class="live-poll-result"><b>${esc(c)}</b><div>${counts[i]} vote${counts[i]===1?'':'s'} • ${pct}%</div><div class="live-poll-bar"><div class="live-poll-fill" style="width:${pct}%"></div></div></div>`;
+  }).join('')+`<div class="pace-note">Total votes: ${total}</div>`;
+}
+function watchTeacherPoll(){
+  onSnapshot(doc(db,'classData','activePoll'),snap=>{
+    teacherActivePoll=snap.exists()?snap.data():null;
+    if(window._teacherPollVotesUnsub){try{window._teacherPollVotesUnsub()}catch(e){}}
+    teacherPollVotes=[];
+    if(teacherActivePoll?.active===true&&teacherActivePoll?.id){
+      window._teacherPollVotesUnsub=onSnapshot(query(collection(db,'classPollVotes'),where('pollId','==',teacherActivePoll.id)),s=>{
+        teacherPollVotes=s.docs.map(d=>({id:d.id,...d.data()}));renderTeacherPoll();
+      },e=>console.warn('teacher poll votes',e));
+    }
+    renderTeacherPoll();
+  },e=>console.warn('teacher active poll',e));
+}
+function bindPollEditor(){
+  const editor=$('pollChoiceEditor');
+  const wireRemove=()=>document.querySelectorAll('.poll-remove-choice').forEach(b=>b.onclick=()=>{if(editor.querySelectorAll('.poll-choice-row').length<=2)return;b.closest('.poll-choice-row').remove()});
+  wireRemove();
+  $('pollAddChoice').onclick=()=>{
+    if(editor.querySelectorAll('.poll-choice-row').length>=6)return;
+    const row=document.createElement('div');row.className='poll-choice-row';row.innerHTML=`<input class="poll-choice-input" placeholder="Choice"><button class="gray poll-remove-choice" type="button">×</button>`;editor.appendChild(row);wireRemove();
+  };
+  $('pollLaunch').onclick=async()=>{
+    const question=$('pollQuestionInput').value.trim();
+    const choices=[...document.querySelectorAll('.poll-choice-input')].map(x=>x.value.trim()).filter(Boolean);
+    if(!question)return alert('Type a poll question.');
+    if(choices.length<2)return alert('Add at least 2 choices.');
+    const id='poll_'+Date.now();
+    await setDoc(doc(db,'classData','activePoll'),{id,question,choices,active:true,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
+    window.DWAudio?.positive();
+  };
+  $('pollClose').onclick=async()=>{
+    if(!teacherActivePoll)return;
+    await setDoc(doc(db,'classData','activePoll'),{active:false,closedAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});
+    window.DWAudio?.negative();
+  };
+}
+function shuffleArray(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
+  return a;
+}
+function bindRandomPicker(){
+  const one=$('pickOneStudent'),out=$('singleStudentOutput'),groups=$('groupOutput');
+  one.onclick=()=>{
+    if(!students.length)return;
+    const s=students[Math.floor(Math.random()*students.length)];
+    out.innerHTML=`<div class="picked-name">🎲 ${esc(displayStudent(s))}</div>`;
+    window.DWAudio?.positive();
+  };
+  document.querySelectorAll('.groupSizeBtn').forEach(b=>b.onclick=()=>{
+    const size=Number(b.dataset.size),shuffled=shuffleArray(students);
+    const made=[];
+    for(let i=0;i<shuffled.length;i+=size)made.push(shuffled.slice(i,i+size));
+    // rebalance a 1-person remainder into previous group when possible
+    if(made.length>1&&made[made.length-1].length===1){
+      const lone=made.pop()[0];
+      made[made.length-1].push(lone);
+    }
+    groups.innerHTML=made.map((g,i)=>`<div class="group-card"><b>Group ${i+1}</b>${g.map(s=>`<div>${esc(displayStudent(s))}</div>`).join('')}</div>`).join('');
+    window.DWAudio?.positive();
+  });
+}
+
 function teacherDateKey(){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Phoenix',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}
 function reqTime(x){try{return x?.createdAt?.toDate?.().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})||''}catch(e){return''}}
 // Request feeds are realtime via onSnapshot above.
@@ -2055,6 +2193,8 @@ document.addEventListener('DOMContentLoaded',()=>{
  if($('calClear'))$('calClear').onclick=()=>{editingCalendarId='';['calTitle','calStartDate','calEndDate','calStartTime','calEndTime'].forEach(id=>$(id).value='');$('calCategory').value='school';$('calIcon').value='📅';$('calSave').textContent='ADD EVENT'};
  if($('calSave'))$('calSave').onclick=async()=>{const title=$('calTitle').value.trim(),startDate=$('calStartDate').value;if(!title||!startDate)return alert('Event title and start date are required.');const id=editingCalendarId||('event_'+Date.now());await setDoc(doc(db,'classCalendarEvents',id),{title,startDate,endDate:$('calEndDate').value||startDate,startTime:$('calStartTime').value||'',endTime:$('calEndTime').value||'',category:$('calCategory').value||'school',icon:$('calIcon').value||'📅',updatedAt:serverTimestamp(),createdAt:serverTimestamp()},{merge:true});editingCalendarId='';$('calClear').click();window.DWAudio?.positive()};
 });
+
+document.addEventListener('DOMContentLoaded',()=>{bindPollEditor();bindRandomPicker();watchTeacherPoll();});
 </script>
 <script id="dragonswood-sound-engine">
 (() => {

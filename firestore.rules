@@ -395,6 +395,17 @@ service cloud.firestore {
       allow create, update, delete: if isTeacher();
     }
 
+
+    match /classPollVotes/{voteId} {
+      allow read: if isTeacher() || isSignedIn();
+      allow create: if isExploreStudent()
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.pollId is string
+                    && request.resource.data.choiceIndex is number;
+      allow update: if false;
+      allow delete: if isTeacher();
+    }
+
     match /pointRequests/{requestId} {
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid

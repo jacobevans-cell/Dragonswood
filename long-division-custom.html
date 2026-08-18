@@ -660,7 +660,7 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
   <h1><span>Long Division</span> Quest</h1>
   <div class="subtitle">DIVIDE • MULTIPLY • SUBTRACT • BRING DOWN</div>
 
-\n  <div class="custom-problem-box">\n    <h3 style="margin:0;color:#ffe896">📝 WORKSHEET / CUSTOM PROBLEM</h3>\n    <div class="custom-problem-grid">\n      <label>DIVIDEND<input id="customDividend" type="number" min="100" max="999" step="1" inputmode="numeric" placeholder="Example: 728"></label>\n      <label>DIVISOR<input id="customDivisor" type="number" min="2" max="9" step="1" inputmode="numeric" placeholder="Example: 7"></label>\n      <button class="primary" id="loadCustomProblem" type="button">LOAD CUSTOM PROBLEM</button>\n    </div>\n    <div style="margin-top:8px;color:var(--muted);font-size:11px">Enter a 3-digit dividend and 1-digit divisor from your worksheet. Then use the exact same step-by-step Long Division Quest.</div>\n    <div class="custom-problem-error" id="customProblemError"></div>\n  </div>\n  <div class="top">
+\n  <div class="custom-problem-box">\n    <h3 style="margin:0;color:#ffe896">📝 WORKSHEET / CUSTOM PROBLEM</h3><div style="margin-top:4px;color:#7fe7ff;font-size:11px;font-weight:900">NOW SUPPORTS 1–5 DIGIT DIVIDENDS + 1–5 DIGIT DIVISORS</div>\n    <div class="custom-problem-grid">\n      <label>DIVIDEND<input id="customDividend" type="number" min="1" max="99999" step="1" inputmode="numeric" placeholder="Example: 42875"></label>\n      <label>DIVISOR<input id="customDivisor" type="number" min="1" max="99999" step="1" inputmode="numeric" placeholder="Example: 125"></label>\n      <button class="primary" id="loadCustomProblem" type="button">LOAD CUSTOM PROBLEM</button>\n    </div>\n    <div style="margin-top:8px;color:var(--muted);font-size:11px">Enter a 1–5 digit dividend and a 1–5 digit divisor from your worksheet. Then use the exact same step-by-step Long Division Quest.</div>\n    <div class="custom-problem-error" id="customProblemError"></div>\n  </div>\n  <div class="top">
     <div>
       <div style="color:var(--muted);font-size:12px;font-weight:900;letter-spacing:1px">CURRENT MISSION</div>
       <div style="font-weight:900;margin-top:3px">Solve the problem one aligned step at a time.</div>
@@ -919,7 +919,7 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
       while(dividend<100 || dividend>999){ divisor=rand(2,9); quotient=rand(12,99); dividend=divisor*quotient; }
     }
     problem={divisor,quotient,dividend};
-    board={quotient:['','',''],rows:[]};
+    board={quotient:Array(String(dividend).length).fill(''),rows:[]};
     tasks=buildTasks(problem);
     taskIndex=-1; credited=false; problemMistakes=0; taskHadMistake=false;
     cellFeedback.textContent=''; hintPanel.classList.add('hidden'); groupVisual.innerHTML=''; hintBtn.textContent='SHOW HINT';
@@ -930,14 +930,16 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
   }
   function loadCustomProblem(){
     const dividend=Number(customDividend.value),divisor=Number(customDivisor.value);customProblemError.textContent='';
-    if(!Number.isInteger(dividend)||dividend<100||dividend>999){customProblemError.textContent='Enter a 3-digit dividend from 100 to 999.';return;}
-    if(!Number.isInteger(divisor)||divisor<2||divisor>9){customProblemError.textContent='Enter a 1-digit divisor from 2 to 9.';return;}
-    makeProblem({dividend,divisor});const r=dividend%divisor;customProblemError.style.color='var(--green)';customProblemError.textContent=`Loaded: ${dividend} ÷ ${divisor}${r?` • remainder ${r}`:''}`;
+    if(!Number.isInteger(dividend)||dividend<1||dividend>99999){customProblemError.textContent='Enter a dividend from 1 to 99,999.';return;}
+    if(!Number.isInteger(divisor)||divisor<1||divisor>99999){customProblemError.textContent='Enter a divisor from 1 to 99,999.';return;}
+    if(divisor>dividend){customProblemError.textContent='For this long-division board, the divisor must be less than or equal to the dividend.';return;}makeProblem({dividend,divisor});const r=dividend%divisor;customProblemError.style.color='var(--green)';customProblemError.textContent=`Loaded: ${dividend} ÷ ${divisor}${r?` • remainder ${r}`:''}`;
   }
 
   function renderBase(){
     divisorBox.textContent=problem.divisor;
     dGrid.innerHTML='';
+    dGrid.style.gridTemplateColumns=`repeat(${String(problem.dividend).length}, 1fr)`;
+    qGrid.style.gridTemplateColumns=`repeat(${String(problem.dividend).length}, 1fr)`;
     String(problem.dividend).split('').forEach(d=>{
       const c=document.createElement('div');
       c.className='digit-cell';
@@ -950,7 +952,8 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
     const digits=String(p.dividend).split('').map(Number);
     const result=[];
     let current=0, started=false;
-    const qCells=['','',''];
+    const width=digits.length;
+    const qCells=Array(width).fill('');
     const rows=[];
 
     for(let i=0;i<digits.length;i++){
@@ -970,12 +973,12 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
       });
       qCells[i]=String(q);
 
-      const productCells=['','',''];
+      const productCells=Array(width).fill('');
       String(product).split('').reverse().forEach((ch,k)=>{
         const pos=i-k; if(pos>=0) productCells[pos]=ch;
       });
       const productRow=rows.length;
-      rows.push({kind:'product',cells:['','',''],subtract:true});
+      rows.push({kind:'product',cells:Array(width).fill(''),subtract:true});
       const productDigits=String(product).split('');
       const productStart=i-productDigits.length+1;
       productDigits.forEach((ch,k)=>{
@@ -988,12 +991,12 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
         });
       });
 
-      const remCells=['','',''];
+      const remCells=Array(width).fill('');
       String(remainder).split('').reverse().forEach((ch,k)=>{
         const pos=i-k; if(pos>=0) remCells[pos]=ch;
       });
       const remRow=rows.length;
-      rows.push({kind:'remainder',cells:['','','']});
+      rows.push({kind:'remainder',cells:Array(width).fill('')});
       const remDigits=String(remainder).split('');
       const remStart=i-remDigits.length+1;
       remDigits.forEach((ch,k)=>{
@@ -1009,7 +1012,7 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
       if(i<digits.length-1){
         const nextDigit=String(digits[i+1]);
         const bringRow=rows.length;
-        rows.push({kind:'bring',cells:['','',''],arrow:true});
+        rows.push({kind:'bring',cells:Array(width).fill(''),arrow:true});
 
         // If remainder is nonzero, carry its digit(s) into the new working row first.
         if(remainder!==0){
@@ -1044,7 +1047,7 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
       const t=tasks.find(x=>x.target==='row' && x.rowIndex===board.rows.length);
       board.rows.push({
         kind:t ? t.type==='multiply'?'product':t.type==='subtract'?'remainder':'bring' : 'remainder',
-        cells:['','',''],
+        cells:Array(String(problem.dividend).length).fill(''),
         subtract:t ? t.type==='multiply' : false,
         arrow:t ? t.type==='bring' : false
       });
@@ -1075,6 +1078,7 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
       }
       const row=document.createElement('div');
       row.className='work-row '+r.kind+(r.subtract?' subtract':'');
+      row.style.gridTemplateColumns=`repeat(${String(problem.dividend).length}, 1fr)`;
       r.cells.forEach((v,col)=>{
         const c=document.createElement('div');
         const active=activeTask && activeTask.target==='row' && activeTask.rowIndex===rowIndex && activeTask.col===col;
@@ -1204,10 +1208,17 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
 
           const dots=document.createElement('div');
           dots.className='dots';
-          for(let d=0; d<divisor; d++){
+          const visualDots=Math.min(divisor,30);
+          for(let d=0; d<visualDots; d++){
             const dot=document.createElement('span');
             dot.className='dot';
             dots.appendChild(dot);
+          }
+          if(divisor>30){
+            const more=document.createElement('span');
+            more.className='group-label';
+            more.textContent=`… = ${divisor}`;
+            dots.appendChild(more);
           }
           box.appendChild(dots);
           strip.appendChild(box);
@@ -1245,10 +1256,17 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
           box.appendChild(label);
           const dots=document.createElement('div');
           dots.className='dots';
-          for(let d=0; d<b; d++){
+          const visualDots=Math.min(b,30);
+          for(let d=0; d<visualDots; d++){
             const dot=document.createElement('span');
             dot.className='dot';
             dots.appendChild(dot);
+          }
+          if(b>30){
+            const more=document.createElement('span');
+            more.className='group-label';
+            more.textContent=`… = ${b}`;
+            dots.appendChild(more);
           }
           box.appendChild(dots);
           strip.appendChild(box);

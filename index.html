@@ -2321,7 +2321,7 @@ Dragonswood Class Goals</h2>
 
 <script id="dragonswood-navigation-core">
 (function(){
-  const views=["home","games","jobs","schedule","calendar","shop","quests","leaderboard","journal"];
+  const views=["home","games","jobs","schedule","calendar","poll","shop","quests","leaderboard","journal"];
 
   function show(view, updateHash){
     if(!views.includes(view)) view="home";
@@ -4399,7 +4399,7 @@ if($("autoEquipBest"))$("autoEquipBest").onclick=async()=>{
 // DRAGONSWOOD PORTAL NAVIGATION
 // Keeps the student signed in while changing portal screens.
 // ============================================================
-const PORTAL_VIEWS=["home","games","shop","quests","leaderboard","journal"];
+const PORTAL_VIEWS=["home","games","jobs","schedule","calendar","poll","shop","quests","leaderboard","journal"];
 
 function openPortalView(view, updateHash=true){
   if(!PORTAL_VIEWS.includes(view)) view="home";
@@ -4611,8 +4611,10 @@ renderRewards();renderBoards();glitterizeStaticIcons();
 (function(){
   function openPoll(){
     if(typeof window.DragonswoodNav==='function'){
-      try{ window.DragonswoodNav('poll'); return; }catch(e){}
+      try{ window.DragonswoodNav('poll'); }catch(e){}
     }
+    const routed=document.getElementById('view-poll')?.classList.contains('active');
+    if(routed)return;
     document.querySelectorAll('.portal-view').forEach(v=>v.classList.remove('active'));
     const p=document.getElementById('view-poll');
     if(p)p.classList.add('active');

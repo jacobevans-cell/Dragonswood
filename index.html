@@ -1844,6 +1844,24 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 <style id="v28-student-requests">
 .student-life-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.student-life-card{padding:14px;border:1px solid rgba(244,201,93,.35);border-radius:12px;background:linear-gradient(145deg,rgba(21,9,48,.9),rgba(3,19,37,.92))}.student-life-card h3{margin:0 0 5px;color:#ffe8a0}.student-life-card p{margin:4px 0;color:#cfc5dc;font-size:11px}.student-life-card button{margin-top:9px;width:100%;padding:11px;font-weight:1000}.bathroom-active{border-color:#52efb1!important;box-shadow:0 0 20px rgba(82,239,177,.15)}.request-row{display:grid;grid-template-columns:1fr auto;gap:7px;margin-top:8px}.request-row select{min-width:0}@media(max-width:760px){.student-life-grid{grid-template-columns:1fr}.request-row{grid-template-columns:1fr}}
 </style>
+
+<style id="dw-v29-integration-style">
+.dw-dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dw-now-card,.dw-coming-card,.dw-job-card{padding:16px}
+.dw-now-big{font-size:28px;font-weight:1000;color:#ffe597;margin:5px 0}
+.dw-subtle{color:#b9c6df;font-size:12px}
+.dw-next-line{margin-top:10px;padding:9px;border-radius:9px;background:rgba(2,204,254,.08);border:1px solid rgba(2,204,254,.28)}
+.dw-event-list{display:grid;gap:8px;margin-top:8px}.dw-event{padding:9px;border-radius:9px;border:1px solid rgba(101,45,193,.35);background:rgba(5,7,23,.5)}
+.dw-event b{color:#ffe597}.dw-event small{display:block;color:#b9c6df;margin-top:2px}
+.schedule-timeline{display:grid;gap:7px}.schedule-block{padding:10px 12px;border:1px solid rgba(101,45,193,.32);border-radius:9px;background:rgba(5,7,23,.5);display:grid;grid-template-columns:90px 1fr auto;gap:10px;align-items:center}
+.schedule-block.now{border-color:#02ccfe;box-shadow:0 0 16px rgba(2,204,254,.18);background:rgba(0,118,145,.18)}.schedule-block.done{opacity:.5}
+.calendar-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.calendar-toolbar button.active{outline:2px solid #ffe597}
+.calendar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:9px}
+.calendar-card{padding:12px;border:1px solid rgba(101,45,193,.35);border-radius:10px;background:rgba(5,7,23,.52)}
+.job-week-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0}.job-day{padding:8px;text-align:center;border:1px solid rgba(101,45,193,.32);border-radius:8px}.job-day.done{border-color:#6be0a8;background:rgba(28,109,79,.25)}
+@media(max-width:850px){.dw-dash-grid{grid-template-columns:1fr}.schedule-block{grid-template-columns:76px 1fr}}
+</style>
+
 </head><body>
 <header class="topbar">
 <div class="shell">
@@ -1969,7 +1987,19 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
     <div class="section-title">
       <div>
-        <h2>🏰 Dragonswood Class Goals</h2>
+        
+<div class="dw-dash-grid" style="margin:14px 0">
+  <div class="frame bevel dw-now-card">
+    <div class="dw-subtle">📍 RIGHT NOW</div>
+    <div class="dw-now-big" id="homeNow">Loading schedule…</div>
+    <div class="dw-next-line" id="homeNext"></div>
+  </div>
+  <div class="frame bevel dw-coming-card">
+    <div class="dw-subtle">📅 COMING UP</div>
+    <div id="homeUpcomingEvents" class="dw-event-list"></div>
+  </div>
+</div>
+<h2>🏰 Dragonswood Class Goals</h2>
         <p>Three separate quests. Each point type advances only its matching goal; Universal Points can help any one of them.</p>
       </div>
     </div>
@@ -2284,7 +2314,7 @@ const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const DOMAIN="explore.academy";
 const $=id=>document.getElementById(id);
 let bathroomUnsub=null,bathroomSlotUnsub=null,bathroomSlotData=null,snackUnsub=null;
-let user=null,profile=null,rewards=[],classPoints=0,scores=[],shopItems=[],myPurchases=[],shopFilter="all",shopSort="level",inventoryFilter="all",profileUnsub=null,purchasesUnsub=null;
+let user=null,profile=null,rewards=[],classPoints=0,scores=[],shopItems=[],myPurchases=[],classJobsConfig=null,myJobWeek=null,classScheduleConfig=null,classCalendarEvents=[],shopFilter="all",shopSort="level",inventoryFilter="all",profileUnsub=null,purchasesUnsub=null;
 
 const TITLES=[
   {id:"princess",label:"Princess",position:"before"},
@@ -2662,6 +2692,83 @@ function renderBathroomStudent(d){
  };
 }
 
+
+const DEFAULT_DRAGONWOOD_JOBS=[{"id": "scroll", "name": "Scroll Keeper", "subtitle": "Paper Passer", "icon": "📜", "pay": 40, "desc": "Passes out and collects classroom materials."}, {"id": "grounds", "name": "Groundskeeper", "subtitle": "Sweeper & Garbage", "icon": "🧹", "pay": 75, "desc": "Keeps the floors and classroom areas clean."}, {"id": "courier", "name": "Courier", "subtitle": "Runner", "icon": "🪽", "pay": 50, "desc": "Safely delivers messages and materials."}, {"id": "rune", "name": "Rune Warden", "subtitle": "Doors, Lights & Board", "icon": "🔑", "pay": 60, "desc": "Manages classroom doors, lights, and board."}, {"id": "gear", "name": "Gearsmith", "subtitle": "Technology", "icon": "⚙️", "pay": 70, "desc": "Helps organize and care for classroom technology."}, {"id": "mimic", "name": "Mimic", "subtitle": "Substitute", "icon": "🧙", "pay": 50, "desc": "Ready to take over any job when a classmate is absent."}, {"id": "flame", "name": "First Flame", "subtitle": "Line Leader", "icon": "🔥", "pay": 40, "desc": "Leads the class safely and sets the pace."}];
+const DEFAULT_DRAGONWOOD_SCHEDULE={"monday": [["08:00", "08:10", "Morning Meeting", "🏰", "Classroom"], ["08:10", "08:50", "4/5 Elective (PE/Art)", "🎨", "Elective"], ["08:50", "10:20", "Reading", "📚", "Classroom"], ["10:20", "11:10", "Language & Writing - Grammar and Spelling", "✍️", "Classroom"], ["11:10", "11:30", "K-5 Lunch", "🍽️", "Lunch"], ["11:30", "11:40", "K-5 Lunch Recess", "🌤️", "Recess"], ["11:40", "13:20", "Math", "➗", "Classroom"], ["13:20", "14:40", "Science", "🔬", "Classroom"], ["14:40", "14:50", "Exit Ticket", "🎟️", "Classroom"], ["14:50", "15:00", "Pack Up", "🎒", "Classroom"]], "tuesday": [["08:00", "08:10", "Morning Meeting", "🏰", "Classroom"], ["08:10", "08:50", "4/5 Elective (PE/Art)", "🎨", "Elective"], ["08:50", "10:20", "Reading", "📚", "Classroom"], ["10:20", "11:10", "Language & Writing - Grammar and Spelling", "✍️", "Classroom"], ["11:10", "11:30", "K-5 Lunch", "🍽️", "Lunch"], ["11:30", "11:40", "K-5 Lunch Recess", "🌤️", "Recess"], ["11:40", "13:20", "Math", "➗", "Classroom"], ["13:20", "14:40", "Science", "🔬", "Classroom"], ["14:40", "14:50", "Exit Ticket", "🎟️", "Classroom"], ["14:50", "15:00", "Pack Up", "🎒", "Classroom"]], "wednesday": [["08:00", "08:10", "Morning Meeting", "🏰", "Classroom"], ["08:10", "08:50", "4/5 Elective (PE/Art)", "🎨", "Elective"], ["08:50", "10:20", "Reading", "📚", "Classroom"], ["10:20", "11:10", "Language & Writing - Comprehension and Spelling", "✍️", "Classroom"], ["11:10", "11:30", "K-5 Lunch", "🍽️", "Lunch"], ["11:30", "11:40", "K-5 Lunch Recess", "🌤️", "Recess"], ["11:40", "12:55", "Math", "➗", "Classroom"], ["12:55", "13:40", "Social Studies", "🌎", "Classroom"], ["13:40", "14:40", "Clubs", "🎯", "Clubs"], ["14:40", "14:50", "Exit Ticket", "🎟️", "Classroom"], ["14:50", "15:00", "Pack Up", "🎒", "Classroom"]], "thursday": [["08:00", "08:10", "Morning Meeting", "🏰", "Classroom"], ["08:10", "08:50", "4/5 Elective (PE/Art)", "🎨", "Elective"], ["08:50", "10:20", "Reading", "📚", "Classroom"], ["10:20", "11:10", "Language & Writing - Grammar and Spelling", "✍️", "Classroom"], ["11:10", "11:30", "K-5 Lunch", "🍽️", "Lunch"], ["11:30", "11:40", "K-5 Lunch Recess", "🌤️", "Recess"], ["11:40", "13:20", "Math", "➗", "Classroom"], ["13:20", "14:40", "Science", "🔬", "Classroom"], ["14:40", "14:50", "Exit Ticket", "🎟️", "Classroom"], ["14:50", "15:00", "Pack Up", "🎒", "Classroom"]], "friday": [["08:00", "08:10", "Morning Meeting / Online Check-In", "💻", "Online"], ["08:10", "08:50", "Remote / Half-Day Learning", "💻", "Online"], ["08:50", "10:20", "Remote Reading", "📚", "Online"], ["10:20", "11:10", "Remote Language & Writing", "✍️", "Online"], ["11:10", "11:40", "Remote Lunch / Break", "🍎", "Online"], ["11:40", "12:55", "Remote Math / Support", "➗", "Online"]]};
+const DEFAULT_DRAGONWOOD_EVENTS=[{"id": "seed0", "startDate": "2026-07-28", "endDate": "2026-07-30", "title": "Teacher Prep & Training", "category": "school", "icon": "🏫", "startTime": "", "endTime": ""}, {"id": "seed1", "startDate": "2026-08-03", "endDate": "2026-08-03", "title": "Semester 1 Begins", "category": "school", "icon": "📘", "startTime": "", "endTime": ""}, {"id": "seed2", "startDate": "2026-08-11", "endDate": "2026-08-13", "title": "Boy Benchmark", "category": "testing", "icon": "🧪", "startTime": "", "endTime": ""}, {"id": "seed3", "startDate": "2026-09-07", "endDate": "2026-09-07", "title": "Labor Day", "category": "holiday", "icon": "🇺🇸", "startTime": "", "endTime": ""}, {"id": "seed4", "startDate": "2026-09-24", "endDate": "2026-09-24", "title": "Multicultural Day", "category": "school", "icon": "🌎", "startTime": "", "endTime": ""}, {"id": "seed5", "startDate": "2026-10-05", "endDate": "2026-10-09", "title": "Fall Break", "category": "break", "icon": "🍂", "startTime": "", "endTime": ""}, {"id": "seed6", "startDate": "2026-11-11", "endDate": "2026-11-11", "title": "Veterans Day", "category": "holiday", "icon": "🇺🇸", "startTime": "", "endTime": ""}, {"id": "seed7", "startDate": "2026-11-23", "endDate": "2026-11-27", "title": "Thanksgiving Break", "category": "break", "icon": "🦃", "startTime": "", "endTime": ""}, {"id": "seed8", "startDate": "2026-12-08", "endDate": "2026-12-10", "title": "MoY Benchmark", "category": "testing", "icon": "🧪", "startTime": "", "endTime": ""}, {"id": "seed9", "startDate": "2026-12-21", "endDate": "2027-01-01", "title": "Winter Break", "category": "break", "icon": "❄️", "startTime": "", "endTime": ""}, {"id": "seed10", "startDate": "2027-01-04", "endDate": "2027-01-04", "title": "Semester 2 Begins", "category": "school", "icon": "📘", "startTime": "", "endTime": ""}, {"id": "seed11", "startDate": "2027-01-18", "endDate": "2027-01-18", "title": "MLK Day", "category": "holiday", "icon": "🕊️", "startTime": "", "endTime": ""}, {"id": "seed12", "startDate": "2027-02-15", "endDate": "2027-02-15", "title": "Presidents Day", "category": "holiday", "icon": "🇺🇸", "startTime": "", "endTime": ""}, {"id": "seed13", "startDate": "2027-02-16", "endDate": "2027-02-18", "title": "EoY Benchmark", "category": "testing", "icon": "🧪", "startTime": "", "endTime": ""}, {"id": "seed14", "startDate": "2027-03-08", "endDate": "2027-03-12", "title": "Spring Break", "category": "break", "icon": "🌼", "startTime": "", "endTime": ""}, {"id": "seed15", "startDate": "2027-03-29", "endDate": "2027-04-09", "title": "State Testing", "category": "testing", "icon": "📝", "startTime": "", "endTime": ""}, {"id": "seed16", "startDate": "2027-04-12", "endDate": "2027-04-16", "title": "Make-up Testing", "category": "testing", "icon": "📝", "startTime": "", "endTime": ""}, {"id": "seed17", "startDate": "2027-05-18", "endDate": "2027-05-20", "title": "Graduation / Promotion", "category": "school", "icon": "🎓", "startTime": "", "endTime": ""}, {"id": "seed18", "startDate": "2027-05-21", "endDate": "2027-05-21", "title": "Summer Break Begins", "category": "break", "icon": "☀️", "startTime": "", "endTime": ""}, {"id": "seed19", "startDate": "2027-05-24", "endDate": "2027-05-26", "title": "Teacher Work Days", "category": "school", "icon": "🏫", "startTime": "", "endTime": ""}, {"id": "seed20", "startDate": "2026-08-14", "endDate": "2026-08-14", "title": "Volleyball vs Sequoia Pathfinder Academy Verrado", "category": "sports", "icon": "🏐", "startTime": "15:30", "endTime": "16:30"}, {"id": "seed21", "startDate": "2026-08-25", "endDate": "2026-08-25", "title": "Volleyball vs South Valley Prep & Arts Academy", "category": "sports", "icon": "🏐", "startTime": "16:30", "endTime": "17:30"}, {"id": "seed22", "startDate": "2026-08-27", "endDate": "2026-08-27", "title": "Volleyball vs BASIS Goodyear", "category": "sports", "icon": "🏐", "startTime": "17:15", "endTime": "18:15"}, {"id": "seed23", "startDate": "2026-09-01", "endDate": "2026-09-01", "title": "Volleyball vs Liberty Traditional School", "category": "sports", "icon": "🏐", "startTime": "16:30", "endTime": "17:30"}, {"id": "seed24", "startDate": "2026-09-02", "endDate": "2026-09-02", "title": "Volleyball vs BASIS Goodyear", "category": "sports", "icon": "🏐", "startTime": "16:00", "endTime": "17:00"}, {"id": "seed25", "startDate": "2026-09-09", "endDate": "2026-09-09", "title": "Volleyball vs Sequoia Pathfinder Academy Verrado", "category": "sports", "icon": "🏐", "startTime": "16:30", "endTime": "17:30"}, {"id": "seed26", "startDate": "2026-09-11", "endDate": "2026-09-11", "title": "Volleyball vs BASIS Goodyear", "category": "sports", "icon": "🏐", "startTime": "16:30", "endTime": "17:30"}, {"id": "seed27", "startDate": "2026-09-15", "endDate": "2026-09-15", "title": "Volleyball vs South Valley Prep & Arts Academy", "category": "sports", "icon": "🏐", "startTime": "16:30", "endTime": "17:30"}, {"id": "seed28", "startDate": "2026-09-21", "endDate": "2026-09-21", "title": "Volleyball vs Liberty Traditional School", "category": "sports", "icon": "🏐", "startTime": "16:00", "endTime": "17:00"}];
+
+function phoenixNow(){ return new Date(new Date().toLocaleString('en-US',{timeZone:'America/Phoenix'})); }
+function localDateKeyPhoenix(d=phoenixNow()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function weekKeyPhoenix(d=phoenixNow()){const x=new Date(d);const shift=(x.getDay()+6)%7;x.setDate(x.getDate()-shift);x.setHours(0,0,0,0);return localDateKeyPhoenix(x);}
+function dayNamePhoenix(){return ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][phoenixNow().getDay()];}
+function hmToMinutes(hm){const [h,m]=String(hm||'00:00').split(':').map(Number);return h*60+m}
+function fmtClock(hm){if(!hm)return'';const [h,m]=hm.split(':').map(Number);const ap=h>=12?'PM':'AM';const hh=((h+11)%12)+1;return `${hh}:${String(m).padStart(2,'0')} ${ap}`}
+function activeScheduleBlocks(){return (classScheduleConfig?.days?.[dayNamePhoenix()]||DEFAULT_DRAGONWOOD_SCHEDULE[dayNamePhoenix()]||[])}
+function renderScheduleUI(){
+  const blocks=activeScheduleBlocks(),now=phoenixNow(),mins=now.getHours()*60+now.getMinutes();
+  let current=null,next=null;
+  for(const b of blocks){
+    const s=hmToMinutes(b[0]),e=hmToMinutes(b[1]);
+    if(mins>=s&&mins<e)current=b;
+    if(!next&&s>mins)next=b;
+  }
+  const nowText=current?`${current[3]||''} ${current[2]}`:(blocks.length&&mins<hmToMinutes(blocks[0][0])?'School has not started yet':'School day complete');
+  const detail=current?`${fmtClock(current[0])}–${fmtClock(current[1])} • ${current[4]||'Classroom'}`:'';
+  const nextText=next?`NEXT • ${fmtClock(next[0])} • ${next[3]||''} ${next[2]}`:'No more scheduled blocks today.';
+  ['scheduleNow','homeNow'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=nowText});
+  const det=document.getElementById('scheduleNowDetail');if(det)det.textContent=detail;
+  ['scheduleNext','homeNext'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=nextText});
+  const tl=document.getElementById('scheduleTimeline');
+  if(tl)tl.innerHTML=blocks.map(b=>{const s=hmToMinutes(b[0]),e=hmToMinutes(b[1]);const cls=mins>=e?'done':(mins>=s&&mins<e?'now':'');return `<div class="schedule-block ${cls}"><b>${fmtClock(b[0])}</b><div><strong>${b[3]||''} ${b[2]}</strong><small style="display:block">${b[4]||''}</small></div><span>${fmtClock(b[1])}</span></div>`}).join('');
+}
+function renderCalendarUI(category='all'){
+  const today=localDateKeyPhoenix(),events=(classCalendarEvents.length?classCalendarEvents:DEFAULT_DRAGONWOOD_EVENTS).slice().sort((a,b)=>String(a.startDate).localeCompare(String(b.startDate)));
+  const grid=document.getElementById('calendarGrid');
+  if(grid)grid.innerHTML=events.filter(e=>category==='all'||e.category===category).map(e=>`<div class="calendar-card"><div><b>${e.icon||'📅'} ${e.title}</b></div><small>${e.startDate}${e.endDate&&e.endDate!==e.startDate?' → '+e.endDate:''}${e.startTime?' • '+fmtClock(e.startTime):''}</small></div>`).join('');
+  const upcoming=events.filter(e=>String(e.endDate||e.startDate)>=today).slice(0,4);
+  const home=document.getElementById('homeUpcomingEvents');
+  if(home)home.innerHTML=upcoming.map(e=>`<div class="dw-event"><b>${e.icon||'📅'} ${e.title}</b><small>${e.startDate}${e.startTime?' • '+fmtClock(e.startTime):''}</small></div>`).join('')||'<div class="dw-subtle">Nothing coming up.</div>';
+}
+function renderStudentJobV29(){
+  if(!user)return;
+  const jobs=classJobsConfig?.jobs||DEFAULT_DRAGONWOOD_JOBS,assign=classJobsConfig?.assignments?.[user.uid];
+  const name=document.getElementById('studentJobName'),sub=document.getElementById('studentJobSubtitle'),icon=document.getElementById('studentJobIcon'),pay=document.getElementById('studentJobPay'),grid=document.getElementById('studentJobWeek'),btn=document.getElementById('studentJobCheckBtn'),status=document.getElementById('studentJobStatus');
+  if(!name||!grid||!btn)return;
+  if(!assign){name.textContent='No job assigned yet';sub.textContent='';icon.textContent='🧹';pay.textContent='';grid.innerHTML='';btn.disabled=true;status.textContent='Your teacher will assign your guild role.';return}
+  const wk=weekKeyPhoenix(),checked=Array.isArray(myJobWeek?.checkedDays)?myJobWeek.checkedDays:[],day=phoenixNow().getDay(),dayIndex=day===0?6:day-1;
+  name.textContent=assign.name||'Class Job';sub.textContent=assign.subtitle||'';icon.textContent=assign.icon||'🧹';
+  const salary=Number(assign.pay||0);pay.textContent=`Weekly salary: 🪙 ${salary} Gold • 4/5 = 80% • 5/5 = 100%`;
+  grid.innerHTML=['MON','TUE','WED','THU','FRI'].map((d,i)=>`<div class="job-day ${checked.includes(i)?'done':''}"><b>${d}</b><div>${checked.includes(i)?'✅':'⬜'}</div></div>`).join('');
+  const count=checked.filter(i=>i>=0&&i<=4).length;
+  const projected=count>=5?salary:(count>=4?Math.floor(salary*.8):0);
+  status.textContent=myJobWeek?.paid?`💰 Paid ${myJobWeek.payAward||projected} Gold.`:(count>=4?`Paycheck unlocked: 🪙 ${projected} Gold${count===4?' • Complete Friday for full pay.':''}`:`${count}/5 days • Complete at least 4 days to qualify.`);
+  const eligible=dayIndex>=0&&dayIndex<=4&&!checked.includes(dayIndex);btn.disabled=!eligible;btn.textContent=eligible?'CHECK OFF TODAY’S JOB':'✅ TODAY COMPLETE';
+  btn.onclick=async()=>{
+    if(btn.disabled)return;btn.disabled=true;
+    try{
+      const ref=doc(db,'studentJobWeeks',user.uid+'_'+wk);
+      await runTransaction(db,async tx=>{
+        const snap=await tx.get(ref),d=snap.exists()?snap.data():{},arr=Array.isArray(d.checkedDays)?[...d.checkedDays]:[];
+        if(arr.includes(dayIndex))return;arr.push(dayIndex);arr.sort((a,b)=>a-b);
+        tx.set(ref,{studentId:user.uid,studentName:studentDisplayName(),weekKey:wk,jobId:assign.id||'',jobName:assign.name||'',jobIcon:assign.icon||'',pay:salary,checkedDays:arr,completedCount:arr.length,paid:d.paid===true,updatedAt:serverTimestamp()},{merge:true});
+      });
+      window.DWAudio?.positive();
+    }catch(e){console.warn(e);status.textContent='Could not check off your job. Tell your teacher.';window.DWAudio?.negative()}
+    finally{btn.disabled=false}
+  };
+}
+function watchV29Integration(){
+  if(!user)return;
+  onSnapshot(doc(db,'classData','classJobs'),s=>{classJobsConfig=s.exists()?s.data():{};renderStudentJobV29()});
+  onSnapshot(doc(db,'classData','classSchedule'),s=>{classScheduleConfig=s.exists()?s.data():{};renderScheduleUI()});
+  onSnapshot(collection(db,'classCalendarEvents'),s=>{classCalendarEvents=s.docs.map(d=>({id:d.id,...d.data()}));renderCalendarUI()});
+  const wk=weekKeyPhoenix();
+  onSnapshot(doc(db,'studentJobWeeks',user.uid+'_'+wk),s=>{myJobWeek=s.exists()?s.data():null;renderStudentJobV29()});
+  setInterval(renderScheduleUI,30000);
+  renderScheduleUI();renderCalendarUI();renderStudentJobV29();
+}
+document.addEventListener('click',e=>{const b=e.target.closest('#calendarFilters button');if(!b)return;document.querySelectorAll('#calendarFilters button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderCalendarUI(b.dataset.cat||'all')});
+
 function watchSnack(){
   if(snackUnsub){try{snackUnsub()}catch(e){} snackUnsub=null}
   if(!user)return;
@@ -2831,6 +2938,7 @@ onAuthStateChanged(auth,async u=>{
     const ref=doc(db,"students",u.uid);
     watchBathroom();
     watchSnack();
+    watchV29Integration();
     const snap=await getDoc(ref);
     if(snap.exists()){
       profile=snap.data();

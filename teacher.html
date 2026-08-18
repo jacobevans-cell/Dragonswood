@@ -557,6 +557,13 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 @keyframes dwPulseOverdue{50%{filter:brightness(1.35)}}
 </style>
 
+
+<style id="dw-v29-teacher-style">
+.v29-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:12px}.v29-list{display:grid;gap:7px}.v29-row{padding:9px;border:1px solid rgba(101,45,193,.3);border-radius:9px;background:rgba(5,7,23,.5)}
+.v29-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.v29-form .full{grid-column:1/-1}.v29-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+@media(max-width:900px){.v29-grid{grid-template-columns:1fr}.v29-form{grid-template-columns:1fr}}
+</style>
+
 </head><body>
 <header class="teacher-head"><div class="shell"><div class="teacher-title">🛡️ DRAGONSWOOD COMMAND<small>EXPLORE ACADEMY • EVANS 4–5 • TEACHER PORTAL</small></div><div id="signed" class="hidden" style="text-align:right"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
 <main class="shell teacher-main">
@@ -716,6 +723,49 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   </div>
 </div>
 
+
+<div id="jobs" class="panel">
+  <div class="titlebar"><div><h2>🧹 GUILD JOBS & AUTOMATIC PAYROLL</h2><p>Assign roles. Students check off daily. Payroll runs automatically for last week.</p></div></div>
+  <div class="v29-grid">
+    <div class="card"><h3>ASSIGNMENTS</h3><div id="jobAssignmentRoster" class="v29-list"></div></div>
+    <div class="card"><h3>THIS WEEK</h3><div id="jobWeekSummary" class="v29-list"></div></div>
+  </div>
+</div>
+
+<div id="schedule" class="panel">
+  <div class="titlebar"><div><h2>🕐 DAILY SCHEDULE EDITOR</h2><p>Edit a day's blocks without touching HTML.</p></div></div>
+  <div class="v29-grid">
+    <div class="card">
+      <div class="v29-form">
+        <select id="scheduleDay"><option>monday</option><option>tuesday</option><option>wednesday</option><option>thursday</option><option>friday</option></select>
+        <button id="scheduleLoad">LOAD DAY</button>
+        <input id="scheduleStart" type="time"><input id="scheduleEnd" type="time">
+        <input id="scheduleTitle" class="full" placeholder="Activity / Subject">
+        <input id="scheduleIcon" placeholder="Icon" value="📘"><input id="scheduleLocation" placeholder="Location" value="Classroom">
+      </div>
+      <div class="v29-actions"><button id="scheduleAdd">ADD BLOCK</button><button id="scheduleSave">SAVE DAY</button></div>
+    </div>
+    <div class="card"><h3 id="scheduleEditorTitle">Monday</h3><div id="scheduleEditorList" class="v29-list"></div></div>
+  </div>
+</div>
+
+<div id="calendar" class="panel">
+  <div class="titlebar"><div><h2>📅 SCHOOL & SPORTS CALENDAR</h2><p>Add, edit, or remove events from the teacher portal.</p></div></div>
+  <div class="v29-grid">
+    <div class="card">
+      <div class="v29-form">
+        <input id="calTitle" class="full" placeholder="Event title">
+        <input id="calStartDate" type="date"><input id="calEndDate" type="date">
+        <input id="calStartTime" type="time"><input id="calEndTime" type="time">
+        <select id="calCategory"><option value="school">School</option><option value="sports">Sports</option><option value="testing">Testing</option><option value="break">Break</option><option value="holiday">Holiday</option></select>
+        <input id="calIcon" placeholder="Icon" value="📅">
+      </div>
+      <div class="v29-actions"><button id="calSave">ADD EVENT</button><button id="calClear" class="gray">CLEAR</button></div>
+    </div>
+    <div class="card"><h3>EVENTS</h3><div id="teacherCalendarList" class="v29-list"></div></div>
+  </div>
+</div>
+
 <div id="shop" class="panel">
   <div class="frame bevel command-title">
     <h2>🧰 DRAGONSWOOD SHOP MANAGER</h2>
@@ -856,7 +906,7 @@ import {getFirestore,doc,getDoc,setDoc,collection,onSnapshot,addDoc,deleteDoc,ge
 const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2", "measurementId": "G-LPRLDGVBD2"},TEACHER="jacobicusjax@gmail.com";
 const normalizedEmail = v => String(v||"").trim().toLowerCase();
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),$=id=>document.getElementById(id);
-let points=0,history=[],rewards=[],scores=[],results=[],students=[],shopItems=[],purchases=[],bathroomStatuses=[],bathroomRequests=[],snackStatuses=[],snackRequests=[],pointRequests=[],recessState={points:0,goal:20,dateKey:""},petGoalState={points:0,goal:250},tripGoalState={points:0,goal:750},universalPointState={points:0};
+let points=0,history=[],rewards=[],scores=[],results=[],students=[],shopItems=[],purchases=[],bathroomStatuses=[],bathroomRequests=[],snackStatuses=[],snackRequests=[],pointRequests=[],classJobsConfigV29={},jobWeeksV29=[],classScheduleV29={},calendarEventsV29=[],recessState={points:0,goal:20,dateKey:""},petGoalState={points:0,goal:250},tripGoalState={points:0,goal:750},universalPointState={points:0};
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
 const AVATAR_EMOJI={"dragon-purple":"🐉","dragon-green":"🐲","knight":"🛡️","wizard":"🧙","witch":"🧙‍♀️","princess":"👸","prince":"🤴","ranger":"🏹","phoenix":"🔥","wolf":"🐺","owl":"🦉","crystal":"🔮"};
 const DRAGONSWOOD_XP_THRESHOLDS=[0,200,450,750,1100,1500,1950,2450,3000,3600,4250,4950,5700,6500,7350,8250,9200,10200,11100,12000];
@@ -1008,6 +1058,10 @@ onSnapshot(collection(db,"bathroomRequests"),s=>{bathroomRequests=s.docs.map(d=>
 onSnapshot(collection(db,"snackStatus"),s=>{snackStatuses=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("snackStatus listener",e));
 onSnapshot(collection(db,"snackRequests"),s=>{snackRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("snackRequests listener",e));
 onSnapshot(collection(db,"pointRequests"),s=>{pointRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("pointRequests listener",e));
+onSnapshot(doc(db,"classData","classJobs"),s=>{classJobsConfigV29=s.exists()?s.data():{};renderV29Jobs()},e=>console.warn("v29 jobs",e));
+onSnapshot(collection(db,"studentJobWeeks"),s=>{jobWeeksV29=s.docs.map(d=>({id:d.id,...d.data()}));renderV29Jobs();setTimeout(runV29Payroll,250)},e=>console.warn("v29 job weeks",e));
+onSnapshot(doc(db,"classData","classSchedule"),s=>{classScheduleV29=s.exists()?s.data():{};loadScheduleDay()},e=>console.warn("v29 schedule",e));
+onSnapshot(collection(db,"classCalendarEvents"),s=>{calendarEventsV29=s.docs.map(d=>({id:d.id,...d.data()}));renderTeacherCalendar()},e=>console.warn("v29 calendar",e));
  onSnapshot(collection(db,"shopItems"),s=>{shopItems=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
       const levelA=Math.max(1,Number(a.requiredLevel||1));
       const levelB=Math.max(1,Number(b.requiredLevel||1));
@@ -1339,6 +1393,56 @@ function ensureTeacherPassTimer(){
       el.classList.toggle('overdue',el.textContent.includes('OVER'));
     });
   },1000);
+}
+
+
+const V29_DEFAULT_JOBS=[{"id": "scroll", "name": "Scroll Keeper", "subtitle": "Paper Passer", "icon": "📜", "pay": 40, "desc": "Passes out and collects classroom materials."}, {"id": "grounds", "name": "Groundskeeper", "subtitle": "Sweeper & Garbage", "icon": "🧹", "pay": 75, "desc": "Keeps the floors and classroom areas clean."}, {"id": "courier", "name": "Courier", "subtitle": "Runner", "icon": "🪽", "pay": 50, "desc": "Safely delivers messages and materials."}, {"id": "rune", "name": "Rune Warden", "subtitle": "Doors, Lights & Board", "icon": "🔑", "pay": 60, "desc": "Manages classroom doors, lights, and board."}, {"id": "gear", "name": "Gearsmith", "subtitle": "Technology", "icon": "⚙️", "pay": 70, "desc": "Helps organize and care for classroom technology."}, {"id": "mimic", "name": "Mimic", "subtitle": "Substitute", "icon": "🧙", "pay": 50, "desc": "Ready to take over any job when a classmate is absent."}, {"id": "flame", "name": "First Flame", "subtitle": "Line Leader", "icon": "🔥", "pay": 40, "desc": "Leads the class safely and sets the pace."}];
+const V29_DEFAULT_SCHEDULE={"monday": [["08:00", "08:10", "Morning Meeting", "🏰", "Classroom"], ["08:10", "08:50", "4/5 Elective (PE/Art)", "🎨", "Elective"], ["08:50", "10:20", "Reading", "📚", "Classroom"], ["10:20", "11:10", "Language & Writing - Grammar and Spelling", "✍️", "Classroom"], ["11:10", "11:30", "K-5 Lunch", "🍽️", "Lunch"], ["11:30", "11:40", "K-5 Lunch Recess", "🌤️", "Recess"], ["11:40", "13:20", "Math", "➗", "Classroom"], ["13:20", "14:40", "Science", "🔬", "Classroom"], ["14:40", "14:50", "Exit Ticket", "🎟️", "Classroom"], ["14:50", "15:00", "Pack Up", "🎒", "Classroom"]], "tuesday": [["08:00", "08:10", "Morning Meeting", "🏰", "Classroom"], ["08:10", "08:50", "4/5 Elective (PE/Art)", "🎨", "Elective"], ["08:50", "10:20", "Reading", "📚", "Classroom"], ["10:20", "11:10", "Language & Writing - Grammar and Spelling", "✍️", "Classroom"], ["11:10", "11:30", "K-5 Lunch", "🍽️", "Lunch"], ["11:30", "11:40", "K-5 Lunch Recess", "🌤️", "Recess"], ["11:40", "13:20", "Math", "➗", "Classroom"], ["13:20", "14:40", "Science", "🔬", "Classroom"], ["14:40", "14:50", "Exit Ticket", "🎟️", "Classroom"], ["14:50", "15:00", "Pack Up", "🎒", "Classroom"]], "wednesday": [["08:00", "08:10", "Morning Meeting", "🏰", "Classroom"], ["08:10", "08:50", "4/5 Elective (PE/Art)", "🎨", "Elective"], ["08:50", "10:20", "Reading", "📚", "Classroom"], ["10:20", "11:10", "Language & Writing - Comprehension and Spelling", "✍️", "Classroom"], ["11:10", "11:30", "K-5 Lunch", "🍽️", "Lunch"], ["11:30", "11:40", "K-5 Lunch Recess", "🌤️", "Recess"], ["11:40", "12:55", "Math", "➗", "Classroom"], ["12:55", "13:40", "Social Studies", "🌎", "Classroom"], ["13:40", "14:40", "Clubs", "🎯", "Clubs"], ["14:40", "14:50", "Exit Ticket", "🎟️", "Classroom"], ["14:50", "15:00", "Pack Up", "🎒", "Classroom"]], "thursday": [["08:00", "08:10", "Morning Meeting", "🏰", "Classroom"], ["08:10", "08:50", "4/5 Elective (PE/Art)", "🎨", "Elective"], ["08:50", "10:20", "Reading", "📚", "Classroom"], ["10:20", "11:10", "Language & Writing - Grammar and Spelling", "✍️", "Classroom"], ["11:10", "11:30", "K-5 Lunch", "🍽️", "Lunch"], ["11:30", "11:40", "K-5 Lunch Recess", "🌤️", "Recess"], ["11:40", "13:20", "Math", "➗", "Classroom"], ["13:20", "14:40", "Science", "🔬", "Classroom"], ["14:40", "14:50", "Exit Ticket", "🎟️", "Classroom"], ["14:50", "15:00", "Pack Up", "🎒", "Classroom"]], "friday": [["08:00", "08:10", "Morning Meeting / Online Check-In", "💻", "Online"], ["08:10", "08:50", "Remote / Half-Day Learning", "💻", "Online"], ["08:50", "10:20", "Remote Reading", "📚", "Online"], ["10:20", "11:10", "Remote Language & Writing", "✍️", "Online"], ["11:10", "11:40", "Remote Lunch / Break", "🍎", "Online"], ["11:40", "12:55", "Remote Math / Support", "➗", "Online"]]};
+const V29_SEED_EVENTS=[{"id": "seed0", "startDate": "2026-07-28", "endDate": "2026-07-30", "title": "Teacher Prep & Training", "category": "school", "icon": "🏫", "startTime": "", "endTime": ""}, {"id": "seed1", "startDate": "2026-08-03", "endDate": "2026-08-03", "title": "Semester 1 Begins", "category": "school", "icon": "📘", "startTime": "", "endTime": ""}, {"id": "seed2", "startDate": "2026-08-11", "endDate": "2026-08-13", "title": "Boy Benchmark", "category": "testing", "icon": "🧪", "startTime": "", "endTime": ""}, {"id": "seed3", "startDate": "2026-09-07", "endDate": "2026-09-07", "title": "Labor Day", "category": "holiday", "icon": "🇺🇸", "startTime": "", "endTime": ""}, {"id": "seed4", "startDate": "2026-09-24", "endDate": "2026-09-24", "title": "Multicultural Day", "category": "school", "icon": "🌎", "startTime": "", "endTime": ""}, {"id": "seed5", "startDate": "2026-10-05", "endDate": "2026-10-09", "title": "Fall Break", "category": "break", "icon": "🍂", "startTime": "", "endTime": ""}, {"id": "seed6", "startDate": "2026-11-11", "endDate": "2026-11-11", "title": "Veterans Day", "category": "holiday", "icon": "🇺🇸", "startTime": "", "endTime": ""}, {"id": "seed7", "startDate": "2026-11-23", "endDate": "2026-11-27", "title": "Thanksgiving Break", "category": "break", "icon": "🦃", "startTime": "", "endTime": ""}, {"id": "seed8", "startDate": "2026-12-08", "endDate": "2026-12-10", "title": "MoY Benchmark", "category": "testing", "icon": "🧪", "startTime": "", "endTime": ""}, {"id": "seed9", "startDate": "2026-12-21", "endDate": "2027-01-01", "title": "Winter Break", "category": "break", "icon": "❄️", "startTime": "", "endTime": ""}, {"id": "seed10", "startDate": "2027-01-04", "endDate": "2027-01-04", "title": "Semester 2 Begins", "category": "school", "icon": "📘", "startTime": "", "endTime": ""}, {"id": "seed11", "startDate": "2027-01-18", "endDate": "2027-01-18", "title": "MLK Day", "category": "holiday", "icon": "🕊️", "startTime": "", "endTime": ""}, {"id": "seed12", "startDate": "2027-02-15", "endDate": "2027-02-15", "title": "Presidents Day", "category": "holiday", "icon": "🇺🇸", "startTime": "", "endTime": ""}, {"id": "seed13", "startDate": "2027-02-16", "endDate": "2027-02-18", "title": "EoY Benchmark", "category": "testing", "icon": "🧪", "startTime": "", "endTime": ""}, {"id": "seed14", "startDate": "2027-03-08", "endDate": "2027-03-12", "title": "Spring Break", "category": "break", "icon": "🌼", "startTime": "", "endTime": ""}, {"id": "seed15", "startDate": "2027-03-29", "endDate": "2027-04-09", "title": "State Testing", "category": "testing", "icon": "📝", "startTime": "", "endTime": ""}, {"id": "seed16", "startDate": "2027-04-12", "endDate": "2027-04-16", "title": "Make-up Testing", "category": "testing", "icon": "📝", "startTime": "", "endTime": ""}, {"id": "seed17", "startDate": "2027-05-18", "endDate": "2027-05-20", "title": "Graduation / Promotion", "category": "school", "icon": "🎓", "startTime": "", "endTime": ""}, {"id": "seed18", "startDate": "2027-05-21", "endDate": "2027-05-21", "title": "Summer Break Begins", "category": "break", "icon": "☀️", "startTime": "", "endTime": ""}, {"id": "seed19", "startDate": "2027-05-24", "endDate": "2027-05-26", "title": "Teacher Work Days", "category": "school", "icon": "🏫", "startTime": "", "endTime": ""}, {"id": "seed20", "startDate": "2026-08-14", "endDate": "2026-08-14", "title": "Volleyball vs Sequoia Pathfinder Academy Verrado", "category": "sports", "icon": "🏐", "startTime": "15:30", "endTime": "16:30"}, {"id": "seed21", "startDate": "2026-08-25", "endDate": "2026-08-25", "title": "Volleyball vs South Valley Prep & Arts Academy", "category": "sports", "icon": "🏐", "startTime": "16:30", "endTime": "17:30"}, {"id": "seed22", "startDate": "2026-08-27", "endDate": "2026-08-27", "title": "Volleyball vs BASIS Goodyear", "category": "sports", "icon": "🏐", "startTime": "17:15", "endTime": "18:15"}, {"id": "seed23", "startDate": "2026-09-01", "endDate": "2026-09-01", "title": "Volleyball vs Liberty Traditional School", "category": "sports", "icon": "🏐", "startTime": "16:30", "endTime": "17:30"}, {"id": "seed24", "startDate": "2026-09-02", "endDate": "2026-09-02", "title": "Volleyball vs BASIS Goodyear", "category": "sports", "icon": "🏐", "startTime": "16:00", "endTime": "17:00"}, {"id": "seed25", "startDate": "2026-09-09", "endDate": "2026-09-09", "title": "Volleyball vs Sequoia Pathfinder Academy Verrado", "category": "sports", "icon": "🏐", "startTime": "16:30", "endTime": "17:30"}, {"id": "seed26", "startDate": "2026-09-11", "endDate": "2026-09-11", "title": "Volleyball vs BASIS Goodyear", "category": "sports", "icon": "🏐", "startTime": "16:30", "endTime": "17:30"}, {"id": "seed27", "startDate": "2026-09-15", "endDate": "2026-09-15", "title": "Volleyball vs South Valley Prep & Arts Academy", "category": "sports", "icon": "🏐", "startTime": "16:30", "endTime": "17:30"}, {"id": "seed28", "startDate": "2026-09-21", "endDate": "2026-09-21", "title": "Volleyball vs Liberty Traditional School", "category": "sports", "icon": "🏐", "startTime": "16:00", "endTime": "17:00"}];
+let scheduleDraftDay='monday',scheduleDraftBlocks=[],editingCalendarId='';
+
+function v29WeekKey(date=new Date()){const p=new Date(date.toLocaleString('en-US',{timeZone:'America/Phoenix'}));const shift=(p.getDay()+6)%7;p.setDate(p.getDate()-shift);p.setHours(0,0,0,0);return `${p.getFullYear()}-${String(p.getMonth()+1).padStart(2,'0')}-${String(p.getDate()).padStart(2,'0')}`}
+function v29PreviousWeekKey(){const d=new Date();d.setDate(d.getDate()-7);return v29WeekKey(d)}
+function v29Jobs(){return Array.isArray(classJobsConfigV29.jobs)&&classJobsConfigV29.jobs.length?classJobsConfigV29.jobs:V29_DEFAULT_JOBS}
+function renderV29Jobs(){
+ const roster=$('jobAssignmentRoster'),summary=$('jobWeekSummary');if(!roster)return;
+ const jobs=v29Jobs(),assign=classJobsConfigV29.assignments||{};
+ roster.innerHTML=students.slice().sort((a,b)=>displayStudent(a).localeCompare(displayStudent(b))).map(s=>{const a=assign[s.id]||{};return `<div class="v29-row"><b>${esc(displayStudent(s))}</b><div class="v29-form"><select data-v29-job="${s.id}"><option value="">No job</option>${jobs.map(j=>`<option value="${j.id}" ${a.id===j.id?'selected':''}>${j.icon} ${esc(j.name)} • ${esc(j.subtitle)}</option>`).join('')}</select><input type="number" min="0" step="5" value="${Number(a.pay||50)}" data-v29-pay="${s.id}"></div></div>`}).join('');
+ document.querySelectorAll('[data-v29-job]').forEach(el=>el.onchange=()=>saveV29Job(el.dataset.v29Job));
+ document.querySelectorAll('[data-v29-pay]').forEach(el=>el.onchange=()=>saveV29Job(el.dataset.v29Pay));
+ const wk=v29WeekKey(),rows=jobWeeksV29.filter(x=>x.weekKey===wk);
+ summary.innerHTML=rows.length?rows.map(x=>`<div class="v29-row"><b>${esc(x.studentName||'Student')} • ${esc(x.jobIcon||'🧹')} ${esc(x.jobName||'Job')}</b><small>${Number(x.completedCount||0)}/5 days • ${x.paid?'💰 PAID':(Number(x.completedCount||0)>=4?'✅ QUALIFIED':'Working')}</small></div>`).join(''):'<div class="muted">No check-offs yet this week.</div>';
+}
+async function saveV29Job(studentId){
+ const sel=document.querySelector(`[data-v29-job="${studentId}"]`),pay=document.querySelector(`[data-v29-pay="${studentId}"]`),job=v29Jobs().find(j=>j.id===sel?.value);
+ const assignments={...(classJobsConfigV29.assignments||{})};
+ if(!job)delete assignments[studentId];else assignments[studentId]={...job,pay:Math.max(0,Number(pay?.value||job.pay||50))};
+ await setDoc(doc(db,'classData','classJobs'),{jobs:v29Jobs(),assignments,updatedAt:serverTimestamp()},{merge:true});window.DWAudio?.positive();
+}
+async function runV29Payroll(){
+ const prev=v29PreviousWeekKey(),eligible=jobWeeksV29.filter(x=>x.weekKey===prev&&Number(x.completedCount||0)>=4&&x.paid!==true);
+ for(const x of eligible){const st=students.find(s=>s.id===x.studentId);if(!st)continue;const salary=Math.max(0,Number(x.pay||0)),award=Number(x.completedCount||0)>=5?salary:Math.floor(salary*.8);if(!award)continue;
+   try{const b=writeBatch(db);b.set(doc(db,'students',st.id),{gold:(+st.gold||0)+award,updatedAt:serverTimestamp()},{merge:true});b.set(doc(db,'studentJobWeeks',x.id),{paid:true,paidAt:serverTimestamp(),payAward:award},{merge:true});b.set(doc(collection(db,'studentTransactions')),{studentId:st.id,studentName:displayStudent(st),stat:'gold',amount:award,reason:`Guild payroll • ${x.jobName||'Class Job'} • ${x.completedCount}/5 days`,category:'job-payroll',createdAt:serverTimestamp()});await b.commit()}catch(e){console.warn('payroll',e)}}
+}
+function renderScheduleEditor(){
+ const list=$('scheduleEditorList');if(!list)return;$('scheduleEditorTitle').textContent=scheduleDraftDay[0].toUpperCase()+scheduleDraftDay.slice(1);
+ list.innerHTML=scheduleDraftBlocks.map((b,i)=>`<div class="v29-row"><b>${b[0]}–${b[1]} • ${b[3]||''} ${esc(b[2])}</b><small>${esc(b[4]||'')}</small><div class="v29-actions"><button data-sched-up="${i}">↑</button><button data-sched-down="${i}">↓</button><button class="danger-soft" data-sched-del="${i}">DELETE</button></div></div>`).join('');
+ document.querySelectorAll('[data-sched-del]').forEach(b=>b.onclick=()=>{scheduleDraftBlocks.splice(+b.dataset.schedDel,1);renderScheduleEditor()});
+ document.querySelectorAll('[data-sched-up]').forEach(b=>b.onclick=()=>{const i=+b.dataset.schedUp;if(i>0){[scheduleDraftBlocks[i-1],scheduleDraftBlocks[i]]=[scheduleDraftBlocks[i],scheduleDraftBlocks[i-1]];renderScheduleEditor()}});
+ document.querySelectorAll('[data-sched-down]').forEach(b=>b.onclick=()=>{const i=+b.dataset.schedDown;if(i<scheduleDraftBlocks.length-1){[scheduleDraftBlocks[i+1],scheduleDraftBlocks[i]]=[scheduleDraftBlocks[i],scheduleDraftBlocks[i+1]];renderScheduleEditor()}});
+}
+function loadScheduleDay(){scheduleDraftDay=$('scheduleDay').value;scheduleDraftBlocks=JSON.parse(JSON.stringify(classScheduleV29?.days?.[scheduleDraftDay]||V29_DEFAULT_SCHEDULE[scheduleDraftDay]||[]));renderScheduleEditor()}
+function renderTeacherCalendar(){
+ const box=$('teacherCalendarList');if(!box)return;box.innerHTML=calendarEventsV29.slice().sort((a,b)=>String(a.startDate).localeCompare(String(b.startDate))).map(e=>`<div class="v29-row"><b>${e.icon||'📅'} ${esc(e.title||'Event')}</b><small>${e.startDate||''}${e.startTime?' • '+e.startTime:''} • ${e.category||'school'}</small><div class="v29-actions"><button data-cal-edit="${e.id}">EDIT</button><button class="danger-soft" data-cal-del="${e.id}">DELETE</button></div></div>`).join('');
+ document.querySelectorAll('[data-cal-edit]').forEach(b=>b.onclick=()=>{const e=calendarEventsV29.find(x=>x.id===b.dataset.calEdit);if(!e)return;editingCalendarId=e.id;$('calTitle').value=e.title||'';$('calStartDate').value=e.startDate||'';$('calEndDate').value=e.endDate||e.startDate||'';$('calStartTime').value=e.startTime||'';$('calEndTime').value=e.endTime||'';$('calCategory').value=e.category||'school';$('calIcon').value=e.icon||'📅';$('calSave').textContent='UPDATE EVENT'});
+ document.querySelectorAll('[data-cal-del]').forEach(b=>b.onclick=async()=>{if(!confirm('Delete this event?'))return;await deleteDoc(doc(db,'classCalendarEvents',b.dataset.calDel));window.DWAudio?.negative()});
+}
+async function seedV29Defaults(){
+ const jobsRef=doc(db,'classData','classJobs'),schedRef=doc(db,'classData','classSchedule');
+ const [jr,sr,events]=await Promise.all([getDoc(jobsRef),getDoc(schedRef),getDocs(collection(db,'classCalendarEvents'))]);
+ if(!jr.exists())await setDoc(jobsRef,{jobs:V29_DEFAULT_JOBS,assignments:{},updatedAt:serverTimestamp()});
+ if(!sr.exists())await setDoc(schedRef,{days:V29_DEFAULT_SCHEDULE,updatedAt:serverTimestamp()});
+ if(events.empty){const b=writeBatch(db);for(const e of V29_SEED_EVENTS){b.set(doc(db,'classCalendarEvents',e.id),{...e,createdAt:serverTimestamp(),updatedAt:serverTimestamp()})}await b.commit()}
 }
 
 function teacherDateKey(){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Phoenix',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}
@@ -1924,6 +2028,15 @@ $("removeGearStudent").onclick=async()=>{
 function renderScores(){$("scoreList").innerHTML=scores.length?scores.map(s=>`<div class="item"><div class="icon">🏆</div><div><b>${esc(s.displayName||s.playerName||"Player")} — ${+s.score||0}</b><small>${esc(s.gameName||s.game||"Game")}</small></div><div><button class="danger mini" data-sdel="${s.id}">Delete</button></div></div>`).join(""):'<div class="muted">No scores submitted yet.</div>';document.querySelectorAll("[data-sdel]").forEach(b=>b.onclick=async()=>{if(confirm("Delete this score?"))await deleteDoc(doc(db,"scores",b.dataset.sdel))})}
 function renderResults(){$("results").innerHTML=results.length?results.map(r=>`<tr><td>${esc(r.displayName||r.playerName||"Player")}</td><td>${esc(r.gameName||r.game||"Game")}</td><td>${+r.score||0}</td><td>${r.accuracy!=null?esc(r.accuracy)+"%":"—"}</td><td>${esc(r.summary||r.details||"—")}</td><td>${r.createdAt?.seconds?new Date(r.createdAt.seconds*1000).toLocaleString():"—"}</td></tr>`).join(""):'<tr><td colspan="6" class="muted">No academic game results yet.</td></tr>'}
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");$(b.dataset.p).classList.add("active")})
+
+setTimeout(()=>{seedV29Defaults().catch(e=>console.warn('seed defaults',e))},1200);
+document.addEventListener('DOMContentLoaded',()=>{
+ if($('scheduleLoad'))$('scheduleLoad').onclick=loadScheduleDay;
+ if($('scheduleAdd'))$('scheduleAdd').onclick=()=>{const s=$('scheduleStart').value,e=$('scheduleEnd').value,t=$('scheduleTitle').value.trim();if(!s||!e||!t)return alert('Add start, end, and activity.');scheduleDraftBlocks.push([s,e,t,$('scheduleIcon').value||'📘',$('scheduleLocation').value||'Classroom']);scheduleDraftBlocks.sort((a,b)=>a[0].localeCompare(b[0]));renderScheduleEditor()};
+ if($('scheduleSave'))$('scheduleSave').onclick=async()=>{const days={...(classScheduleV29.days||V29_DEFAULT_SCHEDULE),[scheduleDraftDay]:scheduleDraftBlocks};await setDoc(doc(db,'classData','classSchedule'),{days,updatedAt:serverTimestamp()},{merge:true});window.DWAudio?.positive()};
+ if($('calClear'))$('calClear').onclick=()=>{editingCalendarId='';['calTitle','calStartDate','calEndDate','calStartTime','calEndTime'].forEach(id=>$(id).value='');$('calCategory').value='school';$('calIcon').value='📅';$('calSave').textContent='ADD EVENT'};
+ if($('calSave'))$('calSave').onclick=async()=>{const title=$('calTitle').value.trim(),startDate=$('calStartDate').value;if(!title||!startDate)return alert('Event title and start date are required.');const id=editingCalendarId||('event_'+Date.now());await setDoc(doc(db,'classCalendarEvents',id),{title,startDate,endDate:$('calEndDate').value||startDate,startTime:$('calStartTime').value||'',endTime:$('calEndTime').value||'',category:$('calCategory').value||'school',icon:$('calIcon').value||'📅',updatedAt:serverTimestamp(),createdAt:serverTimestamp()},{merge:true});editingCalendarId='';$('calClear').click();window.DWAudio?.positive()};
+});
 </script>
 <script id="dragonswood-sound-engine">
 (() => {

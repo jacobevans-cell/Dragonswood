@@ -1862,7 +1862,9 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 @media(max-width:850px){.dw-dash-grid{grid-template-columns:1fr}.schedule-block{grid-template-columns:76px 1fr}}
 </style>
 
-\n<style id="dw-v31-integrated-style">\n.portal-nav{overflow-x:auto;scrollbar-width:thin}.portal-nav .portal-tab{min-width:150px}\n.dw31-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.dw31-card{padding:16px}.dw31-now{font-size:27px;font-weight:1000;color:#ffe79a;margin:5px 0}.dw31-muted{color:#c5bfd4;font-size:12px}.dw31-next{margin-top:10px;padding:9px;border:1px solid rgba(2,204,254,.35);border-radius:9px;background:rgba(2,204,254,.08)}\n.dw31-list{display:grid;gap:8px}.dw31-row{padding:10px;border:1px solid rgba(101,45,193,.35);border-radius:9px;background:rgba(5,7,23,.5)}.dw31-row.now{border-color:#02ccfe;box-shadow:0 0 15px rgba(2,204,254,.2)}.dw31-row.done{opacity:.48}.dw31-row b{color:#ffe79a}.dw31-row small{display:block;color:#c5bfd4;margin-top:2px}\n.dw31-days{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:12px 0}.dw31-day{padding:9px;text-align:center;border:1px solid #51436f;border-radius:8px}.dw31-day.done{border-color:#62dfa8;background:rgba(26,107,78,.27)}\n.dw31-filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}.dw31-filters button.active{outline:2px solid #ffe36d}.dw31-upcoming{display:grid;gap:7px;margin-top:8px}\n@media(max-width:850px){.dw31-grid{grid-template-columns:1fr}.portal-nav .portal-tab{min-width:125px}}\n</style>\n
+
+<style id="dw-v31-integrated-style">\n.portal-nav{overflow-x:auto;scrollbar-width:thin}.portal-nav .portal-tab{min-width:150px}\n.dw31-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.dw31-card{padding:16px}.dw31-now{font-size:27px;font-weight:1000;color:#ffe79a;margin:5px 0}.dw31-muted{color:#c5bfd4;font-size:12px}.dw31-next{margin-top:10px;padding:9px;border:1px solid rgba(2,204,254,.35);border-radius:9px;background:rgba(2,204,254,.08)}\n.dw31-list{display:grid;gap:8px}.dw31-row{padding:10px;border:1px solid rgba(101,45,193,.35);border-radius:9px;background:rgba(5,7,23,.5)}.dw31-row.now{border-color:#02ccfe;box-shadow:0 0 15px rgba(2,204,254,.2)}.dw31-row.done{opacity:.48}.dw31-row b{color:#ffe79a}.dw31-row small{display:block;color:#c5bfd4;margin-top:2px}\n.dw31-days{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:12px 0}.dw31-day{padding:9px;text-align:center;border:1px solid #51436f;border-radius:8px}.dw31-day.done{border-color:#62dfa8;background:rgba(26,107,78,.27)}\n.dw31-filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}.dw31-filters button.active{outline:2px solid #ffe36d}.dw31-upcoming{display:grid;gap:7px;margin-top:8px}\n@media(max-width:850px){.dw31-grid{grid-template-columns:1fr}.portal-nav .portal-tab{min-width:125px}}\n</style>
+
 <style id="dw-poll-style">
 .poll-card{padding:16px}
 .poll-question{font-size:24px;font-weight:1000;color:#ffe89a;margin:4px 0 12px}
@@ -1917,6 +1919,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
     <button class="portal-tab" type="button" data-view="jobs" onclick="DragonswoodNav('jobs')"><span>🧹</span><b>JOBS</b></button>
     <button class="portal-tab" type="button" data-view="schedule" onclick="DragonswoodNav('schedule')"><span>🕐</span><b>SCHEDULE</b></button>
     <button class="portal-tab" type="button" data-view="calendar" onclick="DragonswoodNav('calendar')"><span>📅</span><b>CALENDAR</b></button>
+    <button class="portal-tab" type="button" data-view="poll" onclick="DragonswoodNav('poll')"><span>📊</span><b>POLL</b></button>
     <button class="portal-tab" type="button" data-view="shop" onclick="DragonswoodNav('shop')"><span>🧰</span><b>SHOP</b></button>
     <button class="portal-tab" type="button" data-view="quests" onclick="DragonswoodNav('quests')"><span>⚔️</span><b>QUESTS</b></button>
     <button class="portal-tab" type="button" data-view="leaderboard" onclick="DragonswoodNav('leaderboard')"><span>🏆</span><b>LEADERBOARD</b></button>
@@ -2016,7 +2019,12 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
     <div id="homeUpcomingEvents" class="dw-event-list"></div>
   </div>
 </div>
-\n    <section class="dw31-grid" style="margin:14px 0">\n      <div class="frame bevel dw31-card"><div class="dw31-muted">📍 RIGHT NOW</div><div class="dw31-now" id="dw31HomeNow">Loading schedule…</div><div class="dw31-next" id="dw31HomeNext"></div></div>\n      <div class="frame bevel dw31-card"><div class="dw31-muted">📅 COMING UP</div><div id="dw31HomeUpcoming" class="dw31-upcoming"></div></div>\n    </section>\n<h2>🏰 Dragonswood Class Goals</h2>
+
+    <section class="dw31-grid" style="margin:14px 0">
+      <div class="frame bevel dw31-card"><div class="dw31-muted">📍 RIGHT NOW</div><div class="dw31-now" id="dw31HomeNow">Loading schedule…</div><div class="dw31-next" id="dw31HomeNext"></div></div>
+      <div class="frame bevel dw31-card"><div class="dw31-muted">📅 COMING UP</div><div id="dw31HomeUpcoming" class="dw31-upcoming"></div></div>
+    </section>
+<h2>🏰 Dragonswood Class Goals</h2>
         <p>Three separate quests. Each point type advances only its matching goal; Universal Points can help any one of them.</p>
       </div>
     </div>
@@ -2140,8 +2148,42 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   </section>
   </section>
 
-\n  <!-- JOBS -->\n  <section class="portal-view" id="view-jobs" data-page="jobs">\n    <div class="section-title"><div><h2>🧹 Dragonwood Guild Job</h2><p>Complete your role, check it off, and earn weekly Gold.</p></div></div>\n    <div class="frame bevel dw31-card">\n      <div id="dw31JobIcon" style="font-size:38px">🧹</div><h3 id="dw31JobName">Loading your guild role…</h3><div class="dw31-muted" id="dw31JobSub"></div><div id="dw31JobPay" style="margin-top:6px"></div>\n      <div class="dw31-days" id="dw31JobDays"></div><button id="dw31JobCheck" type="button">CHECK OFF TODAY'S JOB</button><div id="dw31JobStatus" class="dw31-muted" style="margin-top:8px"></div>\n    </div>\n  </section>\n\n  <!-- SCHEDULE -->\n  <section class="portal-view" id="view-schedule" data-page="schedule">\n    <div class="section-title"><div><h2>🕐 Daily Schedule</h2><p>Know where you should be and what comes next.</p></div></div>\n    <div class="dw31-grid"><div class="frame bevel dw31-card"><div class="dw31-muted">RIGHT NOW</div><div class="dw31-now" id="dw31Now">Loading…</div><div id="dw31NowDetail"></div><div class="dw31-next" id="dw31Next"></div></div><div class="frame bevel dw31-card"><h3>Today's Timeline</h3><div class="dw31-list" id="dw31Timeline"></div></div></div>\n  </section>\n\n  <!-- CALENDAR -->\n  <section class="portal-view" id="view-calendar" data-page="calendar">\n    <div class="section-title"><div><h2>📅 Dragonwood Calendar</h2><p>School events, testing, breaks, and sports.</p></div></div>\n    <div class="dw31-filters" id="dw31CalFilters"><button data-cat="all" class="active">ALL</button><button data-cat="school">🏫 SCHOOL</button><button data-cat="sports">🏐 SPORTS</button><button data-cat="testing">🧪 TESTING</button><button data-cat="break">🌴 BREAKS</button><button data-cat="holiday">🇺🇸 HOLIDAYS</button></div>\n    <div class="dw31-list" id="dw31Calendar"></div>\n  </section>\n
+
+  <!-- JOBS -->
+  <section class="portal-view" id="view-jobs" data-page="jobs">
+    <div class="section-title"><div><h2>🧹 Dragonwood Guild Job</h2><p>Complete your role, check it off, and earn weekly Gold.</p></div></div>
+    <div class="frame bevel dw31-card">
+      <div id="dw31JobIcon" style="font-size:38px">🧹</div><h3 id="dw31JobName">Loading your guild role…</h3><div class="dw31-muted" id="dw31JobSub"></div><div id="dw31JobPay" style="margin-top:6px"></div>
+      <div class="dw31-days" id="dw31JobDays"></div><button id="dw31JobCheck" type="button">CHECK OFF TODAY'S JOB</button><div id="dw31JobStatus" class="dw31-muted" style="margin-top:8px"></div>
+    </div>
+  </section>
+
+  <!-- SCHEDULE -->
+  <section class="portal-view" id="view-schedule" data-page="schedule">
+    <div class="section-title"><div><h2>🕐 Daily Schedule</h2><p>Know where you should be and what comes next.</p></div></div>
+    <div class="dw31-grid"><div class="frame bevel dw31-card"><div class="dw31-muted">RIGHT NOW</div><div class="dw31-now" id="dw31Now">Loading…</div><div id="dw31NowDetail"></div><div class="dw31-next" id="dw31Next"></div></div><div class="frame bevel dw31-card"><h3>Today's Timeline</h3><div class="dw31-list" id="dw31Timeline"></div></div></div>
+  </section>
+
+  <!-- CALENDAR -->
+  <section class="portal-view" id="view-calendar" data-page="calendar">
+    <div class="section-title"><div><h2>📅 Dragonwood Calendar</h2><p>School events, testing, breaks, and sports.</p></div></div>
+    <div class="dw31-filters" id="dw31CalFilters"><button data-cat="all" class="active">ALL</button><button data-cat="school">🏫 SCHOOL</button><button data-cat="sports">🏐 SPORTS</button><button data-cat="testing">🧪 TESTING</button><button data-cat="break">🌴 BREAKS</button><button data-cat="holiday">🇺🇸 HOLIDAYS</button></div>
+    <div class="dw31-list" id="dw31Calendar"></div>
+  </section>
+
   <!-- SHOP -->
+  <section class="portal-view" id="view-poll" data-page="poll">
+    <div class="section-title"><div><h2>📊 Live Class Poll</h2><p>Vote once and watch the class results update live.</p></div></div>
+    <section class="frame bevel poll-card">
+      <div id="pollEmpty" class="poll-status">No active poll right now.</div>
+      <div id="pollLive" style="display:none">
+        <div class="poll-question" id="pollQuestion"></div>
+        <div class="poll-options" id="pollOptions"></div>
+        <div class="poll-status" id="pollStudentStatus"></div>
+      </div>
+    </section>
+  </section>
+
   <section class="portal-view" id="view-shop" data-page="shop">
     <div class="section-title">
       <div>

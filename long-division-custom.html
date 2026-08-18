@@ -639,7 +639,9 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
 .round-sub{margin-top:5px;font-size:10px;font-weight:1000;text-transform:uppercase;letter-spacing:.7px}
 .round-banner{margin:0 0 12px;padding:10px 14px;border:1px solid var(--round);border-radius:10px;background:linear-gradient(90deg,var(--rglow),rgba(5,8,28,.72));color:var(--round2);font-weight:1000;text-align:center;letter-spacing:.5px}
 </style>
-\n<style id="dw-custom-long-division-style">\n.custom-problem-box{margin:12px 0 16px;padding:14px;border:1px solid rgba(255,226,105,.55);border-radius:12px;background:linear-gradient(90deg,rgba(92,45,193,.15),rgba(2,204,254,.08))}.custom-problem-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}.custom-problem-grid label{display:grid;gap:5px;font-size:11px;font-weight:900}.custom-problem-grid input{padding:11px;border-radius:8px;border:1px solid #34536d;background:#07111f;color:#fff;font-size:20px;font-weight:900}.custom-problem-error{min-height:18px;margin-top:7px;color:#ff9aa8;font-weight:900;font-size:12px}@media(max-width:720px){.custom-problem-grid{grid-template-columns:1fr 1fr}.custom-problem-grid button{grid-column:1/-1}}\n</style>\n
+
+<style id="dw-custom-long-division-style">\n.custom-problem-box{margin:12px 0 16px;padding:14px;border:1px solid rgba(255,226,105,.55);border-radius:12px;background:linear-gradient(90deg,rgba(92,45,193,.15),rgba(2,204,254,.08))}.custom-problem-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}.custom-problem-grid label{display:grid;gap:5px;font-size:11px;font-weight:900}.custom-problem-grid input{padding:11px;border-radius:8px;border:1px solid #34536d;background:#07111f;color:#fff;font-size:20px;font-weight:900}.custom-problem-error{min-height:18px;margin-top:7px;color:#ff9aa8;font-weight:900;font-size:12px}@media(max-width:720px){.custom-problem-grid{grid-template-columns:1fr 1fr}.custom-problem-grid button{grid-column:1/-1}}\n</style>
+
 <style id="long-division-alignment-v35">
 /*
   The dividend is the source-of-truth for place value.
@@ -717,7 +719,18 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
   <h1><span>Long Division</span> Quest</h1>
   <div class="subtitle">DIVIDE • MULTIPLY • SUBTRACT • BRING DOWN</div>
 
-\n  <div class="custom-problem-box">\n    <h3 style="margin:0;color:#ffe896">📝 WORKSHEET / CUSTOM PROBLEM</h3><div style="margin-top:4px;color:#7fe7ff;font-size:11px;font-weight:900">NOW SUPPORTS 1–5 DIGIT DIVIDENDS + 1–5 DIGIT DIVISORS</div>\n    <div class="custom-problem-grid">\n      <label>DIVIDEND<input id="customDividend" type="number" min="1" max="99999" step="1" inputmode="numeric" placeholder="Example: 42875"></label>\n      <label>DIVISOR<input id="customDivisor" type="number" min="1" max="99999" step="1" inputmode="numeric" placeholder="Example: 125"></label>\n      <button class="primary" id="loadCustomProblem" type="button">LOAD CUSTOM PROBLEM</button>\n    </div>\n    <div style="margin-top:8px;color:var(--muted);font-size:11px">Enter a 1–5 digit dividend and a 1–5 digit divisor from your worksheet. Then use the exact same step-by-step Long Division Quest.</div>\n    <div class="custom-problem-error" id="customProblemError"></div>\n  </div>\n  <div class="top">
+
+  <div class="custom-problem-box">
+    <h3 style="margin:0;color:#ffe896">📝 WORKSHEET / CUSTOM PROBLEM</h3><div style="margin-top:4px;color:#7fe7ff;font-size:11px;font-weight:900">NOW SUPPORTS 1–5 DIGIT DIVIDENDS + 1–5 DIGIT DIVISORS</div>
+    <div class="custom-problem-grid">
+      <label>DIVIDEND<input id="customDividend" type="number" min="1" max="99999" step="1" inputmode="numeric" placeholder="Example: 42875"></label>
+      <label>DIVISOR<input id="customDivisor" type="number" min="1" max="99999" step="1" inputmode="numeric" placeholder="Example: 125"></label>
+      <button class="primary" id="loadCustomProblem" type="button">LOAD CUSTOM PROBLEM</button>
+    </div>
+    <div style="margin-top:8px;color:var(--muted);font-size:11px">Enter a 1–5 digit dividend and a 1–5 digit divisor from your worksheet. Then use the exact same step-by-step Long Division Quest.</div>
+    <div class="custom-problem-error" id="customProblemError"></div>
+  </div>
+  <div class="top">
     <div>
       <div style="color:var(--muted);font-size:12px;font-weight:900;letter-spacing:1px">CURRENT MISSION</div>
       <div style="font-weight:900;margin-top:3px">Solve the problem one aligned step at a time.</div>

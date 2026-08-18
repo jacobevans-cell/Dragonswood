@@ -1863,7 +1863,14 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 </style>
 
 
-<style id="dw-v31-integrated-style">\n.portal-nav{overflow-x:auto;scrollbar-width:thin}.portal-nav .portal-tab{min-width:150px}\n.dw31-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.dw31-card{padding:16px}.dw31-now{font-size:27px;font-weight:1000;color:#ffe79a;margin:5px 0}.dw31-muted{color:#c5bfd4;font-size:12px}.dw31-next{margin-top:10px;padding:9px;border:1px solid rgba(2,204,254,.35);border-radius:9px;background:rgba(2,204,254,.08)}\n.dw31-list{display:grid;gap:8px}.dw31-row{padding:10px;border:1px solid rgba(101,45,193,.35);border-radius:9px;background:rgba(5,7,23,.5)}.dw31-row.now{border-color:#02ccfe;box-shadow:0 0 15px rgba(2,204,254,.2)}.dw31-row.done{opacity:.48}.dw31-row b{color:#ffe79a}.dw31-row small{display:block;color:#c5bfd4;margin-top:2px}\n.dw31-days{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:12px 0}.dw31-day{padding:9px;text-align:center;border:1px solid #51436f;border-radius:8px}.dw31-day.done{border-color:#62dfa8;background:rgba(26,107,78,.27)}\n.dw31-filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}.dw31-filters button.active{outline:2px solid #ffe36d}.dw31-upcoming{display:grid;gap:7px;margin-top:8px}\n@media(max-width:850px){.dw31-grid{grid-template-columns:1fr}.portal-nav .portal-tab{min-width:125px}}\n</style>
+<style id="dw-v31-integrated-style">
+.portal-nav{overflow-x:auto;scrollbar-width:thin}.portal-nav .portal-tab{min-width:150px}
+.dw31-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.dw31-card{padding:16px}.dw31-now{font-size:27px;font-weight:1000;color:#ffe79a;margin:5px 0}.dw31-muted{color:#c5bfd4;font-size:12px}.dw31-next{margin-top:10px;padding:9px;border:1px solid rgba(2,204,254,.35);border-radius:9px;background:rgba(2,204,254,.08)}
+.dw31-list{display:grid;gap:8px}.dw31-row{padding:10px;border:1px solid rgba(101,45,193,.35);border-radius:9px;background:rgba(5,7,23,.5)}.dw31-row.now{border-color:#02ccfe;box-shadow:0 0 15px rgba(2,204,254,.2)}.dw31-row.done{opacity:.48}.dw31-row b{color:#ffe79a}.dw31-row small{display:block;color:#c5bfd4;margin-top:2px}
+.dw31-days{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:12px 0}.dw31-day{padding:9px;text-align:center;border:1px solid #51436f;border-radius:8px}.dw31-day.done{border-color:#62dfa8;background:rgba(26,107,78,.27)}
+.dw31-filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}.dw31-filters button.active{outline:2px solid #ffe36d}.dw31-upcoming{display:grid;gap:7px;margin-top:8px}
+@media(max-width:850px){.dw31-grid{grid-template-columns:1fr}.portal-nav .portal-tab{min-width:125px}}
+</style>
 
 <style id="dw-poll-style">
 .poll-card{padding:16px}
@@ -1875,6 +1882,32 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .poll-bar{height:100%;background:linear-gradient(90deg,#6b38d6,#02ccfe);width:0%}
 .poll-results{font-size:12px;color:#b9c6df;font-weight:800}
 .poll-status{margin-top:9px;color:#b9c6df}
+</style>
+
+
+<style id="dw-v40-home-layout">
+.home-now-coming{
+  width:100%;
+  align-items:stretch;
+}
+.home-now-coming > .frame{
+  min-width:0;
+  height:100%;
+}
+.class-goals-title{
+  width:100%;
+  margin-top:8px !important;
+  clear:both;
+}
+.goal-command-student{
+  width:100% !important;
+  clear:both;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+}
+@media(max-width:850px){
+  .home-now-coming{grid-template-columns:1fr !important}
+  .goal-command-student{grid-template-columns:1fr !important}
+}
 </style>
 
 </head><body>
@@ -2005,29 +2038,27 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
       </div>
     </section>
 
-    <div class="section-title">
-      <div>
-        
-<div class="dw-dash-grid" style="margin:14px 0">
-  <div class="frame bevel dw-now-card">
-    <div class="dw-subtle">📍 RIGHT NOW</div>
-    <div class="dw-now-big" id="homeNow">Loading schedule…</div>
-    <div class="dw-next-line" id="homeNext"></div>
-  </div>
-  <div class="frame bevel dw-coming-card">
-    <div class="dw-subtle">📅 COMING UP</div>
-    <div id="homeUpcomingEvents" class="dw-event-list"></div>
-  </div>
-</div>
+    
+    <div class="dw-dash-grid home-now-coming" style="margin:20px 0 16px">
+      <div class="frame bevel dw-now-card">
+        <div class="dw-subtle">📍 RIGHT NOW</div>
+        <div class="dw-now-big" id="homeNow">Loading schedule…</div>
+        <div class="dw-next-line" id="homeNext"></div>
+      </div>
+      <div class="frame bevel dw-coming-card">
+        <div class="dw-subtle">📅 COMING UP</div>
+        <div id="homeUpcomingEvents" class="dw-event-list"></div>
+      </div>
+    </div>
 
-    <section class="dw31-grid" style="margin:14px 0">
-      <div class="frame bevel dw31-card">
-Dragonswood Class Goals</h2>
+    <div class="section-title class-goals-title">
+      <div>
+        <h2>🏰 Dragonswood Class Goals</h2>
         <p>Three separate quests. Each point type advances only its matching goal; Universal Points can help any one of them.</p>
       </div>
     </div>
 
-    <div class="goal-command-student">
+<div class="goal-command-student">
       <article class="frame bevel goal-card-v21" id="studentRecessGoalCard">
         <div class="goal-icon">🌤️</div>
         <h3>SECOND RECESS</h3>

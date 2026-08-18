@@ -640,23 +640,59 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
 .round-banner{margin:0 0 12px;padding:10px 14px;border:1px solid var(--round);border-radius:10px;background:linear-gradient(90deg,var(--rglow),rgba(5,8,28,.72));color:var(--round2);font-weight:1000;text-align:center;letter-spacing:.5px}
 </style>
 \n<style id="dw-custom-long-division-style">\n.custom-problem-box{margin:12px 0 16px;padding:14px;border:1px solid rgba(255,226,105,.55);border-radius:12px;background:linear-gradient(90deg,rgba(92,45,193,.15),rgba(2,204,254,.08))}.custom-problem-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}.custom-problem-grid label{display:grid;gap:5px;font-size:11px;font-weight:900}.custom-problem-grid input{padding:11px;border-radius:8px;border:1px solid #34536d;background:#07111f;color:#fff;font-size:20px;font-weight:900}.custom-problem-error{min-height:18px;margin-top:7px;color:#ff9aa8;font-weight:900;font-size:12px}@media(max-width:720px){.custom-problem-grid{grid-template-columns:1fr 1fr}.custom-problem-grid button{grid-column:1/-1}}\n</style>\n
-<style id="long-division-alignment-v34">
-/* One shared place-value geometry for quotient, dividend, and every work row. */
-#qGrid,#dGrid,.work-row{
+<style id="long-division-alignment-v35">
+/*
+  The dividend is the source-of-truth for place value.
+  JS measures its real left edge after rendering and stores that offset in --ld-board-left.
+  Quotient and ALL work rows use that identical offset.
+*/
+.division-stage{
   --ld-cols:3;
+  --ld-board-left:76px;
+  position:relative;
+}
+
+#qGrid,#dGrid,.work-row{
   display:grid !important;
   grid-template-columns:repeat(var(--ld-cols),72px) !important;
   column-gap:2px !important;
-  justify-content:start !important;
   width:max-content !important;
+  justify-content:start !important;
+}
+
+#qGrid{
+  margin-left:var(--ld-board-left) !important;
+  margin-right:0 !important;
+}
+
+#dGrid{
   margin-left:0 !important;
   margin-right:0 !important;
 }
-#qGrid .quotient-cell,#dGrid .digit-cell,.work-row .work-cell{
+
+#workWrap{
+  margin-left:var(--ld-board-left) !important;
+  margin-right:0 !important;
+  width:max-content !important;
+}
+
+.work-row{
+  margin-left:0 !important;
+  margin-right:0 !important;
+}
+
+#qGrid .quotient-cell,
+#dGrid .digit-cell,
+.work-row .work-cell{
   width:72px !important;
   min-width:72px !important;
   max-width:72px !important;
   box-sizing:border-box !important;
+}
+
+/* Keep subtraction mark attached to the exact left edge of the working number. */
+.work-row.subtract::before{
+  left:-30px !important;
 }
 </style>
 
@@ -800,6 +836,7 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
   const dGrid = document.getElementById('dividendGrid');
   const divisorBox = document.getElementById('divisorBox');
   const workWrap = document.getElementById('workWrap');
+  const divisionStage = document.querySelector('.division-stage');
   const nextBtn = document.getElementById('next');
   const newBtn = document.getElementById('new');
   const stepTitle = document.getElementById('stepTitle');
@@ -956,10 +993,36 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
     if(divisor>dividend){customProblemError.textContent='For this long-division board, the divisor must be less than or equal to the dividend.';return;}makeProblem({dividend,divisor});const r=dividend%divisor;customProblemError.style.color='var(--green)';customProblemError.textContent=`Loaded: ${dividend} ÷ ${divisor}${r?` • remainder ${r}`:''}`;
   }
 
+  function syncLongDivisionColumns(){
+    if(!divisionStage || !dGrid || !qGrid || !workWrap) return;
+
+    const cols=String(problem?.dividend ?? '').length || 1;
+    divisionStage.style.setProperty('--ld-cols', String(cols));
+    dGrid.style.setProperty('--ld-cols', String(cols));
+    qGrid.style.setProperty('--ld-cols', String(cols));
+
+    /*
+      Force layout, then measure the ACTUAL dividend left edge.
+      This survives 1–5 digits, responsive widths, divisor size, and browser zoom.
+    */
+    const stageRect=divisionStage.getBoundingClientRect();
+    const dividendRect=dGrid.getBoundingClientRect();
+    const exactLeft=Math.max(0, dividendRect.left-stageRect.left);
+
+    divisionStage.style.setProperty('--ld-board-left', `${exactLeft}px`);
+    workWrap.style.setProperty('--ld-board-left', `${exactLeft}px`);
+
+    // Existing work rows inherit the same column count immediately.
+    workWrap.querySelectorAll('.work-row').forEach(row=>{
+      row.style.setProperty('--ld-cols', String(cols));
+    });
+  }
+
   function renderBase(){
     divisorBox.textContent=problem.divisor;
     dGrid.innerHTML='';
     const ldCols=String(problem.dividend).length;
+    divisionStage?.style.setProperty('--ld-cols',ldCols);
     dGrid.style.setProperty('--ld-cols',ldCols);
     qGrid.style.setProperty('--ld-cols',ldCols);
     String(problem.dividend).split('').forEach(d=>{
@@ -968,6 +1031,7 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
       c.textContent=d;
       dGrid.appendChild(c);
     });
+    syncLongDivisionColumns();
   }
 
   function buildTasks(p){
@@ -1113,6 +1177,7 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
         row.appendChild(c);
       });
       workWrap.appendChild(row);
+      syncLongDivisionColumns();
     });
   }
 
@@ -1438,6 +1503,8 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
 
   applyRoundTheme();
   updateMissionUI();
+  window.addEventListener('resize',syncLongDivisionColumns);
+
   makeProblem();
 })();
 </script>

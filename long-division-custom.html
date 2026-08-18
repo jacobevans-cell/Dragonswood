@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Long Division Quest - Aligned</title>
+<title>Long Division Quest • Custom Worksheet Mode - Aligned</title>
 <style>
 :root{
   --bg:#07111f;
@@ -639,7 +639,7 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
 .round-sub{margin-top:5px;font-size:10px;font-weight:1000;text-transform:uppercase;letter-spacing:.7px}
 .round-banner{margin:0 0 12px;padding:10px 14px;border:1px solid var(--round);border-radius:10px;background:linear-gradient(90deg,var(--rglow),rgba(5,8,28,.72));color:var(--round2);font-weight:1000;text-align:center;letter-spacing:.5px}
 </style>
-</head>
+\n<style id="dw-custom-long-division-style">\n.custom-problem-box{margin:12px 0 16px;padding:14px;border:1px solid rgba(255,226,105,.55);border-radius:12px;background:linear-gradient(90deg,rgba(92,45,193,.15),rgba(2,204,254,.08))}.custom-problem-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}.custom-problem-grid label{display:grid;gap:5px;font-size:11px;font-weight:900}.custom-problem-grid input{padding:11px;border-radius:8px;border:1px solid #34536d;background:#07111f;color:#fff;font-size:20px;font-weight:900}.custom-problem-error{min-height:18px;margin-top:7px;color:#ff9aa8;font-weight:900;font-size:12px}@media(max-width:720px){.custom-problem-grid{grid-template-columns:1fr 1fr}.custom-problem-grid button{grid-column:1/-1}}\n</style>\n</head>
 <body>
 
 <div class="app">
@@ -660,7 +660,7 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
   <h1><span>Long Division</span> Quest</h1>
   <div class="subtitle">DIVIDE • MULTIPLY • SUBTRACT • BRING DOWN</div>
 
-  <div class="top">
+\n  <div class="custom-problem-box">\n    <h3 style="margin:0;color:#ffe896">📝 WORKSHEET / CUSTOM PROBLEM</h3>\n    <div class="custom-problem-grid">\n      <label>DIVIDEND<input id="customDividend" type="number" min="100" max="999" step="1" inputmode="numeric" placeholder="Example: 728"></label>\n      <label>DIVISOR<input id="customDivisor" type="number" min="2" max="9" step="1" inputmode="numeric" placeholder="Example: 7"></label>\n      <button class="primary" id="loadCustomProblem" type="button">LOAD CUSTOM PROBLEM</button>\n    </div>\n    <div style="margin-top:8px;color:var(--muted);font-size:11px">Enter a 3-digit dividend and 1-digit divisor from your worksheet. Then use the exact same step-by-step Long Division Quest.</div>\n    <div class="custom-problem-error" id="customProblemError"></div>\n  </div>\n  <div class="top">
     <div>
       <div style="color:var(--muted);font-size:12px;font-weight:900;letter-spacing:1px">CURRENT MISSION</div>
       <div style="font-weight:900;margin-top:3px">Solve the problem one aligned step at a time.</div>
@@ -806,6 +806,7 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
   const hintMain = document.getElementById('hintMain');
   const hintSub = document.getElementById('hintSub');
   const groupVisual = document.getElementById('groupVisual');
+  const customDividend=document.getElementById('customDividend'),customDivisor=document.getElementById('customDivisor'),loadCustomProblemBtn=document.getElementById('loadCustomProblem'),customProblemError=document.getElementById('customProblemError');
 
   const stepEls = {
     divide: document.getElementById('s-divide'),
@@ -909,32 +910,29 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
   function rand(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
   function cloneRows(rows){ return rows.map(r=>({...r,cells:[...r.cells]})); }
 
-  function makeProblem(){
-    let divisor=rand(2,9), quotient=rand(12,99), dividend=divisor*quotient;
-    while(dividend<100 || dividend>999){
+  function makeProblem(custom=null){
+    let divisor, quotient, dividend;
+    if(custom){
+      dividend=Number(custom.dividend); divisor=Number(custom.divisor); quotient=Math.floor(dividend/divisor);
+    }else{
       divisor=rand(2,9); quotient=rand(12,99); dividend=divisor*quotient;
+      while(dividend<100 || dividend>999){ divisor=rand(2,9); quotient=rand(12,99); dividend=divisor*quotient; }
     }
     problem={divisor,quotient,dividend};
     board={quotient:['','',''],rows:[]};
     tasks=buildTasks(problem);
-    taskIndex=-1;
-    credited=false;
-    problemMistakes=0;
-    taskHadMistake=false;
-    cellFeedback.textContent='';
-    hintPanel.classList.add('hidden');
-    groupVisual.innerHTML='';
-    hintBtn.textContent='SHOW HINT';
+    taskIndex=-1; credited=false; problemMistakes=0; taskHadMistake=false;
+    cellFeedback.textContent=''; hintPanel.classList.add('hidden'); groupVisual.innerHTML=''; hintBtn.textContent='SHOW HINT';
     stepTitle.textContent='READY?';
-    stepText.innerHTML='Press <b>Start Steps</b>. You will type every digit directly into the long-division board.';
+    stepText.innerHTML=custom?'Your worksheet problem is loaded. Press <b>Start Steps</b> and solve it using the same Long Division Quest process.':'Press <b>Start Steps</b>. You will type every digit directly into the long-division board.';
     cellInstruction.innerHTML='Press <b>START STEPS</b>. Then type each digit directly into the highlighted box where it belongs.';
-    progress.textContent='STEP 0';
-    nextBtn.textContent='START STEPS';
-    nextBtn.disabled=false;
-    clearSteps();
-    renderBase();
-    renderBoard();
-    updateMissionUI();
+    progress.textContent='STEP 0'; nextBtn.textContent='START STEPS'; nextBtn.disabled=false; clearSteps(); renderBase(); renderBoard(); updateMissionUI();
+  }
+  function loadCustomProblem(){
+    const dividend=Number(customDividend.value),divisor=Number(customDivisor.value);customProblemError.textContent='';
+    if(!Number.isInteger(dividend)||dividend<100||dividend>999){customProblemError.textContent='Enter a 3-digit dividend from 100 to 999.';return;}
+    if(!Number.isInteger(divisor)||divisor<2||divisor>9){customProblemError.textContent='Enter a 1-digit divisor from 2 to 9.';return;}
+    makeProblem({dividend,divisor});const r=dividend%divisor;customProblemError.style.color='var(--green)';customProblemError.textContent=`Loaded: ${dividend} ÷ ${divisor}${r?` • remainder ${r}`:''}`;
   }
 
   function renderBase(){
@@ -1336,7 +1334,8 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
 
     stepTitle.textContent='PROBLEM COMPLETE';
     stepText.textContent=`You placed every digit yourself. Rating: ${stars}`;
-    cellInstruction.textContent=`${bonusText}. Check: ${problem.quotient} × ${problem.divisor} = ${problem.dividend}.`;
+    const finalRemainder=problem.dividend%problem.divisor;
+    cellInstruction.textContent=finalRemainder?`${bonusText}. Check: ${problem.quotient} × ${problem.divisor} + ${finalRemainder} = ${problem.dividend}.`:`${bonusText}. Check: ${problem.quotient} × ${problem.divisor} = ${problem.dividend}.`;
     cellFeedback.textContent=`✓ ${stars}  •  +1 PLAYER XP  •  +${bonus} HIGH-SCORE POINTS`;
     cellFeedback.style.color='#7ed957';
     progress.textContent=`PROBLEM ${roundSolved} OF ${PROBLEMS_PER_ROUND} COMPLETE`;
@@ -1360,6 +1359,9 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
 
   hintBtn.addEventListener('click',showHint);
   nextBtn.addEventListener('click',start);
+  loadCustomProblemBtn.addEventListener('click',loadCustomProblem);
+  [customDividend,customDivisor].forEach(el=>el.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();loadCustomProblem();}}));
+
   newBtn.addEventListener('click',()=>{
     if(missionFinished){
       missionFinished=false;

@@ -406,6 +406,20 @@ service cloud.firestore {
       allow delete: if isTeacher();
     }
 
+
+    match /passStatus/{passId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if isExploreStudent()
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.type in ['outOfSeat','office'];
+      allow update: if isExploreStudent()
+                    && resource.data.studentId == request.auth.uid
+                    && request.resource.data.studentId == resource.data.studentId
+                    && request.resource.data.type == resource.data.type;
+      allow create, update, delete: if isTeacher();
+    }
+
     match /pointRequests/{requestId} {
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid

@@ -1910,6 +1910,20 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 }
 </style>
 
+
+<style id="dw-v41-pass-hub-style">
+#bathroomStudentCard,#snackStudentCard{display:none!important}
+.pass-hub-card{grid-column:1/-1;padding:16px!important;border-color:rgba(2,204,254,.5)!important}
+.pass-hub-top{display:grid;grid-template-columns:220px 1fr;gap:10px;align-items:center}
+.pass-hub-select{width:100%;padding:11px;border-radius:9px;background:#07111f;color:#fff;border:1px solid #51436f;font-weight:900}
+.pass-hub-status{padding:10px 12px;border-radius:9px;background:rgba(5,7,23,.55);border:1px solid rgba(101,45,193,.3);min-height:44px}
+.pass-hub-card.blackout{border-color:#ff668e!important;box-shadow:0 0 20px rgba(255,75,118,.15)}
+.pass-blackout-msg{display:none;margin:8px 0;padding:9px;border-radius:8px;background:rgba(104,9,42,.65);border:1px solid #ff668e;color:#ffd1dc;font-weight:900}
+.pass-hub-card.blackout .pass-blackout-msg{display:block}
+.pass-hub-card button{width:100%;margin-top:9px}
+@media(max-width:760px){.pass-hub-top{grid-template-columns:1fr}}
+</style>
+
 </head><body>
 <header class="topbar">
 <div class="shell">
@@ -2024,6 +2038,22 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
           </div>
         </div>
         <div class="student-life-grid">
+
+          <div class="student-life-card pass-hub-card" id="studentPassHub">
+            <h3>🎟️ Pass Center</h3>
+            <p>Choose the pass you need. Bathroom and snack keep their daily limits; all passes are recorded.</p>
+            <div class="pass-blackout-msg" id="studentPassBlackout">🔒 PASS BLACKOUT ACTIVE — Mr. Evans is teaching. New passes are temporarily unavailable.</div>
+            <div class="pass-hub-top">
+              <select id="studentPassType" class="pass-hub-select">
+                <option value="bathroom">🚻 Bathroom Pass</option>
+                <option value="snack">🍎 Snack Pass</option>
+                <option value="outOfSeat">🚶 Out of Seat Pass</option>
+                <option value="office">🏫 Office Pass</option>
+              </select>
+              <div class="pass-hub-status" id="studentPassHubStatus">Choose a pass.</div>
+            </div>
+            <button id="studentPassHubBtn" type="button">USE PASS</button>
+          </div>
           <div class="student-life-card" id="bathroomStudentCard">
             <h3>🚻 Bathroom Pass</h3><p id="bathroomStudentStatus">Loading your passes…</p><button id="bathroomStudentBtn" type="button">LOADING…</button>
           </div>
@@ -2814,7 +2844,8 @@ function renderScheduleUI(){
 function renderCalendarUI(category='all'){
   const today=localDateKeyPhoenix(),events=(classCalendarEvents.length?classCalendarEvents:DEFAULT_DRAGONWOOD_EVENTS).slice().sort((a,b)=>String(a.startDate).localeCompare(String(b.startDate)));
   const grid=document.getElementById('calendarGrid');
-  if(grid)grid.innerHTML=events.filter(e=>category==='all'||e.category===category).map(e=>`<div class="calendar-card"><div><b>${e.icon||'📅'} ${e.title}</b></div><small>${e.startDate}${e.endDate&&e.endDate!==e.startDate?' → '+e.endDate:''}${e.startTime?' • '+fmtClock(e.startTime):''}</small></div>`).join('');
+  const visibleEvents=events.filter(e=>String(e.endDate||e.startDate)>=today);
+  if(grid)grid.innerHTML=visibleEvents.filter(e=>category==='all'||e.category===category).map(e=>`<div class="calendar-card"><div><b>${e.icon||'📅'} ${e.title}</b></div><small>${e.startDate}${e.endDate&&e.endDate!==e.startDate?' → '+e.endDate:''}${e.startTime?' • '+fmtClock(e.startTime):''}</small></div>`).join('');
   const upcoming=events.filter(e=>String(e.endDate||e.startDate)>=today).slice(0,4);
   const home=document.getElementById('homeUpcomingEvents');
   if(home)home.innerHTML=upcoming.map(e=>`<div class="dw-event"><b>${e.icon||'📅'} ${e.title}</b><small>${e.startDate}${e.startTime?' • '+fmtClock(e.startTime):''}</small></div>`).join('')||'<div class="dw-subtle">Nothing coming up.</div>';
@@ -2882,9 +2913,9 @@ function dw31RenderSchedule(){
  const tl=document.getElementById('dw31Timeline');if(tl)tl.innerHTML=blocks.map(b=>{const s=dw31Minutes(b[0]),e=dw31Minutes(b[1]),cls=mins>=e?'done':(mins>=s&&mins<e?'now':'');return `<div class="dw31-row ${cls}"><b>${dw31Clock(b[0])} • ${b[3]||''} ${b[2]}</b><small>${b[4]||''} • until ${dw31Clock(b[1])}</small></div>`;}).join('');
 }
 function dw31RenderCalendar(cat='all'){
- const source=(dw31Events.length?dw31Events:DW31_DEFAULT_EVENTS).slice().sort((a,b)=>String(a.startDate).localeCompare(String(b.startDate)));
+ const today=dw31DateKey(),source=(dw31Events.length?dw31Events:DW31_DEFAULT_EVENTS).slice().sort((a,b)=>String(a.startDate).localeCompare(String(b.startDate))).filter(e=>String(e.endDate||e.startDate)>=today);
  const box=document.getElementById('dw31Calendar');if(box)box.innerHTML=source.filter(e=>cat==='all'||e.category===cat).map(e=>`<div class="dw31-row"><b>${e.icon||'📅'} ${e.title}</b><small>${e.startDate}${e.endDate&&e.endDate!==e.startDate?' → '+e.endDate:''}${e.startTime?' • '+dw31Clock(e.startTime):''}</small></div>`).join('');
- const today=dw31DateKey(),upcoming=source.filter(e=>String(e.endDate||e.startDate)>=today).slice(0,4),home=document.getElementById('dw31HomeUpcoming');if(home)home.innerHTML=upcoming.map(e=>`<div class="dw31-row"><b>${e.icon||'📅'} ${e.title}</b><small>${e.startDate}${e.startTime?' • '+dw31Clock(e.startTime):''}</small></div>`).join('')||'<div class="dw31-muted">Nothing coming up.</div>';
+ const upcoming=source.filter(e=>String(e.endDate||e.startDate)>=today).slice(0,4),home=document.getElementById('dw31HomeUpcoming');if(home)home.innerHTML=upcoming.map(e=>`<div class="dw31-row"><b>${e.icon||'📅'} ${e.title}</b><small>${e.startDate}${e.startTime?' • '+dw31Clock(e.startTime):''}</small></div>`).join('')||'<div class="dw31-muted">Nothing coming up.</div>';
 }
 function dw31RenderJob(){
  if(!user)return;const assign=dw31JobsConfig?.assignments?.[user.uid],name=$('dw31JobName'),sub=$('dw31JobSub'),icon=$('dw31JobIcon'),pay=$('dw31JobPay'),daysBox=$('dw31JobDays'),btn=$('dw31JobCheck'),status=$('dw31JobStatus');if(!name||!btn)return;
@@ -2954,6 +2985,110 @@ function watchStudentPoll(){
     }
     renderStudentPoll();
   },e=>console.warn('active poll listener',e));
+}
+
+
+let passBlackoutState={active:false},passBlackoutUnsub=null,genericPassUnsubs={},genericPassData={outOfSeat:null,office:null},genericPassTimers={};
+
+function passTypeMeta(type){
+  return type==='outOfSeat'
+    ?{label:'Out of Seat',icon:'🚶',collection:'passStatus'}
+    :{label:'Office',icon:'🏫',collection:'passStatus'};
+}
+function genericPassDocId(type){return `${user.uid}_${type}`}
+function genericPassIsActive(type){const d=genericPassData[type];return d?.dateKey===phoenixDateKey()&&d?.active===true}
+function genericPassTimer(type,startMs){
+  if(genericPassTimers[type])clearInterval(genericPassTimers[type]);
+  const tick=()=>{
+    if(!genericPassIsActive(type))return;
+    const meta=passTypeMeta(type),d=genericPassData[type],elapsed=Date.now()-Number(startMs||Date.now()),remain=5*60*1000-elapsed;
+    const t=remain>0?formatPassTimer(remain):'0:00';
+    const status=$('studentPassHubStatus');
+    if($('studentPassType')?.value===type&&status)status.textContent=`${meta.icon} ${meta.label} ACTIVE • ${remain>0?'⏱️ '+t+' remaining':'⏰ 5 minutes reached'} • Tap when you return.`;
+  };
+  tick();genericPassTimers[type]=setInterval(tick,1000);
+}
+function refreshPassHub(){
+  const sel=$('studentPassType'),status=$('studentPassHubStatus'),btn=$('studentPassHubBtn'),hub=$('studentPassHub');
+  if(!sel||!status||!btn)return;
+  const type=sel.value,blackout=passBlackoutState?.active===true;
+  hub?.classList.toggle('blackout',blackout);
+
+  if(type==='bathroom'){
+    const src=$('bathroomStudentStatus'),srcBtn=$('bathroomStudentBtn');
+    status.textContent=src?.textContent||'Loading bathroom pass…';
+    const active=String(srcBtn?.textContent||'').includes('BACK IN CLASS');
+    btn.textContent=srcBtn?.textContent||'USE BATHROOM PASS';
+    btn.disabled=!active&&blackout;
+    return;
+  }
+  if(type==='snack'){
+    const src=$('snackStudentStatus'),srcBtn=$('snackStudentBtn');
+    status.textContent=src?.textContent||'Loading snack pass…';
+    const active=String(srcBtn?.textContent||'').includes('DONE WITH SNACK');
+    btn.textContent=srcBtn?.textContent||'USE SNACK PASS';
+    btn.disabled=!active&&blackout;
+    return;
+  }
+  const meta=passTypeMeta(type),d=genericPassData[type],active=genericPassIsActive(type);
+  if(active){
+    btn.textContent=`✅ I AM BACK — END ${meta.label.toUpperCase()} PASS`;
+    btn.disabled=false;
+    const startMs=Number(d?.startedMs||0)||(d?.startedAt?.toMillis?.()||Date.now());
+    genericPassTimer(type,startMs);
+  }else{
+    if(genericPassTimers[type]){clearInterval(genericPassTimers[type]);genericPassTimers[type]=null}
+    status.textContent=blackout
+      ?`🔒 ${meta.label} passes are paused during the current blackout.`
+      :`${meta.icon} ${meta.label} pass available • 5 minute timer • trip will be recorded.`;
+    btn.textContent=`${meta.icon} USE ${meta.label.toUpperCase()} PASS`;
+    btn.disabled=blackout;
+  }
+}
+async function useGenericPass(type){
+  if(!user)return;
+  const d=genericPassData[type],active=genericPassIsActive(type),meta=passTypeMeta(type),ref=doc(db,'passStatus',genericPassDocId(type));
+  if(!active&&passBlackoutState?.active===true){refreshPassHub();return}
+  const now=new Date(),key=phoenixDateKey();
+  if(active){
+    const visits=Array.isArray(d?.visits)?[...d.visits]:[];
+    const activeId=String(d?.activeVisitId||'');
+    const updated=visits.map(v=>{
+      if(String(v?.id||'')!==activeId)return v;
+      const start=Number(v?.startedMs||0);
+      return {...v,endedAt:now.toISOString(),endedText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),durationMinutes:start?Math.max(0,Math.round((now.getTime()-start)/60000)):null,status:'returned'};
+    });
+    await setDoc(ref,{active:false,activeVisitId:'',endedAt:serverTimestamp(),endedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),visits:updated,updatedAt:serverTimestamp()},{merge:true});
+    window.DWAudio?.positive();return;
+  }
+  const currentSame=d?.dateKey===key,prior=currentSame&&Array.isArray(d?.visits)?d.visits:[],id=user.uid+'_'+type+'_'+Date.now();
+  const visit={id,studentId:user.uid,studentName:studentDisplayName(),type,label:meta.label,dateKey:key,startedAt:now.toISOString(),startedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),startedMs:now.getTime(),status:'active'};
+  await setDoc(ref,{studentId:user.uid,studentName:studentDisplayName(),type,label:meta.label,dateKey:key,active:true,activeVisitId:id,startedAt:serverTimestamp(),startedAtText:visit.startedAtText,startedMs:visit.startedMs,visits:[...prior,visit].slice(-30),updatedAt:serverTimestamp()},{merge:true});
+  window.DWAudio?.positive();
+}
+function watchUnifiedPassHub(){
+  if(!user)return;
+  if(passBlackoutUnsub){try{passBlackoutUnsub()}catch(e){}}
+  passBlackoutUnsub=onSnapshot(doc(db,'classData','passBlackout'),s=>{passBlackoutState=s.exists()?s.data():{active:false};refreshPassHub()},e=>console.warn('pass blackout',e));
+  ['outOfSeat','office'].forEach(type=>{
+    if(genericPassUnsubs[type]){try{genericPassUnsubs[type]()}catch(e){}}
+    genericPassUnsubs[type]=onSnapshot(doc(db,'passStatus',genericPassDocId(type)),s=>{genericPassData[type]=s.exists()?s.data():null;refreshPassHub()},e=>console.warn(type+' pass',e));
+  });
+  const sel=$('studentPassType'),btn=$('studentPassHubBtn');
+  if(sel)sel.onchange=refreshPassHub;
+  if(btn)btn.onclick=async()=>{
+    const type=sel?.value||'bathroom';
+    try{
+      if(type==='bathroom'){const b=$('bathroomStudentBtn');if(b&&!b.disabled)b.click()}
+      else if(type==='snack'){const b=$('snackStudentBtn');if(b&&!b.disabled)b.click()}
+      else await useGenericPass(type);
+      setTimeout(refreshPassHub,150);
+    }catch(e){console.warn('pass hub',e);$('studentPassHubStatus').textContent='Could not update the pass. Please tell your teacher.';window.DWAudio?.negative()}
+  };
+  ['bathroomStudentStatus','bathroomStudentBtn','snackStudentStatus','snackStudentBtn'].forEach(id=>{
+    const el=$(id);if(el)new MutationObserver(refreshPassHub).observe(el,{childList:true,subtree:true,characterData:true,attributes:true});
+  });
+  refreshPassHub();
 }
 
 function watchSnack(){
@@ -3125,6 +3260,7 @@ onAuthStateChanged(auth,async u=>{
     const ref=doc(db,"students",u.uid);
     watchBathroom();
     watchSnack();
+    watchUnifiedPassHub();
     watchStudentPoll();
     dw31StartIntegration();
     watchV29Integration();

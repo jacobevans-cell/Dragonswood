@@ -581,6 +581,16 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 @media(max-width:850px){.poll-admin-grid,.picker-grid{grid-template-columns:1fr}}
 </style>
 
+
+<style id="dw-v41-teacher-pass-style">
+.pass-master-card{margin:0 0 12px;padding:14px!important;border:1px solid rgba(2,204,254,.45)!important}
+.pass-master-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+#passBlackoutBtn.blackout-on{background:linear-gradient(90deg,#8d123a,#cf315a)!important;border-color:#ff91ad!important}
+.generic-pass-live{display:grid;gap:7px;margin-top:10px}.generic-pass-row{padding:8px;border:1px solid rgba(101,45,193,.28);border-radius:8px}
+.job-by-role-row{display:grid;grid-template-columns:minmax(180px,1fr) minmax(190px,1fr) 95px;gap:8px;align-items:center;padding:9px;border:1px solid rgba(101,45,193,.28);border-radius:8px;background:rgba(5,7,23,.48)}
+@media(max-width:800px){.pass-master-row,.job-by-role-row{grid-template-columns:1fr}}
+</style>
+
 </head><body>
 <header class="teacher-head"><div class="shell"><div class="teacher-title">🛡️ DRAGONSWOOD COMMAND<small>EXPLORE ACADEMY • EVANS 4–5 • TEACHER PORTAL</small></div><div id="signed" class="hidden" style="text-align:right"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
 <main class="shell teacher-main">
@@ -603,6 +613,15 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
 <div id="students" class="panel active">
   <div class="frame bevel command-title"><h2>🧙 STUDENT CONTROL CENTER</h2><p>Manage HP, Gold, XP, level progress, profiles, and group awards.</p></div>
+
+  <div class="card pass-master-card">
+    <div class="pass-master-row">
+      <div><h3 style="margin:0">🚦 PASS CONTROL</h3><p class="pace-note" style="margin:4px 0 0">Blackout instantly blocks students from starting Bathroom, Snack, Out of Seat, or Office passes. Active students can still check back in.</p></div>
+      <button id="passBlackoutBtn" type="button">🔓 PASSES OPEN</button>
+    </div>
+    <div id="genericPassLive" class="generic-pass-live"><div class="muted">No Out of Seat or Office passes active.</div></div>
+  </div>
+
   <div class="live-request-grid">
     <div class="card live-request-box"><h3>🚻 LIVE BATHROOM</h3><p class="pace-note">Students currently out appear here instantly. Each student gets 3 automatic passes per day; extras come here for approval.</p><div id="bathroomLiveList" class="live-request-list"><div class="muted">No students out.</div></div><h4>EXTRA PASS REQUESTS</h4><div id="bathroomRequestList" class="live-request-list"><div class="muted">No pending requests.</div></div>
 <h4>TODAY'S BATHROOM HISTORY</h4>
@@ -749,7 +768,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 <div id="jobs" class="panel">
   <div class="titlebar"><div><h2>🧹 GUILD JOBS & AUTOMATIC PAYROLL</h2><p>Assign roles. Students check off daily. Payroll runs automatically for last week.</p></div></div>
   <div class="v29-grid">
-    <div class="card"><h3>ASSIGNMENTS</h3><div id="jobAssignmentRoster" class="v29-list"></div></div>
+    <div class="card"><h3>ASSIGN STUDENT BY JOB</h3><p class="pace-note">Each row is a guild job. Choose the student who owns it.</p><div id="jobAssignmentRoster" class="v29-list"></div></div>
     <div class="card"><h3>THIS WEEK</h3><div id="jobWeekSummary" class="v29-list"></div></div>
   </div>
 </div>
@@ -1123,6 +1142,8 @@ onSnapshot(collection(db,"bathroomRequests"),s=>{bathroomRequests=s.docs.map(d=>
 onSnapshot(collection(db,"snackStatus"),s=>{snackStatuses=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("snackStatus listener",e));
 onSnapshot(collection(db,"snackRequests"),s=>{snackRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("snackRequests listener",e));
 onSnapshot(collection(db,"pointRequests"),s=>{pointRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("pointRequests listener",e));
+onSnapshot(doc(db,"classData","passBlackout"),s=>{passBlackoutTeacher=s.exists()?s.data():{active:false};renderPassControl()},e=>console.warn("pass blackout listener",e));
+onSnapshot(collection(db,"passStatus"),s=>{genericPassStatuses=s.docs.map(d=>({id:d.id,...d.data()}));renderPassControl()},e=>console.warn("generic pass listener",e));
 onSnapshot(doc(db,"classData","classJobs"),s=>{classJobsConfigV29=s.exists()?s.data():{};renderV29Jobs()},e=>console.warn("v29 jobs",e));
 onSnapshot(collection(db,"studentJobWeeks"),s=>{jobWeeksV29=s.docs.map(d=>({id:d.id,...d.data()}));renderV29Jobs();setTimeout(runV29Payroll,250)},e=>console.warn("v29 job weeks",e));
 onSnapshot(doc(db,"classData","classSchedule"),s=>{classScheduleV29=s.exists()?s.data():{};loadScheduleDay()},e=>console.warn("v29 schedule",e));
@@ -1471,18 +1492,38 @@ function v29PreviousWeekKey(){const d=new Date();d.setDate(d.getDate()-7);return
 function v29Jobs(){return Array.isArray(classJobsConfigV29.jobs)&&classJobsConfigV29.jobs.length?classJobsConfigV29.jobs:V29_DEFAULT_JOBS}
 function renderV29Jobs(){
  const roster=$('jobAssignmentRoster'),summary=$('jobWeekSummary');if(!roster)return;
- const jobs=v29Jobs(),assign=classJobsConfigV29.assignments||{};
- roster.innerHTML=students.slice().sort((a,b)=>displayStudent(a).localeCompare(displayStudent(b))).map(s=>{const a=assign[s.id]||{};return `<div class="v29-row"><b>${esc(displayStudent(s))}</b><div class="v29-form"><select data-v29-job="${s.id}"><option value="">No job</option>${jobs.map(j=>`<option value="${j.id}" ${a.id===j.id?'selected':''}>${j.icon} ${esc(j.name)} • ${esc(j.subtitle)}</option>`).join('')}</select><input type="number" min="0" step="5" value="${Number(a.pay||50)}" data-v29-pay="${s.id}"></div></div>`}).join('');
- document.querySelectorAll('[data-v29-job]').forEach(el=>el.onchange=()=>saveV29Job(el.dataset.v29Job));
- document.querySelectorAll('[data-v29-pay]').forEach(el=>el.onchange=()=>saveV29Job(el.dataset.v29Pay));
+ const jobs=v29Jobs(),assign=classJobsConfigV29.assignments||{},sortedStudents=students.slice().sort((a,b)=>displayStudent(a).localeCompare(displayStudent(b)));
+ roster.innerHTML=jobs.map(j=>{
+   const currentEntry=Object.entries(assign).find(([sid,a])=>a?.id===j.id);
+   const currentStudentId=currentEntry?.[0]||'';
+   const currentPay=Number(currentEntry?.[1]?.pay??j.pay??50);
+   return `<div class="job-by-role-row">
+     <b>${j.icon||'🧹'} ${esc(j.name)}<small style="display:block">${esc(j.subtitle||'')}</small></b>
+     <select data-job-role="${j.id}">
+       <option value="">— Unassigned —</option>
+       ${sortedStudents.map(s=>`<option value="${s.id}" ${s.id===currentStudentId?'selected':''}>${esc(displayStudent(s))}</option>`).join('')}
+     </select>
+     <input type="number" min="0" step="5" value="${currentPay}" data-job-role-pay="${j.id}" title="Weekly Gold salary">
+   </div>`;
+ }).join('');
+ document.querySelectorAll('[data-job-role]').forEach(el=>el.onchange=()=>saveJobByRole(el.dataset.jobRole));
+ document.querySelectorAll('[data-job-role-pay]').forEach(el=>el.onchange=()=>saveJobByRole(el.dataset.jobRolePay));
  const wk=v29WeekKey(),rows=jobWeeksV29.filter(x=>x.weekKey===wk);
  summary.innerHTML=rows.length?rows.map(x=>`<div class="v29-row"><b>${esc(x.studentName||'Student')} • ${esc(x.jobIcon||'🧹')} ${esc(x.jobName||'Job')}</b><small>${Number(x.completedCount||0)}/5 days • ${x.paid?'💰 PAID':(Number(x.completedCount||0)>=4?'✅ QUALIFIED':'Working')}</small></div>`).join(''):'<div class="muted">No check-offs yet this week.</div>';
 }
-async function saveV29Job(studentId){
- const sel=document.querySelector(`[data-v29-job="${studentId}"]`),pay=document.querySelector(`[data-v29-pay="${studentId}"]`),job=v29Jobs().find(j=>j.id===sel?.value);
- const assignments={...(classJobsConfigV29.assignments||{})};
- if(!job)delete assignments[studentId];else assignments[studentId]={...job,pay:Math.max(0,Number(pay?.value||job.pay||50))};
- await setDoc(doc(db,'classData','classJobs'),{jobs:v29Jobs(),assignments,updatedAt:serverTimestamp()},{merge:true});window.DWAudio?.positive();
+async function saveJobByRole(jobId){
+ const jobs=v29Jobs(),job=jobs.find(j=>j.id===jobId);if(!job)return;
+ const sel=document.querySelector(`[data-job-role="${jobId}"]`),pay=document.querySelector(`[data-job-role-pay="${jobId}"]`);
+ const studentId=sel?.value||'',assignments={...(classJobsConfigV29.assignments||{})};
+ // Remove whoever currently owns this job.
+ Object.keys(assignments).forEach(sid=>{if(assignments[sid]?.id===jobId)delete assignments[sid]});
+ // A student can hold only one guild job; choosing them here moves them from the old role.
+ if(studentId){
+   delete assignments[studentId];
+   assignments[studentId]={...job,pay:Math.max(0,Number(pay?.value||job.pay||50))};
+ }
+ await setDoc(doc(db,'classData','classJobs'),{jobs,assignments,updatedAt:serverTimestamp()},{merge:true});
+ window.DWAudio?.positive();
 }
 async function runV29Payroll(){
  const prev=v29PreviousWeekKey(),eligible=jobWeeksV29.filter(x=>x.weekKey===prev&&Number(x.completedCount||0)>=4&&x.paid!==true);
@@ -1603,6 +1644,21 @@ function bindRandomPicker(){
     groups.innerHTML=made.map((g,i)=>`<div class="group-card"><b>Group ${i+1}</b>${g.map(s=>`<div>${esc(displayStudent(s))}</div>`).join('')}</div>`).join('');
     window.DWAudio?.positive();
   });
+}
+
+
+let passBlackoutTeacher={active:false},genericPassStatuses=[];
+function renderPassControl(){
+ const b=$('passBlackoutBtn'),box=$('genericPassLive');if(!b||!box)return;
+ const active=passBlackoutTeacher?.active===true;
+ b.textContent=active?'🔒 PASS BLACKOUT ON':'🔓 PASSES OPEN';
+ b.classList.toggle('blackout-on',active);
+ box.innerHTML=genericPassStatuses.filter(x=>x.active===true).map(x=>`<div class="generic-pass-row"><b>${x.type==='office'?'🏫':'🚶'} ${esc(x.studentName||'Student')} • ${x.label||x.type}</b><small style="display:block">Started ${x.startedAtText||''}</small></div>`).join('')||'<div class="muted">No Out of Seat or Office passes active.</div>';
+}
+async function togglePassBlackout(){
+ const next=!(passBlackoutTeacher?.active===true);
+ await setDoc(doc(db,'classData','passBlackout'),{active:next,updatedAt:serverTimestamp(),updatedBy:auth.currentUser?.email||''},{merge:true});
+ if(next)window.DWAudio?.negative();else window.DWAudio?.positive();
 }
 
 function teacherDateKey(){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Phoenix',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}
@@ -2199,6 +2255,8 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 document.addEventListener('DOMContentLoaded',()=>{bindPollEditor();bindRandomPicker();watchTeacherPoll();});
+
+document.getElementById('passBlackoutBtn')?.addEventListener('click',togglePassBlackout);
 </script>
 <script id="dragonswood-sound-engine">
 (() => {

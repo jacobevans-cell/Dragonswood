@@ -2326,6 +2326,10 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   <!-- DAILY MISSIONS -->
   <section class="portal-view" id="view-quests" data-page="quests">
     <div class="section-title"><div><h2>📜 Daily Missions</h2><p>Your daily schoolwork hub: Morning Bell Work, Exit Quest, and class reading.</p></div></div>
+    <div class="frame bevel daily-access-banner" id="dailyAccessNotice">
+      <div><b>🔒 MORNING REQUIREMENT</b><span id="dailyAccessNoticeText">Finish today’s Daily Work or Level-Up Morning Challenge to unlock Games and My Journal.</span></div>
+      <div class="daily-access-count"><strong id="dailyDaysCompleted">0</strong><small>DAYS COMPLETE</small></div>
+    </div>
     <div class="feature-grid quests-grid">
       <article class="frame bevel feature-card quest-card">
         <div class="feature-icon">🌅</div>
@@ -2349,10 +2353,10 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
       </article>
 
       <article class="frame bevel feature-card quest-card">
-        <div class="feature-icon">⭐</div>
-        <h3>Your Daily Progress</h3>
-        <div class="feature-number"><span id="questXp">0</span></div>
-        <p>Your Player XP grows as you complete Dragonswood learning activities and teacher challenges.</p>
+        <div class="feature-icon">✅</div>
+        <h3>Your Daily Work Progress</h3>
+        <div class="feature-number"><span id="questXp">0</span><small style="font-size:18px"> / 180 DAYS</small></div>
+        <p id="dailyProgressDetail">A day counts when you complete either your assigned Morning Daily Work or the Level-Up Morning Challenge.</p>
       </article>
     </div>
   </section>
@@ -2425,8 +2429,16 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 (function(){
   const views=["home","games","jobs","schedule","calendar","poll","shop","quests","leaderboard","journal"];
 
+  window.DWDailyAccessUnlocked=false;
   function show(view, updateHash){
     if(!views.includes(view)) view="home";
+    if((view==="games"||view==="journal") && window.DWDailyAccessUnlocked!==true){
+      view="quests";
+      window.setTimeout(function(){
+        const n=document.getElementById("dailyAccessNotice");
+        if(n){n.scrollIntoView({behavior:"smooth",block:"center"});n.animate([{transform:"scale(1)"},{transform:"scale(1.02)"},{transform:"scale(1)"}],{duration:420});}
+      },40);
+    }
 
     document.querySelectorAll(".portal-view").forEach(function(panel){
       const active=panel.getAttribute("data-page")===view;
@@ -2475,7 +2487,7 @@ const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const DOMAIN="explore.academy";
 const $=id=>document.getElementById(id);
 let bathroomUnsub=null,bathroomSlotUnsub=null,bathroomSlotData=null,snackUnsub=null;
-let user=null,profile=null,rewards=[],classPoints=0,scores=[],shopItems=[],myPurchases=[],classJobsConfig=null,myJobWeek=null,classScheduleConfig=null,classCalendarEvents=[],shopFilter="all",shopSort="level",inventoryFilter="all",profileUnsub=null,purchasesUnsub=null;
+let user=null,profile=null,rewards=[],classPoints=0,scores=[],shopItems=[],myPurchases=[],classJobsConfig=null,myJobWeek=null,classScheduleConfig=null,classCalendarEvents=[],shopFilter="all",shopSort="level",inventoryFilter="all",profileUnsub=null,purchasesUnsub=null,dailyProgressUnsub=null,dailyOverrideUnsub=null,dailyProgressRows=[],dailyOverrideData={};
 
 const TITLES=[
   {id:"princess",label:"Princess",position:"before"},
@@ -3326,10 +3338,63 @@ async function sendRecognitionRequest(){
 }
 document.getElementById('recognitionRequestBtn')?.addEventListener('click',sendRecognitionRequest);
 
+
+function dwStudentDateKey(){
+  const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function dwCompletedMorningDates(){
+  const out=new Set();
+  dailyProgressRows.forEach(x=>{
+    if(!String(x.id||"").endsWith("_v48"))return;
+    if(x.status==="complete"&&x.session==="morning"&&x.dateKey)out.add(String(x.dateKey));
+  });
+  return out;
+}
+function dwUpdateDailyAccess(){
+  const dates=dwCompletedMorningDates(),today=dwStudentDateKey(),academicComplete=dates.has(today);
+  const overrideToday=String(dailyOverrideData?.dateKey||"")===today &&
+    (dailyOverrideData?.all===true || (Array.isArray(dailyOverrideData?.studentIds)&&dailyOverrideData.studentIds.includes(user?.uid)));
+  const open=academicComplete||overrideToday;
+  window.DWDailyAccessUnlocked=open;
+
+  document.querySelectorAll('.portal-tab[data-view="games"],.portal-tab[data-view="journal"]').forEach(b=>{
+    b.classList.toggle("daily-locked",!open);b.setAttribute("aria-disabled",open?"false":"true");
+  });
+  const count=dates.size;
+  if($("questXp"))$("questXp").textContent=count;
+  if($("dailyDaysCompleted"))$("dailyDaysCompleted").textContent=count;
+  const banner=$("dailyAccessNotice"),txt=$("dailyAccessNoticeText");
+  if(banner)banner.classList.toggle("unlocked",open);
+  if(txt)txt.textContent=academicComplete
+    ?"✅ Morning requirement complete. Games and My Journal are unlocked for today."
+    :overrideToday
+      ?"🔓 Teacher override active. Games and My Journal are unlocked for today."
+      :"Finish today’s assigned Morning Daily Work OR the Level-Up Morning Challenge to unlock Games and My Journal.";
+  if($("dailyProgressDetail"))$("dailyProgressDetail").textContent=
+    `${count} of 180 school days completed. Assigned Daily Work and Level-Up Morning Work both count, but each date counts only once.`;
+}
+function dwWatchDailyCompletion(){
+  if(!user)return;
+  if(dailyProgressUnsub){try{dailyProgressUnsub()}catch(e){}}
+  if(dailyOverrideUnsub){try{dailyOverrideUnsub()}catch(e){}}
+  dailyProgressUnsub=onSnapshot(
+    query(collection(db,"dailyQuestProgress"),where("studentId","==",user.uid)),
+    snap=>{dailyProgressRows=snap.docs.map(d=>({id:d.id,...d.data()}));dwUpdateDailyAccess()},
+    err=>{console.warn("daily progress listener",err);dailyProgressRows=[];dwUpdateDailyAccess()}
+  );
+  dailyOverrideUnsub=onSnapshot(
+    doc(db,"classData","dailyAccessOverride"),
+    snap=>{dailyOverrideData=snap.exists()?snap.data():{};dwUpdateDailyAccess()},
+    err=>{console.warn("daily access override",err);dailyOverrideData={};dwUpdateDailyAccess()}
+  );
+}
 onAuthStateChanged(auth,async u=>{
   user=u;
   if(profileUnsub){try{profileUnsub()}catch(e){} profileUnsub=null}
   if(purchasesUnsub){try{purchasesUnsub()}catch(e){} purchasesUnsub=null}
+  if(dailyProgressUnsub){try{dailyProgressUnsub()}catch(e){} dailyProgressUnsub=null}
+  if(dailyOverrideUnsub){try{dailyOverrideUnsub()}catch(e){} dailyOverrideUnsub=null}
+  dailyProgressRows=[];dailyOverrideData={};window.DWDailyAccessUnlocked=false;
   myPurchases=[];
 
   if(!u){
@@ -3368,6 +3433,7 @@ onAuthStateChanged(auth,async u=>{
     const ref=doc(db,"students",u.uid);
     watchBathroom();
     watchSnack();
+    dwWatchDailyCompletion();
     watchUnifiedPassHub();
     watchStudentPoll();
     dw31StartIntegration();

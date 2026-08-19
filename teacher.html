@@ -609,7 +609,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 <div class="live-request-grid">
 
 
-<div class="card live-request-box"><h3>⭐ STUDENT RECOGNITION REQUESTS</h3><p class="pace-note">Students can ask you to notice a positive choice. Nothing is awarded until you approve it.</p><div class="live-request-list" id="pointRequestList"><div class="muted">No pending requests.</div></div></div>
+<div class="card live-request-box"><h3>⭐ STUDENT RECOGNITION REQUESTS</h3><p class="pace-note">Students can ask you to notice a positive choice. Nothing is awarded until you approve it.</p><div class="live-request-list" id="pointRequestList"><div class="muted">No pending requests.</div></div></div><div class="card live-request-box"><h3>🔓 DAILY WORK ACCESS OVERRIDE</h3><p class="pace-note">Games + Journal unlock automatically after assigned Morning Work OR Level-Up Morning Work. Use this only when the schedule needs an exception; overrides reset by date.</p><div id="dailyAccessOverrideStatus" class="muted">No override active today.</div><div class="actions" style="margin-top:9px;flex-wrap:wrap"><button id="unlockAllDailyAccess">UNLOCK WHOLE CLASS TODAY</button><button id="unlockSelectedDailyAccess">UNLOCK SELECTED TODAY</button><button class="gray" id="clearDailyAccessOverride">CLEAR OVERRIDES</button></div></div>
 </div>
 <div class="progression-plan"><div><small>LEVEL CAP</small><b>20</b><small>Midyear target</small></div><div><small>LEVEL 20 XP</small><b>12,000</b><small>Daily hard cap 150 XP</small></div><div><small>CLASS HP</small><b>10 → 48</b><small>Grows by level</small></div><div><small>RPG BASE HP</small><b>18 → 94</b><small>Before gear</small></div></div>
 <div class="card dw-shared-selector" id="sharedStudentSelector">
@@ -1025,6 +1025,14 @@ async function seed(){
  const rs=await getDocs(collection(db,"rewards"));if(rs.empty){const defs=[["Choose Our Pet Type",20,"🐾","Vote on the kind of class pet we want."],["Vote on Pet Names",40,"🗳️","Earn a class naming vote."],["Plan the Habitat",60,"🏠","Design what our pet will need."],["Choose Pet Jobs",80,"⭐","Create classroom pet responsibilities."],["CLASS PET",100,"🐹","Our class pet is officially unlocked!"],["Free-Time Game Reward",150,"🎮","Unlock special class free-time game time."],["Movie & Snack",200,"🍿","Celebrate with a class movie and snack."],["Class Field Trip",250,"🚌","A major class reward milestone."]],b=writeBatch(db);defs.forEach(r=>b.set(doc(collection(db,"rewards")),{name:r[0],points:r[1],icon:r[2],description:r[3],createdAt:serverTimestamp()}));await b.commit()}
 }
 
+
+$("unlockAllDailyAccess").onclick=()=>saveDailyAccessOverride(true,[]);
+$("unlockSelectedDailyAccess").onclick=()=>{
+ const ids=selectedDailyAccessStudentIds();
+ if(!ids.length){alert("Select one or more students at the top of the Students page first.");return}
+ saveDailyAccessOverride(false,ids);
+};
+$("clearDailyAccessOverride").onclick=()=>saveDailyAccessOverride(false,[]);
 onAuthStateChanged(auth, async u => {
   if (!u) {
     $("login").classList.remove("hidden");
@@ -1067,7 +1075,30 @@ onAuthStateChanged(auth, async u => {
   }
 });
 
+
+function selectedDailyAccessStudentIds(){
+ return [...document.querySelectorAll('#quickStudentCheckboxes input[type="checkbox"]:checked')].map(x=>x.value).filter(Boolean);
+}
+function renderDailyAccessOverrideTeacher(){
+ const el=$("dailyAccessOverrideStatus");if(!el)return;
+ const today=teacherDateKey(),d=dailyAccessOverrideTeacher||{};
+ if(String(d.dateKey||"")!==today){el.textContent="No override active today.";return}
+ if(d.all===true){el.textContent="🔓 Whole class override is active for today.";return}
+ const ids=Array.isArray(d.studentIds)?d.studentIds:[];
+ el.textContent=ids.length?`🔓 ${ids.length} selected student${ids.length===1?"":"s"} unlocked for today.`:"No override active today.";
+}
+async function saveDailyAccessOverride(all,ids){
+ await setDoc(doc(db,"classData","dailyAccessOverride"),{
+   dateKey:teacherDateKey(),all:all===true,studentIds:Array.isArray(ids)?ids:[],updatedAt:serverTimestamp()
+ },{merge:false});
+ window.DWAudio?.positive();
+}
 function listen(){
+
+ onSnapshot(doc(db,"classData","dailyAccessOverride"),s=>{
+   dailyAccessOverrideTeacher=s.exists()?s.data():{};
+   renderDailyAccessOverrideTeacher();
+ },e=>console.warn("daily access override listener",e));
 
  onSnapshot(doc(db,"classData","secondRecess"),async s=>{
    const today=localDateKey();
@@ -1636,7 +1667,7 @@ function bindRandomPicker(){
 }
 
 
-let passBlackoutTeacher={active:false},genericPassStatuses=[];
+let passBlackoutTeacher={active:false},genericPassStatuses=[],dailyAccessOverrideTeacher={};
 async function teacherReturnGenericPass(docId){
  const d=genericPassStatuses.find(x=>x.id===docId);if(!d)return;
  const now=new Date(),visits=Array.isArray(d.visits)?[...d.visits]:[],activeId=String(d.activeVisitId||'');

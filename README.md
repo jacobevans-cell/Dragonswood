@@ -1,6 +1,6 @@
 # Dragonswood
 
-**Current build: v49.2**
+**Current build: v49.3**
 
 ## Student portal
 Home • Daily Missions • Games • Jobs • Schedule • Calendar • Poll • Shop • Leaderboard • My Journal
@@ -46,3 +46,14 @@ v49.1 requires no new Firebase changes. Continue using the Firestore rules from 
 - Teacher sign-in button made explicitly active/high-contrast.
 - Teacher Auth now uses browser session persistence before email/password sign-in to reduce teacher/student testing-session collisions.
 - No new Firestore schema is introduced by the Level-Up feature.
+
+
+## v49.3
+- Games and My Journal are locked until the student satisfies the morning-work requirement.
+- Either assigned Morning Daily Work OR Level-Up Morning Challenge satisfies the requirement.
+- Level-Up and assigned work remain separate records, but the school date counts only once toward completion.
+- Teacher Students page includes daily access overrides for the whole class or selected students; the override is date-scoped.
+- Daily Missions displays the student's actual completed Daily Work day count.
+- Daily Quest also displays the completed-day count and today's completion status.
+- The 180-day journey map now shows actual completed days instead of automatically marking every past day complete.
+- No new Firestore rules are required; the teacher override uses the existing teacher-writable/readable classData collection.

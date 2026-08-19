@@ -3342,6 +3342,7 @@ document.getElementById('recognitionRequestBtn')?.addEventListener('click',sendR
 function dwStudentDateKey(){
   const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 }
+const DW_LEGACY_COMPLETED_DAYS=12;
 function dwCompletedMorningDates(){
   const out=new Set();
   dailyProgressRows.forEach(x=>{
@@ -3349,6 +3350,15 @@ function dwCompletedMorningDates(){
     if(x.status==="complete"&&x.session==="morning"&&x.dateKey)out.add(String(x.dateKey));
   });
   return out;
+}
+function dwCompletedDayCount(){
+  const completedDays=new Set(
+    dailyProgressRows
+      .filter(x=>String(x.id||"").endsWith("_v48")&&x.status==="complete"&&x.session==="morning")
+      .map(x=>Number(x.day||0))
+      .filter(n=>n>DW_LEGACY_COMPLETED_DAYS)
+  );
+  return Math.min(180,DW_LEGACY_COMPLETED_DAYS+completedDays.size);
 }
 function dwUpdateDailyAccess(){
   const dates=dwCompletedMorningDates(),today=dwStudentDateKey(),academicComplete=dates.has(today);
@@ -3360,7 +3370,7 @@ function dwUpdateDailyAccess(){
   document.querySelectorAll('.portal-tab[data-view="games"],.portal-tab[data-view="journal"]').forEach(b=>{
     b.classList.toggle("daily-locked",!open);b.setAttribute("aria-disabled",open?"false":"true");
   });
-  const count=dates.size;
+  const count=dwCompletedDayCount();
   if($("questXp"))$("questXp").textContent=count;
   if($("dailyDaysCompleted"))$("dailyDaysCompleted").textContent=count;
   const banner=$("dailyAccessNotice"),txt=$("dailyAccessNoticeText");
@@ -3371,7 +3381,7 @@ function dwUpdateDailyAccess(){
       ?"🔓 Teacher override active. Games and My Journal are unlocked for today."
       :"Finish today’s assigned Morning Daily Work OR the Level-Up Morning Challenge to unlock Games and My Journal.";
   if($("dailyProgressDetail"))$("dailyProgressDetail").textContent=
-    `${count} of 180 school days completed. Assigned Daily Work and Level-Up Morning Work both count, but each date counts only once.`;
+    `${count} of 180 school days completed. Your first 12 school days are preserved from the original journey; assigned Daily Work and Level-Up Morning Work both count from here forward.`;
 }
 function dwWatchDailyCompletion(){
   if(!user)return;

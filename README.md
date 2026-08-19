@@ -1,6 +1,6 @@
 # Dragonswood
 
-**Current build: v49.3**
+**Current build: v49.4**
 
 ## Student portal
 Home • Daily Missions • Games • Jobs • Schedule • Calendar • Poll • Shop • Leaderboard • My Journal
@@ -57,3 +57,12 @@ v49.1 requires no new Firebase changes. Continue using the Firestore rules from 
 - Daily Quest also displays the completed-day count and today's completion status.
 - The 180-day journey map now shows actual completed days instead of automatically marking every past day complete.
 - No new Firestore rules are required; the teacher override uses the existing teacher-writable/readable classData collection.
+
+
+## v49.4
+- Preserves the first 12 school days as completed for every current student, matching the original Dragonswood journey before daily completion tracking was introduced.
+- Daily Work progress now begins at 12 / 180 instead of resetting students to 0.
+- Days 1–12 display as completed on the 180-day journey map.
+- From Day 13 forward, actual assigned Morning Daily Work OR Level-Up Morning Challenge completion is tracked normally.
+- Today's Games/Journal unlock still requires today's actual Morning Daily Work or Level-Up completion, unless a teacher override is active.
+- No Firebase migration or rule change is required.

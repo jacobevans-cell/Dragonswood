@@ -374,17 +374,24 @@ function renderAccount(){if(!profile)return;$("lvl").textContent=level(Number(pr
 function renderLesson(){if(!lesson)return;$("journey").textContent=`${lesson.day} / 180`;$("chapter").textContent=`${lesson.chapterIcon} ${lesson.chapter.toUpperCase()}`;$("title").textContent=lesson.title;$("skills").textContent=`Math: ${lesson.mathSkill} • ELA: ${lesson.elaSkill}`;$("datepill").textContent=`DAY ${lesson.day} • ${lesson.date}`;renderMap();}
 function renderMap(){
  const now=lesson?.day||1;let s="";
- const completedDays=new Set(dqProgressRows.filter(x=>String(x.id||"").endsWith("_v48")&&x.status==="complete"&&x.session==="morning").map(x=>Number(x.day||0)));
+ const completedDays=new Set(
+   dqProgressRows
+     .filter(x=>String(x.id||"").endsWith("_v48")&&x.status==="complete"&&x.session==="morning")
+     .map(x=>Number(x.day||0))
+ );
  for(let i=1;i<=180;i++){
-   const done=completedDays.has(i);
+   const legacyDone=i<=DW_LEGACY_COMPLETED_DAYS;
+   const done=legacyDone||completedDays.has(i);
    const cls=done?"past":i===now?"today":i<now?"missed":"future";
    const mark=done?"✓":i===now?"★":i<now?"•":"🔒";
-   s+=`<div class="node ${cls}" title="Day ${i}${done?' complete':i<now?' not completed':''}">${mark}</div>`;
+   const legacy=legacyDone?" • preserved from original journey":"";
+   s+=`<div class="node ${cls}" title="Day ${i}${done?' complete':i<now?' not completed':''}${legacy}">${mark}</div>`;
  }
  $("maptrack").innerHTML=s;setTimeout(()=>document.querySelector(".node.today")?.scrollIntoView({inline:"center",block:"nearest"}),50)
 }
 
 const DAILY_QUEST_BUILD="v48";
+const DW_LEGACY_COMPLETED_DAYS=12;
 function progressId(session){return `${user.uid}_${lesson.date}_${lesson?.track||"4"}_${session}_${DAILY_QUEST_BUILD}`}
 function progressRef(session){return doc(db,"dailyQuestProgress",progressId(session))}
 function localProgressKey(session){return `dragonswood_dailyquest_${DAILY_QUEST_BUILD}_${user?.uid||"anon"}_${lesson?.date||"date"}_${lesson?.track||"4"}_${session}`}
@@ -435,7 +442,14 @@ function updateDailyQuestProgressSummary(){
     .filter(x=>String(x.id||"").endsWith("_v48")&&x.status==="complete"&&x.session==="morning"&&x.dateKey)
     .map(x=>String(x.dateKey))
  );
- const count=dqCompletedDates.size,today=lesson?.date||dateKey(),done=dqCompletedDates.has(today);
+ const newCompletedDays=new Set(
+   dqProgressRows
+    .filter(x=>String(x.id||"").endsWith("_v48")&&x.status==="complete"&&x.session==="morning"&&Number(x.day||0)>DW_LEGACY_COMPLETED_DAYS)
+    .map(x=>Number(x.day||0))
+ );
+ const count=Math.min(180,DW_LEGACY_COMPLETED_DAYS+newCompletedDays.size),
+       today=lesson?.date||dateKey(),
+       done=dqCompletedDates.has(today);
  if($("dqDaysComplete"))$("dqDaysComplete").textContent=count;
  if($("dqTodayComplete"))$("dqTodayComplete").textContent=done?"✅ COMPLETE":"Not complete yet";
  if(lesson)renderMap();

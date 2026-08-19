@@ -2088,7 +2088,8 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
     
     <div class="dw-dash-grid home-now-coming" style="margin:20px 0 16px">
-      <div class="frame bevel dw-now-card">
+      <section class="dw-school-countdowns frame bevel"><div class="section-title"><div><h2>⏳ School-Year Countdown</h2><p>Live countdowns from the Explore Academy 2026-27 calendar.</p></div></div><div class="dw-count-grid" id="dwSchoolCountdowns"></div></section>
+<div class="frame bevel dw-now-card">
         <div class="dw-subtle">📍 RIGHT NOW</div>
         <div class="dw-now-big" id="homeNow">Loading schedule…</div>
         <div class="dw-next-line" id="homeNext"></div>
@@ -4911,6 +4912,28 @@ renderRewards();renderBoards();glitterizeStaticIcons();
     openPoll();
   });
 })();
+
+const DW_SCHOOL_BREAKS=[
+ {name:"Fall Break",icon:"🍂",date:"2026-10-05",note:"Oct 5-9"},
+ {name:"Thanksgiving Break",icon:"🦃",date:"2026-11-23",note:"Nov 23-27"},
+ {name:"Winter Break",icon:"❄️",date:"2026-12-21",note:"Dec 21-Jan 1"},
+ {name:"Spring Break",icon:"🌴",date:"2027-03-08",note:"Mar 8-12"}
+];
+function dwLocalDate(){const n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate())}
+function dwCalDate(s){const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)}
+function dwDaysUntil(s){return Math.max(0,Math.ceil((dwCalDate(s)-dwLocalDate())/86400000))}
+function dwRenderSchoolCountdowns(){
+ const host=document.getElementById("dwSchoolCountdowns");if(!host)return;
+ const next=DW_SCHOOL_BREAKS.find(x=>dwCalDate(x.date)>=dwLocalDate());
+ const cards=[
+  next?{l:"NEXT BREAK",b:`${next.icon} ${dwDaysUntil(next.date)} days`,s:`${next.name} • ${next.note}`}:{l:"NEXT BREAK",b:"☀️ Summer",s:"Major breaks complete"},
+  {l:"LAST SCHOOL DAY",b:`🏁 ${dwDaysUntil("2027-05-20")} days`,s:"May 20, 2027"},
+  {l:"SUMMER BREAK",b:`☀️ ${dwDaysUntil("2027-05-21")} days`,s:"Begins May 21, 2027"}
+ ];
+ host.innerHTML=cards.map(x=>`<div class="dw-count-card"><small>${x.l}</small><strong>${x.b}</strong><span>${x.s}</span></div>`).join("");
+}
+window.addEventListener("DOMContentLoaded",dwRenderSchoolCountdowns);
+
 </script>
 
 </body></html>

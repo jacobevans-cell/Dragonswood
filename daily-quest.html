@@ -65,6 +65,11 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
   font-family:Arial,"Noto Sans",sans-serif;
   line-height:1.4;
 }
+
+.calendar-countdowns{margin-top:12px;padding:14px}.countdown-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:9px}
+.countdown-card{border:1px solid #4c397d;border-radius:12px;padding:12px;background:rgba(6,8,32,.76);min-height:78px}
+.countdown-card small{display:block;color:#bdb2d0;font-weight:900;letter-spacing:.6px}.countdown-card b{display:block;color:#fff0a4;font:900 22px Georgia;margin:4px 0}.countdown-card span{color:#d4e8ff;font-size:12px}
+@media(max-width:760px){.countdown-grid{grid-template-columns:1fr}}
 </style></head><body>
 <div class="shell">
   <header class="glass top"><div><div class="brand">🐉 DRAGONSWOOD • DAILY QUEST</div><div class="sub" id="account">Connecting to Dragonswood…</div></div><a class="back" href="index.html#quests">← QUESTS</a></header>
@@ -74,7 +79,7 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
     <div class="glass"><small>HEALTH</small><b id="hp">—</b></div>
     <div class="glass"><small>GOLD</small><b id="gold">—</b></div>
     <div class="glass"><small>DAILY XP</small><b id="dxp">— / 150</b></div>
-    <div class="glass"><small>SCHOOL JOURNEY</small><b id="journey">— / 182</b></div>
+    <div class="glass"><small>SCHOOL JOURNEY</small><b id="journey">— / 180</b></div>
   </section>
   <div id="status" class="glass status">Checking today's sealed quest…</div>
   <section class="glass hero">
@@ -86,7 +91,8 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
     <article class="glass session" id="morningCard"><div class="chapter">🌅 MORNING BELL WORK</div><h2>Morning Adventure</h2><div class="time">≈ 15–20 minutes • 16 interactions</div><p>Grade-matched Math + ELA spiral practice with Visual Coach support.</p><button id="morningBtn">ENTER MORNING QUEST</button></article>
     <article class="glass session" id="exitCard"><div class="chapter">🌙 EXIT QUEST</div><h2>End-of-Day Challenge</h2><div class="time">≈ 15–20 minutes • 16 interactions</div><p>A full independent skill check with fresh problems and coaching available.</p><button id="exitBtn">ENTER EXIT QUEST</button></article>
   </section>
-  <section class="glass map"><b>🗺️ 182-DAY DRAGONSWOOD JOURNEY</b><div class="maptrack" id="maptrack"></div></section>
+  <section class="glass map"><b>🗺️ 180-DAY DRAGONSWOOD JOURNEY</b><div class="maptrack" id="maptrack"></div></section>
+  <section class="glass calendar-countdowns"><b>⏳ SCHOOL-YEAR COUNTDOWNS</b><div class="countdown-grid" id="dqCountdowns"></div></section>
 </div>
 
 <div id="playModal"><section class="glass play">
@@ -324,9 +330,32 @@ function makeTrackLesson(base){const track=resolvedTrack(),day=Number(base.day||
 function translateWord(w,lang){if(lang==="es")return WORD_ES[String(w).toLowerCase()]||"Use context + word parts";return String(w)}
 function speakText(text,lang="en-US"){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=({es:"es-US",fr:"fr-FR",ar:"ar-SA",zh:"zh-CN",vi:"vi-VN",en:"en-US"})[lang]||"en-US";speechSynthesis.speak(u)}catch(e){}}
 
+
+const SCHOOL_CALENDAR_COUNTDOWNS=[
+ {name:"Fall Break",icon:"🍂",date:"2026-10-05",note:"Oct 5-9"},
+ {name:"Thanksgiving Break",icon:"🦃",date:"2026-11-23",note:"Nov 23-27"},
+ {name:"Winter Break",icon:"❄️",date:"2026-12-21",note:"Dec 21-Jan 1"},
+ {name:"Spring Break",icon:"🌴",date:"2027-03-08",note:"Mar 8-12"}
+];
+const LAST_SCHOOL_DAY="2027-05-20",SUMMER_BREAK="2027-05-21";
+function localDateOnly(){const n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate())}
+function calendarDate(s){const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)}
+function daysUntil(s){return Math.max(0,Math.ceil((calendarDate(s)-localDateOnly())/86400000))}
+function renderSchoolCountdowns(){
+ const host=document.getElementById("dqCountdowns");if(!host)return;
+ const today=localDateOnly();
+ const next=SCHOOL_CALENDAR_COUNTDOWNS.find(x=>calendarDate(x.date)>=today);
+ const items=[
+   next?{label:"NEXT BREAK",big:`${next.icon} ${daysUntil(next.date)} days`,small:`${next.name} • ${next.note}`}:{label:"NEXT BREAK",big:"☀️ Summer",small:"Major breaks complete"},
+   {label:"LAST SCHOOL DAY",big:`🏁 ${daysUntil(LAST_SCHOOL_DAY)} days`,small:"May 20, 2027"},
+   {label:"SUMMER BREAK",big:`☀️ ${daysUntil(SUMMER_BREAK)} days`,small:"Begins May 21, 2027"}
+ ];
+ host.innerHTML=items.map(x=>`<div class="countdown-card"><small>${x.label}</small><b>${x.big}</b><span>${x.small}</span></div>`).join("");
+}
+
 function renderAccount(){if(!profile)return;$("lvl").textContent=level(Number(profile.xp||0));$("pxp").textContent=Number(profile.xp||0).toLocaleString();$("hp").textContent=Number(profile.hp||0);$("gold").textContent=Number(profile.gold||0).toLocaleString();$("dxp").textContent=`${dailyXp(profile)} / ${CAP}`;$("account").innerHTML=`Connected as <b>${profile.firstName||user?.email||"Adventurer"}</b>${Number(profile.hp||0)<=0?" • 💀 KNOCKED OUT":""}`;}
-function renderLesson(){if(!lesson)return;$("journey").textContent=`${lesson.day} / 182`;$("chapter").textContent=`${lesson.chapterIcon} ${lesson.chapter.toUpperCase()}`;$("title").textContent=lesson.title;$("skills").textContent=`Math: ${lesson.mathSkill} • ELA: ${lesson.elaSkill}`;$("datepill").textContent=`DAY ${lesson.day} • ${lesson.date}`;renderMap();}
-function renderMap(){const now=lesson?.day||1;let s="";for(let i=1;i<=182;i++){s+=`<div class="node ${i<now?"past":i===now?"today":"future"}">${i<now?"✓":i===now?"★":"🔒"}</div>`}$("maptrack").innerHTML=s;setTimeout(()=>document.querySelector(".node.today")?.scrollIntoView({inline:"center",block:"nearest"}),50)}
+function renderLesson(){if(!lesson)return;$("journey").textContent=`${lesson.day} / 180`;$("chapter").textContent=`${lesson.chapterIcon} ${lesson.chapter.toUpperCase()}`;$("title").textContent=lesson.title;$("skills").textContent=`Math: ${lesson.mathSkill} • ELA: ${lesson.elaSkill}`;$("datepill").textContent=`DAY ${lesson.day} • ${lesson.date}`;renderMap();}
+function renderMap(){const now=lesson?.day||1;let s="";for(let i=1;i<=180;i++){s+=`<div class="node ${i<now?"past":i===now?"today":"future"}">${i<now?"✓":i===now?"★":"🔒"}</div>`}$("maptrack").innerHTML=s;setTimeout(()=>document.querySelector(".node.today")?.scrollIntoView({inline:"center",block:"nearest"}),50)}
 
 const DAILY_QUEST_BUILD="v48";
 function progressId(session){return `${user.uid}_${lesson.date}_${lesson?.track||"4"}_${session}_${DAILY_QUEST_BUILD}`}
@@ -375,7 +404,7 @@ async function refreshSessionCards(){
 async function loadToday(){let key=dateKey();const isTeacher=String(user?.email||"").toLowerCase()===TEACHER;const q=new URLSearchParams(location.search).get("date");if(isTeacher&&q)key=q;try{const snap=await getDoc(doc(db,"dailyQuests",key));if(!snap.exists()){status("No student quest is scheduled for today. Enjoy the suspicious silence.","warn");$("morningCard").classList.add("locked");$("exitCard").classList.add("locked");$("morningBtn").disabled=$("exitBtn").disabled=true;return}lesson=makeTrackLesson(snap.data());renderLesson();$("trackLabel").textContent=lesson.trackName;
 const td=$("trackDesc");if(td)td.textContent=lesson.track==="challenge"?"Advanced enrichment • Early–Mid 6th Grade":lesson.track==="5"?"Fifth-grade Daily Quest curriculum":"Fourth-grade Daily Quest curriculum";
 const mini=$("trackLabelMini");if(mini)mini.textContent=`TRACK: ${lesson.trackName}`;await refreshSessionCards();status(Number(profile.hp||0)<=0?"💀 You may complete today's academics, but knocked-out players earn no Player XP or Gold until revival.":"Today's quest is unlocked. Future quests remain sealed by Dragonswood server time.","good");}catch(err){console.error(err);status(`Today's quest is sealed or unavailable: ${err.code||err.message||"permission denied"}`,"bad");$("morningBtn").disabled=$("exitBtn").disabled=true}}
-onAuthStateChanged(auth,async u=>{user=u;if(!u){status("Open Daily Quest from your signed-in Dragonswood portal.","warn");return}if(!String(u.email||"").toLowerCase().endsWith("@"+DOMAIN)&&String(u.email||"").toLowerCase()!==TEACHER){status("Daily Quest requires an Explore Academy account.","bad");return}try{const s=await getDoc(doc(db,"students",u.uid));if(s.exists())profile=s.data();renderAccount();await loadToday()}catch(e){status("Dragonswood profile error: "+(e.code||e.message),"bad")}});
+onAuthStateChanged(auth,async u=>{user=u;if(!u){status("Open Daily Quest from your signed-in Dragonswood portal.","warn");return}if(!String(u.email||"").toLowerCase().endsWith("@"+DOMAIN)&&String(u.email||"").toLowerCase()!==TEACHER){status("Daily Quest requires an Explore Academy account.","bad");return}try{const s=await getDoc(doc(db,"students",u.uid));if(s.exists())profile=s.data();renderAccount();renderSchoolCountdowns();await loadToday()}catch(e){status("Dragonswood profile error: "+(e.code||e.message),"bad")}});
 $("morningBtn").onclick=()=>startSession("morning");$("exitBtn").onclick=()=>startSession("exit");$("closePlay").onclick=async()=>{if(sessionName&&taskIndex<tasks.length)await saveProgress();$("playModal").classList.remove("show")};
 async function startSession(name){
   sessionName=name;tasks=name==="morning"?lesson.morning:lesson.exit;

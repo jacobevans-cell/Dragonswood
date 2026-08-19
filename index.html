@@ -1924,6 +1924,16 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 @media(max-width:760px){.pass-hub-top{grid-template-columns:1fr}}
 </style>
 
+
+<style id="dw-v42-leaderboard-style">
+.lb-filterbar{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0 12px}
+.lb-filterbar button.active{outline:2px solid #ffe36d}
+.rank .lb-main{min-width:0}
+.lb-detail{display:block;margin-top:2px;color:#d5cfea;font-size:11px;font-weight:700}
+.lb-meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:3px;color:#9fb0c5;font-size:10px}
+.lb-scoretype{display:block;color:#7fe7ff;font-size:9px;text-transform:uppercase;letter-spacing:.5px;text-align:right}
+</style>
+
 </head><body>
 <header class="topbar">
 <div class="shell">
@@ -2326,7 +2336,14 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   <!-- LEADERBOARD -->
   <section class="portal-view" id="view-leaderboard" data-page="leaderboard">
     <div class="section-title"><div><h2>🏆 Leaderboard</h2><p>Top five scores from connected games.</p></div></div>
-  <section class="boards" id="boards"></section>
+  <div class="lb-filterbar" id="leaderboardFilters">
+      <button data-lb-filter="all" class="active">ALL</button>
+      <button data-lb-filter="math">➗ MATH</button>
+      <button data-lb-filter="ela">📚 ELA</button>
+      <button data-lb-filter="daily">📜 DAILY QUEST</button>
+      <button data-lb-filter="games">🎮 OTHER GAMES</button>
+    </div>
+    <section class="boards" id="boards"></section>
   </section>
 
   <!-- JOURNAL -->
@@ -4261,17 +4278,65 @@ function leaderboardName(s){
   }
   return "Player";
 }
+let leaderboardFilter="all";
+function leaderboardCategory(s){
+  const subject=String(s.subject||"").toLowerCase(),game=String(s.gameName||s.game||"").toLowerCase();
+  if(game.includes("daily quest"))return "daily";
+  if(subject.includes("math")||game.includes("division")||game.includes("fraction")||game.includes("decimal"))return "math";
+  if(subject.includes("ela")||subject.includes("reading")||subject.includes("spelling")||game.includes("spelling")||game.includes("reader"))return "ela";
+  return "games";
+}
+function scoreDetailParts(s){
+  const parts=[];
+  const activity=s.activityName||s.activity||"";
+  const lesson=s.lesson||"";
+  const subject=s.subject||"";
+  const session=s.session?String(s.session).replace(/\b\w/g,c=>c.toUpperCase()):"";
+  if(subject)parts.push(subject);
+  if(activity)parts.push(activity);
+  else if(session)parts.push(session);
+  if(lesson)parts.push(lesson);
+  return [...new Set(parts.filter(Boolean))];
+}
 function renderBoards(){
  const grouped={};
- scores.forEach(s=>{const g=s.gameName||s.game||"Game";(grouped[g]??=[]).push(s)});
+ scores.filter(s=>leaderboardFilter==="all"||leaderboardCategory(s)===leaderboardFilter)
+   .forEach(s=>{const g=s.gameName||s.game||"Game";(grouped[g]??=[]).push(s)});
  const games=Object.keys(grouped).sort();
  $("boards").innerHTML=games.length?games.map(g=>{
    const top=grouped[g].sort((a,b)=>(+b.score||0)-(+a.score||0)).slice(0,5);
-   return `<div class="board frame bevel"><h3>${esc(g)}</h3>${top.map((s,i)=>`<div class="rank"><div class="place">${i+1}</div><div class="miniavatar">${esc(s.avatarEmoji||"🐉")}</div><div>${esc(leaderboardName(s))}</div><div class="score">${(+s.score||0).toLocaleString()}</div></div>`).join("")}</div>`;
- }).join(""):'<div class="board frame bevel"><h3>No records yet</h3><p class="muted">The first connected game will start the leaderboard.</p></div>';
+   return `<div class="board frame bevel"><h3>${esc(g)}</h3>${top.map((s,i)=>{
+     const details=scoreDetailParts(s);
+     const meta=[];
+     if(s.accuracy!=null)meta.push(`${Number(s.accuracy)}% accuracy`);
+     if(s.correct!=null&&s.total!=null)meta.push(`${s.correct}/${s.total} correct`);
+     if(s.day!=null)meta.push(`Day ${s.day}`);
+     if(s.dateKey)meta.push(String(s.dateKey));
+     const scoreType=s.scoreType||"points";
+     return `<div class="rank">
+       <div class="place">${i+1}</div>
+       <div class="miniavatar">${esc(s.avatarEmoji||"🐉")}</div>
+       <div class="lb-main"><div>${esc(leaderboardName(s))}</div>
+         ${details.length?`<span class="lb-detail">${details.map(esc).join(" • ")}</span>`:""}
+         ${meta.length?`<span class="lb-meta">${meta.map(x=>`<span>${esc(x)}</span>`).join("")}</span>`:""}
+       </div>
+       <div class="score">${(+s.score||0).toLocaleString()}<span class="lb-scoretype">${esc(scoreType)}</span></div>
+     </div>`;
+   }).join("")}</div>`;
+ }).join(""):'<div class="board frame bevel"><h3>No records yet</h3><p class="muted">No scores match this category yet.</p></div>';
  glitterizeStaticIcons();
 }
 
+
+
+document.addEventListener("click",e=>{
+  const b=e.target.closest("#leaderboardFilters button");
+  if(!b)return;
+  document.querySelectorAll("#leaderboardFilters button").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  leaderboardFilter=b.dataset.lbFilter||"all";
+  renderBoards();
+});
 
 // ============================================================
 // STUDENT SHOP

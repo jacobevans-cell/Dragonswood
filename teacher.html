@@ -600,6 +600,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   <button class="tab active" data-p="students">👥 STUDENTS</button>
   <button class="tab" data-p="rewards">🛡️ CLASS REWARDS</button>
   <button class="tab" data-p="recess">🏰 CLASS GOALS</button>
+  <button class="tab" data-p="passes">🎟️ PASSES</button>
   <button class="tab" data-p="jobs">🧹 JOBS</button>
   <button class="tab" data-p="schedule">🕐 SCHEDULE</button>
   <button class="tab" data-p="calendar">📅 CALENDAR</button>
@@ -614,20 +615,8 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 <div id="students" class="panel active">
   <div class="frame bevel command-title"><h2>🧙 STUDENT CONTROL CENTER</h2><p>Manage HP, Gold, XP, level progress, profiles, and group awards.</p></div>
 
-  <div class="card pass-master-card">
-    <div class="pass-master-row">
-      <div><h3 style="margin:0">🚦 PASS CONTROL</h3><p class="pace-note" style="margin:4px 0 0">Blackout instantly blocks students from starting Bathroom, Snack, Out of Seat, or Office passes. Active students can still check back in.</p></div>
-      <button id="passBlackoutBtn" type="button">🔓 PASSES OPEN</button>
-    </div>
-    <div id="genericPassLive" class="generic-pass-live"><div class="muted">No Out of Seat or Office passes active.</div></div>
-  </div>
-
   <div class="live-request-grid">
-    <div class="card live-request-box"><h3>🚻 LIVE BATHROOM</h3><p class="pace-note">Students currently out appear here instantly. Each student gets 3 automatic passes per day; extras come here for approval.</p><div id="bathroomLiveList" class="live-request-list"><div class="muted">No students out.</div></div><h4>EXTRA PASS REQUESTS</h4><div id="bathroomRequestList" class="live-request-list"><div class="muted">No pending requests.</div></div>
-<h4>TODAY'S BATHROOM HISTORY</h4>
-<div id="bathroomHistoryList" class="live-request-list"><div class="muted">No bathroom visits recorded today.</div></div></div>
-    <div class="card live-request-box"><h3>🍎 LIVE SNACK PASSES</h3><p class="pace-note">Each student gets 2 automatic snack passes per day. After that, extra snack passes require your approval.</p><div id="snackLiveList" class="live-request-list"><div class="muted">No active snack passes.</div></div><h4>EXTRA SNACK REQUESTS</h4><div id="snackRequestList" class="live-request-list"><div class="muted">No pending snack requests.</div></div><h4>TODAY'S SNACK HISTORY</h4><div id="snackHistoryList" class="live-request-list"><div class="muted">No snack passes recorded today.</div></div></div>
-    <div class="card live-request-box"><h3>⭐ STUDENT RECOGNITION REQUESTS</h3><p class="pace-note">Students can ask you to notice a positive choice. Nothing is awarded until you approve it.</p><div id="pointRequestList" class="live-request-list"><div class="muted">No pending requests.</div></div></div>
+    <div class="card live-request-box"><h3>⭐ STUDENT RECOGNITION REQUESTS</h3><p class="pace-note">Students can ask you to notice a positive choice. Nothing is awarded until you approve it.</p><div id="pointRequestList" class="live-request-list"><div class="muted">No pending requests.</div></div>
   </div>
   <div class="progression-plan"><div><small>LEVEL CAP</small><b>20</b><small>Midyear target</small></div><div><small>LEVEL 20 XP</small><b>12,000</b><small>Daily hard cap 150 XP</small></div><div><small>CLASS HP</small><b>10 → 48</b><small>Grows by level</small></div><div><small>RPG BASE HP</small><b>18 → 94</b><small>Before gear</small></div></div>
   <div class="card quick-award-panel"><h3>⚡ QUICK AWARDS</h3><p class="pace-note">Pick the audience, then one award. Student XP/Gold/HP changes are logged automatically; class-goal points are added once per award.</p><div class="quick-target-row"><div class="field"><label>AWARD TO</label><select id="quickAwardGroup"><optgroup label="Groups"><option value="all">Whole Class</option><option value="girl">All Girls</option><option value="boy">All Boys</option><option value="4">All 4th Grade</option><option value="5">All 5th Grade</option><option value="selected">☑ Selected Students</option></optgroup><optgroup label="Individual Students" id="quickIndividualStudentOptions"></optgroup></select></div><div class="pace-note"><b style="color:#ffe68b">PACING:</b> Ordinary good days should land around 80–150 XP. About 130 XP per school day reaches Level 20 around January.</div></div>
@@ -764,6 +753,31 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   </div>
 </div>
 
+
+
+<div id="passes" class="panel">
+  <div class="frame bevel command-title"><h2>🎟️ PASS CONTROL CENTER</h2><p>Live pass activity, approvals, history, and blackout controls.</p></div>
+  <div class="card pass-master-card">
+    <div class="pass-master-row">
+      <div><h3 style="margin:0">🚦 PASS CONTROL</h3><p class="pace-note" style="margin:4px 0 0">Blackout instantly blocks students from starting Bathroom, Snack, Out of Seat, or Office passes. Active students can still check back in.</p></div>
+      <button id="passBlackoutBtn" type="button">🔓 PASSES OPEN</button>
+    </div>
+    <div id="genericPassLive" class="generic-pass-live"><div class="muted">No Out of Seat or Office passes active.</div></div>
+  </div>
+  <div class="live-request-grid">
+    <div class="card live-request-box"><h3>🚻 LIVE BATHROOM</h3><p class="pace-note">Students currently out appear here instantly. Each student gets 3 automatic passes per day; extras come here for approval.</p><div id="bathroomLiveList" class="live-request-list"><div class="muted">No students out.</div></div><h4>EXTRA PASS REQUESTS</h4><div id="bathroomRequestList" class="live-request-list"><div class="muted">No pending requests.</div></div>
+<h4>TODAY'S BATHROOM HISTORY</h4>
+<div id="bathroomHistoryList" class="live-request-list"><div class="muted">No bathroom visits recorded today.</div></div></div>
+    
+    <div class="card live-request-box"><h3>🍎 LIVE SNACK PASSES</h3><p class="pace-note">Each student gets 2 automatic snack passes per day. After that, extra snack passes require your approval.</p><div id="snackLiveList" class="live-request-list"><div class="muted">No active snack passes.</div></div><h4>EXTRA SNACK REQUESTS</h4><div id="snackRequestList" class="live-request-list"><div class="muted">No pending snack requests.</div></div><h4>TODAY'S SNACK HISTORY</h4><div id="snackHistoryList" class="live-request-list"><div class="muted">No snack passes recorded today.</div></div></div>
+    
+    <div class="card live-request-box">
+      <h3>🚶 OUT OF SEAT / 🏫 OFFICE</h3>
+      <p class="pace-note">Live and historical Out of Seat / Office passes. Both are timed and stored.</p>
+      <div id="genericPassHistory" class="live-request-list"><div class="muted">No pass history yet.</div></div>
+    </div>
+  </div>
+</div>
 
 <div id="jobs" class="panel">
   <div class="titlebar"><div><h2>🧹 GUILD JOBS & AUTOMATIC PAYROLL</h2><p>Assign roles. Students check off daily. Payroll runs automatically for last week.</p></div></div>
@@ -1654,6 +1668,13 @@ function renderPassControl(){
  b.textContent=active?'🔒 PASS BLACKOUT ON':'🔓 PASSES OPEN';
  b.classList.toggle('blackout-on',active);
  box.innerHTML=genericPassStatuses.filter(x=>x.active===true).map(x=>`<div class="generic-pass-row"><b>${x.type==='office'?'🏫':'🚶'} ${esc(x.studentName||'Student')} • ${x.label||x.type}</b><small style="display:block">Started ${x.startedAtText||''}</small></div>`).join('')||'<div class="muted">No Out of Seat or Office passes active.</div>';
+ const hist=$('genericPassHistory');
+ if(hist){
+   const visits=[];
+   genericPassStatuses.forEach(x=>(Array.isArray(x.visits)?x.visits:[]).forEach(v=>visits.push({...v,_student:x.studentName||v.studentName||'Student',_type:x.type||v.type||''})));
+   visits.sort((a,b)=>Number(b.startedMs||0)-Number(a.startedMs||0));
+   hist.innerHTML=visits.slice(0,60).map(v=>`<div class="generic-pass-row"><b>${v._type==='office'?'🏫':'🚶'} ${esc(v._student)} • ${v._type==='office'?'Office':'Out of Seat'}</b><small>${esc(v.startedAtText||'')} ${v.endedText?'→ '+esc(v.endedText):'• ACTIVE'}${v.durationMinutes!=null?' • '+v.durationMinutes+' min':''}</small></div>`).join('')||'<div class="muted">No pass history yet.</div>';
+ }
 }
 async function togglePassBlackout(){
  const next=!(passBlackoutTeacher?.active===true);
@@ -2241,7 +2262,20 @@ $("removeGearStudent").onclick=async()=>{
   alert("Gear removed.");
 };
 
-function renderScores(){$("scoreList").innerHTML=scores.length?scores.map(s=>`<div class="item"><div class="icon">🏆</div><div><b>${esc(s.displayName||s.playerName||"Player")} — ${+s.score||0}</b><small>${esc(s.gameName||s.game||"Game")}</small></div><div><button class="danger mini" data-sdel="${s.id}">Delete</button></div></div>`).join(""):'<div class="muted">No scores submitted yet.</div>';document.querySelectorAll("[data-sdel]").forEach(b=>b.onclick=async()=>{if(confirm("Delete this score?"))await deleteDoc(doc(db,"scores",b.dataset.sdel))})}
+function teacherScoreDetail(s){
+  const parts=[s.subject,s.activityName||s.activity,s.lesson,s.session?String(s.session).replace(/\b\w/g,c=>c.toUpperCase()):""].filter(Boolean);
+  return [...new Set(parts)].join(" • ");
+}
+function renderScores(){
+  $("scoreList").innerHTML=scores.length?scores.map(s=>{
+    const detail=teacherScoreDetail(s),meta=[];
+    if(s.accuracy!=null)meta.push(`${s.accuracy}% accuracy`);
+    if(s.correct!=null&&s.total!=null)meta.push(`${s.correct}/${s.total} correct`);
+    if(s.dateKey)meta.push(s.dateKey);
+    return `<div class="item"><div class="icon">🏆</div><div><b>${esc(s.displayName||s.playerName||"Player")} — ${(+s.score||0).toLocaleString()}</b><small>${esc(s.gameName||s.game||"Game")}${detail?` • ${esc(detail)}`:""}${meta.length?` • ${esc(meta.join(" • "))}`:""}</small></div><div><button class="danger mini" data-sdel="${s.id}">Delete</button></div></div>`;
+  }).join(""):'<div class="muted">No scores submitted yet.</div>';
+  document.querySelectorAll("[data-sdel]").forEach(b=>b.onclick=async()=>{if(confirm("Delete this score?"))await deleteDoc(doc(db,"scores",b.dataset.sdel))})
+}
 function renderResults(){$("results").innerHTML=results.length?results.map(r=>`<tr><td>${esc(r.displayName||r.playerName||"Player")}</td><td>${esc(r.gameName||r.game||"Game")}</td><td>${+r.score||0}</td><td>${r.accuracy!=null?esc(r.accuracy)+"%":"—"}</td><td>${esc(r.summary||r.details||"—")}</td><td>${r.createdAt?.seconds?new Date(r.createdAt.seconds*1000).toLocaleString():"—"}</td></tr>`).join(""):'<tr><td colspan="6" class="muted">No academic game results yet.</td></tr>'}
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");$(b.dataset.p).classList.add("active")})
 

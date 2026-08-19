@@ -285,10 +285,16 @@ async function finishSession(){
     avatarEmoji:"🐉",
     game:"daily_quest",
     gameName:"Dragonswood Daily Quest",
+    activityName:sessionName==="morning"?"Morning Bell Work":"Exit Quest",
+    subject:"Math + ELA",
+    lesson:`${lesson.mathSkill} + ${lesson.elaSkill}`,
+    scoreType:"points",
     session:sessionName,
     day:lesson.day,
     dateKey:lesson.date,
     score,
+    correct:Number(correct||0),
+    total:Number(attempts||0),
     accuracy:Math.round(acc*100),
     createdAt:serverTimestamp()
   })}catch(e){console.warn("score",e)}

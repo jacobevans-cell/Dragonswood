@@ -1,6 +1,6 @@
 # Dragonswood
 
-**Current build: v49.4**
+**Current build: v49.5**
 
 ## Student portal
 Home • Daily Missions • Games • Jobs • Schedule • Calendar • Poll • Shop • Leaderboard • My Journal
@@ -66,3 +66,14 @@ v49.1 requires no new Firebase changes. Continue using the Firestore rules from 
 - From Day 13 forward, actual assigned Morning Daily Work OR Level-Up Morning Challenge completion is tracked normally.
 - Today's Games/Journal unlock still requires today's actual Morning Daily Work or Level-Up completion, unless a teacher override is active.
 - No Firebase migration or rule change is required.
+
+
+## v49.5
+- Added the Daily Work completion dashboard directly to the main Daily Missions page.
+- Daily Missions now mirrors:
+  - completed Daily Work days / 180
+  - today's completion status
+  - the 180-day Dragonswood Journey
+  - Next Break / Last School Day / Summer Break countdowns
+- The dedicated Daily Quest page still keeps the same progress interface.
+- No Firebase changes required.

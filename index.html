@@ -2359,6 +2359,31 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
         <p id="dailyProgressDetail">A day counts when you complete either your assigned Morning Daily Work or the Level-Up Morning Challenge.</p>
       </article>
     </div>
+
+    <section class="frame bevel daily-missions-journey">
+      <div class="dm-progress-head">
+        <div>
+          <small>✅ DAILY WORK DAYS COMPLETE</small>
+          <strong><span id="dmDaysComplete">12</span> / 180</strong>
+        </div>
+        <div>
+          <small>TODAY</small>
+          <strong id="dmTodayStatus">Not complete yet</strong>
+          <span>Assigned Morning Work or Level-Up Morning Work counts.</span>
+        </div>
+      </div>
+
+      <div class="dm-journey-block">
+        <b>🗺️ 180-DAY DRAGONSWOOD JOURNEY</b>
+        <div class="dm-maptrack" id="dmMaptrack"></div>
+      </div>
+
+      <div class="dm-countdown-block">
+        <b>⏳ SCHOOL-YEAR COUNTDOWNS</b>
+        <div class="dm-countdown-grid" id="dmCountdownGrid"></div>
+      </div>
+    </section>
+
   </section>
 
   <!-- LEADERBOARD -->
@@ -3382,6 +3407,47 @@ function dwUpdateDailyAccess(){
       :"Finish today’s assigned Morning Daily Work OR the Level-Up Morning Challenge to unlock Games and My Journal.";
   if($("dailyProgressDetail"))$("dailyProgressDetail").textContent=
     `${count} of 180 school days completed. Your first 12 school days are preserved from the original journey; assigned Daily Work and Level-Up Morning Work both count from here forward.`;
+  if($("dmDaysComplete"))$("dmDaysComplete").textContent=count;
+  if($("dmTodayStatus"))$("dmTodayStatus").textContent=academicComplete?"✅ COMPLETE":overrideToday?"🔓 TEACHER OVERRIDE":"Not complete yet";
+  dwRenderDailyMissionsJourney();
+}
+
+function dwRenderDailyMissionsJourney(){
+  const host=$("dmMaptrack");if(host){
+    const completedDays=new Set(
+      dailyProgressRows
+        .filter(x=>String(x.id||"").endsWith("_v48")&&x.status==="complete"&&x.session==="morning")
+        .map(x=>Number(x.day||0))
+    );
+    const currentDay=Math.max(1,12+1); // current school journey is Day 13 at this build point
+    let html="";
+    for(let i=1;i<=180;i++){
+      const done=i<=12||completedDays.has(i);
+      const cls=done?"done":i===currentDay?"today":i<currentDay?"missed":"future";
+      const mark=done?"✓":i===currentDay?"★":i<currentDay?"•":"🔒";
+      html+=`<div class="dm-node ${cls}" title="Day ${i}${done?' complete':i<currentDay?' not completed':''}">${mark}</div>`;
+    }
+    host.innerHTML=html;
+    setTimeout(()=>host.querySelector(".today")?.scrollIntoView({inline:"center",block:"nearest"}),50);
+  }
+  const grid=$("dmCountdownGrid");if(grid){
+    const breaks=[
+      {name:"Fall Break",icon:"🍂",date:"2026-10-05",note:"Oct 5-9"},
+      {name:"Thanksgiving Break",icon:"🦃",date:"2026-11-23",note:"Nov 23-27"},
+      {name:"Winter Break",icon:"❄️",date:"2026-12-21",note:"Dec 21-Jan 1"},
+      {name:"Spring Break",icon:"🌴",date:"2027-03-08",note:"Mar 8-12"}
+    ];
+    const today=new Date(),local=new Date(today.getFullYear(),today.getMonth(),today.getDate());
+    const toDate=s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)};
+    const days=s=>Math.max(0,Math.ceil((toDate(s)-local)/86400000));
+    const next=breaks.find(x=>toDate(x.date)>=local);
+    const cards=[
+      next?{l:"NEXT BREAK",b:`${next.icon} ${days(next.date)} days`,s:`${next.name} • ${next.note}`}:{l:"NEXT BREAK",b:"☀️ Summer",s:"Major breaks complete"},
+      {l:"LAST SCHOOL DAY",b:`🏁 ${days("2027-05-20")} days`,s:"May 20, 2027"},
+      {l:"SUMMER BREAK",b:`☀️ ${days("2027-05-21")} days`,s:"Begins May 21, 2027"}
+    ];
+    grid.innerHTML=cards.map(x=>`<div class="dm-count-card"><small>${x.l}</small><strong>${x.b}</strong><span>${x.s}</span></div>`).join("");
+  }
 }
 function dwWatchDailyCompletion(){
   if(!user)return;

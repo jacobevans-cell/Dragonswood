@@ -1976,7 +1976,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   <!-- Persistent Dragonswood navigation -->
   <nav class="frame bevel portal-nav" id="portalNav" aria-label="Dragonswood navigation">
     <button class="portal-tab active" type="button" data-view="home" onclick="DragonswoodNav('home')"><span>🛡️</span><b>HOME</b></button>
-    <button class="portal-tab" type="button" data-view="quests" onclick="DragonswoodNav('quests')"><span>⚔️</span><b>QUESTS</b></button>
+    <button class="portal-tab" type="button" data-view="quests" onclick="DragonswoodNav('quests')"><span>📜</span><b>DAILY MISSIONS</b></button>
     <button class="portal-tab" type="button" data-view="games" onclick="DragonswoodNav('games')"><span>🎮</span><b>GAMES</b></button>
 
     <button class="portal-tab" type="button" data-view="jobs" onclick="DragonswoodNav('jobs')"><span>🧹</span><b>JOBS</b></button>
@@ -2191,27 +2191,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
     <section class="game-subject-section" data-subject-section="ela">
       <div class="game-subject-heading"><span>📚</span><div><h2>ELA</h2><p>Spelling, reading, vocabulary, and language practice.</p></div></div>
-      <section class="games"><article class="frame bevel game" data-game-subject="ela"><div class="visual game-art" aria-hidden="true">
-<svg class="dw-game-icon" viewBox="0 0 96 96">
-  <defs><linearGradient id="spg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#29c8ff"/><stop offset="1" stop-color="#8656ff"/></linearGradient></defs>
-  <path d="M15 24c15-4 26 0 33 7v48c-9-8-20-11-33-8Z" fill="#152c55" stroke="#68dcff" stroke-width="3"/>
-  <path d="M81 24c-15-4-26 0-33 7v48c9-8 20-11 33-8Z" fill="#241847" stroke="#aa81ff" stroke-width="3"/>
-  <path d="M48 31v48" stroke="#ffe36d" stroke-width="3"/>
-  <text x="31" y="54" text-anchor="middle" fill="#d9faff" font-size="17" font-weight="900" font-family="Georgia">A</text>
-  <text x="65" y="54" text-anchor="middle" fill="#f0dcff" font-size="17" font-weight="900" font-family="Georgia">Z</text>
-  <path d="M26 63h13M57 63h13" stroke="#fff3a0" stroke-width="3" stroke-linecap="round"/>
-  <path d="M20 13v8M16 17h8M79 12v7M76 15h6" stroke="#ffe36d" stroke-width="3" stroke-linecap="round"/>
-</svg></div><div class="body"><span class="tag">ELA</span><h3>Spelling Practice</h3><p>Study, hear, and master spelling words.</p><a class="btn" href="spelling-practice.html">PLAY</a></div></article><article class="frame bevel game" data-game-subject="ela"><div class="visual game-art" aria-hidden="true">
-<svg class="dw-game-icon" viewBox="0 0 96 96">
-  <defs><linearGradient id="erg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#bd79ff"/><stop offset="1" stop-color="#4ea8ff"/></linearGradient></defs>
-  <path d="M16 25c14-5 25-2 32 6v49c-9-8-20-11-32-7Z" fill="#17152f" stroke="#9b6cff" stroke-width="3"/>
-  <path d="M80 25c-14-5-25-2-32 6v49c9-8 20-11 32-7Z" fill="#101c38" stroke="#62c9ff" stroke-width="3"/>
-  <path d="M48 31v49" stroke="#ffe36d" stroke-width="2.5"/>
-  <path d="M25 41h15M25 49h15M25 57h11M56 41h15M56 49h15M56 57h11" stroke="#d9dcff" stroke-width="2.5" stroke-linecap="round" opacity=".85"/>
-  <path d="M48 14c7 8 12 15 12 22-7-4-17-4-24 0 0-7 5-14 12-22Z" fill="url(#erg)" stroke="#f1d7ff" stroke-width="2.5"/>
-  <circle cx="48" cy="26" r="3" fill="#fff2a4"/>
-  <path d="M78 15v8M74 19h8" stroke="#ffe36d" stroke-width="3" stroke-linecap="round"/>
-</svg></div><div class="body"><span class="tag">ELA • READER</span><h3>The Witches eReader</h3><p>Continue the class novel with page memory, read-aloud, highlighting, and illustrated scenes.</p><a class="btn" href="witches-reader.html">OPEN READER</a></div></article></section>
+      <section class="games"></section>
     </section>
 
     <section class="game-subject-section" data-subject-section="science">
@@ -2331,27 +2311,29 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
     </div>
   </section>
 
-  <!-- QUESTS -->
+  <!-- DAILY MISSIONS -->
   <section class="portal-view" id="view-quests" data-page="quests">
-    <div class="section-title"><div><h2>⚔️ Dragonswood Quests</h2><p>Challenges, assignments, and bonus missions will live here.</p></div></div>
+    <div class="section-title"><div><h2>📜 Daily Missions</h2><p>Your daily schoolwork hub: Morning Bell Work, Exit Quest, and class reading.</p></div></div>
     <div class="feature-grid quests-grid">
       <article class="frame bevel feature-card quest-card">
-        <div class="feature-icon">📜</div>
-        <h3>Daily Quests</h3>
+        <div class="feature-icon">🌅</div>
+        <h3>Today’s Daily Quest</h3>
         <p>Complete today’s Morning Bell Work and Exit Quest. Practice Math + ELA skills and build your Dragonswood progress.</p>
-        <a class="btn" href="daily-quest.html">📜 ENTER TODAY’S QUEST</a>
+        <a class="btn" href="daily-quest.html">📜 START TODAY’S WORK</a>
       </article>
+
       <article class="frame bevel feature-card quest-card">
-        <div class="feature-icon">🗡️</div>
-        <h3>Bonus Missions</h3>
-        <p>Optional academic challenges for students who want to push farther.</p>
-        <div class="coming-ribbon">COMING SOON</div>
+        <div class="feature-icon">📖</div>
+        <h3>The Witches eReader</h3>
+        <p>Continue the class novel with page memory, read-aloud, highlighting, and illustrated scenes.</p>
+        <a class="btn" href="witches-reader.html">📖 OPEN CLASS READER</a>
       </article>
+
       <article class="frame bevel feature-card quest-card">
         <div class="feature-icon">⭐</div>
-        <h3>Your XP</h3>
+        <h3>Your Daily Progress</h3>
         <div class="feature-number"><span id="questXp">0</span></div>
-        <p>Complete future quests and teacher challenges to build your adventure level.</p>
+        <p>Your Player XP grows as you complete Dragonswood learning activities and teacher challenges.</p>
       </article>
     </div>
   </section>

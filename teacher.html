@@ -585,6 +585,16 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .dw-select-filters,.dw-reward-modes{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}.dw-select-filters button{padding:6px 12px;font-size:11px}.dw-selection-summary{margin-top:8px;padding:8px 10px;border-radius:8px;background:rgba(2,204,254,.08);color:#dff9ff;font-size:11px}.dw-reward-modes{position:sticky;top:190px;z-index:7;background:rgba(3,5,18,.92);padding:8px;border:1px solid rgba(244,201,93,.25);border-radius:10px}.dw-reward-mode{flex:1;min-width:180px;opacity:.7}.dw-reward-mode.active{opacity:1;outline:2px solid #ffe36d}.dw-reward-mode-panel{display:none}.dw-reward-mode-panel.active{display:block}.dw-custom-selection-note{margin:10px 0;padding:9px;border:1px solid rgba(2,204,254,.28);border-radius:8px;background:rgba(2,204,254,.06);color:#d9f8ff}.dw-reward-mode-panel[data-reward-panel="manage-roster"].active{display:block}
 @media(max-width:900px){.dw-shared-selector,.dw-reward-modes{position:static}.dw-reward-mode{min-width:140px}}
 </style>
+
+<style id="v50-teacher-writing-styles">
+#writing .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#writing textarea{width:100%;resize:vertical}
+.tw-response{padding:12px;margin:9px 0;border:1px solid #423269;border-radius:10px;background:#08091e}
+.tw-response-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.tw-response-head b{color:#fff0a2}.tw-response-body{white-space:pre-wrap;padding:10px;margin:8px 0;background:#050717;border-radius:8px;border:1px solid #2c2450}
+.tw-score-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:8px 0}.tw-score-grid div{padding:7px;border:1px solid #3b2d61;border-radius:7px;text-align:center}.tw-score-grid small{display:block;font-size:8px}.tw-score-grid b{color:#ffe58b}
+.tw-teacher-review{display:grid;grid-template-columns:150px 1fr auto;gap:8px;align-items:end;margin-top:8px}
+@media(max-width:800px){#writing .grid2{grid-template-columns:1fr}.tw-score-grid{grid-template-columns:repeat(2,1fr)}.tw-teacher-review{grid-template-columns:1fr}}
+</style>
 </head><body>
 <header class="teacher-head"><div class="shell"><div class="teacher-title">🛡️ DRAGONSWOOD COMMAND<small>EXPLORE ACADEMY • EVANS 4–5 • TEACHER PORTAL</small></div><div class="hidden" id="signed" style="text-align:right"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
 <main class="shell teacher-main">
@@ -601,6 +611,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 <button class="tab" data-p="picker">🎲 PICKER</button>
 <button class="tab" data-p="shop">🧰 SHOP</button>
 <button class="tab" data-p="scores">🏆 LEADERBOARDS</button>
+<button class="tab" data-p="writing">✍️ WRITING</button>
 <button class="tab" data-p="data">📊 GAME DATA</button>
 </div>
 <div class="panel active" id="students">
@@ -874,6 +885,46 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 </div>
 </div>
 <div class="panel" id="scores"><div class="frame bevel command-title"><h2>🏆 LEADERBOARD MANAGER</h2><p>Review or delete submitted scores.</p></div><div class="card"><div class="list" id="scoreList"></div></div></div>
+
+<div class="panel" id="writing">
+  <div class="frame bevel command-title"><h2>✍️ SCRIBE ARENA COMMAND</h2><p>Launch Quickwrites, watch submissions arrive, review AI rubric scores, and track writing growth.</p></div>
+
+  <div class="live-request-grid">
+    <div class="card">
+      <h3>🔥 LAUNCH WRITING MISSION</h3>
+      <div class="grid2">
+        <div class="field"><label>MISSION TITLE</label><input id="twTitle" value="Morning Quickwrite"></div>
+        <div class="field"><label>MODE</label><select id="twMode"><option>Quickwrite</option><option>Scribe Battle</option><option>Writing Workshop</option></select></div>
+        <div class="field"><label>WRITING TYPE</label><select id="twType"><option>Narrative</option><option>Opinion</option><option>Informative</option><option>Response to Literature</option><option>Free Write</option></select></div>
+        <div class="field"><label>TARGET SKILL</label><select id="twTarget"><option>Sensory Details</option><option>Supporting Details</option><option>Organization</option><option>Sentence Variety</option><option>Vocabulary</option><option>Dialogue</option><option>Evidence</option><option>Conventions</option><option>Strong Conclusion</option></select></div>
+        <div class="field"><label>TIME (MIN)</label><input id="twMinutes" type="number" min="2" max="30" value="5"></div>
+        <div class="field"><label>MINIMUM WORDS</label><input id="twMinWords" type="number" min="0" max="1000" value="75"></div>
+      </div>
+      <div class="field"><label>PROMPT</label><textarea id="twPrompt" rows="5" placeholder="Write about…"></textarea></div>
+      <div class="grid2">
+        <div class="field"><label>HINT 1</label><input id="twHint1" placeholder="Idea spark or sentence starter"></div>
+        <div class="field"><label>HINT 2</label><input id="twHint2" placeholder="Optional hint"></div>
+        <div class="field"><label>HINT 3</label><input id="twHint3" placeholder="Optional hint"></div>
+        <div class="field"><label>HINT 4</label><input id="twHint4" placeholder="Optional hint"></div>
+      </div>
+      <div class="actions"><button id="twLaunch">🔥 LAUNCH TO CLASS</button><button id="twClose" class="gray">CLOSE ACTIVE MISSION</button></div>
+      <div id="twLaunchStatus" class="muted" style="margin-top:8px"></div>
+    </div>
+
+    <div class="card">
+      <h3>📊 LIVE WRITING STATUS</h3>
+      <div id="twActiveSummary" class="muted">No active writing mission.</div>
+      <div class="progress" style="margin-top:10px"><div id="twSubmissionFill" style="width:0"></div></div>
+      <div class="progression-plan" style="margin-top:10px"><div><small>SUBMITTED</small><b id="twSubmittedCount">0</b></div><div><small>DRAFTING</small><b id="twDraftCount">0</b></div><div><small>AI SCORED</small><b id="twAiCount">0</b></div><div><small>AVG WORDS</small><b id="twAvgWords">0</b></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📜 STUDENT RESPONSES</h3>
+    <p class="pace-note">AI scores are suggestions. Edit the teacher score or feedback before treating anything as official.</p>
+    <div id="twResponseList"><div class="muted">Launch a writing mission to begin.</div></div>
+  </div>
+</div>
 <div class="panel" id="data"><div class="frame bevel command-title"><h2>📊 ACADEMIC GAME DATA</h2><p>Private game results for instructional use.</p></div><div class="card" style="overflow:auto"><table><thead><tr><th>Player</th><th>Game</th><th>Score</th><th>Accuracy</th><th>Details</th><th>Time</th></tr></thead><tbody id="results"></tbody></table></div></div>
 </section></main>
 <div class="modal hidden" id="rewardModal"><div class="modalbox card"><h3 id="rewardModalTitle">Add Reward</h3><input id="rid" type="hidden"/><div class="field"><label>Name</label><input id="rname"/></div><div class="field"><label>Points Required</label><input id="rpoints" type="number"/></div><div class="field"><label>Icon</label><input id="ricon" value="🎁"/></div><div class="field"><label>Description</label><textarea id="rdesc"></textarea></div><div class="actions"><button id="saveReward">SAVE REWARD</button><button id="cancelReward">Cancel</button></div></div></div>
@@ -2598,5 +2649,67 @@ document.addEventListener("click",e=>{
     openPanel(btn.dataset.p);
   });
 })();
+</script>
+
+<script type="module" id="v50-teacher-writing-module">
+import {getApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {getFirestore,collection,doc,setDoc,addDoc,onSnapshot,query,where,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+const app=getApp("DragonswoodTeacherPortal"),auth=getAuth(app),db=getFirestore(app),$=id=>document.getElementById(id);
+let twUser=null,twActive=null,twResponses=[],twSessionUnsub=null,twResponseUnsub=null;
+
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function watchWriting(){
+ if(twSessionUnsub)twSessionUnsub();
+ twSessionUnsub=onSnapshot(query(collection(db,"writingSessions"),where("status","==","active")),snap=>{
+   const rows=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+   twActive=rows[0]||null;watchResponses();renderWriting();
+ });
+}
+function watchResponses(){
+ if(twResponseUnsub){twResponseUnsub();twResponseUnsub=null}
+ if(!twActive){twResponses=[];renderWriting();return}
+ twResponseUnsub=onSnapshot(query(collection(db,"writingResponses"),where("sessionId","==",twActive.id)),snap=>{twResponses=snap.docs.map(d=>({id:d.id,...d.data()}));renderWriting()});
+}
+function renderWriting(){
+ const summary=$("twActiveSummary");if(!summary)return;
+ if(!twActive){
+   summary.textContent="No active writing mission.";$("twSubmittedCount").textContent="0";$("twDraftCount").textContent="0";$("twAiCount").textContent="0";$("twAvgWords").textContent="0";$("twSubmissionFill").style.width="0%";$("twResponseList").innerHTML='<div class="muted">Launch a writing mission to begin.</div>';return;
+ }
+ summary.innerHTML=`<b>${esc(twActive.title||"Quickwrite")}</b><br>${esc(twActive.prompt||"")}<br><small>${esc(twActive.writingType||"")} • ${esc(twActive.targetSkill||"")} • ${Number(twActive.timeMinutes||5)} min • ${Number(twActive.minWords||0)} words minimum</small>`;
+ const submitted=twResponses.filter(x=>x.status==="submitted"),draft=twResponses.filter(x=>x.status!=="submitted"),ai=submitted.filter(x=>x.aiFeedback?.totalScore!=null);
+ $("twSubmittedCount").textContent=submitted.length;$("twDraftCount").textContent=draft.length;$("twAiCount").textContent=ai.length;
+ $("twAvgWords").textContent=submitted.length?Math.round(submitted.reduce((a,x)=>a+Number(x.wordCount||0),0)/submitted.length):0;
+ const expected=Math.max(1,Number(window.__dragonswoodStudentCount||22));$("twSubmissionFill").style.width=Math.min(100,submitted.length/expected*100)+"%";
+ $("twResponseList").innerHTML=twResponses.length?twResponses.slice().sort((a,b)=>String(a.studentName||"").localeCompare(String(b.studentName||""))).map(r=>{
+   const f=r.aiFeedback||{};
+   return `<div class="tw-response">
+     <div class="tw-response-head"><b>${esc(r.studentName||"Student")} • ${r.status==="submitted"?"✅ SUBMITTED":"✏️ DRAFT"}</b><span>${Number(r.wordCount||0)} words ${f.totalScore!=null?"• AI "+f.totalScore+"/20":""}</span></div>
+     <div class="tw-response-body">${esc(r.responseText||"")}</div>
+     ${f.totalScore!=null?`<div class="tw-score-grid"><div><small>IDEAS</small><b>${f.ideas}/4</b></div><div><small>ORG</small><b>${f.organization}/4</b></div><div><small>STYLE</small><b>${f.style}/4</b></div><div><small>CONVENTIONS</small><b>${f.conventions}/4</b></div><div><small>TARGET</small><b>${f.targetSkill}/4</b></div></div><div class="muted"><b>Strength:</b> ${esc(f.strength||"")}<br><b>Next:</b> ${esc(f.nextStep||"")}</div>`:"<div class='muted'>AI feedback not run yet.</div>"}
+     <div class="tw-teacher-review"><div class="field"><label>TEACHER SCORE /20</label><input data-tw-score="${r.id}" type="number" min="0" max="20" value="${r.teacherScore??f.totalScore??""}"></div><div class="field"><label>TEACHER FEEDBACK</label><input data-tw-feedback="${r.id}" value="${esc(r.teacherFeedback||"")}"></div><button data-tw-save="${r.id}">SAVE REVIEW</button></div>
+   </div>`;
+ }).join(""):'<div class="muted">No students have opened this Quickwrite yet.</div>';
+ document.querySelectorAll("[data-tw-save]").forEach(b=>b.onclick=async()=>{
+   const id=b.dataset.twSave,score=document.querySelector(`[data-tw-score="${id}"]`)?.value,feedback=document.querySelector(`[data-tw-feedback="${id}"]`)?.value||"";
+   await setDoc(doc(db,"writingResponses",id),{teacherScore:score===""?null:Number(score),teacherFeedback:feedback,teacherReviewedAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});
+   b.textContent="SAVED ✓";setTimeout(()=>b.textContent="SAVE REVIEW",900);
+ });
+}
+$("twLaunch")?.addEventListener("click",async()=>{
+ if(!twUser)return;
+ const prompt=$("twPrompt").value.trim();if(!prompt){$("twLaunchStatus").textContent="Add a prompt first.";return}
+ if(twActive)await setDoc(doc(db,"writingSessions",twActive.id),{status:"closed",closedAt:serverTimestamp()},{merge:true});
+ const ref=await addDoc(collection(db,"writingSessions"),{
+   title:$("twTitle").value.trim()||"Quickwrite",mode:$("twMode").value,writingType:$("twType").value,targetSkill:$("twTarget").value,prompt,
+   timeMinutes:Math.max(2,Number($("twMinutes").value||5)),minWords:Math.max(0,Number($("twMinWords").value||0)),
+   hints:[$("twHint1").value.trim(),$("twHint2").value.trim(),$("twHint3").value.trim(),$("twHint4").value.trim()].filter(Boolean),
+   status:"active",createdBy:twUser.uid,createdAt:serverTimestamp(),updatedAt:serverTimestamp()
+ });
+ $("twLaunchStatus").textContent="🔥 Writing mission launched to students.";
+});
+$("twClose")?.addEventListener("click",async()=>{if(!twActive)return;$("twLaunchStatus").textContent="Closing mission…";await setDoc(doc(db,"writingSessions",twActive.id),{status:"closed",closedAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});$("twLaunchStatus").textContent="Mission closed.";});
+onAuthStateChanged(auth,u=>{twUser=u||null;if(u)watchWriting()});
 </script>
 </body></html>

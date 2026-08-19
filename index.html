@@ -2124,6 +2124,31 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
  .dw-pass-overdue-banner{grid-template-columns:1fr}.dw-pass-overdue-banner button{width:100%}
 }
 </style>
+
+<style id="v50-scribe-styles">
+.scribe-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,.75fr);gap:14px}
+.scribe-active-card,.scribe-feedback-card,.scribe-portfolio-card{padding:17px}
+.scribe-kicker{color:#e3a3ff;font-size:11px;font-weight:1000;letter-spacing:1.1px;margin-bottom:7px}
+.scribe-active-card h2{margin:0 0 7px;color:#fff0a2;font-size:30px}
+.scribe-meta{color:#a7eaff;font-weight:800;margin-bottom:10px}
+.scribe-prompt{padding:16px;border:1px solid #5d3b8b;border-radius:12px;background:#070a25dd;color:#fff;font-size:20px;line-height:1.45;font-family:Georgia,serif}
+.scribe-hints{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.scribe-hints button{padding:7px 10px;font-size:12px}
+.scribe-editor-wrap{margin-top:11px}
+#scribeResponse{width:100%;resize:vertical;min-height:260px;font-size:18px;line-height:1.55;padding:15px}
+.scribe-editor-foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:8px 4px;color:#bcd5e9;font-size:12px}
+.scribe-actions{display:flex;gap:9px;margin-top:7px}.scribe-actions button{flex:1;padding:13px}
+.scribe-secondary{background:linear-gradient(90deg,#30214e,#175277)!important}
+.scribe-status{min-height:22px;margin-top:8px;font-weight:800;color:#9ce7ff}
+.scribe-score{text-align:center;padding:8px}.scribe-score strong{font:900 54px Georgia;color:#fff0a2}.scribe-score span{font-size:22px;color:#d7cbe7}
+.scribe-rubric{display:grid;gap:7px}.scribe-rubric-row{display:grid;grid-template-columns:1fr auto;gap:8px;padding:8px 10px;border:1px solid #423269;border-radius:9px;background:#080a26}
+.scribe-rubric-row b{color:#eef6ff}.scribe-rubric-row span{color:#ffe58b;font-weight:1000}
+.scribe-feedback-box{margin-top:10px;padding:10px;border:1px solid #423269;border-radius:9px;background:#080a26}.scribe-feedback-box b{color:#ffe58b}.scribe-feedback-box p{margin:5px 0 0}
+.scribe-portfolio-card{margin-top:15px}.section-title.compact{margin-bottom:9px}
+.scribe-growth-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px}.scribe-growth-grid>div{padding:10px;border:1px solid #423269;border-radius:9px;background:#080a26}.scribe-growth-grid small{display:block;color:#bcb1cf;font-size:9px;font-weight:900}.scribe-growth-grid b{display:block;color:#fff0a2;font-size:25px;margin-top:3px}
+.scribe-portfolio-list{display:grid;gap:8px}.scribe-portfolio-item{padding:11px;border:1px solid #3c2a63;border-radius:9px;background:#07091f}.scribe-portfolio-item b{color:#fff0a2}.scribe-portfolio-item small{display:block;margin-top:3px}.scribe-portfolio-item p{margin:6px 0 0;white-space:pre-wrap}
+@media(max-width:900px){.scribe-grid{grid-template-columns:1fr}.scribe-growth-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
 </head><body><!-- DRAGONSWOOD BUILD v48.9 COSMIC+JOBS -->
 <header class="topbar">
 <div class="shell">
@@ -2163,6 +2188,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
     <button class="portal-tab active" type="button" data-view="home" onclick="DragonswoodNav('home')"><span>🛡️</span><b>HOME</b></button>
     <button class="portal-tab" type="button" data-view="quests" onclick="DragonswoodNav('quests')"><span>📜</span><b>DAILY MISSIONS</b></button>
     <button class="portal-tab" type="button" data-view="games" onclick="DragonswoodNav('games')"><span>🎮</span><b>GAMES</b></button>
+    <button class="portal-tab" type="button" data-view="scribe" onclick="DragonswoodNav('scribe')"><span>✍️</span><b>SCRIBE ARENA</b></button>
 
     <button class="portal-tab" type="button" data-view="jobs" onclick="DragonswoodNav('jobs')"><span>🧹</span><b>JOBS</b></button>
     <button class="portal-tab" type="button" data-view="schedule" onclick="DragonswoodNav('schedule')"><span>🕐</span><b>SCHEDULE</b></button>
@@ -2326,6 +2352,61 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
       <div><small>UNIVERSAL POINT BANK</small><br><strong id="v21UniversalPoints">0</strong> <span class="muted">available</span></div>
       <div class="muted">Universal Points can be assigned by your teacher to Recess, Class Pet, or Field Trip.</div>
     </div>
+  </section>
+
+
+  <!-- SCRIBE ARENA -->
+  <section class="portal-view" id="view-scribe" data-page="scribe">
+    <div class="section-title"><div><h2>✍️ Dragonswood Scribe Arena</h2><p>Quickwrites, writing challenges, feedback, and your permanent writing portfolio.</p></div></div>
+
+    <div class="scribe-grid">
+      <article class="frame bevel scribe-active-card">
+        <div class="scribe-kicker">🔥 ACTIVE WRITING MISSION</div>
+        <h2 id="scribeSessionTitle">No active Quickwrite</h2>
+        <div id="scribeSessionMeta" class="scribe-meta">Your teacher has not launched a writing mission yet.</div>
+        <div id="scribePromptBox" class="scribe-prompt">When a mission is active, the prompt will appear here.</div>
+
+        <div id="scribeHintRow" class="scribe-hints"></div>
+
+        <div class="scribe-editor-wrap">
+          <textarea id="scribeResponse" rows="12" placeholder="Write your response here…" disabled></textarea>
+          <div class="scribe-editor-foot">
+            <span><b id="scribeWordCount">0</b> words</span>
+            <span id="scribeAutosaveStatus">Waiting for a mission</span>
+            <span id="scribeTimer">⏱️ --:--</span>
+          </div>
+        </div>
+
+        <div class="scribe-actions">
+          <button id="scribeSubmitBtn" type="button" disabled>📜 SUBMIT QUICKWRITE</button>
+          <button id="scribeGradeBtn" type="button" class="scribe-secondary" disabled>✨ GET AI FEEDBACK</button>
+        </div>
+        <div id="scribeSubmitStatus" class="scribe-status"></div>
+      </article>
+
+      <article class="frame bevel scribe-feedback-card">
+        <div class="scribe-kicker">🐉 DRAGONSWOOD WRITING SCORE</div>
+        <div id="scribeNoFeedback" class="muted">Submit a Quickwrite to build your writing history.</div>
+        <div id="scribeFeedback" class="hidden">
+          <div class="scribe-score"><strong id="scribeTotalScore">--</strong><span>/ 20</span></div>
+          <div class="scribe-rubric" id="scribeRubric"></div>
+          <div class="scribe-feedback-box"><b>🔥 Strength</b><p id="scribeStrength"></p></div>
+          <div class="scribe-feedback-box"><b>🎯 Next Quest</b><p id="scribeNextStep"></p></div>
+          <small class="muted">AI feedback is a suggested formative score. Your teacher can review or change it.</small>
+        </div>
+      </article>
+    </div>
+
+    <article class="frame bevel scribe-portfolio-card">
+      <div class="section-title compact"><div><h2>📚 My Writing Portfolio</h2><p>Your saved Quickwrites and writing growth live here.</p></div></div>
+      <div class="scribe-growth-grid" id="scribeGrowthGrid">
+        <div><small>QUICKWRITES</small><b id="scribePortfolioCount">0</b></div>
+        <div><small>AVG SCORE</small><b id="scribePortfolioAvg">--</b></div>
+        <div><small>GRAMMAR</small><b id="scribeGrammarAvg">--</b></div>
+        <div><small>PUNCTUATION</small><b id="scribePunctuationAvg">--</b></div>
+      </div>
+      <div id="scribePortfolioList" class="scribe-portfolio-list"><div class="muted">No writing saved yet.</div></div>
+    </article>
   </section>
 
   <!-- GAMES -->
@@ -2653,7 +2734,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
 <script id="dragonswood-navigation-core">
 (function(){
-  const views=["home","games","jobs","schedule","calendar","poll","shop","quests","leaderboard","journal"];
+  const views=["home","games","jobs","schedule","calendar","poll","shop","quests","leaderboard","journal", "scribe"];
 
   window.DWDailyAccessUnlocked=false;
   function show(view, updateHash){
@@ -5423,4 +5504,150 @@ window.addEventListener('DOMContentLoaded',()=>{
 
 </script>
 
+
+<script type="module" id="v50-scribe-module">
+import {getApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {getFirestore,collection,doc,setDoc,getDoc,onSnapshot,query,where,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {getFunctions,httpsCallable} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-functions.js";
+
+const app=getApp(),auth=getAuth(app),db=getFirestore(app),functions=getFunctions(app,"us-central1");
+const $=id=>document.getElementById(id);
+let scribeUser=null,activeSession=null,myResponse=null,myResponses=[],saveTimer=null,countdownTimer=null,sessionUnsub=null,responseUnsub=null,portfolioUnsub=null;
+
+function words(t){return String(t||"").trim()?String(t).trim().split(/\s+/).length:0}
+function sessionResponseId(sessionId,uid){return `${sessionId}_${uid}`}
+function responseStartMs(r){return Number(r?.startedMs||0)||Date.now()}
+function renderHints(){
+ const row=$("scribeHintRow");if(!row)return;row.innerHTML="";
+ const hints=Array.isArray(activeSession?.hints)?activeSession.hints.filter(Boolean):[];
+ hints.forEach((h,i)=>{const b=document.createElement("button");b.type="button";b.textContent=`💡 Hint ${i+1}`;b.onclick=()=>alert(h);row.appendChild(b)});
+}
+function localMetrics(text){
+ const trimmed=String(text||"").trim(),wc=words(trimmed);
+ const sentences=(trimmed.match(/[.!?]+(?:\s|$)/g)||[]).length;
+ const paragraphs=trimmed?trimmed.split(/\n\s*\n/).filter(Boolean).length:0;
+ const capitals=(trimmed.match(/(^|[.!?]\s+)[A-Z]/g)||[]).length;
+ const endPunct=trimmed && /[.!?]["']?$/.test(trimmed) ? 1:0;
+ return {wordCount:wc,sentenceCount:sentences,paragraphCount:paragraphs,capitalizedSentenceStarts:capitals,hasEndingPunctuation:!!endPunct};
+}
+function renderActive(){
+ const title=$("scribeSessionTitle"),meta=$("scribeSessionMeta"),prompt=$("scribePromptBox"),ta=$("scribeResponse"),submit=$("scribeSubmitBtn"),grade=$("scribeGradeBtn");
+ if(!title)return;
+ if(!activeSession){
+   title.textContent="No active Quickwrite";meta.textContent="Your teacher has not launched a writing mission yet.";prompt.textContent="When a mission is active, the prompt will appear here.";
+   ta.value="";ta.disabled=true;submit.disabled=true;grade.disabled=true;$("scribeWordCount").textContent="0";$("scribeTimer").textContent="⏱️ --:--";$("scribeAutosaveStatus").textContent="Waiting for a mission";renderHints();return;
+ }
+ title.textContent=activeSession.title||"Quickwrite";
+ meta.textContent=`${activeSession.mode||"Quickwrite"} • ${activeSession.writingType||"Writing"} • Target: ${activeSession.targetSkill||"Strong writing"} • Minimum ${Number(activeSession.minWords||0)} words`;
+ prompt.textContent=activeSession.prompt||"";
+ renderHints();
+ ta.disabled=myResponse?.status==="submitted";
+ if(document.activeElement!==ta)ta.value=myResponse?.responseText||"";
+ $("scribeWordCount").textContent=words(ta.value);
+ submit.disabled=myResponse?.status==="submitted";
+ submit.textContent=myResponse?.status==="submitted"?"✅ SUBMITTED":"📜 SUBMIT QUICKWRITE";
+ grade.disabled=myResponse?.status!=="submitted" || myResponse?.aiStatus==="grading";
+ $("scribeAutosaveStatus").textContent=myResponse?.status==="submitted"?"Saved permanently":myResponse?.updatedAt?"Draft saved":"Ready";
+ renderFeedback();
+ startCountdown();
+}
+function startCountdown(){
+ if(countdownTimer)clearInterval(countdownTimer);
+ const el=$("scribeTimer");if(!el||!activeSession)return;
+ const mins=Math.max(1,Number(activeSession.timeMinutes||5));
+ const start=responseStartMs(myResponse);
+ const tick=()=>{
+   if(myResponse?.status==="submitted"){el.textContent="✅ Finished";return}
+   const remain=mins*60000-(Date.now()-start);
+   if(remain<=0){el.textContent="⏰ Time reached";el.style.color="#ff8da4"}else{const sec=Math.ceil(remain/1000);el.textContent=`⏱️ ${Math.floor(sec/60)}:${String(sec%60).padStart(2,"0")}`;el.style.color=""}
+ };
+ tick();countdownTimer=setInterval(tick,1000);
+}
+function renderFeedback(){
+ const fb=myResponse?.aiFeedback;
+ $("scribeNoFeedback")?.classList.toggle("hidden",!!fb);
+ $("scribeFeedback")?.classList.toggle("hidden",!fb);
+ if(!fb)return;
+ $("scribeTotalScore").textContent=fb.totalScore??"--";
+ const cats=[["Ideas & Details","ideas"],["Organization","organization"],["Language & Style","style"],["Conventions","conventions"],["Target Skill","targetSkill"]];
+ $("scribeRubric").innerHTML=cats.map(([label,key])=>`<div class="scribe-rubric-row"><b>${label}</b><span>${Number(fb[key]||0)} / 4</span></div>`).join("");
+ $("scribeStrength").textContent=fb.strength||"";
+ $("scribeNextStep").textContent=fb.nextStep||"";
+}
+async function ensureResponse(){
+ if(!scribeUser||!activeSession)return;
+ const id=sessionResponseId(activeSession.id,scribeUser.uid),ref=doc(db,"writingResponses",id),snap=await getDoc(ref);
+ if(!snap.exists()){
+   await setDoc(ref,{sessionId:activeSession.id,studentId:scribeUser.uid,studentName:scribeUser.displayName||scribeUser.email?.split("@")[0]||"Student",status:"draft",responseText:"",wordCount:0,startedMs:Date.now(),createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
+ }
+}
+function watchMyResponse(){
+ if(responseUnsub){responseUnsub();responseUnsub=null}
+ if(!scribeUser||!activeSession){myResponse=null;renderActive();return}
+ const id=sessionResponseId(activeSession.id,scribeUser.uid);
+ responseUnsub=onSnapshot(doc(db,"writingResponses",id),snap=>{myResponse=snap.exists()?{id:snap.id,...snap.data()}:null;renderActive()});
+ ensureResponse().catch(console.warn);
+}
+function watchSessions(){
+ if(sessionUnsub){sessionUnsub();sessionUnsub=null}
+ sessionUnsub=onSnapshot(query(collection(db,"writingSessions"),where("status","==","active")),snap=>{
+   const rows=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+   activeSession=rows[0]||null;watchMyResponse();
+ });
+}
+function renderPortfolio(){
+ const rows=myResponses.filter(x=>x.status==="submitted").sort((a,b)=>(b.submittedAt?.seconds||0)-(a.submittedAt?.seconds||0));
+ $("scribePortfolioCount").textContent=rows.length;
+ const scored=rows.filter(x=>x.aiFeedback?.totalScore!=null);
+ const avg=scored.length?scored.reduce((a,x)=>a+Number(x.aiFeedback.totalScore||0),0)/scored.length:null;
+ $("scribePortfolioAvg").textContent=avg==null?"--":avg.toFixed(1)+"/20";
+ const gram=scored.length?scored.reduce((a,x)=>a+Number(x.aiFeedback.grammarPercent||0),0)/scored.length:null;
+ const punct=scored.length?scored.reduce((a,x)=>a+Number(x.aiFeedback.punctuationPercent||0),0)/scored.length:null;
+ $("scribeGrammarAvg").textContent=gram==null?"--":Math.round(gram)+"%";
+ $("scribePunctuationAvg").textContent=punct==null?"--":Math.round(punct)+"%";
+ const list=$("scribePortfolioList");
+ list.innerHTML=rows.length?rows.slice(0,12).map(x=>`<div class="scribe-portfolio-item"><b>${x.sessionTitle||"Quickwrite"} • ${x.aiFeedback?.totalScore!=null?x.aiFeedback.totalScore+"/20":"Awaiting score"}</b><small>${x.wordCount||0} words • ${x.writingType||"Writing"} • ${x.targetSkill||""}</small><p>${String(x.responseText||"").slice(0,260)}${String(x.responseText||"").length>260?"…":""}</p></div>`).join(""):'<div class="muted">No writing saved yet.</div>';
+}
+function watchPortfolio(){
+ if(portfolioUnsub){portfolioUnsub();portfolioUnsub=null}
+ if(!scribeUser)return;
+ portfolioUnsub=onSnapshot(query(collection(db,"writingResponses"),where("studentId","==",scribeUser.uid)),snap=>{myResponses=snap.docs.map(d=>({id:d.id,...d.data()}));renderPortfolio()});
+}
+$("scribeResponse")?.addEventListener("input",e=>{
+ $("scribeWordCount").textContent=words(e.target.value);
+ if(!scribeUser||!activeSession||myResponse?.status==="submitted")return;
+ $("scribeAutosaveStatus").textContent="Saving…";
+ clearTimeout(saveTimer);saveTimer=setTimeout(async()=>{
+   const id=sessionResponseId(activeSession.id,scribeUser.uid),metrics=localMetrics(e.target.value);
+   await setDoc(doc(db,"writingResponses",id),{responseText:e.target.value,...metrics,updatedAt:serverTimestamp()},{merge:true});
+   $("scribeAutosaveStatus").textContent="Draft saved";
+ },650);
+});
+$("scribeSubmitBtn")?.addEventListener("click",async()=>{
+ if(!scribeUser||!activeSession)return;
+ const text=$("scribeResponse").value.trim(),wc=words(text),min=Number(activeSession.minWords||0);
+ if(wc<min){$("scribeSubmitStatus").textContent=`Keep writing: ${wc}/${min} words.`;return}
+ const id=sessionResponseId(activeSession.id,scribeUser.uid),metrics=localMetrics(text);
+ await setDoc(doc(db,"writingResponses",id),{
+   responseText:text,...metrics,status:"submitted",sessionTitle:activeSession.title||"Quickwrite",writingType:activeSession.writingType||"Writing",targetSkill:activeSession.targetSkill||"",prompt:activeSession.prompt||"",submittedAt:serverTimestamp(),updatedAt:serverTimestamp()
+ },{merge:true});
+ $("scribeSubmitStatus").textContent="✅ Quickwrite saved to your portfolio.";
+});
+$("scribeGradeBtn")?.addEventListener("click",async()=>{
+ if(!scribeUser||!activeSession||myResponse?.status!=="submitted")return;
+ const btn=$("scribeGradeBtn");btn.disabled=true;btn.textContent="✨ ANALYZING…";$("scribeSubmitStatus").textContent="Dragonswood is analyzing your writing…";
+ try{
+   const call=httpsCallable(functions,"gradeWriting");
+   await call({responseId:myResponse.id});
+   $("scribeSubmitStatus").textContent="✅ AI feedback added. Your teacher can review it.";
+ }catch(e){console.error(e);$("scribeSubmitStatus").textContent=`AI grading is not connected yet: ${e?.message||"deploy the Firebase function first."}`}
+ finally{btn.textContent="✨ GET AI FEEDBACK";renderActive()}
+});
+onAuthStateChanged(auth,u=>{
+ scribeUser=u||null;
+ if(!u){activeSession=null;myResponse=null;myResponses=[];renderActive();renderPortfolio();return}
+ watchSessions();watchPortfolio();
+});
+</script>
 </body></html>

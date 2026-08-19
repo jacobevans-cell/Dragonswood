@@ -1,6 +1,6 @@
 # Dragonswood
 
-**Current build: v49.8**
+**Current build: v49.9**
 
 ## Student portal
 Home • Daily Missions • Games • Jobs • Schedule • Calendar • Poll • Shop • Leaderboard • My Journal
@@ -104,3 +104,16 @@ v49.1 requires no new Firebase changes. Continue using the Firestore rules from 
 - Students can click an Answer Bank choice to place it in the response box, then unlock the rune.
 - This prevents vague vocabulary/strategy prompts from requiring students to invent an exact hidden sentence.
 - Typed equivalent answers remain accepted where appropriate.
+
+
+## v49.9 — Classroom Jobs Update
+Official job roster is now 14 positions:
+- 2 Scroll Keepers (Paper Passers)
+- 2 Command Squires (Teacher Aides)
+- 2 Winged Couriers (Runners)
+- 2 First Flames (Line Leaders)
+- 2 Gearsmiths (Technology)
+- 3 Groundskeepers (Sweepers)
+- 1 Mimic (Substitute)
+
+Existing classJobs data is automatically migrated once to schemaVersion 499 so the old Firestore job list cannot override the new totals. Existing assignments are preserved into the first matching slot where possible.

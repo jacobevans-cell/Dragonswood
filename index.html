@@ -1976,6 +1976,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   <!-- Persistent Dragonswood navigation -->
   <nav class="frame bevel portal-nav" id="portalNav" aria-label="Dragonswood navigation">
     <button class="portal-tab active" type="button" data-view="home" onclick="DragonswoodNav('home')"><span>🛡️</span><b>HOME</b></button>
+    <button class="portal-tab" type="button" data-view="quests" onclick="DragonswoodNav('quests')"><span>⚔️</span><b>QUESTS</b></button>
     <button class="portal-tab" type="button" data-view="games" onclick="DragonswoodNav('games')"><span>🎮</span><b>GAMES</b></button>
 
     <button class="portal-tab" type="button" data-view="jobs" onclick="DragonswoodNav('jobs')"><span>🧹</span><b>JOBS</b></button>
@@ -1983,7 +1984,6 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
     <button class="portal-tab" type="button" data-view="calendar" onclick="DragonswoodNav('calendar')"><span>📅</span><b>CALENDAR</b></button>
     <button class="portal-tab" type="button" data-view="poll" onclick="DragonswoodNav('poll')"><span>📊</span><b>POLL</b></button>
     <button class="portal-tab" type="button" data-view="shop" onclick="DragonswoodNav('shop')"><span>🧰</span><b>SHOP</b></button>
-    <button class="portal-tab" type="button" data-view="quests" onclick="DragonswoodNav('quests')"><span>⚔️</span><b>QUESTS</b></button>
     <button class="portal-tab" type="button" data-view="leaderboard" onclick="DragonswoodNav('leaderboard')"><span>🏆</span><b>LEADERBOARD</b></button>
     <button class="portal-tab" type="button" data-view="journal" onclick="DragonswoodNav('journal')"><span>📖</span><b>MY JOURNAL</b></button>
   </nav>
@@ -4174,7 +4174,7 @@ function localDateKey(){
   const d=new Date();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 }
-let recessState={points:0,goal:20,dateKey:""};
+let recessState={points:0,goal:10,dateKey:""};
 let petStudentGoalState={points:0,goal:250};
 let tripStudentGoalState={points:0,goal:750};
 let universalStudentState={points:0};
@@ -4230,7 +4230,7 @@ onSnapshot(doc(db,"classData","secondRecess"),snap=>{
   const data=snap.exists()?snap.data():{};
   recessState={
     points:Number(data.points||0),
-    goal:Math.max(1,Number(data.goal||20)),
+    goal:Math.max(1,Number(data.goal||10)),
     dateKey:String(data.dateKey||"")
   };
   renderSecondRecess();

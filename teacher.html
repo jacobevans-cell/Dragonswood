@@ -572,6 +572,13 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .job-by-role-row{display:grid;grid-template-columns:minmax(180px,1fr) minmax(190px,1fr) 95px;gap:8px;align-items:center;padding:9px;border:1px solid rgba(101,45,193,.28);border-radius:8px;background:rgba(5,7,23,.48)}
 @media(max-width:800px){.pass-master-row,.job-by-role-row{grid-template-columns:1fr}}
 </style>
+
+<style id="dw-v45-history-style">
+.pass-history-more{margin-top:8px;border:1px solid rgba(101,45,193,.35);border-radius:8px;padding:7px}
+.pass-history-more summary{cursor:pointer;font-weight:900;color:#7fe7ff}
+.pass-history-older{display:grid;gap:7px;margin-top:8px}
+#passArchiveRange{padding:8px;border-radius:8px;background:#07111f;color:#fff;border:1px solid #51436f}
+</style>
 </head><body>
 <header class="teacher-head"><div class="shell"><div class="teacher-title">🛡️ DRAGONSWOOD COMMAND<small>EXPLORE ACADEMY • EVANS 4–5 • TEACHER PORTAL</small></div><div class="hidden" id="signed" style="text-align:right"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
 <main class="shell teacher-main">
@@ -734,7 +741,19 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 <div class="generic-pass-live" id="genericPassLive"><div class="muted">No Out of Seat or Office passes active.</div></div>
 </div><div class="live-request-grid"><div class="card live-request-box"><h3>🚻 LIVE BATHROOM</h3><p class="pace-note">Students currently out appear here instantly. Each student gets 3 automatic passes per day; extras come here for approval.</p><div class="live-request-list" id="bathroomLiveList"><div class="muted">No students out.</div></div><h4>EXTRA PASS REQUESTS</h4><div class="live-request-list" id="bathroomRequestList"><div class="muted">No pending requests.</div></div>
 <h4>TODAY'S BATHROOM HISTORY</h4>
-<div class="live-request-list" id="bathroomHistoryList"><div class="muted">No bathroom visits recorded today.</div></div></div><div class="card live-request-box"><h3>🍎 LIVE SNACK PASSES</h3><p class="pace-note">Each student gets 2 automatic snack passes per day. After that, extra snack passes require your approval.</p><div class="live-request-list" id="snackLiveList"><div class="muted">No active snack passes.</div></div><h4>EXTRA SNACK REQUESTS</h4><div class="live-request-list" id="snackRequestList"><div class="muted">No pending snack requests.</div></div><h4>TODAY'S SNACK HISTORY</h4><div class="live-request-list" id="snackHistoryList"><div class="muted">No snack passes recorded today.</div></div></div><div class="card live-request-box"><h3>🚶 OUT OF SEAT / 🏫 OFFICE</h3><p class="pace-note">Live and historical Out of Seat / Office passes. Both are timed and stored.</p><div class="live-request-list" id="genericPassHistory"><div class="muted">No pass history yet.</div></div></div></div></div><div class="panel" id="jobs">
+<div class="live-request-list" id="bathroomHistoryList"><div class="muted">No bathroom visits recorded today.</div></div></div><div class="card live-request-box"><h3>🍎 LIVE SNACK PASSES</h3><p class="pace-note">Each student gets 2 automatic snack passes per day. After that, extra snack passes require your approval.</p><div class="live-request-list" id="snackLiveList"><div class="muted">No active snack passes.</div></div><h4>EXTRA SNACK REQUESTS</h4><div class="live-request-list" id="snackRequestList"><div class="muted">No pending snack requests.</div></div><h4>TODAY'S SNACK HISTORY</h4><div class="live-request-list" id="snackHistoryList"><div class="muted">No snack passes recorded today.</div></div></div><div class="card live-request-box"><h3>🚶 OUT OF SEAT / 🏫 OFFICE</h3><p class="pace-note">Live and historical Out of Seat / Office passes. Both are timed and stored.</p><div class="live-request-list" id="genericPassHistory"><div class="muted">No pass history yet.</div></div></div>
+    <div class="card live-request-box" style="grid-column:1/-1">
+      <h3>📚 STORED PASS ARCHIVE</h3>
+      <p class="pace-note">Persistent pass records from today and previous days.</p>
+      <select id="passArchiveRange">
+        <option value="today">Today</option>
+        <option value="yesterday">Yesterday</option>
+        <option value="7">Last 7 Days</option>
+        <option value="30">Last 30 Days</option>
+        <option value="all">All Stored</option>
+      </select>
+      <div class="live-request-list" id="passArchiveList" style="margin-top:8px"><div class="muted">No archived passes yet.</div></div>
+    </div></div></div><div class="panel" id="jobs">
 <div class="titlebar"><div><h2>🧹 GUILD JOBS &amp; AUTOMATIC PAYROLL</h2><p>Assign roles. Students check off daily. Payroll runs automatically for last week.</p></div></div>
 <div class="v29-grid">
 <div class="card"><h3>ASSIGN STUDENT BY JOB</h3><p class="pace-note">Each row is a guild job. Choose the student who owns it.</p><div class="v29-list" id="jobAssignmentRoster"></div></div>
@@ -942,7 +961,7 @@ const app=initializeApp(firebaseConfig,"DragonswoodTeacherPortal"),
       auth=getAuth(app),
       db=getFirestore(app),
       $=id=>document.getElementById(id);
-let points=0,history=[],rewards=[],scores=[],results=[],students=[],shopItems=[],purchases=[],bathroomStatuses=[],bathroomRequests=[],snackStatuses=[],snackRequests=[],pointRequests=[],classJobsConfigV29={},jobWeeksV29=[],classScheduleV29={},calendarEventsV29=[],recessState={points:0,goal:20,dateKey:""},petGoalState={points:0,goal:250},tripGoalState={points:0,goal:750},universalPointState={points:0};
+let points=0,history=[],rewards=[],scores=[],results=[],students=[],shopItems=[],purchases=[],bathroomStatuses=[],bathroomRequests=[],snackStatuses=[],snackRequests=[],pointRequests=[],passHistory=[],classJobsConfigV29={},jobWeeksV29=[],classScheduleV29={},calendarEventsV29=[],recessState={points:0,goal:20,dateKey:""},petGoalState={points:0,goal:250},tripGoalState={points:0,goal:750},universalPointState={points:0};
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
 const AVATAR_EMOJI={"dragon-purple":"🐉","dragon-green":"🐲","knight":"🛡️","wizard":"🧙","witch":"🧙‍♀️","princess":"👸","prince":"🤴","ranger":"🏹","phoenix":"🔥","wolf":"🐺","owl":"🦉","crystal":"🔮"};
 const DRAGONSWOOD_XP_THRESHOLDS=[0,200,450,750,1100,1500,1950,2450,3000,3600,4250,4950,5700,6500,7350,8250,9200,10200,11100,12000];
@@ -1096,6 +1115,7 @@ onSnapshot(collection(db,"snackRequests"),s=>{snackRequests=s.docs.map(d=>({id:d
 onSnapshot(collection(db,"pointRequests"),s=>{pointRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("pointRequests listener",e));
 onSnapshot(doc(db,"classData","passBlackout"),s=>{passBlackoutTeacher=s.exists()?s.data():{active:false};renderPassControl()},e=>console.warn("pass blackout listener",e));
 onSnapshot(collection(db,"passStatus"),s=>{genericPassStatuses=s.docs.map(d=>({id:d.id,...d.data()}));renderPassControl()},e=>console.warn("generic pass listener",e));
+onSnapshot(collection(db,"passHistory"),s=>{passHistory=s.docs.map(d=>({id:d.id,...d.data()}));renderPassArchive()},e=>console.warn("passHistory listener",e));
 onSnapshot(doc(db,"classData","classJobs"),s=>{classJobsConfigV29=s.exists()?s.data():{};renderV29Jobs()},e=>console.warn("v29 jobs",e));
 onSnapshot(collection(db,"studentJobWeeks"),s=>{jobWeeksV29=s.docs.map(d=>({id:d.id,...d.data()}));renderV29Jobs();setTimeout(runV29Payroll,250)},e=>console.warn("v29 job weeks",e));
 onSnapshot(doc(db,"classData","classSchedule"),s=>{classScheduleV29=s.exists()?s.data():{};loadScheduleDay()},e=>console.warn("v29 schedule",e));
@@ -1614,6 +1634,10 @@ async function teacherReturnGenericPass(docId){
    endedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
    visits:updated,updatedAt:serverTimestamp()
  },{merge:true});
+ if(activeId){
+   const archived=updated.find(v=>String(v?.id||'')===activeId);
+   if(archived)await setDoc(doc(db,'passHistory',activeId),{...archived,type:d.type,label:d.label||d.type,updatedAt:serverTimestamp()},{merge:true});
+ }
 }
 
 function renderPassControl(){
@@ -1743,6 +1767,52 @@ window.addEventListener("focus",()=>{
   
 });
 
+
+function collapsePassHistoryList(id,label){
+  const box=$(id);if(!box)return;
+  const rows=[...box.children].filter(x=>x.classList.contains('live-request-item'));
+  if(rows.length<=5)return;
+  const older=rows.slice(5);
+  const details=document.createElement('details');
+  details.className='pass-history-more';
+  const summary=document.createElement('summary');
+  summary.textContent=`SHOW ${older.length} OLDER ${label.toUpperCase()}`;
+  details.appendChild(summary);
+  const wrap=document.createElement('div');
+  wrap.className='pass-history-older';
+  older.forEach(x=>wrap.appendChild(x));
+  details.appendChild(wrap);
+  box.appendChild(details);
+}
+function archiveDateDiff(dateKey){
+  const today=new Date(teacherDateKey()+'T12:00:00'),d=new Date(String(dateKey||'')+'T12:00:00');
+  return Math.round((today-d)/86400000);
+}
+function renderPassArchive(){
+  const box=$('passArchiveList');if(!box)return;
+  const range=$('passArchiveRange')?.value||'today';
+  const rows=passHistory.filter(v=>{
+    const diff=archiveDateDiff(v.dateKey);
+    if(range==='today')return diff===0;
+    if(range==='yesterday')return diff===1;
+    if(range==='7')return diff>=0&&diff<7;
+    if(range==='30')return diff>=0&&diff<30;
+    return true;
+  }).sort((a,b)=>Number(b.leftMs||b.startedMs||0)-Number(a.leftMs||a.startedMs||0));
+  const render=v=>{
+    const type=v.type||'pass',icon=type==='bathroom'?'🚻':type==='snack'?'🍎':type==='office'?'🏫':'🚶';
+    const start=v.leftAtText||v.startedAtText||'—',end=v.returnedText||v.endedText||'';
+    return `<div class="live-request-item"><div><b>${icon} ${esc(v.studentName||'Student')} • ${esc(v.label||type)}</b><small>${esc(v.dateKey||'')} • ${esc(start)}${end?' → '+esc(end):' • ACTIVE'}${v.durationMinutes!=null?' • '+Number(v.durationMinutes)+' min':''}</small></div></div>`;
+  };
+  const first=rows.slice(0,5),older=rows.slice(5);
+  box.innerHTML=first.map(render).join('')||'<div class="muted">No archived passes in this range.</div>';
+  if(older.length){
+    const details=document.createElement('details');details.className='pass-history-more';
+    const summary=document.createElement('summary');summary.textContent=`SHOW ${older.length} OLDER PASSES`;details.appendChild(summary);
+    const wrap=document.createElement('div');wrap.className='pass-history-older';wrap.innerHTML=older.map(render).join('');details.appendChild(wrap);box.appendChild(details);
+  }
+}
+
 function renderLiveRequests(){
  ensureTeacherPassTimer();
  setTimeout(dwCheckTeacherAlerts,0);
@@ -1787,6 +1857,9 @@ function renderLiveRequests(){
  const vh=$('bathroomHistoryList');
  if(vh)vh.innerHTML=visits.length?visits.map(v=>`<div class="live-request-item"><div><b>🚻 ${esc(v.studentName||v.fallbackName||'Student')}</b><small>${esc(v.passType==='approved-extra'?'Approved extra pass':'Automatic pass')} • OUT ${esc(v.leftAtText||'—')} • ${v.status==='returned'?'BACK '+esc(v.returnedText||'—'):'OUT NOW'}${Number.isFinite(Number(v.durationMinutes))&&v.durationMinutes!==null?' • '+Number(v.durationMinutes)+' min':''}</small></div></div>`).join(''):'<div class="muted">No bathroom visits recorded today.</div>';
 
+ collapsePassHistoryList('bathroomHistoryList','bathroom visits');
+ collapsePassHistoryList('snackHistoryList','snack visits');
+
  document.querySelectorAll('[data-return-bath]').forEach(b=>b.onclick=async()=>{
    const status=bathroomStatuses.find(x=>x.id===b.dataset.returnBath);
    if(!status)return;
@@ -1822,6 +1895,10 @@ function renderLiveRequests(){
      releasedAt:serverTimestamp(),
      updatedAt:serverTimestamp()
    },{merge:true});
+   if(activeVisitId){
+     const archived=updated.find(v=>String(v?.id||'')===activeVisitId);
+     if(archived)batch.set(doc(db,'passHistory',activeVisitId),{...archived,type:'bathroom',label:'Bathroom',updatedAt:serverTimestamp()},{merge:true});
+   }
    await batch.commit();
    window.DWAudio?.positive();
  });
@@ -1846,6 +1923,10 @@ function renderLiveRequests(){
        endedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
        visits,updatedAt:serverTimestamp()
      },{merge:true});
+     if(activeId){
+       const archived=visits.find(v=>String(v?.id||'')===activeId);
+       if(archived)await setDoc(doc(db,'passHistory',activeId),{...archived,type:'snack',label:'Snack',updatedAt:serverTimestamp()},{merge:true});
+     }
      window.DWAudio?.positive();
    }catch(err){
      console.error("Mark snack done error",err);
@@ -2251,6 +2332,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 document.addEventListener('DOMContentLoaded',()=>{bindPollEditor();bindRandomPicker();watchTeacherPoll();});
 
 document.getElementById('passBlackoutBtn')?.addEventListener('click',togglePassBlackout);
+document.getElementById('passArchiveRange')?.addEventListener('change',renderPassArchive);
 </script>
 <script id="dragonswood-sound-engine">
 (() => {

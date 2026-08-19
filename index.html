@@ -2675,6 +2675,12 @@ function renderBathroomStudent(d){
            visits:updatedVisits,
            updatedAt:serverTimestamp()
          },{merge:true});
+         if(activeVisitId){
+           const archived=updatedVisits.find(v=>String(v?.id||'')===activeVisitId);
+           if(archived)tx.set(doc(db,'passHistory',activeVisitId),{
+             ...archived,type:'bathroom',label:'Bathroom',updatedAt:serverTimestamp()
+           },{merge:true});
+         }
 
          if(slotSnap.exists()){
            const slot=slotSnap.data();
@@ -2774,6 +2780,14 @@ function renderBathroomStudent(d){
            studentName:studentDisplayName(),
            activeVisitId:visitId,
            claimedAt:serverTimestamp(),
+           updatedAt:serverTimestamp()
+         },{merge:true});
+
+         tx.set(doc(db,'passHistory',visitId),{
+           ...visit,
+           type:'bathroom',
+           label:'Bathroom',
+           createdAt:serverTimestamp(),
            updatedAt:serverTimestamp()
          },{merge:true});
 
@@ -3082,6 +3096,12 @@ async function endGenericPass(type){
     visits:updated,
     updatedAt:serverTimestamp()
   },{merge:true});
+  if(activeId){
+    const archived=updated.find(v=>String(v?.id||'')===activeId);
+    if(archived)await setDoc(doc(db,'passHistory',activeId),{
+      ...archived,type,label:meta.label,updatedAt:serverTimestamp()
+    },{merge:true});
+  }
   window.DWAudio?.positive();
 }
 
@@ -3112,6 +3132,7 @@ async function useGenericPass(type){
 
   const currentSame=d?.dateKey===key,prior=currentSame&&Array.isArray(d?.visits)?d.visits:[],id=user.uid+'_'+type+'_'+Date.now();
   const visit={id,studentId:user.uid,studentName:studentDisplayName(),type,label:meta.label,dateKey:key,startedAt:now.toISOString(),startedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),startedMs:now.getTime(),status:'active'};
+  await setDoc(doc(db,'passHistory',id),{...visit,label:meta.label,createdAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});
   await setDoc(ref,{studentId:user.uid,studentName:studentDisplayName(),type,label:meta.label,dateKey:key,active:true,activeVisitId:id,startedAt:serverTimestamp(),startedAtText:visit.startedAtText,startedMs:visit.startedMs,visits:[...prior,visit].slice(-30),updatedAt:serverTimestamp()},{merge:true});
   window.DWAudio?.positive();
 }
@@ -3185,6 +3206,12 @@ function renderSnackStudent(d){
           endedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
           visits:updated,updatedAt:serverTimestamp()
         },{merge:true});
+        if(activeVisitId){
+          const archived=updated.find(v=>String(v?.id||'')===activeVisitId);
+          if(archived)await setDoc(doc(db,'passHistory',activeVisitId),{
+            ...archived,type:'snack',label:'Snack',updatedAt:serverTimestamp()
+          },{merge:true});
+        }
         window.DWAudio?.positive();
       }catch(err){
         console.warn('snack done',err);
@@ -3218,6 +3245,9 @@ function renderSnackStudent(d){
           passType:auto?'automatic':'approved-extra',passNumber:nextUsed,
           startedAt:now.toISOString(),startedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
           startedMs:now.getTime(),endedAt:null,endedText:'',durationMinutes:null,status:'active'};
+        await setDoc(doc(db,'passHistory',id),{
+          ...visit,type:'snack',label:'Snack',createdAt:serverTimestamp(),updatedAt:serverTimestamp()
+        },{merge:true});
         await setDoc(doc(db,'snackStatus',user.uid),{
           studentId:user.uid,studentName:studentDisplayName(),dateKey:key,
           passesUsed:nextUsed,approvalCredits:nextCredits,active:true,activeVisitId:id,

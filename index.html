@@ -2149,7 +2149,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .scribe-portfolio-list{display:grid;gap:8px}.scribe-portfolio-item{padding:11px;border:1px solid #3c2a63;border-radius:9px;background:#07091f}.scribe-portfolio-item b{color:#fff0a2}.scribe-portfolio-item small{display:block;margin-top:3px}.scribe-portfolio-item p{margin:6px 0 0;white-space:pre-wrap}
 @media(max-width:900px){.scribe-grid{grid-template-columns:1fr}.scribe-growth-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
-</head><body><!-- DRAGONSWOOD BUILD v48.9 COSMIC+JOBS -->
+</head><body><!-- DRAGONSWOOD v50.1 SCRIBE LIVE FIX --><!-- DRAGONSWOOD BUILD v48.9 COSMIC+JOBS -->
 <header class="topbar">
 <div class="shell">
   <div class="accountbar hidden" id="account"><span id="accountEmail"></span><button id="profileBtn">Profile</button><button id="signOutBtn">Sign Out</button></div>
@@ -5582,19 +5582,44 @@ async function ensureResponse(){
    await setDoc(ref,{sessionId:activeSession.id,studentId:scribeUser.uid,studentName:scribeUser.displayName||scribeUser.email?.split("@")[0]||"Student",status:"draft",responseText:"",wordCount:0,startedMs:Date.now(),createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
  }
 }
-function watchMyResponse(){
+async function watchMyResponse(){
  if(responseUnsub){responseUnsub();responseUnsub=null}
  if(!scribeUser||!activeSession){myResponse=null;renderActive();return}
+ // IMPORTANT: render the mission immediately. Previously the page waited for a
+ // response-document listener; a brand-new student had no document yet, so
+ // Firestore could deny that first read and the UI incorrectly stayed on
+ // "No active Quickwrite" even though the teacher had launched one.
+ myResponse=null;
+ renderActive();
+ try{
+   await ensureResponse();
+ }catch(e){
+   console.warn("Could not create writing draft yet",e);
+   $("scribeSubmitStatus").textContent="Writing mission loaded, but your draft could not be created. Tell your teacher.";
+   return;
+ }
  const id=sessionResponseId(activeSession.id,scribeUser.uid);
- responseUnsub=onSnapshot(doc(db,"writingResponses",id),snap=>{myResponse=snap.exists()?{id:snap.id,...snap.data()}:null;renderActive()});
- ensureResponse().catch(console.warn);
+ responseUnsub=onSnapshot(
+   doc(db,"writingResponses",id),
+   snap=>{myResponse=snap.exists()?{id:snap.id,...snap.data()}:null;renderActive()},
+   err=>{console.warn("writing response listener",err);renderActive()}
+ );
 }
 function watchSessions(){
  if(sessionUnsub){sessionUnsub();sessionUnsub=null}
- sessionUnsub=onSnapshot(query(collection(db,"writingSessions"),where("status","==","active")),snap=>{
-   const rows=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-   activeSession=rows[0]||null;watchMyResponse();
- });
+ sessionUnsub=onSnapshot(
+   query(collection(db,"writingSessions"),where("status","==","active")),
+   snap=>{
+     const rows=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+     activeSession=rows[0]||null;
+     watchMyResponse();
+   },
+   err=>{
+     console.error("writing session listener",err);
+     activeSession=null;renderActive();
+     $("scribeSubmitStatus").textContent="Could not load the writing mission. Refresh once; if this remains, tell your teacher.";
+   }
+ );
 }
 function renderPortfolio(){
  const rows=myResponses.filter(x=>x.status==="submitted").sort((a,b)=>(b.submittedAt?.seconds||0)-(a.submittedAt?.seconds||0));

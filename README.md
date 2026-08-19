@@ -1,6 +1,6 @@
 # Dragonswood
 
-**Current build: v50.0 — Scribe Arena**
+**Current build: v50.1 — Scribe Live Fix**
 
 ## New in v50
 Dragonswood now includes a first working Scribe Arena / Quickwrite system.
@@ -60,3 +60,11 @@ Do not put the OpenAI secret in GitHub or any HTML file.
 
 ## Current Scribe Arena scope
 v50 establishes the complete Quickwrite storage, teacher workflow, AI grading, portfolio, and growth foundation. Anonymous peer duels/finalist voting can now be layered onto the `writingVotes` collection without changing the core response model.
+
+
+## v50.1 — Scribe Live Fix
+- Fixed a first-open race condition that could leave students seeing **No active Quickwrite** after the teacher had launched a mission.
+- The active mission now renders immediately, then Dragonswood creates the student's draft, then attaches the response listener.
+- Added visible error feedback if a writing-session or response listener fails.
+- Firestore writing rules now also recognize an authenticated Dragonswood test/student account that already has a `students/{uid}` profile. This supports the Technology test student without opening writing access to arbitrary accounts.
+- The AI `gradeWriting` Cloud Function does not need to be redeployed for this fix.

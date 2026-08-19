@@ -1,6 +1,6 @@
 # Dragonswood
 
-**Current build: v49.5**
+**Current build: v49.6**
 
 ## Student portal
 Home • Daily Missions • Games • Jobs • Schedule • Calendar • Poll • Shop • Leaderboard • My Journal
@@ -77,3 +77,11 @@ v49.1 requires no new Firebase changes. Continue using the Firestore rules from 
   - Next Break / Last School Day / Summer Break countdowns
 - The dedicated Daily Quest page still keeps the same progress interface.
 - No Firebase changes required.
+
+
+## v49.6
+- Fixed the Daily Missions progress dashboard CSS not applying on the student portal.
+- The 180-day journey is forced into one horizontal scroll row instead of rendering 180 symbols vertically.
+- Restored boxed styling for Daily Work progress, Today status, Journey, and school-year countdowns.
+- Countdown cards render as a three-column desktop grid and stack cleanly on mobile.
+- Preserved the 12 / 180 legacy completion baseline and all v49.5 completion/unlock logic.

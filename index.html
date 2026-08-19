@@ -1939,6 +1939,152 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .pass-return-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:8px;border:1px solid rgba(2,204,254,.35);border-radius:8px;background:rgba(5,7,23,.48)}
 .pass-return-row button{margin:0!important;width:auto!important;white-space:nowrap}
 </style>
+
+<style id="v496-daily-missions-layout-fix">
+/* v49.6: guaranteed styling for Daily Missions progress dashboard */
+#view-quests .daily-missions-journey{
+  box-sizing:border-box;
+  width:100%;
+  margin:14px 0 0;
+  padding:14px;
+  border:1px solid rgba(144,91,220,.65);
+  border-radius:14px;
+  background:linear-gradient(180deg,rgba(8,8,38,.90),rgba(5,12,34,.86));
+  overflow:hidden;
+}
+#view-quests .dm-progress-head{
+  display:grid;
+  grid-template-columns:minmax(170px,190px) minmax(0,1fr);
+  gap:12px;
+  margin-bottom:14px;
+}
+#view-quests .dm-progress-head>div{
+  min-width:0;
+  padding:11px 13px;
+  border:1px solid #49346f;
+  border-radius:11px;
+  background:#090b2d;
+}
+#view-quests .dm-progress-head small{
+  display:block;
+  color:#c8badc;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.7px;
+}
+#view-quests .dm-progress-head strong{
+  display:block;
+  margin-top:4px;
+  color:#fff0a2;
+  font:900 23px/1.1 Georgia,serif;
+}
+#view-quests .dm-progress-head span{
+  display:block;
+  margin-top:4px;
+  color:#cfe6f6;
+  font-size:11px;
+}
+#view-quests .dm-journey-block,
+#view-quests .dm-countdown-block{
+  display:block;
+  width:100%;
+  margin-top:13px;
+  padding:12px;
+  box-sizing:border-box;
+  border:1px solid rgba(103,71,157,.55);
+  border-radius:11px;
+  background:rgba(5,7,31,.70);
+}
+#view-quests .dm-journey-block>b,
+#view-quests .dm-countdown-block>b{
+  display:block;
+  margin:0 0 9px;
+  color:#f3efff;
+  font-size:14px;
+}
+#view-quests .dm-maptrack{
+  box-sizing:border-box;
+  width:100%;
+  display:flex !important;
+  flex-direction:row !important;
+  flex-wrap:nowrap !important;
+  align-items:center;
+  gap:7px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  padding:5px 2px 9px;
+  scrollbar-width:thin;
+}
+#view-quests .dm-node{
+  box-sizing:border-box;
+  flex:0 0 38px !important;
+  width:38px !important;
+  min-width:38px !important;
+  height:38px !important;
+  min-height:38px !important;
+  display:grid !important;
+  place-items:center;
+  padding:0 !important;
+  margin:0 !important;
+  border-radius:999px;
+  border:1px solid #493277;
+  background:#130d35;
+  color:#8f84a8;
+  font-size:11px;
+  line-height:1;
+  font-weight:900;
+}
+#view-quests .dm-node.done{
+  background:#11302a;
+  color:#85eab1;
+  border-color:#378361;
+}
+#view-quests .dm-node.today{
+  background:linear-gradient(145deg,#7529d0,#0787b2);
+  border-color:#ffe17e;
+  color:#fff;
+  box-shadow:0 0 14px rgba(159,76,255,.55);
+}
+#view-quests .dm-node.missed{
+  background:#24152e;
+  color:#ca9aaa;
+  border-color:#70425e;
+}
+#view-quests .dm-countdown-grid{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:10px;
+  width:100%;
+}
+#view-quests .dm-count-card{
+  min-width:0;
+  padding:12px;
+  border:1px solid #49346f;
+  border-radius:10px;
+  background:#090b2d;
+}
+#view-quests .dm-count-card small{
+  display:block;
+  color:#c8badc;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.7px;
+}
+#view-quests .dm-count-card strong{
+  display:block;
+  margin:4px 0;
+  color:#fff0a2;
+  font:900 21px/1.15 Georgia,serif;
+}
+#view-quests .dm-count-card span{
+  color:#d4e8ff;
+  font-size:11px;
+}
+@media(max-width:760px){
+  #view-quests .dm-progress-head{grid-template-columns:1fr;}
+  #view-quests .dm-countdown-grid{grid-template-columns:1fr !important;}
+}
+</style>
 </head><body><!-- DRAGONSWOOD BUILD v48.9 COSMIC+JOBS -->
 <header class="topbar">
 <div class="shell">
@@ -3419,7 +3565,13 @@ function dwRenderDailyMissionsJourney(){
         .filter(x=>String(x.id||"").endsWith("_v48")&&x.status==="complete"&&x.session==="morning")
         .map(x=>Number(x.day||0))
     );
-    const currentDay=Math.max(1,12+1); // current school journey is Day 13 at this build point
+    const schoolStart=new Date(2026,7,4), now=new Date();
+    let currentDay=1;
+    for(let d=new Date(schoolStart); d<=now; d.setDate(d.getDate()+1)){
+      const dow=d.getDay();
+      if(dow>=1&&dow<=4) currentDay++;
+    }
+    currentDay=Math.max(1,Math.min(180,currentDay-1));
     let html="";
     for(let i=1;i<=180;i++){
       const done=i<=12||completedDays.has(i);

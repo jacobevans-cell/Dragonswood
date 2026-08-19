@@ -1,6 +1,6 @@
 # Dragonswood
 
-**Current build: v49.1**
+**Current build: v49.2**
 
 ## Student portal
 Home • Daily Missions • Games • Jobs • Schedule • Calendar • Poll • Shop • Leaderboard • My Journal
@@ -36,3 +36,13 @@ v49.1 requires no new Firebase changes. Continue using the Firestore rules from 
 - **v48.8:** Initial job check-off fix.
 - **v48.7:** Added Cosmic Architect.
 - **v48.6:** Subject-organized Games library and Elemental Laboratory.
+
+
+## v49.2
+- Added an optional Level-Up Challenge to Daily Missions between the required Daily Quest and The Witches eReader.
+- Level-Up automatically serves one level above the student's assigned track: 4th → 5th, 5th → Challenge (early-mid 6th).
+- Level-Up does not change the teacher-assigned Daily Mission track.
+- Level-Up progress/reward claims are separated from required Daily Mission claims.
+- Teacher sign-in button made explicitly active/high-contrast.
+- Teacher Auth now uses browser session persistence before email/password sign-in to reduce teacher/student testing-session collisions.
+- No new Firestore schema is introduced by the Level-Up feature.

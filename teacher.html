@@ -588,7 +588,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 </head><body>
 <header class="teacher-head"><div class="shell"><div class="teacher-title">🛡️ DRAGONSWOOD COMMAND<small>EXPLORE ACADEMY • EVANS 4–5 • TEACHER PORTAL</small></div><div class="hidden" id="signed" style="text-align:right"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
 <main class="shell teacher-main">
-<section class="card" id="login" style="max-width:520px;margin:45px auto"><h1>Teacher Login</h1><form id="loginForm"><div class="field"><label>Email</label><input id="email" required="" type="email"/></div><div class="field"><label>Password</label><input id="password" required="" type="password"/></div><button style="width:100%">SIGN IN</button><div id="error" style="color:#ff9db5;margin-top:8px"></div></form></section>
+<section class="card" id="login" style="max-width:520px;margin:45px auto"><h1>Teacher Login</h1><form id="loginForm"><div class="field"><label>Email</label><input id="email" required="" type="email"/></div><div class="field"><label>Password</label><input id="password" required="" type="password"/></div><button id="teacherSignInBtn" type="submit" style="width:100%;opacity:1!important;filter:none!important;background:linear-gradient(90deg,#7b2cd3,#048eb6)!important;color:white!important;border:1px solid #f4c95d!important;cursor:pointer!important">SIGN IN</button><div id="error" style="color:#ff9db5;margin-top:8px"></div></form></section>
 <section class="hidden" id="dash">
 <div class="frame bevel tabs command-tabs">
 <button class="tab active" data-p="students">👥 STUDENTS</button>
@@ -943,7 +943,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 </div>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import {getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged,setPersistence,browserSessionPersistence} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {getFirestore,doc,getDoc,setDoc,collection,onSnapshot,addDoc,deleteDoc,getDocs,writeBatch,serverTimestamp,query,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2", "measurementId": "G-LPRLDGVBD2"},TEACHER="jacobicusjax@gmail.com";
@@ -991,7 +991,10 @@ const DRAGONSWOOD_STARTER_CATALOG=[{"id":"reward_drawing_break","name":"Drawing 
 $("loginForm").onsubmit = async e => {
   e.preventDefault();
   $("error").textContent = "";
+  const signBtn=$("teacherSignInBtn");
+  if(signBtn){signBtn.disabled=true;signBtn.textContent="SIGNING IN…";}
   try {
+    await setPersistence(auth,browserSessionPersistence);
     const cred = await signInWithEmailAndPassword(auth, $("email").value.trim(), $("password").value);
     if (normalizedEmail(cred.user.email) !== normalizedEmail(TEACHER)) {
       $("error").textContent = `That account signed in successfully, but it is not the authorized teacher account (${TEACHER}).`;
@@ -999,6 +1002,8 @@ $("loginForm").onsubmit = async e => {
   } catch (err) {
     console.error("Teacher login error:", err);
     $("error").textContent = `Sign in failed: ${err.code || "unknown"} — ${err.message || ""}`;
+  } finally {
+    if(signBtn){signBtn.disabled=false;signBtn.textContent="SIGN IN";}
   }
 };
 $("logout").onclick=()=>signOut(auth);

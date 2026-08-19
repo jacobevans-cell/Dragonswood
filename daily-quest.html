@@ -111,6 +111,113 @@ function numQ(skill,seed,i){const r=hashSeed(seed+i*37),low=skill.toLowerCase();
  else {a=Math.floor(r()*90)+10;b=Math.floor(r()*90)+10;ans=a+b;prompt=`${a} + ${b} = ?`;choices=uniqChoices(ans,[ans+10,ans-10,a-b]);}
  return {prompt,answer:String(ans),choices:shuffle(r,choices.map(String))};
 }
+
+// Large, local accepted-answer bank for open-response word relationships.
+// Curated for elementary/middle-grade use so correct near-equivalents are not rejected merely
+// because the generator stored one preferred answer.
+const WORD_RELATION_BANK={
+ synonym:{
+  rapid:["quick","fast","swift","speedy","brisk"],
+  tiny:["small","little","miniature","minute"],
+  fortunate:["lucky","favored","blessed"],
+  ancient:["old","aged","antique","archaic"],
+  generous:["giving","charitable","kind","unselfish"],
+  increase:["grow","rise","raise","expand","enlarge"],
+  careful:["cautious","attentive","watchful","thorough"],
+  brave:["courageous","bold","fearless","valiant"],
+  calm:["peaceful","quiet","tranquil","serene"],
+  difficult:["hard","challenging","tough","demanding"],
+  easy:["simple","effortless","uncomplicated"],
+  enormous:["huge","gigantic","immense","massive"],
+  famous:["well-known","renowned","celebrated","noted"],
+  important:["significant","essential","major","key"],
+  intelligent:["smart","clever","bright","wise"],
+  joyful:["happy","cheerful","glad","delighted"],
+  quiet:["silent","hushed","still"],
+  strange:["odd","unusual","peculiar","weird"],
+  strong:["powerful","sturdy","tough","robust"],
+  begin:["start","commence"],
+  finish:["end","complete","conclude"],
+  choose:["select","pick"],
+  explain:["clarify","describe","interpret"],
+  examine:["inspect","study","analyze"],
+  create:["make","produce","construct","build"],
+  discover:["find","uncover","detect"],
+  demonstrate:["show","display","illustrate"],
+  compare:["contrast","examine","relate"],
+  evidence:["proof","support","confirmation"],
+  idea:["thought","concept","notion"],
+  result:["outcome","effect","consequence"],
+  method:["way","procedure","process","approach"]
+ },
+ antonym:{
+  ancient:["modern","new","recent","current","contemporary","newest"],
+  generous:["selfish","stingy","greedy","ungenerous"],
+  increase:["decrease","reduce","lessen","diminish","decline"],
+  rapid:["slow","sluggish","leisurely"],
+  tiny:["large","big","huge","enormous","gigantic"],
+  fortunate:["unlucky","unfortunate"],
+  careful:["careless","reckless","inattentive"],
+  brave:["cowardly","fearful","afraid","timid"],
+  calm:["agitated","excited","restless","wild"],
+  difficult:["easy","simple","effortless"],
+  enormous:["tiny","small","little","miniature"],
+  famous:["unknown","obscure"],
+  important:["unimportant","insignificant","minor","trivial"],
+  intelligent:["unintelligent","foolish","stupid"],
+  joyful:["sad","unhappy","miserable","sorrowful"],
+  quiet:["loud","noisy"],
+  strange:["normal","ordinary","usual","familiar"],
+  strong:["weak","frail","feeble"],
+  begin:["end","finish","stop"],
+  finish:["begin","start"],
+  choose:["reject","refuse"],
+  create:["destroy","ruin","demolish"],
+  accept:["reject","refuse","decline"],
+  arrive:["leave","depart"],
+  combine:["separate","divide","split"],
+  expand:["contract","shrink","reduce"],
+  include:["exclude","omit"],
+  maximum:["minimum","least","lowest"],
+  positive:["negative"],
+  permanent:["temporary","brief"],
+  visible:["invisible","hidden","unseen"],
+  complex:["simple","easy","straightforward"],
+  accurate:["inaccurate","wrong","incorrect"],
+  similar:["different","dissimilar","unlike"]
+ }
+};
+function normalizeTypedAnswer(v){
+ return String(v??"").trim().toLowerCase()
+  .replace(/[“”"'`]/g,"")
+  .replace(/[.,!?;:]+$/g,"")
+  .replace(/\s+/g," ");
+}
+function relationshipFromPrompt(prompt){
+ const p=String(prompt||"").toLowerCase();
+ if(p.includes("antonym")||p.includes("opposite"))return "antonym";
+ if(p.includes("synonym")||p.includes("similar meaning"))return "synonym";
+ return "";
+}
+function targetWordFromPrompt(prompt){
+ const p=String(prompt||"");
+ let m=p.match(/(?:antonym|synonym)\s+for\s+["“]?([^"”?.]+)["”]?/i);
+ if(!m)m=p.match(/(?:opposite|similar meaning)\s+(?:of|for)\s+["“]?([^"”?.]+)["”]?/i);
+ return normalizeTypedAnswer(m?.[1]||"");
+}
+function acceptedTypedAnswers(q){
+ const set=new Set([normalizeTypedAnswer(q?.answer)]);
+ (q?.acceptedAnswers||[]).forEach(x=>set.add(normalizeTypedAnswer(x)));
+ const rel=relationshipFromPrompt(q?.prompt),word=targetWordFromPrompt(q?.prompt);
+ if(rel&&word&&WORD_RELATION_BANK[rel]?.[word]){
+   WORD_RELATION_BANK[rel][word].forEach(x=>set.add(normalizeTypedAnswer(x)));
+ }
+ return [...set].filter(Boolean);
+}
+function typedAnswerIsCorrect(q,value){
+ return acceptedTypedAnswers(q).includes(normalizeTypedAnswer(value));
+}
+
 function elaQ(skill,seed,i){const r=hashSeed(seed+i*41),low=skill.toLowerCase();let prompt,answer,choices;
  const wom=skill.match(/Word of the Day • ([^•]+)/i)||skill.match(/Word Application • ([^•]+)/i);if(wom){const w=wom[1].trim();const modes=[`Which strategy best helps determine the meaning of "${w}"?`,`Which sentence best shows careful academic use of "${w}"?`,`When you meet "${w}" in a text, what should you examine first?`];prompt=modes[i%3];if(i%3===0){answer="Use context and meaningful word parts.";choices=[answer,"Skip the word completely.","Choose the longest definition.","Replace it with any familiar word."]}else if(i%3===1){answer=`Use ${w} in a sentence that clearly shows its meaning.`;choices=[answer,`Write ${w} by itself.`,`Copy the sentence without thinking.`,`Choose a random synonym.`]}else{answer="The surrounding sentence and paragraph.";choices=[answer,"Only the first letter.","The page number.","The punctuation mark only."]}return {prompt,answer:String(answer),choices:shuffle(r,choices.map(String)),wordOfDay:w};}
  const banks={
@@ -151,7 +258,9 @@ function elaQ(skill,seed,i){const r=hashSeed(seed+i*41),low=skill.toLowerCase();
    ];
    const g=general[(Math.abs(seed)+i)%general.length];prompt=g.p;answer=g.a;choices=g.c;
  }
- return {prompt,answer:String(answer),choices:shuffle(r,choices.map(String))};
+ const rel=relationshipFromPrompt(prompt),target=targetWordFromPrompt(prompt);
+ const acceptedAnswers=(rel&&target&&WORD_RELATION_BANK[rel]?.[target])?[...WORD_RELATION_BANK[rel][target]]:[];
+ return {prompt,answer:String(answer),choices:shuffle(r,choices.map(String)),acceptedAnswers};
 }
 function makeQ(task,i){
  const subject=String(task?.subject||"").trim().toUpperCase();
@@ -347,7 +456,7 @@ function rangerEngine(q,t){$("arena").innerHTML=`${promptBlock(q,t)}<div class="
 function potionEngine(q,t){$("arena").innerHTML=`${promptBlock(q,t)}<div class="visual-note">Drag the correct ingredient into the cauldron.</div><div class="ingredients">${q.choices.map(c=>`<div draggable="true" class="ingredient" data-v="${c}">🧪 ${c}</div>`).join("")}</div><div class="cauldron" id="cauldron">✨ DROP INGREDIENT HERE ✨</div>`;document.querySelectorAll(".ingredient").forEach(x=>x.ondragstart=e=>e.dataTransfer.setData("text",x.dataset.v));$("cauldron").ondragover=e=>e.preventDefault();$("cauldron").ondrop=e=>{e.preventDefault();const v=e.dataTransfer.getData("text"),ok=v===q.answer;award(ok);if(ok){$("cauldron").textContent="💥 POTION COMPLETE!";advance()}}}
 function bridgeEngine(q,t){$("arena").innerHTML=`${promptBlock(q,t)}<div class="visual-note">Correct answers build the bridge.</div><div class="bridge" id="bridge">${"<div class='plank'></div>".repeat(qIndex)}</div><div class="choices">${q.choices.map(c=>`<button class="choice">${c}</button>`).join("")}</div>`;document.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{const ok=b.textContent===q.answer;award(ok);if(ok){$("bridge").insertAdjacentHTML("beforeend","<div class='plank'></div>");advance()}})}
 function gateEngine(q,t){$("arena").innerHTML=`${promptBlock(q,t)}<div class="visual-note">Fly through the correct gate.</div><div class="gates">${q.choices.slice(0,2).map(c=>`<button class="gate">🐉<br>${c}</button>`).join("")}</div>`;if(!q.choices.slice(0,2).includes(q.answer)){const g=document.querySelectorAll(".gate")[1];g.innerHTML=`🐉<br>${q.answer}`};document.querySelectorAll(".gate").forEach(b=>b.onclick=()=>{const v=b.innerText.split("\n").pop(),ok=v===q.answer;award(ok);if(ok)advance()})}
-function runeEngine(q,t){$("arena").innerHTML=`${promptBlock(q,t)}<div class="visual-note">Type the answer to unlock the rune.</div><div class="runeinput"><input id="rin" autocomplete="off"><button id="runlock">UNLOCK 🔐</button></div>`;$("runlock").onclick=()=>{const ok=$("rin").value.trim().toLowerCase()===q.answer.toLowerCase();award(ok);if(ok)advance()};$("rin").onkeydown=e=>{if(e.key==="Enter")$("runlock").click()}}
+function runeEngine(q,t){$("arena").innerHTML=`${promptBlock(q,t)}<div class="visual-note">Type a correct answer to unlock the rune. Equivalent vocabulary answers are accepted when the question allows more than one.</div><div class="runeinput"><input id="rin" autocomplete="off"><button id="runlock">UNLOCK 🔐</button></div>`;$("runlock").onclick=()=>{const ok=typedAnswerIsCorrect(q,$("rin").value);award(ok);if(ok)advance()};$("rin").onkeydown=e=>{if(e.key==="Enter")$("runlock").click()}}
 function crystalEngine(q,t){
  const cards=shuffle(hashSeed(q.prompt.length+taskIndex*97+qIndex*31),q.choices);
  $("arena").innerHTML=`${promptBlock(q,t)}<div class="visual-note">💎 CRYSTAL HUNT: Tap the crystal that contains the correct academic answer.</div><div class="crystals">${cards.map(c=>`<button class="crystal crystal-answer" data-v="${String(c).replaceAll('"','&quot;')}">💎<br>${c}</button>`).join("")}</div>`;

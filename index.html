@@ -2148,8 +2148,10 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .scribe-growth-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px}.scribe-growth-grid>div{padding:10px;border:1px solid #423269;border-radius:9px;background:#080a26}.scribe-growth-grid small{display:block;color:#bcb1cf;font-size:9px;font-weight:900}.scribe-growth-grid b{display:block;color:#fff0a2;font-size:25px;margin-top:3px}
 .scribe-portfolio-list{display:grid;gap:8px}.scribe-portfolio-item{padding:11px;border:1px solid #3c2a63;border-radius:9px;background:#07091f}.scribe-portfolio-item b{color:#fff0a2}.scribe-portfolio-item small{display:block;margin-top:3px}.scribe-portfolio-item p{margin:6px 0 0;white-space:pre-wrap}
 @media(max-width:900px){.scribe-grid{grid-template-columns:1fr}.scribe-growth-grid{grid-template-columns:repeat(2,1fr)}}
+
+#scribeSubmitBtn:disabled,#scribeGradeBtn:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.55)}
 </style>
-</head><body><!-- DRAGONSWOOD v50.1 SCRIBE LIVE FIX --><!-- DRAGONSWOOD BUILD v48.9 COSMIC+JOBS -->
+</head><body><!-- DRAGONSWOOD v50.3 DRAFT CREATE FIX --><!-- DRAGONSWOOD BUILD v48.9 COSMIC+JOBS -->
 <header class="topbar">
 <div class="shell">
   <div class="accountbar hidden" id="account"><span id="accountEmail"></span><button id="profileBtn">Profile</button><button id="signOutBtn">Sign Out</button></div>
@@ -5595,7 +5597,7 @@ async function watchMyResponse(){
    await ensureResponse();
  }catch(e){
    console.warn("Could not create writing draft yet",e);
-   $("scribeSubmitStatus").textContent="Writing mission loaded, but your draft could not be created. Tell your teacher.";
+   $("scribeSubmitStatus").textContent=`❌ Draft could not be created: ${e?.code||""} ${e?.message||"Tell your teacher."}`;
    return;
  }
  const id=sessionResponseId(activeSession.id,scribeUser.uid);
@@ -5650,24 +5652,53 @@ $("scribeResponse")?.addEventListener("input",e=>{
  },650);
 });
 $("scribeSubmitBtn")?.addEventListener("click",async()=>{
- if(!scribeUser||!activeSession)return;
+ const btn=$("scribeSubmitBtn"),status=$("scribeSubmitStatus");
+ if(!scribeUser||!activeSession){if(status)status.textContent="Writing mission is not ready yet. Refresh once.";return}
  const text=$("scribeResponse").value.trim(),wc=words(text),min=Number(activeSession.minWords||0);
- if(wc<min){$("scribeSubmitStatus").textContent=`Keep writing: ${wc}/${min} words.`;return}
- const id=sessionResponseId(activeSession.id,scribeUser.uid),metrics=localMetrics(text);
- await setDoc(doc(db,"writingResponses",id),{
-   responseText:text,...metrics,status:"submitted",sessionTitle:activeSession.title||"Quickwrite",writingType:activeSession.writingType||"Writing",targetSkill:activeSession.targetSkill||"",prompt:activeSession.prompt||"",submittedAt:serverTimestamp(),updatedAt:serverTimestamp()
- },{merge:true});
- $("scribeSubmitStatus").textContent="✅ Quickwrite saved to your portfolio.";
+ if(wc<min){if(status)status.textContent=`Keep writing: ${wc}/${min} words.`;return}
+ btn.disabled=true;btn.textContent="📜 SUBMITTING…";
+ if(status)status.textContent="Saving your Quickwrite…";
+ try{
+   clearTimeout(saveTimer);
+   const id=sessionResponseId(activeSession.id,scribeUser.uid),metrics=localMetrics(text);
+   await setDoc(doc(db,"writingResponses",id),{
+     responseText:text,...metrics,status:"submitted",
+     sessionTitle:activeSession.title||"Quickwrite",
+     writingType:activeSession.writingType||"Writing",
+     targetSkill:activeSession.targetSkill||"",
+     prompt:activeSession.prompt||"",
+     submittedAt:serverTimestamp(),updatedAt:serverTimestamp()
+   },{merge:true});
+   // Update local state immediately instead of waiting on Firestore's listener.
+   myResponse={...(myResponse||{}),id,status:"submitted",responseText:text,...metrics};
+   renderActive();
+   if(status)status.textContent="✅ Quickwrite submitted and saved to your portfolio. AI feedback is now unlocked.";
+ }catch(e){
+   console.error("Quickwrite submit failed",e);
+   btn.disabled=false;btn.textContent="📜 SUBMIT QUICKWRITE";
+   if(status)status.textContent=`❌ Could not submit: ${e?.code||""} ${e?.message||"Unknown error"}`;
+ }
 });
 $("scribeGradeBtn")?.addEventListener("click",async()=>{
- if(!scribeUser||!activeSession||myResponse?.status!=="submitted")return;
- const btn=$("scribeGradeBtn");btn.disabled=true;btn.textContent="✨ ANALYZING…";$("scribeSubmitStatus").textContent="Dragonswood is analyzing your writing…";
+ const btn=$("scribeGradeBtn"),status=$("scribeSubmitStatus");
+ if(!scribeUser||!activeSession){if(status)status.textContent="Writing mission is not ready yet.";return}
+ if(myResponse?.status!=="submitted"){if(status)status.textContent="Submit your Quickwrite first. AI feedback unlocks after submission.";return}
+ btn.disabled=true;btn.textContent="✨ ANALYZING…";if(status)status.textContent="Dragonswood is sending your writing to the AI grader…";
  try{
    const call=httpsCallable(functions,"gradeWriting");
-   await call({responseId:myResponse.id});
-   $("scribeSubmitStatus").textContent="✅ AI feedback added. Your teacher can review it.";
- }catch(e){console.error(e);$("scribeSubmitStatus").textContent=`AI grading is not connected yet: ${e?.message||"deploy the Firebase function first."}`}
- finally{btn.textContent="✨ GET AI FEEDBACK";renderActive()}
+   const result=await call({responseId:myResponse.id});
+   if(result?.data?.feedback){
+     myResponse={...myResponse,aiFeedback:result.data.feedback,aiStatus:"complete"};
+     renderFeedback();
+   }
+   if(status)status.textContent=result?.data?.cached?"✅ Existing AI feedback loaded.":"✅ AI feedback complete. Your teacher can review it.";
+ }catch(e){
+   console.error("AI grading failed",e);
+   if(status)status.textContent=`❌ AI grading error: ${e?.code||""} ${e?.message||"Check the deployed gradeWriting function."}`;
+ }finally{
+   btn.textContent="✨ GET AI FEEDBACK";
+   btn.disabled=myResponse?.status!=="submitted";
+ }
 });
 onAuthStateChanged(auth,u=>{
  scribeUser=u||null;

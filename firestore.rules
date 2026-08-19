@@ -18,6 +18,14 @@ service cloud.firestore {
         && request.auth.token.email.matches('.*@explore[.]academy$');
     }
 
+    // Explore student accounts plus any authenticated Dragonswood test/student
+    // account that already has a teacher-managed student profile.
+    function isDragonswoodStudent() {
+      return isExploreStudent()
+        || (request.auth != null
+            && exists(/databases/$(database)/documents/students/$(request.auth.uid)));
+    }
+
     function isOwner(uid) {
       return request.auth != null && request.auth.uid == uid;
     }
@@ -149,8 +157,16 @@ service cloud.firestore {
                       )
                     );
 
+      // Existing responses are private to the owner. For a brand-new response,
+      // the document does not exist yet, so resource.data cannot identify the
+      // owner. The response ID is deliberately `${sessionId}_${uid}`, allowing
+      // the student to read/check only the document whose ID ends in their UID.
       allow read: if isTeacher()
-                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+                  || (isSignedIn()
+                      && (
+                        responseId.matches('.*_' + request.auth.uid)
+                        || resource.data.studentId == request.auth.uid
+                      ));
 
       allow update, delete: if isTeacher();
     }
@@ -464,5 +480,51 @@ service cloud.firestore {
     match /{document=**} {
       allow read, write: if false;
     }
+
+
+    // ============================================================
+    // DRAGONSWOOD v50 — SCRIBE ARENA / WRITING PORTFOLIO
+    // ============================================================
+    match /writingSessions/{sessionId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isTeacher();
+    }
+
+    match /writingResponses/{responseId} {
+      // Students can read only their own writing; teacher can read all.
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+
+      // Students create only their own draft/response record.
+      allow create: if isDragonswoodStudent()
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.sessionId is string
+                    && request.resource.data.responseText is string
+                    && request.resource.data.responseText.size() <= 12000
+                    && request.resource.data.status in ['draft','submitted'];
+
+      // Students may edit/submit their own writing, but cannot write AI or teacher grades.
+      allow update: if isDragonswoodStudent()
+                    && resource.data.studentId == request.auth.uid
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+                      'responseText','wordCount','sentenceCount','paragraphCount',
+                      'capitalizedSentenceStarts','hasEndingPunctuation',
+                      'status','sessionTitle','writingType','targetSkill','prompt',
+                      'submittedAt','updatedAt'
+                    ])
+                    && request.resource.data.responseText is string
+                    && request.resource.data.responseText.size() <= 12000;
+
+      allow update, delete: if isTeacher();
+    }
+
+    match /writingVotes/{voteId} {
+      allow read: if isTeacher();
+      allow create: if isDragonswoodStudent()
+                    && request.resource.data.studentId == request.auth.uid;
+      allow update, delete: if isTeacher();
+    }
+
   }
 }

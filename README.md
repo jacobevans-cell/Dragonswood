@@ -1,6 +1,6 @@
 # Dragonswood
 
-**Current build: v50.1 — Scribe Live Fix**
+**Current build: v50.3 — Draft Create Fix**
 
 ## New in v50
 Dragonswood now includes a first working Scribe Arena / Quickwrite system.
@@ -68,3 +68,22 @@ v50 establishes the complete Quickwrite storage, teacher workflow, AI grading, p
 - Added visible error feedback if a writing-session or response listener fails.
 - Firestore writing rules now also recognize an authenticated Dragonswood test/student account that already has a `students/{uid}` profile. This supports the Technology test student without opening writing access to arbitrary accounts.
 - The AI `gradeWriting` Cloud Function does not need to be redeployed for this fix.
+
+
+## v50.2 — Scribe Button Fix
+- Submit Quickwrite now has explicit loading, success, and Firestore error states.
+- Pending autosave is canceled before final submission to prevent draft/submission races.
+- Local response state flips to submitted immediately after Firestore confirms the write, so AI feedback unlocks without waiting on the listener.
+- AI Feedback now reports actual callable-function errors instead of appearing to do nothing.
+- Disabled AI Feedback button is visually obvious before submission.
+- AI grader model changed to `gpt-5-mini` for a broadly supported, low-cost production model.
+- Firestore rules do not need another change for this patch.
+- `gradeWriting` Cloud Function DOES need redeployment because its model configuration changed.
+
+
+## v50.3 — Draft Create Fix
+- Root cause fixed: a new student's `writingResponses/{sessionId_uid}` document did not exist yet, but the client first called `getDoc()` to check for it. The old rule required `resource.data.studentId`, which cannot exist on a nonexistent document, so Firestore denied the check before Dragonswood could create the draft.
+- Writing-response reads now safely permit the signed-in student to check only a response document whose ID ends in their own Firebase UID.
+- Existing responses remain private to their owner; teacher access is unchanged.
+- Includes all v50.2 button/error improvements and the `gpt-5-mini` grader configuration.
+- Requires one Firestore-rules deployment and one `gradeWriting` function deployment.

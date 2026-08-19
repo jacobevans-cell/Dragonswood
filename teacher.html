@@ -1,4 +1,5 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dragonswood Command</title><style>
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Dragonswood Command</title><style>
 :root{
  --bg:#05030c;--bg2:#090516;--panel:#0b0819;--panel2:#110b25;
  --purple:#652DC1;--purple2:#9d48ff;--cyan:#02CCFE;--cyan2:#77edff;
@@ -79,8 +80,6 @@ body > * {
   z-index: 2;
 }
 </style>
-
-
 <style id="dragonswood-v16-glass-gui">
 /* V16: let the environment breathe through the interface */
 :root{
@@ -135,8 +134,6 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   background: transparent !important;
 }
 </style>
-
-
 <style id="dragonswood-v18-command-center">
 /* ======================================================
    V18 — DRAGONSWOOD TEACHER COMMAND CENTER
@@ -492,8 +489,6 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   .recess-award-buttons{grid-template-columns:repeat(2,1fr)}
 }
 </style>
-
-
 <style id="dragonswood-v21-goal-command">
 .goal-command-grid-v21{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
 .goal-control-v21{padding:17px!important;min-height:300px;display:flex;flex-direction:column}
@@ -510,8 +505,6 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .universal-spend-v21 select,.universal-spend-v21 input{width:auto;min-width:95px}
 @media(max-width:950px){.goal-command-grid-v21{grid-template-columns:1fr}.universal-command-v21{grid-template-columns:1fr}}
 </style>
-
-
 <style id="dragonswood-v23-teacher-items">
 .catalog-toolbar{display:flex;gap:7px;flex-wrap:wrap}
 .shop-item-card .rarity-teacher{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.7px}
@@ -519,13 +512,11 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .student-gear-admin{margin-top:10px;padding:10px;border:1px solid rgba(101,45,193,.3);border-radius:8px;background:rgba(6,6,25,.42)}
 .student-gear-admin select{width:100%}
 </style>
-
 <style id="v25quick">
 .progression-plan{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}.progression-plan>div{padding:11px;text-align:center;border:1px solid rgba(244,201,93,.25);border-radius:8px;background:rgba(7,6,30,.44)}.progression-plan b{display:block;color:#fff0a6;font-size:20px}.progression-plan small{color:#c6bad9}.quick-award-panel{padding:14px!important;margin-bottom:12px}.quick-target-row{display:grid;grid-template-columns:minmax(220px,.7fr) 1.3fr;gap:10px;align-items:end;margin-bottom:10px}.quick-award-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.quick-award{padding:11px!important;text-align:left;min-height:126px}.quick-award .qa-icon{font-size:25px;display:block}.quick-award b{display:block;color:#fff0a6;margin:3px 0}.quick-award small{display:block;color:#cbbfe0;font-size:9px;line-height:1.25}.quick-award .qa-pay{margin-top:7px;color:#8ff3c1;font-size:9px;font-weight:1000}.quick-consequence-panel{padding:14px!important;margin-bottom:12px;border-color:rgba(255,92,124,.42)!important}.quick-consequence-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.quick-consequence{padding:11px!important;text-align:left;min-height:126px;border-color:rgba(255,92,124,.28)!important;background:linear-gradient(180deg,rgba(54,9,28,.62),rgba(9,7,27,.94))!important}.quick-consequence:hover{border-color:#ff7598!important}.quick-consequence .qc-icon{font-size:25px;display:block}.quick-consequence b{display:block;color:#ffd0dc;margin:3px 0}.quick-consequence small{display:block;color:#d7bdc8;font-size:9px;line-height:1.25}.quick-consequence .qc-cost{margin-top:7px;color:#ff9db5;font-size:9px;font-weight:1000}.consequence-note{font-size:11px;color:#e2c7d0;line-height:1.35}@media(max-width:1050px){.quick-consequence-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){.quick-consequence-grid{grid-template-columns:1fr}}.qa-point{color:#7eeaff!important}.pace-note{font-size:11px;color:#d9ccef;line-height:1.35}@media(max-width:1050px){.quick-award-grid{grid-template-columns:repeat(2,1fr)}.progression-plan{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){.quick-award-grid,.progression-plan,.quick-target-row{grid-template-columns:1fr}}
 </style>
 <style id="v28-live-requests">.live-request-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.live-request-box{padding:14px!important}.live-request-list{display:grid;gap:7px;margin-top:9px}.live-request-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:9px;border:1px solid rgba(101,45,193,.35);background:#09081d;border-radius:8px}.live-request-item.out{border-color:rgba(82,239,177,.55)}.live-request-item b{color:#fff0a6}.live-request-item small{display:block;color:#cbbfe0}.live-actions{display:flex;gap:5px;flex-wrap:wrap}.live-actions button{padding:7px 9px}@media(max-width:800px){.live-request-grid{grid-template-columns:1fr}.live-request-item{grid-template-columns:1fr}}
 </style>
-
 <style id="dw-student-checkbox-style">
 .student-check-panel{
   margin-top:12px;padding:12px;border:1px solid rgba(129,92,246,.45);
@@ -549,24 +540,17 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .student-check small{display:block;color:#9fb2cf;font-weight:600;font-size:10px}
 .student-selection-count{color:#9fe8ff;font-size:12px;font-weight:900}
 </style>
-
-
 <style id="dw-pass-timer-style">
 .pass-timer{display:inline-block;margin-top:4px;padding:4px 7px;border-radius:999px;border:1px solid rgba(126,231,255,.4);background:rgba(9,26,47,.75);color:#aef2ff;font-weight:1000;font-size:11px}
 .pass-timer.overdue{border-color:rgba(255,118,118,.65);background:rgba(71,12,20,.78);color:#ffb3b3;animation:dwPulseOverdue 1s ease-in-out infinite}
 @keyframes dwPulseOverdue{50%{filter:brightness(1.35)}}
 </style>
-
-
 <style id="dw-v29-teacher-style">
 .v29-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:12px}.v29-list{display:grid;gap:7px}.v29-row{padding:9px;border:1px solid rgba(101,45,193,.3);border-radius:9px;background:rgba(5,7,23,.5)}
 .v29-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.v29-form .full{grid-column:1/-1}.v29-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
 @media(max-width:900px){.v29-grid{grid-template-columns:1fr}.v29-form{grid-template-columns:1fr}}
 </style>
-
-
 <style id="dw-v31-teacher-style">\n.command-tabs{overflow-x:auto}.command-tabs .tab{min-width:130px}.dw31t-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:12px}.dw31t-row{padding:9px;border:1px solid rgba(101,45,193,.3);border-radius:9px;background:rgba(5,7,23,.5);margin:6px 0}.dw31t-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.dw31t-form .full{grid-column:1/-1}.dw31t-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}@media(max-width:900px){.dw31t-grid{grid-template-columns:1fr}.dw31t-form{grid-template-columns:1fr}}\n</style>
-
 <style id="dw-poll-picker-teacher-style">
 .poll-admin-grid,.picker-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .poll-choice-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin:6px 0}
@@ -580,8 +564,6 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .group-card{padding:10px;border:1px solid rgba(101,45,193,.35);border-radius:9px;background:rgba(5,7,23,.5)}
 @media(max-width:850px){.poll-admin-grid,.picker-grid{grid-template-columns:1fr}}
 </style>
-
-
 <style id="dw-v41-teacher-pass-style">
 .pass-master-card{margin:0 0 12px;padding:14px!important;border:1px solid rgba(2,204,254,.45)!important}
 .pass-master-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
@@ -590,412 +572,360 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .job-by-role-row{display:grid;grid-template-columns:minmax(180px,1fr) minmax(190px,1fr) 95px;gap:8px;align-items:center;padding:9px;border:1px solid rgba(101,45,193,.28);border-radius:8px;background:rgba(5,7,23,.48)}
 @media(max-width:800px){.pass-master-row,.job-by-role-row{grid-template-columns:1fr}}
 </style>
-
 </head><body>
-<header class="teacher-head"><div class="shell"><div class="teacher-title">🛡️ DRAGONSWOOD COMMAND<small>EXPLORE ACADEMY • EVANS 4–5 • TEACHER PORTAL</small></div><div id="signed" class="hidden" style="text-align:right"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
+<header class="teacher-head"><div class="shell"><div class="teacher-title">🛡️ DRAGONSWOOD COMMAND<small>EXPLORE ACADEMY • EVANS 4–5 • TEACHER PORTAL</small></div><div class="hidden" id="signed" style="text-align:right"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
 <main class="shell teacher-main">
-<section id="login" class="card" style="max-width:520px;margin:45px auto"><h1>Teacher Login</h1><form id="loginForm"><div class="field"><label>Email</label><input id="email" type="email" required></div><div class="field"><label>Password</label><input id="password" type="password" required></div><button style="width:100%">SIGN IN</button><div id="error" style="color:#ff9db5;margin-top:8px"></div></form></section>
-<section id="dash" class="hidden">
+<section class="card" id="login" style="max-width:520px;margin:45px auto"><h1>Teacher Login</h1><form id="loginForm"><div class="field"><label>Email</label><input id="email" required="" type="email"/></div><div class="field"><label>Password</label><input id="password" required="" type="password"/></div><button style="width:100%">SIGN IN</button><div id="error" style="color:#ff9db5;margin-top:8px"></div></form></section>
+<section class="hidden" id="dash">
 <div class="frame bevel tabs command-tabs">
-  <button class="tab active" data-p="students">👥 STUDENTS</button>
-  <button class="tab" data-p="rewards">🛡️ CLASS REWARDS</button>
-  <button class="tab" data-p="recess">🏰 CLASS GOALS</button>
-  <button class="tab" data-p="passes">🎟️ PASSES</button>
-  <button class="tab" data-p="jobs">🧹 JOBS</button>
-  <button class="tab" data-p="schedule">🕐 SCHEDULE</button>
-  <button class="tab" data-p="calendar">📅 CALENDAR</button>
-  <button class="tab" data-p="poll">📊 POLL</button>
-  <button class="tab" data-p="picker">🎲 PICKER</button>
-  <button class="tab" data-p="shop">🧰 SHOP</button>
-  <button class="tab" data-p="quests">⚔️ QUESTS</button>
-  <button class="tab" data-p="scores">🏆 LEADERBOARDS</button>
-  <button class="tab" data-p="data">📊 GAME DATA</button>
+<button class="tab active" data-p="students">👥 STUDENTS</button>
+<button class="tab" data-p="rewards">🛡️ CLASS REWARDS</button>
+<button class="tab" data-p="recess">🏰 CLASS GOALS</button>
+<button class="tab" data-p="passes">🎟️ PASSES</button><button class="tab" data-p="jobs">🧹 JOBS</button>
+<button class="tab" data-p="schedule">🕐 SCHEDULE</button>
+<button class="tab" data-p="calendar">📅 CALENDAR</button>
+<button class="tab" data-p="poll">📊 POLL</button>
+<button class="tab" data-p="picker">🎲 PICKER</button>
+<button class="tab" data-p="shop">🧰 SHOP</button>
+<button class="tab" data-p="quests">⚔️ QUESTS</button>
+<button class="tab" data-p="scores">🏆 LEADERBOARDS</button>
+<button class="tab" data-p="data">📊 GAME DATA</button>
 </div>
+<div class="panel active" id="students">
+<div class="frame bevel command-title"><h2>🧙 STUDENT CONTROL CENTER</h2><p>Manage HP, Gold, XP, level progress, profiles, and group awards.</p></div>
 
-<div id="students" class="panel active">
-  <div class="frame bevel command-title"><h2>🧙 STUDENT CONTROL CENTER</h2><p>Manage HP, Gold, XP, level progress, profiles, and group awards.</p></div>
+<div class="live-request-grid">
 
-  <div class="live-request-grid">
-    <div class="card live-request-box"><h3>⭐ STUDENT RECOGNITION REQUESTS</h3><p class="pace-note">Students can ask you to notice a positive choice. Nothing is awarded until you approve it.</p><div id="pointRequestList" class="live-request-list"><div class="muted">No pending requests.</div></div>
-  </div>
-  <div class="progression-plan"><div><small>LEVEL CAP</small><b>20</b><small>Midyear target</small></div><div><small>LEVEL 20 XP</small><b>12,000</b><small>Daily hard cap 150 XP</small></div><div><small>CLASS HP</small><b>10 → 48</b><small>Grows by level</small></div><div><small>RPG BASE HP</small><b>18 → 94</b><small>Before gear</small></div></div>
-  <div class="card quick-award-panel"><h3>⚡ QUICK AWARDS</h3><p class="pace-note">Pick the audience, then one award. Student XP/Gold/HP changes are logged automatically; class-goal points are added once per award.</p><div class="quick-target-row"><div class="field"><label>AWARD TO</label><select id="quickAwardGroup"><optgroup label="Groups"><option value="all">Whole Class</option><option value="girl">All Girls</option><option value="boy">All Boys</option><option value="4">All 4th Grade</option><option value="5">All 5th Grade</option><option value="selected">☑ Selected Students</option></optgroup><optgroup label="Individual Students" id="quickIndividualStudentOptions"></optgroup></select></div><div class="pace-note"><b style="color:#ffe68b">PACING:</b> Ordinary good days should land around 80–150 XP. About 130 XP per school day reaches Level 20 around January.</div></div>
+
+<div class="card live-request-box"><h3>⭐ STUDENT RECOGNITION REQUESTS</h3><p class="pace-note">Students can ask you to notice a positive choice. Nothing is awarded until you approve it.</p><div class="live-request-list" id="pointRequestList"><div class="muted">No pending requests.</div></div></div>
+</div>
+<div class="progression-plan"><div><small>LEVEL CAP</small><b>20</b><small>Midyear target</small></div><div><small>LEVEL 20 XP</small><b>12,000</b><small>Daily hard cap 150 XP</small></div><div><small>CLASS HP</small><b>10 → 48</b><small>Grows by level</small></div><div><small>RPG BASE HP</small><b>18 → 94</b><small>Before gear</small></div></div>
+<div class="card quick-award-panel"><h3>⚡ QUICK AWARDS</h3><p class="pace-note">Pick the audience, then one award. Student XP/Gold/HP changes are logged automatically; class-goal points are added once per award.</p><div class="quick-target-row"><div class="field"><label>AWARD TO</label><select id="quickAwardGroup"><optgroup label="Groups"><option value="all">Whole Class</option><option value="girl">All Girls</option><option value="boy">All Boys</option><option value="4">All 4th Grade</option><option value="5">All 5th Grade</option><option value="selected">☑ Selected Students</option></optgroup><optgroup id="quickIndividualStudentOptions" label="Individual Students"></optgroup></select></div><div class="pace-note"><b style="color:#ffe68b">PACING:</b> Ordinary good days should land around 80–150 XP. About 130 XP per school day reaches Level 20 around January.</div></div>
 <div class="student-check-panel">
-  <div class="student-check-head">
-    <b>☑ SELECT SPECIFIC STUDENTS</b>
-    <span class="student-selection-count" id="quickSelectedCount">0 selected</span>
-    <button type="button" id="quickSelectAll">SELECT ALL</button>
-    <button type="button" class="gray" id="quickClearAll">CLEAR</button>
-  </div>
-  <div class="student-check-grid" id="quickStudentCheckboxes"></div>
-  <div class="pace-note" style="margin-top:8px">Check any students, then choose <b>☑ Selected Students</b> above. The same selection works for Quick Awards and Quick Consequences.</div>
+<div class="student-check-head">
+<b>☑ SELECT SPECIFIC STUDENTS</b>
+<span class="student-selection-count" id="quickSelectedCount">0 selected</span>
+<button id="quickSelectAll" type="button">SELECT ALL</button>
+<button class="gray" id="quickClearAll" type="button">CLEAR</button>
+</div>
+<div class="student-check-grid" id="quickStudentCheckboxes"></div>
+<div class="pace-note" style="margin-top:8px">Check any students, then choose <b>☑ Selected Students</b> above. The same selection works for Quick Awards and Quick Consequences.</div>
 </div>
 <div class="quick-award-grid" id="quickAwardGrid"></div></div>
-  <div class="card quick-consequence-panel">
-    <h3>⚠️ QUICK CONSEQUENCES / TAKE AWAYS</h3>
-    <p class="consequence-note">Use the same audience selector above, then choose a consequence. These never reduce a stat below 0, and every change is written to the student transaction history.</p>
-    <div class="quick-consequence-grid" id="quickConsequenceGrid"></div>
-  </div>
-  <div class="card quick-consequence-panel">
-    <h3>🚫 INDIVIDUAL ELIGIBILITY CONTROLS</h3>
-    <p class="consequence-note">Choose a student here, then block or restore Second Recess / field-trip eligibility. All bans still clear with the midnight fresh start.</p>
-    <div class="field" style="max-width:420px;margin:10px 0 12px">
-      <label>STUDENT</label>
-      <select id="eligibilityStudentSelect">
-        <option value="">Choose a student…</option>
-      </select>
-    </div>
-    <div class="quick-consequence-grid">
-      <button class="quick-consequence" id="banRecessBtn"><span class="qc-icon">🌤️🚫</span><b>Ban Second Recess</b><small>Blocks the selected student from the class Second Recess reward.</small><div class="qc-cost">INDIVIDUAL ONLY</div></button>
-      <button class="quick-consequence" id="restoreRecessBtn"><span class="qc-icon">🌤️✅</span><b>Restore Second Recess</b><small>Restores Second Recess now if the student is not knocked out. Midnight also clears all bans.</small><div class="qc-cost">INDIVIDUAL ONLY</div></button>
-      <button class="quick-consequence" id="banTripBtn"><span class="qc-icon">🚌🚫</span><b>Ban Field Trips</b><small>Blocks the selected student from field-trip eligibility.</small><div class="qc-cost">INDIVIDUAL ONLY</div></button>
-      <button class="quick-consequence" id="restoreTripBtn"><span class="qc-icon">🚌✅</span><b>Restore Field Trips</b><small>Restores field-trip eligibility now if the student is not knocked out. Midnight also clears all bans.</small><div class="qc-cost">INDIVIDUAL ONLY</div></button>
-    </div>
-  </div>
-  <div class="card"><h3>MASS AWARD / ADJUSTMENT</h3><div class="groupbox">
-    <div class="field"><label>AWARD TO</label><select id="massGroup"><optgroup label="Groups"><option value="all">Whole Class</option><option value="girl">All Girls</option><option value="boy">All Boys</option><option value="4">All 4th Grade</option><option value="5">All 5th Grade</option><option value="selected">☑ Selected Students</option></optgroup><optgroup label="Individual Students" id="individualStudentOptions"></optgroup></select></div>
-    <div class="field"><label>STAT</label><select id="massStat"><option value="hp">HP</option><option value="gold">Gold</option><option value="xp">XP</option></select></div>
-    <div class="field"><label>AMOUNT</label><input id="massAmount" type="number" value="1"></div>
-    <div class="field"><label>REASON</label><input id="massReason" placeholder="Great teamwork!"></div>
-  </div>
+<div class="card quick-consequence-panel">
+<h3>⚠️ QUICK CONSEQUENCES / TAKE AWAYS</h3>
+<p class="consequence-note">Use the same audience selector above, then choose a consequence. These never reduce a stat below 0, and every change is written to the student transaction history.</p>
+<div class="quick-consequence-grid" id="quickConsequenceGrid"></div>
+</div>
+<div class="card quick-consequence-panel">
+<h3>🚫 INDIVIDUAL ELIGIBILITY CONTROLS</h3>
+<p class="consequence-note">Choose a student here, then block or restore Second Recess / field-trip eligibility. All bans still clear with the midnight fresh start.</p>
+<div class="field" style="max-width:420px;margin:10px 0 12px">
+<label>STUDENT</label>
+<select id="eligibilityStudentSelect">
+<option value="">Choose a student…</option>
+</select>
+</div>
+<div class="quick-consequence-grid">
+<button class="quick-consequence" id="banRecessBtn"><span class="qc-icon">🌤️🚫</span><b>Ban Second Recess</b><small>Blocks the selected student from the class Second Recess reward.</small><div class="qc-cost">INDIVIDUAL ONLY</div></button>
+<button class="quick-consequence" id="restoreRecessBtn"><span class="qc-icon">🌤️✅</span><b>Restore Second Recess</b><small>Restores Second Recess now if the student is not knocked out. Midnight also clears all bans.</small><div class="qc-cost">INDIVIDUAL ONLY</div></button>
+<button class="quick-consequence" id="banTripBtn"><span class="qc-icon">🚌🚫</span><b>Ban Field Trips</b><small>Blocks the selected student from field-trip eligibility.</small><div class="qc-cost">INDIVIDUAL ONLY</div></button>
+<button class="quick-consequence" id="restoreTripBtn"><span class="qc-icon">🚌✅</span><b>Restore Field Trips</b><small>Restores field-trip eligibility now if the student is not knocked out. Midnight also clears all bans.</small><div class="qc-cost">INDIVIDUAL ONLY</div></button>
+</div>
+</div>
+<div class="card"><h3>MASS AWARD / ADJUSTMENT</h3><div class="groupbox">
+<div class="field"><label>AWARD TO</label><select id="massGroup"><optgroup label="Groups"><option value="all">Whole Class</option><option value="girl">All Girls</option><option value="boy">All Boys</option><option value="4">All 4th Grade</option><option value="5">All 5th Grade</option><option value="selected">☑ Selected Students</option></optgroup><optgroup id="individualStudentOptions" label="Individual Students"></optgroup></select></div>
+<div class="field"><label>STAT</label><select id="massStat"><option value="hp">HP</option><option value="gold">Gold</option><option value="xp">XP</option></select></div>
+<div class="field"><label>AMOUNT</label><input id="massAmount" type="number" value="1"/></div>
+<div class="field"><label>REASON</label><input id="massReason" placeholder="Great teamwork!"/></div>
+</div>
 <div class="student-check-panel">
-  <div class="student-check-head">
-    <b>☑ MASS AWARD: SELECT STUDENTS</b>
-    <span class="student-selection-count" id="massSelectedCount">0 selected</span>
-    <button type="button" id="massSelectAll">SELECT ALL</button>
-    <button type="button" class="gray" id="massClearAll">CLEAR</button>
-  </div>
-  <div class="student-check-grid" id="massStudentCheckboxes"></div>
-  <div class="pace-note" style="margin-top:8px">Check students here and choose <b>☑ Selected Students</b> in Award To.</div>
+<div class="student-check-head">
+<b>☑ MASS AWARD: SELECT STUDENTS</b>
+<span class="student-selection-count" id="massSelectedCount">0 selected</span>
+<button id="massSelectAll" type="button">SELECT ALL</button>
+<button class="gray" id="massClearAll" type="button">CLEAR</button>
+</div>
+<div class="student-check-grid" id="massStudentCheckboxes"></div>
+<div class="pace-note" style="margin-top:8px">Check students here and choose <b>☑ Selected Students</b> in Award To.</div>
 </div>
 <div class="actions" style="margin-top:10px"><button onclick="document.getElementById('massAmount').value=1">+1</button><button onclick="document.getElementById('massAmount').value=5">+5</button><button onclick="document.getElementById('massAmount').value=10">+10</button><button onclick="document.getElementById('massAmount').value=-1">-1</button><button id="massApply" style="margin-left:auto">APPLY AWARD</button></div></div>
-  <div class="titlebar"><div><h2>STUDENT ROSTER</h2><p>Profiles appear here after first sign-in.</p></div></div>
-  <div class="card" style="overflow:auto"><table class="student-table"><thead><tr><th>AVATAR</th><th>STUDENT</th><th>GRADE</th><th>GROUP</th><th>LEVEL</th><th>HP</th><th>STATUS</th><th>RECESS</th><th>TRIP</th><th>HP MAX</th><th>GOLD</th><th>XP</th><th>MANAGE</th></tr></thead><tbody id="studentRows"></tbody></table></div>
-
+<div class="titlebar"><div><h2>STUDENT ROSTER</h2><p>Profiles appear here after first sign-in.</p></div></div>
+<div class="card" style="overflow:auto"><table class="student-table"><thead><tr><th>AVATAR</th><th>STUDENT</th><th>GRADE</th><th>GROUP</th><th>LEVEL</th><th>HP</th><th>STATUS</th><th>RECESS</th><th>TRIP</th><th>HP MAX</th><th>GOLD</th><th>XP</th><th>MANAGE</th></tr></thead><tbody id="studentRows"></tbody></table></div>
 </div>
-
-<div id="rewards" class="panel">
-  <div class="grid"><div class="card"><h2>CLASS POINTS</h2><div class="big" id="points">0</div><div class="meter"><div class="fill" id="fill"></div></div><div class="actions" style="margin-top:10px"><input id="reason" class="reason" placeholder="Reason (optional)"><button class="add" data-n="1">+1</button><button class="add" data-n="5">+5</button><button class="add" data-n="10">+10</button><button id="minus">-1</button><button id="undo">UNDO LAST</button></div></div><div class="card"><h2>REWARD HISTORY</h2><div id="history"></div></div></div>
-  <div class="titlebar"><div><h2>REWARD MILESTONES</h2><p>Add or edit rewards without touching GitHub.</p></div><button id="addReward">+ ADD REWARD</button></div><div class="card"><div class="list" id="rewardList"></div></div>
+<div class="panel" id="rewards">
+<div class="grid"><div class="card"><h2>CLASS POINTS</h2><div class="big" id="points">0</div><div class="meter"><div class="fill" id="fill"></div></div><div class="actions" style="margin-top:10px"><input class="reason" id="reason" placeholder="Reason (optional)"/><button class="add" data-n="1">+1</button><button class="add" data-n="5">+5</button><button class="add" data-n="10">+10</button><button id="minus">-1</button><button id="undo">UNDO LAST</button></div></div><div class="card"><h2>REWARD HISTORY</h2><div id="history"></div></div></div>
+<div class="titlebar"><div><h2>REWARD MILESTONES</h2><p>Add or edit rewards without touching GitHub.</p></div><button id="addReward">+ ADD REWARD</button></div><div class="card"><div class="list" id="rewardList"></div></div>
 </div>
-
-<div id="recess" class="panel">
-  <div class="frame bevel command-title">
-    <h2>🏰 CLASS GOAL COMMAND</h2>
-    <p>Recess, Class Pet, and Field Trip now have independent point banks. Universal Points can be saved and assigned to any goal.</p>
-  </div>
-
-  <div class="goal-command-grid-v21">
-    <div class="card goal-control-v21">
-      <div class="goal-symbol">🌤️</div><h3>SECOND RECESS</h3>
-      <div class="goal-big" id="recessTeacherPoints">0</div>
-      <div class="meter large-meter"><div class="fill" id="recessTeacherFill"></div></div>
-      <div class="goal-note" id="recessTeacherStatus">Loading…</div>
-      <div class="goal-actions-v21">
-        <button class="recess-add" data-rn="1">+1</button><button class="recess-add" data-rn="2">+2</button><button class="recess-add" data-rn="5">+5</button><button id="recessMinus" class="danger-soft">−1</button>
-      </div>
-      <div class="goal-settings-v21"><input id="recessGoalInput" type="number" min="1" value="20"><button id="saveRecessGoal">SET GOAL</button></div>
-      <div class="muted" style="margin-top:7px">Daily reset • <span id="recessDateLabel">—</span></div>
-      <button id="recessReset" class="danger-soft" style="margin-top:8px">RESET TODAY</button>
-      <input id="recessTeacherReason" type="hidden">
-    </div>
-
-    <div class="card goal-control-v21">
-      <div class="goal-symbol">🐾</div><h3>CLASS PET</h3>
-      <div class="goal-big" id="petTeacherPoints">0</div>
-      <div class="meter large-meter"><div class="fill" id="petTeacherFill"></div></div>
-      <div class="goal-note" id="petTeacherStatus">Loading…</div>
-      <div class="goal-actions-v21">
-        <button class="pet-add" data-gn="1">+1</button><button class="pet-add" data-gn="2">+2</button><button class="pet-add" data-gn="5">+5</button><button class="pet-add danger-soft" data-gn="-1">−1</button>
-      </div>
-      <div class="goal-settings-v21"><input id="petGoalInput" type="number" min="1" value="250"><button id="savePetGoal">SET GOAL</button></div>
-      <button id="petReset" class="danger-soft" style="margin-top:8px">RESET PET POINTS</button>
-    </div>
-
-    <div class="card goal-control-v21">
-      <div class="goal-symbol">🚌</div><h3>FIELD TRIP</h3>
-      <div class="goal-big" id="tripTeacherPoints">0</div>
-      <div class="meter large-meter"><div class="fill" id="tripTeacherFill"></div></div>
-      <div class="goal-note" id="tripTeacherStatus">Loading…</div>
-      <div class="goal-actions-v21">
-        <button class="trip-add" data-gn="1">+1</button><button class="trip-add" data-gn="2">+2</button><button class="trip-add" data-gn="5">+5</button><button class="trip-add danger-soft" data-gn="-1">−1</button>
-      </div>
-      <div class="goal-settings-v21"><input id="tripGoalInput" type="number" min="1" value="750"><button id="saveTripGoal">SET GOAL</button></div>
-      <button id="tripReset" class="danger-soft" style="margin-top:8px">RESET FIELD TRIP POINTS</button>
-    </div>
-  </div>
-
-  <div class="card universal-command-v21">
-    <div><div style="font-size:38px">🌟</div><b>UNIVERSAL POINT BANK</b></div>
-    <div>
-      <div class="universal-big" id="universalTeacherPoints">0</div>
-      <div class="universal-award-v21">
-        <span class="muted">AWARD:</span>
-        <button class="universal-add" data-un="1">+1</button>
-        <button class="universal-add" data-un="2">+2</button>
-        <button class="universal-add" data-un="5">+5</button>
-        <button class="universal-add danger-soft" data-un="-1">−1</button>
-      </div>
-    </div>
-    <div>
-      <b>ASSIGN UNIVERSAL POINTS</b>
-      <div class="universal-spend-v21" style="margin-top:7px">
-        <input id="universalSpendAmount" type="number" min="1" value="1">
-        <select id="universalDestination">
-          <option value="secondRecess">🌤️ Second Recess</option>
-          <option value="classPet">🐾 Class Pet</option>
-          <option value="fieldTrip">🚌 Field Trip</option>
-        </select>
-        <button id="spendUniversal">ASSIGN</button>
-      </div>
-      <div class="muted" style="margin-top:6px">Assigning moves points out of Universal and into the selected goal.</div>
-    </div>
-  </div>
+<div class="panel" id="recess">
+<div class="frame bevel command-title">
+<h2>🏰 CLASS GOAL COMMAND</h2>
+<p>Recess, Class Pet, and Field Trip now have independent point banks. Universal Points can be saved and assigned to any goal.</p>
 </div>
-
-
-
-<div id="passes" class="panel">
-  <div class="frame bevel command-title"><h2>🎟️ PASS CONTROL CENTER</h2><p>Live pass activity, approvals, history, and blackout controls.</p></div>
-  <div class="card pass-master-card">
-    <div class="pass-master-row">
-      <div><h3 style="margin:0">🚦 PASS CONTROL</h3><p class="pace-note" style="margin:4px 0 0">Blackout instantly blocks students from starting Bathroom, Snack, Out of Seat, or Office passes. Active students can still check back in.</p></div>
-      <button id="passBlackoutBtn" type="button">🔓 PASSES OPEN</button>
-    </div>
-    <div id="genericPassLive" class="generic-pass-live"><div class="muted">No Out of Seat or Office passes active.</div></div>
-  </div>
-  <div class="live-request-grid">
-    <div class="card live-request-box"><h3>🚻 LIVE BATHROOM</h3><p class="pace-note">Students currently out appear here instantly. Each student gets 3 automatic passes per day; extras come here for approval.</p><div id="bathroomLiveList" class="live-request-list"><div class="muted">No students out.</div></div><h4>EXTRA PASS REQUESTS</h4><div id="bathroomRequestList" class="live-request-list"><div class="muted">No pending requests.</div></div>
+<div class="goal-command-grid-v21">
+<div class="card goal-control-v21">
+<div class="goal-symbol">🌤️</div><h3>SECOND RECESS</h3>
+<div class="goal-big" id="recessTeacherPoints">0</div>
+<div class="meter large-meter"><div class="fill" id="recessTeacherFill"></div></div>
+<div class="goal-note" id="recessTeacherStatus">Loading…</div>
+<div class="goal-actions-v21">
+<button class="recess-add" data-rn="1">+1</button><button class="recess-add" data-rn="2">+2</button><button class="recess-add" data-rn="5">+5</button><button class="danger-soft" id="recessMinus">−1</button>
+</div>
+<div class="goal-settings-v21"><input id="recessGoalInput" min="1" type="number" value="20"/><button id="saveRecessGoal">SET GOAL</button></div>
+<div class="muted" style="margin-top:7px">Daily reset • <span id="recessDateLabel">—</span></div>
+<button class="danger-soft" id="recessReset" style="margin-top:8px">RESET TODAY</button>
+<input id="recessTeacherReason" type="hidden"/>
+</div>
+<div class="card goal-control-v21">
+<div class="goal-symbol">🐾</div><h3>CLASS PET</h3>
+<div class="goal-big" id="petTeacherPoints">0</div>
+<div class="meter large-meter"><div class="fill" id="petTeacherFill"></div></div>
+<div class="goal-note" id="petTeacherStatus">Loading…</div>
+<div class="goal-actions-v21">
+<button class="pet-add" data-gn="1">+1</button><button class="pet-add" data-gn="2">+2</button><button class="pet-add" data-gn="5">+5</button><button class="pet-add danger-soft" data-gn="-1">−1</button>
+</div>
+<div class="goal-settings-v21"><input id="petGoalInput" min="1" type="number" value="250"/><button id="savePetGoal">SET GOAL</button></div>
+<button class="danger-soft" id="petReset" style="margin-top:8px">RESET PET POINTS</button>
+</div>
+<div class="card goal-control-v21">
+<div class="goal-symbol">🚌</div><h3>FIELD TRIP</h3>
+<div class="goal-big" id="tripTeacherPoints">0</div>
+<div class="meter large-meter"><div class="fill" id="tripTeacherFill"></div></div>
+<div class="goal-note" id="tripTeacherStatus">Loading…</div>
+<div class="goal-actions-v21">
+<button class="trip-add" data-gn="1">+1</button><button class="trip-add" data-gn="2">+2</button><button class="trip-add" data-gn="5">+5</button><button class="trip-add danger-soft" data-gn="-1">−1</button>
+</div>
+<div class="goal-settings-v21"><input id="tripGoalInput" min="1" type="number" value="750"/><button id="saveTripGoal">SET GOAL</button></div>
+<button class="danger-soft" id="tripReset" style="margin-top:8px">RESET FIELD TRIP POINTS</button>
+</div>
+</div>
+<div class="card universal-command-v21">
+<div><div style="font-size:38px">🌟</div><b>UNIVERSAL POINT BANK</b></div>
+<div>
+<div class="universal-big" id="universalTeacherPoints">0</div>
+<div class="universal-award-v21">
+<span class="muted">AWARD:</span>
+<button class="universal-add" data-un="1">+1</button>
+<button class="universal-add" data-un="2">+2</button>
+<button class="universal-add" data-un="5">+5</button>
+<button class="universal-add danger-soft" data-un="-1">−1</button>
+</div>
+</div>
+<div>
+<b>ASSIGN UNIVERSAL POINTS</b>
+<div class="universal-spend-v21" style="margin-top:7px">
+<input id="universalSpendAmount" min="1" type="number" value="1"/>
+<select id="universalDestination">
+<option value="secondRecess">🌤️ Second Recess</option>
+<option value="classPet">🐾 Class Pet</option>
+<option value="fieldTrip">🚌 Field Trip</option>
+</select>
+<button id="spendUniversal">ASSIGN</button>
+</div>
+<div class="muted" style="margin-top:6px">Assigning moves points out of Universal and into the selected goal.</div>
+</div>
+</div>
+</div>
+<div class="panel" id="passes"><div class="frame bevel command-title"><h2>🎟️ PASS CONTROL CENTER</h2><p>Live pass activity, approvals, history, and blackout controls.</p></div><div class="card pass-master-card">
+<div class="pass-master-row">
+<div><h3 style="margin:0">🚦 PASS CONTROL</h3><p class="pace-note" style="margin:4px 0 0">Blackout instantly blocks students from starting Bathroom, Snack, Out of Seat, or Office passes. Active students can still check back in.</p></div>
+<button id="passBlackoutBtn" type="button">🔓 PASSES OPEN</button>
+</div>
+<div class="generic-pass-live" id="genericPassLive"><div class="muted">No Out of Seat or Office passes active.</div></div>
+</div><div class="live-request-grid"><div class="card live-request-box"><h3>🚻 LIVE BATHROOM</h3><p class="pace-note">Students currently out appear here instantly. Each student gets 3 automatic passes per day; extras come here for approval.</p><div class="live-request-list" id="bathroomLiveList"><div class="muted">No students out.</div></div><h4>EXTRA PASS REQUESTS</h4><div class="live-request-list" id="bathroomRequestList"><div class="muted">No pending requests.</div></div>
 <h4>TODAY'S BATHROOM HISTORY</h4>
-<div id="bathroomHistoryList" class="live-request-list"><div class="muted">No bathroom visits recorded today.</div></div></div>
-    
-    <div class="card live-request-box"><h3>🍎 LIVE SNACK PASSES</h3><p class="pace-note">Each student gets 2 automatic snack passes per day. After that, extra snack passes require your approval.</p><div id="snackLiveList" class="live-request-list"><div class="muted">No active snack passes.</div></div><h4>EXTRA SNACK REQUESTS</h4><div id="snackRequestList" class="live-request-list"><div class="muted">No pending snack requests.</div></div><h4>TODAY'S SNACK HISTORY</h4><div id="snackHistoryList" class="live-request-list"><div class="muted">No snack passes recorded today.</div></div></div>
-    
-    <div class="card live-request-box">
-      <h3>🚶 OUT OF SEAT / 🏫 OFFICE</h3>
-      <p class="pace-note">Live and historical Out of Seat / Office passes. Both are timed and stored.</p>
-      <div id="genericPassHistory" class="live-request-list"><div class="muted">No pass history yet.</div></div>
-    </div>
-  </div>
+<div class="live-request-list" id="bathroomHistoryList"><div class="muted">No bathroom visits recorded today.</div></div></div><div class="card live-request-box"><h3>🍎 LIVE SNACK PASSES</h3><p class="pace-note">Each student gets 2 automatic snack passes per day. After that, extra snack passes require your approval.</p><div class="live-request-list" id="snackLiveList"><div class="muted">No active snack passes.</div></div><h4>EXTRA SNACK REQUESTS</h4><div class="live-request-list" id="snackRequestList"><div class="muted">No pending snack requests.</div></div><h4>TODAY'S SNACK HISTORY</h4><div class="live-request-list" id="snackHistoryList"><div class="muted">No snack passes recorded today.</div></div></div><div class="card live-request-box"><h3>🚶 OUT OF SEAT / 🏫 OFFICE</h3><p class="pace-note">Live and historical Out of Seat / Office passes. Both are timed and stored.</p><div class="live-request-list" id="genericPassHistory"><div class="muted">No pass history yet.</div></div></div></div></div><div class="panel" id="jobs">
+<div class="titlebar"><div><h2>🧹 GUILD JOBS &amp; AUTOMATIC PAYROLL</h2><p>Assign roles. Students check off daily. Payroll runs automatically for last week.</p></div></div>
+<div class="v29-grid">
+<div class="card"><h3>ASSIGN STUDENT BY JOB</h3><p class="pace-note">Each row is a guild job. Choose the student who owns it.</p><div class="v29-list" id="jobAssignmentRoster"></div></div>
+<div class="card"><h3>THIS WEEK</h3><div class="v29-list" id="jobWeekSummary"></div></div>
 </div>
-
-<div id="jobs" class="panel">
-  <div class="titlebar"><div><h2>🧹 GUILD JOBS & AUTOMATIC PAYROLL</h2><p>Assign roles. Students check off daily. Payroll runs automatically for last week.</p></div></div>
-  <div class="v29-grid">
-    <div class="card"><h3>ASSIGN STUDENT BY JOB</h3><p class="pace-note">Each row is a guild job. Choose the student who owns it.</p><div id="jobAssignmentRoster" class="v29-list"></div></div>
-    <div class="card"><h3>THIS WEEK</h3><div id="jobWeekSummary" class="v29-list"></div></div>
-  </div>
 </div>
-
-<div id="schedule" class="panel">
-  <div class="titlebar"><div><h2>🕐 DAILY SCHEDULE EDITOR</h2><p>Edit a day's blocks without touching HTML.</p></div></div>
-  <div class="v29-grid">
-    <div class="card">
-      <div class="v29-form">
-        <select id="scheduleDay"><option>monday</option><option>tuesday</option><option>wednesday</option><option>thursday</option><option>friday</option></select>
-        <button id="scheduleLoad">LOAD DAY</button>
-        <input id="scheduleStart" type="time"><input id="scheduleEnd" type="time">
-        <input id="scheduleTitle" class="full" placeholder="Activity / Subject">
-        <input id="scheduleIcon" placeholder="Icon" value="📘"><input id="scheduleLocation" placeholder="Location" value="Classroom">
-      </div>
-      <div class="v29-actions"><button id="scheduleAdd">ADD BLOCK</button><button id="scheduleSave">SAVE DAY</button></div>
-    </div>
-    <div class="card"><h3 id="scheduleEditorTitle">Monday</h3><div id="scheduleEditorList" class="v29-list"></div></div>
-  </div>
+<div class="panel" id="schedule">
+<div class="titlebar"><div><h2>🕐 DAILY SCHEDULE EDITOR</h2><p>Edit a day's blocks without touching HTML.</p></div></div>
+<div class="v29-grid">
+<div class="card">
+<div class="v29-form">
+<select id="scheduleDay"><option>monday</option><option>tuesday</option><option>wednesday</option><option>thursday</option><option>friday</option></select>
+<button id="scheduleLoad">LOAD DAY</button>
+<input id="scheduleStart" type="time"/><input id="scheduleEnd" type="time"/>
+<input class="full" id="scheduleTitle" placeholder="Activity / Subject"/>
+<input id="scheduleIcon" placeholder="Icon" value="📘"/><input id="scheduleLocation" placeholder="Location" value="Classroom"/>
 </div>
-
-<div id="calendar" class="panel">
-  <div class="titlebar"><div><h2>📅 SCHOOL & SPORTS CALENDAR</h2><p>Add, edit, or remove events from the teacher portal.</p></div></div>
-  <div class="v29-grid">
-    <div class="card">
-      <div class="v29-form">
-        <input id="calTitle" class="full" placeholder="Event title">
-        <input id="calStartDate" type="date"><input id="calEndDate" type="date">
-        <input id="calStartTime" type="time"><input id="calEndTime" type="time">
-        <select id="calCategory"><option value="school">School</option><option value="sports">Sports</option><option value="testing">Testing</option><option value="break">Break</option><option value="holiday">Holiday</option></select>
-        <input id="calIcon" placeholder="Icon" value="📅">
-      </div>
-      <div class="v29-actions"><button id="calSave">ADD EVENT</button><button id="calClear" class="gray">CLEAR</button></div>
-    </div>
-    <div class="card"><h3>EVENTS</h3><div id="teacherCalendarList" class="v29-list"></div></div>
-  </div>
+<div class="v29-actions"><button id="scheduleAdd">ADD BLOCK</button><button id="scheduleSave">SAVE DAY</button></div>
 </div>
-
-
-<div id="poll" class="panel">
-  <div class="titlebar"><div><h2>📊 LIVE CLASS POLL</h2><p>Create a question, add choices, and watch student votes tally instantly.</p></div></div>
-  <div class="poll-admin-grid">
-    <div class="card">
-      <h3>CREATE POLL</h3>
-      <input id="pollQuestionInput" placeholder="Type your question" style="width:100%">
-      <div id="pollChoiceEditor">
-        <div class="poll-choice-row"><input class="poll-choice-input" placeholder="Choice 1"><button class="gray poll-remove-choice" type="button">×</button></div>
-        <div class="poll-choice-row"><input class="poll-choice-input" placeholder="Choice 2"><button class="gray poll-remove-choice" type="button">×</button></div>
-      </div>
-      <div class="actions"><button id="pollAddChoice" type="button">+ ADD CHOICE</button><button id="pollLaunch" type="button">LAUNCH POLL</button><button id="pollClose" class="danger-soft" type="button">CLOSE POLL</button></div>
-    </div>
-    <div class="card">
-      <h3>LIVE RESULTS</h3>
-      <div id="teacherPollTitle" class="muted">No active poll.</div>
-      <div id="teacherPollResults" class="live-poll-results"></div>
-    </div>
-  </div>
+<div class="card"><h3 id="scheduleEditorTitle">Monday</h3><div class="v29-list" id="scheduleEditorList"></div></div>
 </div>
-
-<div id="picker" class="panel">
-  <div class="titlebar"><div><h2>🎲 RANDOM STUDENT & GROUP PICKER</h2><p>Pick one student or instantly split the class into random groups.</p></div></div>
-  <div class="picker-grid">
-    <div class="card">
-      <h3>RANDOM STUDENT</h3>
-      <p class="pace-note">Uses the current student roster.</p>
-      <button id="pickOneStudent" type="button">🎲 PICK A STUDENT</button>
-      <div class="picker-output" id="singleStudentOutput"><div class="muted">No student picked yet.</div></div>
-    </div>
-    <div class="card">
-      <h3>RANDOM GROUPS</h3>
-      <div class="actions">
-        <button class="groupSizeBtn" data-size="2">GROUPS OF 2</button>
-        <button class="groupSizeBtn" data-size="3">GROUPS OF 3</button>
-        <button class="groupSizeBtn" data-size="4">GROUPS OF 4</button>
-        <button class="groupSizeBtn" data-size="5">GROUPS OF 5</button>
-      </div>
-      <div class="picker-output"><div class="group-grid" id="groupOutput"><div class="muted">Choose a group size.</div></div></div>
-    </div>
-  </div>
 </div>
-
-<div id="shop" class="panel">
-  <div class="frame bevel command-title">
-    <h2>🧰 DRAGONSWOOD SHOP MANAGER</h2>
-    <p>Create Gold-priced rewards once here. The student Shop will read these directly from Firebase.</p>
-  </div>
-
-  <div class="shop-summary-grid">
-    <div class="card shop-summary-card"><span>🧰</span><b id="shopItemCount">0</b><small>SHOP ITEMS</small></div>
-    <div class="card shop-summary-card"><span>✨</span><b id="shopActiveCount">0</b><small>ACTIVE</small></div>
-    <div class="card shop-summary-card"><span>📦</span><b id="shopPendingCount">0</b><small>PENDING REDEMPTIONS</small></div>
-  </div>
-
-  <div class="titlebar">
-    <div>
-      <h2>SHOP INVENTORY</h2>
-      <p>Items can be turned on/off without deleting them.</p>
-    </div>
-    <button id="seedRpgGear">⚖️ APPLY V25 MIDYEAR SCALE</button> <button id="addShopItem">+ ADD SHOP ITEM</button>
-  </div>
-
-  <div class="shop-grid" id="shopItemList"></div>
-
-  <div class="titlebar">
-    <div>
-      <h2>REDEMPTION QUEUE</h2>
-      <p>Student purchases will appear here after the student Shop is connected.</p>
-    </div>
-    <select id="purchaseFilter" style="max-width:190px">
-      <option value="pending">Pending</option>
-      <option value="all">All Purchases</option>
-      <option value="redeemed">Redeemed</option>
-      <option value="cancelled">Cancelled</option>
-    </select>
-  </div>
-
-  <div class="card">
-    <div id="purchaseQueue" class="purchase-list"></div>
-  </div>
+<div class="panel" id="calendar">
+<div class="titlebar"><div><h2>📅 SCHOOL &amp; SPORTS CALENDAR</h2><p>Add, edit, or remove events from the teacher portal.</p></div></div>
+<div class="v29-grid">
+<div class="card">
+<div class="v29-form">
+<input class="full" id="calTitle" placeholder="Event title"/>
+<input id="calStartDate" type="date"/><input id="calEndDate" type="date"/>
+<input id="calStartTime" type="time"/><input id="calEndTime" type="time"/>
+<select id="calCategory"><option value="school">School</option><option value="sports">Sports</option><option value="testing">Testing</option><option value="break">Break</option><option value="holiday">Holiday</option></select>
+<input id="calIcon" placeholder="Icon" value="📅"/>
 </div>
-
-<div id="quests" class="panel">
-  <div class="frame bevel command-title">
-    <h2>⚔️ QUEST COMMAND</h2>
-    <p>The Quest system is the next build after Shop. This tab is reserved now so the Command Center architecture stays stable.</p>
-  </div>
-  <div class="feature-placeholder-grid">
-    <div class="card placeholder-card"><div>📜</div><h3>Daily Quests</h3><p>Create short academic or behavior missions with XP / Gold rewards.</p><span>COMING NEXT</span></div>
-    <div class="card placeholder-card"><div>⭐</div><h3>Bonus Missions</h3><p>Optional challenges for students who want to earn more XP.</p><span>COMING NEXT</span></div>
-    <div class="card placeholder-card"><div>✅</div><h3>Approvals</h3><p>Review student submissions and approve completion from one queue.</p><span>COMING NEXT</span></div>
-  </div>
+<div class="v29-actions"><button id="calSave">ADD EVENT</button><button class="gray" id="calClear">CLEAR</button></div>
 </div>
-
-<div id="scores" class="panel"><div class="frame bevel command-title"><h2>🏆 LEADERBOARD MANAGER</h2><p>Review or delete submitted scores.</p></div><div class="card"><div class="list" id="scoreList"></div></div></div>
-<div id="data" class="panel"><div class="frame bevel command-title"><h2>📊 ACADEMIC GAME DATA</h2><p>Private game results for instructional use.</p></div><div class="card" style="overflow:auto"><table><thead><tr><th>Player</th><th>Game</th><th>Score</th><th>Accuracy</th><th>Details</th><th>Time</th></tr></thead><tbody id="results"></tbody></table></div></div>
+<div class="card"><h3>EVENTS</h3><div class="v29-list" id="teacherCalendarList"></div></div>
+</div>
+</div>
+<div class="panel" id="poll">
+<div class="titlebar"><div><h2>📊 LIVE CLASS POLL</h2><p>Create a question, add choices, and watch student votes tally instantly.</p></div></div>
+<div class="poll-admin-grid">
+<div class="card">
+<h3>CREATE POLL</h3>
+<input id="pollQuestionInput" placeholder="Type your question" style="width:100%"/>
+<div id="pollChoiceEditor">
+<div class="poll-choice-row"><input class="poll-choice-input" placeholder="Choice 1"/><button class="gray poll-remove-choice" type="button">×</button></div>
+<div class="poll-choice-row"><input class="poll-choice-input" placeholder="Choice 2"/><button class="gray poll-remove-choice" type="button">×</button></div>
+</div>
+<div class="actions"><button id="pollAddChoice" type="button">+ ADD CHOICE</button><button id="pollLaunch" type="button">LAUNCH POLL</button><button class="danger-soft" id="pollClose" type="button">CLOSE POLL</button></div>
+</div>
+<div class="card">
+<h3>LIVE RESULTS</h3>
+<div class="muted" id="teacherPollTitle">No active poll.</div>
+<div class="live-poll-results" id="teacherPollResults"></div>
+</div>
+</div>
+</div>
+<div class="panel" id="picker">
+<div class="titlebar"><div><h2>🎲 RANDOM STUDENT &amp; GROUP PICKER</h2><p>Pick one student or instantly split the class into random groups.</p></div></div>
+<div class="picker-grid">
+<div class="card">
+<h3>RANDOM STUDENT</h3>
+<p class="pace-note">Uses the current student roster.</p>
+<button id="pickOneStudent" type="button">🎲 PICK A STUDENT</button>
+<div class="picker-output" id="singleStudentOutput"><div class="muted">No student picked yet.</div></div>
+</div>
+<div class="card">
+<h3>RANDOM GROUPS</h3>
+<div class="actions">
+<button class="groupSizeBtn" data-size="2">GROUPS OF 2</button>
+<button class="groupSizeBtn" data-size="3">GROUPS OF 3</button>
+<button class="groupSizeBtn" data-size="4">GROUPS OF 4</button>
+<button class="groupSizeBtn" data-size="5">GROUPS OF 5</button>
+</div>
+<div class="picker-output"><div class="group-grid" id="groupOutput"><div class="muted">Choose a group size.</div></div></div>
+</div>
+</div>
+</div>
+<div class="panel" id="shop">
+<div class="frame bevel command-title">
+<h2>🧰 DRAGONSWOOD SHOP MANAGER</h2>
+<p>Create Gold-priced rewards once here. The student Shop will read these directly from Firebase.</p>
+</div>
+<div class="shop-summary-grid">
+<div class="card shop-summary-card"><span>🧰</span><b id="shopItemCount">0</b><small>SHOP ITEMS</small></div>
+<div class="card shop-summary-card"><span>✨</span><b id="shopActiveCount">0</b><small>ACTIVE</small></div>
+<div class="card shop-summary-card"><span>📦</span><b id="shopPendingCount">0</b><small>PENDING REDEMPTIONS</small></div>
+</div>
+<div class="titlebar">
+<div>
+<h2>SHOP INVENTORY</h2>
+<p>Items can be turned on/off without deleting them.</p>
+</div>
+<button id="seedRpgGear">⚖️ APPLY V25 MIDYEAR SCALE</button> <button id="addShopItem">+ ADD SHOP ITEM</button>
+</div>
+<div class="shop-grid" id="shopItemList"></div>
+<div class="titlebar">
+<div>
+<h2>REDEMPTION QUEUE</h2>
+<p>Student purchases will appear here after the student Shop is connected.</p>
+</div>
+<select id="purchaseFilter" style="max-width:190px">
+<option value="pending">Pending</option>
+<option value="all">All Purchases</option>
+<option value="redeemed">Redeemed</option>
+<option value="cancelled">Cancelled</option>
+</select>
+</div>
+<div class="card">
+<div class="purchase-list" id="purchaseQueue"></div>
+</div>
+</div>
+<div class="panel" id="quests">
+<div class="frame bevel command-title">
+<h2>⚔️ QUEST COMMAND</h2>
+<p>The Quest system is the next build after Shop. This tab is reserved now so the Command Center architecture stays stable.</p>
+</div>
+<div class="feature-placeholder-grid">
+<div class="card placeholder-card"><div>📜</div><h3>Daily Quests</h3><p>Create short academic or behavior missions with XP / Gold rewards.</p><span>COMING NEXT</span></div>
+<div class="card placeholder-card"><div>⭐</div><h3>Bonus Missions</h3><p>Optional challenges for students who want to earn more XP.</p><span>COMING NEXT</span></div>
+<div class="card placeholder-card"><div>✅</div><h3>Approvals</h3><p>Review student submissions and approve completion from one queue.</p><span>COMING NEXT</span></div>
+</div>
+</div>
+<div class="panel" id="scores"><div class="frame bevel command-title"><h2>🏆 LEADERBOARD MANAGER</h2><p>Review or delete submitted scores.</p></div><div class="card"><div class="list" id="scoreList"></div></div></div>
+<div class="panel" id="data"><div class="frame bevel command-title"><h2>📊 ACADEMIC GAME DATA</h2><p>Private game results for instructional use.</p></div><div class="card" style="overflow:auto"><table><thead><tr><th>Player</th><th>Game</th><th>Score</th><th>Accuracy</th><th>Details</th><th>Time</th></tr></thead><tbody id="results"></tbody></table></div></div>
 </section></main>
-
-<div id="rewardModal" class="modal hidden"><div class="modalbox card"><h3 id="rewardModalTitle">Add Reward</h3><input type="hidden" id="rid"><div class="field"><label>Name</label><input id="rname"></div><div class="field"><label>Points Required</label><input id="rpoints" type="number"></div><div class="field"><label>Icon</label><input id="ricon" value="🎁"></div><div class="field"><label>Description</label><textarea id="rdesc"></textarea></div><div class="actions"><button id="saveReward">SAVE REWARD</button><button id="cancelReward">Cancel</button></div></div></div>
-<div id="studentModal" class="modal hidden"><div class="modalbox card"><h3>Manage Student</h3><input type="hidden" id="sid"><div class="field"><label>First Name</label><input id="sname"></div><div class="field"><label>Grade</label><select id="sgrade"><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div><div class="field"><label>Group</label><select id="sgroup"><option value="girl">Girls</option><option value="boy">Boys</option></select></div><div class="field"><label>Title ID</label><input id="stitle"></div><div class="field"><label>Avatar ID</label><input id="savatar"></div><div class="groupbox"><div class="field"><label>HP</label><input id="shp" type="number"></div><div class="field"><label>Gold</label><input id="sgold" type="number"></div><div class="field"><label>XP</label><input id="sxp" type="number"></div><div class="field"><label>Reason</label><input id="sreason"></div></div><div class="student-gear-admin">
-  <b>🎒 STUDENT GEAR / INVENTORY</b>
-  <div class="formgrid" style="margin-top:7px">
-    <div class="field"><label>GIVE GEAR</label><select id="adminGiveGear"></select></div>
-    <div class="field"><label>REMOVE OWNED GEAR</label><select id="adminRemoveGear"></select></div>
-  </div>
-  <div class="actions"><button id="giveGearStudent" type="button">GIVE ITEM</button><button id="removeGearStudent" type="button" class="danger-soft">REMOVE ITEM</button></div>
+<div class="modal hidden" id="rewardModal"><div class="modalbox card"><h3 id="rewardModalTitle">Add Reward</h3><input id="rid" type="hidden"/><div class="field"><label>Name</label><input id="rname"/></div><div class="field"><label>Points Required</label><input id="rpoints" type="number"/></div><div class="field"><label>Icon</label><input id="ricon" value="🎁"/></div><div class="field"><label>Description</label><textarea id="rdesc"></textarea></div><div class="actions"><button id="saveReward">SAVE REWARD</button><button id="cancelReward">Cancel</button></div></div></div>
+<div class="modal hidden" id="studentModal"><div class="modalbox card"><h3>Manage Student</h3><input id="sid" type="hidden"/><div class="field"><label>First Name</label><input id="sname"/></div><div class="field"><label>Grade</label><select id="sgrade"><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div><div class="field"><label>Group</label><select id="sgroup"><option value="girl">Girls</option><option value="boy">Boys</option></select></div><div class="field"><label>Title ID</label><input id="stitle"/></div><div class="field"><label>Avatar ID</label><input id="savatar"/></div><div class="groupbox"><div class="field"><label>HP</label><input id="shp" type="number"/></div><div class="field"><label>Gold</label><input id="sgold" type="number"/></div><div class="field"><label>XP</label><input id="sxp" type="number"/></div><div class="field"><label>Reason</label><input id="sreason"/></div></div><div class="student-gear-admin">
+<b>🎒 STUDENT GEAR / INVENTORY</b>
+<div class="formgrid" style="margin-top:7px">
+<div class="field"><label>GIVE GEAR</label><select id="adminGiveGear"></select></div>
+<div class="field"><label>REMOVE OWNED GEAR</label><select id="adminRemoveGear"></select></div>
+</div>
+<div class="actions"><button id="giveGearStudent" type="button">GIVE ITEM</button><button class="danger-soft" id="removeGearStudent" type="button">REMOVE ITEM</button></div>
 </div>
 <div class="actions" style="margin-top:10px"><button id="saveStudent">SAVE PROFILE</button><button id="deleteStudent">DELETE STUDENT</button><button id="cancelStudent">Cancel</button></div></div></div>
-
-<div id="shopModal" class="modal hidden">
-  <div class="modalbox card shop-modal-box">
-    <div class="modal-heading">
-      <div>
-        <small>DRAGONSWOOD SHOP</small>
-        <h3 id="shopModalTitle">Add Shop Item</h3>
-      </div>
-      <button id="cancelShopItem" class="gray mini">✕</button>
-    </div>
-
-    <input type="hidden" id="shopId">
-
-    <div class="shop-form-grid">
-      <div class="field shop-icon-field">
-        <label>ICON</label>
-        <input id="shopIcon" value="🎁" maxlength="12">
-        <div class="shop-icon-preview" id="shopIconPreview">🎁</div>
-      </div>
-
-      <div class="field">
-        <label>ITEM NAME</label>
-        <input id="shopName" placeholder="Homework Pass">
-      </div>
-
-      <div class="field">
-        <label>GOLD COST</label>
-        <input id="shopCost" type="number" min="0" value="10">
-      </div>
-
-      <div class="field">
-        <label>QUANTITY</label>
-        <input id="shopQuantity" type="number" min="0" placeholder="Blank = unlimited">
-      </div>
-    </div>
-
-    <div class="formgrid" style="margin-top:10px"><div class="field"><label>ITEM TYPE</label><select id="shopKind"><option value="reward">Real-world Reward</option><option value="gear">Avatar / RPG Gear</option></select></div><div class="field"><label>EQUIPMENT SLOT</label><select id="shopSlot"><option value="">None</option><option value="head">Hat / Helmet</option><option value="outfit">Outfit</option><option value="armor">Armor</option><option value="weapon">Weapon</option><option value="offhand">Shield / Off-hand</option><option value="feet">Feet / Boots</option><option value="back">Back Item</option><option value="accessory">Accessory</option><option value="aura">Aura / Effect</option></select></div></div><div class="formgrid" style="margin-top:10px">
-      <div class="field"><label>RARITY</label><select id="shopRarity"><option value="common">Common</option><option value="uncommon">Uncommon</option><option value="rare">Rare</option><option value="epic">Epic</option><option value="legendary">Legendary</option></select></div>
-      <div class="field"><label>LEVEL REQUIRED</label><input id="shopLevel" type="number" min="1" value="1"></div>
-    </div>
-    <div class="formgrid" style="margin-top:10px">
-      <div class="field"><label>SHIRT / OUTFIT COLOR</label><input id="shopShirtColor" placeholder="#652dc1"></div>
-      <div class="field"><label>PANTS COLOR</label><input id="shopPantsColor" placeholder="#33255e"></div>
-      <div class="field"><label>SHOE COLOR</label><input id="shopShoeColor" placeholder="#4b3529"></div>
-      <div class="field"><label>AURA COLOR</label><input id="shopAuraColor" placeholder="#a64cff"></div>
-    </div><div class="formgrid" style="margin-top:10px"><div class="field"><label>ATK BONUS</label><input id="shopAtk" type="number" value="0"></div><div class="field"><label>DEF BONUS</label><input id="shopDef" type="number" value="0"></div><div class="field"><label>MAX HP BONUS</label><input id="shopHp" type="number" value="0"></div><div class="field"><label>HEAL BONUS</label><input id="shopHeal" type="number" value="0"></div></div>
-
-    <div class="field" style="margin-top:10px">
-      <label>DESCRIPTION</label>
-      <textarea id="shopDescription" rows="3" placeholder="What does the student receive?"></textarea>
-    </div>
-
-    <div class="shop-toggle-row">
-      <label class="toggle-label">
-        <input id="shopActive" type="checkbox" checked>
-        <span>ACTIVE IN STUDENT SHOP</span>
-      </label>
-    </div>
-
-    <div class="actions" style="margin-top:14px">
-      <button id="saveShopItem">SAVE SHOP ITEM</button>
-      <button id="deleteShopItem" class="danger-soft hidden">DELETE ITEM</button>
-    </div>
-  </div>
+<div class="modal hidden" id="shopModal">
+<div class="modalbox card shop-modal-box">
+<div class="modal-heading">
+<div>
+<small>DRAGONSWOOD SHOP</small>
+<h3 id="shopModalTitle">Add Shop Item</h3>
 </div>
-
+<button class="gray mini" id="cancelShopItem">✕</button>
+</div>
+<input id="shopId" type="hidden"/>
+<div class="shop-form-grid">
+<div class="field shop-icon-field">
+<label>ICON</label>
+<input id="shopIcon" maxlength="12" value="🎁"/>
+<div class="shop-icon-preview" id="shopIconPreview">🎁</div>
+</div>
+<div class="field">
+<label>ITEM NAME</label>
+<input id="shopName" placeholder="Homework Pass"/>
+</div>
+<div class="field">
+<label>GOLD COST</label>
+<input id="shopCost" min="0" type="number" value="10"/>
+</div>
+<div class="field">
+<label>QUANTITY</label>
+<input id="shopQuantity" min="0" placeholder="Blank = unlimited" type="number"/>
+</div>
+</div>
+<div class="formgrid" style="margin-top:10px"><div class="field"><label>ITEM TYPE</label><select id="shopKind"><option value="reward">Real-world Reward</option><option value="gear">Avatar / RPG Gear</option></select></div><div class="field"><label>EQUIPMENT SLOT</label><select id="shopSlot"><option value="">None</option><option value="head">Hat / Helmet</option><option value="outfit">Outfit</option><option value="armor">Armor</option><option value="weapon">Weapon</option><option value="offhand">Shield / Off-hand</option><option value="feet">Feet / Boots</option><option value="back">Back Item</option><option value="accessory">Accessory</option><option value="aura">Aura / Effect</option></select></div></div><div class="formgrid" style="margin-top:10px">
+<div class="field"><label>RARITY</label><select id="shopRarity"><option value="common">Common</option><option value="uncommon">Uncommon</option><option value="rare">Rare</option><option value="epic">Epic</option><option value="legendary">Legendary</option></select></div>
+<div class="field"><label>LEVEL REQUIRED</label><input id="shopLevel" min="1" type="number" value="1"/></div>
+</div>
+<div class="formgrid" style="margin-top:10px">
+<div class="field"><label>SHIRT / OUTFIT COLOR</label><input id="shopShirtColor" placeholder="#652dc1"/></div>
+<div class="field"><label>PANTS COLOR</label><input id="shopPantsColor" placeholder="#33255e"/></div>
+<div class="field"><label>SHOE COLOR</label><input id="shopShoeColor" placeholder="#4b3529"/></div>
+<div class="field"><label>AURA COLOR</label><input id="shopAuraColor" placeholder="#a64cff"/></div>
+</div><div class="formgrid" style="margin-top:10px"><div class="field"><label>ATK BONUS</label><input id="shopAtk" type="number" value="0"/></div><div class="field"><label>DEF BONUS</label><input id="shopDef" type="number" value="0"/></div><div class="field"><label>MAX HP BONUS</label><input id="shopHp" type="number" value="0"/></div><div class="field"><label>HEAL BONUS</label><input id="shopHeal" type="number" value="0"/></div></div>
+<div class="field" style="margin-top:10px">
+<label>DESCRIPTION</label>
+<textarea id="shopDescription" placeholder="What does the student receive?" rows="3"></textarea>
+</div>
+<div class="shop-toggle-row">
+<label class="toggle-label">
+<input checked="" id="shopActive" type="checkbox"/>
+<span>ACTIVE IN STUDENT SHOP</span>
+</label>
+</div>
+<div class="actions" style="margin-top:14px">
+<button id="saveShopItem">SAVE SHOP ITEM</button>
+<button class="danger-soft hidden" id="deleteShopItem">DELETE ITEM</button>
+</div>
+</div>
+</div>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
@@ -2421,8 +2351,6 @@ document.getElementById('passBlackoutBtn')?.addEventListener('click',togglePassB
   };
 })();
 </script>
-
-
 <script id="dragonswood-feedback-sounds">
 (() => {
   if(window.__dwFeedbackSoundsInstalled) return;
@@ -2465,13 +2393,9 @@ document.getElementById('passBlackoutBtn')?.addEventListener('click',togglePassB
   else start();
 })();
 </script>
-
-
 <script id="dragonswood-teacher-alert-ui">
 document.addEventListener("DOMContentLoaded",()=>window.DWAudio?.addTeacherBadge(),{once:true});
 </script>
-
-
 <script id="dragonswood-teacher-action-sounds">
 document.addEventListener("click",e=>{
   const b=e.target.closest("button");
@@ -2481,8 +2405,6 @@ document.addEventListener("click",e=>{
   else if(/deny|dismiss|ban|remove|subtract|take away|consequence/.test(t)) window.DWAudio?.negative();
 });
 </script>
-
-
 <script id="dw-explicit-point-button-sounds">
 document.addEventListener("click",e=>{
   const b=e.target.closest("button");
@@ -2501,8 +2423,6 @@ document.addEventListener("click",e=>{
   if(isNegative)setTimeout(()=>window.DWAudio?.negative(),180);
 });
 </script>
-
-
 <script id="dw-teacher-poll-picker-nav-fix">
 (function(){
   function openPanel(name){
@@ -2519,5 +2439,4 @@ document.addEventListener("click",e=>{
   });
 })();
 </script>
-
 </body></html>

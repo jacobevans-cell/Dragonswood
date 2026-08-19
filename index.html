@@ -1933,7 +1933,6 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .lb-meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:3px;color:#9fb0c5;font-size:10px}
 .lb-scoretype{display:block;color:#7fe7ff;font-size:9px;text-transform:uppercase;letter-spacing:.5px;text-align:right}
 </style>
-
 </head><body>
 <header class="topbar">
 <div class="shell">
@@ -4293,8 +4292,7 @@ function scoreDetailParts(s){
   const subject=s.subject||"";
   const session=s.session?String(s.session).replace(/\b\w/g,c=>c.toUpperCase()):"";
   if(subject)parts.push(subject);
-  if(activity)parts.push(activity);
-  else if(session)parts.push(session);
+  if(activity)parts.push(activity); else if(session)parts.push(session);
   if(lesson)parts.push(lesson);
   return [...new Set(parts.filter(Boolean))];
 }
@@ -4306,22 +4304,13 @@ function renderBoards(){
  $("boards").innerHTML=games.length?games.map(g=>{
    const top=grouped[g].sort((a,b)=>(+b.score||0)-(+a.score||0)).slice(0,5);
    return `<div class="board frame bevel"><h3>${esc(g)}</h3>${top.map((s,i)=>{
-     const details=scoreDetailParts(s);
-     const meta=[];
+     const details=scoreDetailParts(s),meta=[];
      if(s.accuracy!=null)meta.push(`${Number(s.accuracy)}% accuracy`);
      if(s.correct!=null&&s.total!=null)meta.push(`${s.correct}/${s.total} correct`);
      if(s.day!=null)meta.push(`Day ${s.day}`);
      if(s.dateKey)meta.push(String(s.dateKey));
      const scoreType=s.scoreType||"points";
-     return `<div class="rank">
-       <div class="place">${i+1}</div>
-       <div class="miniavatar">${esc(s.avatarEmoji||"🐉")}</div>
-       <div class="lb-main"><div>${esc(leaderboardName(s))}</div>
-         ${details.length?`<span class="lb-detail">${details.map(esc).join(" • ")}</span>`:""}
-         ${meta.length?`<span class="lb-meta">${meta.map(x=>`<span>${esc(x)}</span>`).join("")}</span>`:""}
-       </div>
-       <div class="score">${(+s.score||0).toLocaleString()}<span class="lb-scoretype">${esc(scoreType)}</span></div>
-     </div>`;
+     return `<div class="rank"><div class="place">${i+1}</div><div class="miniavatar">${esc(s.avatarEmoji||"🐉")}</div><div class="lb-main"><div>${esc(leaderboardName(s))}</div>${details.length?`<span class="lb-detail">${details.map(esc).join(" • ")}</span>`:""}${meta.length?`<span class="lb-meta">${meta.map(x=>`<span>${esc(x)}</span>`).join("")}</span>`:""}</div><div class="score">${(+s.score||0).toLocaleString()}<span class="lb-scoretype">${esc(scoreType)}</span></div></div>`;
    }).join("")}</div>`;
  }).join(""):'<div class="board frame bevel"><h3>No records yet</h3><p class="muted">No scores match this category yet.</p></div>';
  glitterizeStaticIcons();

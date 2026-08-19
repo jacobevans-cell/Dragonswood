@@ -18,14 +18,6 @@ service cloud.firestore {
         && request.auth.token.email.matches('.*@explore[.]academy$');
     }
 
-    // Explore student accounts plus any authenticated Dragonswood test/student
-    // account that already has a teacher-managed student profile.
-    function isDragonswoodStudent() {
-      return isExploreStudent()
-        || (request.auth != null
-            && exists(/databases/$(database)/documents/students/$(request.auth.uid)));
-    }
-
     function isOwner(uid) {
       return request.auth != null && request.auth.uid == uid;
     }
@@ -157,16 +149,8 @@ service cloud.firestore {
                       )
                     );
 
-      // Existing responses are private to the owner. For a brand-new response,
-      // the document does not exist yet, so resource.data cannot identify the
-      // owner. The response ID is deliberately `${sessionId}_${uid}`, allowing
-      // the student to read/check only the document whose ID ends in their UID.
       allow read: if isTeacher()
-                  || (isSignedIn()
-                      && (
-                        responseId.matches('.*_' + request.auth.uid)
-                        || resource.data.studentId == request.auth.uid
-                      ));
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
 
       allow update, delete: if isTeacher();
     }
@@ -496,7 +480,7 @@ service cloud.firestore {
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
 
       // Students create only their own draft/response record.
-      allow create: if isDragonswoodStudent()
+      allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.sessionId is string
                     && request.resource.data.responseText is string
@@ -504,7 +488,7 @@ service cloud.firestore {
                     && request.resource.data.status in ['draft','submitted'];
 
       // Students may edit/submit their own writing, but cannot write AI or teacher grades.
-      allow update: if isDragonswoodStudent()
+      allow update: if isExploreStudent()
                     && resource.data.studentId == request.auth.uid
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
@@ -521,7 +505,7 @@ service cloud.firestore {
 
     match /writingVotes/{voteId} {
       allow read: if isTeacher();
-      allow create: if isDragonswoodStudent()
+      allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid;
       allow update, delete: if isTeacher();
     }

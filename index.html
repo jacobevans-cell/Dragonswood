@@ -5577,24 +5577,44 @@ function renderFeedback(){
 }
 async function ensureResponse(){
  if(!scribeUser||!activeSession)return;
- const id=sessionResponseId(activeSession.id,scribeUser.uid),ref=doc(db,"writingResponses",id),snap=await getDoc(ref);
- if(!snap.exists()){
-   await setDoc(ref,{sessionId:activeSession.id,studentId:scribeUser.uid,studentName:scribeUser.displayName||scribeUser.email?.split("@")[0]||"Student",status:"draft",responseText:"",wordCount:0,startedMs:Date.now(),createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
- }
+ const id=sessionResponseId(activeSession.id,scribeUser.uid),ref=doc(db,"writingResponses",id);
+ if(myResponse?.status==="submitted")return;
+ await setDoc(ref,{
+   sessionId:activeSession.id,studentId:scribeUser.uid,
+   studentName:scribeUser.displayName||scribeUser.email?.split("@")[0]||"Student",
+   status:"draft",responseText:myResponse?.responseText||"",
+   wordCount:Number(myResponse?.wordCount||0),
+   startedMs:Number(myResponse?.startedMs||Date.now()),
+   updatedAt:serverTimestamp()
+ },{merge:true});
 }
-function watchMyResponse(){
+async function watchMyResponse(){
  if(responseUnsub){responseUnsub();responseUnsub=null}
  if(!scribeUser||!activeSession){myResponse=null;renderActive();return}
+ myResponse=null;renderActive();
  const id=sessionResponseId(activeSession.id,scribeUser.uid);
- responseUnsub=onSnapshot(doc(db,"writingResponses",id),snap=>{myResponse=snap.exists()?{id:snap.id,...snap.data()}:null;renderActive()});
- ensureResponse().catch(console.warn);
+ responseUnsub=onSnapshot(
+   doc(db,"writingResponses",id),
+   snap=>{myResponse=snap.exists()?{id:snap.id,...snap.data()}:null;renderActive()},
+   err=>{$("scribeSubmitStatus").textContent=`❌ Response listener: ${err?.code||""} ${err?.message||""}`}
+ );
+ try{await ensureResponse()}
+ catch(e){$("scribeSubmitStatus").textContent=`❌ Draft could not be created: ${e?.code||""} ${e?.message||""}`}
 }
 function watchSessions(){
  if(sessionUnsub){sessionUnsub();sessionUnsub=null}
- sessionUnsub=onSnapshot(query(collection(db,"writingSessions"),where("status","==","active")),snap=>{
-   const rows=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-   activeSession=rows[0]||null;watchMyResponse();
- });
+ sessionUnsub=onSnapshot(
+   doc(db,"classData","activeWritingSession"),
+   snap=>{
+     const d=snap.exists()?snap.data():null;
+     activeSession=(d?.status==="active"&&d?.sessionId)?{id:d.sessionId,...d}:null;
+     watchMyResponse();
+   },
+   err=>{
+     activeSession=null;renderActive();
+     $("scribeSubmitStatus").textContent=`❌ Could not load writing mission: ${err?.code||""} ${err?.message||""}`;
+   }
+ );
 }
 function renderPortfolio(){
  const rows=myResponses.filter(x=>x.status==="submitted").sort((a,b)=>(b.submittedAt?.seconds||0)-(a.submittedAt?.seconds||0));
@@ -5625,24 +5645,43 @@ $("scribeResponse")?.addEventListener("input",e=>{
  },650);
 });
 $("scribeSubmitBtn")?.addEventListener("click",async()=>{
- if(!scribeUser||!activeSession)return;
+ const btn=$("scribeSubmitBtn"),status=$("scribeSubmitStatus");
+ if(!scribeUser||!activeSession){status.textContent="Writing mission is not ready. Refresh once.";return}
  const text=$("scribeResponse").value.trim(),wc=words(text),min=Number(activeSession.minWords||0);
- if(wc<min){$("scribeSubmitStatus").textContent=`Keep writing: ${wc}/${min} words.`;return}
- const id=sessionResponseId(activeSession.id,scribeUser.uid),metrics=localMetrics(text);
- await setDoc(doc(db,"writingResponses",id),{
-   responseText:text,...metrics,status:"submitted",sessionTitle:activeSession.title||"Quickwrite",writingType:activeSession.writingType||"Writing",targetSkill:activeSession.targetSkill||"",prompt:activeSession.prompt||"",submittedAt:serverTimestamp(),updatedAt:serverTimestamp()
- },{merge:true});
- $("scribeSubmitStatus").textContent="✅ Quickwrite saved to your portfolio.";
+ if(wc<min){status.textContent=`Keep writing: ${wc}/${min} words.`;return}
+ btn.disabled=true;btn.textContent="📜 SUBMITTING…";status.textContent="Saving your Quickwrite…";
+ try{
+   clearTimeout(saveTimer);
+   const id=sessionResponseId(activeSession.id,scribeUser.uid),metrics=localMetrics(text);
+   await setDoc(doc(db,"writingResponses",id),{
+     sessionId:activeSession.id,studentId:scribeUser.uid,
+     studentName:scribeUser.displayName||scribeUser.email?.split("@")[0]||"Student",
+     responseText:text,...metrics,status:"submitted",
+     sessionTitle:activeSession.title||"Quickwrite",
+     writingType:activeSession.writingType||"Writing",
+     targetSkill:activeSession.targetSkill||"",
+     prompt:activeSession.prompt||"",
+     submittedAt:serverTimestamp(),updatedAt:serverTimestamp()
+   },{merge:true});
+   myResponse={...(myResponse||{}),id,status:"submitted",responseText:text,...metrics};
+   renderActive();status.textContent="✅ Quickwrite submitted. AI feedback is unlocked.";
+ }catch(e){
+   btn.disabled=false;btn.textContent="📜 SUBMIT QUICKWRITE";
+   status.textContent=`❌ Submit failed: ${e?.code||""} ${e?.message||""}`;
+ }
 });
 $("scribeGradeBtn")?.addEventListener("click",async()=>{
- if(!scribeUser||!activeSession||myResponse?.status!=="submitted")return;
- const btn=$("scribeGradeBtn");btn.disabled=true;btn.textContent="✨ ANALYZING…";$("scribeSubmitStatus").textContent="Dragonswood is analyzing your writing…";
+ const btn=$("scribeGradeBtn"),status=$("scribeSubmitStatus");
+ if(!scribeUser||!activeSession){status.textContent="Writing mission is not ready.";return}
+ if(myResponse?.status!=="submitted"){status.textContent="Submit your Quickwrite first.";return}
+ btn.disabled=true;btn.textContent="✨ ANALYZING…";status.textContent="Dragonswood is grading your writing…";
  try{
    const call=httpsCallable(functions,"gradeWriting");
-   await call({responseId:myResponse.id});
-   $("scribeSubmitStatus").textContent="✅ AI feedback added. Your teacher can review it.";
- }catch(e){console.error(e);$("scribeSubmitStatus").textContent=`AI grading is not connected yet: ${e?.message||"deploy the Firebase function first."}`}
- finally{btn.textContent="✨ GET AI FEEDBACK";renderActive()}
+   const result=await call({responseId:myResponse.id});
+   if(result?.data?.feedback){myResponse={...myResponse,aiFeedback:result.data.feedback,aiStatus:"complete"};renderFeedback()}
+   status.textContent=result?.data?.cached?"✅ Existing AI feedback loaded.":"✅ AI feedback complete. Your teacher can review it.";
+ }catch(e){status.textContent=`❌ AI grading error: ${e?.code||""} ${e?.message||""}`}
+ finally{btn.textContent="✨ GET AI FEEDBACK";btn.disabled=myResponse?.status!=="submitted"}
 });
 onAuthStateChanged(auth,u=>{
  scribeUser=u||null;

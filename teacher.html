@@ -2662,9 +2662,10 @@ let twUser=null,twActive=null,twResponses=[],twSessionUnsub=null,twResponseUnsub
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function watchWriting(){
  if(twSessionUnsub)twSessionUnsub();
- twSessionUnsub=onSnapshot(query(collection(db,"writingSessions"),where("status","==","active")),snap=>{
-   const rows=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-   twActive=rows[0]||null;watchResponses();renderWriting();
+ twSessionUnsub=onSnapshot(doc(db,"classData","activeWritingSession"),snap=>{
+   const d=snap.exists()?snap.data():null;
+   twActive=(d?.status==="active"&&d?.sessionId)?{id:d.sessionId,...d}:null;
+   watchResponses();renderWriting();
  });
 }
 function watchResponses(){
@@ -2699,17 +2700,22 @@ function renderWriting(){
 }
 $("twLaunch")?.addEventListener("click",async()=>{
  if(!twUser)return;
- const prompt=$("twPrompt").value.trim();if(!prompt){$("twLaunchStatus").textContent="Add a prompt first.";return}
- if(twActive)await setDoc(doc(db,"writingSessions",twActive.id),{status:"closed",closedAt:serverTimestamp()},{merge:true});
- const ref=await addDoc(collection(db,"writingSessions"),{
-   title:$("twTitle").value.trim()||"Quickwrite",mode:$("twMode").value,writingType:$("twType").value,targetSkill:$("twTarget").value,prompt,
-   timeMinutes:Math.max(2,Number($("twMinutes").value||5)),minWords:Math.max(0,Number($("twMinWords").value||0)),
+ const prompt=$("twPrompt").value.trim();
+ if(!prompt){$("twLaunchStatus").textContent="Add a prompt first.";return}
+ if(twActive?.id)await setDoc(doc(db,"writingSessions",twActive.id),{status:"closed",closedAt:serverTimestamp()},{merge:true});
+ const payload={
+   title:$("twTitle").value.trim()||"Quickwrite",mode:$("twMode").value,
+   writingType:$("twType").value,targetSkill:$("twTarget").value,prompt,
+   timeMinutes:Math.max(2,Number($("twMinutes").value||5)),
+   minWords:Math.max(0,Number($("twMinWords").value||0)),
    hints:[$("twHint1").value.trim(),$("twHint2").value.trim(),$("twHint3").value.trim(),$("twHint4").value.trim()].filter(Boolean),
    status:"active",createdBy:twUser.uid,createdAt:serverTimestamp(),updatedAt:serverTimestamp()
- });
+ };
+ const ref=await addDoc(collection(db,"writingSessions"),payload);
+ await setDoc(doc(db,"classData","activeWritingSession"),{...payload,sessionId:ref.id},{merge:false});
  $("twLaunchStatus").textContent="🔥 Writing mission launched to students.";
 });
-$("twClose")?.addEventListener("click",async()=>{if(!twActive)return;$("twLaunchStatus").textContent="Closing mission…";await setDoc(doc(db,"writingSessions",twActive.id),{status:"closed",closedAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});$("twLaunchStatus").textContent="Mission closed.";});
+$("twClose")?.addEventListener("click",async()=>{$("twLaunchStatus").textContent="Closing mission…";if(twActive?.id)await setDoc(doc(db,"writingSessions",twActive.id),{status:"closed",closedAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});await setDoc(doc(db,"classData","activeWritingSession"),{status:"closed",sessionId:"",closedAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:false});$("twLaunchStatus").textContent="Mission closed.";});
 onAuthStateChanged(auth,u=>{twUser=u||null;if(u)watchWriting()});
 </script>
 </body></html>

@@ -1600,12 +1600,34 @@ function bindRandomPicker(){
 
 
 let passBlackoutTeacher={active:false},genericPassStatuses=[];
+async function teacherReturnGenericPass(docId){
+ const d=genericPassStatuses.find(x=>x.id===docId);if(!d)return;
+ const now=new Date(),visits=Array.isArray(d.visits)?[...d.visits]:[],activeId=String(d.activeVisitId||'');
+ const updated=visits.map(v=>{
+   if(String(v?.id||'')!==activeId)return v;
+   const start=Number(v?.startedMs||0);
+   return {...v,endedAt:now.toISOString(),endedText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
+     durationMinutes:start?Math.max(0,Math.round((now.getTime()-start)/60000)):null,status:'returned'};
+ });
+ await setDoc(doc(db,'passStatus',docId),{
+   active:false,activeVisitId:'',endedAt:serverTimestamp(),
+   endedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
+   visits:updated,updatedAt:serverTimestamp()
+ },{merge:true});
+}
+
 function renderPassControl(){
  const b=$('passBlackoutBtn'),box=$('genericPassLive');if(!b||!box)return;
  const active=passBlackoutTeacher?.active===true;
  b.textContent=active?'🔒 PASS BLACKOUT ON':'🔓 PASSES OPEN';
  b.classList.toggle('blackout-on',active);
- box.innerHTML=genericPassStatuses.filter(x=>x.active===true).map(x=>`<div class="generic-pass-row"><b>${x.type==='office'?'🏫':'🚶'} ${esc(x.studentName||'Student')} • ${x.label||x.type}</b><small style="display:block">Started ${x.startedAtText||''}</small></div>`).join('')||'<div class="muted">No Out of Seat or Office passes active.</div>';
+ box.innerHTML=genericPassStatuses.filter(x=>x.active===true).map(x=>`<div class="generic-pass-row" style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center"><div><b>${x.type==='office'?'🏫':'🚶'} ${esc(x.studentName||'Student')} • ${x.label||x.type}</b><small style="display:block">Started ${x.startedAtText||''}</small></div><button data-return-generic="${x.id}">MARK RETURNED</button></div>`).join('')||'<div class="muted">No Out of Seat or Office passes active.</div>';
+ box.querySelectorAll('[data-return-generic]').forEach(btn=>btn.onclick=async()=>{
+   btn.disabled=true;
+   try{await teacherReturnGenericPass(btn.dataset.returnGeneric);window.DWAudio?.positive()}
+   catch(e){console.warn('teacher generic return',e);window.DWAudio?.negative();alert('Could not mark this pass returned.')}
+   finally{btn.disabled=false}
+ });
  const hist=$('genericPassHistory');
  if(hist){
    const visits=[];

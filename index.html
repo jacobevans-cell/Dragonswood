@@ -1933,6 +1933,12 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .lb-meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:3px;color:#9fb0c5;font-size:10px}
 .lb-scoretype{display:block;color:#7fe7ff;font-size:9px;text-transform:uppercase;letter-spacing:.5px;text-align:right}
 </style>
+
+<style id="dw-v44-pass-return-style">
+.pass-return-list{display:grid;gap:7px}
+.pass-return-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:8px;border:1px solid rgba(2,204,254,.35);border-radius:8px;background:rgba(5,7,23,.48)}
+.pass-return-row button{margin:0!important;width:auto!important;white-space:nowrap}
+</style>
 </head><body>
 <header class="topbar">
 <div class="shell">
@@ -2060,6 +2066,9 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
                 <option value="office">🏫 Office Pass</option>
               </select>
               <div class="pass-hub-status" id="studentPassHubStatus">Choose a pass.</div>
+            </div>
+            <div id="activeGenericPasses" class="pass-hub-status" style="margin-top:9px;display:none"></div>
+            <div class="pass-hub-top" style="grid-template-columns:1fr">
             </div>
             <button id="studentPassHubBtn" type="button">USE PASS</button>
           </div>
@@ -3018,6 +3027,7 @@ function genericPassTimer(type,startMs){
 function refreshPassHub(){
   const sel=$('studentPassType'),status=$('studentPassHubStatus'),btn=$('studentPassHubBtn'),hub=$('studentPassHub');
   if(!sel||!status||!btn)return;
+  renderActiveGenericPassReturns();
   const type=sel.value,blackout=passBlackoutState?.active===true;
   hub?.classList.toggle('blackout',blackout);
 
@@ -3052,22 +3062,54 @@ function refreshPassHub(){
     btn.disabled=blackout;
   }
 }
+async function endGenericPass(type){
+  if(!user)return;
+  const d=genericPassData[type];
+  if(!(d?.dateKey===phoenixDateKey()&&d?.active===true))return;
+  const ref=doc(db,'passStatus',genericPassDocId(type));
+  const now=new Date(),visits=Array.isArray(d?.visits)?[...d.visits]:[],activeId=String(d?.activeVisitId||'');
+  const updated=visits.map(v=>{
+    if(String(v?.id||'')!==activeId)return v;
+    const start=Number(v?.startedMs||0);
+    return {...v,endedAt:now.toISOString(),endedText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
+      durationMinutes:start?Math.max(0,Math.round((now.getTime()-start)/60000)):null,status:'returned'};
+  });
+  await setDoc(ref,{
+    active:false,
+    activeVisitId:'',
+    endedAt:serverTimestamp(),
+    endedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
+    visits:updated,
+    updatedAt:serverTimestamp()
+  },{merge:true});
+  window.DWAudio?.positive();
+}
+
+function renderActiveGenericPassReturns(){
+  const box=$('activeGenericPasses');
+  if(!box)return;
+  const activeTypes=['outOfSeat','office'].filter(type=>genericPassIsActive(type));
+  if(!activeTypes.length){box.style.display='none';box.innerHTML='';return}
+  box.style.display='block';
+  box.innerHTML=`<div class="pass-return-list">${activeTypes.map(type=>{
+    const meta=passTypeMeta(type),d=genericPassData[type];
+    return `<div class="pass-return-row"><div><b>${meta.icon} ${meta.label} ACTIVE</b><small style="display:block">Started ${d?.startedAtText||''}</small></div><button type="button" data-end-generic-pass="${type}">✅ RETURN</button></div>`;
+  }).join('')}</div>`;
+  box.querySelectorAll('[data-end-generic-pass]').forEach(b=>b.onclick=async()=>{
+    b.disabled=true;
+    try{await endGenericPass(b.dataset.endGenericPass)}
+    catch(e){console.warn('end generic pass',e);$('studentPassHubStatus').textContent='Could not end that pass. Please tell your teacher.';window.DWAudio?.negative()}
+    finally{b.disabled=false}
+  });
+}
+
 async function useGenericPass(type){
   if(!user)return;
   const d=genericPassData[type],active=genericPassIsActive(type),meta=passTypeMeta(type),ref=doc(db,'passStatus',genericPassDocId(type));
   if(!active&&passBlackoutState?.active===true){refreshPassHub();return}
   const now=new Date(),key=phoenixDateKey();
-  if(active){
-    const visits=Array.isArray(d?.visits)?[...d.visits]:[];
-    const activeId=String(d?.activeVisitId||'');
-    const updated=visits.map(v=>{
-      if(String(v?.id||'')!==activeId)return v;
-      const start=Number(v?.startedMs||0);
-      return {...v,endedAt:now.toISOString(),endedText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),durationMinutes:start?Math.max(0,Math.round((now.getTime()-start)/60000)):null,status:'returned'};
-    });
-    await setDoc(ref,{active:false,activeVisitId:'',endedAt:serverTimestamp(),endedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),visits:updated,updatedAt:serverTimestamp()},{merge:true});
-    window.DWAudio?.positive();return;
-  }
+  if(active){await endGenericPass(type);return;}
+
   const currentSame=d?.dateKey===key,prior=currentSame&&Array.isArray(d?.visits)?d.visits:[],id=user.uid+'_'+type+'_'+Date.now();
   const visit={id,studentId:user.uid,studentName:studentDisplayName(),type,label:meta.label,dateKey:key,startedAt:now.toISOString(),startedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),startedMs:now.getTime(),status:'active'};
   await setDoc(ref,{studentId:user.uid,studentName:studentDisplayName(),type,label:meta.label,dateKey:key,active:true,activeVisitId:id,startedAt:serverTimestamp(),startedAtText:visit.startedAtText,startedMs:visit.startedMs,visits:[...prior,visit].slice(-30),updatedAt:serverTimestamp()},{merge:true});

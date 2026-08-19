@@ -732,10 +732,12 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 <div><h3 style="margin:0">🚦 PASS CONTROL</h3><p class="pace-note" style="margin:4px 0 0">Blackout instantly blocks students from starting Bathroom, Snack, Out of Seat, or Office passes. Active students can still check back in.</p></div>
 <button id="passBlackoutBtn" type="button">🔓 PASSES OPEN</button>
 </div>
-<div class="generic-pass-live" id="genericPassLive"><div class="muted">No Out of Seat or Office passes active.</div></div>
-</div><div class="live-request-grid"><div class="card live-request-box"><h3>🚻 LIVE BATHROOM</h3><p class="pace-note">Students currently out appear here instantly. Each student gets 3 automatic passes per day; extras come here for approval.</p><div class="live-request-list" id="bathroomLiveList"><div class="muted">No students out.</div></div><h4>EXTRA PASS REQUESTS</h4><div class="live-request-list" id="bathroomRequestList"><div class="muted">No pending requests.</div></div>
-<h4>TODAY'S BATHROOM HISTORY</h4>
-<div class="live-request-list" id="bathroomHistoryList"><div class="muted">No bathroom visits recorded today.</div></div></div><div class="card live-request-box"><h3>🍎 LIVE SNACK PASSES</h3><p class="pace-note">Each student gets 2 automatic snack passes per day. After that, extra snack passes require your approval.</p><div class="live-request-list" id="snackLiveList"><div class="muted">No active snack passes.</div></div><h4>EXTRA SNACK REQUESTS</h4><div class="live-request-list" id="snackRequestList"><div class="muted">No pending snack requests.</div></div><h4>TODAY'S SNACK HISTORY</h4><div class="live-request-list" id="snackHistoryList"><div class="muted">No snack passes recorded today.</div></div></div><div class="card live-request-box"><h3>🚶 OUT OF SEAT / 🏫 OFFICE</h3><p class="pace-note">Live and historical Out of Seat / Office passes. Both are timed and stored.</p><div class="live-request-list" id="genericPassHistory"><div class="muted">No pass history yet.</div></div></div>
+<div class="generic-pass-live" id="genericPassLive"><div class="muted">No passes are active right now.</div></div>
+<div style="margin-top:12px"><h3 style="margin:0 0 7px">🙋 PASS APPROVALS</h3><p class="pace-note" style="margin:0 0 8px">All Bathroom, Snack, Out of Seat, and Emergency Office requests that need a decision appear here.</p><div class="live-request-list" id="passApprovalCenter"><div class="muted">No pending pass approvals.</div></div></div>
+</div><div class="live-request-grid">
+<div class="card live-request-box"><h3>🚻 BATHROOM HISTORY</h3><p class="pace-note">History only. 3 automatic passes per day; one boy and one girl may be out at a time.</p><div class="live-request-list" id="bathroomHistoryList"><div class="muted">No bathroom visits recorded today.</div></div></div>
+<div class="card live-request-box"><h3>🍎 SNACK HISTORY</h3><p class="pace-note">History only. 2 automatic snack passes per day.</p><div class="live-request-list" id="snackHistoryList"><div class="muted">No snack passes recorded today.</div></div></div>
+<div class="card live-request-box"><h3>🚶 OUT OF SEAT / 🆘 EMERGENCY OFFICE HISTORY</h3><p class="pace-note">History only. Each includes 1 automatic pass per day; extra uses require approval above.</p><div class="live-request-list" id="genericPassHistory"><div class="muted">No pass history yet.</div></div></div>
     <div class="card live-request-box" style="grid-column:1/-1">
       <h3>📚 STORED PASS ARCHIVE</h3>
       <p class="pace-note">Persistent pass records from today and previous days.</p>
@@ -955,7 +957,7 @@ const app=initializeApp(firebaseConfig,"DragonswoodTeacherPortal"),
       auth=getAuth(app),
       db=getFirestore(app),
       $=id=>document.getElementById(id);
-let points=0,history=[],rewards=[],scores=[],results=[],students=[],shopItems=[],purchases=[],bathroomStatuses=[],bathroomRequests=[],snackStatuses=[],snackRequests=[],pointRequests=[],passHistory=[],classJobsConfigV29={},jobWeeksV29=[],classScheduleV29={},calendarEventsV29=[],recessState={points:0,goal:10,dateKey:""},petGoalState={points:0,goal:250},tripGoalState={points:0,goal:750},universalPointState={points:0};
+let points=0,history=[],rewards=[],scores=[],results=[],students=[],shopItems=[],purchases=[],bathroomStatuses=[],bathroomRequests=[],snackStatuses=[],snackRequests=[],pointRequests=[],genericPassRequests=[],passHistory=[],classJobsConfigV29={},jobWeeksV29=[],classScheduleV29={},calendarEventsV29=[],recessState={points:0,goal:10,dateKey:""},petGoalState={points:0,goal:250},tripGoalState={points:0,goal:750},universalPointState={points:0};
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
 const AVATAR_EMOJI={"dragon-purple":"🐉","dragon-green":"🐲","knight":"🛡️","wizard":"🧙","witch":"🧙‍♀️","princess":"👸","prince":"🤴","ranger":"🏹","phoenix":"🔥","wolf":"🐺","owl":"🦉","crystal":"🔮"};
 const DRAGONSWOOD_XP_THRESHOLDS=[0,200,450,750,1100,1500,1950,2450,3000,3600,4250,4950,5700,6500,7350,8250,9200,10200,11100,12000];
@@ -1106,6 +1108,7 @@ onSnapshot(collection(db,"bathroomStatus"),s=>{bathroomStatuses=s.docs.map(d=>({
 onSnapshot(collection(db,"bathroomRequests"),s=>{bathroomRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("bathroomRequests listener",e));
 onSnapshot(collection(db,"snackStatus"),s=>{snackStatuses=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("snackStatus listener",e));
 onSnapshot(collection(db,"snackRequests"),s=>{snackRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("snackRequests listener",e));
+onSnapshot(collection(db,"passRequests"),s=>{genericPassRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("passRequests listener",e));
 onSnapshot(collection(db,"pointRequests"),s=>{pointRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("pointRequests listener",e));
 onSnapshot(doc(db,"classData","passBlackout"),s=>{passBlackoutTeacher=s.exists()?s.data():{active:false};renderPassControl()},e=>console.warn("pass blackout listener",e));
 onSnapshot(collection(db,"passStatus"),s=>{genericPassStatuses=s.docs.map(d=>({id:d.id,...d.data()}));renderPassControl()},e=>console.warn("generic pass listener",e));
@@ -1650,24 +1653,11 @@ async function teacherReturnGenericPass(docId){
 }
 
 function renderPassControl(){
- const b=$('passBlackoutBtn'),box=$('genericPassLive');if(!b||!box)return;
+ const b=$('passBlackoutBtn');if(!b)return;
  const active=passBlackoutTeacher?.active===true;
  b.textContent=active?'🔒 PASS BLACKOUT ON':'🔓 PASSES OPEN';
  b.classList.toggle('blackout-on',active);
- box.innerHTML=genericPassStatuses.filter(x=>x.active===true).map(x=>`<div class="generic-pass-row" style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center"><div><b>${x.type==='office'?'🏫':'🚶'} ${esc(x.studentName||'Student')} • ${x.label||x.type}</b><small style="display:block">Started ${x.startedAtText||''}</small></div><button data-return-generic="${x.id}">MARK RETURNED</button></div>`).join('')||'<div class="muted">No Out of Seat or Office passes active.</div>';
- box.querySelectorAll('[data-return-generic]').forEach(btn=>btn.onclick=async()=>{
-   btn.disabled=true;
-   try{await teacherReturnGenericPass(btn.dataset.returnGeneric);window.DWAudio?.positive()}
-   catch(e){console.warn('teacher generic return',e);window.DWAudio?.negative();alert('Could not mark this pass returned.')}
-   finally{btn.disabled=false}
- });
- const hist=$('genericPassHistory');
- if(hist){
-   const visits=[];
-   genericPassStatuses.forEach(x=>(Array.isArray(x.visits)?x.visits:[]).forEach(v=>visits.push({...v,_student:x.studentName||v.studentName||'Student',_type:x.type||v.type||''})));
-   visits.sort((a,b)=>Number(b.startedMs||0)-Number(a.startedMs||0));
-   hist.innerHTML=visits.slice(0,60).map(v=>`<div class="generic-pass-row"><b>${v._type==='office'?'🏫':'🚶'} ${esc(v._student)} • ${v._type==='office'?'Office':'Out of Seat'}</b><small>${esc(v.startedAtText||'')} ${v.endedText?'→ '+esc(v.endedText):'• ACTIVE'}${v.durationMinutes!=null?' • '+v.durationMinutes+' min':''}</small></div>`).join('')||'<div class="muted">No pass history yet.</div>';
- }
+ renderLiveRequests();
 }
 async function togglePassBlackout(){
  const next=!(passBlackoutTeacher?.active===true);
@@ -1700,6 +1690,7 @@ let dwAlertBathroomRequestIds=new Set();
 let dwAlertRecognitionIds=new Set();
 let dwAlertSnackActiveIds=new Set();
 let dwAlertSnackRequestIds=new Set();
+let dwAlertGenericRequestIds=new Set();
 
 function dwCurrentOutKeys(){
   const key=teacherDateKey();
@@ -1725,6 +1716,10 @@ function dwCurrentSnackRequests(){
   const key=teacherDateKey();
   return new Set(snackRequests.filter(x=>x.dateKey===key&&x.status==="pending").map(x=>String(x.id)));
 }
+function dwCurrentGenericRequests(){
+  const key=teacherDateKey();
+  return new Set(genericPassRequests.filter(x=>x.dateKey===key&&x.status==="pending").map(x=>String(x.id)));
+}
 function dwCurrentRecognitionRequests(){
   return new Set(
     pointRequests
@@ -1738,12 +1733,14 @@ function dwCheckTeacherAlerts(){
   const pointNow=dwCurrentRecognitionRequests();
   const snackNow=dwCurrentSnackActive();
   const snackReqNow=dwCurrentSnackRequests();
+  const genericReqNow=dwCurrentGenericRequests();
 
   if(dwAlertBaselineReady){
     const newBathroomOut=[...outNow].some(x=>!dwAlertOutKeys.has(x));
     const newBathroomReq=[...bathReqNow].some(x=>!dwAlertBathroomRequestIds.has(x));
     const newRecognition=[...pointNow].some(x=>!dwAlertRecognitionIds.has(x));
     const newSnack=[...snackNow].some(x=>!dwAlertSnackActiveIds.has(x)) || [...snackReqNow].some(x=>!dwAlertSnackRequestIds.has(x));
+    const newGenericReq=[...genericReqNow].some(x=>!dwAlertGenericRequestIds.has(x));
 
     if(newBathroomOut || newBathroomReq){
       window.DWAudio?.bathroom();
@@ -1751,6 +1748,9 @@ function dwCheckTeacherAlerts(){
     }else if(newSnack){
       window.DWAudio?.notice();
       try{document.title="🍎 SNACK ALERT • Dragonswood Teacher"}catch(e){}
+     }else if(newGenericReq){
+      window.DWAudio?.notice();
+      try{document.title="🎟️ PASS REQUEST • Dragonswood Teacher"}catch(e){}
     }else if(newRecognition){
       window.DWAudio?.notice();
       try{document.title="⭐ NEW REQUEST • Dragonswood Teacher"}catch(e){}
@@ -1762,6 +1762,7 @@ function dwCheckTeacherAlerts(){
   dwAlertRecognitionIds=pointNow;
   dwAlertSnackActiveIds=snackNow;
   dwAlertSnackRequestIds=snackReqNow;
+  dwAlertGenericRequestIds=genericReqNow;
   dwAlertBaselineReady=true;
 }
 
@@ -1809,7 +1810,7 @@ function renderPassArchive(){
     return true;
   }).sort((a,b)=>Number(b.leftMs||b.startedMs||0)-Number(a.leftMs||a.startedMs||0));
   const render=v=>{
-    const type=v.type||'pass',icon=type==='bathroom'?'🚻':type==='snack'?'🍎':type==='office'?'🏫':'🚶';
+    const type=v.type||'pass',icon=type==='bathroom'?'🚻':type==='snack'?'🍎':type==='office'?'🆘':'🚶';
     const start=v.leftAtText||v.startedAtText||'—',end=v.returnedText||v.endedText||'';
     return `<div class="live-request-item"><div><b>${icon} ${esc(v.studentName||'Student')} • ${esc(v.label||type)}</b><small>${esc(v.dateKey||'')} • ${esc(start)}${end?' → '+esc(end):' • ACTIVE'}${v.durationMinutes!=null?' • '+Number(v.durationMinutes)+' min':''}</small></div></div>`;
   };
@@ -1827,129 +1828,97 @@ function renderLiveRequests(){
  setTimeout(dwCheckTeacherAlerts,0);
  const key=teacherDateKey();
 
- const live=bathroomStatuses.filter(x=>x.dateKey===key&&x.active===true);
- const bl=$('bathroomLiveList');
- if(bl)bl.innerHTML=live.length?live.map(x=>`<div class="live-request-item out"><div><b>🚻 ${esc(x.studentName||displayStudent(students.find(s=>s.id===x.id)||{})||'Student')}</b><small>OUT NOW${x.leftAtText?' • left '+esc(x.leftAtText):''} • ${+x.passesUsed||0} automatic pass${(+x.passesUsed||0)===1?'':'es'} used today<br><span class="pass-timer" data-live-pass-start="${Number((Array.isArray(x.visits)?x.visits:[]).find(v=>String(v?.id||'')===String(x.activeVisitId||''))?.leftMs||Date.now())}">${passCountdownLabel(Number((Array.isArray(x.visits)?x.visits:[]).find(v=>String(v?.id||'')===String(x.activeVisitId||''))?.leftMs||Date.now()))}</span></small></div><div class="live-actions"><button data-return-bath="${x.id}">MARK RETURNED</button></div></div>`).join(''):'<div class="muted">No students are currently out.</div>';
-
- const pending=bathroomRequests.filter(x=>x.dateKey===key&&x.status==='pending');
- const br=$('bathroomRequestList');
- if(br)br.innerHTML=pending.length?pending.map(x=>`<div class="live-request-item"><div><b>🙋 ${esc(x.studentName||'Student')}</b><small>Extra bathroom pass requested ${reqTime(x)}</small></div><div class="live-actions"><button data-bath-approve="${x.id}">APPROVE</button><button class="danger-soft" data-bath-deny="${x.id}">DENY</button></div></div>`).join(''):'<div class="muted">No pending extra-pass requests.</div>';
-
-
+ const bathLive=bathroomStatuses.filter(x=>x.dateKey===key&&x.active===true);
  const snackLive=snackStatuses.filter(x=>x.dateKey===key&&x.active===true);
- const sl=$('snackLiveList');
- if(sl)sl.innerHTML=snackLive.length?snackLive.map(x=>`<div class="live-request-item out"><div><b>🍎 ${esc(x.studentName||'Student')}</b><small>SNACK ACTIVE${x.startedAtText?' • started '+esc(x.startedAtText):''} • ${+x.passesUsed||0} automatic pass${(+x.passesUsed||0)===1?'':'es'} used today<br><span class="pass-timer" data-live-pass-start="${Number((Array.isArray(x.visits)?x.visits:[]).find(v=>String(v?.id||'')===String(x.activeVisitId||''))?.startedMs||Date.now())}">${passCountdownLabel(Number((Array.isArray(x.visits)?x.visits:[]).find(v=>String(v?.id||'')===String(x.activeVisitId||''))?.startedMs||Date.now()))}</span></small></div><div class="live-actions"><button data-snack-done="${x.id}">MARK DONE</button></div></div>`).join(''):'<div class="muted">No active snack passes.</div>';
+ const genLive=genericPassStatuses.filter(x=>x.dateKey===key&&x.active===true);
 
- const snackPending=snackRequests.filter(x=>x.dateKey===key&&x.status==='pending');
- const sr=$('snackRequestList');
- if(sr)sr.innerHTML=snackPending.length?snackPending.map(x=>`<div class="live-request-item"><div><b>🍎 ${esc(x.studentName||'Student')}</b><small>Extra snack pass requested ${reqTime(x)}</small></div><div class="live-actions"><button data-snack-approve="${x.id}">APPROVE</button><button class="danger-soft" data-snack-deny="${x.id}">DENY</button></div></div>`).join(''):'<div class="muted">No pending snack requests.</div>';
+ const liveBox=$('genericPassLive');
+ if(liveBox){
+   const rows=[
+     ...bathLive.map(x=>({kind:'bath',id:x.id,icon:'🚻',name:x.studentName||displayStudent(students.find(s=>s.id===x.id)||{})||'Student',label:'Bathroom',time:x.leftAtText||'',start:Number((Array.isArray(x.visits)?x.visits:[]).find(v=>String(v?.id||'')===String(x.activeVisitId||''))?.leftMs||Date.now())})),
+     ...snackLive.map(x=>({kind:'snack',id:x.id,icon:'🍎',name:x.studentName||'Student',label:'Snack',time:x.startedAtText||'',start:Number((Array.isArray(x.visits)?x.visits:[]).find(v=>String(v?.id||'')===String(x.activeVisitId||''))?.startedMs||Date.now())})),
+     ...genLive.map(x=>({kind:'generic',id:x.id,icon:x.type==='office'?'🆘':'🚶',name:x.studentName||'Student',label:x.type==='office'?'Emergency Office':'Out of Seat',time:x.startedAtText||'',start:Number(x.startedMs||Date.now())}))
+   ];
+   liveBox.innerHTML=rows.length?rows.map(x=>`<div class="live-request-item out"><div><b>${x.icon} ${esc(x.name)} • ${x.label}</b><small>ACTIVE${x.time?' • started '+esc(x.time):''}<br><span class="pass-timer" data-live-pass-start="${x.start}">${passCountdownLabel(x.start)}</span></small></div><div class="live-actions"><button data-central-return="${x.kind}" data-return-id="${x.id}">MARK RETURNED</button></div></div>`).join(''):'<div class="muted">No passes are active right now.</div>';
+ }
+
+ const approvals=[];
+ bathroomRequests.filter(x=>x.dateKey===key&&x.status==='pending').forEach(x=>approvals.push({...x,_kind:'bathroom',_icon:'🚻',_label:'Extra Bathroom'}));
+ snackRequests.filter(x=>x.dateKey===key&&x.status==='pending').forEach(x=>approvals.push({...x,_kind:'snack',_icon:'🍎',_label:'Extra Snack'}));
+ genericPassRequests.filter(x=>x.dateKey===key&&x.status==='pending').forEach(x=>approvals.push({...x,_kind:'generic',_icon:x.type==='office'?'🆘':'🚶',_label:x.type==='office'?'Extra Emergency Office':'Extra Out of Seat'}));
+ approvals.sort((a,b)=>(a.createdAt?.seconds||0)-(b.createdAt?.seconds||0));
+ const ac=$('passApprovalCenter');
+ if(ac)ac.innerHTML=approvals.length?approvals.map(x=>`<div class="live-request-item"><div><b>${x._icon} ${esc(x.studentName||'Student')} • ${x._label}</b><small>Requested ${reqTime(x)}</small></div><div class="live-actions"><button data-pass-approve="${x._kind}" data-request-id="${x.id}">APPROVE</button><button class="danger-soft" data-pass-deny="${x._kind}" data-request-id="${x.id}">DENY</button></div></div>`).join(''):'<div class="muted">No pending pass approvals.</div>';
 
  const snackVisits=[];
- snackStatuses.forEach(status=>{
-   if(status.dateKey!==key)return;
-   (Array.isArray(status.visits)?status.visits:[]).forEach(v=>snackVisits.push({...v,fallbackName:status.studentName}));
- });
+ snackStatuses.forEach(status=>{if(status.dateKey!==key)return;(Array.isArray(status.visits)?status.visits:[]).forEach(v=>snackVisits.push({...v,fallbackName:status.studentName}))});
  snackVisits.sort((a,b)=>Number(b.startedMs||0)-Number(a.startedMs||0));
  const sh=$('snackHistoryList');
  if(sh)sh.innerHTML=snackVisits.length?snackVisits.map(v=>`<div class="live-request-item"><div><b>🍎 ${esc(v.studentName||v.fallbackName||'Student')}</b><small>${esc(v.passType==='approved-extra'?'Approved extra pass':'Automatic pass')} • START ${esc(v.startedAtText||'—')} • ${v.status==='done'?'DONE '+esc(v.endedText||'—'):'ACTIVE'}${Number.isFinite(Number(v.durationMinutes))&&v.durationMinutes!==null?' • '+Number(v.durationMinutes)+' min':''}</small></div></div>`).join(''):'<div class="muted">No snack passes recorded today.</div>';
 
- const pointPending=pointRequests.filter(x=>x.status==='pending');
- const pr=$('pointRequestList');
- if(pr)pr.innerHTML=pointPending.length?pointPending.map(x=>`<div class="live-request-item"><div><b>⭐ ${esc(x.studentName||'Student')}</b><small>${esc(x.reason||'Positive choice')} • ${reqTime(x)}</small></div><div class="live-actions"><button data-point-approve="${x.id}">APPROVE +1 XP</button><button class="danger-soft" data-point-deny="${x.id}">DISMISS</button></div></div>`).join(''):'<div class="muted">No pending recognition requests.</div>';
-
- const visits=[];
- bathroomStatuses.forEach(status=>{
-   if(status.dateKey!==key)return;
-   (Array.isArray(status.visits)?status.visits:[]).forEach(v=>visits.push({...v,fallbackName:status.studentName}));
- });
- visits.sort((a,b)=>Number(b.leftMs||0)-Number(a.leftMs||0));
+ const bathVisits=[];
+ bathroomStatuses.forEach(status=>{if(status.dateKey!==key)return;(Array.isArray(status.visits)?status.visits:[]).forEach(v=>bathVisits.push({...v,fallbackName:status.studentName}))});
+ bathVisits.sort((a,b)=>Number(b.leftMs||0)-Number(a.leftMs||0));
  const vh=$('bathroomHistoryList');
- if(vh)vh.innerHTML=visits.length?visits.map(v=>`<div class="live-request-item"><div><b>🚻 ${esc(v.studentName||v.fallbackName||'Student')}</b><small>${esc(v.passType==='approved-extra'?'Approved extra pass':'Automatic pass')} • OUT ${esc(v.leftAtText||'—')} • ${v.status==='returned'?'BACK '+esc(v.returnedText||'—'):'OUT NOW'}${Number.isFinite(Number(v.durationMinutes))&&v.durationMinutes!==null?' • '+Number(v.durationMinutes)+' min':''}</small></div></div>`).join(''):'<div class="muted">No bathroom visits recorded today.</div>';
+ if(vh)vh.innerHTML=bathVisits.length?bathVisits.map(v=>`<div class="live-request-item"><div><b>🚻 ${esc(v.studentName||v.fallbackName||'Student')}</b><small>${esc(v.passType==='approved-extra'?'Approved extra pass':'Automatic pass')} • OUT ${esc(v.leftAtText||'—')} • ${v.status==='returned'?'BACK '+esc(v.returnedText||'—'):'OUT NOW'}${Number.isFinite(Number(v.durationMinutes))&&v.durationMinutes!==null?' • '+Number(v.durationMinutes)+' min':''}</small></div></div>`).join(''):'<div class="muted">No bathroom visits recorded today.</div>';
+
+ const gv=[];
+ genericPassStatuses.forEach(x=>{if(x.dateKey!==key)return;(Array.isArray(x.visits)?x.visits:[]).forEach(v=>gv.push({...v,_student:x.studentName||v.studentName||'Student',_type:x.type||v.type||''}))});
+ gv.sort((a,b)=>Number(b.startedMs||0)-Number(a.startedMs||0));
+ const gh=$('genericPassHistory');
+ if(gh)gh.innerHTML=gv.length?gv.map(v=>`<div class="live-request-item"><div><b>${v._type==='office'?'🆘':'🚶'} ${esc(v._student)} • ${v._type==='office'?'Emergency Office':'Out of Seat'}</b><small>${esc(v.passType==='approved-extra'?'Approved extra pass':'Automatic pass')} • ${esc(v.startedAtText||'—')} ${v.endedText?'→ '+esc(v.endedText):'• ACTIVE'}${v.durationMinutes!=null?' • '+v.durationMinutes+' min':''}</small></div></div>`).join(''):'<div class="muted">No Out of Seat / Emergency Office history today.</div>';
 
  collapsePassHistoryList('bathroomHistoryList','bathroom visits');
  collapsePassHistoryList('snackHistoryList','snack visits');
+ collapsePassHistoryList('genericPassHistory','other passes');
 
- document.querySelectorAll('[data-return-bath]').forEach(b=>b.onclick=async()=>{
-   const status=bathroomStatuses.find(x=>x.id===b.dataset.returnBath);
-   if(!status)return;
-   const now=new Date();
-   const activeVisitId=String(status.activeVisitId||'');
-   const visits=Array.isArray(status.visits)?status.visits:[];
-   const updated=visits.map(v=>{
-     if(String(v?.id||'')!==activeVisitId)return v;
-     const leftMs=Number(v?.leftMs||0);
-     return {...v,
-       returnedAt:now.toISOString(),
-       returnedText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
-       durationMinutes:leftMs?Math.max(0,Math.round((now.getTime()-leftMs)/60000)):null,
-       status:'returned'
-     };
-   });
-
-   const group=status.genderGroup==="girl"?"girl":"boy";
-   const batch=writeBatch(db);
-   batch.set(doc(db,'bathroomStatus',b.dataset.returnBath),{
-     active:false,
-     activeVisitId:'',
-     returnedAt:serverTimestamp(),
-     returnedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
-     visits:updated,
-     updatedAt:serverTimestamp()
-   },{merge:true});
-   batch.set(doc(db,'bathroomSlots',group),{
-     group,
-     occupied:false,
-     studentId:'',
-     studentName:'',
-     releasedAt:serverTimestamp(),
-     updatedAt:serverTimestamp()
-   },{merge:true});
-   if(activeVisitId){
-     const archived=updated.find(v=>String(v?.id||'')===activeVisitId);
-     if(archived)batch.set(doc(db,'passHistory',activeVisitId),{...archived,type:'bathroom',label:'Bathroom',updatedAt:serverTimestamp()},{merge:true});
-   }
-   await batch.commit();
-   window.DWAudio?.positive();
- });
-
- document.querySelectorAll('[data-snack-done]').forEach(b=>b.onclick=async()=>{
-   const status=snackStatuses.find(x=>x.id===b.dataset.snackDone);
-   if(!status)return;
-   const now=new Date(),activeId=String(status.activeVisitId||'');
-   const visits=(Array.isArray(status.visits)?status.visits:[]).map(v=>{
-     if(String(v?.id||'')!==activeId)return v;
-     const startMs=Number(v?.startedMs||0);
-     return {...v,
-       endedAt:now.toISOString(),
-       endedText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
-       durationMinutes:startMs?Math.max(0,Math.round((now.getTime()-startMs)/60000)):null,
-       status:'done'
-     };
-   });
+ document.querySelectorAll('[data-central-return]').forEach(b=>b.onclick=async()=>{
+   b.disabled=true;
    try{
-     await setDoc(doc(db,'snackStatus',b.dataset.snackDone),{
-       active:false,activeVisitId:'',endedAt:serverTimestamp(),
-       endedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
-       visits,updatedAt:serverTimestamp()
-     },{merge:true});
-     if(activeId){
-       const archived=visits.find(v=>String(v?.id||'')===activeId);
-       if(archived)await setDoc(doc(db,'passHistory',activeId),{...archived,type:'snack',label:'Snack',updatedAt:serverTimestamp()},{merge:true});
-     }
+     const kind=b.dataset.centralReturn,id=b.dataset.returnId;
+     if(kind==='bath'){
+       const status=bathroomStatuses.find(x=>x.id===id);if(!status)return;
+       const now=new Date(),activeId=String(status.activeVisitId||''),visits=Array.isArray(status.visits)?status.visits:[];
+       const updated=visits.map(v=>String(v?.id||'')!==activeId?v:{...v,returnedAt:now.toISOString(),returnedText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),durationMinutes:Number(v?.leftMs||0)?Math.max(0,Math.round((now.getTime()-Number(v.leftMs))/60000)):null,status:'returned'});
+       const group=status.genderGroup==="girl"?"girl":"boy",batch=writeBatch(db);
+       batch.set(doc(db,'bathroomStatus',id),{active:false,activeVisitId:'',returnedAt:serverTimestamp(),returnedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),visits:updated,updatedAt:serverTimestamp()},{merge:true});
+       batch.set(doc(db,'bathroomSlots',group),{group,occupied:false,studentId:'',studentName:'',releasedAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});
+       if(activeId){const archived=updated.find(v=>String(v?.id||'')===activeId);if(archived)batch.set(doc(db,'passHistory',activeId),{...archived,type:'bathroom',label:'Bathroom',updatedAt:serverTimestamp()},{merge:true})}
+       await batch.commit();
+     }else if(kind==='snack'){
+       const status=snackStatuses.find(x=>x.id===id);if(!status)return;
+       const now=new Date(),activeId=String(status.activeVisitId||''),visits=(Array.isArray(status.visits)?status.visits:[]).map(v=>String(v?.id||'')!==activeId?v:{...v,endedAt:now.toISOString(),endedText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),durationMinutes:Number(v?.startedMs||0)?Math.max(0,Math.round((now.getTime()-Number(v.startedMs))/60000)):null,status:'done'});
+       await setDoc(doc(db,'snackStatus',id),{active:false,activeVisitId:'',endedAt:serverTimestamp(),endedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),visits,updatedAt:serverTimestamp()},{merge:true});
+       if(activeId){const archived=visits.find(v=>String(v?.id||'')===activeId);if(archived)await setDoc(doc(db,'passHistory',activeId),{...archived,type:'snack',label:'Snack',updatedAt:serverTimestamp()},{merge:true})}
+     }else await teacherReturnGenericPass(id);
      window.DWAudio?.positive();
-   }catch(err){
-     console.error("Mark snack done error",err);
-     window.DWAudio?.negative();
-     alert("Could not mark snack done: "+(err.code||err.message||err));
-   }
+   }catch(e){console.warn('central pass return',e);window.DWAudio?.negative();alert('Could not mark this pass returned.')}
+   finally{b.disabled=false}
  });
- document.querySelectorAll('[data-snack-approve]').forEach(b=>b.onclick=()=>approveSnack(b.dataset.snackApprove,true));
- document.querySelectorAll('[data-snack-deny]').forEach(b=>b.onclick=()=>approveSnack(b.dataset.snackDeny,false));
 
- document.querySelectorAll('[data-bath-approve]').forEach(b=>b.onclick=()=>approveBathroom(b.dataset.bathApprove,true));
- document.querySelectorAll('[data-bath-deny]').forEach(b=>b.onclick=()=>approveBathroom(b.dataset.bathDeny,false));
+ document.querySelectorAll('[data-pass-approve]').forEach(b=>b.onclick=()=>reviewCentralPass(b.dataset.passApprove,b.dataset.requestId,true));
+ document.querySelectorAll('[data-pass-deny]').forEach(b=>b.onclick=()=>reviewCentralPass(b.dataset.passDeny,b.dataset.requestId,false));
+
+ const pointPending=pointRequests.filter(x=>x.status==='pending'),pr=$('pointRequestList');
+ if(pr)pr.innerHTML=pointPending.length?pointPending.map(x=>`<div class="live-request-item"><div><b>⭐ ${esc(x.studentName||'Student')}</b><small>${esc(x.reason||'Positive choice')} • ${reqTime(x)}</small></div><div class="live-actions"><button data-point-approve="${x.id}">APPROVE +1 XP</button><button class="danger-soft" data-point-deny="${x.id}">DISMISS</button></div></div>`).join(''):'<div class="muted">No pending recognition requests.</div>';
  document.querySelectorAll('[data-point-approve]').forEach(b=>b.onclick=()=>approvePoint(b.dataset.pointApprove,true));
  document.querySelectorAll('[data-point-deny]').forEach(b=>b.onclick=()=>approvePoint(b.dataset.pointDeny,false));
+}
+async function reviewCentralPass(kind,id,yes){
+ if(kind==='bathroom')return approveBathroom(id,yes);
+ if(kind==='snack')return approveSnack(id,yes);
+ return approveGenericPass(id,yes);
+}
+async function approveGenericPass(id,yes){
+ const r=genericPassRequests.find(x=>x.id===id);if(!r)return;
+ try{
+   if(yes){
+     const ref=doc(db,'passStatus',`${r.studentId}_${r.type}`),snap=await getDoc(ref),d=snap.exists()?snap.data():{},same=d.dateKey===teacherDateKey();
+     await setDoc(ref,{studentId:r.studentId,studentName:r.studentName,type:r.type,label:r.type==='office'?'Emergency Office':'Out of Seat',dateKey:teacherDateKey(),passesUsed:same?(+d.passesUsed||1):1,approvalCredits:(same?(+d.approvalCredits||0):0)+1,active:same&&d.active===true,updatedAt:serverTimestamp()},{merge:true});
+   }
+   await setDoc(doc(db,'passRequests',id),{status:yes?'approved':'denied',reviewedAt:serverTimestamp()},{merge:true});
+   yes?window.DWAudio?.positive():window.DWAudio?.negative();
+ }catch(err){console.error('generic pass review',err);window.DWAudio?.negative();alert('Could not review pass request: '+(err.code||err.message||err))}
 }
 async function approveSnack(id,yes){
  const r=snackRequests.find(x=>x.id===id);

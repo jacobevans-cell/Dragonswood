@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dragonswood Cosmic Architect V4</title>
+<style>
+:root{--bg:#030714;--panel:#08152a;--panel2:#0d2140;--gold:#ffd76d;--cyan:#66e7ff;--vio:#b98cff;--text:#f6f8ff;--muted:#b9c8dc;--good:#76efaa}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#17275d,#050817 45%,#02040b);color:var(--text);font:15px/1.4 system-ui,Segoe UI,Arial}
+header{padding:14px;text-align:center;background:#030715ee;border-bottom:1px solid #67528f}h1{font:900 clamp(28px,4vw,48px) Georgia;margin:0;color:#fff0a7}.sub{color:#d6cbe8}
+main{width:min(1500px,98%);margin:auto;padding:10px}.card{background:#08152aed;border:1px solid #2c5374;border-radius:15px;padding:12px}.shell{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:10px}@media(max-width:980px){.shell{grid-template-columns:1fr}}
+.simwrap{position:relative;background:#000;border:1px solid #385b79;border-radius:16px;overflow:hidden;height:min(78vh,780px);min-height:610px}
+iframe{width:100%;height:100%;border:0;background:#000}
+.side{display:grid;gap:9px;align-content:start}.side .card{padding:11px}.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#31214e;border:1px solid #7657a4;font-size:10px;font-weight:900}
+.score{display:grid;grid-template-columns:1fr 1fr;gap:7px}.score>div{text-align:center;padding:8px;background:#06111f;border:1px solid #264963;border-radius:9px}.score b{display:block;font-size:20px;color:var(--gold)}
+.mission{padding:10px;border:1px solid #4d4777;border-radius:10px;background:#0d1630;margin:7px 0;cursor:pointer}.mission.active{outline:2px solid var(--gold)}.mission.done{border-color:#49b87b;background:#0b2a20}.mission h3{margin:0 0 4px;font-size:16px}.mission p{font-size:12px;margin:0;color:var(--muted)}
+button,a.btn{display:inline-block;border:1px solid #3e7fa1;background:linear-gradient(135deg,#171d4f,#064867);color:white;padding:9px 11px;border-radius:9px;font-weight:900;text-decoration:none;cursor:pointer}button:hover,a.btn:hover{filter:brightness(1.12)}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}.actions>*{text-align:center}
+.callout{padding:10px;border-left:4px solid var(--cyan);background:#071a2b;border-radius:8px;font-size:12px}.good{color:var(--good)}
+.tabs{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin:0 0 9px}.tabs button.active{outline:2px solid var(--gold)}
+.panel{display:none}.panel.on{display:block}.knowledge{display:grid;gap:7px}.fact{padding:9px;background:#06111f;border:1px solid #26465e;border-radius:9px;font-size:12px}
+footer{text-align:center;color:#98adbf;padding:18px;font-size:11px}
+</style>
+</head>
+<body>
+<header>
+ <span class="badge">DRAGONSWOOD • ARCANE OBSERVATORY</span>
+ <h1>🌌 Cosmic Architect</h1>
+ <div class="sub">Real PhET orbital simulation underneath. Dragonswood missions on top.</div>
+</header>
+<main>
+ <div class="tabs">
+   <button class="active" data-tab="play">🪐 SIMULATOR</button>
+   <button data-tab="missions">🏆 MISSION BOARD</button>
+   <button data-tab="science">🔬 SCIENCE GUIDE</button>
+ </div>
+
+ <section id="play" class="panel on">
+  <div class="shell">
+   <div class="simwrap">
+    <iframe id="phetFrame" title="PhET My Solar System"
+      src="https://phet.colorado.edu/sims/html/my-solar-system/latest/my-solar-system_all.html"
+      allow="fullscreen"></iframe>
+   </div>
+   <aside class="side">
+    <div class="card">
+      <h2 style="margin:0 0 6px">🎮 Observatory HUD</h2>
+      <div class="score"><div>MISSIONS<b id="doneCount">0 / 8</b></div><div>XP<b id="xp">0</b></div></div>
+    </div>
+    <div class="card">
+      <h3>🎯 Current Mission</h3>
+      <div id="currentMission" class="callout">Choose a mission from the board.</div>
+      <div class="actions" style="margin-top:7px"><button id="missionDone">✓ COMPLETE</button><button id="nextMission">NEXT →</button></div>
+    </div>
+    <div class="card">
+      <h3>⚡ Quick Challenges</h3>
+      <div id="quickList"></div>
+    </div>
+    <div class="card">
+      <div class="callout"><b>Why PhET?</b><br>This is the University of Colorado's open-source My Solar System simulation. Students can manipulate masses, velocities, positions, paths, gravity-force vectors, center of mass, and preset orbital systems instead of relying on our homemade imitation.</div>
+    </div>
+    <div class="actions">
+      <a class="btn" target="_blank" rel="noopener" href="https://phet.colorado.edu/sims/html/my-solar-system/latest/my-solar-system_all.html">↗ FULL SCREEN</a>
+      <button onclick="document.getElementById('phetFrame').src=document.getElementById('phetFrame').src">↺ RELOAD SIM</button>
+    </div>
+   </aside>
+  </div>
+ </section>
+
+ <section id="missions" class="panel">
+  <div class="card">
+   <h2>🏆 Dragonswood Mission Board</h2>
+   <p>These missions are built around things the simulator actually lets students manipulate. No fake buttons that congratulate themselves for existing.</p>
+   <div id="missionBoard"></div>
+  </div>
+ </section>
+
+ <section id="science" class="panel">
+  <div class="card">
+   <h2>🔬 Science Guide</h2>
+   <div class="knowledge">
+    <div class="fact"><b>🧲 Gravity</b><br>Every mass attracts every other mass. More mass means stronger gravitational attraction. Greater distance weakens gravity dramatically because gravitational force follows an inverse-square relationship.</div>
+    <div class="fact"><b>➡️ Velocity</b><br>An orbit happens because a body is moving sideways while gravity continually bends its path inward. Too little speed can lead to a collision. Enough speed can create an orbit. Sufficient speed can produce an escape trajectory.</div>
+    <div class="fact"><b>⚖️ Center of Mass</b><br>Two bodies both orbit their shared center of mass. A star does not sit perfectly still while a planet moves around it.</div>
+    <div class="fact"><b>☄️ Ellipse vs. Hyperbola</b><br>A closed elliptical path is a bound orbit. A hyperbolic path is unbound, meaning the object passes through the system and escapes.</div>
+    <div class="fact"><b>🪐 Multi-body Systems</b><br>Adding more objects makes gravity more complicated. Worlds can perturb one another, collide, exchange energy, or even slingshot objects onto new trajectories.</div>
+   </div>
+  </div>
+ </section>
+</main>
+<footer>
+PhET My Solar System © University of Colorado Boulder, GPL-3.0/open educational simulation. Dragonswood mission wrapper is an adapted educational presentation and does not alter PhET's physics.
+</footer>
+
+<script>
+const MISSIONS=[
+ {name:'First Orbit',xp:50,text:'Use the Intro or Lab screen. Create a body that completes at least one clear orbit without colliding.'},
+ {name:'Too Slow!',xp:50,text:'Reduce a planet’s sideways velocity until its path falls inward. Explain why gravity wins.'},
+ {name:'Escape Artist',xp:60,text:'Increase a body’s speed until it follows an unbound escape path.'},
+ {name:'Heavy Star',xp:60,text:'Increase the central star’s mass. Compare how the same planet path changes.'},
+ {name:'Sun • Planet • Moon',xp:75,text:'Load the Sun, Planet, Moon preset. Turn on paths and watch the moon’s motion while the planet orbits the star.'},
+ {name:'Comet Keeper',xp:75,text:'Load the Sun, Planet, Comet preset. Identify which path is most eccentric.'},
+ {name:'Slingshot',xp:90,text:'Load a Slingshot preset. Watch how a close gravitational encounter changes an object’s velocity and direction.'},
+ {name:'Four Star Ballet',xp:100,text:'Load Four Star Ballet. Turn on paths and center of mass. Describe why this system is much harder to predict than one planet around one star.'}
+];
+let active=0,done=new Set(JSON.parse(localStorage.getItem('dwPhetCosmicDone')||'[]'));
+function save(){localStorage.setItem('dwPhetCosmicDone',JSON.stringify([...done]))}
+function render(){
+ missionBoard.innerHTML=MISSIONS.map((m,i)=>`<div class="mission ${i===active?'active':''} ${done.has(i)?'done':''}" data-i="${i}"><h3>${done.has(i)?'✅ ':''}${i+1}. ${m.name} • ${m.xp} XP</h3><p>${m.text}</p></div>`).join('');
+ quickList.innerHTML=MISSIONS.slice(0,4).map((m,i)=>`<div class="mission ${i===active?'active':''}" data-i="${i}"><h3>${m.name}</h3><p>${m.text}</p></div>`).join('');
+ currentMission.innerHTML=`<b>${MISSIONS[active].name}</b><br>${MISSIONS[active].text}`;
+ doneCount.textContent=`${done.size} / ${MISSIONS.length}`;
+ xp.textContent=[...done].reduce((s,i)=>s+MISSIONS[i].xp,0);
+ document.querySelectorAll('.mission[data-i]').forEach(x=>x.onclick=()=>{active=+x.dataset.i;render()});
+}
+missionDone.onclick=()=>{done.add(active);save();render()};
+nextMission.onclick=()=>{active=(active+1)%MISSIONS.length;render()};
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('on',x.id===b.dataset.tab))});
+render();
+</script>
+</body>
+</html>

@@ -2056,14 +2056,14 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
           <div class="student-life-card pass-hub-card" id="studentPassHub">
             <h3>🎟️ Pass Center</h3>
-            <p>Choose the pass you need. Bathroom and snack keep their daily limits; all passes are recorded.</p>
+            <p>Choose the pass you need. Bathroom and snack keep their daily limits. Out of Seat and Emergency Office each include 1 automatic pass per day; all passes are recorded.</p>
             <div class="pass-blackout-msg" id="studentPassBlackout">🔒 PASS BLACKOUT ACTIVE — Mr. Evans is teaching. New passes are temporarily unavailable.</div>
             <div class="pass-hub-top">
               <select id="studentPassType" class="pass-hub-select">
                 <option value="bathroom">🚻 Bathroom Pass</option>
                 <option value="snack">🍎 Snack Pass</option>
                 <option value="outOfSeat">🚶 Out of Seat Pass</option>
-                <option value="office">🏫 Office Pass</option>
+                <option value="office">🆘 Emergency Office Pass</option>
               </select>
               <div class="pass-hub-status" id="studentPassHubStatus">Choose a pass.</div>
             </div>
@@ -3024,7 +3024,7 @@ let passBlackoutState={active:false},passBlackoutUnsub=null,genericPassUnsubs={}
 function passTypeMeta(type){
   return type==='outOfSeat'
     ?{label:'Out of Seat',icon:'🚶',collection:'passStatus'}
-    :{label:'Office',icon:'🏫',collection:'passStatus'};
+    :{label:'Emergency Office',icon:'🆘',collection:'passStatus'};
 }
 function genericPassDocId(type){return `${user.uid}_${type}`}
 function genericPassIsActive(type){const d=genericPassData[type];return d?.dateKey===phoenixDateKey()&&d?.active===true}
@@ -3032,7 +3032,7 @@ function genericPassTimer(type,startMs){
   if(genericPassTimers[type])clearInterval(genericPassTimers[type]);
   const tick=()=>{
     if(!genericPassIsActive(type))return;
-    const meta=passTypeMeta(type),d=genericPassData[type],elapsed=Date.now()-Number(startMs||Date.now()),remain=5*60*1000-elapsed;
+    const meta=passTypeMeta(type),elapsed=Date.now()-Number(startMs||Date.now()),remain=5*60*1000-elapsed;
     const t=remain>0?formatPassTimer(remain):'0:00';
     const status=$('studentPassHubStatus');
     if($('studentPassType')?.value===type&&status)status.textContent=`${meta.icon} ${meta.label} ACTIVE • ${remain>0?'⏱️ '+t+' remaining':'⏰ 5 minutes reached'} • Tap when you return.`;
@@ -3063,6 +3063,7 @@ function refreshPassHub(){
     return;
   }
   const meta=passTypeMeta(type),d=genericPassData[type],active=genericPassIsActive(type);
+  const same=d?.dateKey===phoenixDateKey(),used=same?(+d?.passesUsed||0):0,credits=same?(+d?.approvalCredits||0):0;
   if(active){
     btn.textContent=`✅ I AM BACK — END ${meta.label.toUpperCase()} PASS`;
     btn.disabled=false;
@@ -3070,16 +3071,26 @@ function refreshPassHub(){
     genericPassTimer(type,startMs);
   }else{
     if(genericPassTimers[type]){clearInterval(genericPassTimers[type]);genericPassTimers[type]=null}
-    status.textContent=blackout
-      ?`🔒 ${meta.label} passes are paused during the current blackout.`
-      :`${meta.icon} ${meta.label} pass available • 5 minute timer • trip will be recorded.`;
-    btn.textContent=`${meta.icon} USE ${meta.label.toUpperCase()} PASS`;
-    btn.disabled=blackout;
+    if(blackout){
+      status.textContent=`🔒 ${meta.label} passes are paused during the current blackout.`;
+      btn.textContent=`${meta.icon} ${meta.label.toUpperCase()} PAUSED`;btn.disabled=true;return;
+    }
+    if(used<1){
+      status.textContent=`${meta.icon} 1 of 1 automatic ${meta.label} pass available today • 5 minute timer.`;
+      btn.textContent=`${meta.icon} USE ${meta.label.toUpperCase()} PASS`;
+    }else if(credits>0){
+      status.textContent=`${meta.icon} ${credits} teacher-approved extra ${meta.label} pass${credits===1?'':'es'} available.`;
+      btn.textContent=`${meta.icon} USE APPROVED ${meta.label.toUpperCase()} PASS`;
+    }else{
+      status.textContent=`Your 1 automatic ${meta.label} pass has been used today. Another use requires teacher approval.`;
+      btn.textContent=`🙋 REQUEST EXTRA ${meta.label.toUpperCase()} PASS`;
+    }
+    btn.disabled=false;
   }
 }
 async function endGenericPass(type){
   if(!user)return;
-  const d=genericPassData[type];
+  const d=genericPassData[type],meta=passTypeMeta(type);
   if(!(d?.dateKey===phoenixDateKey()&&d?.active===true))return;
   const ref=doc(db,'passStatus',genericPassDocId(type));
   const now=new Date(),visits=Array.isArray(d?.visits)?[...d.visits]:[],activeId=String(d?.activeVisitId||'');
@@ -3089,41 +3100,21 @@ async function endGenericPass(type){
     return {...v,endedAt:now.toISOString(),endedText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
       durationMinutes:start?Math.max(0,Math.round((now.getTime()-start)/60000)):null,status:'returned'};
   });
-  await setDoc(ref,{
-    active:false,
-    activeVisitId:'',
-    endedAt:serverTimestamp(),
-    endedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),
-    visits:updated,
-    updatedAt:serverTimestamp()
-  },{merge:true});
+  await setDoc(ref,{active:false,activeVisitId:'',endedAt:serverTimestamp(),endedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),visits:updated,updatedAt:serverTimestamp()},{merge:true});
   if(activeId){
     const archived=updated.find(v=>String(v?.id||'')===activeId);
-    if(archived)await setDoc(doc(db,'passHistory',activeId),{
-      ...archived,type,label:meta.label,updatedAt:serverTimestamp()
-    },{merge:true});
+    if(archived)await setDoc(doc(db,'passHistory',activeId),{...archived,type,label:meta.label,updatedAt:serverTimestamp()},{merge:true});
   }
   window.DWAudio?.positive();
 }
-
 function renderActiveGenericPassReturns(){
-  const box=$('activeGenericPasses');
-  if(!box)return;
+  const box=$('activeGenericPasses');if(!box)return;
   const activeTypes=['outOfSeat','office'].filter(type=>genericPassIsActive(type));
   if(!activeTypes.length){box.style.display='none';box.innerHTML='';return}
   box.style.display='block';
-  box.innerHTML=`<div class="pass-return-list">${activeTypes.map(type=>{
-    const meta=passTypeMeta(type),d=genericPassData[type];
-    return `<div class="pass-return-row"><div><b>${meta.icon} ${meta.label} ACTIVE</b><small style="display:block">Started ${d?.startedAtText||''}</small></div><button type="button" data-end-generic-pass="${type}">✅ RETURN</button></div>`;
-  }).join('')}</div>`;
-  box.querySelectorAll('[data-end-generic-pass]').forEach(b=>b.onclick=async()=>{
-    b.disabled=true;
-    try{await endGenericPass(b.dataset.endGenericPass)}
-    catch(e){console.warn('end generic pass',e);$('studentPassHubStatus').textContent='Could not end that pass. Please tell your teacher.';window.DWAudio?.negative()}
-    finally{b.disabled=false}
-  });
+  box.innerHTML=`<div class="pass-return-list">${activeTypes.map(type=>{const meta=passTypeMeta(type),d=genericPassData[type];return `<div class="pass-return-row"><div><b>${meta.icon} ${meta.label} ACTIVE</b><small style="display:block">Started ${d?.startedAtText||''}</small></div><button type="button" data-end-generic-pass="${type}">✅ RETURN</button></div>`}).join('')}</div>`;
+  box.querySelectorAll('[data-end-generic-pass]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{await endGenericPass(b.dataset.endGenericPass)}catch(e){console.warn('end generic pass',e);$('studentPassHubStatus').textContent='Could not end that pass. Please tell your teacher.';window.DWAudio?.negative()}finally{b.disabled=false}});
 }
-
 async function useGenericPass(type){
   if(!user)return;
   const d=genericPassData[type],active=genericPassIsActive(type),meta=passTypeMeta(type),ref=doc(db,'passStatus',genericPassDocId(type));
@@ -3131,10 +3122,21 @@ async function useGenericPass(type){
   const now=new Date(),key=phoenixDateKey();
   if(active){await endGenericPass(type);return;}
 
-  const currentSame=d?.dateKey===key,prior=currentSame&&Array.isArray(d?.visits)?d.visits:[],id=user.uid+'_'+type+'_'+Date.now();
-  const visit={id,studentId:user.uid,studentName:studentDisplayName(),type,label:meta.label,dateKey:key,startedAt:now.toISOString(),startedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),startedMs:now.getTime(),status:'active'};
+  const same=d?.dateKey===key,used=same?(+d?.passesUsed||0):0,credits=same?(+d?.approvalCredits||0):0;
+  if(used>=1&&credits<=0){
+    const requestId=user.uid+'_'+type+'_'+Date.now();
+    await setDoc(doc(db,'passRequests',requestId),{
+      studentId:user.uid,studentName:studentDisplayName(),type,label:meta.label,dateKey:key,status:'pending',createdAt:serverTimestamp(),updatedAt:serverTimestamp()
+    });
+    $('studentPassHubStatus').textContent=`🙋 Extra ${meta.label} pass requested. Waiting for teacher approval.`;
+    window.DWAudio?.positive();return;
+  }
+
+  const isAuto=used<1,nextUsed=isAuto?used+1:used,nextCredits=isAuto?credits:Math.max(0,credits-1);
+  const prior=same&&Array.isArray(d?.visits)?d.visits:[],id=user.uid+'_'+type+'_'+Date.now();
+  const visit={id,studentId:user.uid,studentName:studentDisplayName(),type,label:meta.label,dateKey:key,passType:isAuto?'automatic':'approved-extra',passNumber:nextUsed,startedAt:now.toISOString(),startedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),startedMs:now.getTime(),status:'active'};
   await setDoc(doc(db,'passHistory',id),{...visit,label:meta.label,createdAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});
-  await setDoc(ref,{studentId:user.uid,studentName:studentDisplayName(),type,label:meta.label,dateKey:key,active:true,activeVisitId:id,startedAt:serverTimestamp(),startedAtText:visit.startedAtText,startedMs:visit.startedMs,visits:[...prior,visit].slice(-30),updatedAt:serverTimestamp()},{merge:true});
+  await setDoc(ref,{studentId:user.uid,studentName:studentDisplayName(),type,label:meta.label,dateKey:key,passesUsed:nextUsed,approvalCredits:nextCredits,active:true,activeVisitId:id,startedAt:serverTimestamp(),startedAtText:visit.startedAtText,startedMs:visit.startedMs,visits:[...prior,visit].slice(-30),updatedAt:serverTimestamp()},{merge:true});
   window.DWAudio?.positive();
 }
 function watchUnifiedPassHub(){
@@ -3156,9 +3158,7 @@ function watchUnifiedPassHub(){
       setTimeout(refreshPassHub,150);
     }catch(e){console.warn('pass hub',e);$('studentPassHubStatus').textContent='Could not update the pass. Please tell your teacher.';window.DWAudio?.negative()}
   };
-  ['bathroomStudentStatus','bathroomStudentBtn','snackStudentStatus','snackStudentBtn'].forEach(id=>{
-    const el=$(id);if(el)new MutationObserver(refreshPassHub).observe(el,{childList:true,subtree:true,characterData:true,attributes:true});
-  });
+  ['bathroomStudentStatus','bathroomStudentBtn','snackStudentStatus','snackStudentBtn'].forEach(id=>{const el=$(id);if(el)new MutationObserver(refreshPassHub).observe(el,{childList:true,subtree:true,characterData:true,attributes:true})});
   refreshPassHub();
 }
 

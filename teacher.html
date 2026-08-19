@@ -933,7 +933,15 @@ import {getFirestore,doc,getDoc,setDoc,collection,onSnapshot,addDoc,deleteDoc,ge
 
 const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2", "measurementId": "G-LPRLDGVBD2"},TEACHER="jacobicusjax@gmail.com";
 const normalizedEmail = v => String(v||"").trim().toLowerCase();
-const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),$=id=>document.getElementById(id);
+/*
+  Teacher portal intentionally uses its own named Firebase app.
+  Firebase Auth keys include the app name, so this teacher login is isolated
+  from the student portal login even when both are open in the same browser.
+*/
+const app=initializeApp(firebaseConfig,"DragonswoodTeacherPortal"),
+      auth=getAuth(app),
+      db=getFirestore(app),
+      $=id=>document.getElementById(id);
 let points=0,history=[],rewards=[],scores=[],results=[],students=[],shopItems=[],purchases=[],bathroomStatuses=[],bathroomRequests=[],snackStatuses=[],snackRequests=[],pointRequests=[],classJobsConfigV29={},jobWeeksV29=[],classScheduleV29={},calendarEventsV29=[],recessState={points:0,goal:20,dateKey:""},petGoalState={points:0,goal:250},tripGoalState={points:0,goal:750},universalPointState={points:0};
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
 const AVATAR_EMOJI={"dragon-purple":"🐉","dragon-green":"🐲","knight":"🛡️","wizard":"🧙","witch":"🧙‍♀️","princess":"👸","prince":"🤴","ranger":"🏹","phoenix":"🔥","wolf":"🐺","owl":"🦉","crystal":"🔮"};
@@ -2283,16 +2291,28 @@ document.getElementById('passBlackoutBtn')?.addEventListener('click',togglePassB
 
   function bathroom(){
     if(!canPlay("bathroom",850)) return;
-    // Intentionally distinct from normal success/failure sounds.
-    tone(659.25,0,.18,"sine",.10);
-    tone(880,.20,.20,"sine",.115);
-    tone(659.25,.44,.30,"sine",.10);
+    /*
+      EXTRA-LOUD classroom pass alert.
+      Multiple harmonics/pulses make this much more audible on laptop speakers.
+      Browser/OS volume still sets the absolute hardware ceiling.
+    */
+    tone(740,0,.20,"square",.22);
+    tone(988,0,.20,"sine",.18);
+    tone(880,.22,.20,"square",.23);
+    tone(1175,.22,.20,"sine",.18);
+    tone(740,.46,.22,"square",.24);
+    tone(988,.46,.22,"sine",.19);
+    tone(880,.72,.32,"square",.25);
+    tone(1175,.72,.32,"sine",.20);
   }
 
   function notice(){
     if(!canPlay("notice",500)) return;
-    tone(523.25,0,.13,"sine",.06);
-    tone(783.99,.15,.22,"sine",.075);
+    // Louder two-stage general alert.
+    tone(660,0,.18,"square",.18);
+    tone(880,0,.18,"sine",.15);
+    tone(784,.20,.25,"square",.20);
+    tone(1047,.20,.25,"sine",.16);
   }
 
   function setEnabled(v){
@@ -2309,7 +2329,7 @@ document.getElementById('passBlackoutBtn')?.addEventListener('click',togglePassB
       badge.textContent = "🔇 Sounds Off";
       badge.dataset.state = "off";
     }else if(unlocked){
-      badge.textContent = "🔔 Alerts Armed";
+      badge.textContent = "🔊 LOUD Alerts Armed";
       badge.dataset.state = "armed";
     }else{
       badge.textContent = "🔔 Click to Arm Sounds";

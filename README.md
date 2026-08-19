@@ -1,6 +1,6 @@
 # Dragonswood
 
-**Current build: v49.6**
+**Current build: v49.8**
 
 ## Student portal
 Home • Daily Missions • Games • Jobs • Schedule • Calendar • Poll • Shop • Leaderboard • My Journal
@@ -85,3 +85,22 @@ v49.1 requires no new Firebase changes. Continue using the Firestore rules from 
 - Restored boxed styling for Daily Work progress, Today status, Journey, and school-year countdowns.
 - Countdown cards render as a three-column desktop grid and stack cleanly on mobile.
 - Preserved the 12 / 180 legacy completion baseline and all v49.5 completion/unlock logic.
+
+
+## v49.7 — Pass Gating + Overdue Alerts
+- Bathroom occupancy still allows one boy and one girl at a time.
+- When a same-group bathroom slot is occupied, the waiting student is shown the NAME of the student currently out.
+- The waiting student's Bathroom button is disabled, so no pass is consumed while the slot is occupied.
+- Bathroom Pass and Emergency Office Pass now lock the student portal until the student checks back in.
+- The lock is a full-screen return screen, so students cannot jump into Games, Journal, Daily Missions, Shop, etc. while those passes are active.
+- All active passes use a 5-minute timer.
+- Bathroom, Snack, Out of Seat, and Emergency Office all receive a visual + audible overdue reminder at 5 minutes and again every 2 minutes afterward.
+- Overdue reminders use the existing Dragonswood sound plus browser speech when available.
+- No Firebase rule changes are required.
+
+
+## v49.8 — Answer Bank Fix
+- Rune/type-in Daily Quest questions now show a visible Answer Bank whenever answer choices exist.
+- Students can click an Answer Bank choice to place it in the response box, then unlock the rune.
+- This prevents vague vocabulary/strategy prompts from requiring students to invent an exact hidden sentence.
+- Typed equivalent answers remain accepted where appropriate.

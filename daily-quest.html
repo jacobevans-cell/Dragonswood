@@ -74,7 +74,15 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
 @media(max-width:760px){.countdown-grid{grid-template-columns:1fr}}
 .dq-progress-summary{margin-top:12px;padding:13px 16px;display:grid;grid-template-columns:190px 1fr;gap:12px;align-items:center}.dq-progress-summary>div{padding:8px 11px;border:1px solid #46336f;border-radius:10px;background:#090b2ccc}.dq-progress-summary small{display:block;color:#c3b4d9;font-size:9px;font-weight:900;letter-spacing:.7px}.dq-progress-summary b{display:block;color:#fff0a2;font:900 22px Georgia;margin-top:3px}.dq-progress-summary span{font-size:11px;color:#cfe6f6}@media(max-width:650px){.dq-progress-summary{grid-template-columns:1fr}}
 .node.missed{background:#24152e;color:#ca9aaa;border-color:#70425e}
-</style></head><body>
+</style>
+<style id="v498-answer-bank-fix">
+.answer-bank{margin:14px 0;padding:14px;border:1px solid rgba(147,197,253,.45);border-radius:14px;background:rgba(18,22,52,.62)}
+.answer-bank-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:9px}
+.answer-bank-choice{padding:11px 12px;border:1px solid #8195ff;border-radius:10px;background:#171936;color:#f4f6ff;font-weight:800;cursor:pointer;text-align:left}
+.answer-bank-choice:hover,.answer-bank-choice.selected{outline:2px solid #65dfff;background:#25245a}
+@media(max-width:620px){.answer-bank-options{grid-template-columns:1fr}}
+</style>
+</head><body>
 <div class="shell">
   <header class="glass top"><div><div class="brand">🐉 DRAGONSWOOD • DAILY QUEST</div><div class="sub" id="account">Connecting to Dragonswood…</div></div><a class="back" href="index.html#quests">← DAILY MISSIONS</a></header>
   <section class="hud">
@@ -578,7 +586,12 @@ function rangerEngine(q,t){$("arena").innerHTML=`${promptBlock(q,t)}<div class="
 function potionEngine(q,t){$("arena").innerHTML=`${promptBlock(q,t)}<div class="visual-note">Drag the correct ingredient into the cauldron.</div><div class="ingredients">${q.choices.map(c=>`<div draggable="true" class="ingredient" data-v="${c}">🧪 ${c}</div>`).join("")}</div><div class="cauldron" id="cauldron">✨ DROP INGREDIENT HERE ✨</div>`;document.querySelectorAll(".ingredient").forEach(x=>x.ondragstart=e=>e.dataTransfer.setData("text",x.dataset.v));$("cauldron").ondragover=e=>e.preventDefault();$("cauldron").ondrop=e=>{e.preventDefault();const v=e.dataTransfer.getData("text"),ok=v===q.answer;award(ok);if(ok){$("cauldron").textContent="💥 POTION COMPLETE!";advance()}}}
 function bridgeEngine(q,t){$("arena").innerHTML=`${promptBlock(q,t)}<div class="visual-note">Correct answers build the bridge.</div><div class="bridge" id="bridge">${"<div class='plank'></div>".repeat(qIndex)}</div><div class="choices">${q.choices.map(c=>`<button class="choice">${c}</button>`).join("")}</div>`;document.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{const ok=b.textContent===q.answer;award(ok);if(ok){$("bridge").insertAdjacentHTML("beforeend","<div class='plank'></div>");advance()}})}
 function gateEngine(q,t){$("arena").innerHTML=`${promptBlock(q,t)}<div class="visual-note">Fly through the correct gate.</div><div class="gates">${q.choices.slice(0,2).map(c=>`<button class="gate">🐉<br>${c}</button>`).join("")}</div>`;if(!q.choices.slice(0,2).includes(q.answer)){const g=document.querySelectorAll(".gate")[1];g.innerHTML=`🐉<br>${q.answer}`};document.querySelectorAll(".gate").forEach(b=>b.onclick=()=>{const v=b.innerText.split("\n").pop(),ok=v===q.answer;award(ok);if(ok)advance()})}
-function runeEngine(q,t){$("arena").innerHTML=`${promptBlock(q,t)}<div class="visual-note">Type a correct answer to unlock the rune. Equivalent vocabulary answers are accepted when the question allows more than one.</div><div class="runeinput"><input id="rin" autocomplete="off"><button id="runlock">UNLOCK 🔐</button></div>`;$("runlock").onclick=()=>{const ok=typedAnswerIsCorrect(q,$("rin").value);award(ok);if(ok)advance()};$("rin").onkeydown=e=>{if(e.key==="Enter")$("runlock").click()}}
+function runeEngine(q,t){
+ const bank=Array.isArray(q?.choices)&&q.choices.length?q.choices:acceptedTypedAnswers(q);
+ $("arena").innerHTML=`${promptBlock(q,t)}<div class="visual-note">Choose from the Answer Bank, or type a correct answer to unlock the rune. Equivalent vocabulary answers are accepted when the question allows more than one.</div>${bank.length?`<div class="answer-bank"><div class="visual-title">🧰 ANSWER BANK</div><div class="answer-bank-options">${bank.map(c=>`<button type="button" class="answer-bank-choice" data-v="${String(c).replaceAll('&','&amp;').replaceAll('"','&quot;')}">${c}</button>`).join("")}</div></div>`:""}<div class="runeinput"><input id="rin" autocomplete="off" placeholder="Choose from the bank or type your answer"><button id="runlock">UNLOCK 🔐</button></div>`;
+ document.querySelectorAll(".answer-bank-choice").forEach(b=>b.onclick=()=>{$("rin").value=b.dataset.v;document.querySelectorAll(".answer-bank-choice").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");$("rin").focus()});
+ $("runlock").onclick=()=>{const ok=typedAnswerIsCorrect(q,$("rin").value);award(ok);if(ok)advance()};$("rin").onkeydown=e=>{if(e.key==="Enter")$("runlock").click()}}
+
 function crystalEngine(q,t){
  const cards=shuffle(hashSeed(q.prompt.length+taskIndex*97+qIndex*31),q.choices);
  $("arena").innerHTML=`${promptBlock(q,t)}<div class="visual-note">💎 CRYSTAL HUNT: Tap the crystal that contains the correct academic answer.</div><div class="crystals">${cards.map(c=>`<button class="crystal crystal-answer" data-v="${String(c).replaceAll('"','&quot;')}">💎<br>${c}</button>`).join("")}</div>`;

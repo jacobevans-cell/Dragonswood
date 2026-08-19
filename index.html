@@ -2085,6 +2085,45 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   #view-quests .dm-countdown-grid{grid-template-columns:1fr !important;}
 }
 </style>
+
+<style id="v497-pass-gating">
+.dw-pass-lock-overlay{
+  display:none;position:fixed;inset:0;z-index:99990;
+  background:rgba(1,2,13,.92);backdrop-filter:blur(10px);
+  align-items:center;justify-content:center;padding:18px;
+}
+.dw-pass-lock-overlay.active{display:flex}
+.dw-pass-lock-card{
+  width:min(620px,94vw);padding:28px 24px;text-align:center;
+  border:2px solid #f4c95d;border-radius:18px;
+  background:linear-gradient(155deg,#160a39,#071a36 70%,#08152b);
+  box-shadow:0 0 55px rgba(101,45,193,.5),inset 0 0 35px rgba(2,204,254,.08);
+}
+.dw-pass-lock-icon{font-size:64px;line-height:1;margin-bottom:8px}
+.dw-pass-lock-card h2{margin:4px 0 10px;color:#fff0a4;font:900 34px Georgia,serif}
+.dw-pass-lock-card p{font-size:18px;line-height:1.45;color:#eef5ff;margin:0 auto 10px;max-width:520px}
+.dw-pass-lock-timer{font-size:26px;font-weight:1000;color:#8feaff;margin:12px 0}
+.dw-pass-lock-timer.overdue{color:#ff859d;animation:dwOverduePulse 1s infinite alternate}
+.dw-pass-lock-card button{
+  width:100%;padding:15px;margin:8px 0 10px;border:1px solid #f4c95d;border-radius:11px;
+  background:linear-gradient(90deg,#7431cf,#0586ad);color:#fff;font-weight:1000;font-size:17px;cursor:pointer
+}
+.dw-pass-lock-card small{display:block;color:#cbbfe0;line-height:1.4}
+.dw-pass-overdue-banner{
+  display:none;position:fixed;left:12px;right:12px;top:12px;z-index:99980;
+  padding:12px 14px;border:2px solid #ff5f7d;border-radius:12px;background:#3c0b1beF;
+  color:#fff;box-shadow:0 0 24px rgba(255,74,112,.45);
+  grid-template-columns:auto 1fr auto;gap:12px;align-items:center
+}
+.dw-pass-overdue-banner.active{display:grid}
+.dw-pass-overdue-banner b{color:#ffd3dc;font-size:15px}.dw-pass-overdue-banner span{font-weight:800}
+.dw-pass-overdue-banner button{padding:9px 13px;border:1px solid #ffd3dc;border-radius:8px;background:#7d1830;color:#fff;font-weight:1000;cursor:pointer}
+@keyframes dwOverduePulse{from{transform:scale(1)}to{transform:scale(1.035)}}
+@media(max-width:620px){
+ .dw-pass-lock-card{padding:22px 16px}.dw-pass-lock-card h2{font-size:27px}.dw-pass-lock-card p{font-size:16px}
+ .dw-pass-overdue-banner{grid-template-columns:1fr}.dw-pass-overdue-banner button{width:100%}
+}
+</style>
 </head><body><!-- DRAGONSWOOD BUILD v48.9 COSMIC+JOBS -->
 <header class="topbar">
 <div class="shell">
@@ -2587,6 +2626,22 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 </section>
 
 </main>
+<div id="dwBlockingPassOverlay" class="dw-pass-lock-overlay" aria-live="assertive">
+  <div class="dw-pass-lock-card">
+    <div class="dw-pass-lock-icon" id="dwBlockingPassIcon">🎟️</div>
+    <h2 id="dwBlockingPassTitle">PASS ACTIVE</h2>
+    <p id="dwBlockingPassText">Return your pass before continuing Dragonswood.</p>
+    <div class="dw-pass-lock-timer" id="dwBlockingPassTimer"></div>
+    <button id="dwBlockingPassReturn" type="button">✅ I AM BACK — RETURN PASS</button>
+    <small>Games, Journal, Daily Missions, and other Dragonswood activities stay locked until this pass is returned.</small>
+  </div>
+</div>
+<div id="dwPassOverdueBanner" class="dw-pass-overdue-banner" aria-live="assertive">
+  <b id="dwPassOverdueTitle">⏰ PASS OVERDUE</b>
+  <span id="dwPassOverdueText">Please return your pass.</span>
+  <button id="dwPassOverdueReturn" type="button">RETURN PASS</button>
+</div>
+
 
 <div id="profileModal" class="modal hidden"><div class="modalbox frame bevel" style="max-width:980px"><h2 id="profileTitle">Create Your Dragonswood Character</h2><div class="formgrid"><div class="field"><label>First Name</label><input id="firstName" readonly></div><div class="field"><label>Grade</label><select id="grade"><option value="">Choose</option><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div><div class="field"><label>Group</label><select id="group"><option value="">Choose</option><option value="girl">Girls</option><option value="boy">Boys</option></select></div><div class="field"><label>Fantasy Title</label><select id="titleSelect"></select></div></div>
 <div class="avatar-studio"><div class="avatar-preview-card"><h3>Your Hero</h3><div id="avatarPreview"></div><div class="avatar-statline"><div><b id="statAtk">1</b>ATK</div><div><b id="statDef">0</b>DEF</div><div><b id="statHp">10</b>MAX HP</div><div><b id="statHeal">0</b>HEAL</div></div><div class="avatar-studio-note">Everyone begins in simple peasant clothes. Armor, hats, weapons and special outfits are earned in Dragonswood.</div></div>
@@ -2603,6 +2658,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   window.DWDailyAccessUnlocked=false;
   function show(view, updateHash){
     if(!views.includes(view)) view="home";
+    if(window.DWBlockingPassType && view!=="home") view="home";
     if((view==="games"||view==="journal") && window.DWDailyAccessUnlocked!==true){
       view="quests";
       window.setTimeout(function(){
@@ -2657,7 +2713,7 @@ const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "auth
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const DOMAIN="explore.academy";
 const $=id=>document.getElementById(id);
-let bathroomUnsub=null,bathroomSlotUnsub=null,bathroomSlotData=null,snackUnsub=null;
+let bathroomUnsub=null,bathroomSlotUnsub=null,bathroomSlotData=null,snackUnsub=null,currentBathroomData=null,currentSnackData=null;
 let user=null,profile=null,rewards=[],classPoints=0,scores=[],shopItems=[],myPurchases=[],classJobsConfig=null,myJobWeek=null,classScheduleConfig=null,classCalendarEvents=[],shopFilter="all",shopSort="level",inventoryFilter="all",profileUnsub=null,purchasesUnsub=null,dailyProgressUnsub=null,dailyOverrideUnsub=null,dailyProgressRows=[],dailyOverrideData={};
 
 const TITLES=[
@@ -2813,7 +2869,7 @@ function watchBathroom(){
 
   bathroomUnsub=onSnapshot(
     doc(db,'bathroomStatus',user.uid),
-    snap=>renderBathroomStudent(snap.exists()?snap.data():null),
+    snap=>{currentBathroomData=snap.exists()?snap.data():null;renderBathroomStudent(currentBathroomData);dwSyncPassLockAndOverdue()}, 
     err=>console.warn("bathroom status",err)
   );
 
@@ -2822,7 +2878,7 @@ function watchBathroom(){
     doc(db,'bathroomSlots',group),
     snap=>{
       bathroomSlotData=snap.exists()?snap.data():null;
-      getDoc(doc(db,'bathroomStatus',user.uid)).then(s=>renderBathroomStudent(s.exists()?s.data():null)).catch(()=>{});
+      getDoc(doc(db,'bathroomStatus',user.uid)).then(s=>{currentBathroomData=s.exists()?s.data():null;renderBathroomStudent(currentBathroomData);dwSyncPassLockAndOverdue()}).catch(()=>{});
     },
     err=>console.warn("bathroom slot",err)
   );
@@ -2922,12 +2978,13 @@ function renderBathroomStudent(d){
    :(credits>0?`${credits} teacher-approved extra pass${credits===1?'':'es'} available.`:'Your 3 automatic passes are used. Extra trips need teacher approval.');
 
  if(slotOccupied&&!slotMine){
-   baseText+=` ⏳ Another ${group==="girl"?"girl":"boy"} is currently out. Your pass will NOT be used until the ${bathroomGroupLabel(group)} slot is available.`;
+   const who=String(bathroomSlotData?.studentName||"Another student").trim();
+   baseText+=` ⏳ ${who} is currently using the ${bathroomGroupLabel(group)} bathroom pass. Wait until ${who} returns. Your pass will NOT be used.`;
  }
  txt.textContent=baseText;
 
  btn.textContent=used<3?'🚻 USE BATHROOM PASS':credits>0?'🚻 USE APPROVED PASS':'🙋 REQUEST EXTRA PASS';
- btn.disabled=false;
+ btn.disabled=slotOccupied&&!slotMine;
 
  btn.onclick=async()=>{
    btn.disabled=true;
@@ -3034,7 +3091,8 @@ function renderBathroomStudent(d){
    }catch(err){
      console.warn('bathroom pass',err);
      if(String(err?.message||'').includes('BATHROOM_SLOT_OCCUPIED')){
-       txt.textContent=`⏳ Another ${group==="girl"?"girl":"boy"} is already out. Your bathroom pass was NOT used. Try again when they return.`;
+       const who=String(bathroomSlotData?.studentName||"Another student").trim();
+       txt.textContent=`⏳ ${who} is already using the ${bathroomGroupLabel(group)} bathroom pass. Your pass was NOT used. Try again after ${who} returns.`;
      }else if(String(err?.message||'').includes('NO_PASS_AVAILABLE')){
        txt.textContent='Your automatic passes are used. Request an extra pass from your teacher.';
      }else{
@@ -3232,6 +3290,94 @@ function watchStudentPoll(){
 
 let passBlackoutState={active:false},passBlackoutUnsub=null,genericPassUnsubs={},genericPassData={outOfSeat:null,office:null},genericPassTimers={};
 
+
+const DW_PASS_LIMIT_MS=5*60*1000;
+const DW_OVERDUE_REPEAT_MS=2*60*1000;
+let dwPassReminderInterval=null,dwPassLastAlertBucket={};
+
+function dwActivePassInfo(){
+  const key=phoenixDateKey(),out=[];
+  const b=currentBathroomData;
+  if(b?.dateKey===key&&b?.active===true){
+    const v=(Array.isArray(b.visits)?b.visits:[]).find(x=>String(x?.id||"")===String(b.activeVisitId||''))||{};
+    out.push({type:"bathroom",label:"Bathroom",icon:"🚻",start:Number(v.leftMs||0)||(b.leftAt?.toMillis?.()||Date.now()),blocking:true});
+  }
+  const sn=currentSnackData;
+  if(sn?.dateKey===key&&sn?.active===true){
+    const v=(Array.isArray(sn.visits)?sn.visits:[]).find(x=>String(x?.id||"")===String(sn.activeVisitId||''))||{};
+    out.push({type:"snack",label:"Snack",icon:"🍎",start:Number(v.startedMs||0)||(sn.startedAt?.toMillis?.()||Date.now()),blocking:false});
+  }
+  ["outOfSeat","office"].forEach(type=>{
+    const d=genericPassData[type];
+    if(d?.dateKey===key&&d?.active===true){
+      out.push({type,label:type==="office"?"Emergency Office":"Out of Seat",icon:type==="office"?"🆘":"🚶",start:Number(d.startedMs||0)||(d.startedAt?.toMillis?.()||Date.now()),blocking:type==="office"});
+    }
+  });
+  return out;
+}
+function dwSpeakPassReminder(text){
+  try{
+    window.DWAudio?.negative?.();
+    setTimeout(()=>window.DWAudio?.negative?.(),220);
+    if("speechSynthesis" in window){
+      speechSynthesis.cancel();
+      const u=new SpeechSynthesisUtterance(text);u.rate=.92;u.volume=1;speechSynthesis.speak(u);
+    }
+  }catch(e){}
+}
+function dwReturnPassByType(type){
+  if(type==="bathroom"){const b=$("bathroomStudentBtn");if(b&&!b.disabled)b.click();return}
+  if(type==="snack"){const b=$("snackStudentBtn");if(b&&!b.disabled)b.click();return}
+  if(type==="outOfSeat"||type==="office"){endGenericPass(type).catch(e=>console.warn("return pass",e));}
+}
+function dwSyncPassLockAndOverdue(){
+  const active=dwActivePassInfo();
+  const blocking=active.find(x=>x.blocking);
+  window.DWBlockingPassType=blocking?.type||"";
+  const overlay=$("dwBlockingPassOverlay");
+  if(overlay){
+    overlay.classList.toggle("active",!!blocking);
+    if(blocking){
+      $("dwBlockingPassIcon").textContent=blocking.icon;
+      $("dwBlockingPassTitle").textContent=`${blocking.label.toUpperCase()} PASS ACTIVE`;
+      $("dwBlockingPassText").textContent=`You are currently using your ${blocking.label} pass. Check back in before returning to Dragonswood work.`;
+      const elapsed=Date.now()-blocking.start,remain=DW_PASS_LIMIT_MS-elapsed;
+      const timer=$("dwBlockingPassTimer");
+      timer.textContent=remain>0?`⏱️ ${formatPassTimer(remain)} remaining`:`⏰ OVERDUE by ${formatPassTimer(Math.abs(remain))}`;
+      timer.classList.toggle("overdue",remain<=0);
+      $("dwBlockingPassReturn").onclick=()=>dwReturnPassByType(blocking.type);
+      if(location.hash!=="#home"&&window.DragonswoodNav)window.DragonswoodNav("home");
+    }
+  }
+
+  const overdue=active.filter(x=>Date.now()-x.start>=DW_PASS_LIMIT_MS);
+  const banner=$("dwPassOverdueBanner");
+  if(banner){
+    banner.classList.toggle("active",overdue.length>0&&!blocking);
+    if(overdue.length&&!blocking){
+      const x=overdue[0],over=Math.max(0,Date.now()-x.start-DW_PASS_LIMIT_MS);
+      $("dwPassOverdueTitle").textContent=`⏰ ${x.label.toUpperCase()} PASS OVERDUE`;
+      $("dwPassOverdueText").textContent=`You are ${formatPassTimer(over)} overdue. Please return your pass now.`;
+      $("dwPassOverdueReturn").onclick=()=>dwReturnPassByType(x.type);
+    }
+  }
+
+  // First overdue alert at 5:00, then another every 2 minutes: 7:00, 9:00, 11:00...
+  active.forEach(x=>{
+    const elapsed=Date.now()-x.start;
+    if(elapsed<DW_PASS_LIMIT_MS)return;
+    const bucket=Math.floor((elapsed-DW_PASS_LIMIT_MS)/DW_OVERDUE_REPEAT_MS);
+    const key=`${x.type}_${x.start}`;
+    if(dwPassLastAlertBucket[key]===bucket)return;
+    dwPassLastAlertBucket[key]=bucket;
+    dwSpeakPassReminder(`Your ${x.label} pass is overdue. Please return your pass and check back in now.`);
+  });
+}
+function dwStartPassReminderEngine(){
+  if(dwPassReminderInterval)clearInterval(dwPassReminderInterval);
+  dwSyncPassLockAndOverdue();
+  dwPassReminderInterval=setInterval(dwSyncPassLockAndOverdue,1000);
+}
 function passTypeMeta(type){
   return type==='outOfSeat'
     ?{label:'Out of Seat',icon:'🚶',collection:'passStatus'}
@@ -3262,7 +3408,7 @@ function refreshPassHub(){
     status.textContent=src?.textContent||'Loading bathroom pass…';
     const active=String(srcBtn?.textContent||'').includes('BACK IN CLASS');
     btn.textContent=srcBtn?.textContent||'USE BATHROOM PASS';
-    btn.disabled=!active&&blackout;
+    btn.disabled=!!srcBtn?.disabled || (!active&&blackout);
     return;
   }
   if(type==='snack'){
@@ -3352,11 +3498,12 @@ async function useGenericPass(type){
 }
 function watchUnifiedPassHub(){
   if(!user)return;
+  dwStartPassReminderEngine();
   if(passBlackoutUnsub){try{passBlackoutUnsub()}catch(e){}}
   passBlackoutUnsub=onSnapshot(doc(db,'classData','passBlackout'),s=>{passBlackoutState=s.exists()?s.data():{active:false};refreshPassHub()},e=>console.warn('pass blackout',e));
   ['outOfSeat','office'].forEach(type=>{
     if(genericPassUnsubs[type]){try{genericPassUnsubs[type]()}catch(e){}}
-    genericPassUnsubs[type]=onSnapshot(doc(db,'passStatus',genericPassDocId(type)),s=>{genericPassData[type]=s.exists()?s.data():null;refreshPassHub()},e=>console.warn(type+' pass',e));
+    genericPassUnsubs[type]=onSnapshot(doc(db,'passStatus',genericPassDocId(type)),s=>{genericPassData[type]=s.exists()?s.data():null;refreshPassHub();dwSyncPassLockAndOverdue()},e=>console.warn(type+' pass',e));
   });
   const sel=$('studentPassType'),btn=$('studentPassHubBtn');
   if(sel)sel.onchange=refreshPassHub;
@@ -3378,7 +3525,7 @@ function watchSnack(){
   if(!user)return;
   snackUnsub=onSnapshot(
     doc(db,'snackStatus',user.uid),
-    snap=>renderSnackStudent(snap.exists()?snap.data():null),
+    snap=>{currentSnackData=snap.exists()?snap.data():null;renderSnackStudent(currentSnackData);dwSyncPassLockAndOverdue()}, 
     err=>console.warn("snack status",err)
   );
 }
@@ -3626,7 +3773,9 @@ onAuthStateChanged(auth,async u=>{
   myPurchases=[];
 
   if(!u){
-    profile=null;
+    profile=null;currentBathroomData=null;currentSnackData=null;genericPassData={outOfSeat:null,office:null};window.DWBlockingPassType="";
+    if(dwPassReminderInterval){clearInterval(dwPassReminderInterval);dwPassReminderInterval=null}
+    $("dwBlockingPassOverlay")?.classList.remove("active");$("dwPassOverdueBanner")?.classList.remove("active");
     $("signedOut").classList.remove("hidden");
     $("signedIn").classList.add("hidden");
     if($("topStats"))$("topStats").classList.add("hidden");

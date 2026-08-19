@@ -1,7 +1,7 @@
 <!doctype html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dragonswood Elemental Laboratory</title>
-<script src="https://3Dmol.org/build/3Dmol-min.js"></script>
+<title>Dragonswood Elemental Laboratory V2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.1/3Dmol-min.js"></script>
 <style>
 :root{--bg:#091522;--panel:#10283a;--ink:#eef8ff;--gold:#ffd166;--cyan:#66e3ff;--vio:#bd8cff}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#173b50,#07111c 60%);color:var(--ink);font:16px system-ui}
@@ -16,10 +16,10 @@ main{max-width:1200px;margin:auto;padding:16px}.mode{display:none}.mode.on{displ
 #viewer{height:350px;background:#050b11;border-radius:15px}.good{color:#8cffb0}.warn{color:#ffd166}.mission{border-left:5px solid var(--vio)}
 footer{padding:30px;text-align:center;color:#a8c0cf;font-size:13px}
 </style></head><body>
-<header><h1>⚗️ Dragonswood Elemental Laboratory</h1><div class="sub">Arcane Academy of Matter • Fantasy presentation, real chemistry</div></header>
+<header><h1>⚗️ Dragonswood Elemental Laboratory</h1><div class="sub">Arcane Academy of Matter • Fantasy presentation, real chemistry • V2</div></header>
 <nav class="tabs"><button onclick="show('table')">🧪 Periodic Table</button><button onclick="show('atom')">⚛️ Build an Atom</button><button onclick="show('molecule')">🧬 Molecule Lab</button><button onclick="show('reaction')">🔥 Reaction Lab</button><button onclick="show('missions')">🏆 Missions</button></nav>
 <main>
-<section id="table" class="mode on"><div class="card"><h2>Periodic Codex</h2><p>Explore all 118 elements. Data loads from the NIH PubChem periodic-table service; a classroom fallback is included.</p><div id="ptable" class="grid"></div></div><div id="detail" class="card">Select an element.</div></section>
+<section id="table" class="mode on"><div class="card"><h2>Periodic Codex</h2><p>Explore all 118 elements. Element names and properties load from the NIH PubChem periodic-table service. Core classroom elements remain available if the service is unavailable.</p><div id="ptable" class="grid"></div></div><div id="detail" class="card">Select an element.</div></section>
 <section id="atom" class="mode"><div class="card"><h2>⚛️ Atom Forge</h2><p>Change the nucleus and electron cloud. <b>The number of protons determines the element.</b></p>
 <div class="lab"><div><div class="atom"><span id="atomSym">H</span></div></div><div>
 <div class="stats"><div class="stat">Protons<br><b id="p">1</b><br><button onclick="chg('p',-1)">−</button> <button onclick="chg('p',1)">+</button></div><div class="stat">Neutrons<br><b id="n">0</b><br><button onclick="chg('n',-1)">−</button> <button onclick="chg('n',1)">+</button></div><div class="stat">Electrons<br><b id="e">1</b><br><button onclick="chg('e',-1)">−</button> <button onclick="chg('e',1)">+</button></div></div>
@@ -32,16 +32,49 @@ footer{padding:30px;text-align:center;color:#a8c0cf;font-size:13px}
 <script>
 let elements=[],state={p:1,n:0,e:1};
 const fallback=[['H','Hydrogen',1,1.008,'Nonmetal','Gas'],['He','Helium',2,4.0026,'Noble gas','Gas'],['Li','Lithium',3,6.94,'Alkali metal','Solid'],['C','Carbon',6,12.011,'Nonmetal','Solid'],['N','Nitrogen',7,14.007,'Nonmetal','Gas'],['O','Oxygen',8,15.999,'Nonmetal','Gas'],['Na','Sodium',11,22.990,'Alkali metal','Solid'],['Mg','Magnesium',12,24.305,'Alkaline earth metal','Solid'],['Al','Aluminum',13,26.982,'Metal','Solid'],['Si','Silicon',14,28.085,'Metalloid','Solid'],['P','Phosphorus',15,30.974,'Nonmetal','Solid'],['S','Sulfur',16,32.06,'Nonmetal','Solid'],['Cl','Chlorine',17,35.45,'Halogen','Gas'],['Ar','Argon',18,39.948,'Noble gas','Gas'],['K','Potassium',19,39.098,'Alkali metal','Solid'],['Ca','Calcium',20,40.078,'Alkaline earth metal','Solid'],['Fe','Iron',26,55.845,'Transition metal','Solid'],['Cu','Copper',29,63.546,'Transition metal','Solid'],['Ag','Silver',47,107.8682,'Transition metal','Solid'],['Au','Gold',79,196.96657,'Transition metal','Solid']];
-async function loadElements(){try{let r=await fetch('https://pubchem.ncbi.nlm.nih.gov/rest/pug/periodictable/JSON');let j=await r.json();let cols=j.Table.Columns.Column, rows=j.Table.Row; elements=rows.map(x=>{let c=x.Cell,o={};cols.forEach((k,i)=>o[k]=c[i]);return o});}catch(e){elements=fallback.map(x=>({Symbol:x[0],Element:x[1],AtomicNumber:x[2],AtomicMass:x[3],GroupBlock:x[4],StandardState:x[5]}));}renderTable();atomUpdate()}
-function renderTable(){ptable.innerHTML=elements.map(x=>`<div class=el onclick='detailEl(${x.AtomicNumber})'><small>${x.AtomicNumber}</small><b>${x.Symbol}</b><small>${x.Element}</small></div>`).join('')}
-function detailEl(z){let x=elements.find(q=>+q.AtomicNumber==z);detail.innerHTML=`<div class=big>${x.Symbol}</div><h2>${x.Element}</h2><div class=stats><div class=stat>Atomic #<br><b>${x.AtomicNumber}</b></div><div class=stat>Atomic mass<br><b>${x.AtomicMass||'—'}</b></div><div class=stat>Family<br><b>${x.GroupBlock||'—'}</b></div><div class=stat>State<br><b>${x.StandardState||'—'}</b></div></div><p>${x.ElectronConfiguration?'<b>Electron configuration:</b> '+x.ElectronConfiguration:''}</p>`}
+async function loadElements(){try{let r=await fetch('https://pubchem.ncbi.nlm.nih.gov/rest/pug/periodictable/JSON');if(!r.ok)throw new Error('PubChem HTTP '+r.status);let j=await r.json();let cols=j.Table.Columns.Column, rows=j.Table.Row; elements=rows.map(x=>{let c=x.Cell,o={};cols.forEach((k,i)=>o[k]=c[i]);return o});}catch(e){elements=fallback.map(x=>({Symbol:x[0],Name:x[1],Element:x[1],AtomicNumber:x[2],AtomicMass:x[3],GroupBlock:x[4],StandardState:x[5]}));}renderTable();atomUpdate();console.log('Periodic data loaded:',elements.length,'elements')}
+function renderTable(){ptable.innerHTML=elements.map(x=>`<div class=el onclick='detailEl(${x.AtomicNumber})'><small>${x.AtomicNumber}</small><b>${x.Symbol}</b><small>${x.Name||x.Element||x.Symbol}</small></div>`).join('')}
+function detailEl(z){let x=elements.find(q=>+q.AtomicNumber==z);detail.innerHTML=`<div class=big>${x.Symbol}</div><h2>${x.Name||x.Element||x.Symbol}</h2><div class=stats><div class=stat>Atomic #<br><b>${x.AtomicNumber}</b></div><div class=stat>Atomic mass<br><b>${x.AtomicMass||'—'}</b></div><div class=stat>Family<br><b>${x.GroupBlock||'—'}</b></div><div class=stat>State<br><b>${x.StandardState||'—'}</b></div></div><p>${x.ElectronConfiguration?'<b>Electron configuration:</b> '+x.ElectronConfiguration:''}</p>`}
 function show(id){document.querySelectorAll('.mode').forEach(x=>x.classList.remove('on'));document.getElementById(id).classList.add('on')}
 function chg(k,d){state[k]=Math.max(k==='p'?1:0,state[k]+d); if(k==='p'&&d>0&&state.e===state.p-1)state.e++; atomUpdate()}
-function atomUpdate(){let x=elements.find(q=>+q.AtomicNumber===state.p),name=x?x.Element:'Unknown',sym=x?x.Symbol:'?';atomSym.textContent=sym;p.textContent=state.p;n.textContent=state.n;e.textContent=state.e;let A=state.p+state.n,charge=state.p-state.e;atomRead.innerHTML=`<h3>${name}-${A}</h3><p>${charge===0?'<span class=good>Neutral atom</span>':`<span class=warn>${charge>0?'Cation':'Anion'} • charge ${charge>0?'+':''}${charge}</span>`}</p><p>Atomic number = <b>${state.p}</b> • Mass number = <b>${A}</b> • electrons = <b>${state.e}</b></p>`}
-const mols=[['Water','H2O','O 0 0 0\\nH .758 .586 0\\nH -.758 .586 0'],['Carbon dioxide','CO₂','C 0 0 0\\nO 1.16 0 0\\nO -1.16 0 0'],['Methane','CH₄','C 0 0 0\\nH .63 .63 .63\\nH -.63 -.63 .63\\nH -.63 .63 -.63\\nH .63 -.63 -.63'],['Oxygen','O₂','O -.6 0 0\\nO .6 0 0'],['Nitrogen','N₂','N -.55 0 0\\nN .55 0 0']];
-let viewer;
-function initMols(){molBtns.innerHTML=mols.map((m,i)=>`<button onclick=mol(${i})>${m[0]}</button>`).join('');setTimeout(()=>{if(window.$3Dmol){viewer=$3Dmol.createViewer('viewer',{backgroundColor:'#050b11'});mol(0)}},500)}
-function mol(i){let m=mols[i];molInfo.innerHTML=`<h3>${m[0]} • ${m[1]}</h3><p>Rotate with your mouse. Scroll to zoom.</p>`;if(!viewer)return;viewer.removeAllModels();let xyz=m[2].split('\\n');viewer.addModel(xyz.length+'\\n'+m[0]+'\\n'+m[2],'xyz');viewer.setStyle({},{sphere:{scale:.32},stick:{radius:.14}});viewer.zoomTo();viewer.render()}
+function atomUpdate(){let x=elements.find(q=>+q.AtomicNumber===state.p),name=x?(x.Name||x.Element||x.Symbol):'Unknown',sym=x?x.Symbol:'?';atomSym.textContent=sym;p.textContent=state.p;n.textContent=state.n;e.textContent=state.e;let A=state.p+state.n,charge=state.p-state.e;atomRead.innerHTML=`<h3>${name}-${A}</h3><p>${charge===0?'<span class=good>Neutral atom</span>':`<span class=warn>${charge>0?'Cation':'Anion'} • charge ${charge>0?'+':''}${charge}</span>`}</p><p>Atomic number = <b>${state.p}</b> • Mass number = <b>${A}</b> • electrons = <b>${state.e}</b></p>`}
+const mols=[
+ {name:'Water',formula:'H₂O',xyz:['O 0 0 0','H 0.758 0.586 0','H -0.758 0.586 0'].join('\n'),shape:'Bent molecule; bond angle about 104.5°.'},
+ {name:'Carbon dioxide',formula:'CO₂',xyz:['C 0 0 0','O 1.16 0 0','O -1.16 0 0'].join('\n'),shape:'Linear molecule; bond angle 180°.'},
+ {name:'Methane',formula:'CH₄',xyz:['C 0 0 0','H 0.63 0.63 0.63','H -0.63 -0.63 0.63','H -0.63 0.63 -0.63','H 0.63 -0.63 -0.63'].join('\n'),shape:'Tetrahedral molecule; bond angles about 109.5°.'},
+ {name:'Oxygen',formula:'O₂',xyz:['O -0.60 0 0','O 0.60 0 0'].join('\n'),shape:'Diatomic molecule.'},
+ {name:'Nitrogen',formula:'N₂',xyz:['N -0.55 0 0','N 0.55 0 0'].join('\n'),shape:'Diatomic molecule.'}
+];
+let viewer=null;
+function initMols(){
+  molBtns.innerHTML=mols.map((m,i)=>`<button onclick="mol(${i})">${m.name}</button>`).join('');
+  const boot=()=>{
+    try{
+      if(window.$3Dmol){
+        viewer=$3Dmol.createViewer(document.getElementById('viewer'),{backgroundColor:'#050b11'});
+        mol(0);
+      }else{
+        molInfo.innerHTML='<h3>3D viewer unavailable</h3><p>The chemistry game still works, but the external 3Dmol.js library did not load.</p>';
+        document.getElementById('viewer').innerHTML='<div style="display:grid;place-items:center;height:100%;color:#ffd166;font-weight:900">3D VIEWER COULD NOT LOAD</div>';
+      }
+    }catch(err){
+      console.error(err);
+      document.getElementById('viewer').innerHTML='<div style="display:grid;place-items:center;height:100%;color:#ffd166;font-weight:900">WEBGL / 3D VIEWER ERROR</div>';
+    }
+  };
+  if(document.readyState==='loading')window.addEventListener('load',boot,{once:true}); else setTimeout(boot,0);
+}
+function mol(i){
+  const m=mols[i];
+  molInfo.innerHTML=`<h3>${m.name} • ${m.formula}</h3><p>${m.shape}</p><p>Drag to rotate • Scroll to zoom</p>`;
+  if(!viewer)return;
+  viewer.removeAllModels();
+  const lines=m.xyz.split('\n');
+  viewer.addModel(lines.length+'\n'+m.name+'\n'+m.xyz,'xyz');
+  viewer.setStyle({},{sphere:{scale:.32},stick:{radius:.14}});
+  viewer.zoomTo();
+  viewer.render();
+}
 const reactions=[{q:'__ H₂ + __ O₂ → __ H₂O',a:[2,1,2],why:'2 H₂ + O₂ → 2 H₂O conserves 4 H atoms and 2 O atoms.'},{q:'__ N₂ + __ H₂ → __ NH₃',a:[1,3,2],why:'N₂ + 3 H₂ → 2 NH₃ conserves 2 N and 6 H atoms.'},{q:'__ CH₄ + __ O₂ → __ CO₂ + __ H₂O',a:[1,2,1,2],why:'CH₄ + 2 O₂ → CO₂ + 2 H₂O conserves C, H, and O atoms.'}];let ri=0;
 function nextRx(){let r=reactions[ri++%reactions.length];rx.innerHTML=`<h2>${r.q}</h2><div class=row>${r.a.map((v,i)=>`<input id=c${i} type=number min=1 value=1 style="width:70px;padding:12px;border-radius:10px">`).join('')}</div><br><button onclick='checkRx(${JSON.stringify(r.a)})'>Test Balance</button><p id=rxmsg></p><details><summary>Science explanation</summary>${r.why}</details>`}
 function checkRx(a){let ok=a.every((v,i)=>+document.getElementById('c'+i).value===v);rxmsg.innerHTML=ok?'<span class=good>✓ Balanced! Matter is conserved.</span>':'<span class=warn>Not balanced yet. Count each kind of atom on both sides.</span>'}

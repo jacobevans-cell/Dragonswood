@@ -919,6 +919,19 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
     </div>
   </div>
 
+  <div class="card" id="twBattleCard" style="display:none">
+    <h3>⚔️ SCRIBE BATTLE COMMAND</h3>
+    <p class="pace-note">Battle finalists are chosen ONLY from AI-scored submissions. Students vote anonymously among the AI Top 4.</p>
+    <div class="actions" style="flex-wrap:wrap">
+      <button id="twBattleSelect">🏆 CLOSE ENTRIES + SELECT AI TOP 4</button>
+      <button id="twBattleFinal" class="gray">⚔️ ADVANCE WINNERS TO FINAL</button>
+      <button id="twBattleReveal" class="gray">🐉 REVEAL MASTER SCRIBE</button>
+      <button id="twBattleReset" class="gray">RESET BATTLE</button>
+    </div>
+    <div id="twBattleStatus" class="muted" style="margin-top:8px"></div>
+    <div id="twBattleBoard" style="margin-top:12px"></div>
+  </div>
+
   <div class="card">
     <h3>📜 STUDENT RESPONSES</h3>
     <p class="pace-note">AI scores are suggestions. Edit the teacher score or feedback before treating anything as official.</p>
@@ -2654,10 +2667,13 @@ document.addEventListener("click",e=>{
 <script type="module" id="v50-teacher-writing-module">
 import {getApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import {getFirestore,collection,doc,setDoc,addDoc,onSnapshot,query,where,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {getFirestore,collection,doc,setDoc,addDoc,onSnapshot,query,where,serverTimestamp,getDocs,deleteDoc} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const app=getApp("DragonswoodTeacherPortal"),auth=getAuth(app),db=getFirestore(app),$=id=>document.getElementById(id);
-let twUser=null,twActive=null,twResponses=[],twSessionUnsub=null,twResponseUnsub=null;
+let twUser=null,twActive=null,twResponses=[],twSessionUnsub=null,twResponseUnsub=null,twBattle=null,twBattleUnsub=null,twVotes=[],twVoteUnsub=null;
+function battleScore(r){const f=r.aiFeedback||{};return Number(f.totalScore||0)*100+Number(f.targetSkill||0)*10+Number(f.ideas||0)}
+function battleEligible(r){const t=String(r.responseText||'').trim();return r.status==='submitted'&&r.aiFeedback?.totalScore!=null&&Number(r.wordCount||0)>=Number(twActive?.minWords||0)&&t.length>=20}
+function anonFinalist(r,seed){return {responseId:r.id,seed,studentId:r.studentId,studentName:r.studentName||'Student',text:r.responseText||'',score:Number(r.aiFeedback?.totalScore||0),target:Number(r.aiFeedback?.targetSkill||0)}}
 
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function watchWriting(){
@@ -2665,7 +2681,7 @@ function watchWriting(){
  twSessionUnsub=onSnapshot(doc(db,"classData","activeWritingSession"),snap=>{
    const d=snap.exists()?snap.data():null;
    twActive=(d?.status==="active"&&d?.sessionId)?{id:d.sessionId,...d}:null;
-   watchResponses();renderWriting();
+   watchResponses();watchBattle();renderWriting();
  });
 }
 function watchResponses(){
@@ -2673,8 +2689,55 @@ function watchResponses(){
  if(!twActive){twResponses=[];renderWriting();return}
  twResponseUnsub=onSnapshot(query(collection(db,"writingResponses"),where("sessionId","==",twActive.id)),snap=>{twResponses=snap.docs.map(d=>({id:d.id,...d.data()}));renderWriting()});
 }
+function watchBattle(){
+ if(twBattleUnsub){twBattleUnsub();twBattleUnsub=null} if(twVoteUnsub){twVoteUnsub();twVoteUnsub=null}
+ twBattle=null;twVotes=[];
+ if(!twActive){renderBattle();return}
+ twBattleUnsub=onSnapshot(doc(db,"classData","scribeBattle"),snap=>{const d=snap.exists()?snap.data():null;twBattle=(d?.sessionId===twActive.id)?d:null;renderBattle()});
+ twVoteUnsub=onSnapshot(query(collection(db,"writingVotes"),where("sessionId","==",twActive.id)),snap=>{twVotes=snap.docs.map(d=>({id:d.id,...d.data()}));renderBattle()});
+}
+function voteCounts(round){const m={};twVotes.filter(v=>v.round===round).forEach(v=>m[v.choice]=(m[v.choice]||0)+1);return m}
+function renderBattle(){
+ const card=$("twBattleCard"),board=$("twBattleBoard"),status=$("twBattleStatus");if(!card||!board)return;
+ const isBattle=twActive?.mode==="Scribe Battle";card.style.display=isBattle?"block":"none";if(!isBattle)return;
+ const scored=twResponses.filter(r=>r.status==="submitted"&&r.aiFeedback?.totalScore!=null).length,submitted=twResponses.filter(r=>r.status==="submitted").length;
+ if(!twBattle){board.innerHTML=`<b>Waiting for finalists.</b><br><span class="muted">${submitted} submitted • ${scored} AI scored. Every submission must finish AI grading before Top 4 selection.</span>`;return}
+ const f=twBattle.finalists||[],semi=voteCounts("semi"),fin=voteCounts("final");
+ const name=x=>esc(x?.studentName||"Student"),txt=x=>esc(String(x?.text||"").slice(0,420));
+ if(twBattle.stage==="semifinal") board.innerHTML=`<div class="grid2"><div class="tw-response"><b>SEMIFINAL A • #1 vs #4</b><p><b>#1 ${name(f[0])}</b> • AI ${f[0]?.score}/20 • ${semi[f[0]?.responseId]||0} votes</p><p>${txt(f[0])}</p><hr><p><b>#4 ${name(f[3])}</b> • AI ${f[3]?.score}/20 • ${semi[f[3]?.responseId]||0} votes</p><p>${txt(f[3])}</p></div><div class="tw-response"><b>SEMIFINAL B • #2 vs #3</b><p><b>#2 ${name(f[1])}</b> • AI ${f[1]?.score}/20 • ${semi[f[1]?.responseId]||0} votes</p><p>${txt(f[1])}</p><hr><p><b>#3 ${name(f[2])}</b> • AI ${f[2]?.score}/20 • ${semi[f[2]?.responseId]||0} votes</p><p>${txt(f[2])}</p></div></div>`;
+ else if(twBattle.stage==="final") {const a=twBattle.finalists?.find(x=>x.responseId===twBattle.finalA),b=twBattle.finalists?.find(x=>x.responseId===twBattle.finalB);board.innerHTML=`<div class="tw-response"><b>🏆 CHAMPIONSHIP</b><p><b>${name(a)}</b> • ${fin[a?.responseId]||0} votes</p><p>${txt(a)}</p><hr><p><b>${name(b)}</b> • ${fin[b?.responseId]||0} votes</p><p>${txt(b)}</p></div>`}
+ else if(twBattle.stage==="revealed"){const w=f.find(x=>x.responseId===twBattle.winnerId);board.innerHTML=`<div class="tw-response"><h3>🐉 MASTER SCRIBE: ${name(w)}</h3><p>AI score ${w?.score}/20 • Target Skill ${w?.target}/4</p><p>${txt(w)}</p></div>`}
+ if(status)status.textContent=`Battle stage: ${twBattle.stage||"waiting"} • ${twVotes.length} votes recorded.`;
+}
+async function clearBattleVotes(){if(!twActive)return;const s=await getDocs(query(collection(db,"writingVotes"),where("sessionId","==",twActive.id)));await Promise.all(s.docs.map(d=>deleteDoc(d.ref)))}
+$("twBattleSelect")?.addEventListener("click",async()=>{
+ if(!twActive||twActive.mode!=="Scribe Battle")return;
+ const submitted=twResponses.filter(r=>r.status==="submitted"),unscored=submitted.filter(r=>r.aiFeedback?.totalScore==null);
+ if(submitted.length<4){$("twBattleStatus").textContent=`Need at least 4 submitted responses. Currently ${submitted.length}.`;return}
+ if(unscored.length){$("twBattleStatus").textContent=`Waiting: ${unscored.length} submitted response(s) still need AI grading.`;return}
+ const eligible=submitted.filter(battleEligible).sort((a,b)=>battleScore(b)-battleScore(a));
+ if(eligible.length<4){$("twBattleStatus").textContent=`Only ${eligible.length} eligible AI-scored responses. Need 4.`;return}
+ const finalists=eligible.slice(0,4).map((r,i)=>anonFinalist(r,i+1));await clearBattleVotes();
+ await setDoc(doc(db,"classData","scribeBattle"),{sessionId:twActive.id,stage:"semifinal",targetSkill:twActive.targetSkill||"Strong Writing",finalists,updatedAt:serverTimestamp()},{merge:false});
+ $("twBattleStatus").textContent="🏆 AI Top 4 selected. Anonymous semifinals are LIVE.";
+});
+$("twBattleFinal")?.addEventListener("click",async()=>{
+ if(!twBattle||twBattle.stage!=="semifinal"){$("twBattleStatus").textContent="Select the AI Top 4 first.";return}
+ const f=twBattle.finalists||[],c=voteCounts("semi");
+ const win=(a,b)=>{const av=c[a.responseId]||0,bv=c[b.responseId]||0;if(av!==bv)return av>bv?a:b;return battleScore({aiFeedback:{totalScore:a.score,targetSkill:a.target,ideas:0}})>=battleScore({aiFeedback:{totalScore:b.score,targetSkill:b.target,ideas:0}})?a:b};
+ const a=win(f[0],f[3]),b=win(f[1],f[2]);
+ await setDoc(doc(db,"classData","scribeBattle"),{stage:"final",finalA:a.responseId,finalB:b.responseId,updatedAt:serverTimestamp()},{merge:true});
+});
+$("twBattleReveal")?.addEventListener("click",async()=>{
+ if(!twBattle||twBattle.stage!=="final"){$("twBattleStatus").textContent="Advance to the championship first.";return}
+ const c=voteCounts("final"),f=twBattle.finalists||[],a=f.find(x=>x.responseId===twBattle.finalA),b=f.find(x=>x.responseId===twBattle.finalB);if(!a||!b)return;
+ const av=c[a.responseId]||0,bv=c[b.responseId]||0;const w=av===bv?(a.score*10+a.target>=b.score*10+b.target?a:b):(av>bv?a:b);
+ await setDoc(doc(db,"classData","scribeBattle"),{stage:"revealed",winnerId:w.responseId,updatedAt:serverTimestamp()},{merge:true});
+});
+$("twBattleReset")?.addEventListener("click",async()=>{if(!twActive)return;await clearBattleVotes();await setDoc(doc(db,"classData","scribeBattle"),{sessionId:twActive.id,stage:"waiting",finalists:[],updatedAt:serverTimestamp()},{merge:false})});
+
 function renderWriting(){
- const summary=$("twActiveSummary");if(!summary)return;
+ const summary=$("twActiveSummary");if(!summary)return;$("twBattleCard") && ($("twBattleCard").style.display=twActive?.mode==="Scribe Battle"?"block":"none");
  if(!twActive){
    summary.textContent="No active writing mission.";$("twSubmittedCount").textContent="0";$("twDraftCount").textContent="0";$("twAiCount").textContent="0";$("twAvgWords").textContent="0";$("twSubmissionFill").style.width="0%";$("twResponseList").innerHTML='<div class="muted">Launch a writing mission to begin.</div>';return;
  }
@@ -2713,6 +2776,7 @@ $("twLaunch")?.addEventListener("click",async()=>{
  };
  const ref=await addDoc(collection(db,"writingSessions"),payload);
  await setDoc(doc(db,"classData","activeWritingSession"),{...payload,sessionId:ref.id},{merge:false});
+ if(payload.mode==="Scribe Battle")await setDoc(doc(db,"classData","scribeBattle"),{sessionId:ref.id,stage:"waiting",finalists:[],targetSkill:payload.targetSkill,updatedAt:serverTimestamp()},{merge:false});
  $("twLaunchStatus").textContent="🔥 Writing mission launched to students.";
 });
 $("twClose")?.addEventListener("click",async()=>{$("twLaunchStatus").textContent="Closing mission…";if(twActive?.id)await setDoc(doc(db,"writingSessions",twActive.id),{status:"closed",closedAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});await setDoc(doc(db,"classData","activeWritingSession"),{status:"closed",sessionId:"",closedAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:false});$("twLaunchStatus").textContent="Mission closed.";});

@@ -1,0 +1,24 @@
+DRAGONSWOOD Q1 R2 MEDIA-READY BUILD
+
+Current video library:
+- 217 unique videos ready in Cloudflare R2.
+- 14 source videos waiting on school Google access.
+
+Pending videos do NOT block creation:
+- Their curriculum missions remain visible.
+- Students can complete the associated activity.
+- The missing video is marked SOURCE PENDING, not as a student failure.
+- Final teacher verification waits until the video source is restored.
+
+R2 video accountability:
+- Videos play directly inside Dragonswood.
+- At least 90% of the video must actually be watched.
+- Large seeks/skips do not earn watched coverage.
+- Student must also submit a Video Check.
+- There is no visible countdown.
+
+When the remaining videos become available:
+1. Rerun the full migrator.
+2. Send the updated full_q1_migration_results.csv.
+3. Regenerate only q1-video-map.js.
+No curriculum redesign is required.

@@ -1,0 +1,18 @@
+Q1 VIDEO FIX
+
+Fixed the Google Vids error.
+
+What changed:
+- Required videos are no longer embedded in an iframe.
+- Clicking WATCH REQUIRED VIDEO opens the exact original curriculum video link in a new tab, which is the method that was already working.
+- Dragonswood keeps the Video Check open in its own tab.
+- There is NO visible countdown.
+- The completion timer still runs silently.
+- WATCH only becomes complete after:
+  1. enough viewing time has passed, and
+  2. the student submits a meaningful Video Check response.
+- Students can click OPEN VIDEO AGAIN if they closed the video tab.
+- Activity submission and teacher verification remain locked behind the required steps.
+
+Important:
+A normal webpage cannot read Google Vids playback position cross-origin, so this is still a time + response accountability check rather than frame-by-frame proof of playback.

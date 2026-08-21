@@ -1,0 +1,8 @@
+DRAGONSWOOD — SELF-CONTAINED STUDENT QUEST UPDATE
+
+- Curriculum planning metadata no longer automatically becomes a student mission.
+- Math/Science Foundational Skills, Vocabulary, and teacher-created checkpoint columns are hidden as separate quests unless they contain a real linked lesson.
+- Removed all dependency on "Complete the lesson resource your teacher gives you."
+- No-video lessons now teach the concept inside Dragonswood with a mini-lesson, example, and memory cue.
+- Existing lesson-aware interactive activities, strong answer validation, R2 video tracking, and Teacher Review Requests are preserved.
+- Core rule: IF DRAGONSWOOD ASSIGNS IT, DRAGONSWOOD PROVIDES EVERYTHING NEEDED TO LEARN AND COMPLETE IT.

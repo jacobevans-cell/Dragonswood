@@ -1,0 +1,17 @@
+UPDATED MASTER INTEGRATION
+
+This package starts from the newly uploaded cleaned Dragonswood master.
+
+Student path:
+DRAGONSWOOD -> DAILY MISSIONS -> Curriculum Quest -> ENTER CURRICULUM QUEST
+
+Added:
+- curriculum-quest.html
+- q1-curriculum-data.js
+- Curriculum Quest card in the updated index.html
+
+The new master was preserved otherwise. Existing Firebase files, rules, games, teacher portal,
+and cleaned project structure were not replaced with the older master.
+
+Current curriculum progress storage is browser-local. Firestore curriculum completion has not
+been added yet because that should be mapped deliberately to the current master schema.

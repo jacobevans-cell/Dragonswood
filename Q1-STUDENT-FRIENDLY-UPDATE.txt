@@ -1,0 +1,22 @@
+Q1 CURRICULUM QUEST — STUDENT-FRIENDLY ACCOUNTABILITY UPDATE
+
+Changes:
+1. Removed freely clickable Watch/Practice/Apply/Master progression.
+2. Required videos now open inside Dragonswood.
+3. Watch only turns green after:
+   - the lesson stays open for at least 60 seconds, AND
+   - the student submits a one-sentence video check.
+4. Practice is locked until the video check is complete.
+5. Practice requires written evidence before it turns green.
+6. Teacher Verify is hidden from students and only appears for the authorized Dragonswood teacher Firebase account.
+7. Student grade is pulled from the existing students/{uid}.grade profile when available.
+8. Student-facing cards use short, kid-friendly titles and directions.
+9. Original pacing-guide wording is hidden from students and available to the teacher under source details.
+10. Opening-day housekeeping items (welcome/routines/procedures/rules/expectations) from Days 1–3 are filtered out; academic Day 3 content remains.
+11. Where the source guide lists an 'In Class' task, that task is now shown as the required activity.
+12. Morphology cards use the morphology sequence's application task when available.
+
+Technical note:
+Because the Google video player does not expose reliable cross-origin playback telemetry to this page,
+the system cannot mathematically prove every second was played. It therefore uses the strongest
+practical browser-side check available here: in-app viewing time plus a required video reflection.

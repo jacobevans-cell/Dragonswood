@@ -17,35 +17,262 @@ main{padding:20px 0 35px}.hero{padding:22px;display:grid;grid-template-columns:1
 .notice{margin-top:10px;padding:10px 12px;border-left:4px solid var(--gold);background:#110b25;color:var(--gold2);font-weight:900;font-size:12px}
 @media(max-width:900px){.tabs{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr}.wordgrid{grid-template-columns:repeat(2,1fr)}.kpis{grid-template-columns:repeat(2,1fr)}.topin{align-items:flex-start;flex-direction:column}}
 @media(max-width:520px){.tabs{grid-template-columns:repeat(2,1fr)}.wordgrid{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.ring{display:none}}
+
+.video-modal{position:fixed;inset:0;background:rgba(0,0,0,.86);z-index:9999;display:none;align-items:center;justify-content:center;padding:18px}
+.video-modal.show{display:flex}.video-box{width:min(980px,96vw);max-height:94vh;overflow:auto;padding:16px;background:#080617;border:1px solid rgba(244,201,93,.65);border-radius:12px;box-shadow:0 18px 70px #000}
+.video-box h2{color:var(--gold2);margin:0 0 8px}.video-box iframe{width:100%;aspect-ratio:16/9;border:1px solid #4c376b;border-radius:8px;background:#000}
+.video-check{margin-top:12px;padding:12px;background:#100b25;border:1px solid #3d2a59;border-radius:8px}.video-check label{display:block;font-weight:900;color:var(--gold2);margin-bottom:6px}
+.video-check textarea,.practice-box textarea{width:100%;min-height:82px;background:#050411;color:white;border:1px solid #493263;border-radius:7px;padding:10px;resize:vertical}
+.timer{font-weight:900;color:var(--cyan);margin:8px 0}.locked{opacity:.48;cursor:not-allowed!important}.step{margin-top:10px;padding:10px;border-radius:8px;background:#0f0a20;border:1px solid #322247}
+.step strong{color:var(--gold2)}.practice-box{margin-top:11px;padding:12px;background:#100b25;border:1px solid rgba(2,204,254,.25);border-radius:8px}
+.kid-task{font-size:14px!important;line-height:1.55!important;color:#eee8f8!important}.source-details{margin-top:10px;color:#aaa2b8;font-size:11px}.source-details summary{cursor:pointer;color:#bba9d9;font-weight:900}
 </style></head>
 <body>
 <header class="top"><div class="shell topin"><div class="brand"><div class="shield">🐉</div><div><h1>DRAGONSWOOD</h1><p>CURRICULUM QUEST • EXPLORE ACADEMY</p></div></div>
-<div class="controls"><select id="grade"><option value="I">I • 4th Grade</option><option value="K">K • 5th Grade</option></select><label>Day <input id="day" type="number" min="1" max="40" value="14" style="width:62px"></label><button class="btn" id="mode">Teacher Mode</button><a class="btn" href="index.html">← Portal</a></div></div></header>
+<div class="controls">
+      <span id="studentIdentity" style="color:#c7c1d5;font-weight:900;font-size:12px">Checking your Dragonswood profile…</span>
+      <select id="grade"><option value="I">I • 4th Grade</option><option value="K">K • 5th Grade</option></select>
+      <label>Day <input id="day" type="number" min="1" max="40" value="14" style="width:62px"></label>
+      <span id="teacherBadge" class="btn" style="display:none">🛡️ TEACHER VERIFIED</span>
+      <a class="btn" href="index.html">← Portal</a>
+    </div></div></header>
 <main class="shell">
 <section class="frame hero"><div><span class="eyebrow">THE ACADEMIC PATH THROUGH DRAGONSWOOD</span><h2 id="hero">Current Quest</h2><p>Your assigned curriculum lives here. Current work keeps moving forward while unfinished earlier requirements stay in Recovery Quest until they are completed.</p><div class="notice">Required curriculum videos remain separate tracked requirements. Opening a video marks it watched, not mastered.</div></div><div class="ring" id="ring"><span id="pct">0%</span></div></section>
 <nav class="tabs"><button class="active" data-tab="current">📜 CURRENT</button><button data-tab="recovery">🗝️ RECOVERY</button><button data-tab="videos">🔮 VIDEOS</button><button data-tab="standards">📚 STANDARDS</button><button data-tab="morph">⚒️ WORDSMITH</button><button data-tab="audit">🛡️ AUDIT</button></nav>
 <section class="kpis" id="kpis"></section>
 <section class="panel active" id="current"></section><section class="panel" id="recovery"></section><section class="panel" id="videos"></section><section class="panel" id="standards"></section><section class="panel" id="morph"></section><section class="panel" id="audit"></section>
 </main>
+
+<div id="videoModal" class="video-modal" aria-hidden="true">
+  <div class="video-box">
+    <div style="display:flex;justify-content:space-between;gap:12px;align-items:start">
+      <div><span class="eyebrow">STEP 1 • WATCH</span><h2 id="videoModalTitle">Required Lesson Video</h2></div>
+      <button class="stage" id="closeVideoModal">CLOSE</button>
+    </div>
+    <iframe id="videoFrame" allow="autoplay; fullscreen" allowfullscreen></iframe>
+    <div class="video-check">
+      <div class="timer" id="videoTimer">Keep the lesson open while you watch.</div>
+      <label for="videoReflection">Video Check: In one good sentence, what did this lesson teach you?</label>
+      <textarea id="videoReflection" placeholder="Example: I learned that…"></textarea>
+      <button class="btn locked" id="finishVideoBtn" disabled>FINISH VIDEO CHECK</button>
+      <p style="color:#bfb5ce;font-size:11px;margin-bottom:0">The Watch step only turns green after the lesson has stayed open long enough AND you complete the video check.</p>
+    </div>
+  </div>
+</div>
+
 <script src="q1-curriculum-data.js"></script>
 <script>
-const D=window.DRAGONSWOOD_DATA,K="dragonswood_q1_integrated_progress";let S=JSON.parse(localStorage.getItem(K)||"{}");S.grade=S.grade||"I";S.day=S.day||14;S.mode=S.mode||"teacher";S.items=S.items||{};
-const $=x=>document.querySelector(x),$$=x=>[...document.querySelectorAll(x)],esc=(x="")=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
-function save(){localStorage.setItem(K,JSON.stringify(S))}function st(id){return S.items[id]||{watched:false,practiced:false,applied:false,mastered:false,verified:false}}function vid(x){return x.resourceUrl&&(x.resourceUrl.includes("google.com/videos")||/video/i.test(x.resourceName||""))}function rows(){return D.items.filter(x=>x.grade===S.grade)}
-function toggle(id,k){let s=st(id);s[k]=!s[k];if(k==="verified"&&s.verified)s.watched=s.practiced=s.applied=s.mastered=true;S.items[id]=s;save();render()}
-function openR(id,url){let s=st(id);s.watched=true;S.items[id]=s;save();window.open(url,"_blank","noopener");render()}
-function card(x){let s=st(x.id);return `<article class="frame quest ${x.resourceUrl?"link":""} ${s.verified?"done":""}"><div class="meta"><span class="tag">${esc(x.subject)}</span><span class="tag">${esc(x.strand)}</span>${vid(x)?'<span class="tag video">REQUIRED VIDEO</span>':""}${s.verified?'<span class="tag complete">VERIFIED</span>':""}</div><h4>${esc(x.resourceName||"Curriculum Requirement")}</h4><p>${esc(x.requirement)}</p><div class="actions">${x.resourceUrl?`<button class="resource" onclick="openR('${x.id}','${esc(x.resourceUrl)}')">OPEN REQUIRED RESOURCE ↗</button>`:""}<button class="stage ${s.watched?"on":""}" onclick="toggle('${x.id}','watched')">WATCH</button><button class="stage ${s.practiced?"on":""}" onclick="toggle('${x.id}','practiced')">PRACTICE</button><button class="stage ${s.applied?"on":""}" onclick="toggle('${x.id}','applied')">APPLY</button><button class="stage ${s.mastered?"on":""}" onclick="toggle('${x.id}','mastered')">MASTER</button>${S.mode==="teacher"?`<button class="stage verify" onclick="toggle('${x.id}','verified')">${s.verified?"UNVERIFY":"VERIFY COMPLETE"}</button>`:""}</div></article>`}
-function grouped(title,desc,a,byDay=false){if(!a.length)return `<div class="frame empty">Nothing waiting here.</div>`;let g={};a.forEach(x=>(g[byDay?x.day:x.subject]??=[]).push(x));return `<div class="title"><div><h2>${title}</h2><p>${desc}</p></div></div>`+Object.entries(g).map(([n,l])=>`<div class="group"><div class="grouphead"><h3>${byDay?"Original Day "+n:n}</h3><small>${l.length} requirements</small></div><div class="grid">${l.map(card).join("")}</div></div>`).join("")}
-function render(){let r=rows(),due=r.filter(x=>x.day<=S.day),done=due.filter(x=>st(x.id).verified).length,p=due.length?Math.round(done/due.length*100):0,back=r.filter(x=>x.day<S.day&&!st(x.id).verified),mv=due.filter(x=>vid(x)&&!st(x.id).watched);
-$("#grade").value=S.grade;$("#day").value=S.day;$("#mode").textContent=S.mode==="teacher"?"Teacher Mode":"Student Mode";$("#hero").textContent=`${D.meta.gradeLabels[S.grade]} • Day ${S.day}`;$("#pct").textContent=p+"%";$("#ring").style.background=`conic-gradient(var(--green) ${p*3.6}deg,#241936 0)`;
-$("#kpis").innerHTML=[[r.filter(x=>x.day===S.day).length,"CURRENT NODES"],[back.length,"RECOVERY NODES"],[mv.length,"VIDEOS UNWATCHED"],[r.length,"Q1 REQUIREMENTS"]].map(x=>`<div class="frame kpi"><b>${x[0]}</b><small>${x[1]}</small></div>`).join("");
-$("#current").innerHTML=grouped(`Day ${S.day} Current Quest`,"Complete today's curriculum without creating a new backlog.",r.filter(x=>x.day===S.day));
-$("#recovery").innerHTML=grouped("Recovery Quest","Only unfinished earlier requirements appear here.",back.sort((a,b)=>a.day-b.day),true);
-let vr=r.filter(vid).sort((a,b)=>a.day-b.day);$("#videos").innerHTML=`<div class="title"><div><h2>🔮 Required Video Vault</h2><p>Every pacing-guide video remains visible.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Day</th><th>Subject</th><th>Video</th><th>Status</th><th>Open</th></tr></thead><tbody>${vr.map(x=>`<tr><td>${x.day}</td><td>${esc(x.subject)}</td><td>${esc(x.resourceName)}</td><td>${st(x.id).watched?"WATCHED":"NOT WATCHED"}${st(x.id).verified?" • VERIFIED":""}</td><td><button class="resource" onclick="openR('${x.id}','${esc(x.resourceUrl)}')">OPEN ↗</button></td></tr>`).join("")}</tbody></table></div>`;
-let sr=D.standards.filter(x=>x.grade===S.grade);$("#standards").innerHTML=`<div class="title"><div><h2>📚 Standards Codex</h2><p>Source standards, proficiency expectations, and assessments.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Subject</th><th>Code</th><th>Standard</th><th>Evidence of Proficiency</th><th>Assessment</th></tr></thead><tbody>${sr.map(x=>`<tr><td>${esc(x.subject)}</td><td>${esc(x.code)}</td><td>${esc(x.standard)}</td><td>${esc(x.proficiency)}</td><td>${esc(x.assessment)}</td></tr>`).join("")}</tbody></table></div>`;
-let mr=D.morphology.filter(x=>x.grade===S.grade),wg={};mr.forEach(x=>(wg[x.week]??=[]).push(x));$("#morph").innerHTML=`<div class="title"><div><h2>⚒️ Wordsmith Tower</h2><p>Roots, target words, morphology videos, slides, and word analysis.</p></div></div>`+Object.entries(wg).map(([w,l])=>`<div class="group"><div class="grouphead"><h3>Week ${w} • ${esc(l[0].root)}</h3></div><div class="wordgrid">${l.map(x=>`<div class="frame word"><small>${esc(x.root)}</small><b>${esc(x.word)}</b><p>${esc(x.morphological||x.orthographic||x.etymological||"Target morphology lesson from the Q1 sequence.")}</p><div class="actions">${x.videoUrl?`<a class="btn" target="_blank" href="${esc(x.videoUrl)}">VIDEO ↗</a>`:""}${x.slideUrl?`<a class="btn" target="_blank" href="${esc(x.slideUrl)}">SLIDES ↗</a>`:""}</div></div>`).join("")}</div></div>`).join("");
-let miss=due.filter(x=>!st(x.id).verified);$("#audit").innerHTML=`<div class="title"><div><h2>🛡️ Curriculum Compliance Shield</h2><p>Teacher-facing verification through Day ${S.day}.</p></div></div><div class="frame audit ${miss.length?"bad":"good"}"><h3>${miss.length} unverified curriculum requirements</h3><p>${miss.length?"Recovery Quest shows the exact unfinished nodes.":"Everything due is verified complete."}</p></div><div class="frame audit ${mv.length?"bad":"good"}"><h3>${mv.length} required videos not marked watched</h3><p>${mv.length?"These remain visible until completed.":"All due required videos are marked watched."}</p></div>`;
+const D=window.DRAGONSWOOD_DATA, K="dragonswood_q1_integrated_progress_v2";
+let S=JSON.parse(localStorage.getItem(K)||"{}");
+S.grade=S.grade||"I"; S.day=S.day||14; S.items=S.items||{};
+const $=x=>document.querySelector(x), $$=x=>[...document.querySelectorAll(x)];
+const esc=(x="")=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+let isTeacher=false, currentStudent=null, activeVideoId=null, videoStartedAt=0, videoTick=null;
+const VIDEO_MIN_SECONDS=60;
+
+function save(){localStorage.setItem(K,JSON.stringify(S))}
+function st(id){return S.items[id]||{watched:false,practiced:false,verified:false,videoReflection:"",practiceEvidence:""}}
+function vid(x){return !!(x.resourceUrl&&(x.resourceUrl.includes("google.com/videos")||/video/i.test(x.resourceName||"")))}
+
+function teacherNote(x){
+  if(x.day>3) return false;
+  const t=((x.requirement||"")+" "+(x.resourceName||"")).toLowerCase();
+  if(x.day<=2) return /(welcome|getting to know|routine|procedure|rules?|expectations?|flavor first day|flavor introduction|course introduction)/i.test(t);
+  return /(getting to know|classroom procedures|procedures|routines|rules|scientific expectations|welcome day)/i.test(t)
+    && !/(pre-assessment|morphology|character|place value|energy|design problem|reading comprehension|language and writing)/i.test(t);
 }
-$("#grade").onchange=e=>{S.grade=e.target.value;save();render()};$("#day").onchange=e=>{S.day=Math.max(1,Math.min(40,+e.target.value||1));save();render()};$("#mode").onclick=()=>{S.mode=S.mode==="teacher"?"student":"teacher";save();render()};
-$$(".tabs button").forEach(b=>b.onclick=()=>{$$(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");$$(".panel").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.tab).classList.add("active")});render();
+function rows(){return D.items.filter(x=>x.grade===S.grade && !teacherNote(x))}
+function morphFor(x){
+  const name=(x.resourceName||"").toLowerCase();
+  if(!/morphology/.test(name)) return null;
+  return D.morphology.find(m=>m.grade===x.grade && name.includes((m.word||"").toLowerCase()))||null;
+}
+function friendlyTitle(x){
+  const n=x.resourceName||"";
+  const m=morphFor(x);
+  if(m) return `Word Mission: ${m.word}`;
+  if(/first or third person|point of view/i.test(n)) return "Who Is Telling the Story?";
+  if(/fanboys/i.test(n)) return "Build Strong Sentences with FANBOYS";
+  if(/inference/i.test(n)) return "Read Between the Lines";
+  if(/character/i.test(n)) return "Character Detective";
+  if(/round/i.test(n)) return "Rounding Mission";
+  if(/decimal/i.test(n)) return "Decimal Mission";
+  if(/energy/i.test(n)) return "Energy Investigation";
+  let s=n.replace(/^(I|K)\s*Q1\s*/i,"")
+         .replace(/^STEM\s*(I|K)\s*Q1\s*/i,"")
+         .replace(/Lesson\s*\d+(?:\.\d+)?\s*[-:]?\s*/ig,"")
+         .replace(/Reading Comprehension\s*/ig,"")
+         .replace(/Language and Writing\s*/ig,"")
+         .replace(/Day\s*\d+\s*/ig,"")
+         .replace(/\s+/g," ").trim();
+  return s||"Today's Curriculum Quest";
+}
+function activityFor(x){
+  const raw=x.requirement||"";
+  const m=morphFor(x);
+  const ic=raw.match(/In Class:?\s*([\s\S]*)/i);
+  if(ic && ic[1].trim()) return ic[1].trim().replace(/\n+/g," ");
+  if(m && m.application) return `${m.application} Then say and write the target word: ${m.word}.`;
+  if(/FANBOYS/i.test(raw)) return "Create or use the FANBOYS anchor chart, then write a strong conclusion sentence.";
+  if(/point of view/i.test(raw)) return "Decide whether the class novel is told in first or third person. Use pronouns or text evidence to prove it.";
+  return "Complete the practice your teacher gives with this lesson. Then type one example, answer, or short description of what you completed.";
+}
+function kidIntro(x){
+  const m=morphFor(x);
+  if(m) return `Today you are learning the word “${m.word}.” Watch the lesson first. Then complete the word mission below.`;
+  if(/point of view|first or third person/i.test((x.resourceName||"")+" "+(x.requirement||""))) return "Watch the lesson to learn how to tell who is telling a story. Then prove the point of view using the class novel.";
+  if(/FANBOYS/i.test((x.resourceName||"")+" "+(x.requirement||""))) return "Watch the lesson to learn how FANBOYS can connect ideas. Then use what you learned in your own sentence.";
+  return "Watch the lesson first. Then complete the mission using what you learned.";
+}
+function previewUrl(url){
+  const m=url.match(/docs\.google\.com\/videos\/d\/([^/]+)/i);
+  if(m) return `https://docs.google.com/videos/d/${m[1]}/preview`;
+  const d=url.match(/drive\.google\.com\/file\/d\/([^/]+)/i);
+  if(d) return `https://drive.google.com/file/d/${d[1]}/preview`;
+  return url;
+}
+function togglePractice(id){
+  const box=document.getElementById("practice-"+id);
+  if(box) box.hidden=!box.hidden;
+}
+function submitPractice(id){
+  const ta=document.getElementById("practiceText-"+id);
+  const text=(ta?.value||"").trim();
+  if(text.length<15){alert("Give a complete answer or explain what you completed. Try at least one good sentence.");return}
+  const s=st(id); s.practiced=true; s.practiceEvidence=text; S.items[id]=s; save(); render();
+}
+function teacherVerify(id){
+  if(!isTeacher) return;
+  const s=st(id);
+  if(!s.watched || !s.practiced){alert("This quest still needs the required video check and activity evidence.");return}
+  s.verified=!s.verified; S.items[id]=s; save(); render();
+}
+function launchVideo(id,url,title){
+  activeVideoId=id; videoStartedAt=Date.now();
+  $("#videoModalTitle").textContent=title;
+  $("#videoFrame").src=previewUrl(url);
+  $("#videoReflection").value=st(id).videoReflection||"";
+  $("#videoModal").classList.add("show");
+  $("#videoModal").setAttribute("aria-hidden","false");
+  updateVideoTimer();
+  clearInterval(videoTick); videoTick=setInterval(updateVideoTimer,1000);
+}
+function updateVideoTimer(){
+  if(!activeVideoId)return;
+  const elapsed=Math.floor((Date.now()-videoStartedAt)/1000), left=Math.max(0,VIDEO_MIN_SECONDS-elapsed);
+  $("#videoTimer").textContent=left?`Keep watching. Video check unlocks in ${left} seconds.`:"Video check is unlocked. Finish the lesson, then answer below.";
+  const answer=$("#videoReflection").value.trim();
+  const ready=left===0 && answer.length>=15;
+  $("#finishVideoBtn").disabled=!ready;
+  $("#finishVideoBtn").classList.toggle("locked",!ready);
+}
+$("#videoReflection").addEventListener("input",updateVideoTimer);
+$("#finishVideoBtn").onclick=()=>{
+  if(!activeVideoId)return;
+  const elapsed=Math.floor((Date.now()-videoStartedAt)/1000);
+  const answer=$("#videoReflection").value.trim();
+  if(elapsed<VIDEO_MIN_SECONDS || answer.length<15)return;
+  const s=st(activeVideoId); s.watched=true; s.videoReflection=answer; S.items[activeVideoId]=s; save();
+  closeVideo(); render();
+};
+function closeVideo(){
+  clearInterval(videoTick); videoTick=null; activeVideoId=null;
+  $("#videoFrame").src="about:blank"; $("#videoModal").classList.remove("show"); $("#videoModal").setAttribute("aria-hidden","true");
+}
+$("#closeVideoModal").onclick=closeVideo;
+
+function card(x){
+  const s=st(x.id), hasVideo=vid(x), canPractice=!hasVideo||s.watched, task=activityFor(x);
+  return `<article class="frame quest ${x.resourceUrl?"link":""} ${s.verified?"done":""}">
+    <div class="meta"><span class="tag">${esc(x.subject)}</span><span class="tag">${esc(x.strand)}</span>${hasVideo?'<span class="tag video">REQUIRED VIDEO</span>':""}${s.verified?'<span class="tag complete">TEACHER VERIFIED</span>':""}</div>
+    <h4>${esc(friendlyTitle(x))}</h4>
+    <p class="kid-task">${esc(kidIntro(x))}</p>
+
+    <div class="step"><strong>1. ${hasVideo?"Watch the lesson":"Learn the lesson"}</strong><br>
+      ${hasVideo?(s.watched?"✅ Video check complete.":`Open the video here. The Watch step will not turn green just from clicking it.`):"Read or complete the lesson resource your teacher gives you."}
+      <div class="actions">${hasVideo?`<button class="resource" onclick="launchVideo('${x.id}','${esc(x.resourceUrl)}','${esc(friendlyTitle(x))}')">${s.watched?"REWATCH VIDEO":"WATCH REQUIRED VIDEO"} ▶</button>`:""}<button class="stage ${s.watched?"on":"locked"}" disabled>${s.watched?"✓ WATCHED":"WATCH"}</button></div>
+    </div>
+
+    <div class="step"><strong>2. Do the Quest</strong><p class="kid-task">${esc(task)}</p>
+      <div class="actions"><button class="stage ${s.practiced?"on":""} ${canPractice?"":"locked"}" ${canPractice?"":"disabled"} onclick="togglePractice('${x.id}')">${s.practiced?"✓ ACTIVITY SUBMITTED":"DO ACTIVITY"}</button></div>
+      <div class="practice-box" id="practice-${x.id}" ${s.practiced?"":"hidden"}>
+        <label><strong>Show your work:</strong> Type your answer, example, or what you completed.</label>
+        <textarea id="practiceText-${x.id}" placeholder="Write a complete sentence or example here…">${esc(s.practiceEvidence||"")}</textarea>
+        ${!s.practiced?`<button class="btn" onclick="submitPractice('${x.id}')">SUBMIT ACTIVITY</button>`:"<p>✅ Activity evidence saved.</p>"}
+      </div>
+    </div>
+
+    <div class="step"><strong>3. Teacher Check</strong><br>${s.verified?"✅ Your teacher verified this quest.":(s.watched&&s.practiced?"Your work is ready for your teacher to check.":"Finish Steps 1 and 2 first.")}
+      ${isTeacher?`<div class="actions"><button class="stage verify ${(s.watched&&s.practiced)?"":"locked"}" ${(s.watched&&s.practiced)?"":"disabled"} onclick="teacherVerify('${x.id}')">${s.verified?"UNVERIFY":"TEACHER VERIFY"}</button></div>`:""}
+    </div>
+    ${isTeacher?`<details class="source-details"><summary>Teacher/source details</summary><p>${esc(x.requirement)}</p><p>${x.resourceName?esc(x.resourceName):""}</p></details>`:""}
+  </article>`;
+}
+function grouped(title,desc,a,byDay=false){
+  if(!a.length)return `<div class="frame empty">Nothing waiting here.</div>`;
+  let g={}; a.forEach(x=>(g[byDay?x.day:x.subject]??=[]).push(x));
+  return `<div class="title"><div><h2>${title}</h2><p>${desc}</p></div></div>`+
+  Object.entries(g).map(([n,l])=>`<div class="group"><div class="grouphead"><h3>${byDay?"Original Day "+n:n}</h3><small>${l.length} missions</small></div><div class="grid">${l.map(card).join("")}</div></div>`).join("");
+}
+function render(){
+  let r=rows(), due=r.filter(x=>x.day<=S.day), done=due.filter(x=>st(x.id).verified).length;
+  let p=due.length?Math.round(done/due.length*100):0, back=r.filter(x=>x.day<S.day&&!st(x.id).verified);
+  let mv=due.filter(x=>vid(x)&&!st(x.id).watched);
+  $("#grade").value=S.grade; $("#day").value=S.day;
+  $("#hero").textContent=`${D.meta.gradeLabels[S.grade]} • Day ${S.day}`;
+  $("#pct").textContent=p+"%"; $("#ring").style.background=`conic-gradient(var(--green) ${p*3.6}deg,#241936 0)`;
+  $("#kpis").innerHTML=[[r.filter(x=>x.day===S.day).length,"TODAY'S MISSIONS"],[back.length,"RECOVERY MISSIONS"],[mv.length,"VIDEOS STILL NEEDED"],[r.length,"Q1 CURRICULUM ITEMS"]].map(x=>`<div class="frame kpi"><b>${x[0]}</b><small>${x[1]}</small></div>`).join("");
+  $("#current").innerHTML=grouped(`Day ${S.day} Current Quest`,"Watch first. Do the activity second. Your teacher verifies the mission last.",r.filter(x=>x.day===S.day));
+  $("#recovery").innerHTML=grouped("Recovery Quest","Only unfinished earlier curriculum appears here. Welcome/rules notes from the opening days are excluded.",back.sort((a,b)=>a.day-b.day),true);
+
+  let vr=r.filter(vid).sort((a,b)=>a.day-b.day);
+  $("#videos").innerHTML=`<div class="title"><div><h2>🔮 Required Video Vault</h2><p>A video only counts after the timed video check is completed.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Day</th><th>Subject</th><th>Kid-Friendly Mission</th><th>Status</th><th>Watch</th></tr></thead><tbody>${vr.map(x=>`<tr><td>${x.day}</td><td>${esc(x.subject)}</td><td>${esc(friendlyTitle(x))}</td><td>${st(x.id).watched?"✅ WATCHED":"NOT YET"}</td><td><button class="resource" onclick="launchVideo('${x.id}','${esc(x.resourceUrl)}','${esc(friendlyTitle(x))}')">WATCH ▶</button></td></tr>`).join("")}</tbody></table></div>`;
+
+  let sr=D.standards.filter(x=>x.grade===S.grade);
+  $("#standards").innerHTML=`<div class="title"><div><h2>📚 Standards Codex</h2><p>This is the teacher-facing source map. Students do not need to decode this before lessons.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Subject</th><th>Code</th><th>Standard</th><th>Evidence of Proficiency</th><th>Assessment</th></tr></thead><tbody>${sr.map(x=>`<tr><td>${esc(x.subject)}</td><td>${esc(x.code)}</td><td>${esc(x.standard)}</td><td>${esc(x.proficiency)}</td><td>${esc(x.assessment)}</td></tr>`).join("")}</tbody></table></div>`;
+
+  let mr=D.morphology.filter(x=>x.grade===S.grade),wg={}; mr.forEach(x=>(wg[x.week]??=[]).push(x));
+  $("#morph").innerHTML=`<div class="title"><div><h2>⚒️ Wordsmith Tower</h2><p>Word roots and target words in a cleaner student view.</p></div></div>`+Object.entries(wg).map(([w,l])=>`<div class="group"><div class="grouphead"><h3>Week ${w} • ${esc(l[0].root)}</h3></div><div class="wordgrid">${l.map(x=>`<div class="frame word"><small>ROOT: ${esc(x.root)}</small><b>${esc(x.word)}</b><p>${esc(x.morphological||x.orthographic||"Learn how this word is built and what its parts mean.")}</p><p><strong>Your task:</strong> ${esc(x.application||"Use the word correctly in a complete sentence.")}</p></div>`).join("")}</div></div>`).join("");
+
+  let miss=due.filter(x=>!st(x.id).verified);
+  $("#audit").innerHTML=`<div class="title"><div><h2>🛡️ Curriculum Compliance Shield</h2><p>${isTeacher?"Teacher verification view.":"Students can see what remains, but they cannot verify their own work."}</p></div></div><div class="frame audit ${miss.length?"bad":"good"}"><h3>${miss.length} missions not teacher-verified</h3><p>${miss.length?"Recovery Quest shows the exact unfinished curriculum.":"Everything due is teacher-verified."}</p></div><div class="frame audit ${mv.length?"bad":"good"}"><h3>${mv.length} required videos still need a completed video check</h3><p>${mv.length?"Opening a link alone no longer counts as watched.":"All due video checks are complete."}</p></div>`;
+}
+$("#grade").onchange=e=>{if(currentStudent&&!isTeacher){e.target.value=S.grade;return}S.grade=e.target.value;save();render()};
+$("#day").onchange=e=>{if(!isTeacher){e.target.value=S.day;return}S.day=Math.max(1,Math.min(40,+e.target.value||1));save();render()};
+$$(".tabs button").forEach(b=>b.onclick=()=>{$$(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");$$(".panel").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.tab).classList.add("active")});
+render();
+</script>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {getFirestore,doc,getDoc} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+const firebaseConfig={"apiKey":"AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE","authDomain":"dragonswood-9289e.firebaseapp.com","projectId":"dragonswood-9289e","storageBucket":"dragonswood-9289e.firebasestorage.app","messagingSenderId":"1064477064695","appId":"1:1064477064695:web:283e1016ee2303d39042f2","measurementId":"G-LPRLDGVBD2"};
+const TEACHER="jacobicusjax@gmail.com";
+const app=initializeApp(firebaseConfig,"DragonswoodCurriculumQuest");
+const auth=getAuth(app),db=getFirestore(app);
+onAuthStateChanged(auth,async u=>{
+  currentStudent=u||null;
+  isTeacher=!!u && String(u.email||"").toLowerCase()===TEACHER.toLowerCase();
+  document.getElementById("teacherBadge").style.display=isTeacher?"inline-block":"none";
+  if(u){
+    document.getElementById("studentIdentity").textContent=isTeacher?"Teacher account":(u.displayName||u.email||"Student");
+    if(!isTeacher){
+      try{
+        const snap=await getDoc(doc(db,"students",u.uid));
+        if(snap.exists()){
+          const g=String(snap.data().grade||"");
+          if(g==="4") S.grade="I";
+          if(g==="5") S.grade="K";
+          save();
+          document.getElementById("grade").disabled=true;
+        }
+      }catch(e){console.warn("Could not load grade profile",e)}
+      document.getElementById("day").disabled=true;
+    }
+  }else{
+    document.getElementById("studentIdentity").textContent="Open from your signed-in Dragonswood portal";
+    document.getElementById("grade").disabled=false;
+  }
+  render();
+});
 </script></body></html>

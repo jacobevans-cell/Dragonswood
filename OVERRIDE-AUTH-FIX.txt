@@ -1,0 +1,22 @@
+DRAGONSWOOD CURRICULUM OVERRIDE AUTH FIX
+
+What was wrong:
+- index.html signs students into Firebase using the DEFAULT app.
+- curriculum-quest.html was creating a separate named Firebase app:
+  "DragonswoodCurriculumQuest".
+- Firebase Auth persistence is app-name scoped, so Curriculum Quest did not see
+  the student's existing portal login.
+- The UI also marked TEACHER REVIEW REQUESTED before Firestore confirmed the
+  request, making a failed request look successful.
+
+Fixed:
+- Curriculum Quest now uses the DEFAULT Firebase app and shares the portal login.
+- A request only changes to TEACHER REVIEW REQUESTED after Firestore confirms it.
+- Failed requests stay unrequested and show a clear error.
+- Teacher queue fix from the prior package is preserved.
+- Removed an accidental duplicate </script> closing tag.
+
+Deploy:
+- Replace curriculum-quest.html.
+- Keep the previously fixed teacher.html.
+- No Firestore rule changes are required if the override rules are already deployed.

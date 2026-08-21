@@ -47,7 +47,7 @@ main{padding:20px 0 35px}.hero{padding:22px;display:grid;grid-template-columns:1
 <body>
 <header class="top"><div class="shell topin"><div class="brand"><div class="shield">🐉</div><div><h1>DRAGONSWOOD</h1><p>CURRICULUM QUEST • EXPLORE ACADEMY</p></div></div>
 <div class="controls">
-      <span id="studentIdentity" style="color:#c7c1d5;font-weight:900;font-size:12px">Checking your Dragonswood profile…</span>
+      <span id="authStatus" style="font-size:11px;color:#bfb5ce;margin-right:8px">Checking sign-in…</span><span id="studentIdentity" style="color:#c7c1d5;font-weight:900;font-size:12px">Checking your Dragonswood profile…</span>
       <select id="grade"><option value="I">I • 4th Grade</option><option value="K">K • 5th Grade</option></select>
       <label>Day <input id="day" type="number" min="1" max="40" value="14" style="width:62px"></label>
       <span id="teacherBadge" class="btn" style="display:none">🛡️ TEACHER VERIFIED</span>
@@ -258,9 +258,17 @@ function checkActivity(id){
 async function requestOverride(id){
   const x=findItem(id);if(!x)return;const answer=activityAnswerText(x).trim();
   if(answer.length<3){alert("Enter your answer first so your teacher can review what Dragonswood rejected.");return}
-  const s=st(id);s.lastActivityAttempt=answer;s.overrideStatus="pending";S.items[id]=s;save();render();
-  if(window.submitCurriculumOverride)await window.submitCurriculumOverride(x,answer,s.activityAttempts||1);
-  else alert("Your request is saved on this device, but the school connection is not ready yet.");
+  const s=st(id);s.lastActivityAttempt=answer;S.items[id]=s;save();
+  if(!window.submitCurriculumOverride){
+    alert("Teacher review is not connected yet. Your answer is saved, but no request was sent.");
+    return;
+  }
+  const ok=await window.submitCurriculumOverride(x,answer,s.activityAttempts||1);
+  if(ok){
+    s.overrideStatus="pending";S.items[id]=s;save();render();
+  }else{
+    s.overrideStatus="";S.items[id]=s;save();render();
+  }
 }
 function card(x){const s=st(x.id),hasVideo=vid(x),readyVideo=mediaReady(x),pendingVideo=mediaPending(x),canPractice=!hasVideo||s.watched||pendingVideo,task=activityFor(x),m=mediaFor(x);return `<article class="frame quest ${x.resourceUrl?"link":""} ${s.verified?"done":""}"><div class="meta"><span class="tag">${esc(x.subject)}</span><span class="tag">${esc(x.strand)}</span>${hasVideo?'<span class="tag video">REQUIRED VIDEO</span>':""}${pendingVideo?'<span class="tag" style="background:#5a3b12;color:#ffe8a0">SOURCE PENDING</span>':""}${s.verified?'<span class="tag complete">TEACHER VERIFIED</span>':""}</div><h4>${esc(friendlyTitle(x))}</h4><p class="kid-task">${esc(kidIntro(x))}</p><div class="step"><strong>1. ${hasVideo?"Watch the lesson":"Learn the lesson"}</strong><br>${pendingVideo?"⏳ This video is temporarily waiting on school access. You are not behind. Complete the activity now; the video will appear here when access is restored.":hasVideo?(s.watched?"✅ Video check complete.":"Watch the lesson here. Skipping ahead does not count as viewing."):"Complete the lesson resource your teacher gives you."}<div class="actions">${readyVideo?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">${s.watched?"REWATCH VIDEO":"WATCH REQUIRED VIDEO"} ▶</button>`:""}${pendingVideo?'<button class="stage locked" disabled>VIDEO ACCESS PENDING</button>':""}${hasVideo&&!pendingVideo?`<button class="stage ${s.watched?"on":"locked"}" disabled>${s.watched?"✓ WATCHED":"WATCH"}</button>`:""}</div></div><div class="step"><strong>2. Do the Quest</strong>${canPractice?renderActivity(x):'<p class="kid-task">Finish the required video first to unlock this activity.</p>'}</div><div class="step"><strong>3. Teacher Check</strong><br>${pendingVideo?(s.practiced?"Activity is ready. Final curriculum verification waits for the restored video.":"Complete the activity while the video source is being restored."):s.verified?"✅ Your teacher verified this quest.":(s.watched&&s.practiced?"Your work is ready for your teacher to check.":"Finish Steps 1 and 2 first.")}${isTeacher&&!pendingVideo?`<div class="actions"><button class="stage verify ${(s.watched&&s.practiced)?"":"locked"}" ${(s.watched&&s.practiced)?"":"disabled"} onclick="teacherVerify('${x.id}')">${s.verified?"UNVERIFY":"TEACHER VERIFY"}</button></div>`:""}</div>${isTeacher?`<details class="source-details"><summary>Teacher/source details</summary><p>${esc(x.requirement)}</p><p>${x.resourceName?esc(x.resourceName):""}</p>${m?`<p>Media status: ${esc(m.status)}</p>`:""}</details>`:""}</article>`}
 function grouped(title,desc,a,byDay=false){if(!a.length)return `<div class="frame empty">Nothing waiting here.</div>`;let g={};a.forEach(x=>(g[byDay?x.day:x.subject]??=[]).push(x));return `<div class="title"><div><h2>${title}</h2><p>${desc}</p></div></div>`+Object.entries(g).map(([n,l])=>`<div class="group"><div class="grouphead"><h3>${byDay?"Original Day "+n:n}</h3><small>${l.length} missions</small></div><div class="grid">${l.map(card).join("")}</div></div>`).join("")}
@@ -270,17 +278,20 @@ let sr=D.standards.filter(x=>x.grade===S.grade);$("#standards").innerHTML=`<div 
 let mr=D.morphology.filter(x=>x.grade===S.grade),wg={};mr.forEach(x=>(wg[x.week]??=[]).push(x));$("#morph").innerHTML=`<div class="title"><div><h2>⚒️ Wordsmith Tower</h2><p>Word roots and target words.</p></div></div>`+Object.entries(wg).map(([w,l])=>`<div class="group"><div class="grouphead"><h3>Week ${w} • ${esc(l[0].root)}</h3></div><div class="wordgrid">${l.map(x=>`<div class="frame word"><small>ROOT: ${esc(x.root)}</small><b>${esc(x.word)}</b><p>${esc(x.morphological||x.orthographic||"Learn how this word is built and what its parts mean.")}</p><p><strong>Your task:</strong> ${esc(x.application||"Use the word correctly in a complete sentence.")}</p></div>`).join("")}</div></div>`).join("");
 let miss=due.filter(x=>!st(x.id).verified&&!mediaPending(x));$("#audit").innerHTML=`<div class="title"><div><h2>🛡️ Curriculum Compliance Shield</h2><p>${isTeacher?"Teacher verification view.":"Students can see what remains, but cannot verify their own work."}</p></div></div><div class="frame audit ${miss.length?"bad":"good"}"><h3>${miss.length} missions not teacher-verified</h3><p>${miss.length?"Recovery Quest shows the unfinished available curriculum.":"Everything currently available and due is teacher-verified."}</p></div><div class="frame audit ${mv.length?"bad":"good"}"><h3>${mv.length} available required videos still need a completed video check</h3></div><div class="frame audit ${pendingSources.length?"bad":"good"}"><h3>${pendingSources.length} curriculum video sources awaiting school access</h3><p>${pendingSources.length?"These are held separately and do not count as student recovery failures. Activities can continue now.":"No curriculum source videos are pending access."}</p></div>`}
 $("#grade").onchange=e=>{if(currentStudent&&!isTeacher){e.target.value=S.grade;return}S.grade=e.target.value;save();render()};$("#day").onchange=e=>{if(!isTeacher){e.target.value=S.day;return}S.day=Math.max(1,Math.min(40,+e.target.value||1));save();render()};$$(".tabs button").forEach(b=>b.onclick=()=>{$$(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");$$(".panel").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.tab).classList.add("active")});render();
-</script></script>
+</script>
 <script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import {initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {getFirestore,doc,getDoc,addDoc,collection,serverTimestamp,onSnapshot,query,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 const firebaseConfig={"apiKey":"AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE","authDomain":"dragonswood-9289e.firebaseapp.com","projectId":"dragonswood-9289e","storageBucket":"dragonswood-9289e.firebasestorage.app","messagingSenderId":"1064477064695","appId":"1:1064477064695:web:283e1016ee2303d39042f2","measurementId":"G-LPRLDGVBD2"};
 const TEACHER="jacobicusjax@gmail.com";
-const app=initializeApp(firebaseConfig,"DragonswoodCurriculumQuest");
+const app=getApps().length?getApp():initializeApp(firebaseConfig);
 const auth=getAuth(app),db=getFirestore(app);
 window.submitCurriculumOverride=async (item,answer,attempts)=>{
-  if(!auth.currentUser){alert("Open Curriculum Quest from your signed-in Dragonswood portal.");return}
+  if(!auth.currentUser){
+    alert("You are not signed in to Dragonswood on this page. Return to the Dragonswood portal, sign in, and open Curriculum Quest again.");
+    return false;
+  }
   try{
     await addDoc(collection(db,"curriculumOverrideRequests"),{
       studentId:auth.currentUser.uid,
@@ -291,9 +302,11 @@ window.submitCurriculumOverride=async (item,answer,attempts)=>{
       studentAnswer:answer,attempts:Number(attempts||1),status:"pending",
       requestedAt:serverTimestamp(),updatedAt:serverTimestamp()
     });
+    return true;
   }catch(e){
     console.error("override request",e);
-    alert("Your teacher-review request could not reach Firestore. Your answer is still saved on this device. Error: "+(e.code||e.message));
+    alert("Teacher review was NOT sent. Your answer is still saved. Error: "+(e.code||e.message));
+    return false;
   }
 };
 let overrideUnsub=null;

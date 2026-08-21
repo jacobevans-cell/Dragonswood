@@ -1,0 +1,18 @@
+DRAGONSWOOD Q1 — INTERACTIVE ACTIVITY + TEACHER OVERRIDE UPGRADE
+
+Changed:
+- Replaced the generic 'type something and submit' activity with lesson-aware activity types.
+- Added strong anti-garbage local validation: repeated filler such as 'Hey. Hey. Hey. Hey.' no longer passes.
+- Morphology: target-word selection + correct contextual sentence.
+- Reading: evidence/inference/point-of-view response checks.
+- Writing: sentence construction checks for FANBOYS, commas, capitalization, opinion writing, etc.
+- Math: deterministic auto-graded numeric/concept missions for common Q1 topics; other math tasks require reasoning.
+- Science: evidence/cause-and-effect response validation.
+- Every activity includes REQUEST TEACHER REVIEW as a safety valve.
+- Student override requests are stored in Firestore.
+- Teacher portal now has a Teacher Override Requests queue with Approve and Send Back.
+- An approved override automatically marks the activity complete for that student's Curriculum Quest.
+- Video accountability remains unchanged.
+
+IMPORTANT DEPLOYMENT:
+This build changes firestore.rules. Deploy the updated rules with the code, otherwise student override requests will be blocked by Firestore security.

@@ -939,6 +939,16 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   </div>
 </div>
 <div class="panel" id="data"><div class="frame bevel command-title"><h2>📊 ACADEMIC GAME DATA</h2><p>Private game results for instructional use.</p></div><div class="card" style="overflow:auto"><table><thead><tr><th>Player</th><th>Game</th><th>Score</th><th>Accuracy</th><th>Details</th><th>Time</th></tr></thead><tbody id="results"></tbody></table></div></div>
+
+<section class="card teacher-queue" id="curriculumOverrideQueue">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+    <div><div class="eyebrow">CURRICULUM QUEST</div><h2 style="margin:4px 0">🛡️ Teacher Override Requests</h2></div>
+    <span class="pill" id="overrideQueueCount">0 waiting</span>
+  </div>
+  <p class="muted">Students use this only when they believe a correct response was rejected by the automatic activity checker.</p>
+  <div id="overrideQueueList"><div class="muted">Loading override requests…</div></div>
+</section>
+
 </section></main>
 <div class="modal hidden" id="rewardModal"><div class="modalbox card"><h3 id="rewardModalTitle">Add Reward</h3><input id="rid" type="hidden"/><div class="field"><label>Name</label><input id="rname"/></div><div class="field"><label>Points Required</label><input id="rpoints" type="number"/></div><div class="field"><label>Icon</label><input id="ricon" value="🎁"/></div><div class="field"><label>Description</label><textarea id="rdesc"></textarea></div><div class="actions"><button id="saveReward">SAVE REWARD</button><button id="cancelReward">Cancel</button></div></div></div>
 <div class="modal hidden" id="studentModal"><div class="modalbox card"><h3>Manage Student</h3><input id="sid" type="hidden"/><div class="field"><label>First Name</label><input id="sname"/></div><div class="field"><label>Grade</label><select id="sgrade"><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div><div class="field"><label>Daily Quest Track</label><select id="squesttrack"><option value="auto">Auto by Grade</option><option value="4">Force 4th Grade</option><option value="5">Force 5th Grade</option><option value="challenge">⭐ Challenge (Early–Mid 6th)</option></select></div><div class="field"><label>Group</label><select id="sgroup"><option value="girl">Girls</option><option value="boy">Boys</option></select></div><div class="field"><label>Title ID</label><input id="stitle"/></div><div class="field"><label>Avatar ID</label><input id="savatar"/></div><div class="groupbox"><div class="field"><label>HP</label><input id="shp" type="number"/></div><div class="field"><label>Gold</label><input id="sgold" type="number"/></div><div class="field"><label>XP</label><input id="sxp" type="number"/></div><div class="field"><label>Reason</label><input id="sreason"/></div></div><div class="student-gear-admin">
@@ -2782,4 +2792,39 @@ $("twLaunch")?.addEventListener("click",async()=>{
 $("twClose")?.addEventListener("click",async()=>{$("twLaunchStatus").textContent="Closing mission…";if(twActive?.id)await setDoc(doc(db,"writingSessions",twActive.id),{status:"closed",closedAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});await setDoc(doc(db,"classData","activeWritingSession"),{status:"closed",sessionId:"",closedAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:false});$("twLaunchStatus").textContent="Mission closed.";});
 onAuthStateChanged(auth,u=>{twUser=u||null;if(u)watchWriting()});
 </script>
+
+<script type="module">
+import {initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {getFirestore,collection,onSnapshot,doc,updateDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+const cqCfg={"apiKey":"AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE","authDomain":"dragonswood-9289e.firebaseapp.com","projectId":"dragonswood-9289e","storageBucket":"dragonswood-9289e.firebasestorage.app","messagingSenderId":"1064477064695","appId":"1:1064477064695:web:283e1016ee2303d39042f2"};
+const cqApp=getApps().length?getApp():initializeApp(cqCfg),cqAuth=getAuth(cqApp),cqDb=getFirestore(cqApp);
+const qEsc=(x="")=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+let cqReq=[];
+function renderCQOverrides(){
+ const box=document.getElementById("overrideQueueList"),count=document.getElementById("overrideQueueCount");if(!box||!count)return;
+ const pending=cqReq.filter(x=>x.status==="pending").sort((a,b)=>(a.requestedAt?.seconds||0)-(b.requestedAt?.seconds||0));
+ count.textContent=`${pending.length} waiting`;
+ if(!pending.length){box.innerHTML='<div class="muted">No curriculum overrides are waiting. Miraculously peaceful.</div>';return}
+ box.innerHTML=pending.map(r=>`<div class="card" style="margin:9px 0;border-color:#6e4b91">
+   <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><b>${qEsc(r.studentName||"Student")}</b><span class="pill">${qEsc(r.grade||"")} • Day ${qEsc(r.day||"—")} • ${qEsc(r.subject||"")}</span></div>
+   <h3 style="margin:8px 0 4px">${qEsc(r.lessonTitle||r.sourceTitle||r.lessonId)}</h3>
+   <div class="muted">Automatic attempts: ${Number(r.attempts||1)}</div>
+   <div style="margin:8px 0;padding:10px;border:1px solid #3e2d51;border-radius:8px;background:#090615;white-space:pre-wrap">${qEsc(r.studentAnswer||"")}</div>
+   <div style="display:flex;gap:8px;flex-wrap:wrap">
+     <button onclick="window.resolveCQOverride('${r.id}','approved')">✅ APPROVE OVERRIDE</button>
+     <button class="danger-soft" onclick="window.resolveCQOverride('${r.id}','returned')">↩ SEND BACK</button>
+   </div>
+ </div>`).join("");
+}
+window.resolveCQOverride=async(id,status)=>{
+ const note=status==="returned"?(prompt("Optional note for the student:")||"Please revise your answer and try again."):"Approved by teacher.";
+ await updateDoc(doc(cqDb,"curriculumOverrideRequests",id),{status,teacherNote:note,resolvedAt:serverTimestamp(),updatedAt:serverTimestamp()});
+};
+onAuthStateChanged(cqAuth,u=>{
+ if(!u||String(u.email||"").toLowerCase()!=="jacobicusjax@gmail.com")return;
+ onSnapshot(collection(cqDb,"curriculumOverrideRequests"),s=>{cqReq=s.docs.map(d=>({id:d.id,...d.data()}));renderCQOverrides()},e=>console.warn("curriculum override queue",e));
+});
+</script>
+
 </body></html>

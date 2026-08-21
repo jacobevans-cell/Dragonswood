@@ -115,6 +115,23 @@ service cloud.firestore {
       allow update, delete: if isTeacher();
     }
 
+
+    // Curriculum activity validator safety valve.
+    // Students can request review of their own rejected work; only the teacher can resolve requests.
+    match /curriculumOverrideRequests/{requestId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+
+      allow create: if isExploreStudent()
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.status == "pending"
+                    && request.resource.data.lessonId is string
+                    && request.resource.data.studentAnswer is string
+                    && request.resource.data.studentAnswer.size() <= 5000;
+
+      allow update, delete: if isTeacher();
+    }
+
     match /leaderboardProfiles/{studentId} {
       allow read: if isSignedIn();
       allow create, update, delete: if isTeacher();

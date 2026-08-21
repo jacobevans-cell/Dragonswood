@@ -26,6 +26,23 @@ main{padding:20px 0 35px}.hero{padding:22px;display:grid;grid-template-columns:1
 .timer{font-weight:900;color:var(--cyan);margin:8px 0}.locked{opacity:.48;cursor:not-allowed!important}.step{margin-top:10px;padding:10px;border-radius:8px;background:#0f0a20;border:1px solid #322247}
 .step strong{color:var(--gold2)}.practice-box{margin-top:11px;padding:12px;background:#100b25;border:1px solid rgba(2,204,254,.25);border-radius:8px}
 .kid-task{font-size:14px!important;line-height:1.55!important;color:#eee8f8!important}.source-details{margin-top:10px;color:#aaa2b8;font-size:11px}.source-details summary{cursor:pointer;color:#bba9d9;font-weight:900}
+
+.activity-shell{margin-top:12px;padding:14px;background:#090616;border:1px solid rgba(2,204,254,.28);border-radius:9px}
+.activity-title{font-family:Georgia,serif;color:var(--gold2);font-weight:900;margin-bottom:5px}
+.activity-prompt{color:#efe9f7;line-height:1.5;margin:7px 0 10px}
+.activity-options{display:grid;gap:7px;margin:9px 0}
+.activity-option{display:flex;gap:9px;align-items:flex-start;padding:10px;border:1px solid #45305e;border-radius:8px;background:#100b21}
+.activity-option input{margin-top:2px}
+.activity-input{width:100%;min-height:86px;background:#050411;color:#fff;border:1px solid #493263;border-radius:7px;padding:10px;resize:vertical}
+.activity-line{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}
+.activity-line input[type="text"],.activity-line input[type="number"],.activity-line select{background:#050411;color:#fff;border:1px solid #493263;border-radius:7px;padding:9px}
+.activity-feedback{margin-top:9px;padding:10px;border-radius:7px;display:none;font-weight:800;line-height:1.4}
+.activity-feedback.show{display:block}.activity-feedback.good{background:#103b2b;color:#a9f4ca;border:1px solid #2c7d58}.activity-feedback.bad{background:#3a1320;color:#ffd0d9;border:1px solid #8e3d54}
+.override-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px dashed #3d2b54}
+.override-btn{background:#3a284d;color:#f4e8ff;border:1px solid #775998;border-radius:7px;padding:8px 10px;font-weight:900}
+.override-btn.pending{background:#624b18;color:#ffeca8}.override-btn.approved{background:#18583f;color:#bff7d7}
+.override-note{font-size:11px;color:#bfb5ce;flex:1}
+.teacher-queue{margin-top:18px}.override-card{padding:12px;margin:8px 0}.override-card .answer{background:#050411;border:1px solid #36274c;padding:9px;border-radius:7px;white-space:pre-wrap;margin:7px 0;color:#f2edf8}
 </style></head>
 <body>
 <header class="top"><div class="shell topin"><div class="brand"><div class="shield">🐉</div><div><h1>DRAGONSWOOD</h1><p>CURRICULUM QUEST • EXPLORE ACADEMY</p></div></div>
@@ -97,7 +114,155 @@ function updateVideoTimer(){if(!activeVideoId)return;const v=$("#nativeVideo"),f
 $("#finishVideoBtn").onclick=()=>{if(!activeVideoId)return;const v=$("#nativeVideo"),answer=$("#videoReflection").value.trim();if(watchedFraction(v)<WATCH_REQUIRED_FRACTION||answer.length<15)return;const s=st(activeVideoId);s.watched=true;s.videoReflection=answer;s.videoCoverage=Math.round(watchedFraction(v)*100);S.items[activeVideoId]=s;save();closeVideo();render()};
 function closeVideo(){activeVideoId=null;watchedRanges=[];const v=$("#nativeVideo");v.pause();v.removeAttribute("src");v.load();$("#videoModal").classList.remove("show");$("#videoModal").setAttribute("aria-hidden","true")}
 $("#closeVideoModal").onclick=closeVideo;
-function card(x){const s=st(x.id),hasVideo=vid(x),readyVideo=mediaReady(x),pendingVideo=mediaPending(x),canPractice=!hasVideo||s.watched||pendingVideo,task=activityFor(x),m=mediaFor(x);return `<article class="frame quest ${x.resourceUrl?"link":""} ${s.verified?"done":""}"><div class="meta"><span class="tag">${esc(x.subject)}</span><span class="tag">${esc(x.strand)}</span>${hasVideo?'<span class="tag video">REQUIRED VIDEO</span>':""}${pendingVideo?'<span class="tag" style="background:#5a3b12;color:#ffe8a0">SOURCE PENDING</span>':""}${s.verified?'<span class="tag complete">TEACHER VERIFIED</span>':""}</div><h4>${esc(friendlyTitle(x))}</h4><p class="kid-task">${esc(kidIntro(x))}</p><div class="step"><strong>1. ${hasVideo?"Watch the lesson":"Learn the lesson"}</strong><br>${pendingVideo?"⏳ This video is temporarily waiting on school access. You are not behind. Complete the activity now; the video will appear here when access is restored.":hasVideo?(s.watched?"✅ Video check complete.":"Watch the lesson here. Skipping ahead does not count as viewing."):"Complete the lesson resource your teacher gives you."}<div class="actions">${readyVideo?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">${s.watched?"REWATCH VIDEO":"WATCH REQUIRED VIDEO"} ▶</button>`:""}${pendingVideo?'<button class="stage locked" disabled>VIDEO ACCESS PENDING</button>':""}${hasVideo&&!pendingVideo?`<button class="stage ${s.watched?"on":"locked"}" disabled>${s.watched?"✓ WATCHED":"WATCH"}</button>`:""}</div></div><div class="step"><strong>2. Do the Quest</strong><p class="kid-task">${esc(task)}</p><div class="actions"><button class="stage ${s.practiced?"on":""} ${canPractice?"":"locked"}" ${canPractice?"":"disabled"} onclick="togglePractice('${x.id}')">${s.practiced?"✓ ACTIVITY SUBMITTED":"DO ACTIVITY"}</button></div><div class="practice-box" id="practice-${x.id}" ${s.practiced?"":"hidden"}><label><strong>Show your work:</strong> Type your answer, example, or what you completed.</label><textarea id="practiceText-${x.id}" placeholder="Write a complete sentence or example here…">${esc(s.practiceEvidence||"")}</textarea>${!s.practiced?`<button class="btn" onclick="submitPractice('${x.id}')">SUBMIT ACTIVITY</button>`:"<p>✅ Activity evidence saved.</p>"}</div></div><div class="step"><strong>3. Teacher Check</strong><br>${pendingVideo?(s.practiced?"Activity is ready. Final curriculum verification waits for the restored video.":"Complete the activity while the video source is being restored."):s.verified?"✅ Your teacher verified this quest.":(s.watched&&s.practiced?"Your work is ready for your teacher to check.":"Finish Steps 1 and 2 first.")}${isTeacher&&!pendingVideo?`<div class="actions"><button class="stage verify ${(s.watched&&s.practiced)?"":"locked"}" ${(s.watched&&s.practiced)?"":"disabled"} onclick="teacherVerify('${x.id}')">${s.verified?"UNVERIFY":"TEACHER VERIFY"}</button></div>`:""}</div>${isTeacher?`<details class="source-details"><summary>Teacher/source details</summary><p>${esc(x.requirement)}</p><p>${x.resourceName?esc(x.resourceName):""}</p>${m?`<p>Media status: ${esc(m.status)}</p>`:""}</details>`:""}</article>`}
+
+function hashNum(s){let h=2166136261;for(const c of String(s)){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return Math.abs(h>>>0)}
+function meaningfulText(v,minWords=6){
+  const raw=String(v||"").trim();
+  if(raw.length<20)return {ok:false,msg:"Write a fuller answer. One complete thought is needed."};
+  const words=(raw.toLowerCase().match(/[a-z']+/g)||[]).filter(w=>w.length>1);
+  if(words.length<minWords)return {ok:false,msg:`Use at least ${minWords} meaningful words.`};
+  const unique=new Set(words);
+  if(unique.size<Math.max(4,Math.ceil(words.length*.5)))return {ok:false,msg:"Your answer repeats too much. Explain the idea in your own words."};
+  const counts={};for(const w of words)counts[w]=(counts[w]||0)+1;
+  if(Math.max(...Object.values(counts))>Math.max(3,Math.ceil(words.length*.35)))return {ok:false,msg:"One word is being repeated too often. Give a real explanation."};
+  if(/^(hey|hi|hello|asdf|blah|idk|test|yes|no)([\s.!?,]+\1)*$/i.test(raw))return {ok:false,msg:"That does not answer the lesson question."};
+  if(/(?:\bhey\b[\s.!]*){3,}/i.test(raw)||/(.)\1{5,}/.test(raw))return {ok:false,msg:"Repeated filler does not count as an answer."};
+  return {ok:true,msg:""};
+}
+function lessonWords(x){
+  const stop=new Set(["lesson","video","class","grade","day","practice","review","student","students","q1","stem","hum","what","with","from","this","that","then","your","into","about"]);
+  return (((x.resourceName||"")+" "+(x.requirement||"")).toLowerCase().match(/[a-z]{4,}/g)||[]).filter(w=>!stop.has(w));
+}
+function activitySpec(x){
+  const raw=((x.resourceName||"")+" "+(x.requirement||"")+" "+(x.strand||"")).toLowerCase();
+  const h=hashNum(x.id);
+  const m=morphFor(x);
+
+  if(m){
+    const pool=D.morphology.filter(z=>z.grade===x.grade&&z.word&&z.word!==m.word).map(z=>z.word);
+    const distract=[...new Set([pool[h%Math.max(1,pool.length)],pool[(h+7)%Math.max(1,pool.length)],pool[(h+13)%Math.max(1,pool.length)]].filter(Boolean))];
+    return {kind:"morph",title:`Word Forge: ${m.word}`,prompt:`Build meaning with the target word “${m.word}.” Choose the target word, then use it correctly in your own sentence.`,word:m.word,root:m.root,options:[m.word,...distract].sort((a,b)=>hashNum(a+x.id)-hashNum(b+x.id))};
+  }
+  if(x.subject==="Math"){
+    if(/round/.test(raw)){
+      const nearest=/1000/.test(raw)?1000:/100/.test(raw)?100:10;
+      const n=(h%7000)+1234, ans=Math.round(n/nearest)*nearest;
+      return {kind:"number",title:"Math Mission",prompt:`Round ${n.toLocaleString()} to the nearest ${nearest.toLocaleString()}.`,answer:String(ans)};
+    }
+    if(/subtract/.test(raw)){
+      const b=(h%480)+120,a=b+(h%700)+250;
+      return {kind:"number",title:"Math Mission",prompt:`Solve: ${a.toLocaleString()} − ${b.toLocaleString()} = ?`,answer:String(a-b)};
+    }
+    if(/add|addition/.test(raw)){
+      const a=(h%1400)+620,b=((h>>4)%1300)+480;
+      return {kind:"number",title:"Math Mission",prompt:`Solve: ${a.toLocaleString()} + ${b.toLocaleString()} = ?`,answer:String(a+b)};
+    }
+    if(/division|divide/.test(raw)){
+      const d=(h%8)+2,q=((h>>3)%30)+6;
+      return {kind:"number",title:"Math Mission",prompt:`Solve: ${d*q} ÷ ${d} = ?`,answer:String(q)};
+    }
+    if(/decimal.*pattern|decimal/.test(raw)){
+      const a=((h%80)+10)/10,b=a+0.1;
+      return {kind:"number",title:"Decimal Mission",prompt:`Complete the pattern: ${a.toFixed(1)}, ${b.toFixed(1)}, ___`,answer:(b+.1).toFixed(1)};
+    }
+    if(/parallel|perpendicular/.test(raw)){
+      const correct=/parallel/.test(raw)?"Parallel":"Perpendicular";
+      return {kind:"mc",title:"Geometry Mission",prompt:`Which type of lines is today's lesson focused on?`,options:["Parallel","Perpendicular","Curved","Intersecting only"],answer:correct};
+    }
+    return {kind:"explain",title:"Math Reasoning Mission",prompt:`Solve or explain the math task for today: ${activityFor(x)}`,keywords:lessonWords(x).slice(0,5),minWords:7};
+  }
+  if(x.subject==="Science"){
+    return {kind:"explain",title:"Science Evidence Mission",prompt:`Use evidence or a cause-and-effect idea to answer: ${activityFor(x)}`,keywords:lessonWords(x).slice(0,7),minWords:8,science:true};
+  }
+  if(x.strand==="Reading"){
+    if(/point of view|first or third/.test(raw))return {kind:"readingPov",title:"Evidence Detective",prompt:"Choose the point of view you found in the class text, then prove it with a pronoun or clue from the text.",options:["First person","Third person"]};
+    if(/infer|inference|between the lines/.test(raw))return {kind:"explain",title:"Inference Detective",prompt:"State one inference from the text and explain what clue or evidence helped you make it.",keywords:["clue","evidence","because","text"],minWords:9};
+    return {kind:"explain",title:"Reading Evidence Mission",prompt:activityFor(x),keywords:["text","because","evidence","character","story"],minWords:8};
+  }
+  if(x.strand==="Writing"){
+    if(/fanboys|conjunction|compound/.test(raw))return {kind:"fanboys",title:"Sentence Forge",prompt:"Write one compound sentence using a comma and a FANBOYS conjunction (for, and, nor, but, or, yet, so)."};
+    if(/comma.*series|commas in a series/.test(raw))return {kind:"commas",title:"Punctuation Forge",prompt:"Write a sentence that correctly lists at least three items using commas."};
+    if(/capitalization/.test(raw))return {kind:"capital",title:"Editing Forge",prompt:"Write one complete sentence with correct capitalization and ending punctuation."};
+    if(/opinion/.test(raw))return {kind:"opinion",title:"Opinion Forge",prompt:"Write an opinion statement and support it with a reason using because."};
+    return {kind:"explain",title:"Writing Forge",prompt:activityFor(x),keywords:lessonWords(x).slice(0,5),minWords:8};
+  }
+  return {kind:"explain",title:"Quest Check",prompt:activityFor(x),keywords:lessonWords(x).slice(0,5),minWords:7};
+}
+function activityAnswerText(x){
+  const spec=activitySpec(x), id=x.id, choice=document.querySelector(`input[name="act-${CSS.escape(id)}"]:checked`)?.value||"";
+  const written=document.getElementById("actText-"+id)?.value||"";
+  const number=document.getElementById("actNumber-"+id)?.value||"";
+  if(spec.kind==="mc")return choice;
+  if(spec.kind==="number")return number;
+  if(spec.kind==="morph"||spec.kind==="readingPov")return `Choice: ${choice}\nResponse: ${written}`;
+  return written;
+}
+function validateActivity(x){
+  const spec=activitySpec(x),id=x.id,choice=document.querySelector(`input[name="act-${CSS.escape(id)}"]:checked`)?.value||"",written=(document.getElementById("actText-"+id)?.value||"").trim(),number=(document.getElementById("actNumber-"+id)?.value||"").trim();
+  if(spec.kind==="number")return number.replace(/,/g,"")===String(spec.answer).replace(/,/g,"")?{ok:true}:{ok:false,msg:"That number is not correct yet. Check your work and try again."};
+  if(spec.kind==="mc")return choice===spec.answer?{ok:true}:{ok:false,msg:"That choice does not match the lesson target. Try again or request teacher review."};
+  if(spec.kind==="morph"){
+    if(choice!==spec.word)return {ok:false,msg:"Choose the lesson's target word first."};
+    const q=meaningfulText(written,6);if(!q.ok)return q;
+    if(!new RegExp(`\\b${spec.word.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}\\b`,"i").test(written))return {ok:false,msg:`Use the word “${spec.word}” in your own sentence.`};
+    return {ok:true};
+  }
+  if(spec.kind==="readingPov"){
+    if(!choice)return {ok:false,msg:"Choose first person or third person."};
+    const q=meaningfulText(written,8);if(!q.ok)return q;
+    if(!/\b(i|me|my|we|our|he|she|they|his|her|their|pronoun|clue|text|says|shows)\b/i.test(written))return {ok:false,msg:"Include a pronoun or a specific clue from the text as evidence."};
+    return {ok:true};
+  }
+  if(spec.kind==="fanboys"){
+    const q=meaningfulText(written,7);if(!q.ok)return q;
+    if(!/,\s*(for|and|nor|but|or|yet|so)\b/i.test(written))return {ok:false,msg:"Use a comma followed by a FANBOYS conjunction to join the ideas."};
+    return {ok:true};
+  }
+  if(spec.kind==="commas"){
+    const q=meaningfulText(written,6);if(!q.ok)return q;
+    if((written.match(/,/g)||[]).length<2)return {ok:false,msg:"A series of at least three items should show at least two commas."};
+    return {ok:true};
+  }
+  if(spec.kind==="capital"){
+    const q=meaningfulText(written,5);if(!q.ok)return q;
+    if(!/^[A-Z]/.test(written)||!/[.!?]["']?$/.test(written))return {ok:false,msg:"Start with a capital letter and finish with ending punctuation."};
+    return {ok:true};
+  }
+  if(spec.kind==="opinion"){
+    const q=meaningfulText(written,8);if(!q.ok)return q;
+    if(!/\b(because|since|reason|should|think|believe)\b/i.test(written))return {ok:false,msg:"State an opinion and support it with a reason."};
+    return {ok:true};
+  }
+  const q=meaningfulText(written,spec.minWords||7);if(!q.ok)return q;
+  if(spec.science&&!/\b(because|energy|evidence|cause|effect|observe|shows|changes|moves|transfer|collision|design|solution|matter|force|resource)\b/i.test(written))return {ok:false,msg:"Include a science idea, observation, cause/effect, or evidence from the lesson."};
+  return {ok:true};
+}
+function renderActivity(x){
+  const spec=activitySpec(x),s=st(x.id),answer=s.practiceEvidence||"",status=s.overrideStatus||"";
+  let controls="";
+  if(spec.kind==="number")controls=`<div class="activity-line"><input id="actNumber-${x.id}" type="text" inputmode="decimal" placeholder="Enter your answer" value="${esc(answer)}"></div>`;
+  else if(spec.kind==="mc")controls=`<div class="activity-options">${spec.options.map(o=>`<label class="activity-option"><input type="radio" name="act-${x.id}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join("")}</div>`;
+  else if(spec.kind==="morph"||spec.kind==="readingPov"){
+    controls=`<div class="activity-options">${spec.options.map(o=>`<label class="activity-option"><input type="radio" name="act-${x.id}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join("")}</div><textarea class="activity-input" id="actText-${x.id}" placeholder="Write your evidence or example here…">${esc(answer.includes("Response:")?answer.split("Response:").slice(1).join("Response:").trim():answer)}</textarea>`;
+  } else controls=`<textarea class="activity-input" id="actText-${x.id}" placeholder="Write your answer here…">${esc(answer)}</textarea>`;
+  return `<div class="activity-shell"><div class="activity-title">${esc(spec.title)}</div><div class="activity-prompt">${esc(spec.prompt)}</div>${controls}<div class="actions"><button class="btn" onclick="checkActivity('${x.id}')">${s.practiced?"CHECK AGAIN":"CHECK MY WORK"}</button></div><div class="activity-feedback" id="actFeedback-${x.id}"></div><div class="override-row"><button class="override-btn ${status}" id="overrideBtn-${x.id}" onclick="requestOverride('${x.id}')">${status==="pending"?"🟡 TEACHER REVIEW REQUESTED":status==="approved"?"✅ TEACHER OVERRIDE APPROVED":"🛡️ REQUEST TEACHER REVIEW"}</button><span class="override-note">Use this if you believe your answer is correct but Dragonswood will not accept it.</span></div></div>`;
+}
+function findItem(id){return D.items.find(x=>x.id===id)}
+function checkActivity(id){
+  const x=findItem(id);if(!x)return;const f=document.getElementById("actFeedback-"+id),result=validateActivity(x),answer=activityAnswerText(x),s=st(id);
+  s.lastActivityAttempt=answer;s.activityAttempts=(s.activityAttempts||0)+1;S.items[id]=s;save();
+  f.className="activity-feedback show "+(result.ok?"good":"bad");
+  if(result.ok){s.practiced=true;s.practiceEvidence=answer;s.overrideStatus="";S.items[id]=s;save();f.textContent="✓ Quest complete. Your answer passed the lesson check.";render()}
+  else{f.textContent="Not yet: "+result.msg+" Your answer was saved. You can revise it or request teacher review.";document.getElementById("overrideBtn-"+id)?.classList.remove("approved")}
+}
+async function requestOverride(id){
+  const x=findItem(id);if(!x)return;const answer=activityAnswerText(x).trim();
+  if(answer.length<3){alert("Enter your answer first so your teacher can review what Dragonswood rejected.");return}
+  const s=st(id);s.lastActivityAttempt=answer;s.overrideStatus="pending";S.items[id]=s;save();render();
+  if(window.submitCurriculumOverride)await window.submitCurriculumOverride(x,answer,s.activityAttempts||1);
+  else alert("Your request is saved on this device, but the school connection is not ready yet.");
+}
+function card(x){const s=st(x.id),hasVideo=vid(x),readyVideo=mediaReady(x),pendingVideo=mediaPending(x),canPractice=!hasVideo||s.watched||pendingVideo,task=activityFor(x),m=mediaFor(x);return `<article class="frame quest ${x.resourceUrl?"link":""} ${s.verified?"done":""}"><div class="meta"><span class="tag">${esc(x.subject)}</span><span class="tag">${esc(x.strand)}</span>${hasVideo?'<span class="tag video">REQUIRED VIDEO</span>':""}${pendingVideo?'<span class="tag" style="background:#5a3b12;color:#ffe8a0">SOURCE PENDING</span>':""}${s.verified?'<span class="tag complete">TEACHER VERIFIED</span>':""}</div><h4>${esc(friendlyTitle(x))}</h4><p class="kid-task">${esc(kidIntro(x))}</p><div class="step"><strong>1. ${hasVideo?"Watch the lesson":"Learn the lesson"}</strong><br>${pendingVideo?"⏳ This video is temporarily waiting on school access. You are not behind. Complete the activity now; the video will appear here when access is restored.":hasVideo?(s.watched?"✅ Video check complete.":"Watch the lesson here. Skipping ahead does not count as viewing."):"Complete the lesson resource your teacher gives you."}<div class="actions">${readyVideo?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">${s.watched?"REWATCH VIDEO":"WATCH REQUIRED VIDEO"} ▶</button>`:""}${pendingVideo?'<button class="stage locked" disabled>VIDEO ACCESS PENDING</button>':""}${hasVideo&&!pendingVideo?`<button class="stage ${s.watched?"on":"locked"}" disabled>${s.watched?"✓ WATCHED":"WATCH"}</button>`:""}</div></div><div class="step"><strong>2. Do the Quest</strong>${canPractice?renderActivity(x):'<p class="kid-task">Finish the required video first to unlock this activity.</p>'}</div><div class="step"><strong>3. Teacher Check</strong><br>${pendingVideo?(s.practiced?"Activity is ready. Final curriculum verification waits for the restored video.":"Complete the activity while the video source is being restored."):s.verified?"✅ Your teacher verified this quest.":(s.watched&&s.practiced?"Your work is ready for your teacher to check.":"Finish Steps 1 and 2 first.")}${isTeacher&&!pendingVideo?`<div class="actions"><button class="stage verify ${(s.watched&&s.practiced)?"":"locked"}" ${(s.watched&&s.practiced)?"":"disabled"} onclick="teacherVerify('${x.id}')">${s.verified?"UNVERIFY":"TEACHER VERIFY"}</button></div>`:""}</div>${isTeacher?`<details class="source-details"><summary>Teacher/source details</summary><p>${esc(x.requirement)}</p><p>${x.resourceName?esc(x.resourceName):""}</p>${m?`<p>Media status: ${esc(m.status)}</p>`:""}</details>`:""}</article>`}
 function grouped(title,desc,a,byDay=false){if(!a.length)return `<div class="frame empty">Nothing waiting here.</div>`;let g={};a.forEach(x=>(g[byDay?x.day:x.subject]??=[]).push(x));return `<div class="title"><div><h2>${title}</h2><p>${desc}</p></div></div>`+Object.entries(g).map(([n,l])=>`<div class="group"><div class="grouphead"><h3>${byDay?"Original Day "+n:n}</h3><small>${l.length} missions</small></div><div class="grid">${l.map(card).join("")}</div></div>`).join("")}
 function render(){let r=rows(),due=r.filter(x=>x.day<=S.day),pendingSources=due.filter(mediaPending),eligibleDue=due.filter(x=>!mediaPending(x)),eligibleDone=eligibleDue.filter(x=>st(x.id).verified).length,p=eligibleDue.length?Math.round(eligibleDone/eligibleDue.length*100):0,back=r.filter(x=>x.day<S.day&&!st(x.id).verified&&!mediaPending(x)),mv=due.filter(x=>vid(x)&&!mediaPending(x)&&!st(x.id).watched);$("#grade").value=S.grade;$("#day").value=S.day;$("#hero").textContent=`${D.meta.gradeLabels[S.grade]} • Day ${S.day}`;$("#pct").textContent=p+"%";$("#ring").style.background=`conic-gradient(var(--green) ${p*3.6}deg,#241936 0)`;$("#kpis").innerHTML=[[r.filter(x=>x.day===S.day).length,"TODAY'S MISSIONS"],[back.length,"RECOVERY MISSIONS"],[mv.length,"VIDEOS STILL NEEDED"],[pendingSources.length,"SOURCE VIDEOS PENDING"]].map(x=>`<div class="frame kpi"><b>${x[0]}</b><small>${x[1]}</small></div>`).join("");$("#current").innerHTML=grouped(`Day ${S.day} Current Quest`,"Watch first. Do the activity second. Your teacher verifies the mission last.",r.filter(x=>x.day===S.day));$("#recovery").innerHTML=grouped("Recovery Quest","Only unfinished earlier curriculum appears here. Videos awaiting school access are held separately and do not count against students.",back.sort((a,b)=>a.day-b.day),true);
 let vr=r.filter(vid).sort((a,b)=>a.day-b.day);$("#videos").innerHTML=`<div class="title"><div><h2>🔮 Required Video Vault</h2><p>R2 videos play directly inside Dragonswood. Source-pending videos are held until school access returns.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Day</th><th>Subject</th><th>Mission</th><th>Media</th><th>Status</th><th>Watch</th></tr></thead><tbody>${vr.map(x=>{const m=mediaFor(x),pending=mediaPending(x),ready=mediaReady(x);return `<tr><td>${x.day}</td><td>${esc(x.subject)}</td><td>${esc(friendlyTitle(x))}</td><td>${pending?"⏳ SOURCE PENDING":ready?"R2 READY":"SOURCE LINK"}</td><td>${pending?"ON HOLD":st(x.id).watched?"✅ WATCHED":"NOT YET"}</td><td>${ready?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">WATCH ▶</button>`:pending?"Awaiting access":"—"}</td></tr>`}).join("")}</tbody></table></div>`;
@@ -109,16 +274,54 @@ $("#grade").onchange=e=>{if(currentStudent&&!isTeacher){e.target.value=S.grade;r
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import {getFirestore,doc,getDoc} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {getFirestore,doc,getDoc,addDoc,collection,serverTimestamp,onSnapshot,query,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 const firebaseConfig={"apiKey":"AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE","authDomain":"dragonswood-9289e.firebaseapp.com","projectId":"dragonswood-9289e","storageBucket":"dragonswood-9289e.firebasestorage.app","messagingSenderId":"1064477064695","appId":"1:1064477064695:web:283e1016ee2303d39042f2","measurementId":"G-LPRLDGVBD2"};
 const TEACHER="jacobicusjax@gmail.com";
 const app=initializeApp(firebaseConfig,"DragonswoodCurriculumQuest");
 const auth=getAuth(app),db=getFirestore(app);
+window.submitCurriculumOverride=async (item,answer,attempts)=>{
+  if(!auth.currentUser){alert("Open Curriculum Quest from your signed-in Dragonswood portal.");return}
+  try{
+    await addDoc(collection(db,"curriculumOverrideRequests"),{
+      studentId:auth.currentUser.uid,
+      studentName:auth.currentUser.displayName||auth.currentUser.email||"Student",
+      studentEmail:auth.currentUser.email||"",
+      lessonId:item.id,grade:item.grade,day:item.day,subject:item.subject,strand:item.strand||"",
+      lessonTitle:friendlyTitle(item),sourceTitle:item.resourceName||"",
+      studentAnswer:answer,attempts:Number(attempts||1),status:"pending",
+      requestedAt:serverTimestamp(),updatedAt:serverTimestamp()
+    });
+  }catch(e){
+    console.error("override request",e);
+    alert("Your teacher-review request could not reach Firestore. Your answer is still saved on this device. Error: "+(e.code||e.message));
+  }
+};
+let overrideUnsub=null;
+function watchMyOverrides(uid){
+  if(overrideUnsub)overrideUnsub();
+  overrideUnsub=onSnapshot(query(collection(db,"curriculumOverrideRequests"),where("studentId","==",uid)),snap=>{
+    let changed=false;
+    snap.forEach(d=>{
+      const r=d.data(),s=st(r.lessonId);
+      if(r.status==="approved"&&(!s.practiced||s.overrideStatus!=="approved")){
+        s.practiced=true;s.overrideStatus="approved";s.overrideApprovedAt=Date.now();s.practiceEvidence=r.studentAnswer||s.practiceEvidence||"Teacher override approved";
+        S.items[r.lessonId]=s;changed=true;
+      }else if(r.status==="pending"&&s.overrideStatus!=="approved"&&s.overrideStatus!=="pending"){
+        s.overrideStatus="pending";S.items[r.lessonId]=s;changed=true;
+      }else if(r.status==="returned"&&s.overrideStatus==="pending"){
+        s.overrideStatus="returned";S.items[r.lessonId]=s;changed=true;
+      }
+    });
+    if(changed){save();render()}
+  },e=>console.warn("override listener",e));
+}
+
 onAuthStateChanged(auth,async u=>{
   currentStudent=u||null;
   isTeacher=!!u && String(u.email||"").toLowerCase()===TEACHER.toLowerCase();
   document.getElementById("teacherBadge").style.display=isTeacher?"inline-block":"none";
   if(u){
+    watchMyOverrides(u.uid);
     document.getElementById("studentIdentity").textContent=isTeacher?"Teacher account":(u.displayName||u.email||"Student");
     if(!isTeacher){
       try{

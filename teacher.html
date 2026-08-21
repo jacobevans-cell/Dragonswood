@@ -2794,11 +2794,11 @@ onAuthStateChanged(auth,u=>{twUser=u||null;if(u)watchWriting()});
 </script>
 
 <script type="module">
-import {initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import {getApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {getFirestore,collection,onSnapshot,doc,updateDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 const cqCfg={"apiKey":"AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE","authDomain":"dragonswood-9289e.firebaseapp.com","projectId":"dragonswood-9289e","storageBucket":"dragonswood-9289e.firebasestorage.app","messagingSenderId":"1064477064695","appId":"1:1064477064695:web:283e1016ee2303d39042f2"};
-const cqApp=getApps().length?getApp():initializeApp(cqCfg),cqAuth=getAuth(cqApp),cqDb=getFirestore(cqApp);
+const cqApp=getApp("DragonswoodTeacherPortal"),cqAuth=getAuth(cqApp),cqDb=getFirestore(cqApp);
 const qEsc=(x="")=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 let cqReq=[];
 function renderCQOverrides(){
@@ -2823,7 +2823,7 @@ window.resolveCQOverride=async(id,status)=>{
 };
 onAuthStateChanged(cqAuth,u=>{
  if(!u||String(u.email||"").toLowerCase()!=="jacobicusjax@gmail.com")return;
- onSnapshot(collection(cqDb,"curriculumOverrideRequests"),s=>{cqReq=s.docs.map(d=>({id:d.id,...d.data()}));renderCQOverrides()},e=>console.warn("curriculum override queue",e));
+ onSnapshot(collection(cqDb,"curriculumOverrideRequests"),s=>{cqReq=s.docs.map(d=>({id:d.id,...d.data()}));renderCQOverrides()},e=>{console.error("curriculum override queue",e);const box=document.getElementById("overrideQueueList"),count=document.getElementById("overrideQueueCount");if(count)count.textContent="ERROR";if(box)box.innerHTML=`<div class="muted" style="color:#ff9b9b">Could not load override requests: ${qEsc(e.code||e.message||e)}. Check Firestore rules deployment.</div>`;});
 });
 </script>
 

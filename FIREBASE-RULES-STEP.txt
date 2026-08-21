@@ -1,8 +1,0 @@
-DRAGONSWOOD v28 FIREBASE RULES UPDATE
-
-1. Open Firebase Console > Firestore Database > Rules.
-2. Replace the entire rules editor with the contents of firestore.rules from this package.
-3. Click Publish.
-4. Then upload the HTML files to GitHub.
-
-New collections: bathroomStatus, bathroomRequests, pointRequests.

@@ -95,6 +95,7 @@ S.grade=S.grade||"I"; S.day=S.day||14; S.items=S.items||{};
 const $=x=>document.querySelector(x), $$=x=>[...document.querySelectorAll(x)];
 const esc=(x="")=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 let isTeacher=false,currentStudent=null,activeVideoId=null,watchedRanges=[],lastVideoTime=0;
+let studentCurriculumAccess=false,accessMessage="Checking today's school-day assignment…";
 const WATCH_REQUIRED_FRACTION=.90;
 function save(){localStorage.setItem(K,JSON.stringify(S));if(window.queueCurriculumProgress)window.queueCurriculumProgress(S)}
 function st(id){return S.items[id]||{watched:false,practiced:false,verified:false,videoReflection:"",practiceEvidence:""}}
@@ -396,10 +397,16 @@ function card(x){
   return `<article class="frame quest ${x.resourceUrl?"link":""} ${complete?"done":""}"><div class="meta"><span class="tag">${esc(x.subject)}</span><span class="tag">${esc(x.strand)}</span>${hasVideo?'<span class="tag video">REQUIRED VIDEO</span>':""}${pendingVideo?'<span class="tag" style="background:#5a3b12;color:#ffe8a0">SOURCE PENDING</span>':""}${complete?'<span class="tag complete">MISSION COMPLETE</span>':""}</div><h4>${esc(friendlyTitle(x))}</h4><p class="kid-task">${esc(kidIntro(x))}</p><div class="step"><strong>1. ${hasVideo?"Watch the lesson":"Learn It in Dragonswood"}</strong><br>${pendingVideo?"⏳ This video is temporarily waiting on school access. You are not behind.":hasVideo?(s.watched?"✅ Video check complete.":"Watch the lesson here. Skipping ahead does not count as viewing."):"Everything needed for this lesson is here."}${!hasVideo?renderMiniLesson(x):""}<div class="actions">${readyVideo?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">${s.watched?"REWATCH VIDEO":"WATCH REQUIRED VIDEO"} ▶</button>`:""}${pendingVideo?'<button class="stage locked" disabled>VIDEO ACCESS PENDING</button>':""}${hasVideo&&!pendingVideo?`<button class="stage ${s.watched?"on":"locked"}" disabled>${s.watched?"✓ WATCHED":"WATCH"}</button>`:""}</div></div><div class="step"><strong>2. Standard Check + Application</strong>${canPractice?renderActivity(x):'<p class="kid-task">Finish the required video first to unlock this activity.</p>'}</div><div class="step"><strong>3. ${needsTeacher?"Teacher Verification":"Completion Check"}</strong><br>${finalText}${verifyButton}</div>${isTeacher?`<details class="source-details"><summary>Teacher/source details</summary><p>${esc(x.requirement)}</p><p>${x.resourceName?esc(x.resourceName):""}</p><p>Human verification: ${needsTeacher?"required":"not required"}</p>${m?`<p>Media status: ${esc(m.status)}</p>`:""}</details>`:""}</article>`;
 }
 function grouped(title,desc,a,byDay=false){if(!a.length)return `<div class="frame empty">Nothing waiting here.</div>`;let g={};a.forEach(x=>(g[byDay?x.day:x.subject]??=[]).push(x));return `<div class="title"><div><h2>${title}</h2><p>${desc}</p></div></div>`+Object.entries(g).map(([n,l])=>`<div class="group"><div class="grouphead"><h3>${byDay?"Original Day "+n:n}</h3><small>${l.length} missions</small></div><div class="grid">${l.map(card).join("")}</div></div>`).join("")}
-function render(){let r=rows(),due=r.filter(x=>x.day<=S.day),pendingSources=due.filter(mediaPending),eligibleDue=due.filter(x=>!mediaPending(x)),eligibleDone=eligibleDue.filter(missionComplete).length,p=eligibleDue.length?Math.round(eligibleDone/eligibleDue.length*100):0,back=r.filter(x=>x.day<S.day&&!missionComplete(x)&&!mediaPending(x)),mv=due.filter(x=>vid(x)&&!mediaPending(x)&&!st(x.id).watched);$("#grade").value=S.grade;$("#day").value=S.day;$("#hero").textContent=`${D.meta.gradeLabels[S.grade]} • Day ${S.day}`;$("#pct").textContent=p+"%";$("#ring").style.background=`conic-gradient(var(--green) ${p*3.6}deg,#241936 0)`;$("#kpis").innerHTML=[[r.filter(x=>x.day===S.day).length,"TODAY'S MISSIONS"],[back.length,"RECOVERY MISSIONS"],[mv.length,"VIDEOS STILL NEEDED"],[pendingSources.length,"SOURCE VIDEOS PENDING"]].map(x=>`<div class="frame kpi"><b>${x[0]}</b><small>${x[1]}</small></div>`).join("");$("#current").innerHTML=grouped(`Day ${S.day} Current Quest`,"Watch the lesson, pass the standard check, then apply what you learned.",r.filter(x=>x.day===S.day));$("#recovery").innerHTML=grouped("Recovery Quest","Only unfinished earlier curriculum appears here. Videos awaiting school access are held separately and do not count against students.",back.sort((a,b)=>a.day-b.day),true);
-let vr=r.filter(vid).sort((a,b)=>a.day-b.day);$("#videos").innerHTML=`<div class="title"><div><h2>🔮 Required Video Vault</h2><p>R2 videos play directly inside Dragonswood. Source-pending videos are held until school access returns.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Day</th><th>Subject</th><th>Mission</th><th>Media</th><th>Status</th><th>Watch</th></tr></thead><tbody>${vr.map(x=>{const m=mediaFor(x),pending=mediaPending(x),ready=mediaReady(x);return `<tr><td>${x.day}</td><td>${esc(x.subject)}</td><td>${esc(friendlyTitle(x))}</td><td>${pending?"⏳ SOURCE PENDING":ready?"R2 READY":"SOURCE LINK"}</td><td>${pending?"ON HOLD":st(x.id).watched?"✅ WATCHED":"NOT YET"}</td><td>${ready?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">WATCH ▶</button>`:pending?"Awaiting access":"—"}</td></tr>`}).join("")}</tbody></table></div>`;
+function render(){
+if(!isTeacher&&!studentCurriculumAccess){
+  $("#hero").textContent="Curriculum Quest Locked";$("#pct").textContent="🔒";$("#ring").style.background="#241936";$("#kpis").innerHTML="";
+  const locked=`<div class="frame empty"><h2>🔒 No curriculum quest is open</h2><p>${esc(accessMessage)}</p></div>`;
+  ["current","recovery","videos","standards","morph","audit"].forEach(id=>$("#"+id).innerHTML=locked);return;
+}
+let r=rows(),due=r.filter(x=>x.day<=S.day),pendingSources=due.filter(mediaPending),eligibleDue=due.filter(x=>!mediaPending(x)),eligibleDone=eligibleDue.filter(missionComplete).length,p=eligibleDue.length?Math.round(eligibleDone/eligibleDue.length*100):0,back=r.filter(x=>x.day<S.day&&!missionComplete(x)&&!mediaPending(x)),mv=due.filter(x=>vid(x)&&!mediaPending(x)&&!st(x.id).watched);$("#grade").value=S.grade;$("#day").value=S.day;$("#hero").textContent=`${D.meta.gradeLabels[S.grade]} • Day ${S.day}`;$("#pct").textContent=p+"%";$("#ring").style.background=`conic-gradient(var(--green) ${p*3.6}deg,#241936 0)`;$("#kpis").innerHTML=[[r.filter(x=>x.day===S.day).length,"TODAY'S MISSIONS"],[back.length,"RECOVERY MISSIONS"],[mv.length,"VIDEOS STILL NEEDED"],[pendingSources.length,"SOURCE VIDEOS PENDING"]].map(x=>`<div class="frame kpi"><b>${x[0]}</b><small>${x[1]}</small></div>`).join("");$("#current").innerHTML=grouped(`Day ${S.day} Current Quest`,"Watch the lesson, pass the standard check, then apply what you learned.",r.filter(x=>x.day===S.day));$("#recovery").innerHTML=grouped("Recovery Quest","Only incomplete missions from school days before today appear here.",back.sort((a,b)=>a.day-b.day),true);
+let vr=(isTeacher?r:due).filter(vid).sort((a,b)=>a.day-b.day);$("#videos").innerHTML=`<div class="title"><div><h2>🔮 Required Video Vault</h2><p>Students see only videos from today and earlier school days. Source-pending videos are held until school access returns.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Day</th><th>Subject</th><th>Mission</th><th>Media</th><th>Status</th><th>Watch</th></tr></thead><tbody>${vr.map(x=>{const m=mediaFor(x),pending=mediaPending(x),ready=mediaReady(x);return `<tr><td>${x.day}</td><td>${esc(x.subject)}</td><td>${esc(friendlyTitle(x))}</td><td>${pending?"⏳ SOURCE PENDING":ready?"R2 READY":"SOURCE LINK"}</td><td>${pending?"ON HOLD":st(x.id).watched?"✅ WATCHED":"NOT YET"}</td><td>${ready?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">WATCH ▶</button>`:pending?"Awaiting access":"—"}</td></tr>`}).join("")}</tbody></table></div>`;
 let sr=D.standards.filter(x=>x.grade===S.grade);$("#standards").innerHTML=standardsMasteryReport()+`<div class="title"><div><h2>📚 Standards Codex</h2><p>Teacher-facing source map.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Subject</th><th>Code</th><th>Standard</th><th>Evidence of Proficiency</th><th>Assessment</th></tr></thead><tbody>${sr.map(x=>`<tr><td>${esc(x.subject)}</td><td>${esc(x.code)}</td><td>${esc(x.standard)}</td><td>${esc(x.proficiency)}</td><td>${esc(x.assessment)}</td></tr>`).join("")}</tbody></table></div>`;
-let mr=D.morphology.filter(x=>x.grade===S.grade),wg={};mr.forEach(x=>(wg[x.week]??=[]).push(x));$("#morph").innerHTML=`<div class="title"><div><h2>⚒️ Wordsmith Tower</h2><p>Word roots and target words.</p></div></div>`+Object.entries(wg).map(([w,l])=>`<div class="group"><div class="grouphead"><h3>Week ${w} • ${esc(l[0].root)}</h3></div><div class="wordgrid">${l.map(x=>`<div class="frame word"><small>ROOT: ${esc(x.root)}</small><b>${esc(x.word)}</b><p>${esc(x.morphological||x.orthographic||"Learn how this word is built and what its parts mean.")}</p><p><strong>Your task:</strong> ${esc(x.application||"Use the word correctly in a complete sentence.")}</p></div>`).join("")}</div></div>`).join("");
+let mr=D.morphology.filter(x=>x.grade===S.grade&&(isTeacher||Number(x.week||0)<=Math.ceil(S.day/5))),wg={};mr.forEach(x=>(wg[x.week]??=[]).push(x));$("#morph").innerHTML=`<div class="title"><div><h2>⚒️ Wordsmith Tower</h2><p>Word roots and target words available through the current school day.</p></div></div>`+Object.entries(wg).map(([w,l])=>`<div class="group"><div class="grouphead"><h3>Week ${w} • ${esc(l[0].root)}</h3></div><div class="wordgrid">${l.map(x=>`<div class="frame word"><small>ROOT: ${esc(x.root)}</small><b>${esc(x.word)}</b><p>${esc(x.morphological||x.orthographic||"Learn how this word is built and what its parts mean.")}</p><p><strong>Your task:</strong> ${esc(x.application||"Use the word correctly in a complete sentence.")}</p></div>`).join("")}</div></div>`).join("");
 let miss=due.filter(x=>!missionComplete(x)&&!mediaPending(x));$("#audit").innerHTML=`<div class="title"><div><h2>🛡️ Curriculum Compliance Shield</h2><p>Completion requires the lesson, standard check, and application. Teacher verification is reserved for human-judgment work.</p></div></div><div class="frame audit ${miss.length?"bad":"good"}"><h3>${miss.length} curriculum missions incomplete</h3><p>${miss.length?"Recovery Quest shows the unfinished available curriculum.":"Everything currently available and due is complete."}</p></div><div class="frame audit ${mv.length?"bad":"good"}"><h3>${mv.length} available required videos still need a completed video check</h3></div><div class="frame audit ${pendingSources.length?"bad":"good"}"><h3>${pendingSources.length} curriculum video sources awaiting school access</h3><p>${pendingSources.length?"These are held separately and do not count as student recovery failures. Activities can continue now.":"No curriculum source videos are pending access."}</p></div>`}
 $("#grade").onchange=e=>{if(currentStudent&&!isTeacher){e.target.value=S.grade;return}S.grade=e.target.value;save();render()};$("#day").onchange=e=>{if(!isTeacher){e.target.value=S.day;return}S.day=Math.max(1,Math.min(40,+e.target.value||1));save();render()};$$(".tabs button").forEach(b=>b.onclick=()=>{$$(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");$$(".panel").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.tab).classList.add("active")});render();
 </script>
@@ -413,6 +420,7 @@ const app=getApps().length?getApp():initializeApp(firebaseConfig);
 const auth=getAuth(app),db=getFirestore(app);
 let progressTimer=null,progressReady=false,selectedStudentId="",teacherProgressRows=[],teacherAllProgress=[],teacherStudentNames={};
 const syncedSignatures=new Map();
+function phoenixDateKey(){return new Intl.DateTimeFormat("en-CA",{timeZone:"America/Phoenix",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date())}
 function progressDocId(uid,itemId){return `${uid}_${itemId}`}
 function questionCounts(item,state){
   const qs=autoQuestionsFor(item),answers=state.autoAnswers||{};
@@ -518,6 +526,8 @@ function watchMyOverrides(uid){
 onAuthStateChanged(auth,async u=>{
   currentStudent=u||null;
   isTeacher=!!u && String(u.email||"").toLowerCase()===TEACHER.toLowerCase();
+  studentCurriculumAccess=isTeacher;
+  accessMessage=u?"Checking today's school-day assignment…":"Open Curriculum Quest from your signed-in Dragonswood portal.";
   document.getElementById("teacherBadge").style.display=isTeacher?"inline-block":"none";
   if(u){
     watchMyOverrides(u.uid);
@@ -548,6 +558,18 @@ onAuthStateChanged(auth,async u=>{
           document.getElementById("grade").disabled=true;
         }
       }catch(e){console.warn("Could not load grade profile",e)}
+      try{
+        const today=await getDoc(doc(db,"dailyQuests",phoenixDateKey()));
+        if(!today.exists())throw new Error("no-school-day");
+        const assignment=today.data();
+        S.day=Math.max(1,Math.min(40,Number(assignment.day||1)));
+        studentCurriculumAccess=true;
+        accessMessage="";
+        save();
+      }catch(e){
+        studentCurriculumAccess=false;
+        accessMessage="There is no open school-day quest right now. Current curriculum and Recovery reopen with the next assigned school day.";
+      }
       document.getElementById("day").disabled=true;
     }else{
       const picker=document.getElementById("teacherStudent");picker.style.display="inline-block";
@@ -568,6 +590,7 @@ onAuthStateChanged(auth,async u=>{
       }catch(e){console.warn("Could not load teacher curriculum roster",e)}
     }
   }else{
+    studentCurriculumAccess=false;
     document.getElementById("studentIdentity").textContent="Open from your signed-in Dragonswood portal";
     document.getElementById("grade").disabled=false;
   }

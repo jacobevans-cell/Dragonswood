@@ -79,6 +79,27 @@ body>*{position:relative;z-index:1}
 .tabs button{background:rgba(16,12,40,.86);backdrop-filter:blur(5px)}
 .tabs button.active{background:linear-gradient(90deg,rgba(64,17,116,.92),rgba(20,41,75,.92))}
 .notice,.step,.activity-shell,.practice-box,.self-lesson{background-color:rgba(10,7,27,.88)}
+
+/* v55.28 — subject identity and stronger day-level hierarchy */
+.quest.quest-word{--quest-accent:#c987ff;--quest-tint:rgba(113,45,164,.28);border-left-color:#c987ff}
+.quest.quest-reading{--quest-accent:#48b9ff;--quest-tint:rgba(26,93,155,.30);border-left-color:#48b9ff}
+.quest.quest-writing{--quest-accent:#ff78c7;--quest-tint:rgba(145,38,109,.29);border-left-color:#ff78c7}
+.quest.quest-math{--quest-accent:#ffd166;--quest-tint:rgba(140,91,18,.29);border-left-color:#ffd166}
+.quest.quest-science{--quest-accent:#65dfa3;--quest-tint:rgba(28,116,78,.29);border-left-color:#65dfa3}
+.quest.quest-general{--quest-accent:#9ba7ff;--quest-tint:rgba(66,71,145,.27);border-left-color:#9ba7ff}
+.quest[class*="quest-"]>.mission-summary{background:linear-gradient(105deg,var(--quest-tint),rgba(8,9,26,.93) 70%)}
+.quest[class*="quest-"]>.mission-summary:hover{background:linear-gradient(105deg,var(--quest-tint),rgba(20,20,55,.96) 72%);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--quest-accent) 42%,transparent)}
+.quest[class*="quest-"] .subject-tag{background:color-mix(in srgb,var(--quest-accent) 24%,#151025);border-color:color-mix(in srgb,var(--quest-accent) 58%,#151025);color:#fff}
+.quest[class*="quest-"] .mission-time{border:1px solid color-mix(in srgb,var(--quest-accent) 38%,transparent);border-radius:8px;padding:7px 10px;background:rgba(3,5,18,.46)}
+.quest[class*="quest-"] .mission-time span{color:var(--quest-accent)}
+.quest[class*="quest-"] h4{color:#fffdf4;text-shadow:0 1px 1px #000}
+.recovery-day>summary{display:grid;grid-template-columns:auto 1fr auto;gap:12px}
+.day-heading{text-align:center;font-size:18px}
+.day-stats{display:flex;align-items:center;justify-content:flex-end;gap:7px;font-family:Arial,sans-serif}
+.day-count,.day-state{padding:6px 9px;border-radius:999px;background:#0c2340;border:1px solid #12668d;color:#79eaff;font-size:10px;font-weight:1000;white-space:nowrap}
+.day-total{padding:8px 12px;border-radius:8px;background:linear-gradient(180deg,#ffe99a,#eebd48);border:1px solid #fff0ae;color:#211209;box-shadow:0 0 14px rgba(244,201,93,.22);font-size:12px;font-weight:1000;white-space:nowrap}
+.locked-day .day-total{filter:saturate(.45);opacity:.72}.locked-day .day-state{color:#b5afc1;border-color:#514867;background:#171326}
+@media(max-width:760px){.recovery-day>summary{grid-template-columns:auto 1fr}.day-heading{text-align:left}.day-stats{grid-column:1/-1;justify-content:flex-start;flex-wrap:wrap;padding-left:22px}.day-total{white-space:normal}.mission-summary{grid-template-columns:1fr}.mission-time{text-align:left!important;margin-top:7px}}
 </style></head>
 <body>
 <header class="top"><div class="shell topin"><div class="brand"><img class="shield" src="dragonswood-volleyball-crest-v1.png" alt="Dragonswood volleyball dragon crest"><div><h1 style="color:#f7c94f;background:linear-gradient(180deg,#fff9d8 0%,#ffe99a 27%,#f8ca50 58%,#ffe99a 82%,#dfa12a 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 1px 0 rgba(116,67,8,.95)) drop-shadow(0 2px 1px rgba(22,5,34,.95)) drop-shadow(0 0 5px rgba(255,216,91,.16));letter-spacing:.3px">DRAGONSWOOD</h1><p>CURRICULUM QUEST • EXPLORE ACADEMY</p></div></div>
@@ -445,6 +466,14 @@ function subjectLabel(x){
   if(morphFor(x))return "ELA • WORD STUDY";
   return "ELA • "+String(x.strand||"HUM").toUpperCase();
 }
+function subjectQuestClass(x){
+  if(morphFor(x))return "quest-word";
+  if(x.strand==="Reading")return "quest-reading";
+  if(x.strand==="Writing")return "quest-writing";
+  if(x.subject==="Math")return "quest-math";
+  if(x.subject==="Science")return "quest-science";
+  return "quest-general";
+}
 function readableVideoDuration(seconds){
   const total=Math.max(0,Math.round(Number(seconds)||0)),mins=Math.floor(total/60),secs=total%60;
   if(!mins)return `${secs} sec video`;
@@ -472,7 +501,7 @@ function card(x){
   const finalText=pendingVideo?(s.practiced?"Activity saved. Final completion waits for the restored video.":"Complete the activity while video access is restored."):complete?"✅ Curriculum mission complete.":needsTeacher?(workReady?"Your work is ready for teacher verification.":"Finish the video, standard check, and written application first."):"Pass the standard check and written application to complete this mission.";
   const verifyButton=isTeacher&&needsTeacher&&!pendingVideo?`<div class="actions"><button class="stage verify ${workReady?"":"locked"}" ${workReady?"":"disabled"} onclick="teacherVerify('${x.id}')">${s.verified?"UNVERIFY":"TEACHER VERIFY"}</button></div>`:"";
   const timing=missionMinutes(x),open=openMissionIds.has(x.id)?" open":"";
-  return `<details class="frame quest ${x.resourceUrl?"link":""} ${complete?"done":""}"${open} ontoggle="rememberMissionOpen('${x.id}',this.open)"><summary class="mission-summary"><div><div class="meta"><span class="tag">${esc(subjectLabel(x))}</span>${hasVideo?'<span class="tag video">REQUIRED VIDEO</span>':""}${pendingVideo?'<span class="tag" style="background:#5a3b12;color:#ffe8a0">SOURCE PENDING</span>':""}${complete?'<span class="tag complete">MISSION COMPLETE</span>':""}</div><h4>${esc(friendlyTitle(x))}</h4></div><div class="mission-time">${esc(timing.total)}<span>${timing.video?esc(timing.video)+" • ":""}${timing.work.check[0]}–${timing.work.check[1]} min check • ${timing.work.application[0]}–${timing.work.application[1]} min application</span></div></summary><div class="mission-body"><p class="kid-task">${esc(kidIntro(x))}</p><div class="step"><strong>1. ${hasVideo?"Watch the lesson":"Learn It in Dragonswood"}</strong><br>${pendingVideo?"⏳ This video is temporarily waiting on school access. You are not behind.":hasVideo?(s.watched?"✅ Video check complete.":"Watch the lesson here. Skipping ahead does not count as viewing."):"Everything needed for this lesson is here."}${!hasVideo||s.watched&&morphFor(x)?renderMiniLesson(x):""}<div class="actions">${readyVideo?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">${s.watched?"REWATCH VIDEO":"WATCH REQUIRED VIDEO"} ▶</button>`:""}${pendingVideo?'<button class="stage locked" disabled>VIDEO ACCESS PENDING</button>':""}${hasVideo&&!pendingVideo?`<button class="stage ${s.watched?"on":"locked"}" disabled>${s.watched?"✓ WATCHED":"WATCH"}</button>`:""}</div></div><div class="step"><strong>2. Standard Check + Application</strong>${canPractice?renderActivity(x):'<p class="kid-task">Finish the required video first to unlock this activity.</p>'}</div><div class="step"><strong>3. ${needsTeacher?"Teacher Verification":"Completion Check"}</strong><br>${finalText}${verifyButton}</div>${isTeacher?`<details class="source-details"><summary>Teacher/source details</summary><p>${esc(x.requirement)}</p><p>${x.resourceName?esc(x.resourceName):""}</p><p>Human verification: ${needsTeacher?"required":"not required"}</p>${m?`<p>Media status: ${esc(m.status)}</p>`:""}</details>`:""}</div></details>`;
+  return `<details class="frame quest ${subjectQuestClass(x)} ${x.resourceUrl?"link":""} ${complete?"done":""}"${open} ontoggle="rememberMissionOpen('${x.id}',this.open)"><summary class="mission-summary"><div><div class="meta"><span class="tag subject-tag">${esc(subjectLabel(x))}</span>${hasVideo?'<span class="tag video">REQUIRED VIDEO</span>':""}${pendingVideo?'<span class="tag" style="background:#5a3b12;color:#ffe8a0">SOURCE PENDING</span>':""}${complete?'<span class="tag complete">MISSION COMPLETE</span>':""}</div><h4>${esc(friendlyTitle(x))}</h4></div><div class="mission-time">${esc(timing.total)}<span>${timing.video?esc(timing.video)+" • ":""}${timing.work.check[0]}–${timing.work.check[1]} min check • ${timing.work.application[0]}–${timing.work.application[1]} min application</span></div></summary><div class="mission-body"><p class="kid-task">${esc(kidIntro(x))}</p><div class="step"><strong>1. ${hasVideo?"Watch the lesson":"Learn It in Dragonswood"}</strong><br>${pendingVideo?"⏳ This video is temporarily waiting on school access. You are not behind.":hasVideo?(s.watched?"✅ Video check complete.":"Watch the lesson here. Skipping ahead does not count as viewing."):"Everything needed for this lesson is here."}${!hasVideo||s.watched&&morphFor(x)?renderMiniLesson(x):""}<div class="actions">${readyVideo?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">${s.watched?"REWATCH VIDEO":"WATCH REQUIRED VIDEO"} ▶</button>`:""}${pendingVideo?'<button class="stage locked" disabled>VIDEO ACCESS PENDING</button>':""}${hasVideo&&!pendingVideo?`<button class="stage ${s.watched?"on":"locked"}" disabled>${s.watched?"✓ WATCHED":"WATCH"}</button>`:""}</div></div><div class="step"><strong>2. Standard Check + Application</strong>${canPractice?renderActivity(x):'<p class="kid-task">Finish the required video first to unlock this activity.</p>'}</div><div class="step"><strong>3. ${needsTeacher?"Teacher Verification":"Completion Check"}</strong><br>${finalText}${verifyButton}</div>${isTeacher?`<details class="source-details"><summary>Teacher/source details</summary><p>${esc(x.requirement)}</p><p>${x.resourceName?esc(x.resourceName):""}</p><p>Human verification: ${needsTeacher?"required":"not required"}</p>${m?`<p>Media status: ${esc(m.status)}</p>`:""}</details>`:""}</div></details>`;
 }
 function grouped(title,desc,a,byDay=false){if(!a.length)return `<div class="frame empty">Nothing waiting here.</div>`;let g={};a.forEach(x=>(g[byDay?x.day:x.subject]??=[]).push(x));return `<div class="title"><div><h2>${title}</h2><p>${desc}</p></div></div>`+Object.entries(g).map(([n,l])=>`<div class="group"><div class="grouphead"><h3>${byDay?"Original Day "+n:n}</h3><small>${l.length} missions</small></div><div class="grid">${l.map(card).join("")}</div></div>`).join("")}
 function recoveryGrouped(a){
@@ -480,7 +509,7 @@ function recoveryGrouped(a){
  const groups={};a.forEach(x=>(groups[x.day]??=[]).push(x));const days=Object.keys(groups).map(Number).sort((a,b)=>a-b),first=days[0];
   return `<div class="title"><div><h2>Recovery Quest</h2><p>Complete one school day at a time. Finishing the open day unlocks the next unfinished day.</p></div></div>`+days.map((day,i)=>{
   const list=groups[day],unlocked=isTeacher||day===first;
-  return `<details class="frame recovery-day ${unlocked?"":"locked-day"}" ${unlocked&&i===0?"open":""}><summary><span>${unlocked?"🗝️":"🔒"} Original Day ${day}</span><span class="recovery-next">${list.length} mission${list.length===1?"":"s"} • ${dayEstimate(list)}${unlocked?" • OPEN":" • LOCKED"}</span></summary>${unlocked?`<div class="recovery-body"><div class="grid">${list.map(card).join("")}</div></div>`:`<div class="recovery-lock">Complete Original Day ${first} to unlock this recovery day.</div>`}</details>`;
+  return `<details class="frame recovery-day ${unlocked?"":"locked-day"}" ${unlocked&&i===0?"open":""}><summary><span class="day-heading">${unlocked?"🗝️":"🔒"} Original Day ${day}</span><span class="day-stats"><span class="day-count">${list.length} MISSION${list.length===1?"":"S"}</span><strong class="day-total">⏱ ${dayEstimate(list)}</strong><span class="day-state">${unlocked?"OPEN":"LOCKED"}</span></span></summary>${unlocked?`<div class="recovery-body"><div class="grid">${list.map(card).join("")}</div></div>`:`<div class="recovery-lock">Complete Original Day ${first} to unlock this recovery day.</div>`}</details>`;
  }).join("");
 }
 function render(){

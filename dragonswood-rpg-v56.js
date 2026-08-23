@@ -113,6 +113,9 @@
   const appearancePacks=APPEARANCE_ROWS.map(([id,name,cls,level,rarity,cost,file])=>({
     id, name:`${name} Appearance Pack`, classId:cls, slot:"appearance",
     level, rarity, cost, art:`${A}${file}`, skinArt:`${A}${file}`,
+    idleArt:`${A}appearances/animated/${file.replace('.png','-idle.gif')}`,
+    attackArt:`${A}appearances/animated/${file.replace('.png','-attack.gif')}`,
+    hurtArt:`${A}appearances/animated/${file.replace('.png','-hurt.gif')}`,
     appearance:true, stats:{atk:0,def:0,hp:0,heal:0}
   }));
   // The Class Shop renders from `items`, so the packs have to live there too.
@@ -193,5 +196,5 @@
   function hash(s){let h=2166136261;for(const c of String(s)){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
   function dailyEnemy(uid,day){return enemies[hash(`${uid}|${dateKey()}|${day}`)%enemies.length]}
 
-  window.DWRPG={classes,pets,prestigePets,enemies,items,appearancePacks,dateKey,levelForXp,hash,dailyEnemy,version:"56.5"};
+  window.DWRPG={classes,pets,prestigePets,enemies,items,appearancePacks,dateKey,levelForXp,hash,dailyEnemy,version:"56.7"};
 })();

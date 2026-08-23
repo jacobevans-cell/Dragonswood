@@ -3110,7 +3110,7 @@ function renderBathroomStudent(d){
          }
        });
 
-       window.DWAudio?.positive();
+       window.DWAudio?.passReturn?.();
      }catch(err){
        console.warn('bathroom return',err);
        txt.textContent='Could not check you back in. Please tell your teacher.';
@@ -3222,7 +3222,7 @@ function renderBathroomStudent(d){
          },{merge:true});
        });
 
-       window.DWAudio?.positive();
+       window.DWAudio?.passStart?.();
      }else{
        const id=user.uid+'_'+Date.now();
        await setDoc(doc(db,'bathroomRequests',id),{
@@ -3235,7 +3235,7 @@ function renderBathroomStudent(d){
          updatedAt:serverTimestamp()
        });
        txt.textContent='Extra bathroom pass requested. Waiting for teacher approval.';
-       window.DWAudio?.positive();
+       window.DWAudio?.notice();
      }
    }catch(err){
      console.warn('bathroom pass',err);
@@ -3466,8 +3466,7 @@ function dwActivePassInfo(){
 }
 function dwSpeakPassReminder(text){
   try{
-    window.DWAudio?.negative?.();
-    setTimeout(()=>window.DWAudio?.negative?.(),220);
+    window.DWAudio?.passAlert?.();
     if("speechSynthesis" in window){
       speechSynthesis.cancel();
       const u=new SpeechSynthesisUtterance(text);u.rate=.92;u.volume=1;speechSynthesis.speak(u);
@@ -3611,7 +3610,7 @@ async function endGenericPass(type){
     const archived=updated.find(v=>String(v?.id||'')===activeId);
     if(archived)await setDoc(doc(db,'passHistory',activeId),{...archived,type,label:meta.label,updatedAt:serverTimestamp()},{merge:true});
   }
-  window.DWAudio?.positive();
+  window.DWAudio?.passReturn?.();
 }
 function renderActiveGenericPassReturns(){
   const box=$('activeGenericPasses');if(!box)return;
@@ -3635,7 +3634,7 @@ async function useGenericPass(type){
       studentId:user.uid,studentName:studentDisplayName(),type,label:meta.label,dateKey:key,status:'pending',createdAt:serverTimestamp(),updatedAt:serverTimestamp()
     });
     $('studentPassHubStatus').textContent=`🙋 Extra ${meta.label} pass requested. Waiting for teacher approval.`;
-    window.DWAudio?.positive();return;
+    window.DWAudio?.notice();return;
   }
 
   const isAuto=used<1,nextUsed=isAuto?used+1:used,nextCredits=isAuto?credits:Math.max(0,credits-1);
@@ -3643,7 +3642,7 @@ async function useGenericPass(type){
   const visit={id,studentId:user.uid,studentName:studentDisplayName(),type,label:meta.label,dateKey:key,passType:isAuto?'automatic':'approved-extra',passNumber:nextUsed,startedAt:now.toISOString(),startedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),startedMs:now.getTime(),status:'active'};
   await setDoc(doc(db,'passHistory',id),{...visit,label:meta.label,createdAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});
   await setDoc(ref,{studentId:user.uid,studentName:studentDisplayName(),type,label:meta.label,dateKey:key,passesUsed:nextUsed,approvalCredits:nextCredits,active:true,activeVisitId:id,startedAt:serverTimestamp(),startedAtText:visit.startedAtText,startedMs:visit.startedMs,visits:[...prior,visit].slice(-30),updatedAt:serverTimestamp()},{merge:true});
-  window.DWAudio?.positive();
+  window.DWAudio?.passStart?.();
 }
 function watchUnifiedPassHub(){
   if(!user)return;
@@ -3720,7 +3719,7 @@ function renderSnackStudent(d){
             ...archived,type:'snack',label:'Snack',updatedAt:serverTimestamp()
           },{merge:true});
         }
-        window.DWAudio?.positive();
+        window.DWAudio?.passReturn?.();
       }catch(err){
         console.warn('snack done',err);
         txt.textContent='Could not end snack pass. Please tell your teacher.';
@@ -3762,7 +3761,7 @@ function renderSnackStudent(d){
           startedAt:serverTimestamp(),startedAtText:visit.startedAtText,endedAt:null,
           visits:[...prior,visit].slice(-20),updatedAt:serverTimestamp()
         },{merge:true});
-        window.DWAudio?.positive();
+        window.DWAudio?.passStart?.();
       }else{
         const id=user.uid+'_'+Date.now();
         await setDoc(doc(db,'snackRequests',id),{
@@ -3770,7 +3769,7 @@ function renderSnackStudent(d){
           createdAt:serverTimestamp(),updatedAt:serverTimestamp()
         });
         txt.textContent='Extra snack pass requested. Waiting for teacher approval.';
-        window.DWAudio?.positive();
+        window.DWAudio?.notice();
       }
     }catch(err){
       console.warn('snack pass',err);
@@ -5349,7 +5348,7 @@ renderRewards();renderBoards();glitterizeStaticIcons();
   let ctx = null;
   let unlocked = false;
   let enabled = localStorage.getItem(KEY) !== "off";
-  const lastPlayed = {positive:0, negative:0, bathroom:0, notice:0};
+  const lastPlayed = {positive:0, negative:0, bathroom:0, notice:0, passStart:0, passReturn:0, passAlert:0};
 
   function getCtx(){
     if(!enabled) return null;
@@ -5414,6 +5413,33 @@ renderRewards();renderBoards();glitterizeStaticIcons();
     tone(783.99,.15,.22,"sine",.075);
   }
 
+  function passStart(){
+    if(!canPlay("passStart",700)) return;
+    // A short magical doorway flourish: warm foundation, then bright lift.
+    tone(293.66,0,.18,"triangle",.045);
+    tone(440,.07,.24,"sine",.06);
+    tone(659.25,.16,.32,"sine",.082);
+    tone(987.77,.27,.42,"sine",.052);
+  }
+
+  function passReturn(){
+    if(!canPlay("passReturn",600)) return;
+    // Gentle resolved cadence for checking back in.
+    tone(783.99,0,.15,"sine",.055);
+    tone(659.25,.10,.18,"sine",.06);
+    tone(523.25,.22,.34,"triangle",.075);
+  }
+
+  function passAlert(){
+    if(!canPlay("passAlert",1500)) return;
+    // Distinct fantasy warning bell; noticeable without a harsh buzzer.
+    tone(587.33,0,.18,"triangle",.085);
+    tone(880,0,.23,"sine",.07);
+    tone(659.25,.30,.18,"triangle",.09);
+    tone(987.77,.30,.25,"sine",.075);
+    tone(392,.58,.42,"triangle",.072);
+  }
+
   function setEnabled(v){
     enabled = !!v;
     localStorage.setItem(KEY, enabled ? "on" : "off");
@@ -5464,7 +5490,7 @@ renderRewards();renderBoards();glitterizeStaticIcons();
   });
 
   window.DWAudio = {
-    positive, negative, bathroom, notice, unlock:getCtx,
+    positive, negative, bathroom, notice, passStart, passReturn, passAlert, unlock:getCtx,
     setEnabled, isEnabled:()=>enabled, isUnlocked:()=>unlocked,
     addTeacherBadge
   };

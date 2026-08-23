@@ -1877,13 +1877,13 @@ function dwCheckTeacherAlerts(){
     const newGenericReq=[...genericReqNow].some(x=>!dwAlertGenericRequestIds.has(x));
 
     if(newBathroomOut || newBathroomReq){
-      window.DWAudio?.bathroom();
+      window.DWAudio?.passRequest?.();
       try{document.title="🚻 BATHROOM ALERT • Dragonswood Teacher"}catch(e){}
     }else if(newSnack){
-      window.DWAudio?.notice();
+      window.DWAudio?.passRequest?.();
       try{document.title="🍎 SNACK ALERT • Dragonswood Teacher"}catch(e){}
      }else if(newGenericReq){
-      window.DWAudio?.notice();
+      window.DWAudio?.passRequest?.();
       try{document.title="🎟️ PASS REQUEST • Dragonswood Teacher"}catch(e){}
     }else if(newRecognition){
       window.DWAudio?.notice();
@@ -2454,7 +2454,7 @@ document.getElementById('passArchiveRange')?.addEventListener('change',renderPas
   let ctx = null;
   let unlocked = false;
   let enabled = localStorage.getItem(KEY) !== "off";
-  const lastPlayed = {positive:0, negative:0, bathroom:0, notice:0};
+  const lastPlayed = {positive:0, negative:0, passRequest:0, notice:0};
 
   function getCtx(){
     if(!enabled) return null;
@@ -2505,30 +2505,22 @@ document.getElementById('passArchiveRange')?.addEventListener('change',renderPas
     tone(174.61,.14,.25,"triangle",.075);
   }
 
-  function bathroom(){
-    if(!canPlay("bathroom",850)) return;
-    /*
-      EXTRA-LOUD classroom pass alert.
-      Multiple harmonics/pulses make this much more audible on laptop speakers.
-      Browser/OS volume still sets the absolute hardware ceiling.
-    */
-    tone(740,0,.20,"square",.22);
-    tone(988,0,.20,"sine",.18);
-    tone(880,.22,.20,"square",.23);
-    tone(1175,.22,.20,"sine",.18);
-    tone(740,.46,.22,"square",.24);
-    tone(988,.46,.22,"sine",.19);
-    tone(880,.72,.32,"square",.25);
-    tone(1175,.72,.32,"sine",.20);
+  function passRequest(){
+    if(!canPlay("passRequest",850)) return;
+    // Bright fantasy messenger chime: easy to notice without sounding like an alarm.
+    tone(329.63,0,.22,"triangle",.10);
+    tone(659.25,0,.28,"sine",.10);
+    tone(493.88,.24,.22,"triangle",.11);
+    tone(987.77,.24,.36,"sine",.105);
+    tone(659.25,.53,.42,"sine",.10);
+    tone(1318.51,.53,.46,"sine",.07);
   }
 
   function notice(){
     if(!canPlay("notice",500)) return;
-    // Louder two-stage general alert.
-    tone(660,0,.18,"square",.18);
-    tone(880,0,.18,"sine",.15);
-    tone(784,.20,.25,"square",.20);
-    tone(1047,.20,.25,"sine",.16);
+    tone(523.25,0,.18,"triangle",.075);
+    tone(783.99,.10,.28,"sine",.085);
+    tone(1046.50,.24,.36,"sine",.065);
   }
 
   function setEnabled(v){
@@ -2545,7 +2537,7 @@ document.getElementById('passArchiveRange')?.addEventListener('change',renderPas
       badge.textContent = "🔇 Sounds Off";
       badge.dataset.state = "off";
     }else if(unlocked){
-      badge.textContent = "🔊 LOUD Alerts Armed";
+      badge.textContent = "🔔 Dragonswood Alerts Armed";
       badge.dataset.state = "armed";
     }else{
       badge.textContent = "🔔 Click to Arm Sounds";
@@ -2581,7 +2573,7 @@ document.getElementById('passArchiveRange')?.addEventListener('change',renderPas
   });
 
   window.DWAudio = {
-    positive, negative, bathroom, notice, unlock:getCtx,
+    positive, negative, passRequest, notice, unlock:getCtx,
     setEnabled, isEnabled:()=>enabled, isUnlocked:()=>unlocked,
     addTeacherBadge
   };

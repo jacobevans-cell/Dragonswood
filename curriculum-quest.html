@@ -99,7 +99,10 @@ body>*{position:relative;z-index:1}
 .day-count,.day-state{padding:6px 9px;border-radius:999px;background:#0c2340;border:1px solid #12668d;color:#79eaff;font-size:10px;font-weight:1000;white-space:nowrap}
 .day-total{padding:8px 12px;border-radius:8px;background:linear-gradient(180deg,#ffe99a,#eebd48);border:1px solid #fff0ae;color:#211209;box-shadow:0 0 14px rgba(244,201,93,.22);font-size:12px;font-weight:1000;white-space:nowrap}
 .locked-day .day-total{filter:saturate(.45);opacity:.72}.locked-day .day-state{color:#b5afc1;border-color:#514867;background:#171326}
+#curriculumTabs{grid-template-columns:repeat(5,1fr)}#curriculumTabs.teacher-tabs{grid-template-columns:repeat(6,1fr)}
+@media(max-width:900px){#curriculumTabs,#curriculumTabs.teacher-tabs{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:760px){.recovery-day>summary{grid-template-columns:auto 1fr}.day-heading{text-align:left}.day-stats{grid-column:1/-1;justify-content:flex-start;flex-wrap:wrap;padding-left:22px}.day-total{white-space:normal}.mission-summary{grid-template-columns:1fr}.mission-time{text-align:left!important;margin-top:7px}}
+@media(max-width:520px){#curriculumTabs,#curriculumTabs.teacher-tabs{grid-template-columns:repeat(2,1fr)}}
 </style></head>
 <body>
 <header class="top"><div class="shell topin"><div class="brand"><img class="shield" src="dragonswood-volleyball-crest-v1.png" alt="Dragonswood volleyball dragon crest"><div><h1 style="color:#f7c94f;background:linear-gradient(180deg,#fff9d8 0%,#ffe99a 27%,#f8ca50 58%,#ffe99a 82%,#dfa12a 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 1px 0 rgba(116,67,8,.95)) drop-shadow(0 2px 1px rgba(22,5,34,.95)) drop-shadow(0 0 5px rgba(255,216,91,.16));letter-spacing:.3px">DRAGONSWOOD</h1><p>CURRICULUM QUEST • EXPLORE ACADEMY</p></div></div>
@@ -113,7 +116,7 @@ body>*{position:relative;z-index:1}
     </div></div></header>
 <main class="shell">
 <section class="frame hero"><div><span class="eyebrow">THE ACADEMIC PATH THROUGH DRAGONSWOOD</span><h2 id="hero">Current Quest</h2><p>Your assigned curriculum lives here. Current work keeps moving forward while unfinished earlier requirements stay in Recovery Quest until they are completed.</p><div class="notice">Required curriculum videos remain separate tracked requirements. Opening a video marks it watched, not mastered.</div></div><div class="ring" id="ring"><span id="pct">0%</span></div></section>
-<nav class="tabs"><button class="active" data-tab="current">📜 CURRENT</button><button data-tab="recovery">🗝️ RECOVERY</button><button data-tab="videos">🔮 VIDEOS</button><button data-tab="standards">📚 STANDARDS</button><button data-tab="morph">⚒️ WORDSMITH</button><button data-tab="audit">🛡️ AUDIT</button></nav>
+<nav class="tabs" id="curriculumTabs"><button class="active" data-tab="current">📜 CURRENT</button><button data-tab="recovery">🗝️ RECOVERY</button><button data-tab="videos">🔮 VIDEOS</button><button data-tab="standards">📚 STANDARDS</button><button data-tab="morph">⚒️ WORDSMITH</button><button data-tab="audit">🛡️ AUDIT</button></nav>
 <section class="kpis" id="kpis"></section>
 <section class="panel active" id="current"></section><section class="panel" id="recovery"></section><section class="panel" id="videos"></section><section class="panel" id="standards"></section><section class="panel" id="morph"></section><section class="panel" id="audit"></section>
 </main>
@@ -513,6 +516,7 @@ function recoveryGrouped(a){
  }).join("");
 }
 function render(){
+const videoTab=document.querySelector('[data-tab="videos"]'),tabs=document.getElementById("curriculumTabs");if(videoTab)videoTab.classList.toggle("hidden",!isTeacher);if(tabs)tabs.classList.toggle("teacher-tabs",isTeacher);if(!isTeacher&&videoTab?.classList.contains("active")){videoTab.classList.remove("active");document.querySelector('[data-tab="current"]')?.classList.add("active");$("#videos").classList.remove("active");$("#current").classList.add("active")}
 if(!isTeacher&&!studentCurriculumAccess){
   $("#hero").textContent="Curriculum Quest Locked";$("#pct").textContent="🔒";$("#ring").style.background="#241936";$("#kpis").innerHTML="";
   const locked=`<div class="frame empty"><h2>🔒 No curriculum quest is open</h2><p>${esc(accessMessage)}</p></div>`;

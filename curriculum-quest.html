@@ -96,6 +96,7 @@ const $=x=>document.querySelector(x), $$=x=>[...document.querySelectorAll(x)];
 const esc=(x="")=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 let isTeacher=false,currentStudent=null,activeVideoId=null,watchedRanges=[],lastVideoTime=0;
 let studentCurriculumAccess=false,accessMessage="Checking today's school-day assignment…";
+let currentQuestOpen=false;
 const WATCH_REQUIRED_FRACTION=.90;
 function save(){localStorage.setItem(K,JSON.stringify(S));if(window.queueCurriculumProgress)window.queueCurriculumProgress(S)}
 function st(id){return S.items[id]||{watched:false,practiced:false,verified:false,videoReflection:"",practiceEvidence:""}}
@@ -403,7 +404,7 @@ if(!isTeacher&&!studentCurriculumAccess){
   const locked=`<div class="frame empty"><h2>🔒 No curriculum quest is open</h2><p>${esc(accessMessage)}</p></div>`;
   ["current","recovery","videos","standards","morph","audit"].forEach(id=>$("#"+id).innerHTML=locked);return;
 }
-let r=rows(),due=r.filter(x=>x.day<=S.day),pendingSources=due.filter(mediaPending),eligibleDue=due.filter(x=>!mediaPending(x)),eligibleDone=eligibleDue.filter(missionComplete).length,p=eligibleDue.length?Math.round(eligibleDone/eligibleDue.length*100):0,back=r.filter(x=>x.day<S.day&&!missionComplete(x)&&!mediaPending(x)),mv=due.filter(x=>vid(x)&&!mediaPending(x)&&!st(x.id).watched);$("#grade").value=S.grade;$("#day").value=S.day;$("#hero").textContent=`${D.meta.gradeLabels[S.grade]} • Day ${S.day}`;$("#pct").textContent=p+"%";$("#ring").style.background=`conic-gradient(var(--green) ${p*3.6}deg,#241936 0)`;$("#kpis").innerHTML=[[r.filter(x=>x.day===S.day).length,"TODAY'S MISSIONS"],[back.length,"RECOVERY MISSIONS"],[mv.length,"VIDEOS STILL NEEDED"],[pendingSources.length,"SOURCE VIDEOS PENDING"]].map(x=>`<div class="frame kpi"><b>${x[0]}</b><small>${x[1]}</small></div>`).join("");$("#current").innerHTML=grouped(`Day ${S.day} Current Quest`,"Watch the lesson, pass the standard check, then apply what you learned.",r.filter(x=>x.day===S.day));$("#recovery").innerHTML=grouped("Recovery Quest","Only incomplete missions from school days before today appear here.",back.sort((a,b)=>a.day-b.day),true);
+let r=rows(),dayIsOpen=isTeacher||currentQuestOpen,due=r.filter(x=>x.day<S.day||(dayIsOpen&&x.day===S.day)),pendingSources=due.filter(mediaPending),eligibleDue=due.filter(x=>!mediaPending(x)),eligibleDone=eligibleDue.filter(missionComplete).length,p=eligibleDue.length?Math.round(eligibleDone/eligibleDue.length*100):0,back=r.filter(x=>x.day<S.day&&!missionComplete(x)&&!mediaPending(x)),mv=due.filter(x=>vid(x)&&!mediaPending(x)&&!st(x.id).watched),todayRows=dayIsOpen?r.filter(x=>x.day===S.day):[];$("#grade").value=S.grade;$("#day").value=S.day;$("#hero").textContent=dayIsOpen?`${D.meta.gradeLabels[S.grade]} • Day ${S.day}`:`Recovery Open • Current Day ${S.day} Locked`;$("#pct").textContent=p+"%";$("#ring").style.background=`conic-gradient(var(--green) ${p*3.6}deg,#241936 0)`;$("#kpis").innerHTML=[[todayRows.length,dayIsOpen?"TODAY'S MISSIONS":"CURRENT MISSIONS OPEN"],[back.length,"RECOVERY MISSIONS"],[mv.length,"PAST VIDEOS STILL NEEDED"],[pendingSources.length,"SOURCE VIDEOS PENDING"]].map(x=>`<div class="frame kpi"><b>${x[0]}</b><small>${x[1]}</small></div>`).join("");$("#current").innerHTML=dayIsOpen?grouped(`Day ${S.day} Current Quest`,"Watch the lesson, pass the standard check, then apply what you learned.",todayRows):`<div class="frame empty"><h2>🔒 Current Quest is closed</h2><p>New curriculum opens on the next assigned school day. Recovery remains available.</p></div>`;$("#recovery").innerHTML=grouped("Recovery Quest","Only incomplete missions from school days before the current day appear here.",back.sort((a,b)=>a.day-b.day),true);
 let vr=(isTeacher?r:due).filter(vid).sort((a,b)=>a.day-b.day);$("#videos").innerHTML=`<div class="title"><div><h2>🔮 Required Video Vault</h2><p>Students see only videos from today and earlier school days. Source-pending videos are held until school access returns.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Day</th><th>Subject</th><th>Mission</th><th>Media</th><th>Status</th><th>Watch</th></tr></thead><tbody>${vr.map(x=>{const m=mediaFor(x),pending=mediaPending(x),ready=mediaReady(x);return `<tr><td>${x.day}</td><td>${esc(x.subject)}</td><td>${esc(friendlyTitle(x))}</td><td>${pending?"⏳ SOURCE PENDING":ready?"R2 READY":"SOURCE LINK"}</td><td>${pending?"ON HOLD":st(x.id).watched?"✅ WATCHED":"NOT YET"}</td><td>${ready?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">WATCH ▶</button>`:pending?"Awaiting access":"—"}</td></tr>`}).join("")}</tbody></table></div>`;
 let sr=D.standards.filter(x=>x.grade===S.grade);$("#standards").innerHTML=standardsMasteryReport()+`<div class="title"><div><h2>📚 Standards Codex</h2><p>Teacher-facing source map.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Subject</th><th>Code</th><th>Standard</th><th>Evidence of Proficiency</th><th>Assessment</th></tr></thead><tbody>${sr.map(x=>`<tr><td>${esc(x.subject)}</td><td>${esc(x.code)}</td><td>${esc(x.standard)}</td><td>${esc(x.proficiency)}</td><td>${esc(x.assessment)}</td></tr>`).join("")}</tbody></table></div>`;
 let mr=D.morphology.filter(x=>x.grade===S.grade&&(isTeacher||Number(x.week||0)<=Math.ceil(S.day/5))),wg={};mr.forEach(x=>(wg[x.week]??=[]).push(x));$("#morph").innerHTML=`<div class="title"><div><h2>⚒️ Wordsmith Tower</h2><p>Word roots and target words available through the current school day.</p></div></div>`+Object.entries(wg).map(([w,l])=>`<div class="group"><div class="grouphead"><h3>Week ${w} • ${esc(l[0].root)}</h3></div><div class="wordgrid">${l.map(x=>`<div class="frame word"><small>ROOT: ${esc(x.root)}</small><b>${esc(x.word)}</b><p>${esc(x.morphological||x.orthographic||"Learn how this word is built and what its parts mean.")}</p><p><strong>Your task:</strong> ${esc(x.application||"Use the word correctly in a complete sentence.")}</p></div>`).join("")}</div></div>`).join("");
@@ -527,6 +528,7 @@ onAuthStateChanged(auth,async u=>{
   currentStudent=u||null;
   isTeacher=!!u && String(u.email||"").toLowerCase()===TEACHER.toLowerCase();
   studentCurriculumAccess=isTeacher;
+  currentQuestOpen=isTeacher;
   accessMessage=u?"Checking today's school-day assignment…":"Open Curriculum Quest from your signed-in Dragonswood portal.";
   document.getElementById("teacherBadge").style.display=isTeacher?"inline-block":"none";
   if(u){
@@ -564,11 +566,13 @@ onAuthStateChanged(auth,async u=>{
         const assignment=today.data();
         S.day=Math.max(1,Math.min(40,Number(assignment.day||1)));
         studentCurriculumAccess=true;
+        currentQuestOpen=true;
         accessMessage="";
         save();
       }catch(e){
-        studentCurriculumAccess=false;
-        accessMessage="There is no open school-day quest right now. Current curriculum and Recovery reopen with the next assigned school day.";
+        studentCurriculumAccess=true;
+        currentQuestOpen=false;
+        accessMessage="Current curriculum is closed, but unfinished work from earlier school days remains available in Recovery.";
       }
       document.getElementById("day").disabled=true;
     }else{
@@ -591,6 +595,7 @@ onAuthStateChanged(auth,async u=>{
     }
   }else{
     studentCurriculumAccess=false;
+    currentQuestOpen=false;
     document.getElementById("studentIdentity").textContent="Open from your signed-in Dragonswood portal";
     document.getElementById("grade").disabled=false;
   }

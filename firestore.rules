@@ -14,8 +14,15 @@ service cloud.firestore {
 
     function isExploreStudent() {
       return request.auth != null
-        && request.auth.token.email != null
-        && request.auth.token.email.matches('.*@explore[.]academy$');
+        && (
+          (
+            request.auth.token.email != null
+            && request.auth.token.email.matches('.*@explore[.]academy$')
+          )
+          // Teacher-approved outside accounts must be able to exercise the
+          // same guarded student paths during testing.
+          || exists(/databases/$(database)/documents/testerAccounts/$(request.auth.uid))
+        );
     }
 
     function isTester() {
@@ -65,7 +72,11 @@ service cloud.firestore {
       allow update: if isOwner(studentId)
                     && isExploreStudent()
                     && request.resource.data.diff(resource.data).affectedKeys()
-                       .hasOnly(['title','avatar','avatarConfig','equipped','updatedAt']);
+                       .hasOnly(['title','avatar','avatarConfig','equipped','homeBackgroundId','updatedAt'])
+                    && request.resource.data.get('homeBackgroundId','fairy-purple') in [
+                      'fairy-purple','fairy-bamboo','fairy-mushroom','crystal-cave',
+                      'jungle','mountain-night','snow-aurora','snow-village'
+                    ];
 
       allow update: if isOwner(studentId)
                     && isExploreStudent()

@@ -2809,7 +2809,7 @@ const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const DOMAIN="explore.academy";
 const $=id=>document.getElementById(id);
 let bathroomUnsub=null,bathroomSlotUnsub=null,bathroomSlotData=null,snackUnsub=null,currentBathroomData=null,currentSnackData=null;
-let user=null,profile=null,rewards=[],classPoints=0,scores=[],shopItems=[],myPurchases=[],classJobsConfig=null,myJobWeek=null,classScheduleConfig=null,classCalendarEvents=[],shopFilter="all",shopSort="level",inventoryFilter="all",profileUnsub=null,purchasesUnsub=null,dailyProgressUnsub=null,dailyOverrideUnsub=null,dailyProgressRows=[],dailyOverrideData={};
+let user=null,profile=null,rewards=[],classPoints=0,scores=[],shopItems=[],myPurchases=[],classJobsConfig=null,myJobWeek=null,classScheduleConfig=null,classCalendarEvents=[],shopFilter="all",shopSort="level",inventoryFilter="all",profileUnsub=null,purchasesUnsub=null,dailyProgressUnsub=null,dailyOverrideUnsub=null,dailyProgressRows=[],dailyOverrideData={},isTesterAccount=false;
 
 const TITLES=[
   {id:"princess",label:"Princess",position:"before"},
@@ -3777,7 +3777,7 @@ function dwUpdateDailyAccess(){
   const dates=dwCompletedMorningDates(),today=dwStudentDateKey(),academicComplete=dates.has(today);
   const overrideToday=String(dailyOverrideData?.dateKey||"")===today &&
     (dailyOverrideData?.all===true || (Array.isArray(dailyOverrideData?.studentIds)&&dailyOverrideData.studentIds.includes(user?.uid)));
-  const open=academicComplete||overrideToday;
+  const open=academicComplete||overrideToday||isTesterAccount;
   window.DWDailyAccessUnlocked=open;
 
   document.querySelectorAll('.portal-tab[data-view="games"],.portal-tab[data-view="journal"]').forEach(b=>{
@@ -3788,7 +3788,9 @@ function dwUpdateDailyAccess(){
   if($("dailyDaysCompleted"))$("dailyDaysCompleted").textContent=count;
   const banner=$("dailyAccessNotice"),txt=$("dailyAccessNoticeText");
   if(banner)banner.classList.toggle("unlocked",open);
-  if(txt)txt.textContent=academicComplete
+  if(txt)txt.textContent=isTesterAccount
+    ?"🧪 Approved tester access. Games and My Journal are unlocked."
+    :academicComplete
     ?"✅ Morning requirement complete. Games and My Journal are unlocked for today."
     :overrideToday
       ?"🔓 Teacher override active. Games and My Journal are unlocked for today."
@@ -3796,7 +3798,7 @@ function dwUpdateDailyAccess(){
   if($("dailyProgressDetail"))$("dailyProgressDetail").textContent=
     `${count} of 180 school days completed. Your first 12 school days are preserved from the original journey; assigned Daily Work and Level-Up Morning Work both count from here forward.`;
   if($("dmDaysComplete"))$("dmDaysComplete").textContent=count;
-  if($("dmTodayStatus"))$("dmTodayStatus").textContent=academicComplete?"✅ COMPLETE":overrideToday?"🔓 TEACHER OVERRIDE":"Not complete yet";
+  if($("dmTodayStatus"))$("dmTodayStatus").textContent=isTesterAccount?"🧪 TESTER ACCESS":academicComplete?"✅ COMPLETE":overrideToday?"🔓 TEACHER OVERRIDE":"Not complete yet";
   dwRenderDailyMissionsJourney();
 }
 
@@ -3881,7 +3883,8 @@ onAuthStateChanged(auth,async u=>{
   }
 
   const email=String(u.email||"").trim().toLowerCase();
-  if(!email.endsWith("@"+DOMAIN)){
+  try{isTesterAccount=(await getDoc(doc(db,"testerAccounts",u.uid))).exists()}catch(e){isTesterAccount=false}
+  if(!email.endsWith("@"+DOMAIN)&&!isTesterAccount){
     profile=null;
     $("signedOut").classList.remove("hidden");
     $("signedIn").classList.add("hidden");

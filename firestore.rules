@@ -18,6 +18,11 @@ service cloud.firestore {
         && request.auth.token.email.matches('.*@explore[.]academy$');
     }
 
+    function isTester() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/testerAccounts/$(request.auth.uid));
+    }
+
     function isOwner(uid) {
       return request.auth != null && request.auth.uid == uid;
     }
@@ -35,7 +40,7 @@ service cloud.firestore {
     match /students/{studentId} {
       allow read: if isTeacher() || isOwner(studentId);
 
-      allow create: if isExploreStudent()
+      allow create: if (isExploreStudent() || isTester())
                     && isOwner(studentId)
                     && request.resource.data.hp == 10
                     && request.resource.data.gold == 0
@@ -122,7 +127,7 @@ service cloud.firestore {
       allow read: if isTeacher()
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
 
-      allow create: if isExploreStudent()
+      allow create: if (isExploreStudent() || isTester())
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.status == "pending"
                     && request.resource.data.lessonId is string
@@ -140,6 +145,7 @@ service cloud.firestore {
     match /scores/{scoreId} {
       allow read: if true;
       allow create: if isSignedIn()
+                    && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.score is number
                     && request.resource.data.score >= 0
                     && request.resource.data.score <= 100000;
@@ -178,7 +184,7 @@ service cloud.firestore {
     match /dailyQuests/{questDate} {
       allow read: if isTeacher()
                   || (
-                    isExploreStudent()
+                    (isExploreStudent() || isTester())
                     && request.time >= resource.data.unlockAt
                     && request.time < resource.data.lockAt
                   );
@@ -200,9 +206,16 @@ service cloud.firestore {
                     && request.resource.data.correct is number
                     && request.resource.data.correct >= 0
                     && request.resource.data.attempts is number
-                    && request.resource.data.attempts >= 0;
+                    && request.resource.data.attempts >= 0
+                    && request.resource.data.attempts <= 60
+                    && request.resource.data.correct <= request.resource.data.attempts
+                    && request.resource.data.score <= request.resource.data.correct * 150
+                    && (!('activeSeconds' in request.resource.data) || (request.resource.data.activeSeconds is number && request.resource.data.activeSeconds >= 0 && request.resource.data.activeSeconds <= 14400))
+                    && (!('idleEvents' in request.resource.data) || (request.resource.data.idleEvents is number && request.resource.data.idleEvents >= 0 && request.resource.data.idleEvents <= 100))
+                    && (!('perQuestionSeconds' in request.resource.data) || (request.resource.data.perQuestionSeconds is list && request.resource.data.perQuestionSeconds.size() <= 60))
+                    && (!('needsReteach' in request.resource.data) || (request.resource.data.needsReteach is list && request.resource.data.needsReteach.size() <= 60));
 
-      allow update: if isExploreStudent()
+      allow update: if (isExploreStudent() || isTester())
                     && resource.data.studentId == request.auth.uid
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.session == resource.data.session
@@ -215,9 +228,84 @@ service cloud.firestore {
                     && request.resource.data.correct is number
                     && request.resource.data.correct >= 0
                     && request.resource.data.attempts is number
-                    && request.resource.data.attempts >= 0;
+                    && request.resource.data.attempts >= 0
+                    && request.resource.data.attempts <= 60
+                    && request.resource.data.correct <= request.resource.data.attempts
+                    && request.resource.data.score <= request.resource.data.correct * 150
+                    && (!('activeSeconds' in request.resource.data) || (request.resource.data.activeSeconds is number && request.resource.data.activeSeconds >= 0 && request.resource.data.activeSeconds <= 14400))
+                    && (!('idleEvents' in request.resource.data) || (request.resource.data.idleEvents is number && request.resource.data.idleEvents >= 0 && request.resource.data.idleEvents <= 100))
+                    && (!('perQuestionSeconds' in request.resource.data) || (request.resource.data.perQuestionSeconds is list && request.resource.data.perQuestionSeconds.size() <= 60))
+                    && (!('needsReteach' in request.resource.data) || (request.resource.data.needsReteach is list && request.resource.data.needsReteach.size() <= 60));
 
       allow delete: if isTeacher();
+    }
+
+    // Curriculum Quest is cached locally for immediate/offline use and mirrored
+    // here so Chromebook or browser-profile resets do not erase academic work.
+    match /curriculumQuestProgress/{studentId} {
+      allow read: if isTeacher() || isOwner(studentId);
+
+      allow create, update: if isExploreStudent()
+                            && isOwner(studentId)
+                            && request.resource.data.studentId == studentId
+                            && request.resource.data.grade in ["I", "K"]
+                            && request.resource.data.day is number
+                            && request.resource.data.day >= 1
+                            && request.resource.data.day <= 40
+                            && request.resource.data.items is map
+                            && request.resource.data.keys().hasOnly([
+                              'studentId','grade','day','items','updatedAt'
+                            ]);
+
+      allow delete: if isTeacher();
+    }
+
+    // Canonical v55 Curriculum Quest record: one student + one mission.
+    // Student evidence is writable by its owner; verified is teacher-only.
+    match /curriculumProgress/{progressId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+
+      allow create: if (isExploreStudent() || isTester())
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.itemId is string
+                    && progressId == request.auth.uid + "_" + request.resource.data.itemId
+                    && request.resource.data.grade in ["I", "K"]
+                    && request.resource.data.day is number
+                    && request.resource.data.day >= 1
+                    && request.resource.data.day <= 40
+                    && request.resource.data.subject in ["Math", "Science", "HUM"]
+                    && request.resource.data.verified == false
+                    && request.resource.data.questionsCorrect is number
+                    && request.resource.data.questionsSeen is number
+                    && request.resource.data.questionsCorrect >= 0
+                    && request.resource.data.questionsCorrect <= request.resource.data.questionsSeen
+                    && request.resource.data.questionsSeen <= 20;
+
+      allow update: if (isExploreStudent() || isTester())
+                    && resource.data.studentId == request.auth.uid
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.itemId == resource.data.itemId
+                    && request.resource.data.verified == resource.data.verified
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+                      'watched','videoCoverage','videoReflection','practiced',
+                      'practiceEvidence','questionsCorrect','questionsSeen',
+                      'autoAnswers','autoAttempts','lastActivityAttempt',
+                      'activityAttempts','overrideStatus','updatedAt'
+                    ])
+                    && request.resource.data.questionsCorrect is number
+                    && request.resource.data.questionsSeen is number
+                    && request.resource.data.questionsCorrect >= 0
+                    && request.resource.data.questionsCorrect <= request.resource.data.questionsSeen
+                    && request.resource.data.questionsSeen <= 20;
+
+      allow update, delete: if isTeacher();
+    }
+
+    // Teacher-managed UID allowlist for outside testing accounts.
+    match /testerAccounts/{uid} {
+      allow read: if isTeacher() || (isSignedIn() && request.auth.uid == uid);
+      allow create, update, delete: if isTeacher();
     }
 
     match /studentTransactions/{transactionId} {
@@ -312,7 +400,7 @@ service cloud.firestore {
                     && request.resource.data.approvalCredits == 0
                     && request.resource.data.active == true;
       allow update: if isOwner(studentId)
-                    && isExploreStudent()
+                    && (isExploreStudent() || isTester())
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.passesUsed is number
                     && request.resource.data.passesUsed >= 0
@@ -478,11 +566,6 @@ service cloud.firestore {
       allow update, delete: if isTeacher();
     }
 
-    match /{document=**} {
-      allow read, write: if false;
-    }
-
-
     // ============================================================
     // DRAGONSWOOD v50 — SCRIBE ARENA / WRITING PORTFOLIO
     // ============================================================
@@ -525,6 +608,13 @@ service cloud.firestore {
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid;
       allow update, delete: if isTeacher();
+    }
+
+    // Documentation-only default deny. Firestore ORs matching allow rules, so
+    // this does not override any explicit block above; unmatched paths remain
+    // denied because no true allow statement exists.
+    match /{document=**} {
+      allow read, write: if false;
     }
 
   }

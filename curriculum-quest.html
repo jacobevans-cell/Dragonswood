@@ -57,6 +57,7 @@ main{padding:20px 0 35px}.hero{padding:22px;display:grid;grid-template-columns:1
       <span id="authStatus" style="font-size:11px;color:#bfb5ce;margin-right:8px">Checking sign-in…</span><span id="studentIdentity" style="color:#c7c1d5;font-weight:900;font-size:12px">Checking your Dragonswood profile…</span>
       <select id="grade"><option value="I">I • 4th Grade</option><option value="K">K • 5th Grade</option></select>
       <label>Day <input id="day" type="number" min="1" max="40" value="14" style="width:62px"></label>
+      <select id="teacherStudent" style="display:none;max-width:220px"><option value="">Select a scholar…</option></select>
       <span id="teacherBadge" class="btn" style="display:none">🛡️ TEACHER VERIFIED</span>
       <a class="btn" href="index.html">← Portal</a>
     </div></div></header>
@@ -86,6 +87,7 @@ main{padding:20px 0 35px}.hero{padding:22px;display:grid;grid-template-columns:1
 </div>
 <script src="q1-curriculum-data.js"></script>
 <script src="q1-video-map.js"></script>
+<script src="curriculum-question-engine.js"></script>
 <script>
 const D=window.DRAGONSWOOD_DATA, VM=window.DRAGONSWOOD_VIDEO_MAP||{}, K="dragonswood_q1_integrated_progress_v3";
 let S=JSON.parse(localStorage.getItem(K)||"{}");
@@ -94,14 +96,15 @@ const $=x=>document.querySelector(x), $$=x=>[...document.querySelectorAll(x)];
 const esc=(x="")=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 let isTeacher=false,currentStudent=null,activeVideoId=null,watchedRanges=[],lastVideoTime=0;
 const WATCH_REQUIRED_FRACTION=.90;
-function save(){localStorage.setItem(K,JSON.stringify(S))}
+function save(){localStorage.setItem(K,JSON.stringify(S));if(window.queueCurriculumProgress)window.queueCurriculumProgress(S)}
 function st(id){return S.items[id]||{watched:false,practiced:false,verified:false,videoReflection:"",practiceEvidence:""}}
 function googleFileId(url=""){const m=String(url).match(/\/d\/([^/?]+)/);return m?m[1]:""}
 function mediaFor(x){const id=googleFileId(x.resourceUrl||"");return id&&VM[id]?VM[id]:null}
 function vid(x){return !!mediaFor(x)||!!(x.resourceUrl&&(x.resourceUrl.includes("google.com/videos")||/video/i.test(x.resourceName||"")))}
 function mediaReady(x){const m=mediaFor(x);return !!m&&m.status==="ready"&&!!m.url}
 function mediaPending(x){const m=mediaFor(x);return !!m&&m.status==="pending"}
-function teacherNote(x){if(x.day>3)return false;const t=((x.requirement||"")+" "+(x.resourceName||"")).toLowerCase();if(x.day<=2)return /(welcome|getting to know|routine|procedure|rules?|expectations?|flavor first day|flavor introduction|course introduction)/i.test(t);return /(getting to know|classroom procedures|procedures|routines|rules|scientific expectations|welcome day)/i.test(t)&&!/(pre-assessment|morphology|character|place value|energy|design problem|reading comprehension|language and writing)/i.test(t)}
+const DW_HIDDEN_ITEM_IDS=new Set(["I-HUM-D1-C1-A","I-HUM-D1-C2-A","I-HUM-D1-C3-A","I-HUM-D1-C4-A","I-HUM-D2-C1-A","I-HUM-D2-C2-A","I-HUM-D2-C3-A","I-HUM-D2-C4-A","K-HUM-D1-C1-A","K-HUM-D1-C2-A","K-HUM-D1-C3-A","K-HUM-D1-C4-A","K-HUM-D2-C1-A","K-HUM-D2-C2-A","K-HUM-D2-C3-A","K-HUM-D2-C4-A","I-Math-D1-C1-A","I-Math-D1-C2-A","I-Math-D1-C3-A","I-Math-D2-C3-A","K-Math-D1-C1-A","K-Math-D1-C2-A","K-Math-D1-C3-A","K-Math-D2-C1-A","I-Science-D1-C1-A","I-Science-D1-C3-A","I-Science-D2-C1-A","I-Science-D2-C3-A","K-Science-D1-C1-A","K-Science-D1-C3-A","K-Science-D1-C4-A"]);
+function teacherNote(x){return DW_HIDDEN_ITEM_IDS.has(x.id)}
 function supportMetadataRow(x){
   if(x.resourceUrl)return false;
   const strand=String(x.strand||"").toLowerCase();
@@ -155,16 +158,16 @@ function activityFor(x){
   if(m&&m.application)return `${m.application} Then use the target word “${m.word}” correctly in your own sentence.`;
   if(/FANBOYS/i.test(raw))return "Write a compound sentence using a comma and one FANBOYS conjunction. Make both sides complete ideas.";
   if(/point of view/i.test(raw))return "Choose the point of view, then prove it with a pronoun or specific clue from the text.";
-  if(x.subject==="Math")return `Complete the Dragonswood math challenge for “${raw||friendlyTitle(x)}.” Show enough reasoning that another mathematician could follow your thinking.`;
-  if(x.subject==="Science")return `Complete the Dragonswood science challenge for “${raw||friendlyTitle(x)}.” Use a cause, effect, observation, model, or piece of evidence in your explanation.`;
-  if(x.strand==="Reading")return `Answer the Dragonswood reading challenge for “${raw||friendlyTitle(x)}.” Use a text clue and explain what it shows.`;
-  if(x.strand==="Writing")return `Create and revise a strong example for “${raw||friendlyTitle(x)}.”`;
-  return `Complete the Dragonswood challenge for “${raw||friendlyTitle(x)}” and explain your thinking.`;
+  if(x.subject==="Math")return "Choose one problem from the practice above. Write its equation, show the important steps, and explain how you checked that your answer is reasonable.";
+  if(x.subject==="Science")return "Write a claim about today’s investigation. Support it with one specific observation or fact, then explain how that evidence supports your claim.";
+  if(x.strand==="Reading")return "Answer today’s reading question, give one specific clue from the lesson text or example, and explain what that clue proves.";
+  if(x.strand==="Writing")return "Write a strong example of today’s writing skill. Reread it, revise one part to make it clearer, and submit the improved version.";
+  return "Explain today’s key idea in your own words and give one correct example that proves you understand it.";
 }
 function kidIntro(x){const m=morphFor(x);if(m)return `Today you are learning the word “${m.word}.” Watch the lesson first. Then complete the word mission below.`;if(/point of view|first or third person/i.test((x.resourceName||"")+" "+(x.requirement||"")))return "Watch the lesson to learn how to tell who is telling a story. Then prove the point of view using the class novel.";if(/FANBOYS/i.test((x.resourceName||"")+" "+(x.requirement||"")))return "Watch the lesson to learn how FANBOYS can connect ideas. Then use what you learned in your own sentence.";return "Watch the lesson first. Then complete the mission using what you learned."}
 function togglePractice(id){const box=document.getElementById("practice-"+id);if(box)box.hidden=!box.hidden}
 function submitPractice(id){const ta=document.getElementById("practiceText-"+id),answer=(ta?.value||"").trim();if(answer.length<15){alert("Give a complete answer or explain what you completed. Try at least one good sentence.");return}const s=st(id);s.practiced=true;s.practiceEvidence=answer;S.items[id]=s;save();render()}
-function teacherVerify(id){if(!isTeacher)return;const s=st(id);if(!s.watched||!s.practiced){alert("This quest still needs the required video check and activity evidence.");return}s.verified=!s.verified;S.items[id]=s;save();render()}
+async function teacherVerify(id){if(!isTeacher||!window.setCurriculumVerification)return;const s=st(id);if(!s.watched||!s.practiced){alert("This quest still needs the required video check and activity evidence.");return}const next=!s.verified;const ok=await window.setCurriculumVerification(id,next);if(!ok)return;s.verified=next;S.items[id]=s;localStorage.setItem(K,JSON.stringify(S));render()}
 function mergeRanges(ranges){if(!ranges.length)return[];const a=ranges.slice().sort((x,y)=>x[0]-y[0]),out=[a[0].slice()];for(let i=1;i<a.length;i++){const last=out[out.length-1],cur=a[i];if(cur[0]<=last[1]+1)last[1]=Math.max(last[1],cur[1]);else out.push(cur.slice())}return out}
 function watchedFraction(v){if(!v.duration||!isFinite(v.duration))return 0;return Math.min(1,mergeRanges(watchedRanges).reduce((n,r)=>n+Math.max(0,r[1]-r[0]),0)/v.duration)}
 function launchVideo(id,url,title){activeVideoId=id;watchedRanges=[];lastVideoTime=0;$("#videoModalTitle").textContent=title;$("#videoReflection").value=st(id).videoReflection||"";const v=$("#nativeVideo");v.src=url;v.currentTime=0;$("#videoModal").classList.add("show");$("#videoModal").setAttribute("aria-hidden","false");updateVideoTimer()}
@@ -192,8 +195,33 @@ function meaningfulText(v,minWords=6){
   return {ok:true,msg:""};
 }
 function lessonWords(x){
-  const stop=new Set(["lesson","video","class","grade","day","practice","review","student","students","q1","stem","hum","what","with","from","this","that","then","your","into","about"]);
-  return (((x.resourceName||"")+" "+(x.requirement||"")).toLowerCase().match(/[a-z]{4,}/g)||[]).filter(w=>!stop.has(w));
+  const entry=typeof dwCurricEntry==="function"?dwCurricEntry(x):null;
+  const skillWords={
+    "math.rounding":["round","place","digit","nearest","estimate"],
+    "math.place_value":["place","value","digit","times","greater","smaller"],
+    "math.addition":["add","sum","regroup","place","estimate"],
+    "math.subtraction":["subtract","difference","regroup","place","estimate"],
+    "sci.energy_transfer":["energy","transfer","move","light","heat","sound","motion"],
+    "sci.design_problem":["problem","criteria","constraint","solution","design"],
+    "sci.compare_solutions":["solution","compare","criteria","evidence","design"],
+    "sci.fair_test":["fair","test","variable","evidence","result"],
+    "ela.pov":["narrator","person","pronoun","point","view"],
+    "ela.character":["character","trait","action","thought","word","evidence"],
+    "ela.meaning":["infer","inference","clue","evidence","text"],
+    "ela.sent.compound":["sentence","complete","conjunction","fanboys","comma"],
+    "ela.opinion":["opinion","claim","reason","evidence","because"]
+  };
+  let words=[];
+  for(const id of (entry?.skills||[])) words.push(...(skillWords[id]||id.split(/[._-]/)));
+  words.push(...String(entry?.iCan||"").toLowerCase().match(/[a-z]{4,}/g)||[]);
+  const stop=new Set(["lesson","video","class","grade","today","practice","review","student","students","with","from","this","that","then","your","into","about","understand","explain","describe","identify","develop"]);
+  return [...new Set(words.filter(w=>!stop.has(w)&&w.length>2))];
+}
+function conceptEvidence(x,written){
+  const words=lessonWords(x),text=String(written||"").toLowerCase();
+  if(!words.length)return {ok:true,matched:[]};
+  const matched=words.filter(w=>new RegExp(`\\b${w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}(?:s|ed|ing)?\\b`,"i").test(text));
+  return {ok:matched.length>=Math.min(2,words.length),matched};
 }
 function activitySpec(x){
   const raw=((x.resourceName||"")+" "+(x.requirement||"")+" "+(x.strand||"")).toLowerCase();
@@ -296,7 +324,9 @@ function validateActivity(x){
     return {ok:true};
   }
   const q=meaningfulText(written,spec.minWords||7);if(!q.ok)return q;
-  if(spec.science&&!/\b(because|energy|evidence|cause|effect|observe|shows|changes|moves|transfer|collision|design|solution|matter|force|resource)\b/i.test(written))return {ok:false,msg:"Include a science idea, observation, cause/effect, or evidence from the lesson."};
+  const concept=conceptEvidence(x,written);
+  if(!concept.ok)return {ok:false,msg:"Use at least two important ideas from today’s lesson and connect them in your explanation."};
+  if(spec.science&&!/\b(because|evidence|cause|effect|observe|observation|shows|result|data)\b/i.test(written))return {ok:false,msg:"Include an observation or fact and explain why it supports your science claim."};
   return {ok:true};
 }
 function renderActivity(x){
@@ -307,9 +337,36 @@ function renderActivity(x){
   else if(spec.kind==="morph"||spec.kind==="readingPov"){
     controls=`<div class="activity-options">${spec.options.map(o=>`<label class="activity-option"><input type="radio" name="act-${x.id}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join("")}</div><textarea class="activity-input" id="actText-${x.id}" placeholder="Write your evidence or example here…">${esc(answer.includes("Response:")?answer.split("Response:").slice(1).join("Response:").trim():answer)}</textarea>`;
   } else controls=`<textarea class="activity-input" id="actText-${x.id}" placeholder="Write your answer here…">${esc(answer)}</textarea>`;
-  return `<div class="activity-shell"><div class="activity-title">${esc(spec.title)}</div><div class="activity-prompt">${esc(spec.prompt)}</div>${controls}<div class="actions"><button class="btn" onclick="checkActivity('${x.id}')">${s.practiced?"CHECK AGAIN":"CHECK MY WORK"}</button></div><div class="activity-feedback" id="actFeedback-${x.id}"></div><div class="override-row"><button class="override-btn ${status}" id="overrideBtn-${x.id}" onclick="requestOverride('${x.id}')">${status==="pending"?"🟡 TEACHER REVIEW REQUESTED":status==="approved"?"✅ TEACHER OVERRIDE APPROVED":"🛡️ REQUEST TEACHER REVIEW"}</button><span class="override-note">Use this if you believe your answer is correct but Dragonswood will not accept it.</span></div></div>`;
+  return `${renderAutoPractice(x)}<div class="activity-shell"><div class="activity-title">Apply What You Learned • ${esc(spec.title)}</div><div class="activity-prompt">${esc(spec.prompt)}</div>${controls}<div class="actions"><button class="btn" onclick="checkActivity('${x.id}')">${s.practiced?"CHECK AGAIN":"CHECK MY WORK"}</button></div><div class="activity-feedback" id="actFeedback-${x.id}"></div><div class="override-row"><button class="override-btn ${status}" id="overrideBtn-${x.id}" onclick="requestOverride('${x.id}')">${status==="pending"?"🟡 TEACHER REVIEW REQUESTED":status==="approved"?"✅ TEACHER OVERRIDE APPROVED":"🛡️ REQUEST TEACHER REVIEW"}</button><span class="override-note">Use this if you believe your answer is correct but Dragonswood will not accept it.</span></div></div>`;
 }
 function findItem(id){return D.items.find(x=>x.id===id)}
+function autoQuestionsFor(x){
+  try{return typeof dwCurricPractice==="function"?dwCurricPractice(x,6):[]}
+  catch(e){console.error("Curriculum practice",x.id,e);return []}
+}
+function autoPassed(x){
+  const q=autoQuestionsFor(x),s=st(x.id),a=s.autoAnswers||{};
+  return !q.length||q.every((item,i)=>String(a[i]||"")===String(item.answer));
+}
+function missionNeedsTeacher(x){return typeof dwNeedsTeacherVerify==="function"?dwNeedsTeacherVerify(x):x.subject==="Science"||/writing/i.test(x.strand||"")}
+function missionComplete(x){
+  const s=st(x.id),videoOk=!vid(x)||s.watched||mediaPending(x);
+  return videoOk&&autoPassed(x)&&!!s.practiced&&(!missionNeedsTeacher(x)||!!s.verified)&&!mediaPending(x);
+}
+function renderAutoPractice(x){
+  const q=autoQuestionsFor(x),s=st(x.id),answers=s.autoAnswers||{};
+  if(!q.length)return `<div class="activity-feedback show good">This mission is observation or written-performance based, so it does not add a fake multiple-choice quiz.</div>`;
+  const renderSet=(items,offset,title,help)=>`<div class="activity-title">${title}</div><p class="kid-task">${help}</p>`+items.map((item,j)=>{const i=j+offset;
+    const chosen=String(answers[i]||""),correct=chosen&&chosen===String(item.answer),wrong=chosen&&!correct;
+    return `<fieldset class="activity-shell"><legend>${i+1}. ${esc(item.prompt)}</legend><div class="activity-options">${item.choices.map(o=>`<label class="activity-option"><input type="radio" name="auto-${x.id}-${i}" value="${esc(o)}" ${chosen===String(o)?"checked":""} onchange="checkAutoQuestion('${x.id}',${i},this.value)"><span>${esc(o)}</span></label>`).join("")}</div>${chosen?`<div class="activity-feedback show ${correct?"good":"bad"}">${correct?"✓ Correct":"Not yet—review the lesson and try again."}</div>`:""}</fieldset>`;
+  }).join("");
+  const videoCount=vid(x)?Math.min(2,q.length):0;
+  return (videoCount?renderSet(q.slice(0,videoCount),0,"Video Check • 2 questions","Use what the lesson video taught you."):"")+
+    renderSet(q.slice(videoCount),videoCount,`Practice • ${q.length-videoCount} questions`,"Prove the lesson skill with fresh examples.");
+}
+function checkAutoQuestion(id,index,value){
+  const x=findItem(id);if(!x)return;const s=st(id);s.autoAnswers=s.autoAnswers||{};s.autoAnswers[index]=value;s.autoAttempts=(s.autoAttempts||0)+1;S.items[id]=s;save();render();
+}
 function checkActivity(id){
   const x=findItem(id);if(!x)return;const f=document.getElementById("actFeedback-"+id),result=validateActivity(x),answer=activityAnswerText(x),s=st(id);
   s.lastActivityAttempt=answer;s.activityAttempts=(s.activityAttempts||0)+1;S.items[id]=s;save();
@@ -332,23 +389,90 @@ async function requestOverride(id){
     s.overrideStatus="";S.items[id]=s;save();render();
   }
 }
-function card(x){const s=st(x.id),hasVideo=vid(x),readyVideo=mediaReady(x),pendingVideo=mediaPending(x),canPractice=!hasVideo||s.watched||pendingVideo,task=activityFor(x),m=mediaFor(x);return `<article class="frame quest ${x.resourceUrl?"link":""} ${s.verified?"done":""}"><div class="meta"><span class="tag">${esc(x.subject)}</span><span class="tag">${esc(x.strand)}</span>${hasVideo?'<span class="tag video">REQUIRED VIDEO</span>':""}${pendingVideo?'<span class="tag" style="background:#5a3b12;color:#ffe8a0">SOURCE PENDING</span>':""}${s.verified?'<span class="tag complete">TEACHER VERIFIED</span>':""}</div><h4>${esc(friendlyTitle(x))}</h4><p class="kid-task">${esc(kidIntro(x))}</p><div class="step"><strong>1. ${hasVideo?"Watch the lesson":"Learn It in Dragonswood"}</strong><br>${pendingVideo?"⏳ This video is temporarily waiting on school access. You are not behind. Dragonswood provides the activity now, and the video will appear here when access is restored.":hasVideo?(s.watched?"✅ Video check complete.":"Watch the lesson here. Skipping ahead does not count as viewing."):"Everything you need for this lesson is right here."}${!hasVideo?renderMiniLesson(x):""}<div class="actions">${readyVideo?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">${s.watched?"REWATCH VIDEO":"WATCH REQUIRED VIDEO"} ▶</button>`:""}${pendingVideo?'<button class="stage locked" disabled>VIDEO ACCESS PENDING</button>':""}${hasVideo&&!pendingVideo?`<button class="stage ${s.watched?"on":"locked"}" disabled>${s.watched?"✓ WATCHED":"WATCH"}</button>`:""}</div></div><div class="step"><strong>2. Do the Quest</strong>${canPractice?renderActivity(x):'<p class="kid-task">Finish the required video first to unlock this activity.</p>'}</div><div class="step"><strong>3. Teacher Check</strong><br>${pendingVideo?(s.practiced?"Activity is ready. Final curriculum verification waits for the restored video.":"Complete the activity while the video source is being restored."):s.verified?"✅ Your teacher verified this quest.":(s.watched&&s.practiced?"Your work is ready for your teacher to check.":"Finish Steps 1 and 2 first.")}${isTeacher&&!pendingVideo?`<div class="actions"><button class="stage verify ${(s.watched&&s.practiced)?"":"locked"}" ${(s.watched&&s.practiced)?"":"disabled"} onclick="teacherVerify('${x.id}')">${s.verified?"UNVERIFY":"TEACHER VERIFY"}</button></div>`:""}</div>${isTeacher?`<details class="source-details"><summary>Teacher/source details</summary><p>${esc(x.requirement)}</p><p>${x.resourceName?esc(x.resourceName):""}</p>${m?`<p>Media status: ${esc(m.status)}</p>`:""}</details>`:""}</article>`}
+function card(x){
+  const s=st(x.id),hasVideo=vid(x),readyVideo=mediaReady(x),pendingVideo=mediaPending(x),canPractice=!hasVideo||s.watched||pendingVideo,m=mediaFor(x),needsTeacher=missionNeedsTeacher(x),complete=missionComplete(x),workReady=(!hasVideo||s.watched)&&autoPassed(x)&&s.practiced;
+  const finalText=pendingVideo?(s.practiced?"Activity saved. Final completion waits for the restored video.":"Complete the activity while video access is restored."):complete?"✅ Curriculum mission complete.":needsTeacher?(workReady?"Your work is ready for teacher verification.":"Finish the video, standard check, and written application first."):"Pass the standard check and written application to complete this mission.";
+  const verifyButton=isTeacher&&needsTeacher&&!pendingVideo?`<div class="actions"><button class="stage verify ${workReady?"":"locked"}" ${workReady?"":"disabled"} onclick="teacherVerify('${x.id}')">${s.verified?"UNVERIFY":"TEACHER VERIFY"}</button></div>`:"";
+  return `<article class="frame quest ${x.resourceUrl?"link":""} ${complete?"done":""}"><div class="meta"><span class="tag">${esc(x.subject)}</span><span class="tag">${esc(x.strand)}</span>${hasVideo?'<span class="tag video">REQUIRED VIDEO</span>':""}${pendingVideo?'<span class="tag" style="background:#5a3b12;color:#ffe8a0">SOURCE PENDING</span>':""}${complete?'<span class="tag complete">MISSION COMPLETE</span>':""}</div><h4>${esc(friendlyTitle(x))}</h4><p class="kid-task">${esc(kidIntro(x))}</p><div class="step"><strong>1. ${hasVideo?"Watch the lesson":"Learn It in Dragonswood"}</strong><br>${pendingVideo?"⏳ This video is temporarily waiting on school access. You are not behind.":hasVideo?(s.watched?"✅ Video check complete.":"Watch the lesson here. Skipping ahead does not count as viewing."):"Everything needed for this lesson is here."}${!hasVideo?renderMiniLesson(x):""}<div class="actions">${readyVideo?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">${s.watched?"REWATCH VIDEO":"WATCH REQUIRED VIDEO"} ▶</button>`:""}${pendingVideo?'<button class="stage locked" disabled>VIDEO ACCESS PENDING</button>':""}${hasVideo&&!pendingVideo?`<button class="stage ${s.watched?"on":"locked"}" disabled>${s.watched?"✓ WATCHED":"WATCH"}</button>`:""}</div></div><div class="step"><strong>2. Standard Check + Application</strong>${canPractice?renderActivity(x):'<p class="kid-task">Finish the required video first to unlock this activity.</p>'}</div><div class="step"><strong>3. ${needsTeacher?"Teacher Verification":"Completion Check"}</strong><br>${finalText}${verifyButton}</div>${isTeacher?`<details class="source-details"><summary>Teacher/source details</summary><p>${esc(x.requirement)}</p><p>${x.resourceName?esc(x.resourceName):""}</p><p>Human verification: ${needsTeacher?"required":"not required"}</p>${m?`<p>Media status: ${esc(m.status)}</p>`:""}</details>`:""}</article>`;
+}
 function grouped(title,desc,a,byDay=false){if(!a.length)return `<div class="frame empty">Nothing waiting here.</div>`;let g={};a.forEach(x=>(g[byDay?x.day:x.subject]??=[]).push(x));return `<div class="title"><div><h2>${title}</h2><p>${desc}</p></div></div>`+Object.entries(g).map(([n,l])=>`<div class="group"><div class="grouphead"><h3>${byDay?"Original Day "+n:n}</h3><small>${l.length} missions</small></div><div class="grid">${l.map(card).join("")}</div></div>`).join("")}
-function render(){let r=rows(),due=r.filter(x=>x.day<=S.day),pendingSources=due.filter(mediaPending),eligibleDue=due.filter(x=>!mediaPending(x)),eligibleDone=eligibleDue.filter(x=>st(x.id).verified).length,p=eligibleDue.length?Math.round(eligibleDone/eligibleDue.length*100):0,back=r.filter(x=>x.day<S.day&&!st(x.id).verified&&!mediaPending(x)),mv=due.filter(x=>vid(x)&&!mediaPending(x)&&!st(x.id).watched);$("#grade").value=S.grade;$("#day").value=S.day;$("#hero").textContent=`${D.meta.gradeLabels[S.grade]} • Day ${S.day}`;$("#pct").textContent=p+"%";$("#ring").style.background=`conic-gradient(var(--green) ${p*3.6}deg,#241936 0)`;$("#kpis").innerHTML=[[r.filter(x=>x.day===S.day).length,"TODAY'S MISSIONS"],[back.length,"RECOVERY MISSIONS"],[mv.length,"VIDEOS STILL NEEDED"],[pendingSources.length,"SOURCE VIDEOS PENDING"]].map(x=>`<div class="frame kpi"><b>${x[0]}</b><small>${x[1]}</small></div>`).join("");$("#current").innerHTML=grouped(`Day ${S.day} Current Quest`,"Watch first. Do the activity second. Your teacher verifies the mission last.",r.filter(x=>x.day===S.day));$("#recovery").innerHTML=grouped("Recovery Quest","Only unfinished earlier curriculum appears here. Videos awaiting school access are held separately and do not count against students.",back.sort((a,b)=>a.day-b.day),true);
+function render(){let r=rows(),due=r.filter(x=>x.day<=S.day),pendingSources=due.filter(mediaPending),eligibleDue=due.filter(x=>!mediaPending(x)),eligibleDone=eligibleDue.filter(missionComplete).length,p=eligibleDue.length?Math.round(eligibleDone/eligibleDue.length*100):0,back=r.filter(x=>x.day<S.day&&!missionComplete(x)&&!mediaPending(x)),mv=due.filter(x=>vid(x)&&!mediaPending(x)&&!st(x.id).watched);$("#grade").value=S.grade;$("#day").value=S.day;$("#hero").textContent=`${D.meta.gradeLabels[S.grade]} • Day ${S.day}`;$("#pct").textContent=p+"%";$("#ring").style.background=`conic-gradient(var(--green) ${p*3.6}deg,#241936 0)`;$("#kpis").innerHTML=[[r.filter(x=>x.day===S.day).length,"TODAY'S MISSIONS"],[back.length,"RECOVERY MISSIONS"],[mv.length,"VIDEOS STILL NEEDED"],[pendingSources.length,"SOURCE VIDEOS PENDING"]].map(x=>`<div class="frame kpi"><b>${x[0]}</b><small>${x[1]}</small></div>`).join("");$("#current").innerHTML=grouped(`Day ${S.day} Current Quest`,"Watch the lesson, pass the standard check, then apply what you learned.",r.filter(x=>x.day===S.day));$("#recovery").innerHTML=grouped("Recovery Quest","Only unfinished earlier curriculum appears here. Videos awaiting school access are held separately and do not count against students.",back.sort((a,b)=>a.day-b.day),true);
 let vr=r.filter(vid).sort((a,b)=>a.day-b.day);$("#videos").innerHTML=`<div class="title"><div><h2>🔮 Required Video Vault</h2><p>R2 videos play directly inside Dragonswood. Source-pending videos are held until school access returns.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Day</th><th>Subject</th><th>Mission</th><th>Media</th><th>Status</th><th>Watch</th></tr></thead><tbody>${vr.map(x=>{const m=mediaFor(x),pending=mediaPending(x),ready=mediaReady(x);return `<tr><td>${x.day}</td><td>${esc(x.subject)}</td><td>${esc(friendlyTitle(x))}</td><td>${pending?"⏳ SOURCE PENDING":ready?"R2 READY":"SOURCE LINK"}</td><td>${pending?"ON HOLD":st(x.id).watched?"✅ WATCHED":"NOT YET"}</td><td>${ready?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">WATCH ▶</button>`:pending?"Awaiting access":"—"}</td></tr>`}).join("")}</tbody></table></div>`;
-let sr=D.standards.filter(x=>x.grade===S.grade);$("#standards").innerHTML=`<div class="title"><div><h2>📚 Standards Codex</h2><p>Teacher-facing source map.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Subject</th><th>Code</th><th>Standard</th><th>Evidence of Proficiency</th><th>Assessment</th></tr></thead><tbody>${sr.map(x=>`<tr><td>${esc(x.subject)}</td><td>${esc(x.code)}</td><td>${esc(x.standard)}</td><td>${esc(x.proficiency)}</td><td>${esc(x.assessment)}</td></tr>`).join("")}</tbody></table></div>`;
+let sr=D.standards.filter(x=>x.grade===S.grade);$("#standards").innerHTML=standardsMasteryReport()+`<div class="title"><div><h2>📚 Standards Codex</h2><p>Teacher-facing source map.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Subject</th><th>Code</th><th>Standard</th><th>Evidence of Proficiency</th><th>Assessment</th></tr></thead><tbody>${sr.map(x=>`<tr><td>${esc(x.subject)}</td><td>${esc(x.code)}</td><td>${esc(x.standard)}</td><td>${esc(x.proficiency)}</td><td>${esc(x.assessment)}</td></tr>`).join("")}</tbody></table></div>`;
 let mr=D.morphology.filter(x=>x.grade===S.grade),wg={};mr.forEach(x=>(wg[x.week]??=[]).push(x));$("#morph").innerHTML=`<div class="title"><div><h2>⚒️ Wordsmith Tower</h2><p>Word roots and target words.</p></div></div>`+Object.entries(wg).map(([w,l])=>`<div class="group"><div class="grouphead"><h3>Week ${w} • ${esc(l[0].root)}</h3></div><div class="wordgrid">${l.map(x=>`<div class="frame word"><small>ROOT: ${esc(x.root)}</small><b>${esc(x.word)}</b><p>${esc(x.morphological||x.orthographic||"Learn how this word is built and what its parts mean.")}</p><p><strong>Your task:</strong> ${esc(x.application||"Use the word correctly in a complete sentence.")}</p></div>`).join("")}</div></div>`).join("");
-let miss=due.filter(x=>!st(x.id).verified&&!mediaPending(x));$("#audit").innerHTML=`<div class="title"><div><h2>🛡️ Curriculum Compliance Shield</h2><p>${isTeacher?"Teacher verification view.":"Students can see what remains, but cannot verify their own work."}</p></div></div><div class="frame audit ${miss.length?"bad":"good"}"><h3>${miss.length} missions not teacher-verified</h3><p>${miss.length?"Recovery Quest shows the unfinished available curriculum.":"Everything currently available and due is teacher-verified."}</p></div><div class="frame audit ${mv.length?"bad":"good"}"><h3>${mv.length} available required videos still need a completed video check</h3></div><div class="frame audit ${pendingSources.length?"bad":"good"}"><h3>${pendingSources.length} curriculum video sources awaiting school access</h3><p>${pendingSources.length?"These are held separately and do not count as student recovery failures. Activities can continue now.":"No curriculum source videos are pending access."}</p></div>`}
+let miss=due.filter(x=>!missionComplete(x)&&!mediaPending(x));$("#audit").innerHTML=`<div class="title"><div><h2>🛡️ Curriculum Compliance Shield</h2><p>Completion requires the lesson, standard check, and application. Teacher verification is reserved for human-judgment work.</p></div></div><div class="frame audit ${miss.length?"bad":"good"}"><h3>${miss.length} curriculum missions incomplete</h3><p>${miss.length?"Recovery Quest shows the unfinished available curriculum.":"Everything currently available and due is complete."}</p></div><div class="frame audit ${mv.length?"bad":"good"}"><h3>${mv.length} available required videos still need a completed video check</h3></div><div class="frame audit ${pendingSources.length?"bad":"good"}"><h3>${pendingSources.length} curriculum video sources awaiting school access</h3><p>${pendingSources.length?"These are held separately and do not count as student recovery failures. Activities can continue now.":"No curriculum source videos are pending access."}</p></div>`}
 $("#grade").onchange=e=>{if(currentStudent&&!isTeacher){e.target.value=S.grade;return}S.grade=e.target.value;save();render()};$("#day").onchange=e=>{if(!isTeacher){e.target.value=S.day;return}S.day=Math.max(1,Math.min(40,+e.target.value||1));save();render()};$$(".tabs button").forEach(b=>b.onclick=()=>{$$(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");$$(".panel").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.tab).classList.add("active")});render();
 </script>
 <script type="module">
 import {initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import {getFirestore,doc,getDoc,addDoc,collection,serverTimestamp,onSnapshot,query,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {getFirestore,doc,getDoc,getDocs,setDoc,updateDoc,addDoc,collection,serverTimestamp,onSnapshot,query,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 const firebaseConfig={"apiKey":"AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE","authDomain":"dragonswood-9289e.firebaseapp.com","projectId":"dragonswood-9289e","storageBucket":"dragonswood-9289e.firebasestorage.app","messagingSenderId":"1064477064695","appId":"1:1064477064695:web:283e1016ee2303d39042f2","measurementId":"G-LPRLDGVBD2"};
 const TEACHER="jacobicusjax@gmail.com";
 const app=getApps().length?getApp():initializeApp(firebaseConfig);
 const auth=getAuth(app),db=getFirestore(app);
+let progressTimer=null,progressReady=false,selectedStudentId="",teacherProgressRows=[],teacherAllProgress=[],teacherStudentNames={};
+const syncedSignatures=new Map();
+function progressDocId(uid,itemId){return `${uid}_${itemId}`}
+function questionCounts(item,state){
+  const qs=autoQuestionsFor(item),answers=state.autoAnswers||{};
+  let seen=0,correct=0;
+  qs.forEach((q,i)=>{if(String(answers[i]||"")!==""){seen++;if(String(answers[i])===String(q.answer))correct++}});
+  return {seen,correct};
+}
+function canonicalProgress(uid,item,state,forceUnverified=false){
+  const counts=questionCounts(item,state),entry=typeof dwCurricEntry==="function"?dwCurricEntry(item):null;
+  return {
+    studentId:uid,itemId:item.id,grade:item.grade,day:Number(item.day),subject:item.subject,strand:item.strand||"",
+    standardCode:(entry?.standards||[]).join(","),watched:!!state.watched,
+    videoCoverage:Number(state.videoCoverage||0),videoReflection:String(state.videoReflection||""),
+    practiced:!!state.practiced,practiceEvidence:String(state.practiceEvidence||""),
+    questionsCorrect:counts.correct,questionsSeen:counts.seen,autoAnswers:state.autoAnswers||{},
+    autoAttempts:Number(state.autoAttempts||0),lastActivityAttempt:String(state.lastActivityAttempt||""),
+    activityAttempts:Number(state.activityAttempts||0),overrideStatus:String(state.overrideStatus||""),
+    verified:forceUnverified?false:!!state.verified,updatedAt:serverTimestamp()
+  };
+}
+function mergeProgressRows(local,rows){
+  const out={grade:local.grade||"I",day:Number(local.day||14),items:{...(local.items||{})}};
+  rows.forEach(r=>{const a=out.items[r.itemId]||{};out.items[r.itemId]={...a,...r,autoAnswers:{...(a.autoAnswers||{}),...(r.autoAnswers||{})},verified:!!r.verified}});
+  return out;
+}
+function standardsMasteryReport(){
+  if(!isTeacher||!teacherAllProgress.length)return "";
+  const ids=[...new Set(teacherAllProgress.map(r=>r.studentId))];
+  const standards=D.standards.filter(x=>x.grade===S.grade);
+  return `<div class="title"><div><h2>🛡️ Standards Mastery Report</h2><p>Question evidence, written work, and video completion by scholar.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Standard</th>${ids.map(id=>`<th>${esc(teacherStudentNames[id]||id.slice(0,6))}</th>`).join("")}</tr></thead><tbody>${standards.map(std=>`<tr><td><b>${esc(std.code)}</b><br><small>${esc(std.proficiency||"")}</small></td>${ids.map(id=>{const rows=teacherAllProgress.filter(r=>r.studentId===id&&String(r.standardCode||"").split(",").includes(std.code));const seen=rows.reduce((n,r)=>n+Number(r.questionsSeen||0),0),correct=rows.reduce((n,r)=>n+Number(r.questionsCorrect||0),0),written=rows.filter(r=>r.practiced).length,verified=rows.filter(r=>r.verified).length,videos=rows.filter(r=>r.watched).length;return `<td>${correct}/${seen} questions<br>${written} written • ${verified} verified<br>${videos} videos</td>`}).join("")}</tr>`).join("")}</tbody></table></div>`;
+}
+async function migrateLegacyProgress(uid,legacy){
+  const remote=await getDocs(query(collection(db,"curriculumProgress"),where("studentId","==",uid)));
+  const existing=new Set(remote.docs.map(d=>d.data().itemId));
+  const writes=[];
+  for(const [id,state] of Object.entries(legacy.items||{})){
+    const item=findItem(id);if(!item||existing.has(id))continue;
+    writes.push(setDoc(doc(db,"curriculumProgress",progressDocId(uid,id)),canonicalProgress(uid,item,state,true)));
+  }
+  for(let i=0;i<writes.length;i+=20)await Promise.all(writes.slice(i,i+20));
+  return remote.docs.map(d=>d.data());
+}
+window.queueCurriculumProgress=state=>{
+  if(!progressReady||!auth.currentUser||isTeacher)return;
+  clearTimeout(progressTimer);
+  const snapshot=JSON.parse(JSON.stringify(state));
+  progressTimer=setTimeout(async()=>{
+    for(const [id,itemState] of Object.entries(snapshot.items||{})){
+      const item=findItem(id);if(!item)continue;
+      const signature=JSON.stringify(itemState);if(syncedSignatures.get(id)===signature)continue;
+      try{await setDoc(doc(db,"curriculumProgress",progressDocId(auth.currentUser.uid,id)),canonicalProgress(auth.currentUser.uid,item,itemState),{merge:true});syncedSignatures.set(id,signature)}
+      catch(e){console.warn("Curriculum item sync",id,e)}
+    }
+  },500);
+};
+window.setCurriculumVerification=async(id,value)=>{
+  if(!isTeacher||!selectedStudentId){alert("Choose a scholar first.");return false}
+  try{await updateDoc(doc(db,"curriculumProgress",progressDocId(selectedStudentId,id)),{verified:!!value,updatedAt:serverTimestamp()});return true}
+  catch(e){alert("Verification was not saved: "+(e.code||e.message));return false}
+};
 window.submitCurriculumOverride=async (item,answer,attempts)=>{
   if(!auth.currentUser){
     alert("You are not signed in to Dragonswood on this page. Return to the Dragonswood portal, sign in, and open Curriculum Quest again.");
@@ -400,6 +524,21 @@ onAuthStateChanged(auth,async u=>{
     document.getElementById("studentIdentity").textContent=isTeacher?"Teacher account":(u.displayName||u.email||"Student");
     if(!isTeacher){
       try{
+        // Read the legacy whole-student document once, then migrate local/legacy
+        // evidence into canonical per-item records. Client-side verified flags
+        // are deliberately reset; only a teacher write can restore them.
+        const legacySnap=await getDoc(doc(db,"curriculumQuestProgress",u.uid));
+        const legacy=legacySnap.exists()?legacySnap.data():{};
+        const mergedLegacy={grade:S.grade||legacy.grade||"I",day:Math.max(Number(S.day||1),Number(legacy.day||1)),items:{...(legacy.items||{}),...(S.items||{})}};
+        Object.values(mergedLegacy.items).forEach(x=>{x.verified=false});
+        await migrateLegacyProgress(u.uid,mergedLegacy);
+        const progressSnap=await getDocs(query(collection(db,"curriculumProgress"),where("studentId","==",u.uid)));
+        S=mergeProgressRows(mergedLegacy,progressSnap.docs.map(d=>d.data()));
+        localStorage.setItem(K,JSON.stringify(S));
+      }catch(e){console.warn("Curriculum cloud progress unavailable; local progress remains safe",e)}
+      progressReady=true;
+      window.queueCurriculumProgress(S);
+      try{
         const snap=await getDoc(doc(db,"students",u.uid));
         if(snap.exists()){
           const g=String(snap.data().grade||"");
@@ -410,6 +549,23 @@ onAuthStateChanged(auth,async u=>{
         }
       }catch(e){console.warn("Could not load grade profile",e)}
       document.getElementById("day").disabled=true;
+    }else{
+      const picker=document.getElementById("teacherStudent");picker.style.display="inline-block";
+      try{
+        const students=await getDocs(collection(db,"students"));
+        teacherStudentNames=Object.fromEntries(students.docs.map(d=>{const x=d.data();return [d.id,x.firstName||x.displayName||x.email||d.id]}));
+        teacherAllProgress=(await getDocs(collection(db,"curriculumProgress"))).docs.map(d=>d.data());
+        picker.innerHTML='<option value="">Select a scholar…</option>'+students.docs.map(d=>{const x=d.data();return `<option value="${d.id}">${esc(x.firstName||x.displayName||x.email||d.id)}</option>`}).join("");
+        picker.onchange=async()=>{
+          selectedStudentId=picker.value;if(!selectedStudentId)return;
+          const snap=await getDocs(query(collection(db,"curriculumProgress"),where("studentId","==",selectedStudentId)));
+          teacherProgressRows=snap.docs.map(d=>d.data());
+          S=mergeProgressRows({grade:"I",day:40,items:{}},teacherProgressRows);
+          const first=teacherProgressRows[0];if(first)S.grade=first.grade;
+          document.getElementById("studentIdentity").textContent=picker.options[picker.selectedIndex].text+" • teacher view";
+          render();
+        };
+      }catch(e){console.warn("Could not load teacher curriculum roster",e)}
     }
   }else{
     document.getElementById("studentIdentity").textContent="Open from your signed-in Dragonswood portal";

@@ -2171,21 +2171,30 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   justify-self:center!important;
   width:max-content;
   max-width:100%;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:24px!important;
 }
 .logo-center .logo-mark{
-  width:126px!important;
-  height:132px!important;
-  margin-bottom:-18px!important;
+  width:154px!important;
+  height:160px!important;
+  margin:0!important;
+  flex:0 0 auto!important;
 }
+.logo-center .logo-copy{text-align:left!important}
 .logo-center .brand-name{font-size:clamp(56px,5vw,78px)!important}
 @media(max-width:1100px){
   .header-grid>.logo-center{grid-column:1!important}
-  .logo-center .logo-mark{width:112px!important;height:118px!important}
+  .logo-center .logo-mark{width:126px!important;height:132px!important}
   .logo-center .brand-name{font-size:clamp(46px,8vw,66px)!important}
 }
 @media(max-width:520px){
-  .logo-center .logo-mark{width:92px!important;height:98px!important;margin-bottom:-13px!important}
-  .logo-center .brand-name{font-size:clamp(30px,10vw,42px)!important}
+  .header-grid>.logo-center{gap:10px!important}
+  .logo-center .logo-mark{width:76px!important;height:82px!important;margin:0!important}
+  .logo-center .brand-name{font-size:clamp(27px,8.5vw,38px)!important}
+  .logo-center .brand-sub{font-size:11px!important}
+  .logo-center .motto{font-size:10px!important}
 }
 .logo-center .motto{
   color:#ffe493!important;
@@ -2206,9 +2215,9 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
     </div>
     <div class="logo-center">
       <div class="logo-mark"><img src="dragonswood-volleyball-crest-v1.png" alt="Dragonswood volleyball dragon crest" style="width:100%;height:100%;object-fit:contain"></div>
-      <div class="brand-name">DRAGONSWOOD</div>
+      <div class="logo-copy"><div class="brand-name">DRAGONSWOOD</div>
       <div class="brand-sub">EXPLORE ACADEMY • EVANS 4–5</div>
-      <div class="motto">✦ BE KIND. BE BRAVE. BE LEGENDARY. ✦</div>
+      <div class="motto">✦ BE KIND. BE BRAVE. BE LEGENDARY. ✦</div></div>
     </div>
     <div class="frame bevel stats-card hidden" id="topStats">
       <div class="stat"><span class="ico">💙</span><b id="hp">10</b><small>HP</small></div>

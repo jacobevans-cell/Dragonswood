@@ -4088,14 +4088,22 @@ const MORPH_GEN = {
     if(mode===0)
       return {prompt:`The root “${root}” means what?`,answer:meaning,
         choices:shuffle(r,[meaning,...wrong])};
-    if(mode===1 && word)
-      return {prompt:`The word “${word}” is built from the root “${root}”.\nWhat does that root add to the meaning?`,
-        answer:meaning,choices:shuffle(r,[meaning,...wrong])};
+    if(mode===1 && word){
+      const sentence=String(p.syntactic||"").replace(new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}\\b`,"i"),"_____");
+      if(sentence&&sentence!==p.syntactic){
+        const decoys=shuffle(r,["formation","credible","portable","predict","rejected","invention","transportation"].filter(w=>w!==word)).slice(0,3);
+        return {prompt:`Which target word correctly completes the sentence?\n${sentence}`,answer:word,choices:shuffle(r,[word,...decoys])};
+      }
+      return {prompt:`The word “${word}” is built from the root “${root}”.\nWhat does that root add to the meaning?`,answer:meaning,choices:shuffle(r,[meaning,...wrong])};
+    }
     if(mode===2){
+      if(p.morphological){
+        const decoys=[`The root means “${wrong[0]},” so the word names something unrelated.`,`The word has no meaningful parts and must only be memorized.`,`The ending changes the word into the opposite of its actual meaning.`];
+        return {prompt:`Which explanation best shows how “${word}” is built and what it means?`,answer:p.morphological,choices:shuffle(r,[p.morphological,...decoys])};
+      }
       const family=Object.keys(DW_ROOT_MEANING).filter(k=>DW_ROOT_MEANING[k]===meaning);
       const decoys=shuffle(r,["garden","sudden","yellow","basket","meadow","pillow","harbor"]).slice(0,3);
-      return {prompt:`Which word contains the root “${root}” (meaning “${meaning}”)?`,
-        answer:word||family[0],choices:shuffle(r,[word||family[0],...decoys])};
+      return {prompt:`Which word contains the root “${root}” (meaning “${meaning}”)?`,answer:word||family[0],choices:shuffle(r,[word||family[0],...decoys])};
     }
     return {prompt:`Knowing that “${root}” means “${meaning}”, what is the best strategy when you meet an unfamiliar word containing it?`,
       answer:"use the root plus the surrounding sentence to predict the meaning",
@@ -5293,6 +5301,10 @@ function dwMorphParts(item){
   const word=(t.match(/Word\s*\n?\s*([^\n]+)/i)||[])[1];
   return {root:(root||"").trim(), word:(word||"").trim()};
 }
+function dwMorphLesson(item,parts){
+  const rows=typeof window!=="undefined"&&window.DRAGONSWOOD_DATA?.morphology||[];
+  return rows.find(m=>m.grade===item.grade&&String(m.word||"").toLowerCase()===String(parts.word||"").toLowerCase())||null;
+}
 
 /* Which strands should stay teacher-observed rather than becoming a quiz. */
 function dwObservationOnly(item){
@@ -5336,7 +5348,13 @@ function dwCurricPractice(item, count){
   }
   // 2. morphology -> ask about this week's root and word
   const mp=dwMorphParts(item);
-  if(mp.root) pushFrom("curric.morph", {root:mp.root, word:mp.word}, count);
+  if(mp.root){
+    const ml=dwMorphLesson(item,mp);
+    pushFrom("curric.morph", Object.assign({root:mp.root,word:mp.word},ml?{
+      phonological:ml.phonological,orthographic:ml.orthographic,morphological:ml.morphological,
+      syntactic:ml.syntactic,etymological:ml.etymological,application:ml.application
+    }:{}), count);
+  }
 
   // 3. HUM has no day ranges in the pacing guide, so pick skills from the
   //    mission's own topic rather than from every HUM standard at once.

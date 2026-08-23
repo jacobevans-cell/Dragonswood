@@ -89,9 +89,11 @@ main{padding:20px 0 35px}.hero{padding:22px;display:grid;grid-template-columns:1
 <script src="q1-video-map.js"></script>
 <script src="curriculum-question-engine.js"></script>
 <script>
-const D=window.DRAGONSWOOD_DATA, VM=window.DRAGONSWOOD_VIDEO_MAP||{}, K="dragonswood_q1_integrated_progress_v3";
-let S=JSON.parse(localStorage.getItem(K)||"{}");
-S.grade=S.grade||"I"; S.day=S.day||14; S.items=S.items||{};
+const D=window.DRAGONSWOOD_DATA, VM=window.DRAGONSWOOD_VIDEO_MAP||{}, BASE_K="dragonswood_q1_integrated_progress_v4";
+const Q1_SCHOOL_DAYS={"2026-08-03":1,"2026-08-04":2,"2026-08-05":3,"2026-08-06":4,"2026-08-07":5,"2026-08-10":6,"2026-08-11":7,"2026-08-12":8,"2026-08-13":9,"2026-08-14":10,"2026-08-17":11,"2026-08-18":12,"2026-08-19":13,"2026-08-20":14,"2026-08-21":15,"2026-08-24":16,"2026-08-25":17,"2026-08-26":18,"2026-08-27":19,"2026-08-28":20,"2026-08-31":21,"2026-09-01":22,"2026-09-02":23,"2026-09-03":24,"2026-09-04":25,"2026-09-08":26,"2026-09-09":27,"2026-09-10":28,"2026-09-11":29,"2026-09-14":30,"2026-09-15":31,"2026-09-16":32,"2026-09-17":33,"2026-09-18":34,"2026-09-21":35,"2026-09-22":36,"2026-09-23":37,"2026-09-24":38,"2026-09-25":39,"2026-09-28":40};
+function q1CalendarCursor(){const today=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Phoenix",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date()),dates=Object.keys(Q1_SCHOOL_DAYS).sort(),todayDay=Q1_SCHOOL_DAYS[today];if(todayDay)return todayDay;const next=dates.find(d=>d>today);if(next)return Q1_SCHOOL_DAYS[next];return 40}
+let K=BASE_K+"_pending",S={grade:"I",day:q1CalendarCursor(),items:{}};
+function loadScopedState(scope){K=BASE_K+"_"+String(scope||"anonymous").replace(/[^a-zA-Z0-9_-]/g,"_");try{S=JSON.parse(localStorage.getItem(K)||"{}")}catch(e){S={}}S.grade=S.grade||"I";S.day=q1CalendarCursor();S.items=S.items||{}}
 const $=x=>document.querySelector(x), $$=x=>[...document.querySelectorAll(x)];
 const esc=(x="")=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 let isTeacher=false,currentStudent=null,activeVideoId=null,watchedRanges=[],lastVideoTime=0;
@@ -527,6 +529,7 @@ function watchMyOverrides(uid){
 onAuthStateChanged(auth,async u=>{
   currentStudent=u||null;
   isTeacher=!!u && String(u.email||"").toLowerCase()===TEACHER.toLowerCase();
+  loadScopedState(isTeacher?"teacher":u?.uid||"anonymous");
   studentCurriculumAccess=isTeacher;
   currentQuestOpen=isTeacher;
   accessMessage=u?"Checking today's school-day assignment…":"Open Curriculum Quest from your signed-in Dragonswood portal.";
@@ -570,6 +573,7 @@ onAuthStateChanged(auth,async u=>{
         accessMessage="";
         save();
       }catch(e){
+        S.day=q1CalendarCursor();
         studentCurriculumAccess=true;
         currentQuestOpen=false;
         accessMessage="Current curriculum is closed, but unfinished work from earlier school days remains available in Recovery.";

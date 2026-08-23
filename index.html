@@ -2359,6 +2359,33 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 </style>
 <script src="dragonswood-rpg-v56.js"></script>
 <script src="dragonswood-gradebook-v5611.js"></script>
+<style id="v56-12-adventurer-trophy-display">
+/* A live, data-driven version of the Champion concept art. */
+.home-hero-card{grid-template-columns:minmax(330px,43%) minmax(0,1fr)!important;align-items:stretch!important}
+.home-hero-main{display:flex;flex-direction:column;justify-content:center;min-width:0;padding:8px 4px}
+.home-relic-display{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0 12px}
+.home-relic{position:relative;min-height:142px;padding:11px 8px 10px;border:1px solid rgba(255,225,121,.5);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;text-align:center;overflow:hidden;background:radial-gradient(circle at 50% 35%,rgba(92,66,174,.38),transparent 48%),linear-gradient(180deg,rgba(16,12,50,.96),rgba(4,7,26,.96));box-shadow:inset 0 0 22px rgba(80,47,155,.23),0 8px 22px rgba(0,0,0,.28)}
+.home-relic:before{content:"";position:absolute;inset:6px;border:1px solid rgba(255,255,255,.08);border-radius:11px;pointer-events:none}
+.relic-art{position:relative;width:82px;height:78px;display:grid;place-items:center;margin-bottom:4px;filter:drop-shadow(0 7px 8px rgba(0,0,0,.48))}
+.relic-art:before,.relic-art:after{content:"";position:absolute;inset:4px;border:5px solid #6f6685;transform:rotate(45deg);border-radius:18px;background:linear-gradient(145deg,#17172c,#43395b);box-shadow:inset 0 0 12px #04040d,0 0 18px currentColor}
+.relic-art:after{inset:13px;border-width:2px;border-color:#dfc66c;background:transparent}
+.relic-art span{position:relative;z-index:2;font:1000 39px Georgia,serif;line-height:1;color:#fff;filter:drop-shadow(0 0 8px currentColor)}
+.relic-copy{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}.relic-copy small{font-size:7px;letter-spacing:1px;font-weight:1000;color:#d7cce5}.relic-copy b{font:900 19px Georgia,serif;color:#fff1a6;text-shadow:0 2px 5px #000}.relic-copy em{font-size:8px;font-style:normal;color:#c9bcdf;margin-top:2px}
+.home-relic-hp{color:#ff315f;border-color:rgba(255,75,115,.62)}.home-relic-hp .relic-art span{color:#ff3565}.home-relic-hp .relic-art:before{border-color:#77717f;background:linear-gradient(145deg,#161724,#4b1727)}
+.home-relic-gold{color:#ffc42f;border-color:rgba(255,201,71,.65)}.home-relic-gold .relic-art:before{border-color:#a57022;background:linear-gradient(145deg,#28180a,#5c350a)}.home-relic-gold .relic-art span{font-size:37px}.home-relic-gold .relic-art i{position:absolute;z-index:3;right:1px;top:2px;color:#fff2a4;font-style:normal;animation:dwCoinSpark 1.9s ease-in-out infinite}.home-relic-gold .relic-art{animation:dwChestFloat 3.4s ease-in-out infinite}
+.home-relic-level{color:#9c67ff;border-color:rgba(151,109,255,.74)}.home-relic-level .relic-art:before{border-color:#b99645;background:linear-gradient(145deg,#101c3e,#37206b)}.home-relic-level .relic-art span{color:#ffe372;font-size:45px}
+.home-mastery-altar{position:relative;min-height:135px;padding:12px 15px 13px;border:1px solid rgba(177,140,255,.55);border-radius:16px;text-align:center;background:radial-gradient(circle at 50% 100%,rgba(111,50,207,.34),transparent 55%),linear-gradient(180deg,rgba(15,15,51,.95),rgba(6,9,31,.96));box-shadow:inset 0 -8px 25px rgba(82,34,156,.22),0 8px 20px rgba(0,0,0,.22)}
+.home-mastery-altar:before{content:"";position:absolute;left:4%;right:4%;bottom:8px;height:7px;border-radius:50%;background:linear-gradient(90deg,transparent,#7953c8,#e2c26c,#7953c8,transparent);filter:blur(1px);opacity:.65}
+.mastery-kicker{font-size:8px;font-weight:1000;letter-spacing:1.3px;color:#d99aff}.mastery-title{margin:2px 0 8px;font:900 18px Georgia,serif;color:#ffe69a}.mastery-medals{position:relative;z-index:1;display:flex;justify-content:center;align-items:flex-start;gap:10px}.mastery-medal{width:76px;display:grid;justify-items:center;gap:4px;color:#e8dcf5;font-size:8px;font-weight:800;line-height:1.15}.mastery-medal-icon{width:49px;height:49px;border-radius:50%;display:grid;place-items:center;font-size:23px;background:radial-gradient(circle,#272166,#0b0c2c 64%);border:3px double #ffd965;box-shadow:0 0 14px rgba(137,80,255,.48),inset 0 0 12px rgba(87,211,255,.2)}.mastery-medal.locked{opacity:.43;filter:grayscale(.8)}.mastery-medal.locked .mastery-medal-icon{border-color:#776f85;box-shadow:none}
+.next-unlocks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;position:relative;z-index:1}.next-unlock{min-height:70px;padding:8px 6px;border:1px solid rgba(121,196,255,.25);border-radius:10px;background:rgba(4,11,35,.58);display:grid;grid-template-columns:34px 1fr;align-items:center;text-align:left}.next-unlock>span{font-size:25px}.next-unlock b{display:block;color:#fff1ac;font-size:10px}.next-unlock small{color:#bbb0cd;font-size:8px}.next-unlock-level{color:#71eaff!important;font-weight:1000}
+.home-energy-channel{margin:12px 0 0!important;padding:9px 13px;border:1px solid rgba(95,197,255,.42);border-radius:13px;background:rgba(3,7,25,.75);box-shadow:inset 0 0 18px rgba(35,83,178,.18)}.home-energy-channel .home-xp-track{height:16px;border:2px solid #7d55d2;box-shadow:0 0 13px rgba(82,138,255,.35),inset 0 0 8px #000}.home-energy-channel .home-xp-fill{position:relative;background:linear-gradient(90deg,#7e2ed9,#256cff,#2ce5ff,#8cfbff);box-shadow:0 0 13px #24cfff}.home-energy-channel .home-xp-fill:after{content:"";position:absolute;inset:2px 0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);animation:dwEnergyFlow 2.3s linear infinite}.home-xp-foot{display:flex;justify-content:space-between;margin-top:5px;color:#bdb2d0;font-size:8px;font-weight:800}.home-xp-foot b,.home-xp-foot span:last-child{color:#80ecff}
+@keyframes dwChestFloat{50%{transform:translateY(-3px)}}@keyframes dwCoinSpark{0%,100%{opacity:.35;transform:scale(.65) rotate(0)}50%{opacity:1;transform:scale(1.2) rotate(90deg)}}@keyframes dwEnergyFlow{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+@media(max-width:1180px){.home-hero-card{grid-template-columns:300px minmax(0,1fr)!important}.home-relic{min-height:126px}.relic-art{width:66px;height:62px}.relic-art span{font-size:31px}.mastery-medal{width:64px}}
+@media(max-width:900px){.home-hero-card{grid-template-columns:240px minmax(0,1fr)!important}.home-relic-display{grid-template-columns:1fr}.home-relic{min-height:82px;display:grid;grid-template-columns:76px 1fr;justify-items:center}.relic-art{margin:0}.home-mastery-altar{min-height:120px}.next-unlocks{grid-template-columns:1fr}.next-unlock{min-height:54px}}
+@media(max-width:700px){.home-hero-card{grid-template-columns:1fr!important}.home-relic-display{grid-template-columns:repeat(3,1fr)}.home-relic{display:flex;min-height:118px}.next-unlocks{grid-template-columns:repeat(3,1fr)}.next-unlock{display:block;text-align:center;min-height:76px}.mastery-medals{flex-wrap:wrap}}
+@media(max-width:520px){.home-relic-display{grid-template-columns:1fr}.home-relic{display:grid;grid-template-columns:76px 1fr;min-height:82px}.next-unlocks{grid-template-columns:1fr}.mastery-medal{width:65px}}
+@media(prefers-reduced-motion:reduce){.home-relic-gold .relic-art,.home-relic-gold .relic-art i,.home-energy-channel .home-xp-fill:after{animation:none!important}}
+</style>
 </head><body><!-- DRAGONSWOOD BUILD v48.9 COSMIC+JOBS -->
 <header class="topbar">
 <div class="shell">
@@ -2437,20 +2464,32 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
         <h2 id="homeHeroName">Adventurer</h2>
         <div class="home-hero-sub" id="homeHeroSub">Level 1 • Dragonswood Adventurer</div>
 
-        <div class="home-xp-row">
-          <div class="home-xp-labels">
-            <span>PLAYER XP</span>
-            <b id="homeHeroXpText">0 / 200</b>
-          </div>
-          <div class="home-xp-track">
-            <div class="home-xp-fill" id="homeHeroXpFill"></div>
-          </div>
+        <div class="home-relic-display" aria-label="Adventurer status">
+          <article class="home-relic home-relic-hp">
+            <div class="relic-art" aria-hidden="true"><span>♥</span></div>
+            <div class="relic-copy"><small>VITALITY RELIC</small><b><span id="homeHeroHp">10</span> HP</b></div>
+          </article>
+          <article class="home-relic home-relic-gold">
+            <div class="relic-art" aria-hidden="true"><span>🪙</span><i>✦</i></div>
+            <div class="relic-copy"><small>ROYAL TREASURY</small><b><span id="homeHeroGold">0</span> GOLD</b></div>
+          </article>
+          <article class="home-relic home-relic-level">
+            <div class="relic-art" aria-hidden="true"><span>✦</span></div>
+            <div class="relic-copy"><small>ADVENTURER RANK</small><b>LEVEL <span id="homeHeroCompactLevel">1</span></b><em id="homeHeroRankName">Rising Adventurer</em></div>
+          </article>
         </div>
 
-        <div class="home-hero-stats" aria-label="Adventurer status">
-          <div class="home-compact-stat"><span>❤️</span><b id="homeHeroHp">10</b><small>Health</small></div>
-          <div class="home-compact-stat"><span>🪙</span><b id="homeHeroGold">0</b><small>Gold</small></div>
-          <div class="home-compact-stat"><span>⭐</span><b>Level <span id="homeHeroCompactLevel">1</span></b></div>
+        <section class="home-mastery-altar" id="homeMasteryAltar" aria-live="polite"></section>
+
+        <div class="home-xp-row home-energy-channel">
+          <div class="home-xp-labels">
+            <span>✦ PLAYER XP</span>
+            <b id="homeHeroXpText">0 / 200</b>
+          </div>
+          <div class="home-xp-track" role="progressbar" aria-label="Player XP progress">
+            <div class="home-xp-fill" id="homeHeroXpFill"></div>
+          </div>
+          <div class="home-xp-foot"><span>Today: <b id="homeHeroDailyXp">0 / 150</b> XP</span><span id="homeHeroXpNext">200 XP</span></div>
         </div>
 
       </div>
@@ -4052,7 +4091,7 @@ function dwWatchDailyCompletion(){
   if(dailyOverrideUnsub){try{dailyOverrideUnsub()}catch(e){}}
   dailyProgressUnsub=onSnapshot(
     query(collection(db,"dailyQuestProgress"),where("studentId","==",user.uid)),
-    snap=>{dailyProgressRows=snap.docs.map(d=>({id:d.id,...d.data()}));dwUpdateDailyAccess();renderStudentGradeSummary()},
+    snap=>{dailyProgressRows=snap.docs.map(d=>({id:d.id,...d.data()}));dwUpdateDailyAccess();renderStudentGradeSummary();if(profile)renderHomeMastery(levelInfo(+profile.xp||0))},
     err=>{console.warn("daily progress listener",err);dailyProgressRows=[];dwUpdateDailyAccess()}
   );
   dailyOverrideUnsub=onSnapshot(
@@ -4987,6 +5026,35 @@ function renderStudentEligibility(){
   if(bar)bar.classList.toggle("hidden",!(dead||recess||trip));
 }
 
+function renderHomeMastery(li){
+  const altar=$("homeMasteryAltar");
+  if(!altar)return;
+  const level=Number(li?.level||1);
+  const unlocks=[
+    {level:2,icon:"🐾",name:"Companion Bond",detail:"Choose an active pet"},
+    {level:3,icon:"🎁",name:"Explorer Chest",detail:"A new reward cache"},
+    {level:5,icon:"🛡️",name:"Tier I Appearance",detail:"A new class look"},
+    {level:7,icon:"🥚",name:"Hatchery Find",detail:"Expanded egg rewards"},
+    {level:10,icon:"🐉",name:"Prestige Pets",detail:"Dragons and elementals"},
+    {level:15,icon:"✨",name:"Tier III Appearance",detail:"Master-class attire"},
+    {level:20,icon:"👑",name:"Champion Mastery",detail:"Permanent champion altar"}
+  ];
+  if(level<20){
+    const next=unlocks.filter(x=>x.level>level).slice(0,3);
+    altar.innerHTML=`<div class="mastery-kicker">YOUR JOURNEY CONTINUES</div><div class="mastery-title">Next Adventurer Unlocks</div><div class="next-unlocks">${next.map(x=>`<div class="next-unlock"><span aria-hidden="true">${x.icon}</span><div><small class="next-unlock-level">LEVEL ${x.level}</small><b>${x.name}</b><small>${x.detail}</small></div></div>`).join("")}</div>`;
+    return;
+  }
+  const completedDays=new Set(dailyProgressRows.map(x=>String(x.dateKey||x.dayKey||x.date||x.id||""))).size;
+  const medals=[
+    {earned:true,icon:"👑",name:"Level 20 Champion"},
+    {earned:!!profile?.classId,icon:"⚔️",name:"Class Mastery"},
+    {earned:Number(profile?.bossWins||0)>0,icon:"🐲",name:"Boss Victor"},
+    {earned:!!profile?.activePet,icon:"🐾",name:"Companion Bond"},
+    {earned:completedDays>=10,icon:"📖",name:"Quest Veteran"}
+  ];
+  altar.innerHTML=`<div class="mastery-kicker">PERMANENT CHAMPION SHOWCASE</div><div class="mastery-title">Champion Mastery</div><div class="mastery-medals">${medals.map(x=>`<div class="mastery-medal${x.earned?"":" locked"}"><span class="mastery-medal-icon" aria-hidden="true">${x.earned?x.icon:"🔒"}</span><span>${x.name}</span></div>`).join("")}</div>`;
+}
+
 function renderProfile(){
   if(!profile)return;
   // The persistent student utility rail contains all four passes and any
@@ -5032,6 +5100,8 @@ function renderProfile(){
   if($("homeHeroGold"))$("homeHeroGold").textContent=compactNumber(gold);
   if($("homeHeroCompactLevel"))$("homeHeroCompactLevel").textContent=li.level;
   if($("homeHeroDailyXp"))$("homeHeroDailyXp").textContent=`${dailyXp} / 150`;
+  if($("homeHeroRankName"))$("homeHeroRankName").textContent=li.level>=20?"MAX LEVEL CHAMPION":li.level>=15?"Master Adventurer":li.level>=10?"Realm Guardian":li.level>=5?"Proven Adventurer":"Rising Adventurer";
+  renderHomeMastery(li);
 
   if(li.level>=20){
     if($("homeHeroXpText"))$("homeHeroXpText").textContent=`${compactNumber(xp)} XP • MAX LEVEL`;
@@ -5046,6 +5116,8 @@ function renderProfile(){
     if($("homeHeroXpFill"))$("homeHeroXpFill").style.width=`${li.pct}%`;
     if($("homeHeroXpNext"))$("homeHeroXpNext").textContent=`${remaining.toLocaleString()} XP`;
   }
+  const xpTrack=$("homeHeroXpFill")?.parentElement;
+  if(xpTrack){xpTrack.setAttribute("aria-valuemin","0");xpTrack.setAttribute("aria-valuemax","100");xpTrack.setAttribute("aria-valuenow",String(li.level>=20?100:Math.round(li.pct||0)))}
   if($("journalKnockoutNotice"))$("journalKnockoutNotice").classList.toggle("hidden",!isStudentKnockedOut(profile));
   if($("journalName"))$("journalName").textContent=display;
   if($("journalSub"))$("journalSub").textContent=`Level ${li.level} • Grade ${profile.grade} • ${profile.genderGroup==="girl"?"Girls":"Boys"} • ${li.next-xp} XP to next level`;

@@ -1428,7 +1428,7 @@ async function applyQuickConsequence(id){
   }
   try{
     await b.commit();
-    window.DWAudio?.negative();
+    window.DWAudio?.takePoints?.();
   }catch(err){
     console.error("Quick consequence error",err);
     window.DWAudio?.negative();
@@ -1458,7 +1458,7 @@ async function applyQuickAward(id){const p=QUICK_AWARDS.find(x=>x.id===id);if(!p
 }if(p.pt==="recess"){const today=localDateKey(),base=recessState.dateKey===today?(+recessState.points||0):0;b.set(doc(db,"classData","secondRecess"),{points:base+p.points,goal:Math.max(1,+recessState.goal||10),dateKey:today,updatedAt:serverTimestamp()},{merge:true})}else if(p.pt==="pet")b.set(doc(db,"classData","classPet"),{points:(+petGoalState.points||0)+p.points,goal:Math.max(1,+petGoalState.goal||250),updatedAt:serverTimestamp()},{merge:true});else if(p.pt==="trip")b.set(doc(db,"classData","fieldTrip"),{points:(+tripGoalState.points||0)+p.points,goal:Math.max(1,+tripGoalState.goal||750),updatedAt:serverTimestamp()},{merge:true});else if(p.pt==="universal")b.set(doc(db,"classData","universalPoints"),{points:(+universalPointState.points||0)+p.points,updatedAt:serverTimestamp()},{merge:true});
 try{
   await b.commit();
-  window.DWAudio?.positive();
+  window.DWAudio?.awardPoints?.();
 }catch(err){
   console.error("Quick award error",err);
   window.DWAudio?.negative();
@@ -2209,8 +2209,8 @@ $("massApply").onclick=async()=>{
   try{
     await batch.commit();
     if(changed>0){
-      if(amount>0)window.DWAudio?.positive();
-      else window.DWAudio?.negative();
+      if(amount>0)window.DWAudio?.awardPoints?.();
+      else window.DWAudio?.takePoints?.();
     }else{
       window.DWAudio?.negative();
     }
@@ -2454,7 +2454,7 @@ document.getElementById('passArchiveRange')?.addEventListener('change',renderPas
   let ctx = null;
   let unlocked = false;
   let enabled = localStorage.getItem(KEY) !== "off";
-  const lastPlayed = {positive:0, negative:0, passRequest:0, notice:0};
+  const lastPlayed = {positive:0, negative:0, awardPoints:0, takePoints:0, passRequest:0, notice:0};
 
   function getCtx(){
     if(!enabled) return null;
@@ -2505,15 +2505,35 @@ document.getElementById('passArchiveRange')?.addEventListener('change',renderPas
     tone(174.61,.14,.25,"triangle",.075);
   }
 
+  function awardPoints(){
+    if(!canPlay("awardPoints",650)) return;
+    // Loud original high-fantasy treasure fanfare.
+    tone(392,0,.18,"triangle",.24);
+    tone(523.25,.11,.20,"triangle",.26);
+    tone(659.25,.23,.22,"triangle",.28);
+    tone(783.99,.37,.42,"triangle",.30);
+    tone(1174.66,.37,.48,"sine",.24);
+    tone(1567.98,.55,.50,"sine",.20);
+  }
+
+  function takePoints(){
+    if(!canPlay("takePoints",650)) return;
+    // Loud original magic-drained cue: unmistakable, but not a harsh buzzer.
+    tone(783.99,0,.16,"triangle",.25);
+    tone(587.33,.12,.20,"triangle",.27);
+    tone(440,.27,.24,"triangle",.29);
+    tone(293.66,.45,.38,"sawtooth",.20);
+    tone(146.83,.58,.48,"triangle",.26);
+    tone(220,.58,.38,"sine",.18);
+  }
+
   function passRequest(){
     if(!canPlay("passRequest",850)) return;
-    // Bright fantasy messenger chime: easy to notice without sounding like an alarm.
-    tone(329.63,0,.22,"triangle",.10);
-    tone(659.25,0,.28,"sine",.10);
-    tone(493.88,.24,.22,"triangle",.11);
-    tone(987.77,.24,.36,"sine",.105);
-    tone(659.25,.53,.42,"sine",.10);
-    tone(1318.51,.53,.46,"sine",.07);
+    // Mystic Portal (#7): the teacher's new-pass-request notification.
+    tone(440,0,.40,"sine",.09);
+    tone(554.37,.10,.40,"sine",.085);
+    tone(659.25,.20,.45,"sine",.085);
+    tone(1108.73,.48,.48,"sine",.09);
   }
 
   function notice(){
@@ -2573,7 +2593,7 @@ document.getElementById('passArchiveRange')?.addEventListener('change',renderPas
   });
 
   window.DWAudio = {
-    positive, negative, passRequest, notice, unlock:getCtx,
+    positive, negative, awardPoints, takePoints, passRequest, notice, unlock:getCtx,
     setEnabled, isEnabled:()=>enabled, isUnlocked:()=>unlocked,
     addTeacherBadge
   };

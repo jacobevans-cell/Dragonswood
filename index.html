@@ -3978,7 +3978,14 @@ onAuthStateChanged(auth,async u=>{
 
     profileUnsub=onSnapshot(ref,s=>{
       if(!s.exists())return;
-      profile=s.data();
+      const previousProfile=profile;
+      const nextProfile=s.data();
+      if(previousProfile){
+        const rewardDelta=(Number(nextProfile.xp||0)-Number(previousProfile.xp||0))+(Number(nextProfile.gold||0)-Number(previousProfile.gold||0));
+        if(rewardDelta>0)window.DWAudio?.awardPoints?.();
+        else if(rewardDelta<0)window.DWAudio?.takePoints?.();
+      }
+      profile=nextProfile;
       try{
         renderProfile();
         if($("conn"))$("conn").textContent="✓ Connected to your Dragonswood account";
@@ -5348,7 +5355,7 @@ renderRewards();renderBoards();glitterizeStaticIcons();
   let ctx = null;
   let unlocked = false;
   let enabled = localStorage.getItem(KEY) !== "off";
-  const lastPlayed = {positive:0, negative:0, bathroom:0, notice:0, passStart:0, passReturn:0, passAlert:0};
+  const lastPlayed = {positive:0, negative:0, awardPoints:0, takePoints:0, bathroom:0, notice:0, passStart:0, passReturn:0, passAlert:0};
 
   function getCtx(){
     if(!enabled) return null;
@@ -5399,6 +5406,28 @@ renderRewards();renderBoards();glitterizeStaticIcons();
     tone(174.61,.14,.25,"triangle",.075);
   }
 
+  function awardPoints(){
+    if(!canPlay("awardPoints",650)) return;
+    // Loud original high-fantasy treasure fanfare.
+    tone(392,0,.18,"triangle",.24);
+    tone(523.25,.11,.20,"triangle",.26);
+    tone(659.25,.23,.22,"triangle",.28);
+    tone(783.99,.37,.42,"triangle",.30);
+    tone(1174.66,.37,.48,"sine",.24);
+    tone(1567.98,.55,.50,"sine",.20);
+  }
+
+  function takePoints(){
+    if(!canPlay("takePoints",650)) return;
+    // Loud original magic-drained cue.
+    tone(783.99,0,.16,"triangle",.25);
+    tone(587.33,.12,.20,"triangle",.27);
+    tone(440,.27,.24,"triangle",.29);
+    tone(293.66,.45,.38,"sawtooth",.20);
+    tone(146.83,.58,.48,"triangle",.26);
+    tone(220,.58,.38,"sine",.18);
+  }
+
   function bathroom(){
     if(!canPlay("bathroom",850)) return;
     // Intentionally distinct from normal success/failure sounds.
@@ -5415,19 +5444,19 @@ renderRewards();renderBoards();glitterizeStaticIcons();
 
   function passStart(){
     if(!canPlay("passStart",700)) return;
-    // A short magical doorway flourish: warm foundation, then bright lift.
-    tone(293.66,0,.18,"triangle",.045);
-    tone(440,.07,.24,"sine",.06);
-    tone(659.25,.16,.32,"sine",.082);
-    tone(987.77,.27,.42,"sine",.052);
+    // Fairy Sparkle (#3): confirms a student's pass has begun.
+    tone(1046.50,0,.15,"sine",.075);
+    tone(1318.51,.09,.18,"sine",.085);
+    tone(1567.98,.19,.25,"sine",.075);
+    tone(2093,.34,.45,"sine",.055);
   }
 
   function passReturn(){
     if(!canPlay("passReturn",600)) return;
-    // Gentle resolved cadence for checking back in.
-    tone(783.99,0,.15,"sine",.055);
-    tone(659.25,.10,.18,"sine",.06);
-    tone(523.25,.22,.34,"triangle",.075);
+    // A short resolving Fairy Sparkle for a completed return.
+    tone(1567.98,0,.15,"sine",.065);
+    tone(1318.51,.10,.18,"sine",.072);
+    tone(1046.50,.22,.34,"sine",.07);
   }
 
   function passAlert(){
@@ -5490,7 +5519,7 @@ renderRewards();renderBoards();glitterizeStaticIcons();
   });
 
   window.DWAudio = {
-    positive, negative, bathroom, notice, passStart, passReturn, passAlert, unlock:getCtx,
+    positive, negative, awardPoints, takePoints, bathroom, notice, passStart, passReturn, passAlert, unlock:getCtx,
     setEnabled, isEnabled:()=>enabled, isUnlocked:()=>unlocked,
     addTeacherBadge
   };

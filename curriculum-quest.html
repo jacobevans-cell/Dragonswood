@@ -556,6 +556,9 @@ function watchMyOverrides(uid){
 onAuthStateChanged(auth,async u=>{
   currentStudent=u||null;
   isTeacher=!!u && String(u.email||"").toLowerCase()===TEACHER.toLowerCase();
+  const authStatus=document.getElementById("authStatus");
+  authStatus.textContent=u?"✓ Signed in":"Not signed in";
+  authStatus.style.color=u?"#7fffd4":"#ff9daf";
   loadScopedState(isTeacher?"teacher":u?.uid||"anonymous");
   studentCurriculumAccess=isTeacher;
   currentQuestOpen=isTeacher;

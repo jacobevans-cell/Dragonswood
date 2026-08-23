@@ -2806,7 +2806,7 @@ import {getFirestore,doc,getDoc,setDoc,onSnapshot,collection,serverTimestamp,run
 
 const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2", "measurementId": "G-LPRLDGVBD2"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
-const DOMAIN="explore.academy";
+const DOMAIN="explore.academy",TEACHER="jacobicusjax@gmail.com";
 const $=id=>document.getElementById(id);
 let bathroomUnsub=null,bathroomSlotUnsub=null,bathroomSlotData=null,snackUnsub=null,currentBathroomData=null,currentSnackData=null;
 let user=null,profile=null,rewards=[],classPoints=0,scores=[],shopItems=[],myPurchases=[],classJobsConfig=null,myJobWeek=null,classScheduleConfig=null,classCalendarEvents=[],shopFilter="all",shopSort="level",inventoryFilter="all",profileUnsub=null,purchasesUnsub=null,dailyProgressUnsub=null,dailyOverrideUnsub=null,dailyProgressRows=[],dailyOverrideData={},isTesterAccount=false;
@@ -3884,7 +3884,8 @@ onAuthStateChanged(auth,async u=>{
 
   const email=String(u.email||"").trim().toLowerCase();
   try{isTesterAccount=(await getDoc(doc(db,"testerAccounts",u.uid))).exists()}catch(e){isTesterAccount=false}
-  if(!email.endsWith("@"+DOMAIN)&&!isTesterAccount){
+  const isTeacherAccount=email===TEACHER;
+  if(!email.endsWith("@"+DOMAIN)&&!isTeacherAccount&&!isTesterAccount){
     profile=null;
     $("signedOut").classList.remove("hidden");
     $("signedIn").classList.add("hidden");
@@ -3893,7 +3894,7 @@ onAuthStateChanged(auth,async u=>{
     $("account").classList.remove("hidden");
     $("accountEmail").textContent=u.email||"Unknown account";
     if($("conn"))$("conn").textContent="Signed in, but this account is not authorized.";
-    $("loginError").textContent=`Firebase signed you in as ${u.email||"an account"}, but Dragonswood only allows @${DOMAIN} school accounts.`;
+    $("loginError").textContent=`Firebase signed you in as ${u.email||"an account"}, but that account is not approved for Dragonswood.`;
     return;
   }
 

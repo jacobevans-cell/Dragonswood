@@ -1382,6 +1382,8 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
    Richer item cards, rarity frames, vector art, and hero display.
 ============================================================ */
 #view-journal .section-title{margin-bottom:8px}
+.dw-planner-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+@media(max-width:900px){.dw-planner-grid{grid-template-columns:1fr}}
 .journal-rpg-layout{
   grid-template-columns:minmax(330px,.86fr) minmax(410px,1.08fr) minmax(600px,1.55fr)!important;
   gap:12px!important;
@@ -2242,16 +2244,14 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
     <button class="portal-tab active" type="button" data-view="home" onclick="DragonswoodNav('home')"><span>🛡️</span><b>HOME</b></button>
     <button class="portal-tab" type="button" data-view="quests" onclick="DragonswoodNav('quests')"><span>📜</span><b>DAILY MISSIONS</b></button>
     <button class="portal-tab" type="button" data-view="games" onclick="DragonswoodNav('games')"><span>🎮</span><b>GAMES</b></button>
-    <button class="portal-tab" type="button" data-view="scribe" onclick="DragonswoodNav('scribe')"><span>✍️</span><b>SCRIBE ARENA</b></button>
+    <button class="portal-tab" type="button" data-view="scribe" onclick="DragonswoodNav('scribe')"><span>✍️</span><b>SCRIBE &amp; JOURNAL</b></button>
 
     <button class="portal-tab" type="button" data-view="jobs" onclick="DragonswoodNav('jobs')"><span>🧹</span><b>JOBS</b></button>
-    <button class="portal-tab" type="button" data-view="schedule" onclick="DragonswoodNav('schedule')"><span>🕐</span><b>SCHEDULE</b></button>
-    <button class="portal-tab" type="button" data-view="calendar" onclick="DragonswoodNav('calendar')"><span>📅</span><b>CALENDAR</b></button>
+    <button class="portal-tab" type="button" data-view="planner" onclick="DragonswoodNav('planner')"><span>🕐</span><b>SCHEDULE &amp; CALENDAR</b></button>
     <button class="portal-tab" type="button" data-view="poll" onclick="DragonswoodNav('poll')"><span>📊</span><b>POLL</b></button>
     <button class="portal-tab" type="button" onclick="location.href='adventurer-hall.html'"><span>⚔️</span><b>ADVENTURER HALL</b></button>
     <button class="portal-tab" type="button" onclick="location.href='boss-battle.html'"><span>👹</span><b>DAILY BOSS</b></button>
     <button class="portal-tab" type="button" data-view="leaderboard" onclick="DragonswoodNav('leaderboard')"><span>🏆</span><b>LEADERBOARD</b></button>
-    <button class="portal-tab" type="button" data-view="journal" onclick="DragonswoodNav('journal')"><span>📖</span><b>MY JOURNAL</b></button>
   </nav>
 
   <!-- HOME -->
@@ -2412,7 +2412,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
   <!-- SCRIBE ARENA -->
   <section class="portal-view" id="view-scribe" data-page="scribe">
-    <div class="section-title"><div><h2>✍️ Dragonswood Scribe Arena</h2><p>Quickwrites, writing challenges, feedback, and your permanent writing portfolio.</p></div></div>
+    <div class="section-title"><div><h2>✍️ Dragonswood Scribe &amp; Journal</h2><p>Quickwrites, writing challenges, feedback, reflections, and your permanent writing portfolio.</p></div></div>
 
     <div class="scribe-grid">
       <article class="frame bevel scribe-active-card">
@@ -2570,17 +2570,13 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
     </div>
   </section>
 
-  <!-- SCHEDULE -->
-  <section class="portal-view" id="view-schedule" data-page="schedule">
-    <div class="section-title"><div><h2>🕐 Daily Schedule</h2><p>Know where you should be and what comes next.</p></div></div>
-    <div class="dw31-grid"><div class="frame bevel dw31-card"><div class="dw31-muted">RIGHT NOW</div><div class="dw31-now" id="dw31Now">Loading…</div><div id="dw31NowDetail"></div><div class="dw31-next" id="dw31Next"></div></div><div class="frame bevel dw31-card"><h3>Today's Timeline</h3><div class="dw31-list" id="dw31Timeline"></div></div></div>
-  </section>
-
-  <!-- CALENDAR -->
-  <section class="portal-view" id="view-calendar" data-page="calendar">
-    <div class="section-title"><div><h2>📅 Dragonwood Calendar</h2><p>School events, testing, breaks, and sports.</p></div></div>
-    <div class="dw31-filters" id="dw31CalFilters"><button data-cat="all" class="active">ALL</button><button data-cat="school">🏫 SCHOOL</button><button data-cat="sports">🏐 SPORTS</button><button data-cat="testing">🧪 TESTING</button><button data-cat="break">🌴 BREAKS</button><button data-cat="holiday">🇺🇸 HOLIDAYS</button></div>
-    <div class="dw31-list" id="dw31Calendar"></div>
+  <!-- SCHEDULE + CALENDAR -->
+  <section class="portal-view" id="view-planner" data-page="planner">
+    <div class="section-title"><div><h2>🕐 Schedule &amp; Calendar</h2><p>Today on the left; upcoming school events on the right.</p></div></div>
+    <div class="dw-planner-grid">
+      <div class="frame bevel dw31-card"><h3>🕐 Today's Schedule</h3><div class="dw31-muted">RIGHT NOW</div><div class="dw31-now" id="dw31Now">Loading…</div><div id="dw31NowDetail"></div><div class="dw31-next" id="dw31Next"></div><h3 style="margin-top:18px">Today's Timeline</h3><div class="dw31-list" id="dw31Timeline"></div></div>
+      <div class="frame bevel dw31-card"><h3>📅 Dragonwood Calendar</h3><p class="dw31-muted">School events, testing, breaks, and sports.</p><div class="dw31-filters" id="dw31CalFilters"><button data-cat="all" class="active">ALL</button><button data-cat="school">🏫 SCHOOL</button><button data-cat="sports">🏐 SPORTS</button><button data-cat="testing">🧪 TESTING</button><button data-cat="break">🌴 BREAKS</button><button data-cat="holiday">🇺🇸 HOLIDAYS</button></div><div class="dw31-list" id="dw31Calendar"></div></div>
+    </div>
   </section>
 
   <!-- SHOP -->
@@ -2800,17 +2796,19 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 <div class="custom-section active" data-avatar-panel="look"><b>Skin tone</b><div class="swatches" id="skinChoices"></div><b>Eye color</b><div class="swatches" id="eyeChoices"></div></div>
 <div class="custom-section" data-avatar-panel="hair"><b>Hair color</b><div class="swatches" id="hairColorChoices"></div><b>Hair style</b><div class="hair-options" id="hairStyleChoices"></div></div>
 <div class="custom-section" data-avatar-panel="equipment"><div class="gear-options" id="equipmentChoices"></div><div class="avatar-studio-note">🔒 Locked gear must be earned or purchased first. Click owned gear to equip it. Click equipped gear again to remove it.</div></div></div></div>
-<div style="display:flex;gap:8px;margin-top:13px"><button id="saveProfile">SAVE CHARACTER</button><button id="closeProfile" class="hidden">Close</button></div><div id="profileError" style="color:#ff9db5;margin-top:8px"></div></div></div>
+<div style="display:flex;gap:8px;margin-top:13px;flex-wrap:wrap"><button id="saveProfile">SAVE PROFILE</button><a class="btn" href="adventurer-hall.html">⚔️ CLASS, GEAR &amp; PETS</a><button id="closeProfile" class="hidden">Close</button></div><div id="profileError" style="color:#ff9db5;margin-top:8px"></div></div></div>
 
 <script id="dragonswood-navigation-core">
 (function(){
-  const views=["home","games","jobs","schedule","calendar","poll","shop","quests","leaderboard","journal", "scribe"];
+  const views=["home","games","jobs","planner","poll","shop","quests","leaderboard","scribe"];
 
   window.DWDailyAccessUnlocked=false;
   function show(view, updateHash){
+    if(view==="schedule"||view==="calendar") view="planner";
+    if(view==="journal") view="scribe";
     if(!views.includes(view)) view="home";
     if(window.DWBlockingPassType && view!=="home") view="home";
-    if((view==="games"||view==="journal") && window.DWDailyAccessUnlocked!==true){
+    if((view==="games"||view==="scribe") && window.DWDailyAccessUnlocked!==true){
       view="quests";
       window.setTimeout(function(){
         const n=document.getElementById("dailyAccessNotice");
@@ -3835,7 +3833,7 @@ function dwUpdateDailyAccess(){
   const open=academicComplete||overrideToday||isTesterAccount;
   window.DWDailyAccessUnlocked=open;
 
-  document.querySelectorAll('.portal-tab[data-view="games"],.portal-tab[data-view="journal"]').forEach(b=>{
+  document.querySelectorAll('.portal-tab[data-view="games"],.portal-tab[data-view="scribe"]').forEach(b=>{
     b.classList.toggle("daily-locked",!open);b.setAttribute("aria-disabled",open?"false":"true");
   });
   const count=dwCompletedDayCount();
@@ -3844,12 +3842,12 @@ function dwUpdateDailyAccess(){
   const banner=$("dailyAccessNotice"),txt=$("dailyAccessNoticeText");
   if(banner)banner.classList.toggle("unlocked",open);
   if(txt)txt.textContent=isTesterAccount
-    ?"🧪 Approved tester access. Games and My Journal are unlocked."
+    ?"🧪 Approved tester access. Games and Scribe & Journal are unlocked."
     :academicComplete
-    ?"✅ Morning requirement complete. Games and My Journal are unlocked for today."
+    ?"✅ Morning requirement complete. Games and Scribe & Journal are unlocked for today."
     :overrideToday
-      ?"🔓 Teacher override active. Games and My Journal are unlocked for today."
-      :"Finish today’s assigned Morning Daily Work OR the Level-Up Morning Challenge to unlock Games and My Journal.";
+      ?"🔓 Teacher override active. Games and Scribe & Journal are unlocked for today."
+      :"Finish today’s assigned Morning Daily Work OR the Level-Up Morning Challenge to unlock Games and Scribe & Journal.";
   if($("dailyProgressDetail"))$("dailyProgressDetail").textContent=
     `${count} of 180 school days completed. Your first 12 school days are preserved from the original journey; assigned Daily Work and Level-Up Morning Work both count from here forward.`;
   if($("dmDaysComplete"))$("dmDaysComplete").textContent=count;
@@ -4762,7 +4760,6 @@ function renderProfile(){
   if($("levelShield"))$("levelShield").textContent=li.level;
   if($("levelTop"))$("levelTop").textContent=li.level;
   if($("shopGold"))$("shopGold").textContent=gold;
-  if($("questXp"))$("questXp").textContent=xp;
 
   // HOME character dashboard: identity + progress only, no equipment controls.
   if($("homeHeroAvatar")){

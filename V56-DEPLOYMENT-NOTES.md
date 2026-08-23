@@ -1,49 +1,34 @@
-# Dragonswood v56 Deployment Notes
+# Dragonswood v56.1 Deployment Notes
 
-## What v56 replaces
+## Included corrections and additions
 
-v56 replaces the five-day RPG shop experiment with a separate four-class inventory. Legacy purchases remain archived in Firestore but do not unlock, equip, or affect v56 items.
+- Fixed the Daily Work Progress box so it displays completed school days—not raw XP.
+- Removed the teacher-facing Legacy Shop tab; historical data remains untouched in Firestore.
+- Split Adventurer Hall into **Class**, **Pet Sanctuary**, and **Class Shop** screens.
+- Class selection is a one-time student choice. A teacher can reset it when necessary.
+- Class Shop displays only the chosen class's equipment and appearance packs.
+- Replaced random icon assignment with deterministic class/slot art so swords, wands, armor, and shields match their names.
+- Added complete class appearance packs at Levels 5, 10, and 15.
+- Added animated ordinary pets, a dedicated active-pet display, and exactly one active companion at a time.
+- Dragon, Gargoyle, and Elemental companions remain Level 10 prestige pets.
+- Simplified combat to ATK, DEF, HP, and HEAL. Critical chance, dodge, and elemental-weakness systems are not used.
+- Daily Boss continues to use harder, no-hint questions derived from completed Morning and Exit work and grants one chest per day.
+- Boss chests may contain 1–3 Gold, XP within the daily cap, a class-compatible item, an egg, or a rare +25 Class Pet/Field Trip goal award. Every fifth win guarantees an egg.
+- Merged student **Scribe** and **Journal** navigation into **Scribe & Journal**.
+- Merged student **Schedule** and **Calendar** into one responsive half-and-half page.
+- Added a Profile link to Adventurer Hall for class, equipment, appearance, and pet management.
+- Added the reusable Cedar narration pilot, manifest, private dry-run batch generator, source hashing, and browser-speech fallback. No paid API call was made.
 
-## Four launch classes
+## Cedar pilot status
 
-- Warrior: ATK/DEF/MAX HP; absorbs Guardian gear.
-- Ranger: ATK plus a fixed 10% critical-hit and 5% dodge chance; absorbs Rogue gear.
-- Mage: strongest base ATK and one simple boss-weakness bonus; absorbs offensive Alchemist gear.
-- Healer: HEAL/MAX HP and small healing after correct boss answers; absorbs support Alchemist gear.
+The approved Cedar sample MP3 was not present in the supplied workspace. The player and manifest integration are ready, but currently fall back to browser speech until approved MP3 clips are added. See `CEDAR-NARRATION-AUDIT.md`. The batch job currently reports 0 clips, 0.0 minutes, and therefore $0 generated cost.
 
-There are no skill trees, mana bars, elemental inventories, or separate pet-leveling systems in v56.
+## Manual deployment
 
-## Shop and equipment
+1. Upload everything inside the changed-files ZIP, preserving `assets/rpg/` and `tools/` folders.
+2. Publish the separate `firestore.rules` from the Firestore rules ZIP.
+3. Hard-refresh the browser.
+4. Test one student: verify the day counter, choose a class once, confirm other classes lock, buy/equip a correctly named item, hatch and activate one pet, and complete a Daily Boss.
+5. Test teacher view: confirm Legacy Shop is absent and Manage Student still exposes v56 RPG fields.
 
-- The Adventurer Hall contains the class selector, stat summary, pet hatchery, equipment, and redesigned market.
-- Every class has a starter set and a Level 10 prestige set.
-- Completing and equipping a whole set grants +1 ATK, +1 DEF, +1 HEAL, and +3 MAX HP.
-- The new inventory uses `rpgInventory`, `rpgEquipped`, and `rpgPurchases` so old purchases cannot interfere.
-
-## Pets and eggs
-
-- Ordinary pets hatch from Woodland Eggs and grant small fixed ATK/DEF bonuses.
-- Eggs can be bought in the Hatchery, found randomly in the daily boss chest, granted by a teacher, and are guaranteed after every fifth boss victory.
-- Dragon, Gargoyle, and Elemental are Level 10 prestige pets and use the supplied sprite art.
-- Separate pet XP/levels are intentionally deferred.
-
-## Daily boss
-
-- The boss is locked until both Morning Work and Exit Quest are complete for the current date.
-- It uses the current day's stored Math and ELA skills to create harder, no-hint questions.
-- Enemies are enlarged and receive additional HP based on player level; bosses do not use a separate combat system.
-- The once-daily chest grants 1–3 Gold, up to 12 XP, and a possible class-compatible item or egg.
-- Rare finds can grant +25 Class Pet Goal Points or +25 Field Trip Goal Points.
-- Each chest is protected by an immutable `bossLoot/{uid}_{date}` record.
-
-## Teacher controls
-
-Manage Student now includes class, eggs, v56 owned item IDs, owned pets, active pet, and boss wins. The older shop panel is labeled Legacy Shop.
-
-## Manual deployment order
-
-1. Upload every file from the changed-files deployment ZIP, preserving folders.
-2. Publish the separate `firestore.rules` file from the rules folder in Firebase.
-3. Hard refresh the browser.
-4. Test with one student: choose a class, buy/equip an item, hatch an egg, complete Morning and Exit work, win the boss, and reopen the boss page to confirm the chest cannot be claimed twice.
-
+Legacy purchases and records are preserved; v56.1 does not erase them.

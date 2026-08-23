@@ -121,6 +121,8 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
 </section></div>
 
 <script src="foundation-track.js"></script>
+<script src="narration-manifest.js"></script>
+<script src="cedar-narration.js"></script>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
@@ -6068,12 +6070,17 @@ function promptBlock(q,t){
  const wod=q.wordOfDay||"";
  const showLanguage=lesson?.track==="challenge" && !!wod && String(t?.skill||"").toLowerCase().includes("word of the day");
  setTimeout(()=>{
-   window.dwSpeakCurrent=()=>speakText(document.getElementById("currentPrompt")?.textContent||"","en");
+   window.dwSpeakCurrent=()=>{
+     const text=document.getElementById("currentPrompt")?.textContent||"";
+     const id=`daily/${String(profile?.grade||lesson?.track||"unknown")}/day-${String(lesson?.day||"current")}/${String(sessionName||"quest")}/question-${String(taskIndex||0)}`;
+     if(window.DWCedar) window.DWCedar.play({id,text,label:"Listen to the Scroll"});
+     else speakText(text,"en");
+   };
    window.dwToggleCoach=()=>{const x=document.getElementById("coachWrap");if(x)x.hidden=!x.hidden};
    window.dwLanguage=(lang)=>{const line=document.getElementById("translationLine");if(line&&wod)line.innerHTML=`WORD OF THE DAY: <b>${wod}</b> • SUPPORT: <b>${translateWord(wod,lang)}</b>`;if(lang!=="en"&&wod)speakText(translateWord(wod,lang),lang)}
  },0);
  const lang=showLanguage?`<select id="langPick" onchange="window.dwLanguage(this.value)"><option value="en">🌎 English</option><option value="es">Español</option><option value="fr">Français</option><option value="ar">العربية</option><option value="zh">中文</option><option value="vi">Tiếng Việt</option></select>`:"";
- return `<div class="supportbar"><button type="button" onclick="window.dwSpeakCurrent()">🔊 READ ALOUD</button><button type="button" onclick="window.dwToggleCoach()">💡 VISUAL COACH</button>${lang}</div><div class="prompt" id="currentPrompt">${q.prompt}</div><div id="coachWrap" hidden>${questionVisual(q,t)}</div>${showLanguage?`<div class="support-translation" id="translationLine">WORD OF THE DAY: <b>${wod}</b></div>`:""}`
+ return `<div class="supportbar"><button type="button" onclick="window.dwSpeakCurrent()">🔊 LISTEN TO THE SCROLL</button><button type="button" onclick="window.dwToggleCoach()">💡 VISUAL COACH</button>${lang}</div><div class="prompt" id="currentPrompt">${q.prompt}</div><div id="coachWrap" hidden>${questionVisual(q,t)}</div>${showLanguage?`<div class="support-translation" id="translationLine">WORD OF THE DAY: <b>${wod}</b></div>`:""}`
 }
 
 

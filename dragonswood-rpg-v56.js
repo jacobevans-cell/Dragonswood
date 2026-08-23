@@ -2,8 +2,8 @@
   const A="assets/rpg/";
   const classes={
     warrior:{name:"Warrior",icon:"⚔️",art:A+"class-warrior.png",color:"#ef9b45",base:{atk:3,def:2,hp:6,heal:0},trait:"Steadfast",traitText:"Defensive sets trade a little attack for extra DEF."},
-    ranger:{name:"Ranger",icon:"🏹",art:A+"class-ranger.png",color:"#54d894",base:{atk:4,def:1,hp:3,heal:0},crit:.10,dodge:.05,trait:"True Shot",traitText:"10% critical-hit chance and 5% dodge chance."},
-    mage:{name:"Mage",icon:"🔮",art:A+"class-mage.png",color:"#b76cff",base:{atk:5,def:0,hp:2,heal:1},element:"arcane",trait:"Spellcraft",traitText:"Element-tagged attacks can exploit a boss weakness."},
+    ranger:{name:"Ranger",icon:"🏹",art:A+"class-ranger.png",color:"#54d894",base:{atk:4,def:1,hp:3,heal:0},trait:"True Shot",traitText:"A steady attack bonus rewards accurate work."},
+    mage:{name:"Mage",icon:"🔮",art:A+"class-mage.png",color:"#b76cff",base:{atk:5,def:0,hp:2,heal:1},trait:"Spellcraft",traitText:"The strongest starting attack, balanced by lighter defense."},
     healer:{name:"Healer",icon:"✨",art:A+"class-healer.png",color:"#65dff1",base:{atk:1,def:1,hp:5,heal:5},trait:"Restoration",traitText:"Correct answers restore a small amount of battle HP."}
   };
   const pets=[
@@ -15,7 +15,7 @@
     ["cloudbeak","Cloudbeak",A+"pet-flying-02.png","common",2,"A bright-eyed sky companion.",1,1],
     ["starflutter","Starflutter",A+"pet-flying-03.png","rare",5,"Its wings sparkle over Dragonswood.",1,0],
     ["stormlet","Stormlet",A+"pet-flying-04.png","epic",7,"A tiny storm creature with a brave heart.",3,1]
-  ].map(x=>({id:x[0],name:x[1],art:x[2],rarity:x[3],level:x[4],description:x[5],atk:x[6],def:x[7],prestige:false}));
+  ].map(x=>({id:x[0],name:x[1],art:x[2],animatedArt:x[2].replace('.png','.gif'),rarity:x[3],level:x[4],description:x[5],atk:x[6],def:x[7],prestige:false}));
   const prestigePets=[
     {id:"dragon",name:"Dragon",art:A+"pet-prestige-dragon.png",rarity:"legendary",level:10,atk:3,def:2,prestige:true,description:"A Level 10 Dragonswood bond."},
     {id:"gargoyle",name:"Gargoyle",art:A+"pet-prestige-gargoyle.png",rarity:"legendary",level:10,atk:1,def:4,prestige:true,description:"A Level 10 stone guardian."},
@@ -43,6 +43,13 @@
     {id:"plain_egg",name:"Mysterious Woodland Egg",classId:"all",slot:"egg",icon:"🥚",cost:125,level:1,rarity:"uncommon",egg:true},
     {id:"prestige_egg",name:"Prestige Dragonwood Egg",classId:"all",slot:"egg",icon:"🌟🥚",cost:850,level:10,rarity:"legendary",egg:true,prestige:true}
   ];
+  const appearancePacks=[
+    ["warrior",5,"Iron Vanguard",A+"skin-warrior-5.png"],["warrior",10,"Sunspire Champion",A+"skin-warrior-10.png"],["warrior",15,"Shadowsteel Veteran",A+"skin-warrior-15.png"],
+    ["ranger",5,"Forest Pathfinder",A+"skin-ranger-5.png"],["ranger",10,"Moonwood Archer",A+"skin-ranger-10.png"],["ranger",15,"Elderwood Warden",A+"skin-ranger-15.png"],
+    ["mage",5,"Arcane Apprentice",A+"skin-mage-5.png"],["mage",10,"Starfall Magician",A+"skin-mage-10.png"],["mage",15,"Grand Spellweaver",A+"skin-mage-15.png"],
+    ["healer",5,"Dawn Acolyte",A+"skin-healer-5.png"],["healer",10,"Radiant Guide",A+"skin-healer-10.png"],["healer",15,"High Luminary",A+"skin-healer-15.png"]
+  ].map(([classId,level,name,art])=>({id:`${classId}_appearance_${level}`,name:`${name} Appearance Pack`,classId,slot:"appearance",level,rarity:level===15?"legendary":level===10?"epic":"rare",cost:level*45,art,skinArt:art,appearance:true,stats:{atk:0,def:0,hp:0,heal:0}}));
+  items.push(...appearancePacks);
   const setPieces=[
     ["warrior","dawnshield","Dawnshield",1,"uncommon",["head","armor","weapon","offhand"],["Dawnshield Helm","Dawnshield Plate","Dawnshield Sword","Dawnshield Aegis"],["🪖","🛡️","⚔️","🔰"]],
     ["warrior","dragonward","Dragonward",10,"legendary",["head","armor","weapon","back"],["Dragonward Helm","Dragonward Warplate","Wyrmbane Blade","Dragonward Mantle"],["🐲","🥋","🗡️","🪽"]],
@@ -64,14 +71,20 @@
   const weaponArt=["01","07","13","22","31","44","58","73"].map(n=>`${A}items/weapon-${n}.png`);
   const armorArt=["01","07","13","22","31","44","58","73"].map(n=>`${A}items/armor-${n}.png`);
   const shieldArt=["01","07","13","22"].map(n=>`${A}items/shield-${n}.png`);
+  const visualMap={
+    warrior:{weapon:weaponArt[0],offhand:shieldArt[1],head:armorArt[5],armor:armorArt[6],outfit:armorArt[6],back:armorArt[2],accessory:armorArt[4]},
+    ranger:{weapon:weaponArt[4],offhand:shieldArt[0],head:armorArt[0],armor:armorArt[2],outfit:armorArt[2],back:armorArt[2],accessory:armorArt[7]},
+    mage:{weapon:weaponArt[5],offhand:shieldArt[2],head:armorArt[0],armor:armorArt[2],outfit:armorArt[2],back:armorArt[2],accessory:armorArt[7]},
+    healer:{weapon:weaponArt[7],offhand:shieldArt[2],head:armorArt[0],armor:armorArt[2],outfit:armorArt[2],back:armorArt[2],accessory:armorArt[7]}
+  };
   items.forEach((item,n)=>{
+    if(item.appearance)return;
     if(item.egg){item.art=item.prestige?`${A}items/egg-22.png`:`${A}items/egg-7.png`;return}
-    const pool=item.slot==="weapon"?weaponArt:item.slot==="offhand"?shieldArt:armorArt;
-    item.art=pool[n%pool.length];
+    item.art=visualMap[item.classId]?.[item.slot]||armorArt[n%armorArt.length];
   });
   function dateKey(){return new Intl.DateTimeFormat("en-CA",{timeZone:"America/Phoenix",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date())}
   function levelForXp(xp){const t=[0,200,450,750,1100,1500,1950,2450,3000,3600,4250,4950,5700,6500,7350,8250,9200,10200,11100,12000];let l=1;t.forEach((v,i)=>{if(Number(xp||0)>=v)l=i+1});return Math.min(20,l)}
   function hash(s){let h=2166136261;for(const c of String(s)){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
   function dailyEnemy(uid,day){return enemies[hash(`${uid}|${dateKey()}|${day}`)%enemies.length]}
-  window.DWRPG={classes,pets,prestigePets,enemies,items,dateKey,levelForXp,hash,dailyEnemy,version:"56.0"};
+  window.DWRPG={classes,pets,prestigePets,enemies,items,appearancePacks,dateKey,levelForXp,hash,dailyEnemy,version:"56.1"};
 })();

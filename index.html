@@ -2350,6 +2350,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 @media(max-width:1050px){#signedIn:not(.hidden){display:block!important}}
 </style>
 <script src="dragonswood-rpg-v56.js"></script>
+<script src="dragonswood-gradebook-v5611.js"></script>
 </head><body><!-- DRAGONSWOOD BUILD v48.9 COSMIC+JOBS -->
 <header class="topbar">
 <div class="shell">
@@ -2960,7 +2961,7 @@ const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const DOMAIN="explore.academy",TEACHER="jacobicusjax@gmail.com";
 const $=id=>document.getElementById(id);
 let bathroomUnsub=null,bathroomSlotUnsub=null,bathroomSlotData=null,snackUnsub=null,currentBathroomData=null,currentSnackData=null;
-let user=null,profile=null,rewards=[],classPoints=0,scores=[],studentLeaderboardRewards=[],studentCurriculumRows=[],studentGradeSettings={daily:40,curriculum:40,reading:20},shopItems=[],myPurchases=[],classJobsConfig=null,myJobWeek=null,classScheduleConfig=null,classCalendarEvents=[],shopFilter="all",shopSort="level",inventoryFilter="all",profileUnsub=null,purchasesUnsub=null,dailyProgressUnsub=null,dailyOverrideUnsub=null,studentCurriculumUnsub=null,dailyProgressRows=[],dailyOverrideData={},isTesterAccount=false;
+let user=null,profile=null,rewards=[],classPoints=0,scores=[],studentLeaderboardRewards=[],studentCurriculumRows=[],studentCurriculumAttempts=[],studentGradeOverrides=[],studentGradeAssignments=[],studentGradeSettings={daily:40,curriculum:40,reading:20},shopItems=[],myPurchases=[],classJobsConfig=null,myJobWeek=null,classScheduleConfig=null,classCalendarEvents=[],shopFilter="all",shopSort="level",inventoryFilter="all",profileUnsub=null,purchasesUnsub=null,dailyProgressUnsub=null,dailyOverrideUnsub=null,studentCurriculumUnsub=null,studentCurriculumAttemptsUnsub=null,studentGradeOverridesUnsub=null,studentGradeAssignmentsUnsub=null,dailyProgressRows=[],dailyOverrideData={},isTesterAccount=false;
 
 const TITLES=[
   {id:"princess",label:"Princess",position:"before"},
@@ -4053,14 +4054,26 @@ function dwWatchDailyCompletion(){
   );
   if(studentCurriculumUnsub){try{studentCurriculumUnsub()}catch(e){}}
   studentCurriculumUnsub=onSnapshot(query(collection(db,"curriculumProgress"),where("studentId","==",user.uid)),snap=>{studentCurriculumRows=snap.docs.map(d=>({id:d.id,...d.data()}));renderStudentGradeSummary()},err=>{console.warn("student curriculum grades",err);studentCurriculumRows=[];renderStudentGradeSummary()});
+  if(studentCurriculumAttemptsUnsub){try{studentCurriculumAttemptsUnsub()}catch(e){}}
+  studentCurriculumAttemptsUnsub=onSnapshot(query(collection(db,"curriculumAttempts"),where("studentId","==",user.uid)),snap=>{studentCurriculumAttempts=snap.docs.map(d=>({id:d.id,...d.data()}));renderStudentGradeSummary()},err=>{console.warn("student curriculum attempts",err);studentCurriculumAttempts=[];renderStudentGradeSummary()});
+  if(studentGradeOverridesUnsub){try{studentGradeOverridesUnsub()}catch(e){}}
+  studentGradeOverridesUnsub=onSnapshot(query(collection(db,"gradebookGrades"),where("studentId","==",user.uid)),snap=>{studentGradeOverrides=snap.docs.map(d=>({id:d.id,...d.data()}));renderStudentGradeSummary()},err=>{console.warn("student grade overrides",err);studentGradeOverrides=[];renderStudentGradeSummary()});
+  if(studentGradeAssignmentsUnsub){try{studentGradeAssignmentsUnsub()}catch(e){}}
+  studentGradeAssignmentsUnsub=onSnapshot(collection(db,"gradebookAssignments"),snap=>{studentGradeAssignments=snap.docs.map(d=>({id:d.id,...d.data()}));renderStudentGradeSummary()},err=>{console.warn("student grade assignments",err);studentGradeAssignments=[];renderStudentGradeSummary()});
 }
 function studentGradeLetter(n){if(n==null)return "";return n>=90?"A":n>=80?"B":n>=70?"C":n>=60?"D":"F"}
+function studentGbHash(v){let h=2166136261;for(const c of String(v||"")){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return(h>>>0).toString(36)}
+function studentGbSafe(v){return String(v||"").toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"").slice(0,60)||"record"}
 function renderStudentGradeSummary(){
   if(!$("studentOverallGrade")||!user)return;const avg=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):null;
-  const dailyMap=new Map();dailyProgressRows.filter(r=>r.status==="complete"&&Number(r.attempts||0)>0).forEach(r=>{const key=`${r.day||r.dateKey}:${r.session||"work"}`,v=Math.round(Number(r.correct||0)/Math.max(1,Number(r.attempts||0))*100);dailyMap.set(key,Math.max(v,dailyMap.get(key)??-1))});
-  const curriculum=studentCurriculumRows.map(r=>Number(r.questionsSeen||0)>0?Math.round(Number(r.questionsCorrect||0)/Number(r.questionsSeen)*100):(r.verified?100:null)).filter(v=>v!=null),readingMap=new Map();scores.filter(s=>String(s.studentId||s.uid||"")===user.uid&&/witch|reader|reading/i.test(`${s.game||""} ${s.gameName||""} ${s.subject||""}`)).forEach(s=>{const key=String(s.assignmentId||s.activityName||s.gameName||"reading"),v=Number(s.accuracy);if(Number.isFinite(v))readingMap.set(key,Math.max(v,readingMap.get(key)??-1))});
-  const cats={daily:avg([...dailyMap.values()]),curriculum:avg(curriculum),reading:avg([...readingMap.values()])};let weighted=0,used=0;Object.entries(cats).forEach(([k,v])=>{if(v!=null){const w=Number(studentGradeSettings[k]||0);weighted+=v*w;used+=w}});const overall=used?Math.round(weighted/used):null;
-  $("studentOverallGrade").textContent=overall==null?"—":`${overall}%`;$("studentLetterGrade").textContent=studentGradeLetter(overall);$("studentDailyGrade").textContent=cats.daily==null?"—":`${cats.daily}%`;$("studentCurriculumGrade").textContent=cats.curriculum==null?"—":`${cats.curriculum}%`;$("studentReadingGrade").textContent=cats.reading==null?"—":`${cats.reading}%`;$("studentGradedCount").textContent=dailyMap.size+curriculum.length+readingMap.size;
+  const group=(rows,keyFn)=>{const map=new Map();rows.forEach(r=>{const key=keyFn(r);if(!map.has(key))map.set(key,[]);map.get(key).push(r)});return map};
+  const daily=group(scores.filter(s=>String(s.studentId||s.uid||"")===user.uid&&/daily[_ ]quest/i.test(`${s.game||""} ${s.gameName||""}`)),r=>`daily:${r.day||r.dateKey}:${r.session||"work"}`);
+  const curriculum=group(studentCurriculumAttempts.length?studentCurriculumAttempts:studentCurriculumRows,r=>String(r.itemId||`${r.subject}:${r.day}`));
+  const reading=group(scores.filter(s=>String(s.studentId||s.uid||"")===user.uid&&/witch|reader|reading/i.test(`${s.game||""} ${s.gameName||""} ${s.subject||""}`)),s=>String(s.assignmentId||s.activityName||s.gameName||"reading"));
+  const categoryMaps={daily,curriculum,reading},categoryValues={daily:[],curriculum:[],reading:[]};Object.entries(categoryMaps).forEach(([category,map])=>map.forEach((rows,sourceId)=>{const settingId=`assignment_${studentGbHash(category+":"+sourceId)}`,setting=studentGradeAssignments.find(x=>x.id===settingId)||{},gradeId=`${studentGbSafe(user.uid)}__${studentGbHash(category+":"+sourceId)}`,override=studentGradeOverrides.find(x=>x.id===gradeId)||{},automatic=DWGradebook.attemptGrade(rows)?.score,final=override.score??automatic;if(setting.hidden!==true&&setting.countsTowardGrade!==false&&override.status!=="Excused"&&Number.isFinite(Number(final)))categoryValues[category].push(Number(final))}));
+  studentGradeAssignments.forEach(setting=>{const category=setting.sourceCategory||setting.category||"daily",sourceId=String(setting.sourceId||setting.id),ids=Array.isArray(setting.assignedStudentIds)?setting.assignedStudentIds:[],grades=Array.isArray(setting.assignedGrades)?setting.assignedGrades.map(String):[],groups=Array.isArray(setting.assignedGroups)?setting.assignedGroups:[],assigned=setting.assigned===true||ids.includes(user.uid)||grades.includes(String(profile?.grade))||groups.includes(profile?.genderGroup);if(!assigned||!DWGradebook.isActuallyMissing(setting,null)||categoryMaps[category]?.has(sourceId))return;const gradeId=`${studentGbSafe(user.uid)}__${studentGbHash(category+":"+sourceId)}`,override=studentGradeOverrides.find(x=>x.id===gradeId)||{};if(override.status!=="Excused")categoryValues[category]?.push(Number(override.score??0))});
+  const cats={daily:avg(categoryValues.daily),curriculum:avg(categoryValues.curriculum),reading:avg(categoryValues.reading)};let weighted=0,used=0;Object.entries(cats).forEach(([k,v])=>{if(v!=null){const w=Number(studentGradeSettings[k]||0);weighted+=v*w;used+=w}});const overall=used?Math.round(weighted/used):null;
+  $("studentOverallGrade").textContent=overall==null?"—":`${overall}%`;$("studentLetterGrade").textContent=studentGradeLetter(overall);$("studentDailyGrade").textContent=cats.daily==null?"—":`${cats.daily}%`;$("studentCurriculumGrade").textContent=cats.curriculum==null?"—":`${cats.curriculum}%`;$("studentReadingGrade").textContent=cats.reading==null?"—":`${cats.reading}%`;$("studentGradedCount").textContent=categoryValues.daily.length+categoryValues.curriculum.length+categoryValues.reading.length;
 }
 onAuthStateChanged(auth,async u=>{
   user=u;
@@ -4069,7 +4082,10 @@ onAuthStateChanged(auth,async u=>{
   if(dailyProgressUnsub){try{dailyProgressUnsub()}catch(e){} dailyProgressUnsub=null}
   if(dailyOverrideUnsub){try{dailyOverrideUnsub()}catch(e){} dailyOverrideUnsub=null}
   if(studentCurriculumUnsub){try{studentCurriculumUnsub()}catch(e){} studentCurriculumUnsub=null}
-  dailyProgressRows=[];studentCurriculumRows=[];dailyOverrideData={};window.DWDailyAccessUnlocked=false;
+  if(studentCurriculumAttemptsUnsub){try{studentCurriculumAttemptsUnsub()}catch(e){} studentCurriculumAttemptsUnsub=null}
+  if(studentGradeOverridesUnsub){try{studentGradeOverridesUnsub()}catch(e){} studentGradeOverridesUnsub=null}
+  if(studentGradeAssignmentsUnsub){try{studentGradeAssignmentsUnsub()}catch(e){} studentGradeAssignmentsUnsub=null}
+  dailyProgressRows=[];studentCurriculumRows=[];studentCurriculumAttempts=[];studentGradeOverrides=[];studentGradeAssignments=[];dailyOverrideData={};window.DWDailyAccessUnlocked=false;
   myPurchases=[];
 
   if(!u){
@@ -6062,4 +6078,145 @@ onAuthStateChanged(auth,u=>{
  watchSessions();watchPortfolio();
 });
 </script>
+
+<style id="dw-v5610-shell-and-stage">
+/* ============================================================
+   Dragonswood v56.10 aesthetic patch — STUDENT PORTAL
+   Appended last on purpose: it overrides by cascade order and
+   removes nothing, so every earlier rule and feature is intact.
+   ============================================================ */
+
+/* --- 1. The side rail is now fixed, full-height, and does not move. --- */
+@media(min-width:1051px){
+  body{padding-left:180px}
+  .topbar,.teacher-head{padding-left:6px}
+
+  #signedIn:not(.hidden){grid-template-columns:minmax(0,1fr)!important;gap:0!important}
+  #signedIn>.portal-view{grid-column:1!important}
+
+  #signedIn>.portal-nav{
+    position:fixed!important;
+    left:0;top:0;bottom:0;
+    width:180px;
+    height:100vh!important;
+    max-height:none!important;
+    margin:0!important;
+    border-radius:0!important;
+    clip-path:none!important;
+    border:0!important;
+    border-right:1px solid rgba(190,148,255,.5)!important;
+    padding:16px 11px!important;
+    gap:6px!important;
+    justify-content:flex-start!important;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    scrollbar-width:none;
+    box-shadow:14px 0 34px rgba(0,0,0,.45);
+    background:
+      radial-gradient(circle at 50% 0%,rgba(120,52,214,.30),transparent 46%),
+      linear-gradient(180deg,rgba(7,10,38,.99),rgba(5,18,37,.98))!important;
+  }
+  #signedIn>.portal-nav::-webkit-scrollbar{width:0}
+  /* The ✦ corner marks belong on a card, not on a wall. */
+  #signedIn>.portal-nav::before,#signedIn>.portal-nav::after{display:none!important}
+
+  #signedIn>.portal-nav .portal-tab{
+    min-height:56px!important;
+    grid-template-columns:34px 1fr!important;
+    gap:7px;
+    padding:9px 10px!important;
+    border-radius:11px!important;
+    transition:background .16s ease,transform .16s ease,border-color .16s ease;
+  }
+  #signedIn>.portal-nav .portal-tab:hover{
+    background:rgba(120,60,210,.30)!important;
+    border-color:rgba(142,238,255,.45)!important;
+    transform:translateX(2px);
+  }
+  #signedIn>.portal-nav .portal-tab span{font-size:23px!important}
+  #signedIn>.portal-nav .portal-tab b{font-size:10.5px!important;letter-spacing:.3px}
+  /* A lit bar on the active tab reads faster than colour alone. */
+  #signedIn>.portal-nav .portal-tab.active{position:relative}
+  #signedIn>.portal-nav .portal-tab.active::before{
+    content:"";position:absolute;left:-11px;top:9px;bottom:9px;width:4px;
+    border-radius:0 4px 4px 0;background:linear-gradient(180deg,#ffe36d,#8eeeff);
+  }
+}
+
+/* --- 2. The adventurer is centred in the stage, not shoved into the floor. ---
+   Source art is a 900x900 canvas with the figure at ~62% width, so it needs a
+   scale to fill the box. The old rule stacked translateY(58px) on top of
+   scale(1.52) from the bottom edge, which is why the posture looked wrong. */
+.home-hero-avatar .dw-hero{
+  align-items:center!important;
+  justify-content:center!important;
+}
+.home-hero-avatar .dw-hero-body{
+  max-height:100%!important;
+  max-width:100%!important;
+  object-fit:contain;
+  transform:translateY(-2%) scale(1.44)!important;
+  transform-origin:center center!important;
+  filter:drop-shadow(0 16px 20px rgba(0,0,0,.5));
+}
+.home-hero-avatar .dw-hero-pet{
+  width:30%!important;
+  max-height:34%!important;
+  right:4%!important;
+  bottom:7%!important;
+  transform:none!important;
+}
+@media(max-width:900px){
+  .home-hero-avatar .dw-hero-body{transform:translateY(-2%) scale(1.32)!important}
+}
+@media(max-width:700px){
+  .home-hero-avatar .dw-hero-body{transform:translateY(-2%) scale(1.20)!important}
+  .home-hero-avatar .dw-hero-pet{width:26%!important;max-height:30%!important}
+}
+
+/* --- 3. Keyboard users can see where they are. There was no focus style
+         anywhere in this file before now. --- */
+:where(button,.btn,a,[tabindex],input,select,textarea):focus-visible{
+  outline:3px solid #ffe36d!important;
+  outline-offset:2px!important;
+  border-radius:8px;
+}
+
+/* --- 4. Touch targets and real-looking controls, scoped so dense rows
+         (leaderboard, reward grid, egg stages) are not pushed around. --- */
+.modal button,.modal .btn,.avatar-tab,.navtile,.lb-filterbar button{min-height:44px}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+select,textarea{
+  min-height:44px;
+  padding:11px 13px;
+  border-radius:10px;
+  border:1px solid rgba(2,204,254,.34);
+  background:linear-gradient(180deg,rgba(12,9,32,.96),rgba(6,6,22,.96));
+  transition:border-color .15s ease,box-shadow .15s ease;
+}
+input:hover,select:hover,textarea:hover{border-color:rgba(255,227,109,.55)}
+input:focus,select:focus,textarea:focus{
+  border-color:#ffe36d;
+  box-shadow:0 0 0 3px rgba(255,227,109,.22);
+  outline:none;
+}
+/* A dropdown should look like something you press. */
+select{
+  appearance:none;-webkit-appearance:none;
+  padding-right:34px;
+  background-image:linear-gradient(180deg,rgba(12,9,32,.96),rgba(6,6,22,.96)),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'><path d='M1 1l6 6 6-6' fill='none' stroke='%23ffe36d' stroke-width='2' stroke-linecap='round'/></svg>");
+  background-repeat:no-repeat,no-repeat;
+  background-position:0 0,right 12px center;
+  background-size:100% 100%,14px 9px;
+  cursor:pointer;
+}
+
+/* --- 5. Motion respect. --- */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+}
+</style>
+
 </body></html>

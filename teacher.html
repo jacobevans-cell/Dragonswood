@@ -644,6 +644,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 @media(max-width:1100px){.gb-controls{grid-template-columns:1fr 1fr}.gb-student>summary{grid-template-columns:48px 1fr repeat(2,85px)}.gb-student>summary>:nth-child(n+5){display:none}.gb-assignment-row{grid-template-columns:1fr 80px 80px}.gb-assignment-row>:nth-child(n+4){grid-column:auto}}
 </style>
 <script src="dragonswood-rpg-v56.js"></script>
+<script src="dragonswood-gradebook-v5611.js"></script>
 </head><body>
 <header class="teacher-head"><div class="shell"><div class="teacher-title"><img src="dragonswood-volleyball-crest-v1.png" alt="Dragonswood volleyball dragon crest" style="width:58px;height:58px;object-fit:contain;vertical-align:middle;margin-right:10px"><span style="color:#f7c94f;background:linear-gradient(180deg,#fff9d8 0%,#ffe99a 27%,#f8ca50 58%,#ffe99a 82%,#dfa12a 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 1px 0 rgba(116,67,8,.95)) drop-shadow(0 2px 1px rgba(22,5,34,.95)) drop-shadow(0 0 5px rgba(255,216,91,.16));letter-spacing:.3px">DRAGONSWOOD COMMAND</span><small>EXPLORE ACADEMY • EVANS 4–5 • TEACHER PORTAL</small></div><div class="hidden" id="signed" style="text-align:right"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
 <main class="shell teacher-main">
@@ -1076,7 +1077,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserSessionPersistence} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import {getFirestore,doc,getDoc,setDoc,collection,onSnapshot,addDoc,deleteDoc,getDocs,writeBatch,serverTimestamp,query,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {getFirestore,doc,getDoc,setDoc,collection,onSnapshot,addDoc,deleteDoc,getDocs,writeBatch,runTransaction,increment,serverTimestamp,query,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2", "measurementId": "G-LPRLDGVBD2"},TEACHER="jacobicusjax@gmail.com";
 const normalizedEmail = v => String(v||"").trim().toLowerCase();
@@ -1089,7 +1090,7 @@ const app=initializeApp(firebaseConfig,"DragonswoodTeacherPortal"),
       auth=getAuth(app),
       db=getFirestore(app),
       $=id=>document.getElementById(id);
-let points=0,history=[],rewards=[],scores=[],results=[],curriculumProgress=[],gradebookGrades=[],gradebookAssignmentSettings=[],leaderboardRewards=[],gradebookSettings={daily:40,curriculum:40,reading:20,attemptRule:"best"},students=[],shopItems=[],purchases=[],bathroomStatuses=[],bathroomRequests=[],snackStatuses=[],snackRequests=[],pointRequests=[],genericPassRequests=[],passHistory=[],classJobsConfigV29={},jobWeeksV29=[],classScheduleV29={},calendarEventsV29=[],recessState={points:0,goal:10,dateKey:""},petGoalState={points:0,goal:250},tripGoalState={points:0,goal:750},universalPointState={points:0};
+let points=0,history=[],rewards=[],scores=[],results=[],dailyQuestProgress=[],curriculumProgress=[],curriculumAttempts=[],gradebookGrades=[],gradebookAssignmentSettings=[],leaderboardRewards=[],bossLootRows=[],gradebookSettings={daily:40,curriculum:40,reading:20,attemptRule:"first_best_average"},students=[],shopItems=[],purchases=[],bathroomStatuses=[],bathroomRequests=[],snackStatuses=[],snackRequests=[],pointRequests=[],genericPassRequests=[],passHistory=[],classJobsConfigV29={},jobWeeksV29=[],classScheduleV29={},calendarEventsV29=[],recessState={points:0,goal:10,dateKey:""},petGoalState={points:0,goal:250},tripGoalState={points:0,goal:750},universalPointState={points:0};
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
 const AVATAR_EMOJI={"dragon-purple":"🐉","dragon-green":"🐲","knight":"🛡️","wizard":"🧙","witch":"🧙‍♀️","princess":"👸","prince":"🤴","ranger":"🏹","phoenix":"🔥","wolf":"🐺","owl":"🦉","crystal":"🔮"};
 const DRAGONSWOOD_XP_THRESHOLDS=[0,200,450,750,1100,1500,1950,2450,3000,3600,4250,4950,5700,6500,7350,8250,9200,10200,11100,12000];
@@ -1273,10 +1274,13 @@ function listen(){
  onSnapshot(collection(db,"rewards"),s=>{rewards=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+a.points||0)-(+b.points||0));renderRewards();renderPoints()});
  onSnapshot(collection(db,"scores"),s=>{scores=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+b.score||0)-(+a.score||0));renderScores()});
  onSnapshot(collection(db,"gameResults"),s=>{results=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));renderResults();renderGradebook()});
+ onSnapshot(collection(db,"dailyQuestProgress"),s=>{dailyQuestProgress=s.docs.map(d=>({id:d.id,...d.data()}));renderGradebook()},e=>console.warn("daily gradebook listener",e));
  onSnapshot(collection(db,"gradebookGrades"),s=>{gradebookGrades=s.docs.map(d=>({id:d.id,...d.data()}));renderGradebook()},e=>console.warn("gradebook listener",e));
  onSnapshot(collection(db,"gradebookAssignments"),s=>{gradebookAssignmentSettings=s.docs.map(d=>({id:d.id,...d.data()}));renderGradebook()},e=>console.warn("assignment settings",e));
  onSnapshot(collection(db,"curriculumProgress"),s=>{curriculumProgress=s.docs.map(d=>({id:d.id,...d.data()}));renderGradebook()},e=>console.warn("curriculum gradebook listener",e));
+ onSnapshot(collection(db,"curriculumAttempts"),s=>{curriculumAttempts=s.docs.map(d=>({id:d.id,...d.data()}));renderGradebook()},e=>console.warn("curriculum attempts listener",e));
  onSnapshot(collection(db,"leaderboardRewards"),s=>{leaderboardRewards=s.docs.map(d=>({id:d.id,...d.data()}));renderScores()},e=>console.warn("leaderboard rewards",e));
+ onSnapshot(collection(db,"bossLoot"),s=>{bossLootRows=s.docs.map(d=>({id:d.id,...d.data()}));const sid=$("sid")?.value;if(sid)dwRenderRpgSnapshot(students.find(x=>x.id===sid))},e=>console.warn("boss loot",e));
  onSnapshot(doc(db,"classData","gradebookSettings"),s=>{if(s.exists())gradebookSettings={...gradebookSettings,...s.data()};renderGradebook()},e=>console.warn("gradebook settings",e));
  onSnapshot(collection(db,"students"),s=>{students=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.firstName||"").localeCompare(String(b.firstName||"")));renderStudents();renderShop();renderScores();renderGradebook()});
 onSnapshot(collection(db,"bathroomStatus"),s=>{bathroomStatuses=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("bathroomStatus listener",e));
@@ -2518,7 +2522,7 @@ function teacherAvatarArt(r){
 }
 let teacherLeaderboardPeriod="weekly";
 function phoenixDayKey(d=new Date()){return new Intl.DateTimeFormat("en-CA",{timeZone:"America/Phoenix",year:"numeric",month:"2-digit",day:"2-digit"}).format(d)}
-function phoenixWeekKey(d=new Date()){const key=phoenixDayKey(d),x=new Date(`${key}T12:00:00-07:00`),day=(x.getDay()+6)%7;x.setDate(x.getDate()-day);return phoenixDayKey(x)}
+function phoenixWeekKey(d=new Date()){return DWGradebook.phoenixWeekKey(d)}
 function scoreDateKey(s){if(s.dateKey)return String(s.dateKey);if(s.createdAt?.seconds)return phoenixDayKey(new Date(s.createdAt.seconds*1000));return ""}
 function leaderboardStandings(period=teacherLeaderboardPeriod){
   const week=phoenixWeekKey(),eligible=scores.filter(s=>period!=="weekly"||scoreDateKey(s)>=week),studentsMap=new Map();
@@ -2532,7 +2536,7 @@ function renderScores(){
 }
 $("teacherWeeklyBoard")?.addEventListener("click",()=>{teacherLeaderboardPeriod="weekly";$("teacherWeeklyBoard").classList.add("active");$("teacherAllTimeBoard").classList.remove("active");renderScores()});
 $("teacherAllTimeBoard")?.addEventListener("click",()=>{teacherLeaderboardPeriod="all";$("teacherAllTimeBoard").classList.add("active");$("teacherWeeklyBoard").classList.remove("active");renderScores()});
-$("issueLeaderboardRewards")?.addEventListener("click",async()=>{const top=leaderboardStandings("weekly").slice(0,5),day=phoenixDayKey(),week=phoenixWeekKey();if(!top.length)return alert("There are no weekly scores to reward yet.");if(!confirm("Issue today's weekly Top-5 rewards? This can only happen once per student today."))return;let issued=0;for(let i=0;i<top.length;i++){const row=top[i],st=row.student;if(!st)continue;const id=`${week}_${day}_${st.id}`,rewardRef=doc(db,"leaderboardRewards",id),already=(await getDoc(rewardRef)).exists(),weeklyCount=leaderboardRewards.filter(r=>r.studentId===st.id&&r.weekKey===week).length;if(already||weeklyCount>=5)continue;const gold=i===0?5:i<3?3:2;await setDoc(rewardRef,{studentId:st.id,studentName:st.firstName||"Student",weekKey:week,dateKey:day,rank:i+1,goldAward:gold,championChoice:i===0,status:"issued",createdAt:serverTimestamp()});await setDoc(doc(db,"students",st.id),{gold:Number(st.gold||0)+gold,updatedAt:serverTimestamp()},{merge:true});issued++}alert(`${issued} leaderboard reward${issued===1?"":"s"} issued. First place also receives a teacher-provided Champion Choice.`)});
+$("issueLeaderboardRewards")?.addEventListener("click",async()=>{const top=leaderboardStandings("weekly").slice(0,5),day=phoenixDayKey(),week=phoenixWeekKey();if(!top.length)return alert("There are no weekly scores to reward yet.");if(!confirm("Issue today's weekly Top-5 rewards? This can only happen once per student today."))return;let issued=0;for(let i=0;i<top.length;i++){const row=top[i],st=row.student;if(!st)continue;const id=`${week}_${day}_${st.id}`,rewardRef=doc(db,"leaderboardRewards",id),studentRef=doc(db,"students",st.id),gold=i===0?5:i<3?3:2;const didIssue=await runTransaction(db,async tx=>{const [rewardSnap,studentSnap]=await Promise.all([tx.get(rewardRef),tx.get(studentRef)]);if(rewardSnap.exists()||!studentSnap.exists())return false;const weekRewards=leaderboardRewards.filter(r=>r.studentId===st.id&&r.weekKey===week);if(weekRewards.length>=5)return false;tx.set(rewardRef,{studentId:st.id,studentName:st.firstName||"Student",weekKey:week,dateKey:day,rank:i+1,goldAward:gold,championChoice:i===0,status:"issued",createdAt:serverTimestamp()});tx.update(studentRef,{gold:increment(gold),updatedAt:serverTimestamp()});return true});if(didIssue)issued++}alert(`${issued} leaderboard reward${issued===1?"":"s"} issued. First place also receives a teacher-provided Champion Choice.`)});
 function renderResults(){$("results").innerHTML=results.length?results.map(r=>`<tr><td>${esc(r.displayName||r.playerName||"Player")}</td><td>${esc(r.gameName||r.game||"Game")}</td><td>${+r.score||0}</td><td>${r.accuracy!=null?esc(r.accuracy)+"%":"—"}</td><td>${esc(r.summary||r.details||"—")}</td><td>${r.createdAt?.seconds?new Date(r.createdAt.seconds*1000).toLocaleString():"—"}</td></tr>`).join(""):'<tr><td colspan="6" class="muted">No academic game results yet.</td></tr>'}
 function gbSafe(v){return String(v||"").toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"").slice(0,60)||"record"}
 function gbHash(v){let h=2166136261;for(const c of String(v||"")){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return(h>>>0).toString(36)}
@@ -2561,13 +2565,14 @@ function renderGradebookMatrixLegacy(){
   document.querySelectorAll("[data-gb-save]").forEach(b=>b.onclick=async()=>{const id=b.dataset.gbSave,scoreEl=document.querySelector(`[data-gb-score="${id}"]`),statusEl=document.querySelector(`[data-gb-status="${id}"]`),noteEl=document.querySelector(`[data-gb-note="${id}"]`);await setDoc(doc(db,"gradebookGrades",id),{studentId:b.dataset.student,studentName:b.dataset.studentName,assignmentId:b.dataset.assignment,assignmentName:b.dataset.assignmentName,score:scoreEl.value===""?null:Number(scoreEl.value),status:statusEl.value,note:noteEl.value.trim(),updatedAt:serverTimestamp()},{merge:true});b.textContent="Saved ✓";setTimeout(()=>b.textContent="Save",1200)});
 }
 function gbCategoryFromResult(r){const t=`${r.gameId||""} ${r.gameName||r.game||""}`.toLowerCase();return /witch|reader|reading/.test(t)?"reading":/curriculum/.test(t)?"curriculum":"daily"}
-function gbScoreFromAttempts(list){const vals=list.map(r=>Number(r.accuracy)).filter(Number.isFinite);if(!vals.length)return null;if(gradebookSettings.attemptRule==="latest")return Number(list[0]?.accuracy);if(gradebookSettings.attemptRule==="average")return Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);return Math.max(...vals)}
+function gbScoreFromAttempts(list){return DWGradebook.attemptGrade(list)?.score??null}
 function gbStudentAssignments(st){
   const map=new Map();
-  results.filter(r=>teacherStudentForRecord(r)?.id===st.id||String(r.studentId||r.uid||"")===st.id).forEach(r=>{const a=gradebookAssignmentInfo(r),category=gbCategoryFromResult(r),key=`${category}:${a.id}`;if(!map.has(key))map.set(key,{id:a.id,name:a.name,category,attempts:[],latest:0});const x=map.get(key);x.attempts.push(r);x.latest=Math.max(x.latest,Number(r.createdAt?.seconds||0))});
+  scores.filter(r=>(teacherStudentForRecord(r)?.id===st.id||String(r.studentId||r.uid||"")===st.id)&&/daily[_ ]quest/i.test(`${r.game||""} ${r.gameName||""}`)).forEach(r=>{const a={id:`daily:${r.day||r.dateKey}:${r.session||"work"}`,name:`Daily Quest: Day ${r.day||"—"} • ${r.session||"Work"}`},key=`daily:${a.id}`;if(!map.has(key))map.set(key,{id:a.id,name:a.name,category:"daily",attempts:[],latest:0});const x=map.get(key);x.attempts.push(r);x.latest=Math.max(x.latest,Number(r.createdAt?.seconds||0))});
   scores.filter(r=>gbCategoryFromResult(r)==="reading"&&(teacherStudentForRecord(r)?.id===st.id||String(r.studentId||r.uid||"")===st.id)).forEach(r=>{const a=gradebookAssignmentInfo(r),key=`reading:${a.id}`;if(!map.has(key))map.set(key,{id:a.id,name:a.name,category:"reading",attempts:[],latest:0});const x=map.get(key);x.attempts.push(r);x.latest=Math.max(x.latest,Number(r.createdAt?.seconds||0))});
-  curriculumProgress.filter(r=>String(r.studentId||"")===st.id).forEach(r=>{const key=`curriculum:${r.itemId}`,seen=Number(r.questionsSeen||0),score=seen?Math.round(Number(r.questionsCorrect||0)/seen*100):(r.verified?100:null);map.set(key,{id:String(r.itemId),name:`Curriculum Quest: ${r.subject||"Mission"} • Day ${r.day||"—"}${r.strand?` • ${r.strand}`:""}`,category:"curriculum",attempts:score==null?[]:[{accuracy:score}],latest:Number(r.updatedAt?.seconds||0),verified:!!r.verified})});
-  return [...map.values()].map(a=>{a.sourceCategory=a.category;a.settingsId=`assignment_${gbHash(a.sourceCategory+":"+a.id)}`;a.setting=gradebookAssignmentSettings.find(x=>x.id===a.settingsId)||{};a.name=a.setting.name||a.name;a.category=a.setting.category||a.category;a.gradeId=`${gbSafe(st.id)}__${gbHash(a.sourceCategory+":"+a.id)}`;a.override=gradebookGrades.find(g=>g.id===a.gradeId)||{};a.auto=gbScoreFromAttempts(a.attempts);a.final=a.override.score??a.auto;a.status=a.override.status||(a.attempts.length?"Complete":"In Progress");a.counts=a.setting.countsTowardGrade!==false;a.hidden=a.setting.hidden===true;return a}).sort((a,b)=>b.latest-a.latest);
+  const curriculumSource=curriculumAttempts.filter(r=>String(r.studentId||"")===st.id);(curriculumSource.length?curriculumSource:curriculumProgress.filter(r=>String(r.studentId||"")===st.id)).forEach(r=>{const key=`curriculum:${r.itemId}`,seen=Number(r.questionsSeen||0),score=Number.isFinite(Number(r.accuracy))?Number(r.accuracy):(seen?Math.round(Number(r.questionsCorrect||0)/seen*100):(r.verified?100:null));if(!map.has(key))map.set(key,{id:String(r.itemId),name:`Curriculum Quest: ${r.subject||"Mission"} • Day ${r.day||"—"}${r.strand?` • ${r.strand}`:""}`,category:"curriculum",attempts:[],latest:0,verified:!!r.verified});const x=map.get(key);if(score!=null)x.attempts.push({...r,accuracy:score});x.latest=Math.max(x.latest,Number(r.createdAt?.seconds||r.updatedAt?.seconds||0))});
+  gradebookAssignmentSettings.forEach(setting=>{const ids=Array.isArray(setting.assignedStudentIds)?setting.assignedStudentIds:[],grades=Array.isArray(setting.assignedGrades)?setting.assignedGrades.map(String):[],groups=Array.isArray(setting.assignedGroups)?setting.assignedGroups:[],assigned=setting.assigned===true||ids.includes(st.id)||grades.includes(String(st.grade))||groups.includes(st.genderGroup);if(!assigned)return;const sourceCategory=setting.sourceCategory||setting.category||"daily",sourceId=String(setting.sourceId||setting.id),key=`${sourceCategory}:${sourceId}`;if(!map.has(key))map.set(key,{id:sourceId,name:setting.name||"Assigned work",category:sourceCategory,attempts:[],latest:0,setting})});
+  return [...map.values()].map(a=>{a.sourceCategory=a.category;a.settingsId=`assignment_${gbHash(a.sourceCategory+":"+a.id)}`;a.setting=a.setting||gradebookAssignmentSettings.find(x=>x.id===a.settingsId)||{};a.name=a.setting.name||a.name;a.category=a.setting.category||a.category;a.gradeId=`${gbSafe(st.id)}__${gbHash(a.sourceCategory+":"+a.id)}`;a.override=gradebookGrades.find(g=>g.id===a.gradeId)||{};a.auto=gbScoreFromAttempts(a.attempts);const actuallyMissing=!a.attempts.length&&DWGradebook.isActuallyMissing(a.setting,a.override);a.final=a.override.score??(actuallyMissing?0:a.auto);a.status=a.override.status||(a.attempts.length?"Complete":actuallyMissing?"Missing":"Assigned");a.counts=a.setting.countsTowardGrade!==false;a.hidden=a.setting.hidden===true;return a}).sort((a,b)=>b.latest-a.latest);
 }
 function gbStudentSummary(st){
   const allAssignments=gbStudentAssignments(st),assignments=allAssignments.filter(a=>!a.hidden),cats={daily:[],curriculum:[],reading:[]};assignments.forEach(a=>{if(a.counts&&a.status!=="Excused"&&Number.isFinite(Number(a.final)))cats[a.category].push(Number(a.final))});
@@ -2587,7 +2592,7 @@ function renderGradebook(){
   const assignmentRows=[...new Map(summaries.flatMap(x=>x.allAssignments).map(a=>[a.settingsId,a])).values()];
   $("gradebookAssignmentManager").innerHTML=assignmentRows.length?assignmentRows.map(a=>`<div class="gb-assignment-row"><input data-ga-name="${a.settingsId}" value="${esc(a.name)}"><select data-ga-category="${a.settingsId}"><option value="daily"${a.category==="daily"?" selected":""}>Daily Quest</option><option value="curriculum"${a.category==="curriculum"?" selected":""}>Curriculum Quest</option><option value="reading"${a.category==="reading"?" selected":""}>Reading Tests</option></select><input data-ga-points="${a.settingsId}" type="number" min="0" value="${a.setting.pointsPossible??100}" title="Points possible"><input data-ga-due="${a.settingsId}" type="date" value="${esc(a.setting.dueDate||"")}"><label><input data-ga-counts="${a.settingsId}" type="checkbox" ${a.counts?"checked":""}> Counts</label><label><input data-ga-hidden="${a.settingsId}" type="checkbox" ${a.hidden?"checked":""}> Hide</label><button data-ga-save="${a.settingsId}" data-source="${esc(a.id)}" data-source-category="${a.sourceCategory}">Save</button></div>`).join(""):'<div class="gb-empty">Assignments appear after the first submission.</div>';
   document.querySelectorAll("[data-gb-save]").forEach(b=>b.onclick=async()=>{const id=b.dataset.gbSave,scoreEl=document.querySelector(`[data-gb-score="${id}"]`),statusEl=document.querySelector(`[data-gb-status="${id}"]`),noteEl=document.querySelector(`[data-gb-note="${id}"]`);await setDoc(doc(db,"gradebookGrades",id),{studentId:b.dataset.student,studentName:b.dataset.studentName,assignmentId:b.dataset.assignment,assignmentName:b.dataset.assignmentName,category:b.dataset.category,score:scoreEl.value===""?null:Number(scoreEl.value),status:statusEl.value,note:noteEl.value.trim(),updatedAt:serverTimestamp()},{merge:true});b.textContent="Saved ✓"});
-  document.querySelectorAll("[data-ga-save]").forEach(b=>b.onclick=async()=>{const id=b.dataset.gaSave;await setDoc(doc(db,"gradebookAssignments",id),{sourceId:b.dataset.source,sourceCategory:b.dataset.sourceCategory,name:document.querySelector(`[data-ga-name="${id}"]`).value.trim(),category:document.querySelector(`[data-ga-category="${id}"]`).value,pointsPossible:Number(document.querySelector(`[data-ga-points="${id}"]`).value)||100,dueDate:document.querySelector(`[data-ga-due="${id}"]`).value,countsTowardGrade:document.querySelector(`[data-ga-counts="${id}"]`).checked,hidden:document.querySelector(`[data-ga-hidden="${id}"]`).checked,updatedAt:serverTimestamp()},{merge:true});b.textContent="Saved ✓"});
+  document.querySelectorAll("[data-ga-save]").forEach(b=>b.onclick=async()=>{const id=b.dataset.gaSave;await setDoc(doc(db,"gradebookAssignments",id),{sourceId:b.dataset.source,sourceCategory:b.dataset.sourceCategory,name:document.querySelector(`[data-ga-name="${id}"]`).value.trim(),category:document.querySelector(`[data-ga-category="${id}"]`).value,pointsPossible:Number(document.querySelector(`[data-ga-points="${id}"]`).value)||100,dueDate:document.querySelector(`[data-ga-due="${id}"]`).value,countsTowardGrade:document.querySelector(`[data-ga-counts="${id}"]`).checked,hidden:document.querySelector(`[data-ga-hidden="${id}"]`).checked,assigned:true,updatedAt:serverTimestamp()},{merge:true});b.textContent="Saved ✓"});
 }
 ["gbSearch","gbGrade","gbGroup","gbSort"].forEach(id=>$(id)?.addEventListener(id==="gbSearch"?"input":"change",renderGradebook));
 $("gbSaveWeights")?.addEventListener("click",async()=>{const d=Number($("gbWeightDaily").value)||0,c=Number($("gbWeightCurriculum").value)||0,r=Number($("gbWeightReading").value)||0;if(d+c+r!==100)return alert("Category weights must total 100%.");await setDoc(doc(db,"classData","gradebookSettings"),{daily:d,curriculum:c,reading:r,updatedAt:serverTimestamp()},{merge:true});alert("Gradebook weights saved.")});
@@ -2623,6 +2628,7 @@ function dwRenderRpgSnapshot(st){
   const packs=(R.appearancePacks||[]).filter(a=>owned.indexOf(a.id)>=0);
   const gear=(R.items||[]).filter(i=>!i.appearance&&!i.egg&&owned.indexOf(i.id)>=0);
   const petObjs=[...(R.pets||[]),...(R.prestigePets||[])].filter(x=>pets.indexOf(x.id)>=0);
+  const pendingLoot=bossLootRows.filter(x=>x.studentId===st.id&&x.rareGoal!=="none"&&x.rareGoalStatus==="pending_teacher_approval");
 
   const row=(img,label,on)=>`<div class="rs-row">${img?`<img src="${img}" alt="">`:""}`+
     `<span class="${on?"rs-on":""}">${label}</span></div>`;
@@ -2644,12 +2650,22 @@ function dwRenderRpgSnapshot(st){
                      :'<div class="rs-none">None hatched</div>')+
       (st.activePet?'<div class="rs-none">Green = active companion</div>':"")+
     `</div>`+
+    `<div class="rs-block"><h5>Pending rare boss finds (${pendingLoot.length})</h5>`+
+      (pendingLoot.length?pendingLoot.map(x=>`<div class="rs-row"><span>${x.rareGoal==="classPet"?"🐾 Class Pet":"🚌 Field Trip"} • ${esc(x.dateKey||"")}</span><button type="button" class="mini" data-approve-boss-loot="${esc(x.id)}">APPROVE +25</button></div>`).join(""):'<div class="rs-none">No finds awaiting review</div>')+
+    `</div>`+
     `<div class="rs-block"><h5>Equipment (${gear.length})</h5>`+
       (gear.length?gear.map(i=>row(i.art,`${i.name}`,
           st.rpgEquipped&&st.rpgEquipped[i.slot]===i.id)).join("")
                   :'<div class="rs-none">None owned</div>')+
       (gear.length?'<div class="rs-none">Green = equipped</div>':"")+
     `</div>`;
+  box.querySelectorAll("[data-approve-boss-loot]").forEach(button=>button.onclick=()=>approveBossGoalFind(button.dataset.approveBossLoot));
+}
+
+async function approveBossGoalFind(lootId){
+  const lootRef=doc(db,"bossLoot",lootId);
+  const approved=await runTransaction(db,async tx=>{const lootSnap=await tx.get(lootRef);if(!lootSnap.exists())return false;const loot=lootSnap.data();if(loot.rareGoalStatus!=="pending_teacher_approval"||!(loot.rareGoal==="classPet"||loot.rareGoal==="fieldTrip"))return false;const goalRef=doc(db,"classData",loot.rareGoal),goalSnap=await tx.get(goalRef),goal=goalSnap.exists()?goalSnap.data():{};tx.set(goalRef,{points:Number(goal.points||0)+25,goal:Number(goal.goal||(loot.rareGoal==="classPet"?250:750)),lastLootId:lootId,updatedAt:serverTimestamp()},{merge:true});tx.update(lootRef,{goalPoints:25,rareGoalStatus:"approved",approvedAt:serverTimestamp()});return true});
+  if(!approved)alert("This rare find was already reviewed.");
 }
 /* ---------- v56 RPG admin helpers ---------- */
 /* Fill the item and pet pickers from the shipped catalogue so a teacher
@@ -3082,5 +3098,149 @@ onAuthStateChanged(cqAuth,u=>{
  onSnapshot(collection(cqDb,"curriculumOverrideRequests"),s=>{cqReq=s.docs.map(d=>({id:d.id,...d.data()}));renderCQOverrides()},e=>{console.error("curriculum override queue",e);const box=document.getElementById("overrideQueueList"),count=document.getElementById("overrideQueueCount");if(count)count.textContent="ERROR";if(box)box.innerHTML=`<div class="muted" style="color:#ff9b9b">Could not load override requests: ${qEsc(e.code||e.message||e)}. Check Firestore rules deployment.</div>`;});
 });
 </script>
+
+
+<style id="dw-v5610-command-parity">
+/* ============================================================
+   Dragonswood v56.10 aesthetic patch — TEACHER COMMAND
+   Brings the teacher portal up to the student portal's design
+   language. Appended last; removes nothing.
+   ============================================================ */
+
+/* --- 1. The 10 tabs become a fixed full-height rail, matching the student
+         portal. They were a 4-wide grid that wrapped to three rows and ate
+         the top of every screen. --- */
+@media(min-width:1051px){
+  body{padding-left:186px}
+
+  .tabs{
+    position:fixed!important;
+    left:0;top:0;bottom:0;
+    width:186px;
+    height:100vh!important;
+    z-index:40;
+    display:flex!important;
+    flex-direction:column!important;
+    gap:6px!important;
+    padding:16px 11px!important;
+    margin:0!important;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    scrollbar-width:none;
+    border:0!important;
+    border-right:1px solid rgba(190,148,255,.5)!important;
+    border-radius:0!important;
+    clip-path:none!important;
+    box-shadow:14px 0 34px rgba(0,0,0,.45);
+    background:
+      radial-gradient(circle at 50% 0%,rgba(120,52,214,.30),transparent 46%),
+      linear-gradient(180deg,rgba(7,10,38,.99),rgba(5,18,37,.98))!important;
+  }
+  .tabs::-webkit-scrollbar{width:0}
+  .tabs::before,.tabs::after{display:none!important}
+
+  .tabs .tab{
+    text-align:left!important;
+    min-height:52px;
+    font-size:11px!important;
+    letter-spacing:.3px;
+    line-height:1.2;
+    padding:10px 11px!important;
+    border-radius:11px!important;
+    background:transparent!important;
+    border:1px solid transparent!important;
+    color:#d8cce8!important;
+    transition:background .16s ease,transform .16s ease,border-color .16s ease;
+  }
+  .tabs .tab:hover{
+    background:rgba(120,60,210,.30)!important;
+    border-color:rgba(142,238,255,.45)!important;
+    transform:translateX(2px);
+  }
+  .tabs .tab.active{
+    position:relative;
+    background:linear-gradient(90deg,rgba(109,46,204,.85),rgba(5,142,181,.72))!important;
+    border-color:#8eeeff!important;
+    box-shadow:0 0 18px rgba(91,85,255,.28)!important;
+    color:#fff!important;
+  }
+  .tabs .tab.active::before{
+    content:"";position:absolute;left:-11px;top:8px;bottom:8px;width:4px;
+    border-radius:0 4px 4px 0;background:linear-gradient(180deg,#ffe36d,#8eeeff);
+  }
+}
+
+/* --- 2. Same glass-panel language the student portal got in v56.9. --- */
+.card,.command-title,.item,.modalbox{
+  background:linear-gradient(145deg,rgba(13,17,52,.93),rgba(3,25,45,.9))!important;
+  border:1px solid rgba(117,94,165,.5)!important;
+  border-radius:14px!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.24);
+}
+.card:hover{border-color:rgba(255,227,109,.42)!important}
+.command-title h2{color:#ffe88b!important}
+
+/* Tables read as data, not as a spreadsheet dumped on the page. */
+.student-table,table{border-radius:12px;overflow:hidden}
+.student-table th,th{
+  position:sticky;top:0;z-index:2;
+  background:linear-gradient(90deg,#2a1250,#08283b)!important;
+  font-size:11px;letter-spacing:.5px;text-transform:uppercase;
+}
+.student-table tbody tr:hover td,table tbody tr:hover td{background:rgba(120,60,210,.14)}
+.badge{border:1px solid rgba(190,148,255,.4);font-weight:900;font-size:11px}
+
+/* --- 3. 82 bare text boxes become controls you can see and press. --- */
+input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+select,textarea{
+  min-height:44px;
+  padding:11px 13px;
+  border-radius:10px;
+  border:1px solid rgba(2,204,254,.34);
+  background:linear-gradient(180deg,rgba(12,9,32,.96),rgba(6,6,22,.96));
+  transition:border-color .15s ease,box-shadow .15s ease;
+}
+input:hover,select:hover,textarea:hover{border-color:rgba(255,227,109,.55)}
+input:focus,select:focus,textarea:focus{
+  border-color:#ffe36d;
+  box-shadow:0 0 0 3px rgba(255,227,109,.22);
+  outline:none;
+}
+input::placeholder,textarea::placeholder{color:#8f88a6}
+select{
+  appearance:none;-webkit-appearance:none;
+  padding-right:34px;
+  background-image:linear-gradient(180deg,rgba(12,9,32,.96),rgba(6,6,22,.96)),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'><path d='M1 1l6 6 6-6' fill='none' stroke='%23ffe36d' stroke-width='2' stroke-linecap='round'/></svg>");
+  background-repeat:no-repeat,no-repeat;
+  background-position:0 0,right 12px center;
+  background-size:100% 100%,14px 9px;
+  cursor:pointer;
+}
+.field label{color:#ffe88b;letter-spacing:.3px;text-transform:uppercase;font-size:10px}
+
+/* Buttons get depth and a pressed state so a click feels like it landed. */
+.btn,button{
+  border-radius:10px;
+  min-height:44px;
+  transition:filter .14s ease,transform .08s ease,box-shadow .14s ease;
+  box-shadow:0 6px 16px rgba(0,0,0,.3);
+}
+.btn:active,button:active{transform:translateY(1px);box-shadow:0 3px 9px rgba(0,0,0,.34)}
+.tabs .tab{box-shadow:none!important}
+
+/* --- 4. Keyboard focus. There was none in this file before now. --- */
+:where(button,.btn,a,[tabindex],input,select,textarea):focus-visible{
+  outline:3px solid #ffe36d!important;
+  outline-offset:2px!important;
+  border-radius:8px;
+}
+
+/* --- 5. Motion respect. This file had no reduced-motion rule at all,
+         and it runs two infinite shimmer animations. --- */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+}
+</style>
 
 </body></html>

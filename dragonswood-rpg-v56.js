@@ -16,6 +16,16 @@
     ["starflutter","Starflutter",A+"pet-flying-03.png","rare",5,"Its wings sparkle over Dragonswood.",1,0],
     ["stormlet","Stormlet",A+"pet-flying-04.png","epic",7,"A tiny storm creature with a brave heart.",3,1]
   ].map(x=>({id:x[0],name:x[1],art:x[2],animatedArt:x[2].replace('.png','.gif'),rarity:x[3],level:x[4],description:x[5],atk:x[6],def:x[7],prestige:false}));
+  /* Woodland companions built from the chibi monster sprites. Each has a
+     looping idle animation; the .png is the still used in lists and shops. */
+  pets.push(...[
+    ["sproutling","Sproutling","pet-chibi-01","common",1,"A little seedling that stands its ground.",1,1],
+    ["puffbeak","Puffbeak","pet-chibi-02","common",2,"A round, bright-feathered wanderer.",2,0],
+    ["curlshell","Curlshell","pet-chibi-03","uncommon",3,"Slow, steady, and never lost.",0,3],
+    ["finnick","Finnick","pet-chibi-04","uncommon",4,"A darting swimmer with a sharp eye.",2,1],
+    ["hootling","Hootling","pet-chibi-05","rare",6,"A wide-eyed watcher of the wood.",2,2]
+  ].map(x=>({id:x[0],name:x[1],art:`${A}${x[2]}.png`,animatedArt:`${A}${x[2]}.gif`,
+             rarity:x[3],level:x[4],description:x[5],atk:x[6],def:x[7],prestige:false})));
   const prestigePets=[
     {id:"dragon",name:"Dragon",art:A+"pet-prestige-dragon.png",rarity:"legendary",level:10,atk:3,def:2,prestige:true,description:"A Level 10 Dragonswood bond."},
     {id:"gargoyle",name:"Gargoyle",art:A+"pet-prestige-gargoyle.png",rarity:"legendary",level:10,atk:1,def:4,prestige:true,description:"A Level 10 stone guardian."},
@@ -43,21 +53,78 @@
     {id:"plain_egg",name:"Mysterious Woodland Egg",classId:"all",slot:"egg",icon:"🥚",cost:125,level:1,rarity:"uncommon",egg:true},
     {id:"prestige_egg",name:"Prestige Dragonwood Egg",classId:"all",slot:"egg",icon:"🌟🥚",cost:850,level:10,rarity:"legendary",egg:true,prestige:true}
   ];
-  const appearancePacks=[
-    ["warrior",5,"Iron Vanguard",A+"skin-warrior-5.png"],["warrior",10,"Sunspire Champion",A+"skin-warrior-10.png"],["warrior",15,"Shadowsteel Veteran",A+"skin-warrior-15.png"],
-    ["ranger",5,"Forest Pathfinder",A+"skin-ranger-5.png"],["ranger",10,"Moonwood Archer",A+"skin-ranger-10.png"],["ranger",15,"Elderwood Warden",A+"skin-ranger-15.png"],
-    ["mage",5,"Arcane Apprentice",A+"skin-mage-5.png"],["mage",10,"Starfall Magician",A+"skin-mage-10.png"],["mage",15,"Grand Spellweaver",A+"skin-mage-15.png"],
-    ["healer",5,"Dawn Acolyte",A+"skin-healer-5.png"],["healer",10,"Radiant Guide",A+"skin-healer-10.png"],["healer",15,"High Luminary",A+"skin-healer-15.png"]
-  ].map(([classId,level,name,art])=>({id:`${classId}_appearance_${level}`,name:`${name} Appearance Pack`,classId,slot:"appearance",level,rarity:level===15?"legendary":level===10?"epic":"rare",cost:level*45,art,skinArt:art,appearance:true,stats:{atk:0,def:0,hp:0,heal:0}}));
+  /* ---- Appearance pack collection -------------------------------------
+     48 packs: four classes x four level tiers x three distinct characters.
+     Curated, not exhaustive — 161 characters are available, but a shop with
+     288 costumes is worse than one with 48. Each tier is three genuinely
+     different characters rather than recolours, and the art gets visibly more
+     elaborate as the level gate rises. Levels 16-20 used to reward nothing at
+     all; L20 is now the top of a real ladder. */
+  const APPEARANCE_ROWS=[
+    ["healer_appearance_5","Hearthside Helper","healer",5,"rare",225,"skin-healer-5.png"],
+    ["healer_appearance_5_b","Village Apprentice","healer",5,"rare",225,"skin-healer-5-b.png"],
+    ["healer_appearance_5_c","Chapel Novice","healer",5,"rare",225,"skin-healer-5-c.png"],
+    ["healer_appearance_10","Tinkerbrew Gnome","healer",10,"epic",450,"skin-healer-10.png"],
+    ["healer_appearance_10_b","Greybeard Mentor","healer",10,"epic",450,"skin-healer-10-b.png"],
+    ["healer_appearance_10_c","Dunewalker Healer","healer",10,"epic",450,"skin-healer-10-c.png"],
+    ["healer_appearance_15","Saffron Monk","healer",15,"legendary",675,"skin-healer-15.png"],
+    ["healer_appearance_15_b","Sunmark Shaman","healer",15,"legendary",675,"skin-healer-15-b.png"],
+    ["healer_appearance_15_c","Ramhorn Shaman","healer",15,"legendary",675,"skin-healer-15-c.png"],
+    ["healer_appearance_20","Golden Oracle","healer",20,"mythic",900,"skin-healer-20.png"],
+    ["healer_appearance_20_b","Shadow Seer","healer",20,"mythic",900,"skin-healer-20-b.png"],
+    ["healer_appearance_20_c","Keeper of Hours","healer",20,"mythic",900,"skin-healer-20-c.png"],
+    ["mage_appearance_5","Apprentice Conjurer","mage",5,"rare",225,"skin-mage-5.png"],
+    ["mage_appearance_5_b","Bluepeak Spellcaster","mage",5,"rare",225,"skin-mage-5-b.png"],
+    ["mage_appearance_5_c","Stormcuff Adept","mage",5,"rare",225,"skin-mage-5-c.png"],
+    ["mage_appearance_10","Emberhair Sorceress","mage",10,"epic",450,"skin-mage-10.png"],
+    ["mage_appearance_10_b","Voltcore Technomage","mage",10,"epic",450,"skin-mage-10-b.png"],
+    ["mage_appearance_10_c","Violet Enchantress","mage",10,"epic",450,"skin-mage-10-c.png"],
+    ["mage_appearance_15","Frostcrown Witch","mage",15,"legendary",675,"skin-mage-15.png"],
+    ["mage_appearance_15_b","Aegiscore Technomage","mage",15,"legendary",675,"skin-mage-15-b.png"],
+    ["mage_appearance_15_c","Silverfrost Sorceress","mage",15,"legendary",675,"skin-mage-15-c.png"],
+    ["mage_appearance_20","Tidecaller Ascendant","mage",20,"mythic",900,"skin-mage-20.png"],
+    ["mage_appearance_20_b","Emberheart Ascendant","mage",20,"mythic",900,"skin-mage-20-b.png"],
+    ["mage_appearance_20_c","Wildhorn Ascendant","mage",20,"mythic",900,"skin-mage-20-c.png"],
+    ["ranger_appearance_5","Greenhood Scout","ranger",5,"rare",225,"skin-ranger-5.png"],
+    ["ranger_appearance_5_b","Crimsonmask Archer","ranger",5,"rare",225,"skin-ranger-5-b.png"],
+    ["ranger_appearance_5_c","Palewood Elf","ranger",5,"rare",225,"skin-ranger-5-c.png"],
+    ["ranger_appearance_10","Nightpetal Shinobi","ranger",10,"epic",450,"skin-ranger-10.png"],
+    ["ranger_appearance_10_b","Snowveil Shinobi","ranger",10,"epic",450,"skin-ranger-10-b.png"],
+    ["ranger_appearance_10_c","Emberbraid Elf","ranger",10,"epic",450,"skin-ranger-10-c.png"],
+    ["ranger_appearance_15","Antlerhelm Tracker","ranger",15,"legendary",675,"skin-ranger-15.png"],
+    ["ranger_appearance_15_b","Thornmantle Ranger","ranger",15,"legendary",675,"skin-ranger-15-b.png"],
+    ["ranger_appearance_15_c","Silent Blade","ranger",15,"legendary",675,"skin-ranger-15-c.png"],
+    ["ranger_appearance_20","Heartwood Warden","ranger",20,"mythic",900,"skin-ranger-20.png"],
+    ["ranger_appearance_20_b","Stonebark Sentinel","ranger",20,"mythic",900,"skin-ranger-20-b.png"],
+    ["ranger_appearance_20_c","Mosscrown Keeper","ranger",20,"mythic",900,"skin-ranger-20-c.png"],
+    ["warrior_appearance_5","Ironwatch Sergeant","warrior",5,"rare",225,"skin-warrior-5.png"],
+    ["warrior_appearance_5_b","Bronze Hoplite","warrior",5,"rare",225,"skin-warrior-5-b.png"],
+    ["warrior_appearance_5_c","Northvale Raider","warrior",5,"rare",225,"skin-warrior-5-c.png"],
+    ["warrior_appearance_10","Silverbrand Knight","warrior",10,"epic",450,"skin-warrior-10.png"],
+    ["warrior_appearance_10_b","Phalanx Spearguard","warrior",10,"epic",450,"skin-warrior-10-b.png"],
+    ["warrior_appearance_10_c","Azure Bushi","warrior",10,"epic",450,"skin-warrior-10-c.png"],
+    ["warrior_appearance_15","Crowned Sovereign","warrior",15,"legendary",675,"skin-warrior-15.png"],
+    ["warrior_appearance_15_b","Order Templar","warrior",15,"legendary",675,"skin-warrior-15-b.png"],
+    ["warrior_appearance_15_c","Goldshield Amazon","warrior",15,"legendary",675,"skin-warrior-15-c.png"],
+    ["warrior_appearance_20","Rimeguard Sovereign","warrior",20,"mythic",900,"skin-warrior-20.png"],
+    ["warrior_appearance_20_b","Glacierborn Vigil","warrior",20,"mythic",900,"skin-warrior-20-b.png"],
+    ["warrior_appearance_20_c","Winterlight Champion","warrior",20,"mythic",900,"skin-warrior-20-c.png"]
+  ];
+  const appearancePacks=APPEARANCE_ROWS.map(([id,name,cls,level,rarity,cost,file])=>({
+    id, name:`${name} Appearance Pack`, classId:cls, slot:"appearance",
+    level, rarity, cost, art:`${A}${file}`, skinArt:`${A}${file}`,
+    appearance:true, stats:{atk:0,def:0,hp:0,heal:0}
+  }));
+  // The Class Shop renders from `items`, so the packs have to live there too.
   items.push(...appearancePacks);
   const setPieces=[
     ["warrior","dawnshield","Dawnshield",1,"uncommon",["head","armor","weapon","offhand"],["Dawnshield Helm","Dawnshield Plate","Dawnshield Sword","Dawnshield Aegis"],["🪖","🛡️","⚔️","🔰"]],
     ["warrior","dragonward","Dragonward",10,"legendary",["head","armor","weapon","back"],["Dragonward Helm","Dragonward Warplate","Wyrmbane Blade","Dragonward Mantle"],["🐲","🥋","🗡️","🪽"]],
     ["ranger","briarfox","Briarfox",1,"uncommon",["head","outfit","weapon","accessory"],["Briarfox Hood","Briarfox Leathers","Briarfox Longbow","Scout's Compass"],["🧢","🥷","🏹","🧭"]],
     ["ranger","moonhawk","Moonhawk",10,"legendary",["head","outfit","weapon","back"],["Moonhawk Cowl","Moonhawk Raiment","Moonhawk Bow","Moonhawk Cape"],["🦅","🥋","🏹","🌙"]],
-    ["mage","sparkweaver","Sparkweaver",1,"uncommon",["head","outfit","weapon","offhand"],["Sparkweaver Hat","Sparkweaver Robes","Sparkweaver Wand","Beginner's Grimoire"],["🎓","🥻","🪄","📘"]],
+    ["mage","sparkweaver","Sparkweaver",1,"uncommon",["head","outfit","weapon","offhand"],["Sparkweaver Hat","Sparkweaver Robes","Sparkweaver Set Wand","Beginner's Grimoire"],["🎓","🥻","🪄","📘"]],
     ["mage","winterwitch","Winter Witch",10,"legendary",["head","outfit","weapon","accessory"],["Frostweave Hat","Frostweave Robes","Winter Staff","Snowflake Charm"],["❄️","🧥","🔮","💠"]],
-    ["healer","dawnlight","Dawnlight",1,"uncommon",["head","outfit","weapon","accessory"],["Dawnlight Circlet","Dawnlight Vestments","Dawnlight Staff","Restoration Charm"],["😇","🥻","✨","💎"]],
+    ["healer","dawnlight","Dawnlight",1,"uncommon",["head","outfit","weapon","accessory"],["Dawnlight Circlet","Dawnlight Vestments","Dawnlight Set Staff","Restoration Charm"],["😇","🥻","✨","💎"]],
     ["healer","starbloom","Starbloom",10,"legendary",["head","outfit","weapon","back"],["Starbloom Crown","Starbloom Vestments","Starbloom Scepter","Mercywing Mantle"],["🌸","👘","🪄","🪽"]]
   ];
   for(const [classId,setId,setName,level,rarity,slots,names,icons] of setPieces){
@@ -68,23 +135,63 @@
         stats:{atk:main?(classId==="mage"?5:4):1,def:protect?3:0,hp:protect?3:1,heal:support?(main?4:2):(classId==="mage"&&slot==="offhand"?2:0)}});
     });
   }
-  const weaponArt=["01","07","13","22","31","44","58","73"].map(n=>`${A}items/weapon-${n}.png`);
-  const armorArt=["01","07","13","22","31","44","58","73"].map(n=>`${A}items/armor-${n}.png`);
-  const shieldArt=["01","07","13","22"].map(n=>`${A}items/shield-${n}.png`);
-  const visualMap={
-    warrior:{weapon:weaponArt[0],offhand:shieldArt[1],head:armorArt[5],armor:armorArt[6],outfit:armorArt[6],back:armorArt[2],accessory:armorArt[4]},
-    ranger:{weapon:weaponArt[4],offhand:shieldArt[0],head:armorArt[0],armor:armorArt[2],outfit:armorArt[2],back:armorArt[2],accessory:armorArt[7]},
-    mage:{weapon:weaponArt[5],offhand:shieldArt[2],head:armorArt[0],armor:armorArt[2],outfit:armorArt[2],back:armorArt[2],accessory:armorArt[7]},
-    healer:{weapon:weaponArt[7],offhand:shieldArt[2],head:armorArt[0],armor:armorArt[2],outfit:armorArt[2],back:armorArt[2],accessory:armorArt[7]}
+  /* Explicit art per item id. The old visualMap gave ONE picture per
+     (class, slot), so a Level 1 sword and a Level 10 sword looked the
+     same — gear that never changes appearance is a weak reward. These
+     icons get visibly better as the level requirement climbs. */
+  const ITEM_ART={
+    briarfox_accessory:"assets/rpg/items/item-briarfox-accessory.png",
+    briarfox_bow:"assets/rpg/items/item-briarfox-bow.png",
+    briarfox_head:"assets/rpg/items/item-briarfox-head.png",
+    briarfox_outfit:"assets/rpg/items/item-briarfox-outfit.png",
+    briarfox_weapon:"assets/rpg/items/item-briarfox-weapon.png",
+    crimson_potion_belt:"assets/rpg/items/item-crimson-potion-belt.png",
+    dawnlight_accessory:"assets/rpg/items/item-dawnlight-accessory.png",
+    dawnlight_head:"assets/rpg/items/item-dawnlight-head.png",
+    dawnlight_outfit:"assets/rpg/items/item-dawnlight-outfit.png",
+    dawnlight_staff:"assets/rpg/items/item-dawnlight-staff.png",
+    dawnlight_weapon:"assets/rpg/items/item-dawnlight-weapon.png",
+    dawnshield_armor:"assets/rpg/items/item-dawnshield-armor.png",
+    dawnshield_head:"assets/rpg/items/item-dawnshield-head.png",
+    dawnshield_offhand:"assets/rpg/items/item-dawnshield-offhand.png",
+    dawnshield_weapon:"assets/rpg/items/item-dawnshield-weapon.png",
+    dragonward_armor:"assets/rpg/items/item-dragonward-armor.png",
+    dragonward_back:"assets/rpg/items/item-dragonward-back.png",
+    dragonward_head:"assets/rpg/items/item-dragonward-head.png",
+    dragonward_weapon:"assets/rpg/items/item-dragonward-weapon.png",
+    ironroot_guard:"assets/rpg/items/item-ironroot-guard.png",
+    moonhawk_back:"assets/rpg/items/item-moonhawk-back.png",
+    moonhawk_head:"assets/rpg/items/item-moonhawk-head.png",
+    moonhawk_outfit:"assets/rpg/items/item-moonhawk-outfit.png",
+    moonhawk_weapon:"assets/rpg/items/item-moonhawk-weapon.png",
+    nightstep_cloak:"assets/rpg/items/item-nightstep-cloak.png",
+    restoration_satchel:"assets/rpg/items/item-restoration-satchel.png",
+    sparkweaver_head:"assets/rpg/items/item-sparkweaver-head.png",
+    sparkweaver_offhand:"assets/rpg/items/item-sparkweaver-offhand.png",
+    sparkweaver_outfit:"assets/rpg/items/item-sparkweaver-outfit.png",
+    sparkweaver_wand:"assets/rpg/items/item-sparkweaver-wand.png",
+    sparkweaver_weapon:"assets/rpg/items/item-sparkweaver-weapon.png",
+    starbloom_back:"assets/rpg/items/item-starbloom-back.png",
+    starbloom_head:"assets/rpg/items/item-starbloom-head.png",
+    starbloom_outfit:"assets/rpg/items/item-starbloom-outfit.png",
+    starbloom_weapon:"assets/rpg/items/item-starbloom-weapon.png",
+    sunsteel_blade:"assets/rpg/items/item-sunsteel-blade.png",
+    winterwitch_accessory:"assets/rpg/items/item-winterwitch-accessory.png",
+    winterwitch_head:"assets/rpg/items/item-winterwitch-head.png",
+    winterwitch_outfit:"assets/rpg/items/item-winterwitch-outfit.png",
+    winterwitch_weapon:"assets/rpg/items/item-winterwitch-weapon.png"
   };
-  items.forEach((item,n)=>{
-    if(item.appearance)return;
+  const FALLBACK_ART=`${A}items/armor-01.png`;
+  items.forEach(item=>{
+    if(item.appearance)return;                       // packs carry their own skinArt
     if(item.egg){item.art=item.prestige?`${A}items/egg-22.png`:`${A}items/egg-7.png`;return}
-    item.art=visualMap[item.classId]?.[item.slot]||armorArt[n%armorArt.length];
+    item.art=ITEM_ART[item.id]||FALLBACK_ART;
   });
+
   function dateKey(){return new Intl.DateTimeFormat("en-CA",{timeZone:"America/Phoenix",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date())}
   function levelForXp(xp){const t=[0,200,450,750,1100,1500,1950,2450,3000,3600,4250,4950,5700,6500,7350,8250,9200,10200,11100,12000];let l=1;t.forEach((v,i)=>{if(Number(xp||0)>=v)l=i+1});return Math.min(20,l)}
   function hash(s){let h=2166136261;for(const c of String(s)){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
   function dailyEnemy(uid,day){return enemies[hash(`${uid}|${dateKey()}|${day}`)%enemies.length]}
-  window.DWRPG={classes,pets,prestigePets,enemies,items,appearancePacks,dateKey,levelForXp,hash,dailyEnemy,version:"56.1"};
+
+  window.DWRPG={classes,pets,prestigePets,enemies,items,appearancePacks,dateKey,levelForXp,hash,dailyEnemy,version:"56.5"};
 })();

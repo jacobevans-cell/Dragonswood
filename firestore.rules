@@ -29,6 +29,22 @@ service cloud.firestore {
 
     match /classData/{docId} {
       allow read: if true;
+
+      // A rare Daily Boss chest may add exactly 25 points to the Class Pet or
+      // Field Trip goal. The award is validated against the loot document
+      // written in the same batch, so it cannot be claimed on its own.
+      allow update: if isExploreStudent()
+                    && (docId == 'classPet' || docId == 'fieldTrip')
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['points','goal','lastLootId','updatedAt'])
+                    && request.resource.data.points is number
+                    && request.resource.data.points == resource.data.get('points',0) + 25
+                    && request.resource.data.lastLootId is string
+                    && request.resource.data.lastLootId != resource.data.get('lastLootId','')
+                    && getAfter(/databases/$(database)/documents/bossLoot/$(request.resource.data.lastLootId)).data.studentId == request.auth.uid
+                    && getAfter(/databases/$(database)/documents/bossLoot/$(request.resource.data.lastLootId)).data.rareGoal == docId
+                    && getAfter(/databases/$(database)/documents/bossLoot/$(request.resource.data.lastLootId)).data.goalPoints == 25;
+
       allow write: if isTeacher();
     }
 
@@ -77,7 +93,17 @@ service cloud.firestore {
                     && isExploreStudent()
                     && resource.data.hp > 0
                     && request.resource.data.diff(resource.data).affectedKeys()
-                       .hasOnly(['xp','gold','dailyXpDate','dailyXpEarned','lastGameClaimId','updatedAt'])
+                       .hasOnly(['xp','gold','dailyXpDate','dailyXpEarned','lastGameClaimId',
+                                'bossWins','lastBossWinDate','rpgInventory','eggInventory','updatedAt'])
+                    // Daily Boss adds win bookkeeping and may drop one item or one egg.
+                    && request.resource.data.get('bossWins',0) is number
+                    && request.resource.data.get('bossWins',0) <= resource.data.get('bossWins',0) + 1
+                    && request.resource.data.get('rpgInventory',[]).size()
+                       <= resource.data.get('rpgInventory',[]).size() + 1
+                    && request.resource.data.get('rpgInventory',[])
+                       .hasAll(resource.data.get('rpgInventory',[]))
+                    && request.resource.data.get('eggInventory',0)
+                       <= resource.data.get('eggInventory',0) + 1
                     && request.resource.data.lastGameClaimId is string
                     && request.resource.data.dailyXpDate is string
                     && request.resource.data.dailyXpEarned is number
@@ -104,6 +130,62 @@ service cloud.firestore {
                     && request.resource.data.gold
                        == resource.data.gold
                           + getAfter(/databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)).data.goldAward;
+
+      // ---------------- v56 RPG progression ----------------
+      // Each path is deliberately narrow. A student may spend, equip and hatch,
+      // but may never mint Gold, XP, items or pets out of nothing.
+
+      // Choose a class. One time only: it must be unset before this write.
+      allow update: if isOwner(studentId)
+                    && isExploreStudent()
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['classId','classChosenAt','updatedAt'])
+                    && resource.data.get('classId','') == ''
+                    && request.resource.data.classId in ['warrior','ranger','mage','healer'];
+
+      // Buy from the Class Shop. Gold must actually go down; inventory grows by
+      // at most one entry, and nothing already owned may disappear.
+      allow update: if isOwner(studentId)
+                    && isExploreStudent()
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['gold','rpgInventory','eggInventory','updatedAt'])
+                    && request.resource.data.gold is number
+                    && request.resource.data.gold >= 0
+                    && request.resource.data.gold < resource.data.gold
+                    && request.resource.data.get('rpgInventory',[]) is list
+                    && request.resource.data.get('rpgInventory',[]).size()
+                       <= resource.data.get('rpgInventory',[]).size() + 1
+                    && request.resource.data.get('rpgInventory',[])
+                       .hasAll(resource.data.get('rpgInventory',[]))
+                    && request.resource.data.get('eggInventory',0) is number
+                    && request.resource.data.get('eggInventory',0) >= 0
+                    && request.resource.data.get('eggInventory',0)
+                       <= resource.data.get('eggInventory',0) + 1;
+
+      // Equip gear and pick the one active companion.
+      // The active pet must be one the student already owns.
+      allow update: if isOwner(studentId)
+                    && isExploreStudent()
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['rpgEquipped','activePet','updatedAt'])
+                    && (
+                         request.resource.data.get('activePet','') == ''
+                         || resource.data.get('ownedPets',[])
+                            .hasAny([request.resource.data.get('activePet','')])
+                       );
+
+      // Hatch an egg. Costs exactly one egg and yields exactly one new pet.
+      allow update: if isOwner(studentId)
+                    && isExploreStudent()
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['eggInventory','ownedPets','lastHatchedPet','activePet','updatedAt'])
+                    && request.resource.data.eggInventory is number
+                    && request.resource.data.eggInventory >= 0
+                    && request.resource.data.eggInventory == resource.data.get('eggInventory',0) - 1
+                    && request.resource.data.ownedPets is list
+                    && request.resource.data.ownedPets.size()
+                       == resource.data.get('ownedPets',[]).size() + 1
+                    && request.resource.data.ownedPets.hasAll(resource.data.get('ownedPets',[]));
 
       // Midnight fresh start. Clears all eligibility bans, as requested.
       allow update: if isOwner(studentId)
@@ -303,6 +385,55 @@ service cloud.firestore {
     }
 
     // Teacher-managed UID allowlist for outside testing accounts.
+    // ============================================================
+    // v56 RPG — Daily Boss loot and Class Shop purchase ledger
+    // These two collections were written by the RPG pages but had no rule,
+    // so every write fell through to the catch-all and was denied.
+    // ============================================================
+
+    // One chest per student per school day. The document id is
+    // {uid}_{dateKey}, and there is no update path — so a second chest on the
+    // same day is impossible rather than merely discouraged.
+    match /bossLoot/{lootId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+
+      allow create: if isExploreStudent()
+                    && request.resource.data.studentId == request.auth.uid
+                    && lootId == request.auth.uid + '_' + request.resource.data.dateKey
+                    && request.resource.data.dateKey is string
+                    && request.resource.data.status == "complete"
+                    && request.resource.data.goldAward is number
+                    && request.resource.data.goldAward >= 0
+                    && request.resource.data.goldAward <= 3
+                    && request.resource.data.xpAward is number
+                    && request.resource.data.xpAward >= 0
+                    && request.resource.data.xpAward <= 12
+                    && request.resource.data.goalPoints is number
+                    && request.resource.data.goalPoints >= 0
+                    && request.resource.data.goalPoints <= 25
+                    && request.resource.data.rareGoal in ['none','classPet','fieldTrip']
+                    && request.resource.data.itemId is string;
+
+      allow update, delete: if isTeacher();
+    }
+
+    // Purchase ledger. Create-only for students; the gold check that matters
+    // lives on the students document, which cannot go up on this path.
+    match /rpgPurchases/{purchaseId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+
+      allow create: if isExploreStudent()
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.itemId is string
+                    && request.resource.data.cost is number
+                    && request.resource.data.cost >= 0
+                    && request.resource.data.cost <= 5000;
+
+      allow update, delete: if isTeacher();
+    }
+
     match /testerAccounts/{uid} {
       allow read: if isTeacher() || (isSignedIn() && request.auth.uid == uid);
       allow create, update, delete: if isTeacher();

@@ -594,7 +594,18 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .tw-score-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:8px 0}.tw-score-grid div{padding:7px;border:1px solid #3b2d61;border-radius:7px;text-align:center}.tw-score-grid small{display:block;font-size:8px}.tw-score-grid b{color:#ffe58b}
 .tw-teacher-review{display:grid;grid-template-columns:150px 1fr auto;gap:8px;align-items:end;margin-top:8px}
 @media(max-width:800px){#writing .grid2{grid-template-columns:1fr}.tw-score-grid{grid-template-columns:repeat(2,1fr)}.tw-teacher-review{grid-template-columns:1fr}}
+
+.rpg-snapshot{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start}
+.rpg-snapshot .rs-block{flex:1 1 190px;min-width:170px;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:8px 10px}
+.rpg-snapshot h5{margin:0 0 5px;font-size:10.5px;letter-spacing:.08em;opacity:.72;text-transform:uppercase}
+.rpg-snapshot .rs-row{display:flex;align-items:center;gap:6px;font-size:12.5px;margin:3px 0}
+.rpg-snapshot img{width:26px;height:26px;object-fit:contain;image-rendering:pixelated;
+  border-radius:5px;background:rgba(0,0,0,.3)}
+.rpg-snapshot .rs-none{font-size:12px;opacity:.55}
+.rpg-snapshot .rs-on{color:#54d894;font-weight:700}
 </style>
+<script src="dragonswood-rpg-v56.js"></script>
 </head><body>
 <header class="teacher-head"><div class="shell"><div class="teacher-title"><img src="dragonswood-volleyball-crest-v1.png" alt="Dragonswood volleyball dragon crest" style="width:58px;height:58px;object-fit:contain;vertical-align:middle;margin-right:10px"><span style="color:#f7c94f;background:linear-gradient(180deg,#fff9d8 0%,#ffe99a 27%,#f8ca50 58%,#ffe99a 82%,#dfa12a 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 1px 0 rgba(116,67,8,.95)) drop-shadow(0 2px 1px rgba(22,5,34,.95)) drop-shadow(0 0 5px rgba(255,216,91,.16));letter-spacing:.3px">DRAGONSWOOD COMMAND</span><small>EXPLORE ACADEMY • EVANS 4–5 • TEACHER PORTAL</small></div><div class="hidden" id="signed" style="text-align:right"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
 <main class="shell teacher-main">
@@ -951,7 +962,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
 </section></main>
 <div class="modal hidden" id="rewardModal"><div class="modalbox card"><h3 id="rewardModalTitle">Add Reward</h3><input id="rid" type="hidden"/><div class="field"><label>Name</label><input id="rname"/></div><div class="field"><label>Points Required</label><input id="rpoints" type="number"/></div><div class="field"><label>Icon</label><input id="ricon" value="🎁"/></div><div class="field"><label>Description</label><textarea id="rdesc"></textarea></div><div class="actions"><button id="saveReward">SAVE REWARD</button><button id="cancelReward">Cancel</button></div></div></div>
-<div class="modal hidden" id="studentModal"><div class="modalbox card"><h3>Manage Student</h3><input id="sid" type="hidden"/><div class="field"><label>First Name</label><input id="sname"/></div><div class="field"><label>Grade</label><select id="sgrade"><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div><div class="field"><label>Daily Quest Track</label><select id="squesttrack"><option value="auto">Auto by Grade</option><option value="foundation">Foundation (Grade 3 prerequisites)</option><option value="4">Force 4th Grade</option><option value="5">Force 5th Grade</option><option value="challenge">⭐ Challenge (Early–Mid 6th)</option></select></div><div class="field"><label>Group</label><select id="sgroup"><option value="girl">Girls</option><option value="boy">Boys</option></select></div><div class="field"><label>Title ID</label><input id="stitle"/></div><div class="field"><label>Avatar ID</label><input id="savatar"/></div><div class="groupbox"><div class="field"><label>HP</label><input id="shp" type="number"/></div><div class="field"><label>Gold</label><input id="sgold" type="number"/></div><div class="field"><label>XP</label><input id="sxp" type="number"/></div><div class="field"><label>Reason</label><input id="sreason"/></div></div><div class="student-gear-admin"><h4>⚔️ V56 CLASS, PETS & EGGS</h4><div class="formgrid"><div class="field"><label>CLASS</label><select id="sclass"><option value="">Not chosen</option><option value="warrior">Warrior</option><option value="ranger">Ranger</option><option value="mage">Mage</option><option value="healer">Healer</option></select></div><div class="field"><label>WOODLAND EGGS</label><input id="seggs" min="0" type="number" value="0"/></div></div><div class="field"><label>V56 OWNED ITEM IDS (comma separated)</label><input id="srpgitems" placeholder="dawnshield_head, dawnshield_armor"/></div><div class="field"><label>OWNED PET IDS (comma separated)</label><input id="spets" placeholder="mossling, moonwing"/></div><div class="field"><label>ACTIVE PET ID</label><input id="sactivepet" placeholder="mossling"/></div><div class="field"><label>BOSS WINS</label><input id="sbosswins" min="0" type="number" value="0"/></div></div><div class="student-gear-admin">
+<div class="modal hidden" id="studentModal"><div class="modalbox card"><h3>Manage Student</h3><input id="sid" type="hidden"/><div class="field"><label>First Name</label><input id="sname"/></div><div class="field"><label>Grade</label><select id="sgrade"><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div><div class="field"><label>Daily Quest Track</label><select id="squesttrack"><option value="auto">Auto by Grade</option><option value="foundation">Foundation (Grade 3 prerequisites)</option><option value="4">Force 4th Grade</option><option value="5">Force 5th Grade</option><option value="challenge">⭐ Challenge (Early–Mid 6th)</option></select></div><div class="field"><label>Group</label><select id="sgroup"><option value="girl">Girls</option><option value="boy">Boys</option></select></div><div class="field"><label>Title ID</label><input id="stitle"/></div><div class="field"><label>Avatar ID</label><input id="savatar"/></div><div class="groupbox"><div class="field"><label>HP</label><input id="shp" type="number"/></div><div class="field"><label>Gold</label><input id="sgold" type="number"/></div><div class="field"><label>XP</label><input id="sxp" type="number"/></div><div class="field"><label>Reason</label><input id="sreason"/></div></div><div class="student-gear-admin"><h4>🧭 RPG SNAPSHOT</h4><div id="srpgSnapshot" class="rpg-snapshot"><span class="muted">Select a student.</span></div></div><div class="student-gear-admin"><h4>⚔️ V56 CLASS, PETS &amp; EGGS</h4><div class="formgrid"><div class="field"><label>CLASS</label><select id="sclass"><option value="">Not chosen</option><option value="warrior">Warrior</option><option value="ranger">Ranger</option><option value="mage">Mage</option><option value="healer">Healer</option></select></div><div class="field"><label>WOODLAND EGGS</label><input id="seggs" min="0" type="number" value="0"/></div></div><div class="field"><label>V56 OWNED ITEM IDS (comma separated)</label><input id="srpgitems" list="rpgItemList" placeholder="click to pick, or type ids separated by commas"/><datalist id="rpgItemList"></datalist></div><div class="field"><label>OWNED PET IDS (comma separated)</label><input id="spets" list="rpgPetList" placeholder="click to pick, or type ids separated by commas"/><datalist id="rpgPetList"></datalist></div><div class="field"><label>ACTIVE PET ID</label><input id="sactivepet" list="rpgPetList" placeholder="click to pick one"/></div><div class="field"><label>BOSS WINS</label><input id="sbosswins" min="0" type="number" value="0"/></div><div class="field"><label>DAY CREDIT BEFORE TRACKING</label><input id="slegacydays" min="0" max="180" type="number" value="0"/><small class="pace-note">Days completed before the counter existed. Set 12 for the original roster, 0 for anyone who joined later.</small></div></div><div class="actions" style="margin-top:9px;flex-wrap:wrap"><button class="gray" id="resetClassBtn" type="button">RESET CLASS CHOICE</button><small class="pace-note" id="resetClassNote">Clears the one-time class pick so the student may choose again. Their items and pets are kept.</small></div><div class="student-gear-admin">
 <b>🎒 STUDENT GEAR / INVENTORY</b>
 <div class="formgrid" style="margin-top:7px">
 <div class="field"><label>GIVE GEAR</label><select id="adminGiveGear"></select></div>
@@ -2090,7 +2101,7 @@ async function approveBathroom(id,yes){const r=bathroomRequests.find(x=>x.id===i
 async function approvePoint(id,yes){const r=pointRequests.find(x=>x.id===id);if(!r)return;if(yes){const st=students.find(x=>x.id===r.studentId);if(st){await setDoc(doc(db,'students',st.id),{xp:(+st.xp||0)+1,updatedAt:serverTimestamp()},{merge:true});await addDoc(collection(db,'studentTransactions'),{studentId:st.id,studentName:displayStudent(st),stat:'xp',amount:1,reason:'Student recognition request: '+(r.reason||'Positive choice'),createdAt:serverTimestamp()})}}await setDoc(doc(db,'pointRequests',id),{status:yes?'approved':'dismissed',reviewedAt:serverTimestamp()},{merge:true})}
 
 function renderStudents(){$("studentRows").innerHTML=students.length?students.map(s=>`<tr><td class="student-avatar">${AVATAR_EMOJI[s.avatar]||"🐉"}</td><td><span class="student-name">${esc(displayStudent(s))}</span><br><small>${esc(s.email||"")}</small></td><td>${esc(s.grade||"—")}</td><td><span class="badge">${s.dailyQuestTrack==="challenge"?"⭐ Challenge":s.dailyQuestTrack==="foundation"?"Foundation":s.dailyQuestTrack==="5"?"5th":s.dailyQuestTrack==="4"?"4th":`Auto → ${esc(s.grade||"4")}th`}</span></td><td>${s.genderGroup==="girl"?"Girls":s.genderGroup==="boy"?"Boys":"—"}</td><td><span class="badge">Lv ${levelInfo(+s.xp||0)}</span></td><td>${+s.hp||0}</td><td>${isKnockedOut(s)?"💀 KO":"✅ Active"}</td><td>${(s.recessBlocked||isKnockedOut(s))?"🚫":"✅"}</td><td>${(s.fieldTripBlocked||isKnockedOut(s))?"🚫":"✅"}</td><td>${classroomHpMax(levelInfo(+s.xp||0))}</td><td>${+s.gold||0}</td><td>${+s.xp||0}</td><td>${dailyXpState(s).earned} / 150</td><td><button class="gray mini" data-manage="${s.id}">Manage</button></td></tr>`).join(""):'<tr><td colspan="15" class="muted">No students have created profiles yet.</td></tr>';document.querySelectorAll("[data-manage]").forEach(b=>b.onclick=()=>openStudent(b.dataset.manage));renderMassStudentOptions();dw31RenderTeacherJobs()}
-function openStudent(id){let s=students.find(x=>x.id===id);if(!s)return;$("studentModal").classList.remove("hidden");$("sid").value=id;$("sname").value=s.firstName||"";$("sgrade").value=s.grade||"4";$("squesttrack").value=s.dailyQuestTrack||"auto";$("sgroup").value=s.genderGroup||"girl";$("stitle").value=s.title||"";$("savatar").value=s.avatar||"dragon-purple";$("shp").value=+s.hp||0;$("shp").max=classroomHpMax(levelInfo(+s.xp||0));$("sgold").value=+s.gold||0;$("sxp").value=+s.xp||0;$("sreason").value="";$("sclass").value=s.classId||"";$("seggs").value=Math.max(0,Number(s.eggInventory||0));$("srpgitems").value=(s.rpgInventory||[]).join(", ");$("spets").value=(s.ownedPets||[]).join(", ");$("sactivepet").value=s.activePet||"";$("sbosswins").value=Math.max(0,Number(s.bossWins||0))}
+function openStudent(id){let s=students.find(x=>x.id===id);if(!s)return;$("studentModal").classList.remove("hidden");$("sid").value=id;$("sname").value=s.firstName||"";$("sgrade").value=s.grade||"4";$("squesttrack").value=s.dailyQuestTrack||"auto";$("sgroup").value=s.genderGroup||"girl";$("stitle").value=s.title||"";$("savatar").value=s.avatar||"dragon-purple";$("shp").value=+s.hp||0;$("shp").max=classroomHpMax(levelInfo(+s.xp||0));$("sgold").value=+s.gold||0;$("sxp").value=+s.xp||0;$("sreason").value="";$("sclass").value=s.classId||"";$("seggs").value=Math.max(0,Number(s.eggInventory||0));$("srpgitems").value=(s.rpgInventory||[]).join(", ");$("spets").value=(s.ownedPets||[]).join(", ");$("sactivepet").value=s.activePet||"";$("sbosswins").value=Math.max(0,Number(s.bossWins||0));$("slegacydays").value=Math.max(0,Number(s.legacyDayCredit||0));dwFillRpgPickers();dwRenderRpgSnapshot(s)}
 $("cancelStudent").onclick=()=>$("studentModal").classList.add("hidden");
 
 $("deleteStudent").onclick = async () => {
@@ -2137,7 +2148,7 @@ $("deleteStudent").onclick = async () => {
   }
 };
 
-$("saveStudent").onclick=async()=>{let id=$("sid").value,s=students.find(x=>x.id===id);if(!s)return;let newHp=+$("shp").value||0,newGold=+$("sgold").value||0,newXp=+$("sxp").value||0,rpgInventory=$("srpgitems").value.split(",").map(x=>x.trim()).filter(Boolean),ownedPets=$("spets").value.split(",").map(x=>x.trim()).filter(Boolean);await setDoc(doc(db,"students",id),{firstName:$("sname").value.trim()||s.firstName,grade:$("sgrade").value,dailyQuestTrack:$("squesttrack").value,genderGroup:$("sgroup").value,title:$("stitle").value.trim(),avatar:$("savatar").value.trim(),hp:newHp,gold:newGold,xp:newXp,classId:$("sclass").value,eggInventory:Math.max(0,+$("seggs").value||0),rpgInventory,ownedPets,activePet:$("sactivepet").value.trim(),bossWins:Math.max(0,+$("sbosswins").value||0),updatedAt:serverTimestamp()},{merge:true});let changes=[["hp",newHp-(+s.hp||0)],["gold",newGold-(+s.gold||0)],["xp",newXp-(+s.xp||0)]].filter(x=>x[1]!==0);for(const [stat,amount] of changes)await addDoc(collection(db,"studentTransactions"),{studentId:id,stat,amount,reason:$("sreason").value.trim()||"Teacher adjustment",createdAt:serverTimestamp()});$("studentModal").classList.add("hidden")};
+$("saveStudent").onclick=async()=>{let id=$("sid").value,s=students.find(x=>x.id===id);if(!s)return;let newHp=+$("shp").value||0,newGold=+$("sgold").value||0,newXp=+$("sxp").value||0,rpgInventory=$("srpgitems").value.split(",").map(x=>x.trim()).filter(Boolean),ownedPets=$("spets").value.split(",").map(x=>x.trim()).filter(Boolean);await setDoc(doc(db,"students",id),{firstName:$("sname").value.trim()||s.firstName,grade:$("sgrade").value,dailyQuestTrack:$("squesttrack").value,genderGroup:$("sgroup").value,title:$("stitle").value.trim(),avatar:$("savatar").value.trim(),hp:newHp,gold:newGold,xp:newXp,classId:$("sclass").value,eggInventory:Math.max(0,+$("seggs").value||0),rpgInventory,ownedPets,activePet:$("sactivepet").value.trim(),bossWins:Math.max(0,+$("sbosswins").value||0),legacyDayCredit:Math.min(180,Math.max(0,+$("slegacydays").value||0)),updatedAt:serverTimestamp()},{merge:true});let changes=[["hp",newHp-(+s.hp||0)],["gold",newGold-(+s.gold||0)],["xp",newXp-(+s.xp||0)]].filter(x=>x[1]!==0);for(const [stat,amount] of changes)await addDoc(collection(db,"studentTransactions"),{studentId:id,stat,amount,reason:$("sreason").value.trim()||"Teacher adjustment",createdAt:serverTimestamp()});$("studentModal").classList.add("hidden")};
 
 $("massApply").onclick=async()=>{
   const group=$("massGroup").value;
@@ -2445,6 +2456,86 @@ document.addEventListener('DOMContentLoaded',()=>{bindPollEditor();bindRandomPic
 
 document.getElementById('passBlackoutBtn')?.addEventListener('click',togglePassBlackout);
 document.getElementById('passArchiveRange')?.addEventListener('change',renderPassArchive);
+
+/* Read-only view of what a student actually owns. The editable fields below
+   it are still the way to change anything; this exists so a teacher can see
+   appearance packs, pets and boss progress without decoding item ids. */
+function dwRenderRpgSnapshot(st){
+  const box=$("srpgSnapshot"); if(!box) return;
+  const R=window.DWRPG;
+  if(!st||!R){ box.innerHTML='<span class="muted">Select a student.</span>'; return; }
+  const owned=Array.isArray(st.rpgInventory)?st.rpgInventory:[];
+  const pets=Array.isArray(st.ownedPets)?st.ownedPets:[];
+  const cls=R.classes[st.classId];
+  const lvl=R.levelForXp(st.xp);
+
+  const packs=(R.appearancePacks||[]).filter(a=>owned.indexOf(a.id)>=0);
+  const gear=(R.items||[]).filter(i=>!i.appearance&&!i.egg&&owned.indexOf(i.id)>=0);
+  const petObjs=[...(R.pets||[]),...(R.prestigePets||[])].filter(x=>pets.indexOf(x.id)>=0);
+
+  const row=(img,label,on)=>`<div class="rs-row">${img?`<img src="${img}" alt="">`:""}`+
+    `<span class="${on?"rs-on":""}">${label}</span></div>`;
+
+  box.innerHTML=
+    `<div class="rs-block"><h5>Class &amp; level</h5>`+
+      (cls?row(cls.art,`${cls.name} • Level ${lvl}`,false)
+          :'<div class="rs-none">No class chosen yet</div>')+
+      row("",`Boss wins: ${Number(st.bossWins||0)}`,false)+
+      row("",`Eggs: ${Number(st.eggInventory||0)}`,false)+
+      row("",`Day credit: ${Number(st.legacyDayCredit||0)}`,false)+
+    `</div>`+
+    `<div class="rs-block"><h5>Appearance packs (${packs.length}/3)</h5>`+
+      (packs.length?packs.map(a=>row(a.skinArt,`${a.name} • L${a.level}`,false)).join("")
+                   :'<div class="rs-none">None owned</div>')+
+    `</div>`+
+    `<div class="rs-block"><h5>Pets (${petObjs.length})</h5>`+
+      (petObjs.length?petObjs.map(x=>row(x.art,x.name,st.activePet===x.id)).join("")
+                     :'<div class="rs-none">None hatched</div>')+
+      (st.activePet?'<div class="rs-none">Green = active companion</div>':"")+
+    `</div>`+
+    `<div class="rs-block"><h5>Equipment (${gear.length})</h5>`+
+      (gear.length?gear.map(i=>row(i.art,`${i.name}`,
+          st.rpgEquipped&&st.rpgEquipped[i.slot]===i.id)).join("")
+                  :'<div class="rs-none">None owned</div>')+
+      (gear.length?'<div class="rs-none">Green = equipped</div>':"")+
+    `</div>`;
+}
+/* ---------- v56 RPG admin helpers ---------- */
+/* Fill the item and pet pickers from the shipped catalogue so a teacher
+   selects real ids instead of remembering "sunsteel_blade". */
+function dwFillRpgPickers(){
+  const R=window.DWRPG; if(!R) return;
+  const il=$("rpgItemList"), pl=$("rpgPetList");
+  if(il&&!il.dataset.filled){
+    il.innerHTML=R.items.filter(i=>!i.egg)
+      .sort((a,b)=>(a.classId+a.slot).localeCompare(b.classId+b.slot))
+      .map(i=>`<option value="${i.id}">${i.name} — ${i.classId} ${i.slot}</option>`).join("");
+    il.dataset.filled="1";
+  }
+  if(pl&&!pl.dataset.filled){
+    pl.innerHTML=[...R.pets,...R.prestigePets]
+      .map(p=>`<option value="${p.id}">${p.name} — ${p.rarity}${p.prestige?" (prestige)":""}</option>`).join("");
+    pl.dataset.filled="1";
+  }
+}
+
+/* Reset the one-time class choice. Items and pets are deliberately kept:
+   a child who switches class keeps what they earned, they just cannot use
+   the other class's gear until they pick again. */
+document.addEventListener("click",async ev=>{
+  if(ev.target?.id!=="resetClassBtn") return;
+  const note=$("resetClassNote");
+  const sidv=$("sid")?.value;
+  if(!sidv){ if(note)note.textContent="Pick a student first."; return; }
+  if(!confirm("Clear this student's class choice? They will pick again next time they open Adventurer Hall. Items and pets are kept.")) return;
+  try{
+    await setDoc(doc(db,"students",sidv),
+      {classId:"",classChosenAt:null,rpgEquipped:{},updatedAt:serverTimestamp()},{merge:true});
+    $("sclass").value="";
+    if(note)note.textContent="✓ Class cleared. The student may choose again.";
+  }catch(e){ if(note)note.textContent="Could not clear class: "+(e.code||e.message); }
+});
+
 </script>
 <script id="dragonswood-sound-engine">
 (() => {

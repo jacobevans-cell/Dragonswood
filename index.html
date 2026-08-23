@@ -2204,7 +2204,38 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   letter-spacing:.2px;
 }
 .topbar{border-bottom-color:rgba(247,216,111,.72)!important}
+
+/* ---- v56.2 unified RPG character ---- */
+.dw-hero{position:relative;width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center}
+.dw-hero-body{max-width:100%;max-height:100%;object-fit:contain;
+  filter:drop-shadow(0 6px 14px rgba(0,0,0,.55));image-rendering:auto}
+.dw-hero-pet{position:absolute;right:2%;bottom:0;width:34%;max-height:46%;object-fit:contain;
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,.5))}
+.dw-hero-gear{position:absolute;left:0;bottom:0;display:flex;gap:4px;padding:4px;
+  background:rgba(8,6,18,.62);border-radius:8px}
+.dw-gear-badge{width:26px;height:26px;image-rendering:pixelated;
+  border:1px solid var(--class,#ffd766);border-radius:5px;background:rgba(0,0,0,.35)}
+.dw-hero-small{align-items:center}
+.dw-hero-small .dw-hero-body{max-height:100%}
+@media (max-width:640px){.dw-gear-badge{width:22px;height:22px}}
+
+/* ---- v56.2 Jobs tracker inside Daily Missions ---- */
+.dm-job-tracker{margin-top:16px;padding:12px 14px;border-radius:12px;
+  background:rgba(10,8,22,.55);border:1px solid rgba(255,215,102,.28)}
+.dm-job-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.dm-job-head small{display:block;font-size:10.5px;letter-spacing:.09em;opacity:.72}
+.dm-job-head strong{font-size:15px}
+.dm-job-head > div:nth-child(2) span{display:block;margin-top:2px;font-size:12px;opacity:.78}
+.dm-job-icon{font-size:26px;line-height:1}
+.dm-job-status{margin-left:auto;font-size:12.5px;font-weight:700;color:#ffd766;text-align:right}
+.dm-job-days{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
+.dm-job-days .job-day{text-align:center;padding:6px 2px;border-radius:8px;font-size:11px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+.dm-job-days .job-day.done{background:rgba(84,216,148,.16);border-color:rgba(84,216,148,.45)}
+.dm-job-days .job-day.today{outline:2px solid #ffd766;outline-offset:1px}
+@media (max-width:520px){.dm-job-status{margin-left:0;width:100%;text-align:left}}
 </style>
+<script src="dragonswood-rpg-v56.js"></script>
 </head><body><!-- DRAGONSWOOD BUILD v48.9 COSMIC+JOBS -->
 <header class="topbar">
 <div class="shell">
@@ -2246,7 +2277,6 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
     <button class="portal-tab" type="button" data-view="games" onclick="DragonswoodNav('games')"><span>🎮</span><b>GAMES</b></button>
     <button class="portal-tab" type="button" data-view="scribe" onclick="DragonswoodNav('scribe')"><span>✍️</span><b>SCRIBE &amp; JOURNAL</b></button>
 
-    <button class="portal-tab" type="button" data-view="jobs" onclick="DragonswoodNav('jobs')"><span>🧹</span><b>JOBS</b></button>
     <button class="portal-tab" type="button" data-view="planner" onclick="DragonswoodNav('planner')"><span>🕐</span><b>SCHEDULE &amp; CALENDAR</b></button>
     <button class="portal-tab" type="button" data-view="poll" onclick="DragonswoodNav('poll')"><span>📊</span><b>POLL</b></button>
     <button class="portal-tab" type="button" onclick="location.href='adventurer-hall.html'"><span>⚔️</span><b>ADVENTURER HALL</b></button>
@@ -2561,15 +2591,6 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
     </section>
   </section>
 
-<!-- JOBS -->
-  <section class="portal-view" id="view-jobs" data-page="jobs">
-    <div class="section-title"><div><h2>🧹 Dragonwood Guild Job</h2><p>Complete your role, check it off, and earn weekly Gold.</p></div></div>
-    <div class="frame bevel dw31-card">
-      <div id="dw31JobIcon" style="font-size:38px">🧹</div><h3 id="dw31JobName">Loading your guild role…</h3><div class="dw31-muted" id="dw31JobSub"></div><div id="dw31JobPay" style="margin-top:6px"></div>
-      <div class="dw31-days" id="dw31JobDays"></div><button id="dw31JobCheck" type="button">CHECK OFF TODAY'S JOB</button><div id="dw31JobStatus" class="dw31-muted" style="margin-top:8px"></div>
-    </div>
-  </section>
-
   <!-- SCHEDULE + CALENDAR -->
   <section class="portal-view" id="view-planner" data-page="planner">
     <div class="section-title"><div><h2>🕐 Schedule &amp; Calendar</h2><p>Today on the left; upcoming school events on the right.</p></div></div>
@@ -2687,7 +2708,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
       <article class="frame bevel feature-card quest-card">
         <div class="feature-icon">✅</div>
         <h3>Your Daily Work Progress</h3>
-        <div class="feature-number"><span id="questXp">0</span><small style="font-size:18px"> / 180 DAYS</small></div>
+        <div class="feature-number"><span id="dailyWorkDays">0</span><small style="font-size:18px"> / 180 DAYS</small></div>
         <p id="dailyProgressDetail">A day counts when you complete either your assigned Morning Daily Work or the Level-Up Morning Challenge.</p>
       </article>
     </div>
@@ -2696,7 +2717,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
       <div class="dm-progress-head">
         <div>
           <small>✅ DAILY WORK DAYS COMPLETE</small>
-          <strong><span id="dmDaysComplete">12</span> / 180</strong>
+          <strong><span id="dmDaysComplete">0</span> / 180</strong>
         </div>
         <div>
           <small>TODAY</small>
@@ -2714,7 +2735,21 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
         <b>⏳ SCHOOL-YEAR COUNTDOWNS</b>
         <div class="dm-countdown-grid" id="dmCountdownGrid"></div>
       </div>
-    </section>
+          <div class="dm-job-tracker" id="dmJobTracker" hidden>
+        <div class="dm-job-head">
+          <span class="dm-job-icon" id="dmJobIcon">🧹</span>
+          <div>
+            <small>THIS WEEK'S CLASS JOB</small>
+            <strong id="dmJobName">No job assigned yet</strong>
+            <span id="dmJobSub"></span>
+          </div>
+          <div class="dm-job-status" id="dmJobStatus"></div>
+        </div>
+        <div id="dmJobPay" class="dw31-muted" style="margin-top:8px"></div>
+        <div class="dm-job-days" id="dmJobDays"></div>
+        <button id="dmJobCheck" type="button" style="margin-top:10px">CHECK OFF TODAY'S JOB</button>
+      </div>
+</section>
 
   </section>
 
@@ -2800,7 +2835,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
 <script id="dragonswood-navigation-core">
 (function(){
-  const views=["home","games","jobs","planner","poll","shop","quests","leaderboard","scribe"];
+  const views=["home","games","planner","poll","shop","quests","leaderboard","scribe"];
 
   window.DWDailyAccessUnlocked=false;
   function show(view, updateHash){
@@ -3367,10 +3402,11 @@ function dw31RenderCalendar(cat='all'){
  const upcoming=source.filter(e=>String(e.endDate||e.startDate)>=today).slice(0,4),home=document.getElementById('dw31HomeUpcoming');if(home)home.innerHTML=upcoming.map(e=>`<div class="dw31-row"><b>${e.icon||'📅'} ${e.title}</b><small>${e.startDate}${e.startTime?' • '+dw31Clock(e.startTime):''}</small></div>`).join('')||'<div class="dw31-muted">Nothing coming up.</div>';
 }
 function dw31RenderJob(){
- if(!user)return;const assign=dw31JobsConfig?.assignments?.[user.uid],name=$('dw31JobName'),sub=$('dw31JobSub'),icon=$('dw31JobIcon'),pay=$('dw31JobPay'),daysBox=$('dw31JobDays'),btn=$('dw31JobCheck'),status=$('dw31JobStatus');if(!name||!btn)return;
- if(!assign){name.textContent='No job assigned yet';sub.textContent='Your teacher will assign your guild role.';icon.textContent='🧹';pay.textContent='';daysBox.innerHTML='';btn.disabled=true;status.textContent='';return;}
+ if(!user)return;const box=$('dmJobTracker'),assign=dw31JobsConfig?.assignments?.[user.uid],name=$('dmJobName'),sub=$('dmJobSub'),icon=$('dmJobIcon'),pay=$('dmJobPay'),daysBox=$('dmJobDays'),btn=$('dmJobCheck'),status=$('dmJobStatus');if(!box||!name||!btn)return;
+ box.hidden=false;
+ if(!assign){name.textContent='No job assigned yet';sub.textContent='Your teacher will assign your guild role.';icon.textContent='🧹';pay.textContent='';daysBox.innerHTML='';btn.disabled=true;btn.textContent='WAITING FOR JOB ASSIGNMENT';status.textContent='';return;}
  const checked=Array.isArray(dw31JobWeek?.checkedDays)?dw31JobWeek.checkedDays:[],now=dw31AZNow(),day=now.getDay(),di=day===0?6:day-1,salary=Number(assign.pay||0),count=checked.filter(i=>i>=0&&i<=4).length,award=count>=5?salary:(count>=4?Math.floor(salary*.8):0);
- icon.textContent=assign.icon||'🧹';name.textContent=assign.name||'Guild Job';sub.textContent=assign.subtitle||'';pay.textContent=`Weekly salary: 🪙 ${salary} Gold • 4/5 = 80% • 5/5 = 100%`;daysBox.innerHTML=['MON','TUE','WED','THU','FRI'].map((d,i)=>`<div class="dw31-day ${checked.includes(i)?'done':''}"><b>${d}</b><div>${checked.includes(i)?'✅':'⬜'}</div></div>`).join('');
+ icon.textContent=assign.icon||'🧹';name.textContent=assign.name||'Guild Job';sub.textContent=assign.subtitle||'';pay.textContent=`Weekly salary: 🪙 ${salary} Gold • 4/5 days = 80% • 5/5 days = full pay`;daysBox.innerHTML=['MON','TUE','WED','THU','FRI'].map((d,i)=>`<div class="job-day ${checked.includes(i)?'done':''} ${i===di?'today':''}"><b>${d}</b><div>${checked.includes(i)?'✅':'⬜'}</div></div>`).join('');
  status.textContent=dw31JobWeek?.paid?`💰 Paid ${dw31JobWeek.payAward||award} Gold.`:(count>=4?`Paycheck unlocked: 🪙 ${award} Gold${count===4?' • Complete Friday for full salary.':''}`:`${count}/5 days complete • Complete at least 4 days to qualify.`);
  const eligible=di>=0&&di<=4&&!checked.includes(di);btn.disabled=!eligible;btn.textContent=checked.includes(di)?'✅ TODAY CHECKED OFF':(eligible?"CHECK OFF TODAY'S JOB":'NO CHECK-OFF TODAY');
  btn.onclick=async()=>{if(btn.disabled)return;btn.disabled=true;try{const ref=doc(db,'studentJobWeeks',user.uid+'_'+dw31WeekKey());await runTransaction(db,async tx=>{const snap=await tx.get(ref),d=snap.exists()?snap.data():{},arr=Array.isArray(d.checkedDays)?[...d.checkedDays]:[];if(arr.includes(di))return;arr.push(di);arr.sort((a,b)=>a-b);if(snap.exists()){tx.update(ref,{checkedDays:arr,completedCount:arr.filter(x=>x>=0&&x<=4).length});}else{tx.set(ref,{studentId:user.uid,studentName:studentDisplayName(),weekKey:dw31WeekKey(),jobId:assign.id||'',jobName:assign.name||'',jobIcon:assign.icon||'',pay:salary,checkedDays:arr,completedCount:arr.filter(x=>x>=0&&x<=4).length,paid:false,updatedAt:serverTimestamp()});}});window.DWAudio?.positive();}catch(e){console.warn('job checkoff',e);status.textContent='Could not check off your job. Tell your teacher.';window.DWAudio?.negative();}finally{btn.disabled=false;}};
@@ -3808,7 +3844,14 @@ document.getElementById('recognitionRequestBtn')?.addEventListener('click',sendR
 function dwStudentDateKey(){
   const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 }
-const DW_LEGACY_COMPLETED_DAYS=12;
+/* Days completed before this counter existed. This is per student, not a
+   constant: a child who joins in March must not start the year at 12/180.
+   Set students/{uid}.legacyDayCredit from the teacher portal; anything
+   without the field falls back to 0. The old class-wide value was 12. */
+function dwLegacyDayCredit(){
+  const v=Number(profile?.legacyDayCredit);
+  return Number.isFinite(v)&&v>=0?Math.min(180,Math.floor(v)):0;
+}
 function dwCompletedMorningDates(){
   const out=new Set();
   dailyProgressRows.forEach(x=>{
@@ -3818,13 +3861,14 @@ function dwCompletedMorningDates(){
   return out;
 }
 function dwCompletedDayCount(){
+  const credit=dwLegacyDayCredit();
   const completedDays=new Set(
     dailyProgressRows
       .filter(x=>String(x.id||"").endsWith("_v48")&&x.status==="complete"&&x.session==="morning")
       .map(x=>Number(x.day||0))
-      .filter(n=>n>DW_LEGACY_COMPLETED_DAYS)
+      .filter(n=>n>credit)
   );
-  return Math.min(180,DW_LEGACY_COMPLETED_DAYS+completedDays.size);
+  return Math.min(180,credit+completedDays.size);
 }
 function dwUpdateDailyAccess(){
   const dates=dwCompletedMorningDates(),today=dwStudentDateKey(),academicComplete=dates.has(today);
@@ -3837,7 +3881,8 @@ function dwUpdateDailyAccess(){
     b.classList.toggle("daily-locked",!open);b.setAttribute("aria-disabled",open?"false":"true");
   });
   const count=dwCompletedDayCount();
-  if($("questXp"))$("questXp").textContent=count;
+  if($("dailyWorkDays"))$("dailyWorkDays").textContent=count;
+  if($("questXp"))$("questXp").textContent=count;   // legacy id, harmless if absent
   if($("dailyDaysCompleted"))$("dailyDaysCompleted").textContent=count;
   const banner=$("dailyAccessNotice"),txt=$("dailyAccessNoticeText");
   if(banner)banner.classList.toggle("unlocked",open);
@@ -4174,6 +4219,55 @@ function equippedItemBySlot(slot){
   return shopItems.find(x=>x.id===id)||DRAGONSWOOD_STARTER_CATALOG.find(x=>x.id===id)||null;
 }
 
+/* ==========================================================================
+   ONE CHARACTER MODEL
+   Before v56.2 the portal drew the old chibi (avatarConfig: skin/eyes/hair)
+   while Adventurer Hall and the Daily Boss drew the RPG character
+   (classId / rpgEquipped / activePet). Two sources of truth for "what does
+   this student look like".
+
+   Rule now: if the student has chosen a class, the RPG character is who they
+   are, everywhere. If they have not, the chibi is still the fallback, so
+   nobody loses a face mid-year.
+   ========================================================================== */
+function dwRpgSkinArt(){
+  const R=window.DWRPG; if(!R||!profile?.classId) return null;
+  const cls=R.classes[profile.classId]; if(!cls) return null;
+  // The highest appearance pack the student owns wins; otherwise the base class art.
+  const owned=Array.isArray(profile.rpgInventory)?profile.rpgInventory:[];
+  const packs=(R.appearancePacks||[])
+    .filter(p=>p.classId===profile.classId&&owned.indexOf(p.id)>=0)
+    .sort((a,b)=>b.level-a.level);
+  return {art:(packs[0]&&packs[0].skinArt)||cls.art, className:cls.name,
+          packName:packs[0]?packs[0].name:"", color:cls.color};
+}
+function dwActivePetArt(){
+  const R=window.DWRPG; if(!R||!profile?.activePet) return null;
+  const pet=[...(R.pets||[]),...(R.prestigePets||[])].find(x=>x.id===profile.activePet);
+  if(!pet) return null;
+  return {art:pet.animatedArt||pet.art,name:pet.name};
+}
+function dwEquippedBadges(){
+  const R=window.DWRPG; if(!R||!profile?.rpgEquipped) return [];
+  return Object.values(profile.rpgEquipped)
+    .map(id=>(R.items||[]).find(i=>i.id===id))
+    .filter(Boolean).slice(0,4)
+    .map(i=>`<img class="dw-gear-badge" src="${i.art}" alt="${esc(i.name)}" title="${esc(i.name)}">`);
+}
+/* small=true is the header chip; small=false is the big home hero. */
+function dwHeroMarkup(small){
+  const skin=dwRpgSkinArt();
+  if(!skin) return small
+    ? chibiMarkup({...defaultAvatarConfig(),...(profile?.avatarConfig||{})},true)
+    : journalHeroMarkup();
+  const pet=dwActivePetArt();
+  const badges=small?[]:dwEquippedBadges();
+  return `<div class="dw-hero${small?" dw-hero-small":""}" style="--class:${skin.color}">
+    <img class="dw-hero-body" src="${skin.art}" alt="${esc(skin.className)} adventurer">
+    ${pet&&!small?`<img class="dw-hero-pet" src="${pet.art}" alt="${esc(pet.name)}" title="${esc(pet.name)}">`:""}
+    ${badges.length?`<div class="dw-hero-gear">${badges.join("")}</div>`:""}
+  </div>`;
+}
 function journalHeroMarkup(){
   const cfg={...defaultAvatarConfig(),...(profile?.avatarConfig||{})};
   const gender=profile?.genderGroup==="girl"?"girl":"boy";
@@ -4742,7 +4836,7 @@ function renderProfile(){
   const li=levelInfo(+profile.xp||0),display=formatName(profile);
   const hp=+profile.hp||0,gold=+profile.gold||0,xp=+profile.xp||0;
 
-  if($("avatar")){$("avatar").classList.add("mini-chibi");$("avatar").innerHTML=chibiMarkup({...defaultAvatarConfig(),...(profile.avatarConfig||{})},true)}
+  if($("avatar")){$("avatar").classList.toggle("mini-chibi",!dwRpgSkinArt());$("avatar").innerHTML=dwHeroMarkup(true)}
   if($("displayName"))$("displayName").textContent=display;
   if($("profileSub")){
     const daily=normalizedDailyXp(profile);
@@ -4764,7 +4858,7 @@ function renderProfile(){
   // HOME character dashboard: identity + progress only, no equipment controls.
   if($("homeHeroAvatar")){
     // HOME is display-only, but it mirrors the fully equipped Journal character.
-    $("homeHeroAvatar").innerHTML=journalHeroMarkup();
+    $("homeHeroAvatar").innerHTML=dwHeroMarkup(false);
   }
   if($("homeHeroName"))$("homeHeroName").textContent=display;
   if($("homeHeroLevel"))$("homeHeroLevel").textContent=li.level;
@@ -5313,7 +5407,7 @@ if($("autoEquipBest"))$("autoEquipBest").onclick=async()=>{
 // DRAGONSWOOD PORTAL NAVIGATION
 // Keeps the student signed in while changing portal screens.
 // ============================================================
-const PORTAL_VIEWS=["home","games","jobs","schedule","calendar","poll","shop","quests","leaderboard","journal"];
+const PORTAL_VIEWS=["home","games","schedule","calendar","poll","shop","quests","leaderboard","journal"];
 
 function openPortalView(view, updateHash=true){
   if(!PORTAL_VIEWS.includes(view)) view="home";

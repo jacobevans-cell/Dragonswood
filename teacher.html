@@ -613,7 +613,9 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .dw-select-filters select,.dw-select-filters input{min-height:34px;background:#080b22;color:#fff;border:1px solid #574083;border-radius:8px;padding:6px}.dw-select-filters input{width:150px}.student-selection-count{font-size:15px!important;color:#ffe36d!important}
 .dw-reward-modes{top:47vh!important}.quick-award-grid,.quick-consequence-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}.teacher-admin-details summary{cursor:pointer;color:#ffe58b;font-weight:900;font-size:15px;padding:8px}
 /* One balanced page for Schedule + Calendar and one four-quadrant Tools page. */
-#schedule.active,#calendar.active,#poll.active,#picker.active{display:inline-block!important;width:calc(50% - 6px);vertical-align:top;margin-right:6px}
+#dash:not(.hidden){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:start}
+#dash>.command-tabs,#dash>.panel{grid-column:1/-1;min-width:0}
+#dash>#schedule.active,#dash>#calendar.active,#dash>#poll.active,#dash>#picker.active{display:block!important;grid-column:auto;width:auto;margin:0;min-width:0}
 #schedule .v29-grid,#calendar .v29-grid,#poll .poll-admin-grid,#picker .picker-grid{grid-template-columns:1fr!important;gap:9px}
 #schedule .card,#calendar .card,#poll .card,#picker .card{min-height:235px;max-height:420px;overflow:auto}
 /* Pass types read as separate visual control cards; archives stay collapsed visually. */
@@ -627,7 +629,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 #scoreList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.teacher-score-board{padding:12px;border:1px solid #604b91;border-radius:13px;background:rgba(5,9,31,.8)}.teacher-score-board h3{margin:0 0 8px;color:#ffe58b}.teacher-rank{display:grid!important;grid-template-columns:34px 1fr auto auto;align-items:center;gap:8px;margin:6px 0!important;border-radius:10px!important}.teacher-rank-place{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(145deg,#7539ca,#078eb0);border:1px solid #ffe36d;font-weight:900}.teacher-rank strong{color:#ffe36d;font-size:16px}
 #scores table{border-collapse:separate;border-spacing:0 7px}#scores tbody tr{background:rgba(255,255,255,.045)}#scores td{padding:10px!important}#scores tbody tr:nth-child(1){outline:2px solid #f3cf58}#scores tbody tr:nth-child(2){outline:1px solid #ccd6e8}#scores tbody tr:nth-child(3){outline:1px solid #be7d4d}
 @media(max-width:1050px){.command-tabs{grid-template-columns:repeat(4,1fr)}.student-check-grid{grid-template-columns:repeat(3,1fr)!important}.quick-award-grid,.quick-consequence-grid{grid-template-columns:repeat(2,1fr)!important}}
-@media(max-width:800px){#schedule.active,#calendar.active,#poll.active,#picker.active{display:block!important;width:100%;margin:0}.command-tabs{grid-template-columns:repeat(2,1fr)}.student-check-grid{grid-template-columns:repeat(2,1fr)!important}.dw-shared-selector,.dw-reward-modes{position:static!important;max-height:none}#passes .live-request-grid{grid-template-columns:1fr}#passes .live-request-box:nth-child(5){grid-column:auto}#scoreList{grid-template-columns:1fr}}
+@media(max-width:800px){#dash:not(.hidden){grid-template-columns:1fr}#dash>#schedule.active,#dash>#calendar.active,#dash>#poll.active,#dash>#picker.active{grid-column:1;width:100%}.command-tabs{grid-template-columns:repeat(2,1fr)}.student-check-grid{grid-template-columns:repeat(2,1fr)!important}.dw-shared-selector,.dw-reward-modes{position:static!important;max-height:none}#passes .live-request-grid{grid-template-columns:1fr}#passes .live-request-box:nth-child(5){grid-column:auto}#scoreList{grid-template-columns:1fr}}
 </style>
 <script src="dragonswood-rpg-v56.js"></script>
 </head><body>

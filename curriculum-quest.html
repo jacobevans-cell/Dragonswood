@@ -457,7 +457,7 @@ function missionMinutes(x){
   if(!vid(x))return {total:(x.strand==="Writing"||x.subject==="Science")?"EST. 25–35 MIN TOTAL":"EST. 20–30 MIN TOTAL",video:"Dragonswood lesson included",base:timingBase(x)};
   const seconds=Number(VIDEO_DURATIONS[x.id]||0),base=timingBase(x);
   if(seconds>0){const rounded=Math.max(1,Math.round(seconds/60));return {total:`EST. ${base[0]+rounded}–${base[1]+rounded} MIN TOTAL`,video:readableVideoDuration(seconds),base}}
-  return {total:"CALCULATING TOTAL…",video:"Checking actual video time…",base};
+  return {total:`EST. ${base[0]+5}–${base[1]+10} MIN TOTAL`,video:"Actual video time loads automatically",base};
 }
 function applyVideoDuration(id,seconds){
   if(!isFinite(seconds)||seconds<=0)return;
@@ -469,7 +469,7 @@ function applyVideoDuration(id,seconds){
   });
 }
 function hydrateVideoDurations(){
-  const loadNode=node=>{const id=node.dataset.videoDurationId,url=node.dataset.videoUrl;if(!id||!url||VIDEO_DURATIONS[id]||VIDEO_DURATION_LOADING.has(id))return;VIDEO_DURATION_LOADING.add(id);const probe=document.createElement("video");probe.preload="metadata";probe.muted=true;probe.addEventListener("loadedmetadata",()=>{applyVideoDuration(id,probe.duration);probe.removeAttribute("src");probe.load()},{once:true});probe.addEventListener("error",()=>{VIDEO_DURATION_LOADING.delete(id);$$(`[data-video-duration-id="${CSS.escape(id)}"] span`).forEach(x=>x.textContent="Video time available when opened • 6-question check + application")},{once:true});probe.src=url};
+  const loadNode=node=>{const id=node.dataset.videoDurationId,url=node.dataset.videoUrl;if(!id||!url||VIDEO_DURATIONS[id]||VIDEO_DURATION_LOADING.has(id))return;VIDEO_DURATION_LOADING.add(id);const probe=document.createElement("video");probe.preload="metadata";probe.muted=true;let finished=false;const stop=()=>{if(finished)return;finished=true;VIDEO_DURATION_LOADING.delete(id);probe.removeAttribute("src");probe.load()};const timer=setTimeout(()=>{$$(`[data-video-duration-id="${CSS.escape(id)}"] span`).forEach(x=>x.textContent="Exact time records when video opens • 6-question check + application");stop()},8000);probe.addEventListener("loadedmetadata",()=>{if(finished)return;clearTimeout(timer);finished=true;applyVideoDuration(id,probe.duration);probe.removeAttribute("src");probe.load()},{once:true});probe.addEventListener("error",()=>{if(finished)return;clearTimeout(timer);$$(`[data-video-duration-id="${CSS.escape(id)}"] span`).forEach(x=>x.textContent="Exact time records when video opens • 6-question check + application");stop()},{once:true});probe.src=url};
   const nodes=$$('[data-video-duration-id][data-video-url]').filter(node=>!VIDEO_DURATIONS[node.dataset.videoDurationId]);
   if(!("IntersectionObserver" in window)){nodes.slice(0,12).forEach(loadNode);return}
   const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){observer.unobserve(entry.target);loadNode(entry.target)}}),{rootMargin:"350px 0px"});nodes.forEach(node=>observer.observe(node));

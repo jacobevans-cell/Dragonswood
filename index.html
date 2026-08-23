@@ -2260,6 +2260,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 #view-quests .quest-card:last-child .feature-number{margin:0;font-size:28px}
 /* Fantasy competition board with podium emphasis and one entry per student. */
 #view-leaderboard .boards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.lb-periodbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 10px}.lb-periodbar button{min-width:150px}.lb-periodbar .active{border-color:#ffe36d;background:linear-gradient(90deg,#7130c9,#078caf)}.lb-prize-note{margin-left:auto;padding:8px 12px;border:1px solid #665092;border-radius:10px;background:rgba(111,48,190,.13);font-size:10px;color:#e8ddf6}.lb-prize{color:#ffe36d;font-size:9px;font-weight:900;display:block;margin-top:2px}
 #view-leaderboard .board{padding:14px;background:linear-gradient(155deg,rgba(21,12,52,.96),rgba(4,19,38,.95));border-color:#8e68cf}
 #view-leaderboard .board h3{font-size:21px;color:#ffe58a;margin:0 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(255,226,115,.35)}
 #view-leaderboard .rank{position:relative;display:grid;grid-template-columns:44px 42px 1fr auto;align-items:center;gap:9px;padding:10px 11px;margin:7px 0;border:1px solid rgba(124,105,192,.38);border-radius:13px;background:linear-gradient(90deg,rgba(20,17,55,.96),rgba(5,19,39,.9))}
@@ -2332,6 +2333,21 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .daily-review-card{display:grid;grid-template-columns:auto 1fr minmax(270px,.8fr);gap:12px;align-items:center;margin-top:12px;padding:12px 14px}
 .daily-review-card>span{font-size:26px}.daily-review-card h3{margin:0 0 3px}.daily-review-card p{margin:0;font-size:10px}.daily-review-card .request-row{margin:0}
 @media(max-width:900px){.header-grid{grid-template-columns:1fr!important}.header-student-tools{width:100%}.header-pass-popover{left:0;right:auto}.daily-review-card{grid-template-columns:auto 1fr}.daily-review-card .request-row{grid-column:1/-1}.home-hero-stats{justify-content:center}}
+/* v56.9 — concept-art navigation and glass-panel design language. */
+@media(min-width:1051px){
+  #signedIn:not(.hidden){display:grid!important;grid-template-columns:158px minmax(0,1fr);gap:15px;align-items:start}
+  #signedIn>.portal-nav{grid-column:1;position:sticky;top:12px;z-index:30;display:flex!important;flex-direction:column;gap:5px;padding:10px 7px;max-height:calc(100vh - 24px);overflow-y:auto;background:linear-gradient(180deg,rgba(7,10,38,.98),rgba(5,18,37,.96));border-color:rgba(190,148,255,.5)}
+  #signedIn>.portal-nav .portal-tab{min-width:0!important;width:100%;min-height:58px;display:grid;grid-template-columns:30px 1fr;align-items:center;text-align:left;padding:8px;border-radius:12px;background:transparent;border:1px solid transparent;color:#d8cce8}
+  #signedIn>.portal-nav .portal-tab span{font-size:21px;text-align:center}#signedIn>.portal-nav .portal-tab b{font-size:10px;line-height:1.15}
+  #signedIn>.portal-nav .portal-tab.active{background:linear-gradient(90deg,rgba(109,46,204,.85),rgba(5,142,181,.72));border-color:#8eeeff;box-shadow:0 0 18px rgba(91,85,255,.28);color:white}
+  #signedIn>.portal-view{grid-column:2;min-width:0}
+}
+.portal-view>.section-title,.home-hero-info,.journal-equipment-card,.daily-missions-journey{background:linear-gradient(145deg,rgba(13,17,52,.93),rgba(3,25,45,.9));border:1px solid rgba(117,94,165,.5);border-radius:14px}
+.portal-view .frame{box-shadow:0 12px 30px rgba(0,0,0,.2)}
+.student-grade-summary{display:grid;grid-template-columns:150px repeat(3,1fr) 130px;gap:9px;align-items:center;margin-top:12px;padding:13px}.student-grade-summary>div{padding:10px;border:1px solid #4e3b76;border-radius:11px;background:rgba(6,10,34,.76)}.student-grade-summary small{display:block;font-size:9px;color:#c8bdd6}.student-grade-summary b{font-size:21px;color:#ffe376}.student-grade-summary .overall b{font-size:30px}.student-grade-note{grid-column:1/-1;color:#bfb4d1;font-size:10px}
+@media(max-width:850px){.student-grade-summary{grid-template-columns:1fr 1fr}.student-grade-note{grid-column:1/-1}}
+.topbar{border-bottom:1px solid rgba(183,143,246,.45);background:linear-gradient(180deg,rgba(5,8,30,.96),rgba(4,12,31,.9))}
+@media(max-width:1050px){#signedIn:not(.hidden){display:block!important}}
 </style>
 <script src="dragonswood-rpg-v56.js"></script>
 </head><body><!-- DRAGONSWOOD BUILD v48.9 COSMIC+JOBS -->
@@ -2790,12 +2806,21 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
       <span>⭐</span><div><h3>Request Teacher Review</h3><p>Finished your work and think Mr. Evans missed a positive choice? Send one quiet review request.</p></div>
       <div><div class="request-row"><select id="recognitionReason"><option>Great Effort</option><option>Ready &amp; Working</option><option>Kindness</option><option>Leadership</option><option>Helped Someone</option><option>Academic Win</option><option>Other Positive Choice</option></select><button id="recognitionRequestBtn" type="button">REQUEST REVIEW</button></div><p id="recognitionRequestStatus"></p></div>
     </section>
+    <section class="frame bevel student-grade-summary" id="studentGradeSummary">
+      <div class="overall"><small>CURRENT GRADE</small><b id="studentOverallGrade">—</b> <span id="studentLetterGrade"></span></div>
+      <div><small>DAILY QUEST</small><b id="studentDailyGrade">—</b></div>
+      <div><small>CURRICULUM QUEST</small><b id="studentCurriculumGrade">—</b></div>
+      <div><small>READING TESTS</small><b id="studentReadingGrade">—</b></div>
+      <div><small>GRADED WORK</small><b id="studentGradedCount">0</b></div>
+      <div class="student-grade-note">Only completed or teacher-graded work counts. Future and unassigned activities do not lower your grade.</div>
+    </section>
 
   </section>
 
   <!-- LEADERBOARD -->
   <section class="portal-view" id="view-leaderboard" data-page="leaderboard">
-    <div class="section-title"><div><h2>🏆 Leaderboard</h2><p>Top five scores from connected games.</p></div></div>
+    <div class="section-title"><div><h2>🏆 Leaderboard</h2><p>Weekly competition and the permanent Dragonswood Hall of Fame.</p></div></div>
+  <div class="lb-periodbar"><button id="studentWeeklyBoard" class="active" type="button">📅 THIS WEEK</button><button id="studentAllTimeBoard" type="button">🏰 ALL TIME</button><div class="lb-prize-note">Weekly Top 5 earn one reward each school day • maximum 5 days</div></div>
   <div class="lb-filterbar" id="leaderboardFilters">
       <button data-lb-filter="all" class="active">ALL</button>
       <button data-lb-filter="math">➗ MATH</button>
@@ -2935,7 +2960,7 @@ const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const DOMAIN="explore.academy",TEACHER="jacobicusjax@gmail.com";
 const $=id=>document.getElementById(id);
 let bathroomUnsub=null,bathroomSlotUnsub=null,bathroomSlotData=null,snackUnsub=null,currentBathroomData=null,currentSnackData=null;
-let user=null,profile=null,rewards=[],classPoints=0,scores=[],shopItems=[],myPurchases=[],classJobsConfig=null,myJobWeek=null,classScheduleConfig=null,classCalendarEvents=[],shopFilter="all",shopSort="level",inventoryFilter="all",profileUnsub=null,purchasesUnsub=null,dailyProgressUnsub=null,dailyOverrideUnsub=null,dailyProgressRows=[],dailyOverrideData={},isTesterAccount=false;
+let user=null,profile=null,rewards=[],classPoints=0,scores=[],studentLeaderboardRewards=[],studentCurriculumRows=[],studentGradeSettings={daily:40,curriculum:40,reading:20},shopItems=[],myPurchases=[],classJobsConfig=null,myJobWeek=null,classScheduleConfig=null,classCalendarEvents=[],shopFilter="all",shopSort="level",inventoryFilter="all",profileUnsub=null,purchasesUnsub=null,dailyProgressUnsub=null,dailyOverrideUnsub=null,studentCurriculumUnsub=null,dailyProgressRows=[],dailyOverrideData={},isTesterAccount=false;
 
 const TITLES=[
   {id:"princess",label:"Princess",position:"before"},
@@ -4018,7 +4043,7 @@ function dwWatchDailyCompletion(){
   if(dailyOverrideUnsub){try{dailyOverrideUnsub()}catch(e){}}
   dailyProgressUnsub=onSnapshot(
     query(collection(db,"dailyQuestProgress"),where("studentId","==",user.uid)),
-    snap=>{dailyProgressRows=snap.docs.map(d=>({id:d.id,...d.data()}));dwUpdateDailyAccess()},
+    snap=>{dailyProgressRows=snap.docs.map(d=>({id:d.id,...d.data()}));dwUpdateDailyAccess();renderStudentGradeSummary()},
     err=>{console.warn("daily progress listener",err);dailyProgressRows=[];dwUpdateDailyAccess()}
   );
   dailyOverrideUnsub=onSnapshot(
@@ -4026,6 +4051,16 @@ function dwWatchDailyCompletion(){
     snap=>{dailyOverrideData=snap.exists()?snap.data():{};dwUpdateDailyAccess()},
     err=>{console.warn("daily access override",err);dailyOverrideData={};dwUpdateDailyAccess()}
   );
+  if(studentCurriculumUnsub){try{studentCurriculumUnsub()}catch(e){}}
+  studentCurriculumUnsub=onSnapshot(query(collection(db,"curriculumProgress"),where("studentId","==",user.uid)),snap=>{studentCurriculumRows=snap.docs.map(d=>({id:d.id,...d.data()}));renderStudentGradeSummary()},err=>{console.warn("student curriculum grades",err);studentCurriculumRows=[];renderStudentGradeSummary()});
+}
+function studentGradeLetter(n){if(n==null)return "";return n>=90?"A":n>=80?"B":n>=70?"C":n>=60?"D":"F"}
+function renderStudentGradeSummary(){
+  if(!$("studentOverallGrade")||!user)return;const avg=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):null;
+  const dailyMap=new Map();dailyProgressRows.filter(r=>r.status==="complete"&&Number(r.attempts||0)>0).forEach(r=>{const key=`${r.day||r.dateKey}:${r.session||"work"}`,v=Math.round(Number(r.correct||0)/Math.max(1,Number(r.attempts||0))*100);dailyMap.set(key,Math.max(v,dailyMap.get(key)??-1))});
+  const curriculum=studentCurriculumRows.map(r=>Number(r.questionsSeen||0)>0?Math.round(Number(r.questionsCorrect||0)/Number(r.questionsSeen)*100):(r.verified?100:null)).filter(v=>v!=null),readingMap=new Map();scores.filter(s=>String(s.studentId||s.uid||"")===user.uid&&/witch|reader|reading/i.test(`${s.game||""} ${s.gameName||""} ${s.subject||""}`)).forEach(s=>{const key=String(s.assignmentId||s.activityName||s.gameName||"reading"),v=Number(s.accuracy);if(Number.isFinite(v))readingMap.set(key,Math.max(v,readingMap.get(key)??-1))});
+  const cats={daily:avg([...dailyMap.values()]),curriculum:avg(curriculum),reading:avg([...readingMap.values()])};let weighted=0,used=0;Object.entries(cats).forEach(([k,v])=>{if(v!=null){const w=Number(studentGradeSettings[k]||0);weighted+=v*w;used+=w}});const overall=used?Math.round(weighted/used):null;
+  $("studentOverallGrade").textContent=overall==null?"—":`${overall}%`;$("studentLetterGrade").textContent=studentGradeLetter(overall);$("studentDailyGrade").textContent=cats.daily==null?"—":`${cats.daily}%`;$("studentCurriculumGrade").textContent=cats.curriculum==null?"—":`${cats.curriculum}%`;$("studentReadingGrade").textContent=cats.reading==null?"—":`${cats.reading}%`;$("studentGradedCount").textContent=dailyMap.size+curriculum.length+readingMap.size;
 }
 onAuthStateChanged(auth,async u=>{
   user=u;
@@ -4033,7 +4068,8 @@ onAuthStateChanged(auth,async u=>{
   if(purchasesUnsub){try{purchasesUnsub()}catch(e){} purchasesUnsub=null}
   if(dailyProgressUnsub){try{dailyProgressUnsub()}catch(e){} dailyProgressUnsub=null}
   if(dailyOverrideUnsub){try{dailyOverrideUnsub()}catch(e){} dailyOverrideUnsub=null}
-  dailyProgressRows=[];dailyOverrideData={};window.DWDailyAccessUnlocked=false;
+  if(studentCurriculumUnsub){try{studentCurriculumUnsub()}catch(e){} studentCurriculumUnsub=null}
+  dailyProgressRows=[];studentCurriculumRows=[];dailyOverrideData={};window.DWDailyAccessUnlocked=false;
   myPurchases=[];
 
   if(!u){
@@ -5082,7 +5118,9 @@ function renderSecondRecess(){
 
 onSnapshot(doc(db,"classData","main"),s=>{if(s.exists())classPoints=+s.data().points||0;renderRewards()});
 onSnapshot(collection(db,"rewards"),s=>{rewards=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+a.points||0)-(+b.points||0));renderRewards()});
-onSnapshot(collection(db,"scores"),s=>{scores=s.docs.map(d=>({id:d.id,...d.data()}));renderBoards()});
+onSnapshot(collection(db,"scores"),s=>{scores=s.docs.map(d=>({id:d.id,...d.data()}));renderBoards();renderStudentGradeSummary()});
+onSnapshot(collection(db,"leaderboardRewards"),s=>{studentLeaderboardRewards=s.docs.map(d=>({id:d.id,...d.data()}));renderBoards()},e=>console.warn("leaderboard rewards",e));
+onSnapshot(doc(db,"classData","gradebookSettings"),s=>{if(s.exists())studentGradeSettings={...studentGradeSettings,...s.data()};renderStudentGradeSummary()},e=>console.warn("student grade settings",e));
 onSnapshot(collection(db,"shopItems"),s=>{
   shopItems=s.docs.map(d=>({id:d.id,...d.data()}))
     .filter(i=>i.active!==false)
@@ -5163,7 +5201,10 @@ function leaderboardName(s){
   }
   return "Player";
 }
-let leaderboardFilter="all";
+let leaderboardFilter="all",studentLeaderboardPeriod="weekly";
+function studentPhoenixDayKey(d=new Date()){return new Intl.DateTimeFormat("en-CA",{timeZone:"America/Phoenix",year:"numeric",month:"2-digit",day:"2-digit"}).format(d)}
+function studentWeekKey(d=new Date()){const key=studentPhoenixDayKey(d),x=new Date(`${key}T12:00:00-07:00`),day=(x.getDay()+6)%7;x.setDate(x.getDate()-day);return studentPhoenixDayKey(x)}
+function studentScoreDate(s){if(s.dateKey)return String(s.dateKey);if(s.createdAt?.seconds)return studentPhoenixDayKey(new Date(s.createdAt.seconds*1000));return ""}
 function leaderboardCategory(s){
   const subject=String(s.subject||"").toLowerCase(),game=String(s.gameName||s.game||"").toLowerCase();
   if(game.includes("daily quest"))return "daily";
@@ -5183,30 +5224,15 @@ function scoreDetailParts(s){
   return [...new Set(parts.filter(Boolean))];
 }
 function renderBoards(){
- const grouped={};
- scores.filter(s=>leaderboardFilter==="all"||leaderboardCategory(s)===leaderboardFilter)
-   .forEach(s=>{const g=s.gameName||s.game||"Game";(grouped[g]??=[]).push(s)});
- const games=Object.keys(grouped).sort();
- $("boards").innerHTML=games.length?games.map(g=>{
-   const bestByStudent=new Map();
-   grouped[g].forEach(s=>{
-     const key=String(s.uid||s.studentId||s.studentEmail||leaderboardName(s)).trim().toLowerCase();
-     const old=bestByStudent.get(key);
-     if(!old||Number(s.score||0)>Number(old.score||0))bestByStudent.set(key,s);
-   });
-   const top=[...bestByStudent.values()].sort((a,b)=>(+b.score||0)-(+a.score||0)).slice(0,5);
-   return `<div class="board frame bevel"><h3>${esc(g)}</h3>${top.map((s,i)=>{
-     const details=scoreDetailParts(s),meta=[];
-     if(s.accuracy!=null)meta.push(`${Number(s.accuracy)}% accuracy`);
-     if(s.correct!=null&&s.total!=null)meta.push(`${s.correct}/${s.total} correct`);
-     if(s.day!=null)meta.push(`Day ${s.day}`);
-     if(s.dateKey)meta.push(String(s.dateKey));
-     const scoreType=s.scoreType||"points";
-     return `<div class="rank"><div class="place">${i+1}</div><div class="miniavatar">${esc(s.avatarEmoji||"🐉")}</div><div class="lb-main"><div>${esc(leaderboardName(s))}</div>${details.length?`<span class="lb-detail">${details.map(esc).join(" • ")}</span>`:""}${meta.length?`<span class="lb-meta">${meta.map(x=>`<span>${esc(x)}</span>`).join("")}</span>`:""}</div><div class="score">${(+s.score||0).toLocaleString()}<span class="lb-scoretype">${esc(scoreType)}</span></div></div>`;
-   }).join("")}</div>`;
- }).join(""):'<div class="board frame bevel"><h3>No records yet</h3><p class="muted">No scores match this category yet.</p></div>';
+ const eligible=scores.filter(s=>(studentLeaderboardPeriod!=="weekly"||studentScoreDate(s)>=studentWeekKey())&&(leaderboardFilter==="all"||leaderboardCategory(s)===leaderboardFilter)),players=new Map();
+ eligible.forEach(s=>{const sid=String(s.uid||s.studentId||s.studentEmail||leaderboardName(s)).trim().toLowerCase(),assignment=String(s.assignmentId||`${s.gameName||s.game||"Game"}:${s.day||""}:${s.session||s.activityName||""}`),key=`${sid}|||${assignment}`;if(!players.has(sid))players.set(sid,{record:s,best:new Map(),total:0});const row=players.get(sid),old=row.best.get(key);if(!old||Number(s.score||0)>Number(old.score||0))row.best.set(key,s)});
+ players.forEach(row=>row.total=[...row.best.values()].reduce((n,s)=>n+Number(s.score||0),0));const top=[...players.values()].sort((a,b)=>b.total-a.total||b.best.size-a.best.size).slice(0,10),title=studentLeaderboardPeriod==="weekly"?"📅 This Week":"🏰 All-Time Hall of Fame";
+ $("boards").innerHTML=top.length?`<div class="board frame bevel" style="grid-column:1/-1"><h3>${title}</h3>${top.map((row,i)=>{const s=row.record,rewarded=studentLeaderboardRewards.some(r=>String(r.studentId||"")===String(s.studentId||s.uid||"")&&r.dateKey===studentPhoenixDayKey());return `<div class="rank"><div class="place">${i+1}</div><div class="miniavatar">${esc(s.avatarEmoji||"🐉")}</div><div class="lb-main"><div>${esc(leaderboardName(s))}</div><span class="lb-detail">${row.best.size} qualifying activit${row.best.size===1?"y":"ies"}</span>${studentLeaderboardPeriod==="weekly"&&i<5?`<span class="lb-prize">🎁 WEEKLY PRIZE ZONE${rewarded?" • REWARDED TODAY ✓":""}</span>`:""}</div><div class="score">${row.total.toLocaleString()}<span class="lb-scoretype">TOTAL POINTS</span></div></div>`}).join("")}</div>`:'<div class="board frame bevel"><h3>No records yet</h3><p class="muted">No scores match this period and category yet.</p></div>';
  glitterizeStaticIcons();
 }
+
+$("studentWeeklyBoard")?.addEventListener("click",()=>{studentLeaderboardPeriod="weekly";$("studentWeeklyBoard").classList.add("active");$("studentAllTimeBoard").classList.remove("active");renderBoards()});
+$("studentAllTimeBoard")?.addEventListener("click",()=>{studentLeaderboardPeriod="all";$("studentAllTimeBoard").classList.add("active");$("studentWeeklyBoard").classList.remove("active");renderBoards()});
 
 
 

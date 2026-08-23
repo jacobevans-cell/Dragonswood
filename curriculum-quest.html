@@ -51,6 +51,34 @@ main{padding:20px 0 35px}.hero{padding:22px;display:grid;grid-template-columns:1
 .self-lesson .example-box{margin-top:10px;padding:10px 12px;border-left:4px solid #ffd868;background:#171027;border-radius:5px;color:#fff7d4}
 .self-lesson .remember{margin-top:8px;color:#c9bee0;font-size:12px}
 .mission-note{display:inline-block;margin-top:8px;padding:5px 8px;border-radius:999px;background:#1b1530;border:1px solid #4a3863;color:#d8caef;font-size:11px;font-weight:900}
+
+/* v55.22 — shared enchanted Dragonswood environment */
+html{min-height:100%;background:#040410}
+body{
+  background:
+    linear-gradient(180deg,rgba(3,4,14,.30),rgba(3,4,14,.48) 62%,rgba(3,4,14,.68)),
+    url("dragonswood-portal-background.png") center top / cover fixed no-repeat!important;
+  position:relative;
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(circle at 18% 15%,rgba(166,76,255,.08),transparent 25%),radial-gradient(circle at 84% 18%,rgba(2,204,254,.06),transparent 23%);
+}
+body>*{position:relative;z-index:1}
+.top{
+  background:linear-gradient(180deg,rgba(4,3,18,.70),rgba(5,3,22,.54));
+  backdrop-filter:blur(5px) saturate(1.15);-webkit-backdrop-filter:blur(5px) saturate(1.15);
+}
+.frame{
+  background:linear-gradient(145deg,rgba(11,8,28,.82),rgba(5,6,18,.88));
+  backdrop-filter:blur(6px) saturate(1.12);-webkit-backdrop-filter:blur(6px) saturate(1.12);
+}
+.mission-summary{background:linear-gradient(100deg,rgba(21,16,43,.88),rgba(8,9,26,.90))}
+.mission-summary:hover{background:linear-gradient(100deg,rgba(33,21,65,.92),rgba(11,23,48,.92))}
+.recovery-day>summary{background:linear-gradient(90deg,rgba(23,16,46,.90),rgba(10,16,37,.91))}
+.tabs button{background:rgba(16,12,40,.86);backdrop-filter:blur(5px)}
+.tabs button.active{background:linear-gradient(90deg,rgba(64,17,116,.92),rgba(20,41,75,.92))}
+.notice,.step,.activity-shell,.practice-box,.self-lesson{background-color:rgba(10,7,27,.88)}
 </style></head>
 <body>
 <header class="top"><div class="shell topin"><div class="brand"><img class="shield" src="dragonswood-volleyball-crest-v1.png" alt="Dragonswood volleyball dragon crest"><div><h1 style="color:#f7c94f;background:linear-gradient(180deg,#fff9d8 0%,#ffe99a 27%,#f8ca50 58%,#ffe99a 82%,#dfa12a 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 1px 0 rgba(116,67,8,.95)) drop-shadow(0 2px 1px rgba(22,5,34,.95)) drop-shadow(0 0 5px rgba(255,216,91,.16));letter-spacing:.3px">DRAGONSWOOD</h1><p>CURRICULUM QUEST • EXPLORE ACADEMY</p></div></div>

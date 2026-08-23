@@ -2333,6 +2333,14 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .daily-review-card{display:grid;grid-template-columns:auto 1fr minmax(270px,.8fr);gap:12px;align-items:center;margin-top:12px;padding:12px 14px}
 .daily-review-card>span{font-size:26px}.daily-review-card h3{margin:0 0 3px}.daily-review-card p{margin:0;font-size:10px}.daily-review-card .request-row{margin:0}
 @media(max-width:900px){.header-grid{grid-template-columns:1fr!important}.header-student-tools{width:100%}.header-pass-popover{left:0;right:auto}.daily-review-card{grid-template-columns:auto 1fr}.daily-review-card .request-row{grid-column:1/-1}.home-hero-stats{justify-content:center}}
+/* Keep persistent student utilities above the page/character stage. Without
+   an explicit header stacking context, later Home content paints over the
+   open pass menu and makes its controls appear dimmed or hidden. */
+.topbar{position:relative!important;z-index:500!important;overflow:visible!important}
+.topbar .shell,.header-grid,.header-student-tools{position:relative;z-index:510;overflow:visible!important}
+.header-pass-popover{z-index:520!important;isolation:isolate;opacity:1!important;filter:none!important}
+.header-pass-popover .pass-hub-card{position:relative;z-index:1;opacity:1!important}
+.main{position:relative;z-index:1}
 /* v56.9 — concept-art navigation and glass-panel design language. */
 @media(min-width:1051px){
   #signedIn:not(.hidden){display:grid!important;grid-template-columns:158px minmax(0,1fr);gap:15px;align-items:start}

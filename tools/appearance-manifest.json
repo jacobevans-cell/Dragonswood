@@ -1,0 +1,482 @@
+[
+ {
+  "classId": "warrior",
+  "level": 5,
+  "slot": 1,
+  "name": "Ironwatch Sergeant",
+  "file": "skin-warrior-5.png",
+  "cost": 225,
+  "rarity": "rare",
+  "source": "medieval-king-defender-and-sergeant~Medieval-Sergeant"
+ },
+ {
+  "classId": "warrior",
+  "level": 5,
+  "slot": 2,
+  "name": "Bronze Hoplite",
+  "file": "skin-warrior-5-b.png",
+  "cost": 225,
+  "rarity": "rare",
+  "source": "spartan-knight-and-warrior~Greek-Warrior"
+ },
+ {
+  "classId": "warrior",
+  "level": 5,
+  "slot": 3,
+  "name": "Northvale Raider",
+  "file": "skin-warrior-5-c.png",
+  "cost": 225,
+  "rarity": "rare",
+  "source": "viking~Viking-3"
+ },
+ {
+  "classId": "warrior",
+  "level": 10,
+  "slot": 1,
+  "name": "Silverbrand Knight",
+  "file": "skin-warrior-10.png",
+  "cost": 450,
+  "rarity": "epic",
+  "source": "girl-knight~Girl-Knight-1"
+ },
+ {
+  "classId": "warrior",
+  "level": 10,
+  "slot": 2,
+  "name": "Phalanx Spearguard",
+  "file": "skin-warrior-10-b.png",
+  "cost": 450,
+  "rarity": "epic",
+  "source": "spartan-knight-and-warrior~Spartan-Knight-with-Spear"
+ },
+ {
+  "classId": "warrior",
+  "level": 10,
+  "slot": 3,
+  "name": "Azure Bushi",
+  "file": "skin-warrior-10-c.png",
+  "cost": 450,
+  "rarity": "epic",
+  "source": "samurai~Samurai-1"
+ },
+ {
+  "classId": "warrior",
+  "level": 15,
+  "slot": 1,
+  "name": "Crowned Sovereign",
+  "file": "skin-warrior-15.png",
+  "cost": 675,
+  "rarity": "legendary",
+  "source": "medieval-king-defender-and-sergeant~Medieval-King"
+ },
+ {
+  "classId": "warrior",
+  "level": 15,
+  "slot": 2,
+  "name": "Order Templar",
+  "file": "skin-warrior-15-b.png",
+  "cost": 675,
+  "rarity": "legendary",
+  "source": "armored-knight~Templar-Knight"
+ },
+ {
+  "classId": "warrior",
+  "level": 15,
+  "slot": 3,
+  "name": "Goldshield Amazon",
+  "file": "skin-warrior-15-c.png",
+  "cost": 675,
+  "rarity": "legendary",
+  "source": "amazon-warrior~Amazon-Warrior-3"
+ },
+ {
+  "classId": "warrior",
+  "level": 20,
+  "slot": 1,
+  "name": "Rimeguard Sovereign",
+  "file": "skin-warrior-20.png",
+  "cost": 900,
+  "rarity": "mythic",
+  "source": "frost-knight~Frost-Knight-1"
+ },
+ {
+  "classId": "warrior",
+  "level": 20,
+  "slot": 2,
+  "name": "Glacierborn Vigil",
+  "file": "skin-warrior-20-b.png",
+  "cost": 900,
+  "rarity": "mythic",
+  "source": "frost-knight~Frost-Knight-2"
+ },
+ {
+  "classId": "warrior",
+  "level": 20,
+  "slot": 3,
+  "name": "Winterlight Champion",
+  "file": "skin-warrior-20-c.png",
+  "cost": 900,
+  "rarity": "mythic",
+  "source": "frost-knight~Frost-Knight-3"
+ },
+ {
+  "classId": "ranger",
+  "level": 5,
+  "slot": 1,
+  "name": "Greenhood Scout",
+  "file": "skin-ranger-5.png",
+  "cost": 225,
+  "rarity": "rare",
+  "source": "free-forest-ranger~Forest-Ranger-1"
+ },
+ {
+  "classId": "ranger",
+  "level": 5,
+  "slot": 2,
+  "name": "Crimsonmask Archer",
+  "file": "skin-ranger-5-b.png",
+  "cost": 225,
+  "rarity": "rare",
+  "source": "archer-barbarian-mage~Archer-Guy"
+ },
+ {
+  "classId": "ranger",
+  "level": 5,
+  "slot": 3,
+  "name": "Palewood Elf",
+  "file": "skin-ranger-5-c.png",
+  "cost": 225,
+  "rarity": "rare",
+  "source": "elf-archer~Archer-1"
+ },
+ {
+  "classId": "ranger",
+  "level": 10,
+  "slot": 1,
+  "name": "Nightpetal Shinobi",
+  "file": "skin-ranger-10.png",
+  "cost": 450,
+  "rarity": "epic",
+  "source": "ninja-and-assassin~Black-Ninja"
+ },
+ {
+  "classId": "ranger",
+  "level": 10,
+  "slot": 2,
+  "name": "Snowveil Shinobi",
+  "file": "skin-ranger-10-b.png",
+  "cost": 450,
+  "rarity": "epic",
+  "source": "ninja-and-assassin~White-Ninja"
+ },
+ {
+  "classId": "ranger",
+  "level": 10,
+  "slot": 3,
+  "name": "Emberbraid Elf",
+  "file": "skin-ranger-10-c.png",
+  "cost": 450,
+  "rarity": "epic",
+  "source": "elf-archer~Archer-2"
+ },
+ {
+  "classId": "ranger",
+  "level": 15,
+  "slot": 1,
+  "name": "Antlerhelm Tracker",
+  "file": "skin-ranger-15.png",
+  "cost": 675,
+  "rarity": "legendary",
+  "source": "free-forest-ranger~Forest-Ranger-3"
+ },
+ {
+  "classId": "ranger",
+  "level": 15,
+  "slot": 2,
+  "name": "Thornmantle Ranger",
+  "file": "skin-ranger-15-b.png",
+  "cost": 675,
+  "rarity": "legendary",
+  "source": "free-forest-ranger~Forest-Ranger-2"
+ },
+ {
+  "classId": "ranger",
+  "level": 15,
+  "slot": 3,
+  "name": "Silent Blade",
+  "file": "skin-ranger-15-c.png",
+  "cost": 675,
+  "rarity": "legendary",
+  "source": "ninja-and-assassin~Assassin-Guy"
+ },
+ {
+  "classId": "ranger",
+  "level": 20,
+  "slot": 1,
+  "name": "Heartwood Warden",
+  "file": "skin-ranger-20.png",
+  "cost": 900,
+  "rarity": "mythic",
+  "source": "forest-guardian~Forest-Guardian-1"
+ },
+ {
+  "classId": "ranger",
+  "level": 20,
+  "slot": 2,
+  "name": "Stonebark Sentinel",
+  "file": "skin-ranger-20-b.png",
+  "cost": 900,
+  "rarity": "mythic",
+  "source": "forest-guardian~Forest-Guardian-2"
+ },
+ {
+  "classId": "ranger",
+  "level": 20,
+  "slot": 3,
+  "name": "Mosscrown Keeper",
+  "file": "skin-ranger-20-c.png",
+  "cost": 900,
+  "rarity": "mythic",
+  "source": "forest-guardian~Forest-Guardian-3"
+ },
+ {
+  "classId": "mage",
+  "level": 5,
+  "slot": 1,
+  "name": "Apprentice Conjurer",
+  "file": "skin-mage-5.png",
+  "cost": 225,
+  "rarity": "rare",
+  "source": "human-magician~Human-Magician-1"
+ },
+ {
+  "classId": "mage",
+  "level": 5,
+  "slot": 2,
+  "name": "Bluepeak Spellcaster",
+  "file": "skin-mage-5-b.png",
+  "cost": 225,
+  "rarity": "rare",
+  "source": "archer-barbarian-mage~Medieval-Mage"
+ },
+ {
+  "classId": "mage",
+  "level": 5,
+  "slot": 3,
+  "name": "Stormcuff Adept",
+  "file": "skin-mage-5-c.png",
+  "cost": 225,
+  "rarity": "rare",
+  "source": "human-magician~Human-Magician-3"
+ },
+ {
+  "classId": "mage",
+  "level": 10,
+  "slot": 1,
+  "name": "Emberhair Sorceress",
+  "file": "skin-mage-10.png",
+  "cost": 450,
+  "rarity": "epic",
+  "source": "magician-girl~Magician-Girl-1"
+ },
+ {
+  "classId": "mage",
+  "level": 10,
+  "slot": 2,
+  "name": "Voltcore Technomage",
+  "file": "skin-mage-10-b.png",
+  "cost": 450,
+  "rarity": "epic",
+  "source": "chibi-technomage~Technomage-2"
+ },
+ {
+  "classId": "mage",
+  "level": 10,
+  "slot": 3,
+  "name": "Violet Enchantress",
+  "file": "skin-mage-10-c.png",
+  "cost": 450,
+  "rarity": "epic",
+  "source": "magician-girl~Magician-Girl-3"
+ },
+ {
+  "classId": "mage",
+  "level": 15,
+  "slot": 1,
+  "name": "Frostcrown Witch",
+  "file": "skin-mage-15.png",
+  "cost": 675,
+  "rarity": "legendary",
+  "source": "chibi-winter-witch~Winter-Witch-1"
+ },
+ {
+  "classId": "mage",
+  "level": 15,
+  "slot": 2,
+  "name": "Aegiscore Technomage",
+  "file": "skin-mage-15-b.png",
+  "cost": 675,
+  "rarity": "legendary",
+  "source": "chibi-technomage~Technomage-3"
+ },
+ {
+  "classId": "mage",
+  "level": 15,
+  "slot": 3,
+  "name": "Silverfrost Sorceress",
+  "file": "skin-mage-15-c.png",
+  "cost": 675,
+  "rarity": "legendary",
+  "source": "magician-girl~Magician-Girl-2"
+ },
+ {
+  "classId": "mage",
+  "level": 20,
+  "slot": 1,
+  "name": "Tidecaller Ascendant",
+  "file": "skin-mage-20.png",
+  "cost": 900,
+  "rarity": "mythic",
+  "source": "elemental-spirits~Elemental-Spirits-1"
+ },
+ {
+  "classId": "mage",
+  "level": 20,
+  "slot": 2,
+  "name": "Emberheart Ascendant",
+  "file": "skin-mage-20-b.png",
+  "cost": 900,
+  "rarity": "mythic",
+  "source": "elemental-spirits~Elemental-Spirits-2"
+ },
+ {
+  "classId": "mage",
+  "level": 20,
+  "slot": 3,
+  "name": "Wildhorn Ascendant",
+  "file": "skin-mage-20-c.png",
+  "cost": 900,
+  "rarity": "mythic",
+  "source": "elemental-spirits~Elemental-Spirits-3"
+ },
+ {
+  "classId": "healer",
+  "level": 5,
+  "slot": 1,
+  "name": "Hearthside Helper",
+  "file": "skin-healer-5.png",
+  "cost": 225,
+  "rarity": "rare",
+  "source": "villager~Villager-2"
+ },
+ {
+  "classId": "healer",
+  "level": 5,
+  "slot": 2,
+  "name": "Village Apprentice",
+  "file": "skin-healer-5-b.png",
+  "cost": 225,
+  "rarity": "rare",
+  "source": "citizen~Citizen-3"
+ },
+ {
+  "classId": "healer",
+  "level": 5,
+  "slot": 3,
+  "name": "Chapel Novice",
+  "file": "skin-healer-5-c.png",
+  "cost": 225,
+  "rarity": "rare",
+  "source": "priest~Priest-1"
+ },
+ {
+  "classId": "healer",
+  "level": 10,
+  "slot": 1,
+  "name": "Tinkerbrew Gnome",
+  "file": "skin-healer-10.png",
+  "cost": 450,
+  "rarity": "epic",
+  "source": "gnome~Gnome-2"
+ },
+ {
+  "classId": "healer",
+  "level": 10,
+  "slot": 2,
+  "name": "Greybeard Mentor",
+  "file": "skin-healer-10-b.png",
+  "cost": 450,
+  "rarity": "epic",
+  "source": "old-hero~Old-hero-2"
+ },
+ {
+  "classId": "healer",
+  "level": 10,
+  "slot": 3,
+  "name": "Dunewalker Healer",
+  "file": "skin-healer-10-c.png",
+  "cost": 450,
+  "rarity": "epic",
+  "source": "desert-nomad~Desert-Nomad-1"
+ },
+ {
+  "classId": "healer",
+  "level": 15,
+  "slot": 1,
+  "name": "Saffron Monk",
+  "file": "skin-healer-15.png",
+  "cost": 675,
+  "rarity": "legendary",
+  "source": "chibi-spiritual-monk~Spiritual-Monk-2"
+ },
+ {
+  "classId": "healer",
+  "level": 15,
+  "slot": 2,
+  "name": "Sunmark Shaman",
+  "file": "skin-healer-15-b.png",
+  "cost": 675,
+  "rarity": "legendary",
+  "source": "human-shaman~Human-Shaman-1"
+ },
+ {
+  "classId": "healer",
+  "level": 15,
+  "slot": 3,
+  "name": "Ramhorn Shaman",
+  "file": "skin-healer-15-c.png",
+  "cost": 675,
+  "rarity": "legendary",
+  "source": "shaman~Shaman-2"
+ },
+ {
+  "classId": "healer",
+  "level": 20,
+  "slot": 1,
+  "name": "Golden Oracle",
+  "file": "skin-healer-20.png",
+  "cost": 900,
+  "rarity": "mythic",
+  "source": "free-seer~Seer-1"
+ },
+ {
+  "classId": "healer",
+  "level": 20,
+  "slot": 2,
+  "name": "Shadow Seer",
+  "file": "skin-healer-20-b.png",
+  "cost": 900,
+  "rarity": "mythic",
+  "source": "free-seer~Seer-2"
+ },
+ {
+  "classId": "healer",
+  "level": 20,
+  "slot": 3,
+  "name": "Keeper of Hours",
+  "file": "skin-healer-20-c.png",
+  "cost": 900,
+  "rarity": "mythic",
+  "source": "chibi-time-keeper~Time-Keeper-2"
+ }
+]

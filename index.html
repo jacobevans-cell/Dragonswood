@@ -4981,6 +4981,10 @@ function renderStudentEligibility(){
 
 function renderProfile(){
   if(!profile)return;
+  // The persistent student utility rail contains all four passes and any
+  // temporary restriction notices. It starts hidden while signed out and
+  // must become visible as soon as an authenticated profile is rendered.
+  if($("topStats"))$("topStats").classList.remove("hidden");
   const li=levelInfo(+profile.xp||0),display=formatName(profile);
   const hp=+profile.hp||0,gold=+profile.gold||0,xp=+profile.xp||0;
 

@@ -5340,7 +5340,7 @@ function dwCurricPractice(item, count){
 
   // 3. HUM has no day ranges in the pacing guide, so pick skills from the
   //    mission's own topic rather than from every HUM standard at once.
-  let skills=(entry&&entry.skills)||[];
+  let skills=((entry&&entry.skills)||[]).filter(s=>dwSkillMatchesSubject(item,s));
   const topicSkills=dwTopicSkills(item);
   if(topicSkills.length) skills=topicSkills;
   for(const s of skills){ if(out.length>=count) break; pushFrom(s, null, Math.ceil(count/Math.max(1,skills.length))+2); }
@@ -5411,15 +5411,24 @@ function dwTopicSkills(item){
   return [];
 }
 
+/* Never allow a mapped or cumulative fallback skill to cross subjects. */
+function dwSkillMatchesSubject(item, skillId){
+  const s=String(skillId||"");
+  if(item.subject==="Math") return /^math\./.test(s);
+  if(item.subject==="Science") return /^sci\./.test(s);
+  if(item.subject==="HUM") return /^(ela|writing|vocab|morph|curric)\./.test(s);
+  return false;
+}
+
 
 /* Every skill this grade and subject has covered up to and including this day. */
 function dwCumulativeSkills(item){
   if(typeof DW_CURRIC_PLAN==="undefined") return [];
   const seen=[];
   for(const id in DW_CURRIC_PLAN){
-    if(id.indexOf(item.grade+"-")!==0) continue;
+    if(id.indexOf(item.grade+"-"+item.subject+"-")!==0) continue;
     const m=id.match(/-D(\d+)-/); if(!m || Number(m[1])>item.day) continue;
-    for(const s of (DW_CURRIC_PLAN[id].skills||[])) if(seen.indexOf(s)<0) seen.push(s);
+    for(const s of (DW_CURRIC_PLAN[id].skills||[])) if(dwSkillMatchesSubject(item,s)&&seen.indexOf(s)<0) seen.push(s);
   }
   if(/vocab/i.test(item.strand||"")||/vocabulary/i.test(item.requirement||"")) seen.unshift("curric.vocab");
   return seen;
@@ -5477,4 +5486,3 @@ function dwQuestion(skillId, seed, i, subject, fallbackLabel){
     : MATH_GEN.wordproblem(r,{},i);
   return Object.assign({}, legacy, {skillId:skillId||null, label:fallbackLabel||"Review", source:"legacy"});
 }
-

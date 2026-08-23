@@ -611,7 +611,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 #students .command-title,#passes .command-title,#scores .command-title,#poll .titlebar,#picker .titlebar,#schedule .titlebar,#calendar .titlebar{background:linear-gradient(135deg,rgba(86,31,143,.45),rgba(4,110,145,.25));border:1px solid rgba(244,201,93,.45);border-radius:13px;padding:13px}
 #students .progression-plan{margin:9px 0}.dw-shared-selector{top:5px!important;max-height:44vh;overflow:auto;background:rgba(5,7,25,.97)!important}.student-check-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important}.student-check{padding:8px!important;border-radius:9px!important;background:rgba(255,255,255,.035)}
 .dw-select-filters select,.dw-select-filters input{min-height:34px;background:#080b22;color:#fff;border:1px solid #574083;border-radius:8px;padding:6px}.dw-select-filters input{width:150px}.student-selection-count{font-size:15px!important;color:#ffe36d!important}
-.dw-reward-modes{position:static!important;top:auto!important;z-index:auto!important}.quick-award-grid,.quick-consequence-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}.teacher-admin-details summary{cursor:pointer;color:#ffe58b;font-weight:900;font-size:15px;padding:8px}
+.dw-reward-modes{position:sticky!important;top:72px!important;z-index:35!important}.quick-award-grid,.quick-consequence-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}.teacher-admin-details summary{cursor:pointer;color:#ffe58b;font-weight:900;font-size:15px;padding:8px}
 /* One balanced page for Schedule + Calendar and one four-quadrant Tools page. */
 #dash:not(.hidden){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:start}
 #dash>.command-tabs,#dash>.panel{grid-column:1/-1;min-width:0}
@@ -630,6 +630,15 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 #scores table{border-collapse:separate;border-spacing:0 7px}#scores tbody tr{background:rgba(255,255,255,.045)}#scores td{padding:10px!important}#scores tbody tr:nth-child(1){outline:2px solid #f3cf58}#scores tbody tr:nth-child(2){outline:1px solid #ccd6e8}#scores tbody tr:nth-child(3){outline:1px solid #be7d4d}
 @media(max-width:1050px){.command-tabs{grid-template-columns:repeat(4,1fr)}.student-check-grid{grid-template-columns:repeat(3,1fr)!important}.quick-award-grid,.quick-consequence-grid{grid-template-columns:repeat(2,1fr)!important}}
 @media(max-width:800px){#dash:not(.hidden){grid-template-columns:1fr}#dash>#schedule.active,#dash>#calendar.active,#dash>#poll.active,#dash>#picker.active{grid-column:1;width:100%}.command-tabs{grid-template-columns:repeat(2,1fr)}.student-check-grid{grid-template-columns:repeat(2,1fr)!important}.dw-shared-selector,.dw-reward-modes{position:static!important;max-height:none}#passes .live-request-grid{grid-template-columns:1fr}#passes .live-request-box:nth-child(5){grid-column:auto}#scoreList{grid-template-columns:1fr}}
+/* v56.8 — teacher navigation, avatar leaderboards, and assignment gradebook. */
+.command-tabs .tab{min-height:58px!important;font-size:12px!important;color:#fff2ad!important;border-color:rgba(244,201,93,.42)!important;text-shadow:0 1px 2px #000;box-shadow:inset 0 0 12px rgba(83,38,145,.14)}
+.command-tabs .tab:hover{border-color:#ffe36d!important;background:linear-gradient(90deg,#3d167e,#0b6080)!important}.command-tabs .tab.active{font-size:13px!important;box-shadow:0 0 18px rgba(2,204,254,.24)!important}
+.reward-purpose{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;margin:0 0 12px;padding:11px 13px;border-radius:12px;border:1px solid rgba(2,204,254,.38);background:rgba(2,204,254,.07)}.reward-purpose>span{font-size:27px}.reward-purpose p{margin:2px 0;font-size:11px}
+.teacher-rank-avatar{width:46px;height:46px;object-fit:contain;border-radius:12px;padding:3px;background:linear-gradient(145deg,#1c123c,#09253a);border:1px solid #8665c2;filter:drop-shadow(0 4px 7px rgba(0,0,0,.4))}.teacher-rank{grid-template-columns:34px 48px 1fr auto auto!important}.teacher-rank small{display:block;margin-top:2px}
+.gradebook-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:0 0 12px}.gradebook-summary>div{padding:12px;border-radius:12px;border:1px solid #584482;background:linear-gradient(145deg,rgba(35,14,69,.85),rgba(5,29,45,.78))}.gradebook-summary small{display:block;font-size:9px;letter-spacing:.7px}.gradebook-summary b{display:block;margin-top:3px;font-size:24px;color:#ffe58a}
+.gradebook-toolbar{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;margin-bottom:12px}.gradebook-toolbar label{display:block;font-size:9px;font-weight:900;color:#d8c9e7;margin-bottom:4px}.gradebook-table-wrap{max-height:62vh;overflow:auto;border:1px solid #4e3b76;border-radius:12px}.gradebook-table{min-width:1040px}.gradebook-table thead{position:sticky;top:0;z-index:3}.gradebook-student{display:flex;align-items:center;gap:8px}.gradebook-student img{width:38px;height:38px;object-fit:contain;border-radius:9px;background:#0a0b21;border:1px solid #5a4388}.gradebook-grade{font-size:18px;font-weight:1000}.gradebook-grade.a{color:#71eda5}.gradebook-grade.b{color:#8bd9ff}.gradebook-grade.c{color:#ffe178}.gradebook-grade.d{color:#ffb060}.gradebook-grade.f{color:#ff7f9c}.gradebook-score-input{width:76px;padding:7px!important}.gradebook-status{min-width:110px;padding:7px!important}.gradebook-note{min-width:145px;padding:7px!important}.gradebook-save{padding:7px 9px!important}.gradebook-assignment-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:9px;margin-bottom:12px}.gradebook-assignment-card{padding:11px;border:1px solid #574182;border-radius:12px;background:rgba(7,11,31,.82)}.gradebook-assignment-card h4{margin:0 0 5px;color:#ffe58a}.gradebook-assignment-card small{display:block}.gradebook-assignment-card b{color:#8eeeff}.raw-results-details{margin-top:12px;border:1px solid #49376d;border-radius:11px;padding:9px}.raw-results-details summary{cursor:pointer;color:#d9c7f0;font-weight:900}
+@media(max-width:900px){.gradebook-summary{grid-template-columns:repeat(2,1fr)}.gradebook-toolbar{grid-template-columns:1fr}.teacher-rank{grid-template-columns:34px 42px 1fr auto!important}.teacher-rank .danger{grid-column:4}.teacher-rank-avatar{width:40px;height:40px}}
+.gradebook-assignment-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:9px;margin-bottom:12px}.gradebook-assignment-card{text-align:left}.gradebook-assignment-card small,.gradebook-assignment-card b,.gradebook-assignment-card span{display:block}.gradebook-assignment-card b{margin:4px 0;color:#ffe58a}.gradebook-assignment-card span{font-size:10px;color:#8eeeff}.raw-results{margin-top:12px;border:1px solid #49376d;border-radius:11px;padding:9px}.raw-results summary{cursor:pointer;color:#d9c7f0;font-weight:900}.grade-letter{font-size:18px;font-weight:1000;color:#ffe58a}
 </style>
 <script src="dragonswood-rpg-v56.js"></script>
 </head><body>
@@ -701,7 +710,9 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 </div>
 <div class="panel" id="rewards">
 <div class="grid"><div class="card"><h2>CLASS POINTS</h2><div class="big" id="points">0</div><div class="meter"><div class="fill" id="fill"></div></div><div class="actions" style="margin-top:10px"><input class="reason" id="reason" placeholder="Reason (optional)"/><button class="add" data-n="1">+1</button><button class="add" data-n="5">+5</button><button class="add" data-n="10">+10</button><button id="minus">-1</button><button id="undo">UNDO LAST</button></div></div><div class="card"><h2>REWARD HISTORY</h2><div id="history"></div></div></div>
-<div class="titlebar"><div><h2>REWARD MILESTONES</h2><p>Add or edit rewards without touching GitHub.</p></div><button id="addReward">+ ADD REWARD</button></div><div class="card"><div class="list" id="rewardList"></div></div>
+<div class="titlebar"><div><h2>CLASS REWARD MILESTONES</h2><p>Choose what the class unlocks as its shared reward total grows.</p></div><button id="addReward">+ ADD REWARD</button></div>
+<div class="reward-purpose"><span>🎁</span><div><b>What this page does</b><p>These are class-wide reward thresholds. Editing a milestone changes what students work toward; it does not give or remove points.</p></div></div>
+<div class="card"><div class="list" id="rewardList"></div></div>
 </div>
 <div class="panel" id="recess">
 <div class="frame bevel command-title">
@@ -974,7 +985,14 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
     <div id="twResponseList"><div class="muted">Launch a writing mission to begin.</div></div>
   </div>
 </div>
-<div class="panel" id="data"><div class="frame bevel command-title"><h2>📊 ACADEMIC GAME DATA</h2><p>Private game results for instructional use.</p></div><div class="card" style="overflow:auto"><table><thead><tr><th>Player</th><th>Game</th><th>Score</th><th>Accuracy</th><th>Details</th><th>Time</th></tr></thead><tbody id="results"></tbody></table></div></div>
+<div class="panel" id="data">
+  <div class="frame bevel command-title"><h2>📚 ASSIGNMENT GRADEBOOK</h2><p>Assignments, attempts, automatic scores, teacher grades, and missing work in one place.</p></div>
+  <div class="gradebook-summary"><div><small>ASSIGNMENTS</small><b id="gradebookAssignmentCount">0</b></div><div><small>STUDENTS</small><b id="gradebookStudentCount">0</b></div><div><small>CLASS AVERAGE</small><b id="gradebookClassAverage">—</b></div><div><small>MISSING</small><b id="gradebookMissingCount">0</b></div></div>
+  <div class="gradebook-assignment-grid" id="gradebookAssignments"></div>
+  <div class="gradebook-toolbar"><select id="gradebookAssignmentFilter"><option value="all">All assignments</option></select><select id="gradebookStudentFilter"><option value="all">All students</option></select><button id="gradebookExport" type="button">⬇ EXPORT CSV</button></div>
+  <div class="card gradebook-table-wrap"><table class="gradebook-table"><thead><tr><th>Student</th><th>Assignment</th><th>Attempts</th><th>Auto Score</th><th>Grade</th><th>Status</th><th>Teacher Score</th><th>Teacher Note</th><th></th></tr></thead><tbody id="gradebookRows"></tbody></table></div>
+  <details class="card raw-results"><summary>View raw game attempts</summary><div style="overflow:auto;margin-top:10px"><table><thead><tr><th>Player</th><th>Game</th><th>Score</th><th>Accuracy</th><th>Details</th><th>Time</th></tr></thead><tbody id="results"></tbody></table></div></details>
+</div>
 
 <section class="card teacher-queue" id="curriculumOverrideQueue">
   <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
@@ -1067,7 +1085,7 @@ const app=initializeApp(firebaseConfig,"DragonswoodTeacherPortal"),
       auth=getAuth(app),
       db=getFirestore(app),
       $=id=>document.getElementById(id);
-let points=0,history=[],rewards=[],scores=[],results=[],students=[],shopItems=[],purchases=[],bathroomStatuses=[],bathroomRequests=[],snackStatuses=[],snackRequests=[],pointRequests=[],genericPassRequests=[],passHistory=[],classJobsConfigV29={},jobWeeksV29=[],classScheduleV29={},calendarEventsV29=[],recessState={points:0,goal:10,dateKey:""},petGoalState={points:0,goal:250},tripGoalState={points:0,goal:750},universalPointState={points:0};
+let points=0,history=[],rewards=[],scores=[],results=[],gradebookGrades=[],students=[],shopItems=[],purchases=[],bathroomStatuses=[],bathroomRequests=[],snackStatuses=[],snackRequests=[],pointRequests=[],genericPassRequests=[],passHistory=[],classJobsConfigV29={},jobWeeksV29=[],classScheduleV29={},calendarEventsV29=[],recessState={points:0,goal:10,dateKey:""},petGoalState={points:0,goal:250},tripGoalState={points:0,goal:750},universalPointState={points:0};
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
 const AVATAR_EMOJI={"dragon-purple":"🐉","dragon-green":"🐲","knight":"🛡️","wizard":"🧙","witch":"🧙‍♀️","princess":"👸","prince":"🤴","ranger":"🏹","phoenix":"🔥","wolf":"🐺","owl":"🦉","crystal":"🔮"};
 const DRAGONSWOOD_XP_THRESHOLDS=[0,200,450,750,1100,1500,1950,2450,3000,3600,4250,4950,5700,6500,7350,8250,9200,10200,11100,12000];
@@ -1250,8 +1268,9 @@ function listen(){
  onSnapshot(doc(db,"classData","main"),s=>{if(!s.exists())return;let d=s.data();points=+d.points||0;history=Array.isArray(d.history)?d.history:[];renderPoints()});
  onSnapshot(collection(db,"rewards"),s=>{rewards=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+a.points||0)-(+b.points||0));renderRewards();renderPoints()});
  onSnapshot(collection(db,"scores"),s=>{scores=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+b.score||0)-(+a.score||0));renderScores()});
- onSnapshot(collection(db,"gameResults"),s=>{results=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));renderResults()});
- onSnapshot(collection(db,"students"),s=>{students=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.firstName||"").localeCompare(String(b.firstName||"")));renderStudents();renderShop()});
+ onSnapshot(collection(db,"gameResults"),s=>{results=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));renderResults();renderGradebook()});
+ onSnapshot(collection(db,"gradebookGrades"),s=>{gradebookGrades=s.docs.map(d=>({id:d.id,...d.data()}));renderGradebook()},e=>console.warn("gradebook listener",e));
+ onSnapshot(collection(db,"students"),s=>{students=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.firstName||"").localeCompare(String(b.firstName||"")));renderStudents();renderShop();renderScores();renderGradebook()});
 onSnapshot(collection(db,"bathroomStatus"),s=>{bathroomStatuses=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("bathroomStatus listener",e));
 onSnapshot(collection(db,"bathroomRequests"),s=>{bathroomRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("bathroomRequests listener",e));
 onSnapshot(collection(db,"snackStatus"),s=>{snackStatuses=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("snackStatus listener",e));
@@ -2478,6 +2497,17 @@ function teacherScoreDetail(s){
   const parts=[s.subject,s.activityName||s.activity,s.lesson,s.session?String(s.session).replace(/\b\w/g,c=>c.toUpperCase()):""].filter(Boolean);
   return [...new Set(parts)].join(" • ");
 }
+function teacherStudentForRecord(r){
+  const keys=[r?.studentId,r?.uid,r?.studentEmail,r?.email,r?.displayName,r?.playerName].filter(Boolean).map(v=>String(v).trim().toLowerCase());
+  return students.find(s=>[s.id,s.uid,s.email,s.firstName,s.displayName].filter(Boolean).some(v=>keys.includes(String(v).trim().toLowerCase())));
+}
+function teacherAvatarArt(r){
+  const st=teacherStudentForRecord(r),R=window.DWRPG;if(!st||!R)return "dragonswood-volleyball-crest-v1.png";
+  const owned=Array.isArray(st.rpgInventory)?st.rpgInventory:[],equipped=st.rpgEquipped?.appearance;
+  const packs=(R.appearancePacks||[]).filter(p=>owned.includes(p.id)||p.id===equipped);
+  const chosen=packs.find(p=>p.id===equipped)||packs[0],cls=R.classes?.[st.classId];
+  return chosen?.idleArt||chosen?.skinArt||chosen?.art||cls?.art||"dragonswood-volleyball-crest-v1.png";
+}
 function renderScores(){
   const games={};scores.forEach(s=>{const game=s.gameName||s.game||"Game",key=String(s.uid||s.studentId||s.studentEmail||s.displayName||s.playerName||'player').toLowerCase();games[game]??=new Map();const old=games[game].get(key);if(!old||Number(s.score||0)>Number(old.score||0))games[game].set(key,s)});
   const ranked=Object.entries(games).map(([game,map])=>({game,rows:[...map.values()].sort((a,b)=>Number(b.score||0)-Number(a.score||0)).slice(0,5)}));
@@ -2486,11 +2516,39 @@ function renderScores(){
     if(s.accuracy!=null)meta.push(`${s.accuracy}% accuracy`);
     if(s.correct!=null&&s.total!=null)meta.push(`${s.correct}/${s.total} correct`);
     if(s.dateKey)meta.push(s.dateKey);
-    return `<div class="item teacher-rank"><div class="teacher-rank-place">${i+1}</div><div><b>${esc(s.displayName||s.playerName||"Player")}</b><small>${detail?esc(detail):'Best score'}${meta.length?` • ${esc(meta.join(" • "))}`:""}</small></div><strong>${(+s.score||0).toLocaleString()}</strong><button class="danger mini" data-sdel="${s.id}">Delete</button></div>`;
+    return `<div class="item teacher-rank"><div class="teacher-rank-place">${i+1}</div><img class="teacher-rank-avatar" src="${esc(teacherAvatarArt(s))}" alt=""><div><b>${esc(s.displayName||s.playerName||"Player")}</b><small>${detail?esc(detail):'Best score'}${meta.length?` • ${esc(meta.join(" • "))}`:""}</small></div><strong>${(+s.score||0).toLocaleString()}</strong><button class="danger mini" data-sdel="${s.id}">Delete</button></div>`;
   }).join("")+`</section>`).join(""):'<div class="muted">No scores submitted yet.</div>';
   document.querySelectorAll("[data-sdel]").forEach(b=>b.onclick=async()=>{if(confirm("Delete this score?"))await deleteDoc(doc(db,"scores",b.dataset.sdel))})
 }
 function renderResults(){$("results").innerHTML=results.length?results.map(r=>`<tr><td>${esc(r.displayName||r.playerName||"Player")}</td><td>${esc(r.gameName||r.game||"Game")}</td><td>${+r.score||0}</td><td>${r.accuracy!=null?esc(r.accuracy)+"%":"—"}</td><td>${esc(r.summary||r.details||"—")}</td><td>${r.createdAt?.seconds?new Date(r.createdAt.seconds*1000).toLocaleString():"—"}</td></tr>`).join(""):'<tr><td colspan="6" class="muted">No academic game results yet.</td></tr>'}
+function gbSafe(v){return String(v||"").toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"").slice(0,60)||"record"}
+function gbHash(v){let h=2166136261;for(const c of String(v||"")){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return(h>>>0).toString(36)}
+function gradebookAssignmentInfo(r){
+  const game=String(r.gameName||r.game||"Academic Assignment").trim(),raw=String(r.assignmentName||r.summary||r.details||"").replace(/\s*[•·-]\s*\d+s\s*$/i,"").trim();
+  const assignmentId=String(r.assignmentId||`${game} • ${raw||"Practice"}`),name=raw?`${game}: ${raw}`:game;
+  return {id:assignmentId,name};
+}
+function gradebookRowsData(){
+  const assignments=new Map(),attempts=new Map();
+  results.forEach(r=>{const a=gradebookAssignmentInfo(r);assignments.set(a.id,a);const st=teacherStudentForRecord(r),sid=st?.id||String(r.studentId||r.uid||r.studentEmail||r.displayName||r.playerName||"unknown"),key=`${sid}|||${a.id}`;if(!attempts.has(key))attempts.set(key,[]);attempts.get(key).push(r)});
+  const roster=students.length?students:[...new Map(results.map(r=>{const id=String(r.studentId||r.uid||r.studentEmail||r.displayName||r.playerName||"unknown");return[id,{id,firstName:r.displayName||r.playerName||"Player"}]})).values()];
+  const rows=[];roster.forEach(st=>assignments.forEach(a=>{const key=`${st.id}|||${a.id}`,tries=attempts.get(key)||[],best=tries.reduce((top,r)=>Number(r.accuracy??-1)>Number(top?.accuracy??-1)?r:top,null),gradeId=`${gbSafe(st.id)}__${gbHash(a.id)}`,override=gradebookGrades.find(g=>g.id===gradeId)||{};rows.push({gradeId,student:st,assignment:a,tries,best,override})}));
+  return {assignments:[...assignments.values()],rows};
+}
+function gbLetter(n){if(n==null||n==="")return "—";n=Number(n);return n>=90?"A":n>=80?"B":n>=70?"C":n>=60?"D":"F"}
+function renderGradebook(){
+  if(!$("gradebookRows"))return;const data=gradebookRowsData(),af=$("gradebookAssignmentFilter"),sf=$("gradebookStudentFilter"),keepA=af.value||"all",keepS=sf.value||"all";
+  af.innerHTML='<option value="all">All assignments</option>'+data.assignments.map(a=>`<option value="${esc(a.id)}">${esc(a.name)}</option>`).join("");sf.innerHTML='<option value="all">All students</option>'+students.map(s=>`<option value="${esc(s.id)}">${esc(s.firstName||s.displayName||"Student")}</option>`).join("");af.value=[...af.options].some(o=>o.value===keepA)?keepA:"all";sf.value=[...sf.options].some(o=>o.value===keepS)?keepS:"all";
+  const completed=data.rows.filter(r=>r.tries.length),scoresForAvg=completed.map(r=>Number(r.override.score??r.best?.accuracy)).filter(Number.isFinite),missing=data.rows.filter(r=>!r.tries.length&&r.override.status!=="Excused").length;
+  $("gradebookAssignmentCount").textContent=data.assignments.length;$("gradebookStudentCount").textContent=students.length;$("gradebookClassAverage").textContent=scoresForAvg.length?`${Math.round(scoresForAvg.reduce((a,b)=>a+b,0)/scoresForAvg.length)}%`:"—";$("gradebookMissingCount").textContent=missing;
+  $("gradebookAssignments").innerHTML=data.assignments.map(a=>{const rs=data.rows.filter(r=>r.assignment.id===a.id),done=rs.filter(r=>r.tries.length).length,vals=rs.map(r=>Number(r.override.score??r.best?.accuracy)).filter(Number.isFinite);return `<button type="button" class="gradebook-assignment-card" data-grade-assignment="${esc(a.id)}"><small>ASSIGNMENT</small><b>${esc(a.name)}</b><span>${done}/${rs.length} complete${vals.length?` • ${Math.round(vals.reduce((x,y)=>x+y,0)/vals.length)}% avg`:""}</span></button>`}).join("")||'<div class="card muted">Student assignment results will appear here after work is submitted.</div>';
+  const visible=data.rows.filter(r=>(af.value==="all"||r.assignment.id===af.value)&&(sf.value==="all"||r.student.id===sf.value));
+  $("gradebookRows").innerHTML=visible.length?visible.map(r=>{const auto=r.best?.accuracy,status=r.override.status||(r.tries.length?"Complete":"Missing"),grade=r.override.score??auto;return `<tr><td><b>${esc(r.student.firstName||r.student.displayName||"Student")}</b></td><td>${esc(r.assignment.name)}</td><td>${r.tries.length}</td><td>${auto!=null?`${esc(auto)}%`:"—"}</td><td><span class="grade-letter">${gbLetter(grade)}</span></td><td><select data-gb-status="${r.gradeId}"><option${status==="Complete"?" selected":""}>Complete</option><option${status==="Missing"?" selected":""}>Missing</option><option${status==="Late"?" selected":""}>Late</option><option${status==="Excused"?" selected":""}>Excused</option></select></td><td><input data-gb-score="${r.gradeId}" type="number" min="0" max="100" placeholder="${auto??"—"}" value="${r.override.score??""}"></td><td><input data-gb-note="${r.gradeId}" placeholder="Optional note" value="${esc(r.override.note||"")}"></td><td><button class="mini" data-gb-save="${r.gradeId}" data-student="${esc(r.student.id)}" data-student-name="${esc(r.student.firstName||r.student.displayName||"Student")}" data-assignment="${esc(r.assignment.id)}" data-assignment-name="${esc(r.assignment.name)}">Save</button></td></tr>`}).join(""):'<tr><td colspan="9" class="muted">No rows match these filters.</td></tr>';
+  document.querySelectorAll("[data-grade-assignment]").forEach(b=>b.onclick=()=>{af.value=b.dataset.gradeAssignment;renderGradebook()});
+  document.querySelectorAll("[data-gb-save]").forEach(b=>b.onclick=async()=>{const id=b.dataset.gbSave,scoreEl=document.querySelector(`[data-gb-score="${id}"]`),statusEl=document.querySelector(`[data-gb-status="${id}"]`),noteEl=document.querySelector(`[data-gb-note="${id}"]`);await setDoc(doc(db,"gradebookGrades",id),{studentId:b.dataset.student,studentName:b.dataset.studentName,assignmentId:b.dataset.assignment,assignmentName:b.dataset.assignmentName,score:scoreEl.value===""?null:Number(scoreEl.value),status:statusEl.value,note:noteEl.value.trim(),updatedAt:serverTimestamp()},{merge:true});b.textContent="Saved ✓";setTimeout(()=>b.textContent="Save",1200)});
+}
+$("gradebookAssignmentFilter")?.addEventListener("change",renderGradebook);$("gradebookStudentFilter")?.addEventListener("change",renderGradebook);
+$("gradebookExport")?.addEventListener("click",()=>{const {rows}=gradebookRowsData(),lines=[["Student","Assignment","Attempts","Auto Score","Teacher Score","Final Grade","Status","Note"],...rows.map(r=>{const auto=r.best?.accuracy,final=r.override.score??auto;return[r.student.firstName||r.student.displayName||"Student",r.assignment.name,r.tries.length,auto??"",r.override.score??"",final??"",r.override.status||(r.tries.length?"Complete":"Missing"),r.override.note||""]})],csv=lines.map(row=>row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n"),a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download=`dragonswood-gradebook-${new Date().toISOString().slice(0,10)}.csv`;a.click();URL.revokeObjectURL(a.href)});
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");const names=b.dataset.p==="planner"?["schedule","calendar"]:b.dataset.p==="tools"?["poll","picker"]:[b.dataset.p];names.forEach(n=>$(n)?.classList.add("active"))})
 
 setTimeout(()=>{seedV29Defaults().catch(e=>console.warn('seed defaults',e))},1200);

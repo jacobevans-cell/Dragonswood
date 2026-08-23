@@ -2291,9 +2291,10 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 }
 .home-hero-avatar{width:100%!important;height:365px!important;overflow:visible!important}
 .home-hero-avatar,.home-level-medallion{position:relative;z-index:2}
-.home-hero-avatar .dw-hero-body{max-height:365px;max-width:92%;transform:scale(1.42);transform-origin:center bottom}
-.home-hero-avatar .dw-hero-pet{width:165px;max-height:165px;right:-2%;bottom:2%;transform:scale(1.18);transform-origin:center bottom}
+.home-hero-avatar .dw-hero-body{max-height:365px;max-width:92%;transform:translateY(58px) scale(1.52);transform-origin:center bottom}
+.home-hero-avatar .dw-hero-pet{width:175px;max-height:175px;right:-2%;bottom:-5%;transform:translateY(18px) scale(1.28);transform-origin:center bottom}
 .home-hero-avatar .dw-hero-gear{display:none!important}
+.home-hero-avatar-wrap .home-level-medallion{display:none!important}
 .home-hero-main{min-width:0}
 .home-hero-stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .home-hero-stats>div{padding:9px!important}
@@ -2312,10 +2313,25 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .profile-background-choice span{position:absolute;inset:auto 0 0;padding:5px 3px;background:linear-gradient(transparent,rgba(3,3,18,.94));font-size:9px;font-weight:900;text-shadow:0 1px 2px #000}
 .profile-background-choice.active{border-color:#ffe06d;box-shadow:0 0 0 2px #6d2cbd,0 0 16px rgba(255,218,93,.32)}
 .profile-rpg-studio #avatarPreview{--home-stage-bg:url("assets/rpg/backgrounds/fairy-purple.webp");border-radius:14px;overflow:hidden;background:linear-gradient(180deg,rgba(9,4,29,.08),rgba(8,3,26,.24)),var(--home-stage-bg) center bottom/cover no-repeat;box-shadow:inset 0 0 25px rgba(4,2,20,.42)}
-@media(max-width:900px){.home-hero-card{grid-template-columns:240px 1fr!important}.home-hero-avatar,.home-hero-avatar-wrap{height:320px!important;min-height:320px!important}.home-hero-avatar .dw-hero-body{transform:scale(1.3)}.home-hero-avatar .dw-hero-pet{width:135px;max-height:135px;transform:scale(1.1)}.home-hero-stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){.home-hero-card{grid-template-columns:240px 1fr!important}.home-hero-avatar,.home-hero-avatar-wrap{height:320px!important;min-height:320px!important}.home-hero-avatar .dw-hero-body{transform:translateY(48px) scale(1.4)}.home-hero-avatar .dw-hero-pet{width:145px;max-height:145px;bottom:-4%;transform:translateY(14px) scale(1.18)}.home-hero-stats{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:900px){#view-leaderboard .boards{grid-template-columns:1fr}}
-@media(max-width:700px){#view-quests .quests-grid{grid-template-columns:1fr}#view-quests .quest-card:last-child{grid-column:auto;grid-template-columns:42px 1fr}.home-hero-card{grid-template-columns:1fr!important}.home-hero-avatar,.home-hero-avatar-wrap{height:320px!important;min-height:320px!important}.home-hero-avatar .dw-hero-body{transform:scale(1.18)}.home-hero-avatar .dw-hero-pet{width:120px;max-height:120px;right:4%;transform:scale(1)}.profile-rpg-studio{grid-template-columns:1fr}#view-leaderboard .rank{grid-template-columns:38px 34px 1fr}.score{grid-column:3;text-align:left}}
+@media(max-width:700px){#view-quests .quests-grid{grid-template-columns:1fr}#view-quests .quest-card:last-child{grid-column:auto;grid-template-columns:42px 1fr}.home-hero-card{grid-template-columns:1fr!important}.home-hero-avatar,.home-hero-avatar-wrap{height:320px!important;min-height:320px!important}.home-hero-avatar .dw-hero-body{transform:translateY(42px) scale(1.28)}.home-hero-avatar .dw-hero-pet{width:130px;max-height:130px;right:4%;bottom:-3%;transform:translateY(12px) scale(1.08)}.profile-rpg-studio{grid-template-columns:1fr}#view-leaderboard .rank{grid-template-columns:38px 34px 1fr}.score{grid-column:3;text-align:left}}
 @media(prefers-reduced-motion:reduce){.dw-hero-body,.dw-hero-pet{animation:none!important}}
+/* v56.8 — compact My Adventurer header utilities and status. */
+.header-student-tools{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:7px;min-width:250px;align-self:center}
+.header-pass-button{min-height:45px;display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 12px!important;border-color:#ffe16b!important;box-shadow:0 0 18px rgba(2,204,254,.16)}
+.header-pass-button small{font-size:9px;color:#d9f7ff;font-weight:700}
+.header-restrictions{display:flex;justify-content:flex-end;gap:6px;flex-wrap:wrap}
+.header-restriction{padding:5px 8px;border-radius:999px;border:1px solid #ff8eaa;background:rgba(76,8,31,.92);color:#ffdce5;font-size:9px;font-weight:900}
+.header-pass-popover{position:absolute;right:0;top:calc(100% + 8px);z-index:120;width:min(440px,92vw);padding:13px;border-radius:14px;background:#08091f!important;border:1px solid #ffe16b;box-shadow:0 18px 45px rgba(0,0,0,.66)}
+.header-pass-popover h3{margin:0 0 5px;color:#ffe99d}.header-pass-popover p{font-size:10px;margin:0 0 8px}
+.header-pass-popover .pass-hub-top{grid-template-columns:1fr!important}.header-pass-popover #studentPassHubBtn{width:100%;margin-top:8px}
+.home-hero-stats{display:flex!important;align-items:center;gap:9px!important;margin:8px 0 4px;padding:9px 12px;border:1px solid rgba(244,201,93,.35);border-radius:12px;background:rgba(4,7,25,.72)}
+.home-compact-stat{display:flex;align-items:center;gap:5px;font-weight:900;color:#fff0a2;font-size:16px}.home-compact-stat+ .home-compact-stat{padding-left:11px;border-left:1px solid rgba(255,255,255,.13)}
+.home-compact-stat small{color:#cfc6dd;font-size:9px;letter-spacing:.4px}.home-compact-stat span{font-size:20px}
+.daily-review-card{display:grid;grid-template-columns:auto 1fr minmax(270px,.8fr);gap:12px;align-items:center;margin-top:12px;padding:12px 14px}
+.daily-review-card>span{font-size:26px}.daily-review-card h3{margin:0 0 3px}.daily-review-card p{margin:0;font-size:10px}.daily-review-card .request-row{margin:0}
+@media(max-width:900px){.header-grid{grid-template-columns:1fr!important}.header-student-tools{width:100%}.header-pass-popover{left:0;right:auto}.daily-review-card{grid-template-columns:auto 1fr}.daily-review-card .request-row{grid-column:1/-1}.home-hero-stats{justify-content:center}}
 </style>
 <script src="dragonswood-rpg-v56.js"></script>
 </head><body><!-- DRAGONSWOOD BUILD v48.9 COSMIC+JOBS -->
@@ -2334,10 +2350,23 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
       <div class="brand-sub">EXPLORE ACADEMY • EVANS 4–5</div>
       <div class="motto">✦ BE KIND. BE BRAVE. BE LEGENDARY. ✦</div></div>
     </div>
-    <div class="frame bevel stats-card hidden" id="topStats">
-      <div class="stat"><span class="ico">💙</span><b id="hp">10</b><small>HP</small></div>
-      <div class="stat"><span class="ico">🪙</span><b id="gold">0</b><small>GOLD</small></div>
-      <div class="stat"><span class="ico">⭐</span><b id="xp">0</b><small>XP</small></div>
+    <div class="header-student-tools hidden" id="topStats">
+      <button class="header-pass-button" id="headerPassToggle" type="button" aria-expanded="false"><span>🎟️</span><b>PASSES</b><small id="headerPassSummary">Bathroom • Snack • Out of Seat • Office</small></button>
+      <div class="header-restrictions hidden" id="studentRestrictionBar" aria-live="polite">
+        <span class="header-restriction hidden" id="headerKnockoutNotice">❤️ Adventure Paused</span>
+        <span class="header-restriction hidden" id="headerRecessNotice">🌤️ Second Recess Unavailable Today</span>
+        <span class="header-restriction hidden" id="headerTripNotice">🚌 Field Trip Access Paused</span>
+      </div>
+      <div class="header-pass-popover hidden" id="headerPassPopover">
+        <div class="pass-hub-card" id="studentPassHub">
+          <h3>🎟️ Student Passes</h3><p>Choose the pass you need. Current limits and active passes appear here.</p>
+          <div class="pass-blackout-msg" id="studentPassBlackout">🔒 Passes are temporarily paused while Mr. Evans is teaching.</div>
+          <div class="pass-hub-top"><select id="studentPassType" class="pass-hub-select"><option value="bathroom">🚻 Bathroom Pass</option><option value="snack">🍎 Snack Pass</option><option value="outOfSeat">🚶 Out of Seat Pass</option><option value="office">🆘 Emergency Office Pass</option></select><div class="pass-hub-status" id="studentPassHubStatus">Choose a pass.</div></div>
+          <div id="activeGenericPasses" class="pass-hub-status" style="margin-top:9px;display:none"></div><button id="studentPassHubBtn" type="button">USE PASS</button>
+        </div>
+      </div>
+      <div class="hidden" id="bathroomStudentCard"><p id="bathroomStudentStatus">Loading your passes…</p><button id="bathroomStudentBtn" type="button">LOADING…</button></div>
+      <div class="hidden" id="snackStudentCard"><p id="snackStudentStatus">Loading your snack passes…</p><button id="snackStudentBtn" type="button">LOADING…</button></div>
     </div>
   </div>
 </div>
@@ -2354,7 +2383,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
   <!-- Persistent Dragonswood navigation -->
   <nav class="frame bevel portal-nav" id="portalNav" aria-label="Dragonswood navigation">
-    <button class="portal-tab active" type="button" data-view="home" onclick="DragonswoodNav('home')"><span>🛡️</span><b>HOME</b></button>
+    <button class="portal-tab active" type="button" data-view="home" onclick="DragonswoodNav('home')"><span>🛡️</span><b>MY ADVENTURER</b></button>
     <button class="portal-tab" type="button" data-view="quests" onclick="DragonswoodNav('quests')"><span>📜</span><b>DAILY MISSIONS</b></button>
     <button class="portal-tab" type="button" data-view="games" onclick="DragonswoodNav('games')"><span>🎮</span><b>GAMES</b></button>
     <button class="portal-tab" type="button" data-view="scribe" onclick="DragonswoodNav('scribe')"><span>✍️</span><b>SCRIBE &amp; JOURNAL</b></button>
@@ -2379,7 +2408,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
       </div>
 
       <div class="home-hero-main">
-        <div class="home-hero-eyebrow">YOUR DRAGONSWOOD ADVENTURER</div>
+        <div class="home-hero-eyebrow">MY ADVENTURER</div>
         <h2 id="homeHeroName">Adventurer</h2>
         <div class="home-hero-sub" id="homeHeroSub">Level 1 • Dragonswood Adventurer</div>
 
@@ -2393,90 +2422,14 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
           </div>
         </div>
 
-        <div class="home-hero-stats">
-          <div class="home-stat hp">
-            <span>❤️</span>
-            <small>HEALTH</small>
-            <b id="homeHeroHp">10</b>
-          </div>
-          <div class="home-stat gold">
-            <span>🪙</span>
-            <small>GOLD</small>
-            <b id="homeHeroGold">0</b>
-          </div>
-          <div class="home-stat daily">
-            <span>⭐</span>
-            <small>DAILY XP</small>
-            <b id="homeHeroDailyXp">0 / 150</b>
-          </div>
-          <div class="home-stat next">
-            <span>⬆️</span>
-            <small>TO NEXT LEVEL</small>
-            <b id="homeHeroXpNext">200 XP</b>
-          </div>
+        <div class="home-hero-stats" aria-label="Adventurer status">
+          <div class="home-compact-stat"><span>❤️</span><b id="homeHeroHp">10</b><small>Health</small></div>
+          <div class="home-compact-stat"><span>🪙</span><b id="homeHeroGold">0</b><small>Gold</small></div>
+          <div class="home-compact-stat"><span>⭐</span><b>Level <span id="homeHeroCompactLevel">1</span></b></div>
         </div>
 
-        <div class="home-status-row">
-          <div class="home-status-card" id="homeHealthStatus">
-            <span>❤️</span>
-            <div><small>ADVENTURE STATUS</small><b id="homeHealthStatusText">ACTIVE</b><p id="homeHealthStatusSub">You can earn XP and Gold.</p></div>
-          </div>
-          <div class="home-status-card" id="homeRecessStatus">
-            <span>🌤️</span>
-            <div><small>SECOND RECESS</small><b id="homeRecessStatusText">ELIGIBLE</b><p id="homeRecessStatusSub">You may join if the class earns it.</p></div>
-          </div>
-          <div class="home-status-card" id="homeTripStatus">
-            <span>🚌</span>
-            <div><small>FIELD TRIPS</small><b id="homeTripStatusText">ELIGIBLE</b><p id="homeTripStatusSub">You are currently eligible.</p></div>
-          </div>
-        </div>
-        <div class="student-life-grid">
-
-          <div class="student-life-card pass-hub-card" id="studentPassHub">
-            <h3>🎟️ Pass Center</h3>
-            <p>Choose the pass you need. Bathroom and snack keep their daily limits. Out of Seat and Emergency Office each include 1 automatic pass per day; all passes are recorded.</p>
-            <div class="pass-blackout-msg" id="studentPassBlackout">🔒 PASS BLACKOUT ACTIVE — Mr. Evans is teaching. New passes are temporarily unavailable.</div>
-            <div class="pass-hub-top">
-              <select id="studentPassType" class="pass-hub-select">
-                <option value="bathroom">🚻 Bathroom Pass</option>
-                <option value="snack">🍎 Snack Pass</option>
-                <option value="outOfSeat">🚶 Out of Seat Pass</option>
-                <option value="office">🆘 Emergency Office Pass</option>
-              </select>
-              <div class="pass-hub-status" id="studentPassHubStatus">Choose a pass.</div>
-            </div>
-            <div id="activeGenericPasses" class="pass-hub-status" style="margin-top:9px;display:none"></div>
-            <div class="pass-hub-top" style="grid-template-columns:1fr">
-            </div>
-            <button id="studentPassHubBtn" type="button">USE PASS</button>
-          </div>
-          <div class="student-life-card" id="bathroomStudentCard">
-            <h3>🚻 Bathroom Pass</h3><p id="bathroomStudentStatus">Loading your passes…</p><button id="bathroomStudentBtn" type="button">LOADING…</button>
-          </div>
-          <div class="student-life-card" id="snackStudentCard">
-            <h3>🍎 Snack Pass</h3><p id="snackStudentStatus">Loading your snack passes…</p><button id="snackStudentBtn" type="button">LOADING…</button>
-          </div>
-          <div class="student-life-card">
-            <h3>⭐ Request Recognition</h3><p>Think Mr. Evans missed something positive? Send a quick request. You do not award yourself the point.</p>
-            <div class="request-row"><select id="recognitionReason"><option>Great Effort</option><option>Ready & Working</option><option>Kindness</option><option>Leadership</option><option>Helped Someone</option><option>Academic Win</option><option>Other Positive Choice</option></select><button id="recognitionRequestBtn" type="button">REQUEST</button></div><p id="recognitionRequestStatus"></p>
-          </div>
-        </div>
       </div>
     </section>
-
-    
-    <div class="dw-dash-grid home-now-coming" style="margin:20px 0 16px">
-      <section class="dw-school-countdowns frame bevel"><div class="section-title"><div><h2>⏳ School-Year Countdown</h2><p>Live countdowns from the Explore Academy 2026-27 calendar.</p></div></div><div class="dw-count-grid" id="dwSchoolCountdowns"></div></section>
-<div class="frame bevel dw-now-card">
-        <div class="dw-subtle">📍 RIGHT NOW</div>
-        <div class="dw-now-big" id="homeNow">Loading schedule…</div>
-        <div class="dw-next-line" id="homeNext"></div>
-      </div>
-      <div class="frame bevel dw-coming-card">
-        <div class="dw-subtle">📅 COMING UP</div>
-        <div id="homeUpcomingEvents" class="dw-event-list"></div>
-      </div>
-    </div>
 
     <div class="section-title class-goals-title">
       <div>
@@ -2833,6 +2786,11 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
       </div>
 </section>
 
+    <section class="frame bevel daily-review-card" aria-label="Request teacher review">
+      <span>⭐</span><div><h3>Request Teacher Review</h3><p>Finished your work and think Mr. Evans missed a positive choice? Send one quiet review request.</p></div>
+      <div><div class="request-row"><select id="recognitionReason"><option>Great Effort</option><option>Ready &amp; Working</option><option>Kindness</option><option>Leadership</option><option>Helped Someone</option><option>Academic Win</option><option>Other Positive Choice</option></select><button id="recognitionRequestBtn" type="button">REQUEST REVIEW</button></div><p id="recognitionRequestStatus"></p></div>
+    </section>
+
   </section>
 
   <!-- LEADERBOARD -->
@@ -3040,6 +2998,13 @@ function homeBackgroundById(id){return HOME_BACKGROUNDS.find(bg=>bg.id===id)||HO
 
 
 function esc(v){return String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]))}
+function compactNumber(value){
+  const n=Math.max(0,Number(value)||0);
+  if(n>=1000000)return `${Math.floor(n/100000)/10}m`;
+  if(n>=100000)return `${Math.floor(n/1000)}k`;
+  if(n>=1000)return `${Math.floor(n/100)/10}k`;
+  return String(Math.round(n));
+}
 function firstNameFromUser(u){return (u.displayName||u.email.split("@")[0]).trim().split(/\s+/)[0]}
 function formatName(p){
   const t=TITLES.find(x=>x.id===p.title);
@@ -3929,6 +3894,16 @@ async function sendRecognitionRequest(){
  }
 }
 document.getElementById('recognitionRequestBtn')?.addEventListener('click',sendRecognitionRequest);
+const headerPassToggle=document.getElementById('headerPassToggle'),headerPassPopover=document.getElementById('headerPassPopover');
+headerPassToggle?.addEventListener('click',event=>{
+  event.stopPropagation();
+  const opening=headerPassPopover.classList.contains('hidden');
+  headerPassPopover.classList.toggle('hidden',!opening);
+  headerPassToggle.setAttribute('aria-expanded',String(opening));
+  if(opening)refreshPassHub();
+});
+headerPassPopover?.addEventListener('click',event=>event.stopPropagation());
+document.addEventListener('click',()=>{if(headerPassPopover&&!headerPassPopover.classList.contains('hidden')){headerPassPopover.classList.add('hidden');headerPassToggle?.setAttribute('aria-expanded','false')}});
 
 
 function dwStudentDateKey(){
@@ -4944,6 +4919,12 @@ function renderStudentEligibility(){
     ?(dead?"Knocked-out players are blocked from field trips until revival.":"You are currently blocked from field trips.")
     :"You are currently eligible.";
   if(trip&&tripCard)tripCard.classList.add("blocked");
+
+  const bar=$("studentRestrictionBar"),knockoutNotice=$("headerKnockoutNotice"),recessNotice=$("headerRecessNotice"),tripNotice=$("headerTripNotice");
+  if(knockoutNotice)knockoutNotice.classList.toggle("hidden",!dead);
+  if(recessNotice)recessNotice.classList.toggle("hidden",!recess);
+  if(tripNotice)tripNotice.classList.toggle("hidden",!trip);
+  if(bar)bar.classList.toggle("hidden",!(dead||recess||trip));
 }
 
 function renderProfile(){
@@ -4960,8 +4941,8 @@ function renderProfile(){
       : `Level ${li.level} • Grade ${profile.grade} • ${profile.genderGroup==="girl"?"Girls":"Boys"} • ${li.next-xp} XP to next level • Daily XP ${daily}/150`;
   }
   if($("hp"))$("hp").textContent=hp;
-  if($("gold"))$("gold").textContent=gold;
-  if($("xp"))$("xp").textContent=xp;
+  if($("gold"))$("gold").textContent=compactNumber(gold);
+  if($("xp"))$("xp").textContent=compactNumber(xp);
   const dailyXp=normalizedDailyXp(profile);
   if($("dailyXp"))$("dailyXp").textContent=`${dailyXp} / 150`;
   if($("journalDailyXp"))$("journalDailyXp").textContent=`${dailyXp} / 150`;
@@ -4984,11 +4965,12 @@ function renderProfile(){
       ? `Level 20 MAX • Grade ${profile.grade} • Dragonswood Champion`
       : `Level ${li.level} • Grade ${profile.grade} • ${profile.genderGroup==="girl"?"Girls":"Boys"}`;
   if($("homeHeroHp"))$("homeHeroHp").textContent=hp;
-  if($("homeHeroGold"))$("homeHeroGold").textContent=gold.toLocaleString();
+  if($("homeHeroGold"))$("homeHeroGold").textContent=compactNumber(gold);
+  if($("homeHeroCompactLevel"))$("homeHeroCompactLevel").textContent=li.level;
   if($("homeHeroDailyXp"))$("homeHeroDailyXp").textContent=`${dailyXp} / 150`;
 
   if(li.level>=20){
-    if($("homeHeroXpText"))$("homeHeroXpText").textContent=`${xp.toLocaleString()} XP • MAX LEVEL`;
+    if($("homeHeroXpText"))$("homeHeroXpText").textContent=`${compactNumber(xp)} XP • MAX LEVEL`;
     if($("homeHeroXpFill"))$("homeHeroXpFill").style.width="100%";
     if($("homeHeroXpNext"))$("homeHeroXpNext").textContent="MAX";
   }else{

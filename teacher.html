@@ -1234,14 +1234,56 @@ async function saveDailyAccessOverride(all,ids){
  },{merge:false});
  window.DWAudio?.positive();
 }
-function listen(){
+/* ==========================================================================
+   v56.19 — tab-aware data layer.
 
- onSnapshot(doc(db,"classData","dailyAccessOverride"),s=>{
+   Before: listen() opened 34 Firestore listeners at once, and the `students`
+   listener — the only one the default Students tab renders from — was 19th in
+   that queue, behind gameResults, curriculumAttempts, passHistory and nine
+   other whole-collection reads. Seven separate listeners each called
+   renderGradebook() during startup, so the gradebook was rebuilt seven times
+   before the teacher saw a single student row.
+
+   After: 16 essential listeners, `students` first. The other 18 subscribe the
+   first time their tab (or a student record) is actually opened, and never
+   twice. No listener callback logic was changed; the statements below are the
+   originals, moved.
+   ========================================================================== */
+const DW_SUBSCRIBED=new Set();
+function dwSub(key,fn){
+  if(DW_SUBSCRIBED.has(key))return;      // reopening a tab must not re-subscribe
+  DW_SUBSCRIBED.add(key);
+  try{fn();}catch(e){console.warn("dwSub "+key,e);}
+}
+/* Coalesce repeat renders into one per animation frame. Seven gradebook
+   listeners firing together now cost one render, not seven. */
+const DW_RENDER_QUEUE=new Set();let DW_RENDER_FRAME=0;
+function dwQueue(fn){
+  if(typeof fn!=="function")return;
+  DW_RENDER_QUEUE.add(fn);
+  if(DW_RENDER_FRAME)return;
+  DW_RENDER_FRAME=requestAnimationFrame(function(){
+    DW_RENDER_FRAME=0;
+    const jobs=Array.from(DW_RENDER_QUEUE);DW_RENDER_QUEUE.clear();
+    for(const j of jobs){try{j();}catch(e){console.warn("render",e);}}
+  });
+}
+/* Honest loading state: a deferred tab says so until its first snapshot. */
+function dwTabLoading(on,panelId){
+  const p=document.getElementById(panelId);if(!p)return;
+  p.classList.toggle("dw-tab-loading",!!on);
+}
+
+function listen(){
+  dwSub("students",function(){
+   onSnapshot(collection(db,"students"),s=>{students=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.firstName||"").localeCompare(String(b.firstName||"")));dwQueue(renderStudents);dwQueue(renderShop);dwQueue(renderScores);dwQueue(renderGradebook)});
+  });
+  dwSub("classStatus",function(){
+   onSnapshot(doc(db,"classData","dailyAccessOverride"),s=>{
    dailyAccessOverrideTeacher=s.exists()?s.data():{};
    renderDailyAccessOverrideTeacher();
  },e=>console.warn("daily access override listener",e));
-
- onSnapshot(doc(db,"classData","secondRecess"),async s=>{
+   onSnapshot(doc(db,"classData","secondRecess"),async s=>{
    const today=localDateKey();
    let data=s.exists()?s.data():{points:0,goal:10,dateKey:today};
 
@@ -1258,52 +1300,95 @@ function listen(){
    };
    renderTeacherRecess();
  });
-
-
- onSnapshot(doc(db,"classData","classPet"),s=>{
+   onSnapshot(doc(db,"classData","classPet"),s=>{
    const d=s.exists()?s.data():{};
    petGoalState={points:Math.max(0,Number(d.points||0)),goal:Math.max(1,Number(d.goal||250))};
    renderPersistentGoal("pet",petGoalState);
  });
- onSnapshot(doc(db,"classData","fieldTrip"),s=>{
+   onSnapshot(doc(db,"classData","fieldTrip"),s=>{
    const d=s.exists()?s.data():{};
    tripGoalState={points:Math.max(0,Number(d.points||0)),goal:Math.max(1,Number(d.goal||750))};
    renderPersistentGoal("trip",tripGoalState);
  });
- onSnapshot(doc(db,"classData","universalPoints"),s=>{
+   onSnapshot(doc(db,"classData","universalPoints"),s=>{
    const d=s.exists()?s.data():{};
    universalPointState={points:Math.max(0,Number(d.points||0))};
    if($("universalTeacherPoints"))$("universalTeacherPoints").textContent=universalPointState.points;
  });
+   onSnapshot(doc(db,"classData","main"),s=>{if(!s.exists())return;let d=s.data();points=+d.points||0;history=Array.isArray(d.history)?d.history:[];dwQueue(renderPoints)});
+  });
+  dwSub("rewards",function(){
+   onSnapshot(collection(db,"rewards"),s=>{rewards=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+a.points||0)-(+b.points||0));dwQueue(renderRewards);dwQueue(renderPoints)});
+  });
+  dwSub("liveRequests",function(){
+   onSnapshot(collection(db,"bathroomStatus"),s=>{bathroomStatuses=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderLiveRequests)},e=>console.warn("bathroomStatus listener",e));
+   onSnapshot(collection(db,"bathroomRequests"),s=>{bathroomRequests=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderLiveRequests)},e=>console.warn("bathroomRequests listener",e));
+   onSnapshot(collection(db,"snackStatus"),s=>{snackStatuses=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderLiveRequests)},e=>console.warn("snackStatus listener",e));
+   onSnapshot(collection(db,"snackRequests"),s=>{snackRequests=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderLiveRequests)},e=>console.warn("snackRequests listener",e));
+   onSnapshot(collection(db,"passRequests"),s=>{genericPassRequests=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderLiveRequests)},e=>console.warn("passRequests listener",e));
+   onSnapshot(collection(db,"pointRequests"),s=>{pointRequests=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderLiveRequests)},e=>console.warn("pointRequests listener",e));
+   onSnapshot(doc(db,"classData","passBlackout"),s=>{passBlackoutTeacher=s.exists()?s.data():{active:false};dwQueue(renderPassControl)},e=>console.warn("pass blackout listener",e));
+   onSnapshot(collection(db,"passStatus"),s=>{genericPassStatuses=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderPassControl)},e=>console.warn("generic pass listener",e));
+  });
+}
 
- onSnapshot(doc(db,"classData","main"),s=>{if(!s.exists())return;let d=s.data();points=+d.points||0;history=Array.isArray(d.history)?d.history:[];renderPoints()});
- onSnapshot(collection(db,"rewards"),s=>{rewards=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+a.points||0)-(+b.points||0));renderRewards();renderPoints()});
- onSnapshot(collection(db,"scores"),s=>{scores=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+b.score||0)-(+a.score||0));renderScores()});
- onSnapshot(collection(db,"gameResults"),s=>{results=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));renderResults();renderGradebook()});
- onSnapshot(collection(db,"dailyQuestProgress"),s=>{dailyQuestProgress=s.docs.map(d=>({id:d.id,...d.data()}));renderGradebook()},e=>console.warn("daily gradebook listener",e));
- onSnapshot(collection(db,"gradebookGrades"),s=>{gradebookGrades=s.docs.map(d=>({id:d.id,...d.data()}));renderGradebook()},e=>console.warn("gradebook listener",e));
- onSnapshot(collection(db,"gradebookAssignments"),s=>{gradebookAssignmentSettings=s.docs.map(d=>({id:d.id,...d.data()}));renderGradebook()},e=>console.warn("assignment settings",e));
- onSnapshot(collection(db,"curriculumProgress"),s=>{curriculumProgress=s.docs.map(d=>({id:d.id,...d.data()}));renderGradebook()},e=>console.warn("curriculum gradebook listener",e));
- onSnapshot(collection(db,"curriculumAttempts"),s=>{curriculumAttempts=s.docs.map(d=>({id:d.id,...d.data()}));renderGradebook()},e=>console.warn("curriculum attempts listener",e));
- onSnapshot(collection(db,"leaderboardRewards"),s=>{leaderboardRewards=s.docs.map(d=>({id:d.id,...d.data()}));renderScores()},e=>console.warn("leaderboard rewards",e));
- onSnapshot(collection(db,"bossLoot"),s=>{bossLootRows=s.docs.map(d=>({id:d.id,...d.data()}));const sid=$("sid")?.value;if(sid)dwRenderRpgSnapshot(students.find(x=>x.id===sid))},e=>console.warn("boss loot",e));
- onSnapshot(collection(db,"physicalPrizeDrops"),s=>{physicalPrizeDrops=s.docs.map(d=>({id:d.id,...d.data()}));const sid=$("sid")?.value;if(sid)dwRenderRpgSnapshot(students.find(x=>x.id===sid))},e=>console.warn("physical prize drops",e));
- onSnapshot(doc(db,"classData","gradebookSettings"),s=>{if(s.exists())gradebookSettings={...gradebookSettings,...s.data()};renderGradebook()},e=>console.warn("gradebook settings",e));
- onSnapshot(collection(db,"students"),s=>{students=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.firstName||"").localeCompare(String(b.firstName||"")));renderStudents();renderShop();renderScores();renderGradebook()});
-onSnapshot(collection(db,"bathroomStatus"),s=>{bathroomStatuses=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("bathroomStatus listener",e));
-onSnapshot(collection(db,"bathroomRequests"),s=>{bathroomRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("bathroomRequests listener",e));
-onSnapshot(collection(db,"snackStatus"),s=>{snackStatuses=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("snackStatus listener",e));
-onSnapshot(collection(db,"snackRequests"),s=>{snackRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("snackRequests listener",e));
-onSnapshot(collection(db,"passRequests"),s=>{genericPassRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("passRequests listener",e));
-onSnapshot(collection(db,"pointRequests"),s=>{pointRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("pointRequests listener",e));
-onSnapshot(doc(db,"classData","passBlackout"),s=>{passBlackoutTeacher=s.exists()?s.data():{active:false};renderPassControl()},e=>console.warn("pass blackout listener",e));
-onSnapshot(collection(db,"passStatus"),s=>{genericPassStatuses=s.docs.map(d=>({id:d.id,...d.data()}));renderPassControl()},e=>console.warn("generic pass listener",e));
-onSnapshot(collection(db,"passHistory"),s=>{passHistory=s.docs.map(d=>({id:d.id,...d.data()}));renderPassArchive()},e=>console.warn("passHistory listener",e));
-onSnapshot(doc(db,"classData","classJobs"),s=>{classJobsConfigV29=s.exists()?s.data():{};renderV29Jobs();dw499MigrateJobsConfig(classJobsConfigV29)},e=>console.warn("v29 jobs",e));
-onSnapshot(collection(db,"studentJobWeeks"),s=>{jobWeeksV29=s.docs.map(d=>({id:d.id,...d.data()}));renderV29Jobs();setTimeout(runV29Payroll,250)},e=>console.warn("v29 job weeks",e));
-onSnapshot(doc(db,"classData","classSchedule"),s=>{classScheduleV29=s.exists()?s.data():{};loadScheduleDay()},e=>console.warn("v29 schedule",e));
-onSnapshot(collection(db,"classCalendarEvents"),s=>{calendarEventsV29=s.docs.map(d=>({id:d.id,...d.data()}));renderTeacherCalendar()},e=>console.warn("v29 calendar",e));
- onSnapshot(collection(db,"shopItems"),s=>{shopItems=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
+/* Called by the tab click handler. Safe to call on every click. */
+function dwEnsureTabData(p){
+  if(p==="data"){
+   dwTabLoading(true,"data");
+   dwSub("gradebook",function(){
+    onSnapshot(collection(db,"gameResults"),s=>{results=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));dwQueue(renderResults);dwQueue(renderGradebook)});
+    onSnapshot(collection(db,"dailyQuestProgress"),s=>{dailyQuestProgress=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderGradebook)},e=>console.warn("daily gradebook listener",e));
+    onSnapshot(collection(db,"gradebookGrades"),s=>{gradebookGrades=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderGradebook)},e=>console.warn("gradebook listener",e));
+    onSnapshot(collection(db,"gradebookAssignments"),s=>{gradebookAssignmentSettings=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderGradebook)},e=>console.warn("assignment settings",e));
+    onSnapshot(collection(db,"curriculumProgress"),s=>{curriculumProgress=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderGradebook)},e=>console.warn("curriculum gradebook listener",e));
+    onSnapshot(collection(db,"curriculumAttempts"),s=>{curriculumAttempts=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderGradebook)},e=>console.warn("curriculum attempts listener",e));
+    onSnapshot(doc(db,"classData","gradebookSettings"),s=>{if(s.exists())gradebookSettings={...gradebookSettings,...s.data()};dwQueue(renderGradebook)},e=>console.warn("gradebook settings",e));
+    dwQueue(function(){dwTabLoading(false,"data");});
+   });
+  }
+  if(p==="scores"){
+   dwTabLoading(true,"scores");
+   dwSub("leaderboard",function(){
+    onSnapshot(collection(db,"scores"),s=>{scores=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+b.score||0)-(+a.score||0));dwQueue(renderScores)});
+    onSnapshot(collection(db,"leaderboardRewards"),s=>{leaderboardRewards=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderScores)},e=>console.warn("leaderboard rewards",e));
+    dwQueue(function(){dwTabLoading(false,"scores");});
+   });
+  }
+  if(p==="passes"){
+   dwTabLoading(true,"passes");
+   dwSub("passHistory",function(){
+    onSnapshot(collection(db,"passHistory"),s=>{passHistory=s.docs.map(d=>({id:d.id,...d.data()}));renderPassArchive()},e=>console.warn("passHistory listener",e));
+    dwQueue(function(){dwTabLoading(false,"passes");});
+   });
+  }
+  if(p==="jobs"){
+   dwTabLoading(true,"jobs");
+   dwSub("jobs",function(){
+    onSnapshot(doc(db,"classData","classJobs"),s=>{classJobsConfigV29=s.exists()?s.data():{};dwQueue(renderV29Jobs);dw499MigrateJobsConfig(classJobsConfigV29)},e=>console.warn("v29 jobs",e));
+    onSnapshot(collection(db,"studentJobWeeks"),s=>{jobWeeksV29=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderV29Jobs);setTimeout(runV29Payroll,250)},e=>console.warn("v29 job weeks",e));
+    dwQueue(function(){dwTabLoading(false,"jobs");});
+   });
+  }
+  if(p==="planner"){
+   dwTabLoading(true,"schedule");
+   dwSub("planner",function(){
+    onSnapshot(doc(db,"classData","classSchedule"),s=>{classScheduleV29=s.exists()?s.data():{};loadScheduleDay()},e=>console.warn("v29 schedule",e));
+    onSnapshot(collection(db,"classCalendarEvents"),s=>{calendarEventsV29=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderTeacherCalendar)},e=>console.warn("v29 calendar",e));
+    dwQueue(function(){dwTabLoading(false,"schedule");});
+   });
+  }
+}
+
+/* Called when a student record is opened. The RPG snapshot and the legacy
+   shop are the only things that read these collections. */
+function dwEnsureStudentData(){
+  dwSub("rpgDetail",function(){
+   onSnapshot(collection(db,"bossLoot"),s=>{bossLootRows=s.docs.map(d=>({id:d.id,...d.data()}));const sid=$("sid")?.value;if(sid)dwRenderRpgSnapshot(students.find(x=>x.id===sid))},e=>console.warn("boss loot",e));
+   onSnapshot(collection(db,"physicalPrizeDrops"),s=>{physicalPrizeDrops=s.docs.map(d=>({id:d.id,...d.data()}));const sid=$("sid")?.value;if(sid)dwRenderRpgSnapshot(students.find(x=>x.id===sid))},e=>console.warn("physical prize drops",e));
+  });
+  dwSub("shop",function(){
+   onSnapshot(collection(db,"shopItems"),s=>{shopItems=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
       const levelA=Math.max(1,Number(a.requiredLevel||1));
       const levelB=Math.max(1,Number(b.requiredLevel||1));
       if(levelA!==levelB) return levelA-levelB;
@@ -1315,9 +1400,11 @@ onSnapshot(collection(db,"classCalendarEvents"),s=>{calendarEventsV29=s.docs.map
       const rarityB=rarityOrder[String(b.rarity||"common").toLowerCase()]||99;
       if(rarityA!==rarityB) return rarityA-rarityB;
       return String(a.name||"").localeCompare(String(b.name||""));
-    });renderShop()});
- onSnapshot(collection(db,"purchases"),s=>{purchases=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.purchasedAt?.seconds||0)-(a.purchasedAt?.seconds||0));renderShop();});
+    });dwQueue(renderShop)});
+   onSnapshot(collection(db,"purchases"),s=>{purchases=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.purchasedAt?.seconds||0)-(a.purchasedAt?.seconds||0));dwQueue(renderShop);});
+  });
 }
+
 
 function localDateKey(){
   const d=new Date();
@@ -2187,7 +2274,8 @@ async function approveBathroom(id,yes){const r=bathroomRequests.find(x=>x.id===i
 async function approvePoint(id,yes){const r=pointRequests.find(x=>x.id===id);if(!r)return;if(yes){const st=students.find(x=>x.id===r.studentId);if(st){await setDoc(doc(db,'students',st.id),{xp:(+st.xp||0)+1,updatedAt:serverTimestamp()},{merge:true});await addDoc(collection(db,'studentTransactions'),{studentId:st.id,studentName:displayStudent(st),stat:'xp',amount:1,reason:'Student recognition request: '+(r.reason||'Positive choice'),createdAt:serverTimestamp()})}}await setDoc(doc(db,'pointRequests',id),{status:yes?'approved':'dismissed',reviewedAt:serverTimestamp()},{merge:true})}
 
 function renderStudents(){$("studentRows").innerHTML=students.length?students.map(s=>`<tr><td class="student-avatar">${AVATAR_EMOJI[s.avatar]||"🐉"}</td><td><span class="student-name">${esc(displayStudent(s))}</span><br><small>${esc(s.email||"")}</small></td><td>${esc(s.grade||"—")}</td><td><span class="badge">${s.dailyQuestTrack==="challenge"?"⭐ Challenge":s.dailyQuestTrack==="foundation"?"Foundation":s.dailyQuestTrack==="5"?"5th":s.dailyQuestTrack==="4"?"4th":`Auto → ${esc(s.grade||"4")}th`}</span></td><td>${s.genderGroup==="girl"?"Girls":s.genderGroup==="boy"?"Boys":"—"}</td><td><span class="badge">Lv ${levelInfo(+s.xp||0)}</span></td><td>${+s.hp||0}</td><td>${isKnockedOut(s)?"💀 KO":"✅ Active"}</td><td>${(s.recessBlocked||isKnockedOut(s))?"🚫":"✅"}</td><td>${(s.fieldTripBlocked||isKnockedOut(s))?"🚫":"✅"}</td><td>${classroomHpMax(levelInfo(+s.xp||0))}</td><td>${+s.gold||0}</td><td>${+s.xp||0}</td><td>${dailyXpState(s).earned} / 150</td><td><button class="gray mini" data-manage="${s.id}">Manage</button></td></tr>`).join(""):'<tr><td colspan="15" class="muted">No students have created profiles yet.</td></tr>';document.querySelectorAll("[data-manage]").forEach(b=>b.onclick=()=>openStudent(b.dataset.manage));renderMassStudentOptions();dw31RenderTeacherJobs()}
-function openStudent(id){let s=students.find(x=>x.id===id);if(!s)return;$("studentModal").classList.remove("hidden");$("sid").value=id;$("sname").value=s.firstName||"";$("sgrade").value=s.grade||"4";$("squesttrack").value=s.dailyQuestTrack||"auto";$("sgroup").value=s.genderGroup||"girl";$("stitle").value=s.title||"";$("savatar").value=s.avatar||"dragon-purple";$("shp").value=+s.hp||0;$("shp").max=classroomHpMax(levelInfo(+s.xp||0));$("sgold").value=+s.gold||0;$("sxp").value=+s.xp||0;$("sreason").value="";$("sclass").value=s.classId||"";$("seggs").value=Math.max(0,Number(s.eggInventory||0));$("srpgitems").value=(s.rpgInventory||[]).join(", ");$("spets").value=(s.ownedPets||[]).join(", ");$("sactivepet").value=s.activePet||"";$("sbosswins").value=Math.max(0,Number(s.bossWins||0));$("slegacydays").value=Math.max(0,Number(s.legacyDayCredit||0));dwFillRpgPickers();dwRenderRpgSnapshot(s)}
+function openStudent(id){
+ dwEnsureStudentData();let s=students.find(x=>x.id===id);if(!s)return;$("studentModal").classList.remove("hidden");$("sid").value=id;$("sname").value=s.firstName||"";$("sgrade").value=s.grade||"4";$("squesttrack").value=s.dailyQuestTrack||"auto";$("sgroup").value=s.genderGroup||"girl";$("stitle").value=s.title||"";$("savatar").value=s.avatar||"dragon-purple";$("shp").value=+s.hp||0;$("shp").max=classroomHpMax(levelInfo(+s.xp||0));$("sgold").value=+s.gold||0;$("sxp").value=+s.xp||0;$("sreason").value="";$("sclass").value=s.classId||"";$("seggs").value=Math.max(0,Number(s.eggInventory||0));$("srpgitems").value=(s.rpgInventory||[]).join(", ");$("spets").value=(s.ownedPets||[]).join(", ");$("sactivepet").value=s.activePet||"";$("sbosswins").value=Math.max(0,Number(s.bossWins||0));$("slegacydays").value=Math.max(0,Number(s.legacyDayCredit||0));dwFillRpgPickers();dwRenderRpgSnapshot(s)}
 $("cancelStudent").onclick=()=>$("studentModal").classList.add("hidden");
 
 $("deleteStudent").onclick = async () => {
@@ -2613,7 +2701,7 @@ function renderGradebook(){
 document.querySelectorAll("[data-gb-sort]").forEach(button=>button.addEventListener("click",()=>{const key=button.dataset.gbSort;if(gbSortState.key===key)gbSortState.direction=gbSortState.direction==="asc"?"desc":"asc";else{gbSortState.key=key;gbSortState.direction=key==="name"?"asc":"desc"}renderGradebook()}));
 $("gbSaveWeights")?.addEventListener("click",async()=>{const d=Number($("gbWeightDaily").value)||0,c=Number($("gbWeightCurriculum").value)||0,r=Number($("gbWeightReading").value)||0;if(d+c+r!==100)return alert("Category weights must total 100%.");await setDoc(doc(db,"classData","gradebookSettings"),{daily:d,curriculum:c,reading:r,updatedAt:serverTimestamp()},{merge:true});alert("Gradebook weights saved.")});
 $("gradebookExport")?.addEventListener("click",()=>{const rows=students.map(gbStudentSummary),lines=[["Student","Grade","Overall","Letter","Daily Quest","Curriculum Quest","Reading Tests","Missing","Assignments"],...rows.map(x=>[x.student.firstName||"Student",x.student.grade||"",x.overall??"",gbLetter(x.overall),x.averages.daily??"",x.averages.curriculum??"",x.averages.reading??"",x.missing,x.assignments.length])],csv=lines.map(row=>row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n"),a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download=`dragonswood-cumulative-grades-${new Date().toISOString().slice(0,10)}.csv`;a.click();URL.revokeObjectURL(a.href)});
-document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");const names=b.dataset.p==="planner"?["schedule","calendar"]:b.dataset.p==="tools"?["poll","picker"]:b.dataset.p==="rewards"?["rewards","recess"]:[b.dataset.p];names.forEach(n=>$(n)?.classList.add("active"))})
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");dwEnsureTabData(b.dataset.p);const names=b.dataset.p==="planner"?["schedule","calendar"]:b.dataset.p==="tools"?["poll","picker"]:b.dataset.p==="rewards"?["rewards","recess"]:[b.dataset.p];names.forEach(n=>$(n)?.classList.add("active"))})
 
 setTimeout(()=>{seedV29Defaults().catch(e=>console.warn('seed defaults',e))},1200);
 document.addEventListener('DOMContentLoaded',()=>{
@@ -3310,6 +3398,27 @@ select{
 @media(max-width:1050px){
   .nav-crest,.nav-divider{display:none}
   .tabs{grid-template-columns:repeat(2,1fr)!important}
+}
+</style>
+
+<style id="dw-v5619-loading">
+/* v56.19 — honest loading state for tabs whose data now arrives on demand.
+   Without this a deferred tab would flash "no assignments yet" before its
+   first snapshot, which reads as data loss rather than as loading. */
+.panel.dw-tab-loading{position:relative;min-height:220px}
+.panel.dw-tab-loading::after{
+  content:"Loading\2026";
+  position:absolute;inset:0;z-index:5;
+  display:grid;place-items:center;
+  font-family:Georgia,serif;font-size:15px;letter-spacing:1px;
+  color:#ffe88b;
+  background:linear-gradient(180deg,rgba(5,6,20,.86),rgba(5,6,20,.94));
+  border-radius:12px;
+  backdrop-filter:blur(1px);
+}
+@media(prefers-reduced-motion:no-preference){
+  .panel.dw-tab-loading::after{animation:dwFadeIn .18s ease}
+  @keyframes dwFadeIn{from{opacity:0}to{opacity:1}}
 }
 </style>
 </body></html>

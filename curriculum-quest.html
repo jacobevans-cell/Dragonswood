@@ -359,7 +359,7 @@ function activityAnswerText(x){
 }
 function validateActivity(x){
   const spec=activitySpec(x),id=x.id,choice=document.querySelector(`input[name="act-${CSS.escape(id)}"]:checked`)?.value||"",written=(document.getElementById("actText-"+id)?.value||"").trim(),number=(document.getElementById("actNumber-"+id)?.value||"").trim();
-  if(spec.kind==="number")return number.replace(/,/g,"")===String(spec.answer).replace(/,/g,"")?{ok:true}:{ok:false,msg:"That number is not correct yet. Check your work and try again."};
+  if(spec.kind==="number")return (window.DWGrading?window.DWGrading.answersEquivalent(spec.answer,number):number.replace(/,/g,"")===String(spec.answer).replace(/,/g,""))?{ok:true}:{ok:false,msg:"That number is not correct yet. Check your work and try again."};
   if(spec.kind==="mc")return choice===spec.answer?{ok:true}:{ok:false,msg:"That choice does not match the lesson target. Try again or request teacher review."};
   if(spec.kind==="morph"){
     if(choice!==spec.word)return {ok:false,msg:"Choose the lesson's target word first."};
@@ -411,12 +411,12 @@ function renderActivity(x){
 }
 function findItem(id){return D.items.find(x=>x.id===id)}
 function autoQuestionsFor(x){
-  try{return typeof dwCurricPractice==="function"?dwCurricPractice(x,6):[]}
+  try{const rows=typeof dwCurricPractice==="function"?dwCurricPractice(x,6):[];if(window.DWGrading)rows.forEach((q,i)=>window.DWGrading.assertQuestion(q,`Curriculum ${x.id} #${i+1}`));return rows}
   catch(e){console.error("Curriculum practice",x.id,e);return []}
 }
 function autoPassed(x){
   const q=autoQuestionsFor(x),s=st(x.id),a=s.autoAnswers||{};
-  return !q.length||q.every((item,i)=>String(a[i]||"")===String(item.answer));
+  return !q.length||q.every((item,i)=>(window.DWGrading?window.DWGrading.answersEquivalent(item.answer,a[i]||""):String(a[i]||"")===String(item.answer))||s.autoOverrideStatus?.[i]==="approved");
 }
 function missionNeedsTeacher(x){return typeof dwNeedsTeacherVerify==="function"?dwNeedsTeacherVerify(x):x.subject==="Science"||/writing/i.test(x.strand||"")}
 function missionComplete(x){
@@ -424,19 +424,30 @@ function missionComplete(x){
   return videoOk&&autoPassed(x)&&!!s.practiced&&(!missionNeedsTeacher(x)||!!s.verified)&&!mediaPending(x);
 }
 function renderAutoPractice(x){
-  const q=autoQuestionsFor(x),s=st(x.id),answers=s.autoAnswers||{};
+  const q=autoQuestionsFor(x),s=st(x.id),answers=s.autoAnswers||{},review=s.autoOverrideStatus||{};
   if(!q.length)return `<div class="activity-feedback show good">This mission is observation or written-performance based, so it does not add a fake multiple-choice quiz.</div>`;
   const renderSet=(items,offset,title,help)=>`<div class="activity-title">${title}</div><p class="kid-task">${help}</p>`+items.map((item,j)=>{const i=j+offset;
-    const chosen=String(answers[i]||""),correct=chosen&&chosen===String(item.answer),wrong=chosen&&!correct;
-    return `<fieldset class="activity-shell"><legend>${i+1}. ${esc(item.prompt)}</legend><div class="activity-options">${item.choices.map(o=>`<label class="activity-option"><input type="radio" name="auto-${x.id}-${i}" value="${esc(o)}" ${chosen===String(o)?"checked":""} onchange="checkAutoQuestion('${x.id}',${i},this.value)"><span>${esc(o)}</span></label>`).join("")}</div>${chosen?`<div class="activity-feedback show ${correct?"good":"bad"}">${correct?"✓ Correct":"Not yet—review the lesson and try again."}</div>`:""}</fieldset>`;
+    const chosen=String(answers[i]||""),correct=chosen&&(window.DWGrading?window.DWGrading.answersEquivalent(item.answer,chosen):chosen===String(item.answer)),status=review[i]||"";
+    const label=status==="pending"?"🟡 TEACHER REVIEW REQUESTED":status==="approved"?"✅ TEACHER APPROVED":status==="returned"?"🛡️ REQUEST REVIEW AGAIN":"🛡️ REQUEST TEACHER REVIEW";
+    return `<fieldset class="activity-shell"><legend>${i+1}. ${esc(item.prompt)}</legend><div class="activity-options">${item.choices.map(o=>`<label class="activity-option"><input type="radio" name="auto-${x.id}-${i}" value="${esc(o)}" ${chosen===String(o)?"checked":""} onchange="checkAutoQuestion('${x.id}',${i},this.value)"><span>${esc(o)}</span></label>`).join("")}</div>${chosen?`<div class="activity-feedback show ${correct||status==="approved"?"good":"bad"}">${correct?"✓ Correct":status==="approved"?"✓ Teacher approved":"Not yet—review the lesson and try again."}</div>`:""}<div class="override-row"><button type="button" class="override-btn ${status}" ${status==="pending"||status==="approved"?"disabled":""} onclick="requestAutoQuestionOverride('${x.id}',${i})">${label}</button><span class="override-note">Think Dragonswood rejected a correct answer? Send this exact question to your teacher.</span></div></fieldset>`;
   }).join("");
   const videoCount=vid(x)?Math.min(2,q.length):0;
   return (videoCount?renderSet(q.slice(0,videoCount),0,"Video Check • 2 questions","Use what the lesson video taught you."):"")+
     renderSet(q.slice(videoCount),videoCount,`Practice • ${q.length-videoCount} questions`,"Prove the lesson skill with fresh examples.");
 }
 function checkAutoQuestion(id,index,value){
-  const x=findItem(id);if(!x)return;const s=st(id);s.autoAnswers=s.autoAnswers||{};s.autoAnswers[index]=value;s.autoAttempts=(s.autoAttempts||0)+1;S.items[id]=s;save();render();
+  const x=findItem(id);if(!x)return;const s=st(id);s.autoAnswers=s.autoAnswers||{};s.autoOverrideStatus=s.autoOverrideStatus||{};s.autoAnswers[index]=value;s.autoAttempts=(s.autoAttempts||0)+1;const q=autoQuestionsFor(x)[index];if(q&&(window.DWGrading?window.DWGrading.answersEquivalent(q.answer,value):String(q.answer)===String(value)))delete s.autoOverrideStatus[index];S.items[id]=s;save();render();
 }
+
+async function requestAutoQuestionOverride(id,index){
+ const x=findItem(id);if(!x)return;const q=autoQuestionsFor(x)[index];if(!q)return;
+ const s=st(id),answer=String(s.autoAnswers?.[index]||"").trim();if(!answer){alert("Choose an answer first so your teacher can review exactly what Dragonswood rejected.");return}
+ if(window.DWGrading?.answersEquivalent(q.answer,answer)){alert("That answer is already being accepted as correct.");return}
+ s.autoOverrideStatus=s.autoOverrideStatus||{};if(["pending","approved"].includes(s.autoOverrideStatus[index]))return;
+ const ok=await window.submitCurriculumOverride?.(x,answer,s.autoAttempts||1,{overrideType:"auto-question",questionIndex:index,questionPrompt:String(q.prompt||""),expectedAnswer:String(q.answer||"")});
+ if(ok){s.autoOverrideStatus[index]="pending";S.items[id]=s;save();render()}
+}
+
 function checkActivity(id){
   const x=findItem(id);if(!x)return;const f=document.getElementById("actFeedback-"+id),result=validateActivity(x),answer=activityAnswerText(x),s=st(id);
   s.lastActivityAttempt=answer;s.activityAttempts=(s.activityAttempts||0)+1;S.items[id]=s;save();
@@ -530,6 +541,7 @@ let mr=D.morphology.filter(x=>x.grade===S.grade&&(isTeacher||Number(x.week||0)<=
 let miss=due.filter(x=>!missionComplete(x)&&!mediaPending(x));$("#audit").innerHTML=`<div class="title"><div><h2>🛡️ Curriculum Compliance Shield</h2><p>Completion requires the lesson, standard check, and application. Teacher verification is reserved for human-judgment work.</p></div></div><div class="frame audit ${miss.length?"bad":"good"}"><h3>${miss.length} curriculum missions incomplete</h3><p>${miss.length?"Recovery Quest shows the unfinished available curriculum.":"Everything currently available and due is complete."}</p></div><div class="frame audit ${mv.length?"bad":"good"}"><h3>${mv.length} available required videos still need a completed video check</h3></div><div class="frame audit ${pendingSources.length?"bad":"good"}"><h3>${pendingSources.length} curriculum video sources awaiting school access</h3><p>${pendingSources.length?"These are held separately and do not count as student recovery failures. Activities can continue now.":"No curriculum source videos are pending access."}</p></div>`}
 $("#grade").onchange=e=>{if(currentStudent&&!isTeacher){e.target.value=S.grade;return}S.grade=e.target.value;save();render()};$("#day").onchange=e=>{if(!isTeacher){e.target.value=S.day;return}S.day=Math.max(1,Math.min(40,+e.target.value||1));save();render()};$$(".tabs button").forEach(b=>b.onclick=()=>{$$(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");$$(".panel").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.tab).classList.add("active")});render();
 </script>
+<script src="dragonswood-grading-core.js?v=56.20.1"></script>
 <script type="module">
 import {initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
@@ -545,7 +557,7 @@ function progressDocId(uid,itemId){return `${uid}_${itemId}`}
 function questionCounts(item,state){
   const qs=autoQuestionsFor(item),answers=state.autoAnswers||{};
   let seen=0,correct=0;
-  qs.forEach((q,i)=>{if(String(answers[i]||"")!==""){seen++;if(String(answers[i])===String(q.answer))correct++}});
+  qs.forEach((q,i)=>{if(String(answers[i]||"")!==""){seen++;if(window.DWGrading?window.DWGrading.answersEquivalent(q.answer,answers[i]):String(answers[i])===String(q.answer))correct++}});
   return {seen,correct};
 }
 function canonicalProgress(uid,item,state,forceUnverified=false){
@@ -612,7 +624,7 @@ window.setCurriculumVerification=async(id,value)=>{
   try{await updateDoc(doc(db,"curriculumProgress",progressDocId(selectedStudentId,id)),{verified:!!value,updatedAt:serverTimestamp()});return true}
   catch(e){alert("Verification was not saved: "+(e.code||e.message));return false}
 };
-window.submitCurriculumOverride=async (item,answer,attempts)=>{
+window.submitCurriculumOverride=async (item,answer,attempts,meta={})=>{
   if(!auth.currentUser){
     alert("You are not signed in to Dragonswood on this page. Return to the Dragonswood portal, sign in, and open Curriculum Quest again.");
     return false;
@@ -624,6 +636,10 @@ window.submitCurriculumOverride=async (item,answer,attempts)=>{
       studentEmail:auth.currentUser.email||"",
       lessonId:item.id,grade:item.grade,day:item.day,subject:item.subject,strand:item.strand||"",
       lessonTitle:friendlyTitle(item),sourceTitle:item.resourceName||"",
+      source:"curriculum",overrideType:meta.overrideType||"activity",
+      questionIndex:Number.isInteger(meta.questionIndex)?meta.questionIndex:null,
+      questionPrompt:String(meta.questionPrompt||"").slice(0,5000),
+      expectedAnswer:String(meta.expectedAnswer||"").slice(0,1000),
       studentAnswer:answer,attempts:Number(attempts||1),status:"pending",
       requestedAt:serverTimestamp(),updatedAt:serverTimestamp()
     });
@@ -640,15 +656,18 @@ function watchMyOverrides(uid){
   overrideUnsub=onSnapshot(query(collection(db,"curriculumOverrideRequests"),where("studentId","==",uid)),snap=>{
     let changed=false;
     snap.forEach(d=>{
-      const r=d.data(),s=st(r.lessonId);
-      if(r.status==="approved"&&(!s.practiced||s.overrideStatus!=="approved")){
-        s.practiced=true;s.overrideStatus="approved";s.overrideApprovedAt=Date.now();s.practiceEvidence=r.studentAnswer||s.practiceEvidence||"Teacher override approved";
-        S.items[r.lessonId]=s;changed=true;
-      }else if(r.status==="pending"&&s.overrideStatus!=="approved"&&s.overrideStatus!=="pending"){
-        s.overrideStatus="pending";S.items[r.lessonId]=s;changed=true;
-      }else if(r.status==="returned"&&s.overrideStatus==="pending"){
-        s.overrideStatus="returned";S.items[r.lessonId]=s;changed=true;
+      const r=d.data();if(r.source==="daily"||r.overrideType==="daily-question")return;
+      const s=st(r.lessonId);
+      if(r.overrideType==="auto-question"&&Number.isInteger(r.questionIndex)){
+        const i=r.questionIndex;s.autoOverrideStatus=s.autoOverrideStatus||{};
+        if(r.status==="approved"){const item=findItem(r.lessonId),q=item?autoQuestionsFor(item)[i]:null;if(q){s.autoAnswers=s.autoAnswers||{};s.autoAnswers[i]=String(q.answer)}if(s.autoOverrideStatus[i]!=="approved"){s.autoOverrideStatus[i]="approved";changed=true}}
+        else if(r.status==="pending"&&s.autoOverrideStatus[i]!=="approved"&&s.autoOverrideStatus[i]!=="pending"){s.autoOverrideStatus[i]="pending";changed=true}
+        else if(r.status==="returned"&&s.autoOverrideStatus[i]==="pending"){s.autoOverrideStatus[i]="returned";changed=true}
+        S.items[r.lessonId]=s;return;
       }
+      if(r.status==="approved"&&(!s.practiced||s.overrideStatus!=="approved")){s.practiced=true;s.overrideStatus="approved";s.overrideApprovedAt=Date.now();s.practiceEvidence=r.studentAnswer||s.practiceEvidence||"Teacher override approved";S.items[r.lessonId]=s;changed=true}
+      else if(r.status==="pending"&&s.overrideStatus!=="approved"&&s.overrideStatus!=="pending"){s.overrideStatus="pending";S.items[r.lessonId]=s;changed=true}
+      else if(r.status==="returned"&&s.overrideStatus==="pending"){s.overrideStatus="returned";S.items[r.lessonId]=s;changed=true}
     });
     if(changed){save();render()}
   },e=>console.warn("override listener",e));

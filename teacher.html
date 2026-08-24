@@ -3276,16 +3276,14 @@ function renderCQOverrides(){
  const box=document.getElementById("overrideQueueList"),count=document.getElementById("overrideQueueCount");if(!box||!count)return;
  const pending=cqReq.filter(x=>x.status==="pending").sort((a,b)=>(a.requestedAt?.seconds||0)-(b.requestedAt?.seconds||0));
  count.textContent=`${pending.length} waiting`;
- if(!pending.length){box.innerHTML='<div class="muted">No curriculum overrides are waiting. Miraculously peaceful.</div>';return}
+ if(!pending.length){box.innerHTML='<div class="muted">No grading overrides are waiting.</div>';return}
  box.innerHTML=pending.map(r=>`<div class="card" style="margin:9px 0;border-color:#6e4b91">
-   <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><b>${qEsc(r.studentName||"Student")}</b><span class="pill">${qEsc(r.grade||"")} • Day ${qEsc(r.day||"—")} • ${qEsc(r.subject||"")}</span></div>
-   <h3 style="margin:8px 0 4px">${qEsc(r.lessonTitle||r.sourceTitle||r.lessonId)}</h3>
-   <div class="muted">Automatic attempts: ${Number(r.attempts||1)}</div>
-   <div style="margin:8px 0;padding:10px;border:1px solid #3e2d51;border-radius:8px;background:#090615;white-space:pre-wrap">${qEsc(r.studentAnswer||"")}</div>
-   <div style="display:flex;gap:8px;flex-wrap:wrap">
-     <button onclick="window.resolveCQOverride('${r.id}','approved')">✅ APPROVE OVERRIDE</button>
-     <button class="danger-soft" onclick="window.resolveCQOverride('${r.id}','returned')">↩ SEND BACK</button>
-   </div>
+   <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>${r.source==="daily"?"📜 DAILY WORK QUESTION":"🐉 CURRICULUM QUEST"} • ${qEsc(r.studentName||r.studentEmail||"Student")}</b><span class="badge">${qEsc(r.overrideType||"activity")}</span></div>
+   <div style="margin-top:6px"><b>${qEsc(r.lessonTitle||r.lessonId||"Lesson")}</b></div>
+   ${r.questionPrompt?`<div style="margin-top:8px;padding:8px;border:1px solid #45366b;border-radius:8px"><small>QUESTION</small><div>${qEsc(r.questionPrompt)}</div></div>`:""}
+   <div style="margin-top:8px"><small>STUDENT ANSWER</small><div>${qEsc(r.studentAnswer||"")}</div></div>
+   ${r.expectedAnswer?`<div style="margin-top:8px"><small>GRADER EXPECTED</small><div style="color:#ffe58b">${qEsc(r.expectedAnswer)}</div></div>`:""}
+   <div class="actions" style="margin-top:10px"><button onclick="resolveCQOverride('${r.id}','approved')">✅ APPROVE AS CORRECT</button><button class="gray" onclick="resolveCQOverride('${r.id}','returned')">↩ RETURN TO STUDENT</button></div>
  </div>`).join("");
 }
 window.resolveCQOverride=async(id,status)=>{

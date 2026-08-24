@@ -122,6 +122,13 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
 </section></div>
 
 <script src="foundation-track.js"></script>
+<script src="dragonswood-grading-core.js?v=56.20.1"></script>
+<style id="dw-grading-hardening-styles">
+.dw-question-review{margin-top:14px;padding:10px 12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1px solid rgba(255,211,94,.42);border-radius:10px;background:rgba(11,10,35,.84)}
+.dw-question-review-btn{padding:9px 12px!important;background:linear-gradient(90deg,#5f2da5,#176a8c)!important;border-color:#f4c95d!important}
+.dw-question-review-note{font-size:11px;color:#d5cee5;line-height:1.35}
+</style>
+
 <script src="narration-manifest.js?v=56.19.6"></script>
 <script src="dragonswood-narrator.js?v=56.19.6"></script>
 <script type="module">
@@ -134,6 +141,8 @@ const TEACHER="jacobicusjax@gmail.com",DOMAIN="explore.academy",CAP=150;
 const XP=[0,200,450,750,1100,1500,1950,2450,3000,3600,4250,4950,5700,6500,7350,8250,9200,10200,11100,12000];
 const $=id=>document.getElementById(id);
 let user=null,profile=null,lesson=null,sessionName="",questionPlan=[],tasks=[],taskIndex=0,qIndex=0,score=0,correct=0,attempts=0,sessionStart=0,currentQuestion=null,currentQuestionSeen=false,currentQuestionCorrect=false;
+let dwDailyOverrideUnsub=null,dwDailyOverrideRows=[],dwLastStudentAnswer="";
+const dwRejectedQuestionKeys=new Set(),dwOverrideAppliedKeys=new Set();
 window.addEventListener("dw:narration-voice-change",async e=>{const voiceId=e.detail?.voiceId||"automatic";if(!user||profile?.narrationVoice===voiceId)return;profile={...(profile||{}),narrationVoice:voiceId};try{await setDoc(doc(db,"students",user.uid),{narrationVoice:voiceId,updatedAt:serverTimestamp()},{merge:true})}catch(err){console.warn("Could not sync narration preference",err)}});
 let activeSeconds=0,idleEvents=0,perQuestionSeconds=[],questionStartedAt=0,lastInteractionAt=0,idleAnnounced=false,activeTimer=null,skillStats={},needsReteach=new Set(),retryKeys=new Set();
 let sessionProgress=null,morningProgress=null,exitProgress=null,dqProgressRows=[],dqProgressUnsub=null,dqCompletedDates=new Set();
@@ -272,7 +281,9 @@ function acceptedTypedAnswers(q){
  return [...set].filter(Boolean);
 }
 function typedAnswerIsCorrect(q,value){
- return acceptedTypedAnswers(q).includes(normalizeTypedAnswer(value));
+ return acceptedTypedAnswers(q).some(answer=>window.DWGrading
+   ? window.DWGrading.answersEquivalent(answer,value)
+   : normalizeTypedAnswer(answer)===normalizeTypedAnswer(value));
 }
 
 function elaQ(skill,seed,i){const r=hashSeed(seed+i*41),low=skill.toLowerCase();let prompt,answer,choices;
@@ -3657,7 +3668,7 @@ correlative(r,p,i){
        `${x.charAt(0).toUpperCase()+x.slice(1)} the map, the compass was missing.`])}
 },
 perfecttense(r,p,i){
-  const q=[["By noon, the scouts ___ the ridge.","had reached","present perfect? no — past perfect",["reached","reach","were reaching"]],
+  const q=[["By noon, the scouts ___ the ridge.","had reached","past perfect",["reached","reach","were reaching"]],
    ["Maya ___ that trail three times already.","has climbed","present perfect",["climbed","climbs","was climbing"]],
    ["By next spring, we ___ the whole valley.","will have mapped","future perfect",["map","mapped","are mapping"]],
    ["They ___ the gate before the storm hit.","had closed","past perfect",["close","closed","are closing"]],
@@ -5798,6 +5809,7 @@ function dwQuestion(skillId, seed, i, subject, fallbackLabel){
 
 function makeQ(task,i){
  const q=dwQuestion(task&&task.skillId, task&&task.seed, i, task&&task.subject, task&&task.skill);
+ if(q&&window.DWGrading)window.DWGrading.assertQuestion(q,`${task?.skillId||task?.skill||"unknown"} #${i+1}`);
  if(q&&q.source==="registry"){
    // carry the Challenge-track Word of the Day through to the support bar
    if(task&&task.wordOfDay&&!q.wordOfDay) q.wordOfDay=task.wordOfDay;
@@ -6009,7 +6021,8 @@ const mini=$("trackLabelMini");if(mini)mini.textContent=`TRACK: ${lesson.trackNa
 onAuthStateChanged(auth,async u=>{user=u;if(!u){status("Open Daily Quest from your signed-in Dragonswood portal.","warn");return}let tester=false;try{tester=(await getDoc(doc(db,"testerAccounts",u.uid))).exists()}catch(e){}if(!String(u.email||"").toLowerCase().endsWith("@"+DOMAIN)&&String(u.email||"").toLowerCase()!==TEACHER&&!tester){status("Daily Quest requires an Explore Academy or approved tester account.","bad");return}try{const s=await getDoc(doc(db,"students",u.uid));if(s.exists())profile=s.data();else if(tester)profile={firstName:u.displayName||"Tester",grade:"4",hp:10,gold:0,xp:0};window.DWVoicePreferences?.set?.(profile?.narrationVoice||"automatic");renderAccount();renderSchoolCountdowns();watchDailyQuestProgress();await loadToday()}catch(e){status("Dragonswood profile error: "+(e.code||e.message),"bad")}});
 $("morningBtn").onclick=()=>startSession("morning");$("exitBtn").onclick=()=>startSession("exit");$("closePlay").onclick=async()=>{if(sessionName&&taskIndex<tasks.length)await saveProgress();$("playModal").classList.remove("show")};
 async function startSession(name){
-  sessionName=name;tasks=name==="morning"?lesson.morning:lesson.exit;
+  sessionName=name;watchDailyQuestionOverrides(user?.uid);dwInstallDailyReviewUI();
+  tasks=name==="morning"?lesson.morning:lesson.exit;
   questionPlan=buildUniqueQuestionPlan(tasks);
   sessionProgress=await readProgress(name);
   if(sessionProgress?.status==="complete"){taskIndex=0;qIndex=0;score=0;correct=0;attempts=0}
@@ -6026,6 +6039,86 @@ async function startSession(name){
   await saveProgress({status:"in_progress",startedAt:serverTimestamp()});
   renderCurrent();
 }
+
+function dwReviewHash(value){let h=2166136261;for(const ch of String(value||"")){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return(h>>>0).toString(36)}
+function dwDailyQuestionKey(q=currentQuestion){
+ const sig=q?`${String(q.prompt||"")}||${String(q.answer||"")}||${currentSkillId()}`:"none";
+ return `${dateKey()}|${sessionName||"session"}|${dwReviewHash(sig)}`;
+}
+function dwCurrentStudentAnswer(){
+ const arena=$("arena");if(!arena)return dwLastStudentAnswer||"Interactive response";
+ const typed=arena.querySelector("#freeAnswer,#rin,input[type='text'],input[type='number'],textarea");
+ if(typed&&String(typed.value||"").trim())return String(typed.value).trim();
+ const checked=arena.querySelector("input[type='radio']:checked");
+ if(checked)return String(checked.value||checked.closest("label")?.textContent||"").trim();
+ return dwLastStudentAnswer||"Interactive response submitted; review the recorded question.";
+}
+function dwDailyReviewRow(key=dwDailyQuestionKey()){
+ return dwDailyOverrideRows.filter(r=>r.overrideType==="daily-question"&&r.questionKey===key)
+  .sort((a,b)=>(b.requestedAt?.seconds||0)-(a.requestedAt?.seconds||0))[0]||null;
+}
+function dwCancelFalseRetry(){
+ const retryKey=`${currentSkillId()}|${qSignature(currentQuestion)}`;
+ for(let i=tasks.length-1;i>taskIndex;i--)if(tasks[i]?._retryForKey===retryKey){tasks.splice(i,1);questionPlan.splice(i,1)}
+ retryKeys.delete(retryKey);
+}
+function dwRefreshDailyReviewFooter(){
+ const arena=$("arena");if(!arena||!currentQuestion||!sessionName)return;
+ let f=arena.querySelector(".dw-question-review");
+ if(!f){
+  f=document.createElement("div");f.className="dw-question-review";
+  f.innerHTML='<button type="button" class="dw-question-review-btn">🛡️ REQUEST TEACHER REVIEW</button><span class="dw-question-review-note">Use this when you believe Dragonswood rejected a correct answer.</span>';
+  arena.appendChild(f);f.querySelector("button").onclick=requestDailyQuestionReview;
+ }
+ const r=dwDailyReviewRow(),b=f.querySelector("button"),n=f.querySelector(".dw-question-review-note");
+ if(r?.status==="approved"){b.disabled=true;b.textContent="✅ TEACHER APPROVED";n.textContent="This question is being counted as correct."}
+ else if(r?.status==="pending"){b.disabled=true;b.textContent="🟡 TEACHER REVIEW REQUESTED";n.textContent="Your exact question and response were sent."}
+ else if(r?.status==="returned"){b.disabled=false;b.textContent="🛡️ REQUEST REVIEW AGAIN";n.textContent=r.teacherNote||"Revise and try again."}
+ else{b.disabled=false;b.textContent="🛡️ REQUEST TEACHER REVIEW";n.textContent="Use this when you believe Dragonswood rejected a correct answer."}
+}
+function dwInstallDailyReviewUI(){
+ const arena=$("arena");if(!arena||arena.dataset.dwReviewInstalled)return;arena.dataset.dwReviewInstalled="1";
+ arena.addEventListener("click",e=>{const h=e.target.closest?.("[data-v],[data-answer],.choice,.target,.crystal,.brick,.ingredient,.token");if(h){const v=h.dataset?.v||h.dataset?.answer||h.textContent;if(String(v||"").trim())dwLastStudentAnswer=String(v).trim()}},true);
+ arena.addEventListener("change",e=>{if(e.target?.value!=null)dwLastStudentAnswer=String(e.target.value)},true);
+ new MutationObserver(()=>queueMicrotask(dwRefreshDailyReviewFooter)).observe(arena,{childList:true});
+ dwRefreshDailyReviewFooter();
+}
+async function requestDailyQuestionReview(){
+ if(!user||!currentQuestion)return;
+ const key=dwDailyQuestionKey(),prior=dwDailyReviewRow(key);if(prior?.status==="pending"||prior?.status==="approved")return;
+ const t=tasks[taskIndex]||{},answer=String(dwCurrentStudentAnswer()||"Interactive response").slice(0,5000);
+ try{
+  await setDoc(doc(collection(db,"curriculumOverrideRequests")),{
+   source:"daily",overrideType:"daily-question",questionKey:key,
+   studentId:user.uid,studentName:profile?.firstName||user.displayName||user.email||"Student",studentEmail:user.email||"",
+   lessonId:`daily:${dateKey()}:${sessionName}:${key}`,
+   lessonTitle:`${sessionName==="morning"?"Morning Daily Work":"Exit Quest"} • ${dwCleanLabel(t.skill||currentSkillId())}`,
+   grade:String(profile?.grade||""),day:Number(lesson?.day||0),subject:String(t.subject||"Daily Work"),strand:String(t.skill||""),
+   questionPrompt:String(currentQuestion.prompt||"").slice(0,5000),expectedAnswer:String(currentQuestion.answer||"").slice(0,1000),
+   studentAnswer:answer,attempts:Number(attempts||0),status:"pending",requestedAt:serverTimestamp(),updatedAt:serverTimestamp()
+  });
+  dwCancelFalseRetry();feedback("Teacher review requested. Your exact question and response were sent.","good");
+ }catch(e){console.error("daily review",e);feedback(`Teacher review was not sent: ${e.code||e.message||e}`,"bad")}
+}
+function dwApplyDailyApproval(r){
+ if(!r||r.status!=="approved"||!currentQuestion)return;const key=dwDailyQuestionKey();
+ if(r.questionKey!==key||dwOverrideAppliedKeys.has(key)||currentQuestionCorrect)return;
+ dwOverrideAppliedKeys.add(key);const skillId=currentSkillId(),stat=skillStats[skillId]||{seen:0,correct:0};
+ if(!currentQuestionSeen){stat.seen++;currentQuestionSeen=true}
+ if(!currentQuestionCorrect){stat.correct++;correct++;currentQuestionCorrect=true}
+ if(dwRejectedQuestionKeys.has(key)){attempts=Math.max(correct,attempts-1);score+=15;dwRejectedQuestionKeys.delete(key)}
+ else if(attempts<correct)attempts=correct;
+ score+=100;needsReteach.delete(skillId);skillStats[skillId]=stat;updateRun();
+ feedback("Teacher override approved. This question now counts as correct. ✅","good");setTimeout(advance,450);
+}
+function watchDailyQuestionOverrides(uid){
+ if(dwDailyOverrideUnsub||!uid)return;
+ dwDailyOverrideUnsub=onSnapshot(query(collection(db,"curriculumOverrideRequests"),where("studentId","==",uid)),snap=>{
+  dwDailyOverrideRows=snap.docs.map(d=>({id:d.id,...d.data()})).filter(r=>r.overrideType==="daily-question");
+  dwRefreshDailyReviewFooter();const r=dwDailyReviewRow();if(r?.status==="approved")dwApplyDailyApproval(r);
+ },e=>console.warn("daily review listener",e));
+}
+
 function totalQuestions(){return tasks.reduce((n,t)=>n+t.count,0)}
 function completedBefore(){let n=0;for(let i=0;i<taskIndex;i++)n+=tasks[i].count;return n+qIndex}
 function updateRun(){const done=completedBefore(),tot=totalQuestions();$("prog").style.width=`${Math.min(100,done/tot*100)}%`;$("runStats").textContent=`High Score ${score.toLocaleString()} • ${attempts?Math.round(correct/attempts*100):100}%`;const t=tasks[taskIndex];if(t)$("taskMeta").textContent=`${t.subject} • ${dwCleanLabel(t.skill)} • ${engineName(t.engine)} • ${qIndex+1}/${t.count}`}
@@ -6033,13 +6126,13 @@ function engineName(e){return ({choice:"Rune Choice",dragSort:"Drag & Drop",catc
 function currentSkillId(){const t=tasks[taskIndex]||{};return String(currentQuestion?.skillId||t.skillId||(typeof dwSkillIdForLabel==="function"?dwSkillIdForLabel(t.skill):"")||t.skill||"unknown")}
 function queueRetry(skillId){
  const t=tasks[taskIndex],key=skillId+"|"+qSignature(currentQuestion);if(!t||t._isRetry||retryKeys.has(key)||retryKeys.size>=10)return;
- retryKeys.add(key);const retry={...t,count:1,seed:Number(t.seed||1)+700001+retryKeys.size*9973,_isRetry:true,skillId};
+ retryKeys.add(key);const retry={...t,count:1,seed:Number(t.seed||1)+700001+retryKeys.size*9973,_isRetry:true,skillId,_retryForKey:key};
  tasks.push(retry);let q=null;for(let i=0;i<80;i++){const cand=makeQ({...retry,seed:retry.seed+i*7919},i);if(cand&&qSignature(cand)!==qSignature(currentQuestion)){q=cand;break}}questionPlan.push([q||makeQ(retry,91)]);
 }
 function award(ok){
  attempts++;markActive();const skillId=currentSkillId(),row=skillStats[skillId]||{seen:0,correct:0};if(!currentQuestionSeen){row.seen++;currentQuestionSeen=true}
  if(ok){correct++;if(!currentQuestionCorrect){row.correct++;currentQuestionCorrect=true}score+=100+Math.max(0,50-Math.floor((Date.now()-sessionStart)/10000));feedback("Correct! ✨","good")}
- else{score=Math.max(0,score-15);feedback("Not yet. Try again.","bad");const t=tasks[taskIndex];if(t?._isRetry)needsReteach.add(skillId);else queueRetry(skillId)}
+ else{dwRejectedQuestionKeys.add(dwDailyQuestionKey());score=Math.max(0,score-15);feedback("Not yet. Try again.","bad");const t=tasks[taskIndex];if(t?._isRetry)needsReteach.add(skillId);else queueRetry(skillId)}
  skillStats[skillId]=row;updateRun()
 }
 function feedback(t,c){$("feedback").textContent=t;$("feedback").className=`feedback ${c}`}

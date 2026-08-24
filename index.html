@@ -6243,4 +6243,21 @@ body:has(#profileModal:not(.hidden)){overflow:hidden}
   else window.setTimeout(relight,60);
 })();
 </script>
+<style id="dw-v56214-header-alignment">
+/* Keep the student identity and utility controls in separate columns. */
+@media(min-width:901px){
+  .header-grid:has(#topStats:not(.hidden)){grid-template-columns:minmax(0,1fr) minmax(270px,310px)!important;gap:18px!important}
+  .header-grid:has(#topStats:not(.hidden))>.logo-center{grid-column:1!important;justify-self:start!important;min-width:0!important;width:100%!important;max-width:100%!important;gap:clamp(10px,1.4vw,20px)!important}
+  .header-grid:has(#topStats:not(.hidden))>.header-student-tools{grid-column:2!important;width:100%!important;min-width:0!important}
+  .header-grid:has(#topStats:not(.hidden))>.profile-card.hidden{display:none!important}
+  .header-grid:has(#topStats:not(.hidden)) .logo-mark{width:clamp(92px,9vw,132px)!important;height:clamp(96px,9.4vw,138px)!important}
+  .header-grid:has(#topStats:not(.hidden)) .logo-copy{min-width:0!important}
+  .header-grid:has(#topStats:not(.hidden)) .brand-name{font-size:clamp(40px,4.25vw,68px)!important;max-width:100%!important}
+}
+@media(max-width:900px){
+  .header-grid>.logo-center{width:100%!important;max-width:100%!important;justify-self:center!important}
+  .header-student-tools{max-width:620px;margin:0 auto!important}
+  .header-restrictions{justify-content:center!important}
+}
+</style>
 </body></html>

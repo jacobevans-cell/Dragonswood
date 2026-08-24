@@ -6228,35 +6228,32 @@ onAuthStateChanged(auth,u=>{
   }
 }
 
-/* --- 2. The adventurer is centred in the stage, not shoved into the floor. ---
-   Source art is a 900x900 canvas with the figure at ~62% width, so it needs a
-   scale to fill the box. The old rule stacked translateY(58px) on top of
-   scale(1.52) from the bottom edge, which is why the posture looked wrong. */
+/* --- 2. Ground the adventurer and companion on the scene floor. --- */
 .home-hero-avatar .dw-hero{
-  align-items:center!important;
+  align-items:flex-end!important;
   justify-content:center!important;
 }
 .home-hero-avatar .dw-hero-body{
   max-height:100%!important;
   max-width:100%!important;
   object-fit:contain;
-  transform:translateY(-2%) scale(1.44)!important;
-  transform-origin:center center!important;
+  transform:translateY(5%) scale(1.44)!important;
+  transform-origin:center bottom!important;
   filter:drop-shadow(0 16px 20px rgba(0,0,0,.5));
 }
 .home-hero-avatar .dw-hero-pet{
   width:30%!important;
   max-height:34%!important;
   right:4%!important;
-  bottom:7%!important;
+  bottom:1%!important;
   transform:none!important;
 }
 @media(max-width:900px){
-  .home-hero-avatar .dw-hero-body{transform:translateY(-2%) scale(1.32)!important}
+  .home-hero-avatar .dw-hero-body{transform:translateY(5%) scale(1.32)!important}
 }
 @media(max-width:700px){
-  .home-hero-avatar .dw-hero-body{transform:translateY(-2%) scale(1.20)!important}
-  .home-hero-avatar .dw-hero-pet{width:26%!important;max-height:30%!important}
+  .home-hero-avatar .dw-hero-body{transform:translateY(5%) scale(1.20)!important}
+  .home-hero-avatar .dw-hero-pet{width:26%!important;max-height:30%!important;bottom:1%!important}
 }
 
 /* --- 3. Keyboard users can see where they are. There was no focus style

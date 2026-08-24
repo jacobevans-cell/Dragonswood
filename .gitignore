@@ -6,3 +6,7 @@ tools/narration/tmp/
 *.onnx
 *.onnx_data
 narration-generation-report.json
+
+# Deep Time Lab private Firebase data
+functions/paleo-v43-private/
+functions/

@@ -1,0 +1,1 @@
+window.DEEP_TIME_CASE_SHELL_SP019={"caseId":"SP019","tier":"standard","caseDays":3,"totalSectors":40,"investigationsPerDay":5,"totalInvestigations":15,"ready":false,"publicIdentity":null,"note":"Student-safe shell only. Identity and unfinished science stay private until case build/reveal."};

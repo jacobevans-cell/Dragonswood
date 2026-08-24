@@ -4274,13 +4274,14 @@ function equippedItemBySlot(slot){
 function dwRpgSkinArt(){
   const R=window.DWRPG; if(!R||!profile?.classId) return null;
   const cls=R.classes[profile.classId]; if(!cls) return null;
+  const baseClassArt=/boy/i.test(String(profile?.genderGroup||profile?.group||""))?(cls.artBoy||cls.art):(cls.artGirl||cls.art);
   // The highest appearance pack the student owns wins; otherwise the base class art.
   const owned=Array.isArray(profile.rpgInventory)?profile.rpgInventory:[];
   const equippedId=profile?.rpgEquipped?.appearance;
   const packs=(R.appearancePacks||[])
     .filter(p=>p.classId===profile.classId&&owned.indexOf(p.id)>=0)
     .sort((a,b)=>(a.id===equippedId?-1:b.id===equippedId?1:b.level-a.level));
-  return {art:(packs[0]&&packs[0].skinArt)||cls.art,
+  return {art:(packs[0]&&packs[0].skinArt)||baseClassArt,
           idleArt:(packs[0]&&packs[0].idleArt)||null,
           className:cls.name, packName:packs[0]?packs[0].name:"", color:cls.color};
 }

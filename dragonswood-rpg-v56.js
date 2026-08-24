@@ -1,7 +1,7 @@
 (function(){
   const A="assets/rpg/";
   const classes={
-    warrior:{name:"Warrior",icon:"⚔️",art:A+"class-warrior.png",color:"#ef9b45",base:{atk:3,def:2,hp:6,heal:0},trait:"Steadfast",traitText:"Defensive sets trade a little attack for extra DEF."},
+    warrior:{name:"Warrior",icon:"⚔️",art:A+"class-warrior.png",artGirl:A+"class-warrior.png",artBoy:A+"skin-warrior-5.png",color:"#ef9b45",base:{atk:3,def:2,hp:6,heal:0},trait:"Steadfast",traitText:"Defensive sets trade a little attack for extra DEF."},
     ranger:{name:"Ranger",icon:"🏹",art:A+"class-ranger.png",color:"#54d894",base:{atk:4,def:1,hp:3,heal:0},trait:"True Shot",traitText:"A steady attack bonus rewards accurate work."},
     mage:{name:"Mage",icon:"🔮",art:A+"class-mage.png",color:"#b76cff",base:{atk:5,def:0,hp:2,heal:1},trait:"Spellcraft",traitText:"The strongest starting attack, balanced by lighter defense."},
     healer:{name:"Healer",icon:"✨",art:A+"class-healer.png",color:"#65dff1",base:{atk:1,def:1,hp:5,heal:5},trait:"Restoration",traitText:"Correct answers restore a small amount of battle HP."}

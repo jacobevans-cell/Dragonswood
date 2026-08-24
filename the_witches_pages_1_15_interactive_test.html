@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>The Witches: Pages 1–15 Challenge Test</title>
+<title>The Witches: Pages 1–15 Challenge Test</title><link rel="icon" type="image/png" href="dragonswood-volleyball-crest-v1.png">
 <style>
 :root{--bg:#120b18;--panel:#21152b;--panel2:#2b1937;--gold:#f1c75b;--ink:#fff8e8;--muted:#cdbed4;--good:#68c58a;--bad:#ef7b7b;--line:#5d416a}
 *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at top,#3b1749,#120b18 52%);color:var(--ink);font-family:Arial,sans-serif}
@@ -162,6 +162,7 @@ document.getElementById("grade").addEventListener("click",()=>{
  document.getElementById("gradeMsg").textContent=msg;
  document.getElementById("breakdown").textContent="Green outlines show correct choices after grading. Red outlines show incorrect selected choices.";
  document.getElementById("result").classList.add("show"); document.getElementById("result").scrollIntoView({behavior:"smooth"});
+ window.dispatchEvent(new CustomEvent("witches-test-graded",{detail:{score,max,accuracy:pct}}));
 });
 document.getElementById("reset").addEventListener("click",()=>{
  if(!confirm("Reset every answer and score?"))return;
@@ -170,6 +171,15 @@ document.getElementById("reset").addEventListener("click",()=>{
  document.querySelectorAll(".card").forEach(c=>{delete c.dataset.selected;c.querySelector(".feedback").textContent=""});
  document.getElementById("result").classList.remove("show");document.getElementById("liveScore").textContent="—";updateAnswered();window.scrollTo({top:0,behavior:"smooth"});
 });
+</script>
+<script type="module">
+import {initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {getFirestore,doc,getDoc,setDoc,collection,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+const firebaseConfig={"apiKey":"AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE","authDomain":"dragonswood-9289e.firebaseapp.com","projectId":"dragonswood-9289e","storageBucket":"dragonswood-9289e.firebasestorage.app","messagingSenderId":"1064477064695","appId":"1:1064477064695:web:283e1016ee2303d39042f2"};
+const app=getApps().length?getApp():initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);let currentUser=null,currentProfile=null;
+onAuthStateChanged(auth,async u=>{currentUser=u;if(u){const s=await getDoc(doc(db,"students",u.uid));currentProfile=s.exists()?s.data():null}});
+window.addEventListener("witches-test-graded",async e=>{if(!currentUser)return alert("Sign in through Dragonswood before taking the test so your grade can be saved.");const d=e.detail||{};try{await setDoc(doc(collection(db,"scores")),{studentId:currentUser.uid,studentEmail:currentUser.email||"",displayName:currentProfile?.firstName||String(currentUser.email||"").split("@")[0],playerName:currentProfile?.firstName||"Student",avatarEmoji:"📖",game:"witches_reading_test",gameName:"The Witches Reading Test",activityName:"Pages 1–15 Challenge Test",assignmentId:"witches-pages-1-15",subject:"Reading",category:"reading",score:Number(d.score||0),correct:Number(d.score||0),total:Number(d.max||30),accuracy:Number(d.accuracy||0),scoreType:"points",createdAt:serverTimestamp()});document.getElementById("breakdown").textContent+=" Your grade was saved to the Dragonswood Gradebook."}catch(err){console.warn(err);alert("Your score is visible here, but it could not be saved. Please tell Mr. Evans.")}});
 </script>
 </body>
 </html>

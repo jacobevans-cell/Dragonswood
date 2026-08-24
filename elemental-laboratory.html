@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dragonswood Elemental Laboratory V5 • Visual Codex + 3D Library</title>
+<title>Dragonswood Elemental Laboratory V5 • Visual Codex + 3D Library</title><link rel="icon" type="image/png" href="dragonswood-volleyball-crest-v1.png">
 <style>
 :root{--bg:#06101d;--panel:#0b2033;--panel2:#102a42;--gold:#ffd166;--cyan:#41d9ff;--vio:#a979ff;--text:#f4fbff;--muted:#b9cddd;--good:#7ef0a7;--bad:#ff8298}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -10%,#193d61,#07111e 50%,#040a12);color:var(--text);font:15px/1.4 system-ui,Segoe UI,Arial;min-height:100vh}
@@ -26,7 +26,7 @@ footer{padding:24px;text-align:center;color:#98b4c5;font-size:12px}
 .dw-back{position:fixed;left:12px;top:12px;z-index:30;text-decoration:none;color:#fff7ba;background:#111b36e8;border:1px solid #ffd166;padding:9px 12px;border-radius:10px;font-weight:900;box-shadow:0 4px 18px #0007}@media(max-width:650px){.dw-back{position:static;display:inline-block;margin:10px}}</style>
 </head>
 <body><a class="dw-back" href="index.html#games">← DRAGONSWOOD GAMES</a>
-<header><div class="badge">ARCANE ACADEMY SCIENCE WING</div><h1>⚗️ Elemental Laboratory</h1><div class="sub">Dragonswood presentation • real atomic structure, real molecules, real conservation of matter</div></header>
+<header><div class="badge"><img src="dragonswood-volleyball-crest-v1.png" alt="Dragonswood crest" style="width:32px;height:32px;object-fit:contain;vertical-align:middle;margin-right:7px">ARCANE ACADEMY SCIENCE WING</div><h1>⚗️ Elemental Laboratory</h1><div class="sub">Dragonswood presentation • real atomic structure, real molecules, real conservation of matter</div></header>
 <nav><button onclick="showMode('table')">🧪 Periodic Codex</button><button onclick="showMode('atom')">⚛️ Atom Forge</button><button onclick="showMode('mixer')">🧙 Element Mixer</button><button onclick="showMode('molecule')">🧬 Molecule Observatory</button><button onclick="showMode('reaction')">🔥 Reaction Chamber</button><button onclick="showMode('missions')">🏆 Academy Missions</button></nav>
 <main>
 <section id="table" class="mode on">
@@ -209,4 +209,4 @@ function renderMissions(){missionGrid.innerHTML=missionDefs.map(([id,t],i)=>`<di
 renderTable();updateAtom();renderMixerBank();setupDrop('slotA','A');setupDrop('slotB','B');mixSearch.addEventListener('input',renderMixerBank);
 setTimeout(()=>{document.getElementById('molSearch')?.addEventListener('input',renderMolButtons);document.getElementById('molCategory')?.addEventListener('change',renderMolButtons)},0);renderDiscoveries();renderMolButtons();drawMolecule();renderReaction();renderMissions();
 </script>
-</body></html>
+<script src="narration-manifest.js?v=56.19.6"></script><script src="dragonswood-narrator.js?v=56.19.6"></script></body></html>

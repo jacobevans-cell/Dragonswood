@@ -14,8 +14,20 @@ service cloud.firestore {
 
     function isExploreStudent() {
       return request.auth != null
-        && request.auth.token.email != null
-        && request.auth.token.email.matches('.*@explore[.]academy$');
+        && (
+          (
+            request.auth.token.email != null
+            && request.auth.token.email.matches('.*@explore[.]academy$')
+          )
+          // Teacher-approved outside accounts must be able to exercise the
+          // same guarded student paths during testing.
+          || exists(/databases/$(database)/documents/testerAccounts/$(request.auth.uid))
+        );
+    }
+
+    function isTester() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/testerAccounts/$(request.auth.uid));
     }
 
     function isOwner(uid) {
@@ -24,6 +36,22 @@ service cloud.firestore {
 
     match /classData/{docId} {
       allow read: if true;
+
+      // A rare Daily Boss chest may add exactly 25 points to the Class Pet or
+      // Field Trip goal. The award is validated against the loot document
+      // written in the same batch, so it cannot be claimed on its own.
+      allow update: if isExploreStudent()
+                    && (docId == 'classPet' || docId == 'fieldTrip')
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['points','goal','lastLootId','updatedAt'])
+                    && request.resource.data.points is number
+                    && request.resource.data.points == resource.data.get('points',0) + 25
+                    && request.resource.data.lastLootId is string
+                    && request.resource.data.lastLootId != resource.data.get('lastLootId','')
+                    && getAfter(/databases/$(database)/documents/bossLoot/$(request.resource.data.lastLootId)).data.studentId == request.auth.uid
+                    && getAfter(/databases/$(database)/documents/bossLoot/$(request.resource.data.lastLootId)).data.rareGoal == docId
+                    && getAfter(/databases/$(database)/documents/bossLoot/$(request.resource.data.lastLootId)).data.goalPoints == 25;
+
       allow write: if isTeacher();
     }
 
@@ -35,7 +63,7 @@ service cloud.firestore {
     match /students/{studentId} {
       allow read: if isTeacher() || isOwner(studentId);
 
-      allow create: if isExploreStudent()
+      allow create: if (isExploreStudent() || isTester())
                     && isOwner(studentId)
                     && request.resource.data.hp == 10
                     && request.resource.data.gold == 0
@@ -44,7 +72,14 @@ service cloud.firestore {
       allow update: if isOwner(studentId)
                     && isExploreStudent()
                     && request.resource.data.diff(resource.data).affectedKeys()
-                       .hasOnly(['title','avatar','avatarConfig','equipped','updatedAt']);
+                       .hasOnly(['title','avatar','avatarConfig','equipped','homeBackgroundId','narrationVoice','updatedAt'])
+                    && request.resource.data.get('narrationVoice','automatic') in [
+                      'automatic','gb-lewis','us-liam','us-bella','es-alex'
+                    ]
+                    && request.resource.data.get('homeBackgroundId','fairy-purple') in [
+                      'fairy-purple','fairy-bamboo','fairy-mushroom','crystal-cave',
+                      'jungle','mountain-night','snow-aurora','snow-village'
+                    ];
 
       allow update: if isOwner(studentId)
                     && isExploreStudent()
@@ -72,7 +107,17 @@ service cloud.firestore {
                     && isExploreStudent()
                     && resource.data.hp > 0
                     && request.resource.data.diff(resource.data).affectedKeys()
-                       .hasOnly(['xp','gold','dailyXpDate','dailyXpEarned','lastGameClaimId','updatedAt'])
+                       .hasOnly(['xp','gold','dailyXpDate','dailyXpEarned','lastGameClaimId',
+                                'bossWins','lastBossWinDate','rpgInventory','eggInventory','updatedAt'])
+                    // Daily Boss adds win bookkeeping and may drop one item or one egg.
+                    && request.resource.data.get('bossWins',0) is number
+                    && request.resource.data.get('bossWins',0) <= resource.data.get('bossWins',0) + 1
+                    && request.resource.data.get('rpgInventory',[]).size()
+                       <= resource.data.get('rpgInventory',[]).size() + 1
+                    && request.resource.data.get('rpgInventory',[])
+                       .hasAll(resource.data.get('rpgInventory',[]))
+                    && request.resource.data.get('eggInventory',0)
+                       <= resource.data.get('eggInventory',0) + 1
                     && request.resource.data.lastGameClaimId is string
                     && request.resource.data.dailyXpDate is string
                     && request.resource.data.dailyXpEarned is number
@@ -100,6 +145,62 @@ service cloud.firestore {
                        == resource.data.gold
                           + getAfter(/databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)).data.goldAward;
 
+      // ---------------- v56 RPG progression ----------------
+      // Each path is deliberately narrow. A student may spend, equip and hatch,
+      // but may never mint Gold, XP, items or pets out of nothing.
+
+      // Choose a class. One time only: it must be unset before this write.
+      allow update: if isOwner(studentId)
+                    && isExploreStudent()
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['classId','classChosenAt','updatedAt'])
+                    && resource.data.get('classId','') == ''
+                    && request.resource.data.classId in ['warrior','ranger','mage','healer'];
+
+      // Buy from the Class Shop. Gold must actually go down; inventory grows by
+      // at most one entry, and nothing already owned may disappear.
+      allow update: if isOwner(studentId)
+                    && isExploreStudent()
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['gold','rpgInventory','eggInventory','updatedAt'])
+                    && request.resource.data.gold is number
+                    && request.resource.data.gold >= 0
+                    && request.resource.data.gold < resource.data.gold
+                    && request.resource.data.get('rpgInventory',[]) is list
+                    && request.resource.data.get('rpgInventory',[]).size()
+                       <= resource.data.get('rpgInventory',[]).size() + 1
+                    && request.resource.data.get('rpgInventory',[])
+                       .hasAll(resource.data.get('rpgInventory',[]))
+                    && request.resource.data.get('eggInventory',0) is number
+                    && request.resource.data.get('eggInventory',0) >= 0
+                    && request.resource.data.get('eggInventory',0)
+                       <= resource.data.get('eggInventory',0) + 1;
+
+      // Equip gear and pick the one active companion.
+      // The active pet must be one the student already owns.
+      allow update: if isOwner(studentId)
+                    && isExploreStudent()
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['rpgEquipped','activePet','updatedAt'])
+                    && (
+                         request.resource.data.get('activePet','') == ''
+                         || resource.data.get('ownedPets',[])
+                            .hasAny([request.resource.data.get('activePet','')])
+                       );
+
+      // Hatch an egg. Costs exactly one egg and yields exactly one new pet.
+      allow update: if isOwner(studentId)
+                    && isExploreStudent()
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['eggInventory','ownedPets','lastHatchedPet','activePet','updatedAt'])
+                    && request.resource.data.eggInventory is number
+                    && request.resource.data.eggInventory >= 0
+                    && request.resource.data.eggInventory == resource.data.get('eggInventory',0) - 1
+                    && request.resource.data.ownedPets is list
+                    && request.resource.data.ownedPets.size()
+                       == resource.data.get('ownedPets',[]).size() + 1
+                    && request.resource.data.ownedPets.hasAll(resource.data.get('ownedPets',[]));
+
       // Midnight fresh start. Clears all eligibility bans, as requested.
       allow update: if isOwner(studentId)
                     && isExploreStudent()
@@ -122,7 +223,7 @@ service cloud.firestore {
       allow read: if isTeacher()
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
 
-      allow create: if isExploreStudent()
+      allow create: if (isExploreStudent() || isTester())
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.status == "pending"
                     && request.resource.data.lessonId is string
@@ -140,6 +241,7 @@ service cloud.firestore {
     match /scores/{scoreId} {
       allow read: if true;
       allow create: if isSignedIn()
+                    && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.score is number
                     && request.resource.data.score >= 0
                     && request.resource.data.score <= 100000;
@@ -178,7 +280,7 @@ service cloud.firestore {
     match /dailyQuests/{questDate} {
       allow read: if isTeacher()
                   || (
-                    isExploreStudent()
+                    (isExploreStudent() || isTester())
                     && request.time >= resource.data.unlockAt
                     && request.time < resource.data.lockAt
                   );
@@ -200,9 +302,16 @@ service cloud.firestore {
                     && request.resource.data.correct is number
                     && request.resource.data.correct >= 0
                     && request.resource.data.attempts is number
-                    && request.resource.data.attempts >= 0;
+                    && request.resource.data.attempts >= 0
+                    && request.resource.data.attempts <= 60
+                    && request.resource.data.correct <= request.resource.data.attempts
+                    && request.resource.data.score <= request.resource.data.correct * 150
+                    && (!('activeSeconds' in request.resource.data) || (request.resource.data.activeSeconds is number && request.resource.data.activeSeconds >= 0 && request.resource.data.activeSeconds <= 14400))
+                    && (!('idleEvents' in request.resource.data) || (request.resource.data.idleEvents is number && request.resource.data.idleEvents >= 0 && request.resource.data.idleEvents <= 100))
+                    && (!('perQuestionSeconds' in request.resource.data) || (request.resource.data.perQuestionSeconds is list && request.resource.data.perQuestionSeconds.size() <= 60))
+                    && (!('needsReteach' in request.resource.data) || (request.resource.data.needsReteach is list && request.resource.data.needsReteach.size() <= 60));
 
-      allow update: if isExploreStudent()
+      allow update: if (isExploreStudent() || isTester())
                     && resource.data.studentId == request.auth.uid
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.session == resource.data.session
@@ -215,9 +324,133 @@ service cloud.firestore {
                     && request.resource.data.correct is number
                     && request.resource.data.correct >= 0
                     && request.resource.data.attempts is number
-                    && request.resource.data.attempts >= 0;
+                    && request.resource.data.attempts >= 0
+                    && request.resource.data.attempts <= 60
+                    && request.resource.data.correct <= request.resource.data.attempts
+                    && request.resource.data.score <= request.resource.data.correct * 150
+                    && (!('activeSeconds' in request.resource.data) || (request.resource.data.activeSeconds is number && request.resource.data.activeSeconds >= 0 && request.resource.data.activeSeconds <= 14400))
+                    && (!('idleEvents' in request.resource.data) || (request.resource.data.idleEvents is number && request.resource.data.idleEvents >= 0 && request.resource.data.idleEvents <= 100))
+                    && (!('perQuestionSeconds' in request.resource.data) || (request.resource.data.perQuestionSeconds is list && request.resource.data.perQuestionSeconds.size() <= 60))
+                    && (!('needsReteach' in request.resource.data) || (request.resource.data.needsReteach is list && request.resource.data.needsReteach.size() <= 60));
 
       allow delete: if isTeacher();
+    }
+
+    // Curriculum Quest is cached locally for immediate/offline use and mirrored
+    // here so Chromebook or browser-profile resets do not erase academic work.
+    match /curriculumQuestProgress/{studentId} {
+      allow read: if isTeacher() || isOwner(studentId);
+
+      allow create, update: if isExploreStudent()
+                            && isOwner(studentId)
+                            && request.resource.data.studentId == studentId
+                            && request.resource.data.grade in ["I", "K"]
+                            && request.resource.data.day is number
+                            && request.resource.data.day >= 1
+                            && request.resource.data.day <= 40
+                            && request.resource.data.items is map
+                            && request.resource.data.keys().hasOnly([
+                              'studentId','grade','day','items','updatedAt'
+                            ]);
+
+      allow delete: if isTeacher();
+    }
+
+    // Canonical v55 Curriculum Quest record: one student + one mission.
+    // Student evidence is writable by its owner; verified is teacher-only.
+    match /curriculumProgress/{progressId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+
+      allow create: if (isExploreStudent() || isTester())
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.itemId is string
+                    && progressId == request.auth.uid + "_" + request.resource.data.itemId
+                    && request.resource.data.grade in ["I", "K"]
+                    && request.resource.data.day is number
+                    && request.resource.data.day >= 1
+                    && request.resource.data.day <= 40
+                    && request.resource.data.subject in ["Math", "Science", "HUM"]
+                    && request.resource.data.verified == false
+                    && request.resource.data.questionsCorrect is number
+                    && request.resource.data.questionsSeen is number
+                    && request.resource.data.questionsCorrect >= 0
+                    && request.resource.data.questionsCorrect <= request.resource.data.questionsSeen
+                    && request.resource.data.questionsSeen <= 20;
+
+      allow update: if (isExploreStudent() || isTester())
+                    && resource.data.studentId == request.auth.uid
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.itemId == resource.data.itemId
+                    && request.resource.data.verified == resource.data.verified
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+                      'watched','videoCoverage','videoReflection','practiced',
+                      'practiceEvidence','questionsCorrect','questionsSeen',
+                      'autoAnswers','autoAttempts','lastActivityAttempt',
+                      'activityAttempts','overrideStatus','updatedAt'
+                    ])
+                    && request.resource.data.questionsCorrect is number
+                    && request.resource.data.questionsSeen is number
+                    && request.resource.data.questionsCorrect >= 0
+                    && request.resource.data.questionsCorrect <= request.resource.data.questionsSeen
+                    && request.resource.data.questionsSeen <= 20;
+
+      allow update, delete: if isTeacher();
+    }
+
+    // Teacher-managed UID allowlist for outside testing accounts.
+    // ============================================================
+    // v56 RPG — Daily Boss loot and Class Shop purchase ledger
+    // These two collections were written by the RPG pages but had no rule,
+    // so every write fell through to the catch-all and was denied.
+    // ============================================================
+
+    // One chest per student per school day. The document id is
+    // {uid}_{dateKey}, and there is no update path — so a second chest on the
+    // same day is impossible rather than merely discouraged.
+    match /bossLoot/{lootId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+
+      allow create: if isExploreStudent()
+                    && request.resource.data.studentId == request.auth.uid
+                    && lootId == request.auth.uid + '_' + request.resource.data.dateKey
+                    && request.resource.data.dateKey is string
+                    && request.resource.data.status == "complete"
+                    && request.resource.data.goldAward is number
+                    && request.resource.data.goldAward >= 0
+                    && request.resource.data.goldAward <= 3
+                    && request.resource.data.xpAward is number
+                    && request.resource.data.xpAward >= 0
+                    && request.resource.data.xpAward <= 12
+                    && request.resource.data.goalPoints is number
+                    && request.resource.data.goalPoints >= 0
+                    && request.resource.data.goalPoints <= 25
+                    && request.resource.data.rareGoal in ['none','classPet','fieldTrip']
+                    && request.resource.data.itemId is string;
+
+      allow update, delete: if isTeacher();
+    }
+
+    // Purchase ledger. Create-only for students; the gold check that matters
+    // lives on the students document, which cannot go up on this path.
+    match /rpgPurchases/{purchaseId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+
+      allow create: if isExploreStudent()
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.itemId is string
+                    && request.resource.data.cost is number
+                    && request.resource.data.cost >= 0
+                    && request.resource.data.cost <= 5000;
+
+      allow update, delete: if isTeacher();
+    }
+
+    match /testerAccounts/{uid} {
+      allow read: if isTeacher() || (isSignedIn() && request.auth.uid == uid);
+      allow create, update, delete: if isTeacher();
     }
 
     match /studentTransactions/{transactionId} {
@@ -312,7 +545,7 @@ service cloud.firestore {
                     && request.resource.data.approvalCredits == 0
                     && request.resource.data.active == true;
       allow update: if isOwner(studentId)
-                    && isExploreStudent()
+                    && (isExploreStudent() || isTester())
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.passesUsed is number
                     && request.resource.data.passesUsed >= 0
@@ -478,11 +711,6 @@ service cloud.firestore {
       allow update, delete: if isTeacher();
     }
 
-    match /{document=**} {
-      allow read, write: if false;
-    }
-
-
     // ============================================================
     // DRAGONSWOOD v50 — SCRIBE ARENA / WRITING PORTFOLIO
     // ============================================================
@@ -525,6 +753,92 @@ service cloud.firestore {
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid;
       allow update, delete: if isTeacher();
+    }
+
+    // ============================================================
+    // v56.19.1 — curriculum history, gradebook, leaderboard rewards,
+    // and one-time physical prize drops.
+    // ============================================================
+
+    // Immutable history of a student's Curriculum Quest attempts.
+    match /curriculumAttempts/{attemptId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+
+      allow create: if isExploreStudent()
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.itemId is string
+                    && request.resource.data.attemptNumber is number
+                    && request.resource.data.attemptNumber >= 1
+                    && request.resource.data.questionsCorrect is number
+                    && request.resource.data.questionsSeen is number
+                    && request.resource.data.questionsSeen >= 1
+                    && request.resource.data.questionsSeen <= 100
+                    && request.resource.data.questionsCorrect >= 0
+                    && request.resource.data.questionsCorrect
+                       <= request.resource.data.questionsSeen
+                    && request.resource.data.accuracy is number
+                    && request.resource.data.accuracy >= 0
+                    && request.resource.data.accuracy <= 100;
+
+      allow update, delete: if isTeacher();
+    }
+
+    // Assignment configuration is classroom-wide. Signed-in students need to
+    // read it to calculate their own grade, but only the teacher may change it.
+    match /gradebookAssignments/{assignmentId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isTeacher();
+    }
+
+    // Teacher-entered grades and notes are private to the individual student.
+    match /gradebookGrades/{gradeId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+      allow create, update, delete: if isTeacher();
+    }
+
+    // The weekly leaderboard display needs these issued-reward records.
+    // Rewards can change Gold, so issuance remains teacher-only.
+    match /leaderboardRewards/{rewardId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isTeacher();
+    }
+
+    // Rare real-world rewards are created only by the same authenticated
+    // student and only when a matching Daily Boss loot record exists in the
+    // same committed batch. Students may make one earned reward into a
+    // redemption request; only the teacher can mark it redeemed or delete it.
+    match /physicalPrizeDrops/{dropId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+
+      allow create: if isExploreStudent()
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.status == 'earned'
+                    && request.resource.data.prizeType in ['recess','lunch','icecream']
+                    && request.resource.data.bossLootId == dropId
+                    && getAfter(/databases/$(database)/documents/bossLoot/$(dropId)).data.studentId
+                       == request.auth.uid
+                    && getAfter(/databases/$(database)/documents/bossLoot/$(dropId)).data.rarePrizeType
+                       == request.resource.data.prizeType;
+
+      allow update: if isExploreStudent()
+                    && resource.data.studentId == request.auth.uid
+                    && request.resource.data.studentId == resource.data.studentId
+                    && resource.data.status == 'earned'
+                    && request.resource.data.status == 'requested'
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['status','requestedAt']);
+
+      allow create, update, delete: if isTeacher();
+    }
+
+    // Documentation-only default deny. Firestore ORs matching allow rules, so
+    // this does not override any explicit block above; unmatched paths remain
+    // denied because no true allow statement exists.
+    match /{document=**} {
+      allow read, write: if false;
     }
 
   }

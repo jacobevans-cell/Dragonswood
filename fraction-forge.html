@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dragonswood • Fraction Forge</title>
+<title>Dragonswood • Fraction Forge</title><link rel="icon" type="image/png" href="dragonswood-volleyball-crest-v1.png">
 <style>
 :root{
   --bg:#061126;--panel:#07162c;--panel2:#0a1e38;--line:#1b5871;--text:#f6fbff;
@@ -197,7 +197,7 @@ body.round-3 .panel,body.round-3 .mission-card,body.round-3 .control-panel{borde
 <body class="round-1">
 <div class="app">
   <div class="dw-bar">
-    <div class="dw-mark">🐉 DRAGONSWOOD • FRACTION FORGE</div>
+    <div class="dw-mark"><img src="dragonswood-volleyball-crest-v1.png" alt="Dragonswood crest" style="width:34px;height:34px;object-fit:contain;vertical-align:middle;margin-right:7px">DRAGONSWOOD • FRACTION FORGE</div>
     <div class="dw-account" id="dwAccount">Connecting to your Dragonswood account…</div>
     <a class="dw-back" href="index.html#games">← GAMES</a>
   </div>
@@ -294,6 +294,8 @@ body.round-3 .panel,body.round-3 .mission-card,body.round-3 .control-panel{borde
   </div>
 </div>
 
+<script src="narration-manifest.js?v=56.19.6"></script>
+<script src="dragonswood-narrator.js?v=56.19.6"></script>
 <script>
 const $=id=>document.getElementById(id);
 const PROBLEMS_PER_ROUND=10,TOTAL_ROUNDS=3,SCORE_MAX=800;
@@ -725,7 +727,7 @@ $("hintBtn").onclick=()=>{
 }
 $("readCoachBtn").onclick=()=>{
   const text=`${$("coachTitle").textContent}. ${$("coachText").textContent}. ${$("coachExample").textContent}`;
-  if("speechSynthesis"in window){speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(text))}
+  window.DWNarrator?.play({id:`fraction-forge/coach/${currentStep||"lesson"}`,text,contentType:"general"});
 }
 document.querySelectorAll("[data-op]").forEach(b=>b.onclick=()=>{
   if(started&&roundSolved>0&&!confirm("Change operation and restart this 3-round quest?"))return;

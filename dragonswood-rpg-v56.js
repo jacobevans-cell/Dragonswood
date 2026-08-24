@@ -6,31 +6,9 @@
     mage:{name:"Mage",icon:"🔮",art:A+"class-mage.png",color:"#b76cff",base:{atk:5,def:0,hp:2,heal:1},trait:"Spellcraft",traitText:"The strongest starting attack, balanced by lighter defense."},
     healer:{name:"Healer",icon:"✨",art:A+"class-healer.png",color:"#65dff1",base:{atk:1,def:1,hp:5,heal:5},trait:"Restoration",traitText:"Correct answers restore a small amount of battle HP."}
   };
-  const pets=[
-    ["mossling","Mossling",A+"pet-land-01.png","common",1,"A sturdy forest friend.",1,1],
-    ["embercub","Embercub",A+"pet-land-02.png","common",1,"A warm-hearted burrow beast.",2,0],
-    ["riverback","Riverback",A+"pet-land-03.png","uncommon",2,"A calm companion with a shell-like back.",0,2],
-    ["thornpup","Thornpup",A+"pet-land-04.png","uncommon",3,"A quick woodland tracker.",2,1],
-    ["moonwing","Moonwing",A+"pet-flying-01.png","rare",4,"A silent flyer that scouts ahead.",2,0],
-    ["cloudbeak","Cloudbeak",A+"pet-flying-02.png","common",2,"A bright-eyed sky companion.",1,1],
-    ["starflutter","Starflutter",A+"pet-flying-03.png","rare",5,"Its wings sparkle over Dragonswood.",1,0],
-    ["stormlet","Stormlet",A+"pet-flying-04.png","epic",7,"A tiny storm creature with a brave heart.",3,1]
-  ].map(x=>({id:x[0],name:x[1],art:x[2],animatedArt:x[2].replace('.png','.gif'),rarity:x[3],level:x[4],description:x[5],atk:x[6],def:x[7],prestige:false}));
-  /* Woodland companions built from the chibi monster sprites. Each has a
-     looping idle animation; the .png is the still used in lists and shops. */
-  pets.push(...[
-    ["sproutling","Sproutling","pet-chibi-01","common",1,"A little seedling that stands its ground.",1,1],
-    ["puffbeak","Puffbeak","pet-chibi-02","common",2,"A round, bright-feathered wanderer.",2,0],
-    ["curlshell","Curlshell","pet-chibi-03","uncommon",3,"Slow, steady, and never lost.",0,3],
-    ["finnick","Finnick","pet-chibi-04","uncommon",4,"A darting swimmer with a sharp eye.",2,1],
-    ["hootling","Hootling","pet-chibi-05","rare",6,"A wide-eyed watcher of the wood.",2,2]
-  ].map(x=>({id:x[0],name:x[1],art:`${A}${x[2]}.png`,animatedArt:`${A}${x[2]}.gif`,
-             rarity:x[3],level:x[4],description:x[5],atk:x[6],def:x[7],prestige:false})));
-  const prestigePets=[
-    {id:"dragon",name:"Dragon",art:A+"pet-prestige-dragon.png",rarity:"legendary",level:10,atk:3,def:2,prestige:true,description:"A Level 10 Dragonswood bond."},
-    {id:"gargoyle",name:"Gargoyle",art:A+"pet-prestige-gargoyle.png",rarity:"legendary",level:10,atk:1,def:4,prestige:true,description:"A Level 10 stone guardian."},
-    {id:"elemental",name:"Elemental",art:A+"pet-prestige-elemental.png",rarity:"legendary",level:10,atk:4,def:1,prestige:true,description:"A Level 10 elemental companion."}
-  ];
+  const petRegistry=Array.isArray(window.DRAGONSWOOD_PET_REGISTRY)?window.DRAGONSWOOD_PET_REGISTRY:[];
+  const pets=petRegistry.filter(p=>!p.prestige);
+  const prestigePets=petRegistry.filter(p=>p.prestige);
   const enemies=[
     {id:"goblin_scout",name:"Briar Goblin Scout",art:A+"enemy-goblin.png",element:"nature",hp:28,atk:5,loot:"Briar Cache"},
     {id:"orc_guard",name:"Ironwood Orc Guard",art:A+"enemy-orc.png",element:"earth",hp:34,atk:6,loot:"Ironwood Chest"},
@@ -196,5 +174,5 @@
   function hash(s){let h=2166136261;for(const c of String(s)){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
   function dailyEnemy(uid,day){return enemies[hash(`${uid}|${dateKey()}|${day}`)%enemies.length]}
 
-  window.DWRPG={classes,pets,prestigePets,enemies,items,appearancePacks,dateKey,levelForXp,hash,dailyEnemy,version:"56.7"};
+  window.DWRPG={classes,pets,prestigePets,petRegistry,enemies,items,appearancePacks,dateKey,levelForXp,hash,dailyEnemy,version:"56.14"};
 })();

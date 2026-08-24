@@ -416,7 +416,7 @@ function autoQuestionsFor(x){
 }
 function autoPassed(x){
   const q=autoQuestionsFor(x),s=st(x.id),a=s.autoAnswers||{};
-  return !q.length||q.every((item,i)=>(window.DWGrading?window.DWGrading.answersEquivalent(item.answer,a[i]||""):String(a[i]||"")===String(item.answer))||s.autoOverrideStatus?.[i]==="approved");
+  return !q.length||q.every((item,i)=>(window.DWGrading?window.DWGrading.questionAnswerEquivalent(item,a[i]||""):String(a[i]||"")===String(item.answer))||s.autoOverrideStatus?.[i]==="approved");
 }
 function missionNeedsTeacher(x){return typeof dwNeedsTeacherVerify==="function"?dwNeedsTeacherVerify(x):x.subject==="Science"||/writing/i.test(x.strand||"")}
 function missionComplete(x){
@@ -427,7 +427,7 @@ function renderAutoPractice(x){
   const q=autoQuestionsFor(x),s=st(x.id),answers=s.autoAnswers||{},review=s.autoOverrideStatus||{};
   if(!q.length)return `<div class="activity-feedback show good">This mission is observation or written-performance based, so it does not add a fake multiple-choice quiz.</div>`;
   const renderSet=(items,offset,title,help)=>`<div class="activity-title">${title}</div><p class="kid-task">${help}</p>`+items.map((item,j)=>{const i=j+offset;
-    const chosen=String(answers[i]||""),correct=chosen&&(window.DWGrading?window.DWGrading.answersEquivalent(item.answer,chosen):chosen===String(item.answer)),status=review[i]||"";
+    const chosen=String(answers[i]||""),correct=chosen&&(window.DWGrading?window.DWGrading.questionAnswerEquivalent(item,chosen):chosen===String(item.answer)),status=review[i]||"";
     const label=status==="pending"?"🟡 TEACHER REVIEW REQUESTED":status==="approved"?"✅ TEACHER APPROVED":status==="returned"?"🛡️ REQUEST REVIEW AGAIN":"🛡️ REQUEST TEACHER REVIEW";
     return `<fieldset class="activity-shell"><legend>${i+1}. ${esc(item.prompt)}</legend><div class="activity-options">${item.choices.map(o=>`<label class="activity-option"><input type="radio" name="auto-${x.id}-${i}" value="${esc(o)}" ${chosen===String(o)?"checked":""} onchange="checkAutoQuestion('${x.id}',${i},this.value)"><span>${esc(o)}</span></label>`).join("")}</div>${chosen?`<div class="activity-feedback show ${correct||status==="approved"?"good":"bad"}">${correct?"✓ Correct":status==="approved"?"✓ Teacher approved":"Not yet—review the lesson and try again."}</div>`:""}<div class="override-row"><button type="button" class="override-btn ${status}" ${status==="pending"||status==="approved"?"disabled":""} onclick="requestAutoQuestionOverride('${x.id}',${i})">${label}</button><span class="override-note">Think Dragonswood rejected a correct answer? Send this exact question to your teacher.</span></div></fieldset>`;
   }).join("");
@@ -448,13 +448,55 @@ async function requestAutoQuestionOverride(id,index){
  if(ok){s.autoOverrideStatus[index]="pending";S.items[id]=s;save();render()}
 }
 
-function checkActivity(id){
-  const x=findItem(id);if(!x)return;const f=document.getElementById("actFeedback-"+id),result=validateActivity(x),answer=activityAnswerText(x),s=st(id);
+function curriculumAiEligible(spec,result,answer){
+  if(result.ok||!String(answer||"").trim())return false;
+  return spec.kind==="explain"||spec.kind==="opinion";
+}
+async function curriculumAiRescue(x,spec,answer,result){
+  if(!window.DWAcademicAI?.judge)return {decision:"unavailable",confidence:"low",reason:"AI rescue is not connected."};
+  const concepts=lessonWords(x).slice(0,8);
+  const rubric=[
+    "Respond directly to the task.",
+    concepts.length?`Relevant lesson ideas include: ${concepts.join(", ")}.`:"",
+    spec.science?"Include an observation/fact/evidence idea and connect it to the claim.":"",
+    "Simple grade 4-5 wording is acceptable. Do not require password vocabulary if the meaning is correct.",
+    `Free-validator concern: ${result.msg||"response did not match the rule check"}`
+  ].filter(Boolean).join(" ");
+  return window.DWAcademicAI.judge({
+    source:"curriculum",mode:"reasoning",questionId:String(x.id||""),skillId:String(x.strand||x.subject||""),
+    gradeBand:"4-5",prompt:String(spec.prompt||activityFor(x)||""),expectedAnswer:concepts.join(", "),
+    studentAnswer:String(answer||""),rubric,strictConventions:false
+  });
+}
+async function checkActivity(id){
+  const x=findItem(id);if(!x)return;
+  const f=document.getElementById("actFeedback-"+id),spec=activitySpec(x),answer=activityAnswerText(x),s=st(id);
+  let result=validateActivity(x),aiResult=null;
   s.lastActivityAttempt=answer;s.activityAttempts=(s.activityAttempts||0)+1;S.items[id]=s;save();
+
+  if(curriculumAiEligible(spec,result,answer)){
+    f.className="activity-feedback show";
+    f.textContent="Checking whether your wording shows the lesson idea…";
+    aiResult=await curriculumAiRescue(x,spec,answer,result);
+    if(aiResult.decision==="approve")result={ok:true,aiApproved:true,msg:""};
+    else if(aiResult.decision==="review"||aiResult.decision==="unavailable"){
+      f.className="activity-feedback show";
+      f.textContent="Your answer was saved and was NOT counted wrong. Dragonswood could not make a confident judgment. Use REQUEST TEACHER REVIEW below.";
+      document.getElementById("overrideBtn-"+id)?.classList.remove("approved");
+      return;
+    }
+  }
+
   window.recordCurriculumAttempt?.(x,s,result.ok);
   f.className="activity-feedback show "+(result.ok?"good":"bad");
-  if(result.ok){s.practiced=true;s.practiceEvidence=answer;s.overrideStatus="";S.items[id]=s;save();f.textContent="✓ Quest complete. Your answer passed the lesson check.";render()}
-  else{f.textContent="Not yet: "+result.msg+" Your answer was saved. You can revise it or request teacher review.";document.getElementById("overrideBtn-"+id)?.classList.remove("approved")}
+  if(result.ok){
+    s.practiced=true;s.practiceEvidence=answer;s.overrideStatus="";S.items[id]=s;save();
+    f.textContent=aiResult?.decision==="approve"?"✓ Quest complete. Your wording was accepted by the semantic rescue check.":"✓ Quest complete. Your answer passed the lesson check.";
+    render();
+  }else{
+    f.textContent="Not yet: "+result.msg+" Your answer was saved. You can revise it or request teacher review.";
+    document.getElementById("overrideBtn-"+id)?.classList.remove("approved");
+  }
 }
 async function requestOverride(id){
   const x=findItem(id);if(!x)return;const answer=activityAnswerText(x).trim();
@@ -541,15 +583,22 @@ let mr=D.morphology.filter(x=>x.grade===S.grade&&(isTeacher||Number(x.week||0)<=
 let miss=due.filter(x=>!missionComplete(x)&&!mediaPending(x));$("#audit").innerHTML=`<div class="title"><div><h2>🛡️ Curriculum Compliance Shield</h2><p>Completion requires the lesson, standard check, and application. Teacher verification is reserved for human-judgment work.</p></div></div><div class="frame audit ${miss.length?"bad":"good"}"><h3>${miss.length} curriculum missions incomplete</h3><p>${miss.length?"Recovery Quest shows the unfinished available curriculum.":"Everything currently available and due is complete."}</p></div><div class="frame audit ${mv.length?"bad":"good"}"><h3>${mv.length} available required videos still need a completed video check</h3></div><div class="frame audit ${pendingSources.length?"bad":"good"}"><h3>${pendingSources.length} curriculum video sources awaiting school access</h3><p>${pendingSources.length?"These are held separately and do not count as student recovery failures. Activities can continue now.":"No curriculum source videos are pending access."}</p></div>`}
 $("#grade").onchange=e=>{if(currentStudent&&!isTeacher){e.target.value=S.grade;return}S.grade=e.target.value;save();render()};$("#day").onchange=e=>{if(!isTeacher){e.target.value=S.day;return}S.day=Math.max(1,Math.min(40,+e.target.value||1));save();render()};$$(".tabs button").forEach(b=>b.onclick=()=>{$$(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");$$(".panel").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.tab).classList.add("active")});render();
 </script>
-<script src="dragonswood-grading-core.js?v=56.20.1"></script>
+<script src="dragonswood-grading-core.js?v=56.21.0"></script>
+<script src="dragonswood-academic-ai-client.js?v=56.21.0"></script>
 <script type="module">
 import {initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {getFirestore,doc,getDoc,getDocs,setDoc,updateDoc,addDoc,collection,serverTimestamp,onSnapshot,query,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {getFunctions,httpsCallable} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-functions.js";
 const firebaseConfig={"apiKey":"AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE","authDomain":"dragonswood-9289e.firebaseapp.com","projectId":"dragonswood-9289e","storageBucket":"dragonswood-9289e.firebasestorage.app","messagingSenderId":"1064477064695","appId":"1:1064477064695:web:283e1016ee2303d39042f2","measurementId":"G-LPRLDGVBD2"};
 const TEACHER="jacobicusjax@gmail.com";
 const app=getApps().length?getApp():initializeApp(firebaseConfig);
-const auth=getAuth(app),db=getFirestore(app);
+const auth=getAuth(app),db=getFirestore(app),academicFunctions=getFunctions(app,"us-central1");
+window.DWAcademicAI?.configure(async payload=>{
+  const call=httpsCallable(academicFunctions,"gradeAcademicAnswer");
+  const result=await call(payload);
+  return result?.data||{};
+});
 let progressTimer=null,progressReady=false,selectedStudentId="",teacherProgressRows=[],teacherAllProgress=[],teacherStudentNames={};
 const syncedSignatures=new Map();
 function phoenixDateKey(){return new Intl.DateTimeFormat("en-CA",{timeZone:"America/Phoenix",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date())}
@@ -557,7 +606,7 @@ function progressDocId(uid,itemId){return `${uid}_${itemId}`}
 function questionCounts(item,state){
   const qs=autoQuestionsFor(item),answers=state.autoAnswers||{};
   let seen=0,correct=0;
-  qs.forEach((q,i)=>{if(String(answers[i]||"")!==""){seen++;if(window.DWGrading?window.DWGrading.answersEquivalent(q.answer,answers[i]):String(answers[i])===String(q.answer))correct++}});
+  qs.forEach((q,i)=>{if(String(answers[i]||"")!==""){seen++;if(window.DWGrading?window.DWGrading.questionAnswerEquivalent(q,answers[i]):String(answers[i])===String(q.answer))correct++}});
   return {seen,correct};
 }
 function canonicalProgress(uid,item,state,forceUnverified=false){

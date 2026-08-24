@@ -834,6 +834,21 @@ service cloud.firestore {
       allow create, update, delete: if isTeacher();
     }
 
+    // Academic AI Answer Rescue. Cloud Functions Admin SDK owns writes.
+    match /academicAiUsage/{docId} {
+      allow read: if isTeacher();
+      allow write: if false;
+    }
+
+    match /academicAnswerAiAudit/{docId} {
+      allow read: if isTeacher();
+      allow write: if false;
+    }
+
+    match /academicAnswerAiCache/{docId} {
+      allow read, write: if false;
+    }
+
     // Documentation-only default deny. Firestore ORs matching allow rules, so
     // this does not override any explicit block above; unmatched paths remain
     // denied because no true allow statement exists.

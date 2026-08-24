@@ -1,6 +1,25 @@
 {
-  "voice": "cedar",
-  "model": "gpt-4o-mini-tts",
-  "instructions": "Warm fantasy narrator and trusted guide. Clear, expressive, adventurous, and encouraging for fourth- and fifth-grade students. Add a gentle sense of mystery and wonder, but never sound scary, silly, or overdramatic. Use a comfortable pace with natural pauses and pronounce academic vocabulary carefully.",
-  "clips": []
+  "version": 2,
+  "model": "onnx-community/Kokoro-82M-v1.0-ONNX",
+  "speed": 0.9,
+  "voices": {
+    "gb-lewis": {"modelVoice": "bm_lewis", "language": "en-GB", "role": "fantasy-general"},
+    "us-liam": {"modelVoice": "am_liam", "language": "en-US", "role": "ela-academic"},
+    "us-bella": {"modelVoice": "af_bella", "language": "en-US", "role": "student-choice"},
+    "es-alex": {"modelVoice": "em_alex", "language": "es-ES", "role": "spanish-support"}
+  },
+  "clips": [
+    {
+      "id": "system/welcome",
+      "area": "system",
+      "lessonId": "welcome",
+      "sectionId": "greeting",
+      "contentType": "general",
+      "text": "Hello, adventurer, and welcome to Dragonswood. We hope to see you soon—and hear the tales of your journey.",
+      "translations": {"es-alex": "Hola, aventurero, y bienvenido a Dragonswood. Esperamos verte pronto y escuchar los relatos de tu viaje."},
+      "voices": ["gb-lewis", "us-liam", "us-bella", "es-alex"],
+      "textVersion": 1,
+      "fallback": true
+    }
+  ]
 }

@@ -1,0 +1,10 @@
+{
+  "name": "dragonswood-development-tools",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "narration:audit": "node tools/narration/audit-narration.mjs",
+    "narration:generate": "node tools/narration/generate-narration.mjs --generate"
+  },
+  "devDependencies": {"kokoro-js": "^1.2.1"}
+}

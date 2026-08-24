@@ -294,6 +294,8 @@ body.round-3 .panel,body.round-3 .mission-card,body.round-3 .control-panel{borde
   </div>
 </div>
 
+<script src="narration-manifest.js"></script>
+<script src="dragonswood-narrator.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 const PROBLEMS_PER_ROUND=10,TOTAL_ROUNDS=3,SCORE_MAX=800;
@@ -725,7 +727,7 @@ $("hintBtn").onclick=()=>{
 }
 $("readCoachBtn").onclick=()=>{
   const text=`${$("coachTitle").textContent}. ${$("coachText").textContent}. ${$("coachExample").textContent}`;
-  if("speechSynthesis"in window){speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(text))}
+  window.DWNarrator?.play({id:`fraction-forge/coach/${currentStep||"lesson"}`,text,contentType:"general"});
 }
 document.querySelectorAll("[data-op]").forEach(b=>b.onclick=()=>{
   if(started&&roundSolved>0&&!confirm("Change operation and restart this 3-round quest?"))return;

@@ -123,7 +123,7 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
 
 <script src="foundation-track.js"></script>
 <script src="narration-manifest.js"></script>
-<script src="cedar-narration.js"></script>
+<script src="dragonswood-narrator.js"></script>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
@@ -134,6 +134,7 @@ const TEACHER="jacobicusjax@gmail.com",DOMAIN="explore.academy",CAP=150;
 const XP=[0,200,450,750,1100,1500,1950,2450,3000,3600,4250,4950,5700,6500,7350,8250,9200,10200,11100,12000];
 const $=id=>document.getElementById(id);
 let user=null,profile=null,lesson=null,sessionName="",questionPlan=[],tasks=[],taskIndex=0,qIndex=0,score=0,correct=0,attempts=0,sessionStart=0,currentQuestion=null,currentQuestionSeen=false,currentQuestionCorrect=false;
+window.addEventListener("dw:narration-voice-change",async e=>{const voiceId=e.detail?.voiceId||"automatic";if(!user||profile?.narrationVoice===voiceId)return;profile={...(profile||{}),narrationVoice:voiceId};try{await setDoc(doc(db,"students",user.uid),{narrationVoice:voiceId,updatedAt:serverTimestamp()},{merge:true})}catch(err){console.warn("Could not sync narration preference",err)}});
 let activeSeconds=0,idleEvents=0,perQuestionSeconds=[],questionStartedAt=0,lastInteractionAt=0,idleAnnounced=false,activeTimer=null,skillStats={},needsReteach=new Set(),retryKeys=new Set();
 let sessionProgress=null,morningProgress=null,exitProgress=null,dqProgressRows=[],dqProgressUnsub=null,dqCompletedDates=new Set();
 function dateKey(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
@@ -6005,7 +6006,7 @@ const td=$("trackDesc");if(td)td.textContent=isLevelUpMode()
   ? (lesson.track==="challenge"?"Optional enrichment • Early–Mid 6th Grade":lesson.track==="foundation"?"Optional fourth-grade level-up work":"Optional fifth-grade challenge work")
   : (lesson.track==="challenge"?"Advanced enrichment • Early–Mid 6th Grade":lesson.track==="5"?"Fifth-grade spiral practice":lesson.track==="foundation"?"Foundation spiral practice • Grade 3 prerequisite skills":"Fourth-grade spiral practice");
 const mini=$("trackLabelMini");if(mini)mini.textContent=`TRACK: ${lesson.trackName}`;await refreshSessionCards();status(Number(profile.hp||0)<=0?"💀 You may complete today's academics, but knocked-out players earn no Player XP or Gold until revival.":"Today's quest is unlocked. Future quests remain sealed by Dragonswood server time.","good");}catch(err){console.error(err);status(`Today's quest is sealed or unavailable: ${err.code||err.message||"permission denied"}`,"bad");$("morningBtn").disabled=$("exitBtn").disabled=true}}
-onAuthStateChanged(auth,async u=>{user=u;if(!u){status("Open Daily Quest from your signed-in Dragonswood portal.","warn");return}let tester=false;try{tester=(await getDoc(doc(db,"testerAccounts",u.uid))).exists()}catch(e){}if(!String(u.email||"").toLowerCase().endsWith("@"+DOMAIN)&&String(u.email||"").toLowerCase()!==TEACHER&&!tester){status("Daily Quest requires an Explore Academy or approved tester account.","bad");return}try{const s=await getDoc(doc(db,"students",u.uid));if(s.exists())profile=s.data();else if(tester)profile={firstName:u.displayName||"Tester",grade:"4",hp:10,gold:0,xp:0};renderAccount();renderSchoolCountdowns();watchDailyQuestProgress();await loadToday()}catch(e){status("Dragonswood profile error: "+(e.code||e.message),"bad")}});
+onAuthStateChanged(auth,async u=>{user=u;if(!u){status("Open Daily Quest from your signed-in Dragonswood portal.","warn");return}let tester=false;try{tester=(await getDoc(doc(db,"testerAccounts",u.uid))).exists()}catch(e){}if(!String(u.email||"").toLowerCase().endsWith("@"+DOMAIN)&&String(u.email||"").toLowerCase()!==TEACHER&&!tester){status("Daily Quest requires an Explore Academy or approved tester account.","bad");return}try{const s=await getDoc(doc(db,"students",u.uid));if(s.exists())profile=s.data();else if(tester)profile={firstName:u.displayName||"Tester",grade:"4",hp:10,gold:0,xp:0};window.DWVoicePreferences?.set?.(profile?.narrationVoice||"automatic");renderAccount();renderSchoolCountdowns();watchDailyQuestProgress();await loadToday()}catch(e){status("Dragonswood profile error: "+(e.code||e.message),"bad")}});
 $("morningBtn").onclick=()=>startSession("morning");$("exitBtn").onclick=()=>startSession("exit");$("closePlay").onclick=async()=>{if(sessionName&&taskIndex<tasks.length)await saveProgress();$("playModal").classList.remove("show")};
 async function startSession(name){
   sessionName=name;tasks=name==="morning"?lesson.morning:lesson.exit;
@@ -6074,7 +6075,8 @@ function promptBlock(q,t){
    window.dwSpeakCurrent=()=>{
      const text=document.getElementById("currentPrompt")?.textContent||"";
      const id=`daily/${String(profile?.grade||lesson?.track||"unknown")}/day-${String(lesson?.day||"current")}/${String(sessionName||"quest")}/question-${String(taskIndex||0)}`;
-     if(window.DWCedar) window.DWCedar.play({id,text,label:"Listen to the Scroll"});
+     if(window.DWNarrator) window.DWNarrator.play({id,text,label:"Listen to the Scroll",contentType:/reading|spelling|phonics|vocabulary|ela|language|writing/i.test(String(t?.subject||"")+" "+String(t?.skill||""))?"ela":"general"});
+     else if(window.DWCedar) window.DWCedar.play({id,text,label:"Listen to the Scroll"});
      else speakText(text,"en");
    };
    window.dwToggleCoach=()=>{const x=document.getElementById("coachWrap");if(x)x.hidden=!x.hidden};

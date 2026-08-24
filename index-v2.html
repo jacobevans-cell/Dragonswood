@@ -551,6 +551,15 @@
 <div class="avatar-studio profile-rpg-studio"><div class="avatar-preview-card"><h3>Your Dragonswood Adventurer</h3><div id="avatarPreview"></div><div class="avatar-statline"><div><b id="statAtk">1</b>ATK</div><div><b id="statDef">0</b>DEF</div><div><b id="statHp">10</b>MAX HP</div><div><b id="statHeal">0</b>HEAL</div></div><div id="profileGearBadges" class="profile-gear-badges"></div><div id="profilePetLabel" class="avatar-studio-note"></div></div>
 <div class="avatar-controls profile-rpg-summary"><h3>Class, Gear &amp; Pets</h3><p>Your selected appearance, equipped battle gear, and one active pet are managed in Adventurer Hall. Changes made there automatically appear on Home, Profile, and Scribe Arena.</p><a class="btn" href="adventurer-hall.html">⚔️ OPEN ADVENTURER HALL</a><div><h3 style="margin:4px 0 7px">Choose Your Home Scene</h3><p style="margin:0 0 9px">Pick the place where your adventurer and active pet live.</p><div id="profileBackgroundChoices" class="profile-background-picker" role="radiogroup" aria-label="Home scene"></div></div></div></div>
 <div style="display:flex;gap:8px;margin-top:13px;flex-wrap:wrap"><button id="saveProfile">SAVE PROFILE</button><a class="btn" href="adventurer-hall.html">⚔️ CLASS, GEAR &amp; PETS</a><button id="closeProfile" class="hidden">Close</button></div><div id="profileError" style="color:#ff9db5;margin-top:8px"></div></div></div>
+<div class="modal hidden dw-v2-welcome" id="dwV2Welcome" role="dialog" aria-modal="true" aria-labelledby="dwV2WelcomeTitle" aria-describedby="dwV2WelcomeText">
+  <div class="modalbox dw-v2-welcome-card">
+    <img class="dw-v2-welcome-crest" src="dragonswood-volleyball-crest-v1.png" alt="">
+    <span class="eyebrow">A NEW CHAPTER BEGINS</span>
+    <h2 id="dwV2WelcomeTitle">Welcome to Dragonswood V2!</h2>
+    <p id="dwV2WelcomeText">Your adventure has a brand-new map. Everything you have earned is still here—now it is easier to find, explore, and enjoy.</p>
+    <button class="btn-primary dw-v2-welcome-enter" id="dwV2WelcomeEnter" type="button">⚔️ ENTER DRAGONSWOOD V2</button>
+  </div>
+</div>
 <script id="dragonswood-navigation-core">
 (function(){
   const views=["home","games","planner","poll","shop","quests","leaderboard","scribe"];
@@ -1777,6 +1786,12 @@ onAuthStateChanged(auth,async u=>{
   $("account").classList.remove("hidden");
   $("accountEmail").textContent=u.email;
   if($("conn"))$("conn").textContent="✓ Connected to your Dragonswood account";
+  const v2Welcome=$("dwV2Welcome"),v2Enter=$("dwV2WelcomeEnter");
+  if(v2Welcome&&v2Enter&&!sessionStorage.getItem("dwV2WelcomeSeen")){
+    v2Welcome.classList.remove("hidden");
+    v2Enter.onclick=()=>{sessionStorage.setItem("dwV2WelcomeSeen","1");v2Welcome.classList.add("hidden")};
+    requestAnimationFrame(()=>v2Enter.focus());
+  }
 
   try{
     const ref=doc(db,"students",u.uid);

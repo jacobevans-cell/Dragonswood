@@ -1,0 +1,44 @@
+@layer reset, tokens, base, layout, components, utilities, states;
+
+@layer tokens {
+  :root {
+    --dw-bg-deep: #050a1d;
+    --dw-bg: #071027;
+    --dw-bg-soft: #0b1630;
+    --dw-surface: rgba(8, 20, 48, 0.90);
+    --dw-surface-raised: rgba(13, 31, 67, 0.94);
+    --dw-surface-hover: rgba(22, 43, 85, 0.96);
+    --dw-line: rgba(142, 159, 202, 0.20);
+    --dw-line-strong: rgba(123, 209, 255, 0.45);
+    --dw-gold: #f4cf73;
+    --dw-gold-soft: #d9b55f;
+    --dw-violet: #8f62ff;
+    --dw-cyan: #23c9e8;
+    --dw-cyan-soft: #6eddf0;
+    --dw-green: #49d5a6;
+    --dw-warning: #ffcf67;
+    --dw-danger: #ff6f91;
+    --dw-text: #f6f2e9;
+    --dw-text-soft: #c4cbe0;
+    --dw-text-muted: #8590ad;
+    --dw-shadow: 0 18px 54px rgba(0, 0, 0, 0.28);
+    --dw-glow: 0 0 28px rgba(71, 183, 255, 0.10);
+    --dw-radius-sm: 9px;
+    --dw-radius-md: 14px;
+    --dw-radius-lg: 18px;
+    --dw-radius-xl: 24px;
+    --dw-space-1: 4px;
+    --dw-space-2: 8px;
+    --dw-space-3: 12px;
+    --dw-space-4: 16px;
+    --dw-space-5: 20px;
+    --dw-space-6: 24px;
+    --dw-space-8: 32px;
+    --dw-space-10: 40px;
+    --dw-sidebar: 218px;
+    --dw-topbar: 100px;
+    --dw-control-height: 38px;
+    --dw-font-ui: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --dw-font-display: Georgia, "Times New Roman", serif;
+  }
+}

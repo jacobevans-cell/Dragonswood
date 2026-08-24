@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#8f62ff"/><stop offset="1" stop-color="#23c9e8"/></linearGradient></defs>
+  <path d="M32 3 56 13 51 49 32 61 13 49 8 13Z" fill="url(#g)" stroke="#f4cf73" stroke-width="2"/>
+  <text x="32" y="40" text-anchor="middle" font-family="Georgia,serif" font-size="27" fill="#f4cf73">D</text>
+</svg>

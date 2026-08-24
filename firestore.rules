@@ -34,6 +34,16 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid == uid;
     }
 
+    // Seating Command is teacher-only. Student presentation is rendered from
+    // the authenticated teacher page and never reads these private rules.
+    match /classrooms/{classroomId}/seatingPlans/{planId} {
+      allow read, write: if isTeacher();
+    }
+
+    match /classrooms/{classroomId}/seatingHistory/{historyId} {
+      allow read, write: if isTeacher();
+    }
+
     match /classData/{docId} {
       allow read: if true;
 

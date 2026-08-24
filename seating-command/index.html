@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071027">
+  <title>Dragonswood Seating Command</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/seating-command.css">
+</head>
+<body class="embedded">
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Teacher portal navigation">
+      <div class="brand-lockup">
+        <div class="crest" aria-hidden="true">D</div>
+        <div>
+          <div class="eyebrow gold">TEACHER PORTAL</div>
+          <div class="brand-school">Explore Academy</div>
+        </div>
+      </div>
+      <nav class="nav-list">
+        <button class="nav-item" type="button"><span>🧙</span><span>Student Command</span></button>
+        <button class="nav-item" type="button"><span>📊</span><span>Gradebook</span></button>
+        <button class="nav-item" type="button"><span>📜</span><span>Scribe Command</span></button>
+        <button class="nav-item" type="button"><span>🎯</span><span>Class Rewards</span></button>
+        <button class="nav-item" type="button"><span>🎟️</span><span>Pass Control</span></button>
+        <button class="nav-item" type="button"><span>🪄</span><span>Guild Jobs</span></button>
+        <button class="nav-item" type="button"><span>🕘</span><span>Schedule</span></button>
+        <button class="nav-item active" type="button" aria-current="page"><span>🧰</span><span>Classroom Tools</span></button>
+        <button class="nav-item" type="button"><span>🏆</span><span>Leaderboards</span></button>
+      </nav>
+      <div class="prototype-note">
+        <span class="spark">✦</span>
+        <div><strong>Teacher-only workspace</strong><small>Live roster • protected seating data</small></div>
+      </div>
+    </aside>
+
+    <main class="main-shell">
+      <header class="topbar">
+        <div class="title-lockup">
+          <div class="tiny-context">EXPLORE ACADEMY • EVANS 4–5 • TEACHER PORTAL</div>
+          <div class="portal-title-row"><span class="mini-crest">D</span><h1>DRAGONSWOOD COMMAND</h1></div>
+        </div>
+        <button class="teacher-chip" type="button"><span class="status-dot"></span> Mr. Evans <span aria-hidden="true">⌄</span></button>
+      </header>
+
+      <section class="page-wrap">
+        <section class="hero-card" aria-labelledby="page-title">
+          <div class="hero-icon" aria-hidden="true">🪑</div>
+          <div class="hero-copy">
+            <div class="eyebrow gold">CLASSROOM TOOLS • PURPOSEFUL PLACEMENT</div>
+            <h2 id="page-title">Seating Command</h2>
+            <p>Build the room once. Generate thoughtful seats in seconds. Show students only what they need.</p>
+          </div>
+          <div class="hero-actions">
+            <label class="purpose-select">Purpose
+              <select id="purposeSelector" aria-label="Seating plan purpose">
+                <option value="focus">Focus / Direct Instruction</option>
+                <option value="collaboration">Collaboration</option>
+                <option value="assessment">Assessment / Testing</option>
+                <option value="discussion">Discussion / Seminar</option>
+                <option value="substitute">Substitute Day</option>
+                <option value="intervention">Intervention / Small Group</option>
+              </select>
+            </label>
+            <button class="button secondary" id="savePlanButton" type="button">Save Plan</button>
+            <button class="button primary" id="presentButton" type="button">Present Student View</button>
+          </div>
+        </section>
+
+        <section class="metric-strip" aria-label="Seating plan summary">
+          <article class="metric-card"><span class="metric-icon">👥</span><div><small>STUDENTS</small><strong id="studentCountMetric">24</strong><span id="gradeSplitMetric">12 fourth • 12 fifth</span></div></article>
+          <article class="metric-card"><span class="metric-icon">🪑</span><div><small>SEATS</small><strong id="seatCountMetric">24</strong><span id="openSeatsMetric">0 open seats</span></div></article>
+          <article class="metric-card"><span class="metric-icon">🛡️</span><div><small>HARD RULES</small><strong id="hardRuleMetric">0</strong><span id="hardRuleDetail">No conflicts</span></div></article>
+          <article class="metric-card"><span class="metric-icon">✨</span><div><small>FRESH NEIGHBORS</small><strong id="freshNeighborMetric">100%</strong><span>Compared with last saved plan</span></div></article>
+        </section>
+
+        <section class="workspace-grid">
+          <section class="room-panel panel" aria-labelledby="room-heading">
+            <div class="panel-heading room-heading-row">
+              <div>
+                <div class="eyebrow">LIVE ROOM</div>
+                <h3 id="room-heading">Room 214</h3>
+              </div>
+              <div class="plan-health" id="planHealth"><span class="health-dot"></span> Plan ready</div>
+            </div>
+
+            <div class="room-toolbar" aria-label="Seating chart tools">
+              <div class="segmented" id="layoutSelector" aria-label="Room layout">
+                <button class="segment active" type="button" data-layout="pods">Pods of 4</button>
+                <button class="segment" type="button" data-layout="trios">Groups of 3</button>
+                <button class="segment" type="button" data-layout="rows">Focus Rows</button>
+                <button class="segment" type="button" data-layout="horseshoe">Horseshoe</button>
+              </div>
+              <div class="toolbar-actions">
+                <button class="icon-button" id="flipButton" type="button" title="Flip teacher/student orientation" aria-label="Flip orientation">⇅</button>
+                <button class="button quiet" id="undoButton" type="button">Undo</button>
+                <button class="button quiet" id="shuffleButton" type="button">Quick Shuffle</button>
+                <button class="button primary" id="smartArrangeButton" type="button">✦ Smart Arrange</button>
+              </div>
+            </div>
+
+            <div class="room-stage" id="roomStage" tabindex="0" aria-label="Interactive classroom seating map">
+              <div class="front-wall" id="frontWall"><span>WHITEBOARD • FRONT OF ROOM</span></div>
+              <div class="teacher-desk">Teacher<br>Desk</div>
+              <div class="small-group-table">Small Group<br>Table</div>
+              <div class="class-door">DOOR</div>
+              <div class="room-center-label" aria-hidden="true">Drag a student, or click two seats to swap</div>
+              <div id="seatLayer" class="seat-layer"></div>
+            </div>
+
+            <div class="room-footer">
+              <div class="legend"><span><i class="legend-dot grade4"></i>4th</span><span><i class="legend-dot grade5"></i>5th</span><span><i class="legend-lock">🔒</i>locked</span><span><i class="legend-rule">✦</i>rule-aware</span></div>
+              <div class="privacy-note">Teacher-only rules never appear in Student View.</div>
+            </div>
+          </section>
+
+          <aside class="control-panel panel" aria-label="Seating command controls">
+            <div class="tab-list" role="tablist" aria-label="Seating command side panel">
+              <button class="tab active" type="button" data-tab="roster" role="tab" aria-selected="true">Roster</button>
+              <button class="tab" type="button" data-tab="rules" role="tab" aria-selected="false">Rules <span id="ruleBadge" class="tab-badge">4</span></button>
+              <button class="tab" type="button" data-tab="plans" role="tab" aria-selected="false">Plans <span id="planBadge" class="tab-badge">0</span></button>
+            </div>
+
+            <section class="tab-panel active" id="rosterTab" data-panel="roster" role="tabpanel">
+              <div class="side-actions">
+                <label class="search-wrap"><span>⌕</span><input id="rosterSearch" type="search" placeholder="Search scholars" aria-label="Search scholars"></label>
+                <button class="button compact secondary" id="refreshRosterButton" type="button">Refresh Roster</button>
+              </div>
+              <div class="roster-summary"><span id="rosterSeatedSummary">24/24 seated</span><button class="link-button" id="clearSelectionButton" type="button">Clear selection</button></div>
+              <div id="rosterList" class="roster-list"></div>
+            </section>
+
+            <section class="tab-panel" id="rulesTab" data-panel="rules" role="tabpanel" hidden>
+              <div class="rule-intro">
+                <strong>Hard rules must be satisfied.</strong>
+                <span>Preferences improve a plan without turning a child into a label.</span>
+              </div>
+              <div id="ruleList" class="rule-list"></div>
+              <form id="ruleForm" class="rule-form">
+                <label>Rule type<select id="ruleType"><option value="apart">Keep apart</option><option value="together">Prefer together</option><option value="front">Needs front zone</option><option value="door">Prefer door side</option><option value="lock">Lock current seat</option></select></label>
+                <label>Scholar<select id="ruleStudentA"></select></label>
+                <label id="ruleStudentBWrap">Second scholar<select id="ruleStudentB"></select></label>
+                <label>Priority<select id="rulePriority"><option value="hard">Hard rule</option><option value="soft">Preference</option></select></label>
+                <button class="button primary full" type="submit">Add Rule</button>
+              </form>
+            </section>
+
+            <section class="tab-panel" id="plansTab" data-panel="plans" role="tabpanel" hidden>
+              <div class="plan-intro">
+                <strong>Recommended plans</strong>
+                <span>Generated locally. No student data is sent anywhere.</span>
+              </div>
+              <div id="candidateList" class="candidate-list">
+                <div class="empty-state"><span>✦</span><strong>No candidates yet</strong><p>Choose Smart Arrange to compare three high-scoring plans.</p></div>
+              </div>
+            </section>
+          </aside>
+        </section>
+
+        <section class="intelligence-panel panel">
+          <div class="panel-heading">
+            <div><div class="eyebrow">PLAN INTELLIGENCE</div><h3>Why this arrangement works</h3></div>
+            <button class="button compact quiet" id="refreshInsightsButton" type="button">Recheck</button>
+          </div>
+          <div id="insightGrid" class="insight-grid"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="importDialog" class="dw-dialog">
+    <form method="dialog" class="dialog-card" id="importForm">
+      <div class="dialog-heading"><div><div class="eyebrow">ROSTER IMPORT</div><h3>Paste names or CSV</h3></div><button class="icon-button" value="cancel" aria-label="Close">×</button></div>
+      <p class="dialog-help">Manual roster imports are retained only for isolated development testing. Production uses the authoritative Dragonswood roster.</p>
+      <textarea id="importText" rows="12" placeholder="Avery,4&#10;Jordan,5&#10;..." aria-label="Roster import text"></textarea>
+      <label class="file-picker">Or choose a CSV file<input id="csvFileInput" type="file" accept=".csv,text/csv"></label>
+      <div class="dialog-actions"><button class="button quiet" value="cancel" type="button" id="cancelImportButton">Cancel</button><button class="button primary" type="submit">Replace Fictional Roster</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="studentViewDialog" class="student-dialog">
+    <section class="student-view-shell">
+      <header class="student-view-header">
+        <div><div class="tiny-context">DRAGONSWOOD • ROOM 214</div><h2>Find Your Seat</h2><p>Enter quietly, find your name, and begin the posted warm-up.</p></div>
+        <div class="student-view-actions"><button class="button quiet" id="studentFlipButton" type="button">Flip View</button><button class="button primary" id="closeStudentViewButton" type="button">Back to Teacher View</button></div>
+      </header>
+      <div class="student-room" id="studentRoom">
+        <div class="front-wall student-front"><span>WHITEBOARD • FRONT</span></div>
+        <div id="studentSeatLayer" class="seat-layer"></div>
+      </div>
+      <footer class="student-view-footer"><span>✦ BE KIND. BE BRAVE. BE LEGENDARY. ✦</span><span>No teacher notes or support rules are shown here.</span></footer>
+    </section>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

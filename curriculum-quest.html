@@ -1,23 +1,22 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dragonswood | Curriculum Quest</title><link rel="icon" type="image/png" href="dragonswood-volleyball-crest-v1.png">
+<title>Dragonswood | Curriculum Quest</title>
 <style>
 :root{--bg:#05030c;--panel:#0b0819;--panel2:#110b25;--purple:#652DC1;--purple2:#9d48ff;--cyan:#02CCFE;--gold:#F4C95D;--gold2:#ffe8a0;--text:#fff8e9;--muted:#c7c1d5;--green:#65d69d;--red:#ff8095}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0%,rgba(101,45,193,.16),transparent 28%),linear-gradient(180deg,#05030c,#090516 48%,#05030c);color:var(--text);font-family:Arial,Helvetica,sans-serif;min-height:100vh}
 button,input,select{font:inherit}button{cursor:pointer}.shell{width:min(1450px,95%);margin:auto}h1,h2,h3,h4{font-family:Georgia,"Times New Roman",serif}.frame{background:linear-gradient(145deg,rgba(11,8,28,.98),rgba(5,6,18,.99));border:1px solid rgba(244,201,93,.46);box-shadow:inset 0 0 0 1px rgba(101,45,193,.13),0 12px 30px rgba(0,0,0,.35);border-radius:10px}
-.top{padding:16px 0;border-bottom:1px solid rgba(244,201,93,.35)}.topin{display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{display:flex;align-items:center;gap:13px}.shield{width:68px;height:72px;object-fit:contain;display:block;filter:drop-shadow(0 4px 9px rgba(0,0,0,.7)) drop-shadow(0 0 5px rgba(157,72,255,.28))}.brand h1{margin:0;color:var(--gold2);font-size:30px}.brand p{margin:3px 0;color:#d88cff;font-weight:900}.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}select,input{background:#070615;color:white;border:1px solid rgba(2,204,254,.25);border-radius:7px;padding:9px}.btn{border:1px solid rgba(244,201,93,.4);border-radius:8px;padding:9px 13px;font-weight:900;color:#fff;background:linear-gradient(90deg,#5318a8,#7926cc,#075e86);text-decoration:none;display:inline-block}
+.top{padding:16px 0;border-bottom:1px solid rgba(244,201,93,.35)}.topin{display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{display:flex;align-items:center;gap:13px}.shield{width:60px;height:66px;display:grid;place-items:center;font-size:28px;background:linear-gradient(145deg,#3a0d6d,#7420c2 55%,#073b59);border:2px solid var(--gold);clip-path:polygon(50% 0,90% 14%,84% 72%,50% 100%,16% 72%,10% 14%)}.brand h1{margin:0;color:var(--gold2);font-size:30px}.brand p{margin:3px 0;color:#d88cff;font-weight:900}.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}select,input{background:#070615;color:white;border:1px solid rgba(2,204,254,.25);border-radius:7px;padding:9px}.btn{border:1px solid rgba(244,201,93,.4);border-radius:8px;padding:9px 13px;font-weight:900;color:#fff;background:linear-gradient(90deg,#5318a8,#7926cc,#075e86);text-decoration:none;display:inline-block}
 main{padding:20px 0 35px}.hero{padding:22px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}.hero h2{font-size:30px;margin:4px 0 8px}.hero p{color:var(--muted);line-height:1.5;margin:0}.eyebrow{color:var(--cyan);font-weight:900;font-size:11px;letter-spacing:.14em}.ring{width:95px;height:95px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--green) 0deg,#241936 0);position:relative}.ring:after{content:"";position:absolute;inset:9px;border-radius:50%;background:#090615}.ring span{position:relative;z-index:1;font-family:Georgia,serif;font-size:20px;font-weight:900;color:var(--gold2)}
 .tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin:14px 0}.tabs button{padding:11px 7px;border:1px solid rgba(101,45,193,.4);background:#100c28;color:var(--gold2);font-family:Georgia,serif;font-weight:900;border-radius:7px}.tabs button.active{border-color:var(--gold);background:linear-gradient(90deg,#401174,#14294b)}
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:13px}.kpi{padding:13px;text-align:center}.kpi b{display:block;font-family:Georgia,serif;color:var(--gold2);font-size:25px}.kpi small{color:var(--muted);font-weight:900}.panel{display:none}.panel.active{display:block}.title{display:flex;justify-content:space-between;align-items:end;margin:18px 3px 9px}.title h2{margin:0}.title p{margin:3px 0;color:var(--muted)}
 .group{margin:13px 0}.grouphead{display:flex;justify-content:space-between;margin:0 3px 7px}.grouphead h3{margin:0;color:var(--gold2)}.grouphead small{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.recovery-day{margin:10px 0;overflow:hidden}.recovery-day>summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:15px 17px;cursor:pointer;background:linear-gradient(90deg,#17102e,#0a1025);font-family:Georgia,serif;font-weight:900;color:var(--gold2)}.recovery-day>summary::-webkit-details-marker{display:none}.recovery-day>summary:before{content:"▶";color:var(--cyan);font-family:Arial;font-size:12px}.recovery-day[open]>summary:before{content:"▼"}.recovery-day .recovery-body{padding:12px}.recovery-day.locked-day>summary{cursor:not-allowed;opacity:.62}.recovery-day.locked-day>summary:before{content:"🔒"}.recovery-lock{padding:18px;color:var(--muted);text-align:center}.recovery-next{color:var(--cyan);font-size:11px;font-family:Arial;font-weight:900}
-.quest{padding:0;border-left:4px solid var(--purple);position:relative;overflow:hidden}.quest.link{border-left-color:var(--cyan)}.quest.done{border-color:#3e916b;background:linear-gradient(145deg,#10281f,#081612)}.mission-summary{list-style:none;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:15px;cursor:pointer;background:linear-gradient(100deg,#15102b,#08091a)}.mission-summary::-webkit-details-marker{display:none}.mission-summary:before{content:"▶";position:absolute;right:14px;bottom:10px;color:var(--cyan);font-size:11px}.quest[open]>.mission-summary:before{content:"▼"}.mission-summary:hover{background:linear-gradient(100deg,#211541,#0b1730)}.mission-summary h4{margin:6px 0 0;font-size:17px}.mission-time{text-align:right;color:var(--gold2);font-size:11px;font-weight:900;line-height:1.5;padding-right:17px}.mission-time span{display:block;color:var(--cyan)}.mission-body{padding:0 14px 14px}.meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:7px}.tag{font-size:10px;font-weight:900;background:#26183f;color:#e4d9ff;border:1px solid #493069;border-radius:999px;padding:4px 7px}.tag.video{background:#07364a;color:#8deaff}.tag.complete{background:#123e2e;color:#9cf2c7}.quest h4{margin:0 0 7px;font-size:17px}.quest p{white-space:pre-line;color:#d0cadb;font-size:13px;line-height:1.45}.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.stage,.resource{padding:7px 9px;border-radius:7px;font-size:11px;font-weight:900;border:1px solid rgba(244,201,93,.3);color:#fff;background:#1d1533}.stage.on{background:#216a4d}.resource{background:#075e86}.verify{background:linear-gradient(90deg,#5318a8,#7926cc);color:#fff;border:1px solid var(--gold)}
+.quest{padding:14px;border-left:4px solid var(--purple);position:relative}.quest.link{border-left-color:var(--cyan)}.quest.done{border-color:#3e916b;background:linear-gradient(145deg,#10281f,#081612)}.meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:7px}.tag{font-size:10px;font-weight:900;background:#26183f;color:#e4d9ff;border:1px solid #493069;border-radius:999px;padding:4px 7px}.tag.video{background:#07364a;color:#8deaff}.tag.complete{background:#123e2e;color:#9cf2c7}.quest h4{margin:0 0 7px;font-size:17px}.quest p{white-space:pre-line;color:#d0cadb;font-size:13px;line-height:1.45}.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.stage,.resource{padding:7px 9px;border-radius:7px;font-size:11px;font-weight:900;border:1px solid rgba(244,201,93,.3);color:#fff;background:#1d1533}.stage.on{background:#216a4d}.resource{background:#075e86}.verify{background:linear-gradient(90deg,#5318a8,#7926cc);color:#fff;border:1px solid var(--gold)}
 .tablewrap{overflow:auto}.tablewrap table{width:100%;border-collapse:collapse;min-width:900px}th,td{padding:10px;border-bottom:1px solid #2c203e;text-align:left;vertical-align:top;font-size:12px}th{background:#160d2a;color:var(--gold2);position:sticky;top:0}.empty{padding:28px;text-align:center;color:var(--muted)}
 .wordgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.word{padding:13px}.word b{color:var(--gold2);font-family:Georgia,serif;font-size:18px}.word small{color:var(--cyan);display:block;font-weight:900;margin-bottom:5px}.word p{font-size:12px;color:var(--muted);line-height:1.4}
 .audit{padding:15px;margin-bottom:9px}.audit.bad{border-color:#8a3948}.audit.good{border-color:#397b5b}.audit h3{margin:0 0 5px}.audit p{margin:0;color:var(--muted)}
 .notice{margin-top:10px;padding:10px 12px;border-left:4px solid var(--gold);background:#110b25;color:var(--gold2);font-weight:900;font-size:12px}
 @media(max-width:900px){.tabs{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr}.wordgrid{grid-template-columns:repeat(2,1fr)}.kpis{grid-template-columns:repeat(2,1fr)}.topin{align-items:flex-start;flex-direction:column}}
-@media(max-width:520px){.tabs{grid-template-columns:repeat(2,1fr)}.wordgrid{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.ring{display:none}.mission-summary{grid-template-columns:1fr}.mission-time{text-align:left;padding-right:0}.mission-summary:before{top:17px;bottom:auto}}
+@media(max-width:520px){.tabs{grid-template-columns:repeat(2,1fr)}.wordgrid{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.ring{display:none}}
 
 .video-modal{position:fixed;inset:0;background:rgba(0,0,0,.86);z-index:9999;display:none;align-items:center;justify-content:center;padding:18px}
 .video-modal.show{display:flex}.video-box{width:min(980px,96vw);max-height:94vh;overflow:auto;padding:16px;background:#080617;border:1px solid rgba(244,201,93,.65);border-radius:12px;box-shadow:0 18px 70px #000}
@@ -51,72 +50,19 @@ main{padding:20px 0 35px}.hero{padding:22px;display:grid;grid-template-columns:1
 .self-lesson .example-box{margin-top:10px;padding:10px 12px;border-left:4px solid #ffd868;background:#171027;border-radius:5px;color:#fff7d4}
 .self-lesson .remember{margin-top:8px;color:#c9bee0;font-size:12px}
 .mission-note{display:inline-block;margin-top:8px;padding:5px 8px;border-radius:999px;background:#1b1530;border:1px solid #4a3863;color:#d8caef;font-size:11px;font-weight:900}
-
-/* v55.22 — shared enchanted Dragonswood environment */
-html{min-height:100%;background:#040410}
-body{
-  background:
-    linear-gradient(180deg,rgba(3,4,14,.30),rgba(3,4,14,.48) 62%,rgba(3,4,14,.68)),
-    url("dragonswood-portal-background.png") center top / cover fixed no-repeat!important;
-  position:relative;
-}
-body:before{
-  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(circle at 18% 15%,rgba(166,76,255,.08),transparent 25%),radial-gradient(circle at 84% 18%,rgba(2,204,254,.06),transparent 23%);
-}
-body>*{position:relative;z-index:1}
-.top{
-  background:linear-gradient(180deg,rgba(4,3,18,.70),rgba(5,3,22,.54));
-  backdrop-filter:blur(5px) saturate(1.15);-webkit-backdrop-filter:blur(5px) saturate(1.15);
-}
-.frame{
-  background:linear-gradient(145deg,rgba(11,8,28,.82),rgba(5,6,18,.88));
-  backdrop-filter:blur(6px) saturate(1.12);-webkit-backdrop-filter:blur(6px) saturate(1.12);
-}
-.mission-summary{background:linear-gradient(100deg,rgba(21,16,43,.88),rgba(8,9,26,.90))}
-.mission-summary:hover{background:linear-gradient(100deg,rgba(33,21,65,.92),rgba(11,23,48,.92))}
-.recovery-day>summary{background:linear-gradient(90deg,rgba(23,16,46,.90),rgba(10,16,37,.91))}
-.tabs button{background:rgba(16,12,40,.86);backdrop-filter:blur(5px)}
-.tabs button.active{background:linear-gradient(90deg,rgba(64,17,116,.92),rgba(20,41,75,.92))}
-.notice,.step,.activity-shell,.practice-box,.self-lesson{background-color:rgba(10,7,27,.88)}
-
-/* v55.28 — subject identity and stronger day-level hierarchy */
-.quest.quest-word{--quest-accent:#c987ff;--quest-tint:rgba(113,45,164,.28);border-left-color:#c987ff}
-.quest.quest-reading{--quest-accent:#48b9ff;--quest-tint:rgba(26,93,155,.30);border-left-color:#48b9ff}
-.quest.quest-writing{--quest-accent:#ff78c7;--quest-tint:rgba(145,38,109,.29);border-left-color:#ff78c7}
-.quest.quest-math{--quest-accent:#ffd166;--quest-tint:rgba(140,91,18,.29);border-left-color:#ffd166}
-.quest.quest-science{--quest-accent:#65dfa3;--quest-tint:rgba(28,116,78,.29);border-left-color:#65dfa3}
-.quest.quest-general{--quest-accent:#9ba7ff;--quest-tint:rgba(66,71,145,.27);border-left-color:#9ba7ff}
-.quest[class*="quest-"]>.mission-summary{background:linear-gradient(105deg,var(--quest-tint),rgba(8,9,26,.93) 70%)}
-.quest[class*="quest-"]>.mission-summary:hover{background:linear-gradient(105deg,var(--quest-tint),rgba(20,20,55,.96) 72%);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--quest-accent) 42%,transparent)}
-.quest[class*="quest-"] .subject-tag{background:color-mix(in srgb,var(--quest-accent) 24%,#151025);border-color:color-mix(in srgb,var(--quest-accent) 58%,#151025);color:#fff}
-.quest[class*="quest-"] .mission-time{border:1px solid color-mix(in srgb,var(--quest-accent) 38%,transparent);border-radius:8px;padding:7px 10px;background:rgba(3,5,18,.46)}
-.quest[class*="quest-"] .mission-time span{color:var(--quest-accent)}
-.quest[class*="quest-"] h4{color:#fffdf4;text-shadow:0 1px 1px #000}
-.recovery-day>summary{display:grid;grid-template-columns:auto 1fr auto;gap:12px}
-.day-heading{text-align:center;font-size:18px}
-.day-stats{display:flex;align-items:center;justify-content:flex-end;gap:7px;font-family:Arial,sans-serif}
-.day-count,.day-state{padding:6px 9px;border-radius:999px;background:#0c2340;border:1px solid #12668d;color:#79eaff;font-size:10px;font-weight:1000;white-space:nowrap}
-.day-total{padding:8px 12px;border-radius:8px;background:linear-gradient(180deg,#ffe99a,#eebd48);border:1px solid #fff0ae;color:#211209;box-shadow:0 0 14px rgba(244,201,93,.22);font-size:12px;font-weight:1000;white-space:nowrap}
-.locked-day .day-total{filter:saturate(.45);opacity:.72}.locked-day .day-state{color:#b5afc1;border-color:#514867;background:#171326}
-#curriculumTabs{grid-template-columns:repeat(5,1fr)}#curriculumTabs.teacher-tabs{grid-template-columns:repeat(6,1fr)}
-@media(max-width:900px){#curriculumTabs,#curriculumTabs.teacher-tabs{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:760px){.recovery-day>summary{grid-template-columns:auto 1fr}.day-heading{text-align:left}.day-stats{grid-column:1/-1;justify-content:flex-start;flex-wrap:wrap;padding-left:22px}.day-total{white-space:normal}.mission-summary{grid-template-columns:1fr}.mission-time{text-align:left!important;margin-top:7px}}
-@media(max-width:520px){#curriculumTabs,#curriculumTabs.teacher-tabs{grid-template-columns:repeat(2,1fr)}}
 </style></head>
 <body>
-<header class="top"><div class="shell topin"><div class="brand"><img class="shield" src="dragonswood-volleyball-crest-v1.png" alt="Dragonswood volleyball dragon crest"><div><h1 style="color:#f7c94f;background:linear-gradient(180deg,#fff9d8 0%,#ffe99a 27%,#f8ca50 58%,#ffe99a 82%,#dfa12a 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 1px 0 rgba(116,67,8,.95)) drop-shadow(0 2px 1px rgba(22,5,34,.95)) drop-shadow(0 0 5px rgba(255,216,91,.16));letter-spacing:.3px">DRAGONSWOOD</h1><p>CURRICULUM QUEST • EXPLORE ACADEMY</p></div></div>
+<header class="top"><div class="shell topin"><div class="brand"><div class="shield">🐉</div><div><h1>DRAGONSWOOD</h1><p>CURRICULUM QUEST • EXPLORE ACADEMY</p></div></div>
 <div class="controls">
       <span id="authStatus" style="font-size:11px;color:#bfb5ce;margin-right:8px">Checking sign-in…</span><span id="studentIdentity" style="color:#c7c1d5;font-weight:900;font-size:12px">Checking your Dragonswood profile…</span>
       <select id="grade"><option value="I">I • 4th Grade</option><option value="K">K • 5th Grade</option></select>
       <label>Day <input id="day" type="number" min="1" max="40" value="14" style="width:62px"></label>
-      <select id="teacherStudent" style="display:none;max-width:220px"><option value="">Select a scholar…</option></select>
       <span id="teacherBadge" class="btn" style="display:none">🛡️ TEACHER VERIFIED</span>
       <a class="btn" href="index.html">← Portal</a>
     </div></div></header>
 <main class="shell">
 <section class="frame hero"><div><span class="eyebrow">THE ACADEMIC PATH THROUGH DRAGONSWOOD</span><h2 id="hero">Current Quest</h2><p>Your assigned curriculum lives here. Current work keeps moving forward while unfinished earlier requirements stay in Recovery Quest until they are completed.</p><div class="notice">Required curriculum videos remain separate tracked requirements. Opening a video marks it watched, not mastered.</div></div><div class="ring" id="ring"><span id="pct">0%</span></div></section>
-<nav class="tabs" id="curriculumTabs"><button class="active" data-tab="current">📜 CURRENT</button><button data-tab="recovery">🗝️ RECOVERY</button><button data-tab="videos">🔮 VIDEOS</button><button data-tab="standards">📚 STANDARDS</button><button data-tab="morph">⚒️ WORDSMITH</button><button data-tab="audit">🛡️ AUDIT</button></nav>
+<nav class="tabs"><button class="active" data-tab="current">📜 CURRENT</button><button data-tab="recovery">🗝️ RECOVERY</button><button data-tab="videos">🔮 VIDEOS</button><button data-tab="standards">📚 STANDARDS</button><button data-tab="morph">⚒️ WORDSMITH</button><button data-tab="audit">🛡️ AUDIT</button></nav>
 <section class="kpis" id="kpis"></section>
 <section class="panel active" id="current"></section><section class="panel" id="recovery"></section><section class="panel" id="videos"></section><section class="panel" id="standards"></section><section class="panel" id="morph"></section><section class="panel" id="audit"></section>
 </main>
@@ -139,30 +85,23 @@ body>*{position:relative;z-index:1}
   </div>
 </div>
 <script src="q1-curriculum-data.js"></script>
-<script src="q1-curriculum-enhancements.js"></script>
 <script src="q1-video-map.js"></script>
-<script src="curriculum-question-engine.js"></script>
 <script>
-const D=window.DRAGONSWOOD_DATA, VM=window.DRAGONSWOOD_VIDEO_MAP||{}, BASE_K="dragonswood_q1_integrated_progress_v4";
-const Q1_SCHOOL_DAYS={"2026-08-03":1,"2026-08-04":2,"2026-08-05":3,"2026-08-06":4,"2026-08-07":5,"2026-08-10":6,"2026-08-11":7,"2026-08-12":8,"2026-08-13":9,"2026-08-14":10,"2026-08-17":11,"2026-08-18":12,"2026-08-19":13,"2026-08-20":14,"2026-08-21":15,"2026-08-24":16,"2026-08-25":17,"2026-08-26":18,"2026-08-27":19,"2026-08-28":20,"2026-08-31":21,"2026-09-01":22,"2026-09-02":23,"2026-09-03":24,"2026-09-04":25,"2026-09-08":26,"2026-09-09":27,"2026-09-10":28,"2026-09-11":29,"2026-09-14":30,"2026-09-15":31,"2026-09-16":32,"2026-09-17":33,"2026-09-18":34,"2026-09-21":35,"2026-09-22":36,"2026-09-23":37,"2026-09-24":38,"2026-09-25":39,"2026-09-28":40};
-function q1CalendarCursor(){const today=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Phoenix",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date()),dates=Object.keys(Q1_SCHOOL_DAYS).sort(),todayDay=Q1_SCHOOL_DAYS[today];if(todayDay)return todayDay;const next=dates.find(d=>d>today);if(next)return Q1_SCHOOL_DAYS[next];return 40}
-let K=BASE_K+"_pending",S={grade:"I",day:q1CalendarCursor(),items:{}};
-function loadScopedState(scope){K=BASE_K+"_"+String(scope||"anonymous").replace(/[^a-zA-Z0-9_-]/g,"_");try{S=JSON.parse(localStorage.getItem(K)||"{}")}catch(e){S={}}S.grade=S.grade||"I";S.day=q1CalendarCursor();S.items=S.items||{}}
+const D=window.DRAGONSWOOD_DATA, VM=window.DRAGONSWOOD_VIDEO_MAP||{}, K="dragonswood_q1_integrated_progress_v3";
+let S=JSON.parse(localStorage.getItem(K)||"{}");
+S.grade=S.grade||"I"; S.day=S.day||14; S.items=S.items||{};
 const $=x=>document.querySelector(x), $$=x=>[...document.querySelectorAll(x)];
 const esc=(x="")=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 let isTeacher=false,currentStudent=null,activeVideoId=null,watchedRanges=[],lastVideoTime=0;
-let studentCurriculumAccess=false,accessMessage="Checking today's school-day assignment…";
-let currentQuestOpen=false;
 const WATCH_REQUIRED_FRACTION=.90;
-function save(){localStorage.setItem(K,JSON.stringify(S));if(window.queueCurriculumProgress)window.queueCurriculumProgress(S)}
+function save(){localStorage.setItem(K,JSON.stringify(S))}
 function st(id){return S.items[id]||{watched:false,practiced:false,verified:false,videoReflection:"",practiceEvidence:""}}
 function googleFileId(url=""){const m=String(url).match(/\/d\/([^/?]+)/);return m?m[1]:""}
 function mediaFor(x){const id=googleFileId(x.resourceUrl||"");return id&&VM[id]?VM[id]:null}
 function vid(x){return !!mediaFor(x)||!!(x.resourceUrl&&(x.resourceUrl.includes("google.com/videos")||/video/i.test(x.resourceName||"")))}
 function mediaReady(x){const m=mediaFor(x);return !!m&&m.status==="ready"&&!!m.url}
 function mediaPending(x){const m=mediaFor(x);return !!m&&m.status==="pending"}
-const DW_HIDDEN_ITEM_IDS=new Set(["I-HUM-D1-C1-A","I-HUM-D1-C2-A","I-HUM-D1-C3-A","I-HUM-D1-C4-A","I-HUM-D2-C1-A","I-HUM-D2-C2-A","I-HUM-D2-C3-A","I-HUM-D2-C4-A","K-HUM-D1-C1-A","K-HUM-D1-C2-A","K-HUM-D1-C3-A","K-HUM-D1-C4-A","K-HUM-D2-C1-A","K-HUM-D2-C2-A","K-HUM-D2-C3-A","K-HUM-D2-C4-A","I-Math-D1-C1-A","I-Math-D1-C2-A","I-Math-D1-C3-A","I-Math-D2-C3-A","K-Math-D1-C1-A","K-Math-D1-C2-A","K-Math-D1-C3-A","K-Math-D2-C1-A","I-Science-D1-C1-A","I-Science-D1-C3-A","I-Science-D2-C1-A","I-Science-D2-C3-A","K-Science-D1-C1-A","K-Science-D1-C3-A","K-Science-D1-C4-A"]);
-function teacherNote(x){return DW_HIDDEN_ITEM_IDS.has(x.id)}
+function teacherNote(x){if(x.day>3)return false;const t=((x.requirement||"")+" "+(x.resourceName||"")).toLowerCase();if(x.day<=2)return /(welcome|getting to know|routine|procedure|rules?|expectations?|flavor first day|flavor introduction|course introduction)/i.test(t);return /(getting to know|classroom procedures|procedures|routines|rules|scientific expectations|welcome day)/i.test(t)&&!/(pre-assessment|morphology|character|place value|energy|design problem|reading comprehension|language and writing)/i.test(t)}
 function supportMetadataRow(x){
   if(x.resourceUrl)return false;
   const strand=String(x.strand||"").toLowerCase();
@@ -175,9 +114,9 @@ function supportMetadataRow(x){
   if(!x.resourceName && req.split(/\s+/).length<=3 && /^(application|communication|benchmark|data analysis|conductor|impact|momentum|questioning|predicting|measuring)$/i.test(req)) return true;
   return false;
 }
-function rows(){return D.items.filter(x=>x.grade===S.grade&&Number(x.day)>=3&&!teacherNote(x)&&!supportMetadataRow(x))}
+function rows(){return D.items.filter(x=>x.grade===S.grade&&!teacherNote(x)&&!supportMetadataRow(x))}
 function morphFor(x){const name=(x.resourceName||"").toLowerCase();if(!/morphology/.test(name))return null;return D.morphology.find(m=>m.grade===x.grade&&name.includes((m.word||"").toLowerCase()))||null}
-function friendlyTitle(x){const n=x.resourceName||"",m=morphFor(x);if(m)return `Word Mission: ${m.word}`;if(/first or third person|point of view/i.test(n))return "Who Is Telling the Story?";if(/fanboys/i.test(n))return "Build Strong Sentences with FANBOYS";if(/inference/i.test(n))return "Read Between the Lines";if(/character/i.test(n))return "Character Detective";if(/round/i.test(n))return "Rounding Mission";if(/decimal/i.test(n))return "Decimal Mission";if(/energy/i.test(n))return "Energy Investigation";return n.replace(/^(I|K)\s*Q1\s*/i,"").replace(/^STEM\s*(I|K)\s*Q1\s*/i,"").replace(/Lesson\s*\d+(?:\.\d+)?\s*[-:]?\s*/ig,"").replace(/Reading Comprehension\s*/ig,"").replace(/Language and Writing\s*/ig,"").replace(/Day\s*\d+\s*/ig,"").replace(/^[\s,;:–—-]+/,"").replace(/\s+/g," ").trim()||"Today's Curriculum Quest"}
+function friendlyTitle(x){const n=x.resourceName||"",m=morphFor(x);if(m)return `Word Mission: ${m.word}`;if(/first or third person|point of view/i.test(n))return "Who Is Telling the Story?";if(/fanboys/i.test(n))return "Build Strong Sentences with FANBOYS";if(/inference/i.test(n))return "Read Between the Lines";if(/character/i.test(n))return "Character Detective";if(/round/i.test(n))return "Rounding Mission";if(/decimal/i.test(n))return "Decimal Mission";if(/energy/i.test(n))return "Energy Investigation";return n.replace(/^(I|K)\s*Q1\s*/i,"").replace(/^STEM\s*(I|K)\s*Q1\s*/i,"").replace(/Lesson\s*\d+(?:\.\d+)?\s*[-:]?\s*/ig,"").replace(/Reading Comprehension\s*/ig,"").replace(/Language and Writing\s*/ig,"").replace(/Day\s*\d+\s*/ig,"").replace(/\s+/g," ").trim()||"Today's Curriculum Quest"}
 
 function topicText(x){return ((x.resourceName||"")+" "+(x.requirement||"")+" "+(x.strand||"")).toLowerCase()}
 function miniLessonFor(x){
@@ -207,18 +146,6 @@ function miniLessonFor(x){
   return {title:"Dragonswood Briefing",idea:"Today's skill is “"+(x.requirement||friendlyTitle(x))+".” Study the key idea and use the activity below to prove what you know.",example:"You do not need a separate worksheet or teacher handout. Everything required for this mission is inside Dragonswood.",remember:"Learn here. Practice here. Prove it here."};
 }
 function renderMiniLesson(x){
-  const morph=morphFor(x);
-  if(morph){
-    const layers=[
-      ["Say It",morph.phonological],
-      ["Spell It",morph.orthographic],
-      ["Build It",morph.morphological],
-      ["Use It",morph.syntactic],
-      ["Word History",morph.etymological],
-      ["Your Mission",morph.application]
-    ].filter(([,v])=>String(v||"").trim());
-    return `<div class="self-lesson"><div class="lesson-banner">📖 WORD LAB • ${esc(morph.word)}</div>${layers.map(([label,value])=>`<div class="key-idea"><strong>${esc(label)}:</strong> ${esc(value)}</div>`).join("")}<span class="mission-note">Everything needed for this word mission is inside Dragonswood</span></div>`;
-  }
   const m=miniLessonFor(x);
   return `<div class="self-lesson"><div class="lesson-banner">📖 LEARN IT HERE • ${esc(m.title)}</div><div class="key-idea">${esc(m.idea)}</div><div class="example-box"><strong>Example:</strong> ${esc(m.example)}</div><div class="remember"><strong>Remember:</strong> ${esc(m.remember)}</div><span class="mission-note">No worksheet or outside lesson required</span></div>`;
 }
@@ -228,16 +155,16 @@ function activityFor(x){
   if(m&&m.application)return `${m.application} Then use the target word “${m.word}” correctly in your own sentence.`;
   if(/FANBOYS/i.test(raw))return "Write a compound sentence using a comma and one FANBOYS conjunction. Make both sides complete ideas.";
   if(/point of view/i.test(raw))return "Choose the point of view, then prove it with a pronoun or specific clue from the text.";
-  if(x.subject==="Math")return "Choose one problem from the practice above. Write its equation, show the important steps, and explain how you checked that your answer is reasonable.";
-  if(x.subject==="Science")return "Write a claim about today’s investigation. Support it with one specific observation or fact, then explain how that evidence supports your claim.";
-  if(x.strand==="Reading")return "Answer today’s reading question, give one specific clue from the lesson text or example, and explain what that clue proves.";
-  if(x.strand==="Writing")return "Write a strong example of today’s writing skill. Reread it, revise one part to make it clearer, and submit the improved version.";
-  return "Explain today’s key idea in your own words and give one correct example that proves you understand it.";
+  if(x.subject==="Math")return `Complete the Dragonswood math challenge for “${raw||friendlyTitle(x)}.” Show enough reasoning that another mathematician could follow your thinking.`;
+  if(x.subject==="Science")return `Complete the Dragonswood science challenge for “${raw||friendlyTitle(x)}.” Use a cause, effect, observation, model, or piece of evidence in your explanation.`;
+  if(x.strand==="Reading")return `Answer the Dragonswood reading challenge for “${raw||friendlyTitle(x)}.” Use a text clue and explain what it shows.`;
+  if(x.strand==="Writing")return `Create and revise a strong example for “${raw||friendlyTitle(x)}.”`;
+  return `Complete the Dragonswood challenge for “${raw||friendlyTitle(x)}” and explain your thinking.`;
 }
 function kidIntro(x){const m=morphFor(x);if(m)return `Today you are learning the word “${m.word}.” Watch the lesson first. Then complete the word mission below.`;if(/point of view|first or third person/i.test((x.resourceName||"")+" "+(x.requirement||"")))return "Watch the lesson to learn how to tell who is telling a story. Then prove the point of view using the class novel.";if(/FANBOYS/i.test((x.resourceName||"")+" "+(x.requirement||"")))return "Watch the lesson to learn how FANBOYS can connect ideas. Then use what you learned in your own sentence.";return "Watch the lesson first. Then complete the mission using what you learned."}
 function togglePractice(id){const box=document.getElementById("practice-"+id);if(box)box.hidden=!box.hidden}
 function submitPractice(id){const ta=document.getElementById("practiceText-"+id),answer=(ta?.value||"").trim();if(answer.length<15){alert("Give a complete answer or explain what you completed. Try at least one good sentence.");return}const s=st(id);s.practiced=true;s.practiceEvidence=answer;S.items[id]=s;save();render()}
-async function teacherVerify(id){if(!isTeacher||!window.setCurriculumVerification)return;const s=st(id);if(!s.watched||!s.practiced){alert("This quest still needs the required video check and activity evidence.");return}const next=!s.verified;const ok=await window.setCurriculumVerification(id,next);if(!ok)return;s.verified=next;S.items[id]=s;localStorage.setItem(K,JSON.stringify(S));render()}
+function teacherVerify(id){if(!isTeacher)return;const s=st(id);if(!s.watched||!s.practiced){alert("This quest still needs the required video check and activity evidence.");return}s.verified=!s.verified;S.items[id]=s;save();render()}
 function mergeRanges(ranges){if(!ranges.length)return[];const a=ranges.slice().sort((x,y)=>x[0]-y[0]),out=[a[0].slice()];for(let i=1;i<a.length;i++){const last=out[out.length-1],cur=a[i];if(cur[0]<=last[1]+1)last[1]=Math.max(last[1],cur[1]);else out.push(cur.slice())}return out}
 function watchedFraction(v){if(!v.duration||!isFinite(v.duration))return 0;return Math.min(1,mergeRanges(watchedRanges).reduce((n,r)=>n+Math.max(0,r[1]-r[0]),0)/v.duration)}
 function launchVideo(id,url,title){activeVideoId=id;watchedRanges=[];lastVideoTime=0;$("#videoModalTitle").textContent=title;$("#videoReflection").value=st(id).videoReflection||"";const v=$("#nativeVideo");v.src=url;v.currentTime=0;$("#videoModal").classList.add("show");$("#videoModal").setAttribute("aria-hidden","false");updateVideoTimer()}
@@ -265,33 +192,8 @@ function meaningfulText(v,minWords=6){
   return {ok:true,msg:""};
 }
 function lessonWords(x){
-  const entry=typeof dwCurricEntry==="function"?dwCurricEntry(x):null;
-  const skillWords={
-    "math.rounding":["round","place","digit","nearest","estimate"],
-    "math.place_value":["place","value","digit","times","greater","smaller"],
-    "math.addition":["add","sum","regroup","place","estimate"],
-    "math.subtraction":["subtract","difference","regroup","place","estimate"],
-    "sci.energy_transfer":["energy","transfer","move","light","heat","sound","motion"],
-    "sci.design_problem":["problem","criteria","constraint","solution","design"],
-    "sci.compare_solutions":["solution","compare","criteria","evidence","design"],
-    "sci.fair_test":["fair","test","variable","evidence","result"],
-    "ela.pov":["narrator","person","pronoun","point","view"],
-    "ela.character":["character","trait","action","thought","word","evidence"],
-    "ela.meaning":["infer","inference","clue","evidence","text"],
-    "ela.sent.compound":["sentence","complete","conjunction","fanboys","comma"],
-    "ela.opinion":["opinion","claim","reason","evidence","because"]
-  };
-  let words=[];
-  for(const id of (entry?.skills||[])) words.push(...(skillWords[id]||id.split(/[._-]/)));
-  words.push(...String(entry?.iCan||"").toLowerCase().match(/[a-z]{4,}/g)||[]);
-  const stop=new Set(["lesson","video","class","grade","today","practice","review","student","students","with","from","this","that","then","your","into","about","understand","explain","describe","identify","develop"]);
-  return [...new Set(words.filter(w=>!stop.has(w)&&w.length>2))];
-}
-function conceptEvidence(x,written){
-  const words=lessonWords(x),text=String(written||"").toLowerCase();
-  if(!words.length)return {ok:true,matched:[]};
-  const matched=words.filter(w=>new RegExp(`\\b${w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}(?:s|ed|ing)?\\b`,"i").test(text));
-  return {ok:matched.length>=Math.min(2,words.length),matched};
+  const stop=new Set(["lesson","video","class","grade","day","practice","review","student","students","q1","stem","hum","what","with","from","this","that","then","your","into","about"]);
+  return (((x.resourceName||"")+" "+(x.requirement||"")).toLowerCase().match(/[a-z]{4,}/g)||[]).filter(w=>!stop.has(w));
 }
 function activitySpec(x){
   const raw=((x.resourceName||"")+" "+(x.requirement||"")+" "+(x.strand||"")).toLowerCase();
@@ -394,9 +296,7 @@ function validateActivity(x){
     return {ok:true};
   }
   const q=meaningfulText(written,spec.minWords||7);if(!q.ok)return q;
-  const concept=conceptEvidence(x,written);
-  if(!concept.ok)return {ok:false,msg:"Use at least two important ideas from today’s lesson and connect them in your explanation."};
-  if(spec.science&&!/\b(because|evidence|cause|effect|observe|observation|shows|result|data)\b/i.test(written))return {ok:false,msg:"Include an observation or fact and explain why it supports your science claim."};
+  if(spec.science&&!/\b(because|energy|evidence|cause|effect|observe|shows|changes|moves|transfer|collision|design|solution|matter|force|resource)\b/i.test(written))return {ok:false,msg:"Include a science idea, observation, cause/effect, or evidence from the lesson."};
   return {ok:true};
 }
 function renderActivity(x){
@@ -407,40 +307,12 @@ function renderActivity(x){
   else if(spec.kind==="morph"||spec.kind==="readingPov"){
     controls=`<div class="activity-options">${spec.options.map(o=>`<label class="activity-option"><input type="radio" name="act-${x.id}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join("")}</div><textarea class="activity-input" id="actText-${x.id}" placeholder="Write your evidence or example here…">${esc(answer.includes("Response:")?answer.split("Response:").slice(1).join("Response:").trim():answer)}</textarea>`;
   } else controls=`<textarea class="activity-input" id="actText-${x.id}" placeholder="Write your answer here…">${esc(answer)}</textarea>`;
-  return `${renderAutoPractice(x)}<div class="activity-shell"><div class="activity-title">Apply What You Learned • ${esc(spec.title)}</div><div class="activity-prompt">${esc(spec.prompt)}</div>${controls}<div class="actions"><button class="btn" onclick="checkActivity('${x.id}')">${s.practiced?"CHECK AGAIN":"CHECK MY WORK"}</button></div><div class="activity-feedback" id="actFeedback-${x.id}"></div><div class="override-row"><button class="override-btn ${status}" id="overrideBtn-${x.id}" onclick="requestOverride('${x.id}')">${status==="pending"?"🟡 TEACHER REVIEW REQUESTED":status==="approved"?"✅ TEACHER OVERRIDE APPROVED":"🛡️ REQUEST TEACHER REVIEW"}</button><span class="override-note">Use this if you believe your answer is correct but Dragonswood will not accept it.</span></div></div>`;
+  return `<div class="activity-shell"><div class="activity-title">${esc(spec.title)}</div><div class="activity-prompt">${esc(spec.prompt)}</div>${controls}<div class="actions"><button class="btn" onclick="checkActivity('${x.id}')">${s.practiced?"CHECK AGAIN":"CHECK MY WORK"}</button></div><div class="activity-feedback" id="actFeedback-${x.id}"></div><div class="override-row"><button class="override-btn ${status}" id="overrideBtn-${x.id}" onclick="requestOverride('${x.id}')">${status==="pending"?"🟡 TEACHER REVIEW REQUESTED":status==="approved"?"✅ TEACHER OVERRIDE APPROVED":"🛡️ REQUEST TEACHER REVIEW"}</button><span class="override-note">Use this if you believe your answer is correct but Dragonswood will not accept it.</span></div></div>`;
 }
 function findItem(id){return D.items.find(x=>x.id===id)}
-function autoQuestionsFor(x){
-  try{return typeof dwCurricPractice==="function"?dwCurricPractice(x,6):[]}
-  catch(e){console.error("Curriculum practice",x.id,e);return []}
-}
-function autoPassed(x){
-  const q=autoQuestionsFor(x),s=st(x.id),a=s.autoAnswers||{};
-  return !q.length||q.every((item,i)=>String(a[i]||"")===String(item.answer));
-}
-function missionNeedsTeacher(x){return typeof dwNeedsTeacherVerify==="function"?dwNeedsTeacherVerify(x):x.subject==="Science"||/writing/i.test(x.strand||"")}
-function missionComplete(x){
-  const s=st(x.id),videoOk=!vid(x)||s.watched||mediaPending(x);
-  return videoOk&&autoPassed(x)&&!!s.practiced&&(!missionNeedsTeacher(x)||!!s.verified)&&!mediaPending(x);
-}
-function renderAutoPractice(x){
-  const q=autoQuestionsFor(x),s=st(x.id),answers=s.autoAnswers||{};
-  if(!q.length)return `<div class="activity-feedback show good">This mission is observation or written-performance based, so it does not add a fake multiple-choice quiz.</div>`;
-  const renderSet=(items,offset,title,help)=>`<div class="activity-title">${title}</div><p class="kid-task">${help}</p>`+items.map((item,j)=>{const i=j+offset;
-    const chosen=String(answers[i]||""),correct=chosen&&chosen===String(item.answer),wrong=chosen&&!correct;
-    return `<fieldset class="activity-shell"><legend>${i+1}. ${esc(item.prompt)}</legend><div class="activity-options">${item.choices.map(o=>`<label class="activity-option"><input type="radio" name="auto-${x.id}-${i}" value="${esc(o)}" ${chosen===String(o)?"checked":""} onchange="checkAutoQuestion('${x.id}',${i},this.value)"><span>${esc(o)}</span></label>`).join("")}</div>${chosen?`<div class="activity-feedback show ${correct?"good":"bad"}">${correct?"✓ Correct":"Not yet—review the lesson and try again."}</div>`:""}</fieldset>`;
-  }).join("");
-  const videoCount=vid(x)?Math.min(2,q.length):0;
-  return (videoCount?renderSet(q.slice(0,videoCount),0,"Video Check • 2 questions","Use what the lesson video taught you."):"")+
-    renderSet(q.slice(videoCount),videoCount,`Practice • ${q.length-videoCount} questions`,"Prove the lesson skill with fresh examples.");
-}
-function checkAutoQuestion(id,index,value){
-  const x=findItem(id);if(!x)return;const s=st(id);s.autoAnswers=s.autoAnswers||{};s.autoAnswers[index]=value;s.autoAttempts=(s.autoAttempts||0)+1;S.items[id]=s;save();render();
-}
 function checkActivity(id){
   const x=findItem(id);if(!x)return;const f=document.getElementById("actFeedback-"+id),result=validateActivity(x),answer=activityAnswerText(x),s=st(id);
   s.lastActivityAttempt=answer;s.activityAttempts=(s.activityAttempts||0)+1;S.items[id]=s;save();
-  window.recordCurriculumAttempt?.(x,s,result.ok);
   f.className="activity-feedback show "+(result.ok?"good":"bad");
   if(result.ok){s.practiced=true;s.practiceEvidence=answer;s.overrideStatus="";S.items[id]=s;save();f.textContent="✓ Quest complete. Your answer passed the lesson check.";render()}
   else{f.textContent="Not yet: "+result.msg+" Your answer was saved. You can revise it or request teacher review.";document.getElementById("overrideBtn-"+id)?.classList.remove("approved")}
@@ -460,158 +332,23 @@ async function requestOverride(id){
     s.overrideStatus="";S.items[id]=s;save();render();
   }
 }
-const openMissionIds=new Set();
-function rememberMissionOpen(id,isOpen){if(isOpen)openMissionIds.add(id);else openMissionIds.delete(id)}
-function subjectLabel(x){
-  if(x.subject==="Math")return "MATH";
-  if(x.subject==="Science")return "SCIENCE";
-  if(x.strand==="Writing")return "ELA • WRITING";
-  if(x.strand==="Reading")return "ELA • READING";
-  if(morphFor(x))return "ELA • WORD STUDY";
-  return "ELA • "+String(x.strand||"HUM").toUpperCase();
-}
-function subjectQuestClass(x){
-  if(morphFor(x))return "quest-word";
-  if(x.strand==="Reading")return "quest-reading";
-  if(x.strand==="Writing")return "quest-writing";
-  if(x.subject==="Math")return "quest-math";
-  if(x.subject==="Science")return "quest-science";
-  return "quest-general";
-}
-function readableVideoDuration(seconds){
-  const total=Math.max(0,Math.round(Number(seconds)||0)),mins=Math.floor(total/60),secs=total%60;
-  if(!mins)return `${secs} sec video`;
-  return `${mins} min${secs?` ${secs} sec`:""} video`;
-}
-function workTiming(x){
-  if(morphFor(x))return {check:[7,10],application:[5,8]};
-  if(x.strand==="Reading")return {check:[8,12],application:[8,12]};
-  if(x.strand==="Writing")return {check:[8,12],application:[12,18]};
-  if(x.subject==="Math")return {check:[9,13],application:[10,15]};
-  if(x.subject==="Science")return {check:[8,12],application:[10,15]};
-  return {check:[7,11],application:[8,12]};
-}
-function missionMinutes(x){
-  const work=workTiming(x),workLow=work.check[0]+work.application[0],workHigh=work.check[1]+work.application[1];
-  if(!vid(x)){const range=[workLow+5,workHigh+8];return {total:`EST. ${range[0]}–${range[1]} MIN TOTAL`,video:"Dragonswood lesson included",work,range}}
-  const seconds=Number(mediaFor(x)?.durationSeconds||0);
-  if(seconds>0){const videoMinutes=seconds/60,low=Math.max(1,Math.round(videoMinutes+workLow)),high=Math.max(low,Math.round(videoMinutes+workHigh));return {total:`EST. ${low}–${high} MIN TOTAL`,video:readableVideoDuration(seconds),work,range:[low,high]}}
-  const range=[workLow+5,workHigh+10];return {total:`EST. ${range[0]}–${range[1]} MIN TOTAL`,video:"",work,range};
-}
-function compactMinutes(total){const n=Math.max(0,Math.round(total));if(n<60)return `${n} MIN`;const h=Math.floor(n/60),m=n%60;return `${h} HR${h===1?"":"S"}${m?` ${m} MIN`:""}`}
-function dayEstimate(list){const totals=list.reduce((sum,x)=>{const range=missionMinutes(x).range;sum[0]+=range[0];sum[1]+=range[1];return sum},[0,0]);return `EST. ${compactMinutes(totals[0])}–${compactMinutes(totals[1])} TOTAL`}
-function card(x){
-  const s=st(x.id),hasVideo=vid(x),readyVideo=mediaReady(x),pendingVideo=mediaPending(x),canPractice=!hasVideo||s.watched||pendingVideo,m=mediaFor(x),needsTeacher=missionNeedsTeacher(x),complete=missionComplete(x),workReady=(!hasVideo||s.watched)&&autoPassed(x)&&s.practiced;
-  const finalText=pendingVideo?(s.practiced?"Activity saved. Final completion waits for the restored video.":"Complete the activity while video access is restored."):complete?"✅ Curriculum mission complete.":needsTeacher?(workReady?"Your work is ready for teacher verification.":"Finish the video, standard check, and written application first."):"Pass the standard check and written application to complete this mission.";
-  const verifyButton=isTeacher&&needsTeacher&&!pendingVideo?`<div class="actions"><button class="stage verify ${workReady?"":"locked"}" ${workReady?"":"disabled"} onclick="teacherVerify('${x.id}')">${s.verified?"UNVERIFY":"TEACHER VERIFY"}</button></div>`:"";
-  const timing=missionMinutes(x),open=openMissionIds.has(x.id)?" open":"";
-  return `<details class="frame quest ${subjectQuestClass(x)} ${x.resourceUrl?"link":""} ${complete?"done":""}"${open} ontoggle="rememberMissionOpen('${x.id}',this.open)"><summary class="mission-summary"><div><div class="meta"><span class="tag subject-tag">${esc(subjectLabel(x))}</span>${hasVideo?'<span class="tag video">REQUIRED VIDEO</span>':""}${pendingVideo?'<span class="tag" style="background:#5a3b12;color:#ffe8a0">SOURCE PENDING</span>':""}${complete?'<span class="tag complete">MISSION COMPLETE</span>':""}</div><h4>${esc(friendlyTitle(x))}</h4></div><div class="mission-time">${esc(timing.total)}<span>${timing.video?esc(timing.video)+" • ":""}${timing.work.check[0]}–${timing.work.check[1]} min check • ${timing.work.application[0]}–${timing.work.application[1]} min application</span></div></summary><div class="mission-body"><p class="kid-task">${esc(kidIntro(x))}</p><div class="step"><strong>1. ${hasVideo?"Watch the lesson":"Learn It in Dragonswood"}</strong><br>${pendingVideo?"⏳ This video is temporarily waiting on school access. You are not behind.":hasVideo?(s.watched?"✅ Video check complete.":"Watch the lesson here. Skipping ahead does not count as viewing."):"Everything needed for this lesson is here."}${!hasVideo||s.watched&&morphFor(x)?renderMiniLesson(x):""}<div class="actions">${readyVideo?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">${s.watched?"REWATCH VIDEO":"WATCH REQUIRED VIDEO"} ▶</button>`:""}${pendingVideo?'<button class="stage locked" disabled>VIDEO ACCESS PENDING</button>':""}${hasVideo&&!pendingVideo?`<button class="stage ${s.watched?"on":"locked"}" disabled>${s.watched?"✓ WATCHED":"WATCH"}</button>`:""}</div></div><div class="step"><strong>2. Standard Check + Application</strong>${canPractice?renderActivity(x):'<p class="kid-task">Finish the required video first to unlock this activity.</p>'}</div><div class="step"><strong>3. ${needsTeacher?"Teacher Verification":"Completion Check"}</strong><br>${finalText}${verifyButton}</div>${isTeacher?`<details class="source-details"><summary>Teacher/source details</summary><p>${esc(x.requirement)}</p><p>${x.resourceName?esc(x.resourceName):""}</p><p>Human verification: ${needsTeacher?"required":"not required"}</p>${m?`<p>Media status: ${esc(m.status)}</p>`:""}</details>`:""}</div></details>`;
-}
+function card(x){const s=st(x.id),hasVideo=vid(x),readyVideo=mediaReady(x),pendingVideo=mediaPending(x),canPractice=!hasVideo||s.watched||pendingVideo,task=activityFor(x),m=mediaFor(x);return `<article class="frame quest ${x.resourceUrl?"link":""} ${s.verified?"done":""}"><div class="meta"><span class="tag">${esc(x.subject)}</span><span class="tag">${esc(x.strand)}</span>${hasVideo?'<span class="tag video">REQUIRED VIDEO</span>':""}${pendingVideo?'<span class="tag" style="background:#5a3b12;color:#ffe8a0">SOURCE PENDING</span>':""}${s.verified?'<span class="tag complete">TEACHER VERIFIED</span>':""}</div><h4>${esc(friendlyTitle(x))}</h4><p class="kid-task">${esc(kidIntro(x))}</p><div class="step"><strong>1. ${hasVideo?"Watch the lesson":"Learn It in Dragonswood"}</strong><br>${pendingVideo?"⏳ This video is temporarily waiting on school access. You are not behind. Dragonswood provides the activity now, and the video will appear here when access is restored.":hasVideo?(s.watched?"✅ Video check complete.":"Watch the lesson here. Skipping ahead does not count as viewing."):"Everything you need for this lesson is right here."}${!hasVideo?renderMiniLesson(x):""}<div class="actions">${readyVideo?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">${s.watched?"REWATCH VIDEO":"WATCH REQUIRED VIDEO"} ▶</button>`:""}${pendingVideo?'<button class="stage locked" disabled>VIDEO ACCESS PENDING</button>':""}${hasVideo&&!pendingVideo?`<button class="stage ${s.watched?"on":"locked"}" disabled>${s.watched?"✓ WATCHED":"WATCH"}</button>`:""}</div></div><div class="step"><strong>2. Do the Quest</strong>${canPractice?renderActivity(x):'<p class="kid-task">Finish the required video first to unlock this activity.</p>'}</div><div class="step"><strong>3. Teacher Check</strong><br>${pendingVideo?(s.practiced?"Activity is ready. Final curriculum verification waits for the restored video.":"Complete the activity while the video source is being restored."):s.verified?"✅ Your teacher verified this quest.":(s.watched&&s.practiced?"Your work is ready for your teacher to check.":"Finish Steps 1 and 2 first.")}${isTeacher&&!pendingVideo?`<div class="actions"><button class="stage verify ${(s.watched&&s.practiced)?"":"locked"}" ${(s.watched&&s.practiced)?"":"disabled"} onclick="teacherVerify('${x.id}')">${s.verified?"UNVERIFY":"TEACHER VERIFY"}</button></div>`:""}</div>${isTeacher?`<details class="source-details"><summary>Teacher/source details</summary><p>${esc(x.requirement)}</p><p>${x.resourceName?esc(x.resourceName):""}</p>${m?`<p>Media status: ${esc(m.status)}</p>`:""}</details>`:""}</article>`}
 function grouped(title,desc,a,byDay=false){if(!a.length)return `<div class="frame empty">Nothing waiting here.</div>`;let g={};a.forEach(x=>(g[byDay?x.day:x.subject]??=[]).push(x));return `<div class="title"><div><h2>${title}</h2><p>${desc}</p></div></div>`+Object.entries(g).map(([n,l])=>`<div class="group"><div class="grouphead"><h3>${byDay?"Original Day "+n:n}</h3><small>${l.length} missions</small></div><div class="grid">${l.map(card).join("")}</div></div>`).join("")}
-function recoveryGrouped(a){
- if(!a.length)return `<div class="frame empty"><h2>✅ Recovery is clear</h2><p>No earlier curriculum days are waiting.</p></div>`;
- const groups={};a.forEach(x=>(groups[x.day]??=[]).push(x));const days=Object.keys(groups).map(Number).sort((a,b)=>a-b),first=days[0];
-  return `<div class="title"><div><h2>Recovery Quest</h2><p>Complete one school day at a time. Finishing the open day unlocks the next unfinished day.</p></div></div>`+days.map((day,i)=>{
-  const list=groups[day],unlocked=isTeacher||day===first;
-  return `<details class="frame recovery-day ${unlocked?"":"locked-day"}" ${unlocked&&i===0?"open":""}><summary><span class="day-heading">${unlocked?"🗝️":"🔒"} Original Day ${day}</span><span class="day-stats"><span class="day-count">${list.length} MISSION${list.length===1?"":"S"}</span><strong class="day-total">⏱ ${dayEstimate(list)}</strong><span class="day-state">${unlocked?"OPEN":"LOCKED"}</span></span></summary>${unlocked?`<div class="recovery-body"><div class="grid">${list.map(card).join("")}</div></div>`:`<div class="recovery-lock">Complete Original Day ${first} to unlock this recovery day.</div>`}</details>`;
- }).join("");
-}
-function render(){
-const videoTab=document.querySelector('[data-tab="videos"]'),tabs=document.getElementById("curriculumTabs");if(videoTab)videoTab.classList.toggle("hidden",!isTeacher);if(tabs)tabs.classList.toggle("teacher-tabs",isTeacher);if(!isTeacher&&videoTab?.classList.contains("active")){videoTab.classList.remove("active");document.querySelector('[data-tab="current"]')?.classList.add("active");$("#videos").classList.remove("active");$("#current").classList.add("active")}
-if(!isTeacher&&!studentCurriculumAccess){
-  $("#hero").textContent="Curriculum Quest Locked";$("#pct").textContent="🔒";$("#ring").style.background="#241936";$("#kpis").innerHTML="";
-  const locked=`<div class="frame empty"><h2>🔒 No curriculum quest is open</h2><p>${esc(accessMessage)}</p></div>`;
-  ["current","recovery","videos","standards","morph","audit"].forEach(id=>$("#"+id).innerHTML=locked);return;
-}
-let r=rows(),dayIsOpen=isTeacher||currentQuestOpen,due=r.filter(x=>x.day<S.day||(dayIsOpen&&x.day===S.day)),pendingSources=due.filter(mediaPending),eligibleDue=due.filter(x=>!mediaPending(x)),eligibleDone=eligibleDue.filter(missionComplete).length,p=eligibleDue.length?Math.round(eligibleDone/eligibleDue.length*100):0,back=r.filter(x=>x.day<S.day&&!missionComplete(x)&&!mediaPending(x)),recoveryDays=[...new Set(back.map(x=>Number(x.day)))].sort((a,b)=>a-b),mv=due.filter(x=>vid(x)&&!mediaPending(x)&&!st(x.id).watched),todayRows=dayIsOpen?r.filter(x=>x.day===S.day):[];$("#grade").value=S.grade;$("#day").value=S.day;$("#hero").textContent=dayIsOpen?`${D.meta.gradeLabels[S.grade]} • Day ${S.day}`:`Recovery Open • Current Day ${S.day} Locked`;$("#pct").textContent=p+"%";$("#ring").style.background=`conic-gradient(var(--green) ${p*3.6}deg,#241936 0)`;$("#kpis").innerHTML=[[todayRows.length,dayIsOpen?"TODAY'S MISSIONS":"CURRENT MISSIONS OPEN"],[recoveryDays.length,"RECOVERY DAYS"],[mv.length,"PAST VIDEOS STILL NEEDED"],[pendingSources.length,"SOURCE VIDEOS PENDING"]].map(x=>`<div class="frame kpi"><b>${x[0]}</b><small>${x[1]}</small></div>`).join("");$("#current").innerHTML=dayIsOpen?grouped(`Day ${S.day} Current Quest`,`Watch the lesson, pass the standard check, then apply what you learned. ${dayEstimate(todayRows)}.`,todayRows):`<div class="frame empty"><h2>🔒 Current Quest is closed</h2><p>New curriculum opens on the next assigned school day. Recovery remains available.</p></div>`;$("#recovery").innerHTML=recoveryGrouped(back.sort((a,b)=>a.day-b.day));
-let vr=(isTeacher?r:due).filter(vid).sort((a,b)=>a.day-b.day);$("#videos").innerHTML=`<div class="title"><div><h2>🔮 Required Video Vault</h2><p>Students see only videos from today and earlier school days. Source-pending videos are held until school access returns.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Day</th><th>Subject</th><th>Mission</th><th>Media</th><th>Status</th><th>Watch</th></tr></thead><tbody>${vr.map(x=>{const m=mediaFor(x),pending=mediaPending(x),ready=mediaReady(x);return `<tr><td>${x.day}</td><td>${esc(x.subject)}</td><td>${esc(friendlyTitle(x))}</td><td>${pending?"⏳ SOURCE PENDING":ready?"R2 READY":"SOURCE LINK"}</td><td>${pending?"ON HOLD":st(x.id).watched?"✅ WATCHED":"NOT YET"}</td><td>${ready?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">WATCH ▶</button>`:pending?"Awaiting access":"—"}</td></tr>`}).join("")}</tbody></table></div>`;
-let sr=D.standards.filter(x=>x.grade===S.grade);$("#standards").innerHTML=standardsMasteryReport()+`<div class="title"><div><h2>📚 Standards Codex</h2><p>Teacher-facing source map.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Subject</th><th>Code</th><th>Standard</th><th>Evidence of Proficiency</th><th>Assessment</th></tr></thead><tbody>${sr.map(x=>`<tr><td>${esc(x.subject)}</td><td>${esc(standardCode(x))}</td><td>${esc(x.standard)}</td><td>${esc(x.proficiency)}</td><td>${esc(x.assessment)}</td></tr>`).join("")}</tbody></table></div>`;
-let mr=D.morphology.filter(x=>x.grade===S.grade&&(isTeacher||Number(x.week||0)<=Math.ceil(S.day/5))),wg={};mr.forEach(x=>(wg[x.week]??=[]).push(x));$("#morph").innerHTML=`<div class="title"><div><h2>⚒️ Wordsmith Tower</h2><p>Word roots and target words available through the current school day.</p></div></div>`+Object.entries(wg).map(([w,l])=>`<div class="group"><div class="grouphead"><h3>Week ${w} • ${esc(l[0].root)}</h3></div><div class="wordgrid">${l.map(x=>`<div class="frame word"><small>ROOT: ${esc(x.root)}</small><b>${esc(x.word)}</b><p>${esc(x.morphological||x.orthographic||"Learn how this word is built and what its parts mean.")}</p><p><strong>Your task:</strong> ${esc(x.application||"Use the word correctly in a complete sentence.")}</p></div>`).join("")}</div></div>`).join("");
-let miss=due.filter(x=>!missionComplete(x)&&!mediaPending(x));$("#audit").innerHTML=`<div class="title"><div><h2>🛡️ Curriculum Compliance Shield</h2><p>Completion requires the lesson, standard check, and application. Teacher verification is reserved for human-judgment work.</p></div></div><div class="frame audit ${miss.length?"bad":"good"}"><h3>${miss.length} curriculum missions incomplete</h3><p>${miss.length?"Recovery Quest shows the unfinished available curriculum.":"Everything currently available and due is complete."}</p></div><div class="frame audit ${mv.length?"bad":"good"}"><h3>${mv.length} available required videos still need a completed video check</h3></div><div class="frame audit ${pendingSources.length?"bad":"good"}"><h3>${pendingSources.length} curriculum video sources awaiting school access</h3><p>${pendingSources.length?"These are held separately and do not count as student recovery failures. Activities can continue now.":"No curriculum source videos are pending access."}</p></div>`}
+function render(){let r=rows(),due=r.filter(x=>x.day<=S.day),pendingSources=due.filter(mediaPending),eligibleDue=due.filter(x=>!mediaPending(x)),eligibleDone=eligibleDue.filter(x=>st(x.id).verified).length,p=eligibleDue.length?Math.round(eligibleDone/eligibleDue.length*100):0,back=r.filter(x=>x.day<S.day&&!st(x.id).verified&&!mediaPending(x)),mv=due.filter(x=>vid(x)&&!mediaPending(x)&&!st(x.id).watched);$("#grade").value=S.grade;$("#day").value=S.day;$("#hero").textContent=`${D.meta.gradeLabels[S.grade]} • Day ${S.day}`;$("#pct").textContent=p+"%";$("#ring").style.background=`conic-gradient(var(--green) ${p*3.6}deg,#241936 0)`;$("#kpis").innerHTML=[[r.filter(x=>x.day===S.day).length,"TODAY'S MISSIONS"],[back.length,"RECOVERY MISSIONS"],[mv.length,"VIDEOS STILL NEEDED"],[pendingSources.length,"SOURCE VIDEOS PENDING"]].map(x=>`<div class="frame kpi"><b>${x[0]}</b><small>${x[1]}</small></div>`).join("");$("#current").innerHTML=grouped(`Day ${S.day} Current Quest`,"Watch first. Do the activity second. Your teacher verifies the mission last.",r.filter(x=>x.day===S.day));$("#recovery").innerHTML=grouped("Recovery Quest","Only unfinished earlier curriculum appears here. Videos awaiting school access are held separately and do not count against students.",back.sort((a,b)=>a.day-b.day),true);
+let vr=r.filter(vid).sort((a,b)=>a.day-b.day);$("#videos").innerHTML=`<div class="title"><div><h2>🔮 Required Video Vault</h2><p>R2 videos play directly inside Dragonswood. Source-pending videos are held until school access returns.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Day</th><th>Subject</th><th>Mission</th><th>Media</th><th>Status</th><th>Watch</th></tr></thead><tbody>${vr.map(x=>{const m=mediaFor(x),pending=mediaPending(x),ready=mediaReady(x);return `<tr><td>${x.day}</td><td>${esc(x.subject)}</td><td>${esc(friendlyTitle(x))}</td><td>${pending?"⏳ SOURCE PENDING":ready?"R2 READY":"SOURCE LINK"}</td><td>${pending?"ON HOLD":st(x.id).watched?"✅ WATCHED":"NOT YET"}</td><td>${ready?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">WATCH ▶</button>`:pending?"Awaiting access":"—"}</td></tr>`}).join("")}</tbody></table></div>`;
+let sr=D.standards.filter(x=>x.grade===S.grade);$("#standards").innerHTML=`<div class="title"><div><h2>📚 Standards Codex</h2><p>Teacher-facing source map.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Subject</th><th>Code</th><th>Standard</th><th>Evidence of Proficiency</th><th>Assessment</th></tr></thead><tbody>${sr.map(x=>`<tr><td>${esc(x.subject)}</td><td>${esc(x.code)}</td><td>${esc(x.standard)}</td><td>${esc(x.proficiency)}</td><td>${esc(x.assessment)}</td></tr>`).join("")}</tbody></table></div>`;
+let mr=D.morphology.filter(x=>x.grade===S.grade),wg={};mr.forEach(x=>(wg[x.week]??=[]).push(x));$("#morph").innerHTML=`<div class="title"><div><h2>⚒️ Wordsmith Tower</h2><p>Word roots and target words.</p></div></div>`+Object.entries(wg).map(([w,l])=>`<div class="group"><div class="grouphead"><h3>Week ${w} • ${esc(l[0].root)}</h3></div><div class="wordgrid">${l.map(x=>`<div class="frame word"><small>ROOT: ${esc(x.root)}</small><b>${esc(x.word)}</b><p>${esc(x.morphological||x.orthographic||"Learn how this word is built and what its parts mean.")}</p><p><strong>Your task:</strong> ${esc(x.application||"Use the word correctly in a complete sentence.")}</p></div>`).join("")}</div></div>`).join("");
+let miss=due.filter(x=>!st(x.id).verified&&!mediaPending(x));$("#audit").innerHTML=`<div class="title"><div><h2>🛡️ Curriculum Compliance Shield</h2><p>${isTeacher?"Teacher verification view.":"Students can see what remains, but cannot verify their own work."}</p></div></div><div class="frame audit ${miss.length?"bad":"good"}"><h3>${miss.length} missions not teacher-verified</h3><p>${miss.length?"Recovery Quest shows the unfinished available curriculum.":"Everything currently available and due is teacher-verified."}</p></div><div class="frame audit ${mv.length?"bad":"good"}"><h3>${mv.length} available required videos still need a completed video check</h3></div><div class="frame audit ${pendingSources.length?"bad":"good"}"><h3>${pendingSources.length} curriculum video sources awaiting school access</h3><p>${pendingSources.length?"These are held separately and do not count as student recovery failures. Activities can continue now.":"No curriculum source videos are pending access."}</p></div>`}
 $("#grade").onchange=e=>{if(currentStudent&&!isTeacher){e.target.value=S.grade;return}S.grade=e.target.value;save();render()};$("#day").onchange=e=>{if(!isTeacher){e.target.value=S.day;return}S.day=Math.max(1,Math.min(40,+e.target.value||1));save();render()};$$(".tabs button").forEach(b=>b.onclick=()=>{$$(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");$$(".panel").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.tab).classList.add("active")});render();
 </script>
 <script type="module">
 import {initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import {getFirestore,doc,getDoc,getDocs,setDoc,updateDoc,addDoc,collection,serverTimestamp,onSnapshot,query,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {getFirestore,doc,getDoc,addDoc,collection,serverTimestamp,onSnapshot,query,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 const firebaseConfig={"apiKey":"AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE","authDomain":"dragonswood-9289e.firebaseapp.com","projectId":"dragonswood-9289e","storageBucket":"dragonswood-9289e.firebasestorage.app","messagingSenderId":"1064477064695","appId":"1:1064477064695:web:283e1016ee2303d39042f2","measurementId":"G-LPRLDGVBD2"};
 const TEACHER="jacobicusjax@gmail.com";
 const app=getApps().length?getApp():initializeApp(firebaseConfig);
 const auth=getAuth(app),db=getFirestore(app);
-let progressTimer=null,progressReady=false,selectedStudentId="",teacherProgressRows=[],teacherAllProgress=[],teacherStudentNames={};
-const syncedSignatures=new Map();
-function phoenixDateKey(){return new Intl.DateTimeFormat("en-CA",{timeZone:"America/Phoenix",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date())}
-function progressDocId(uid,itemId){return `${uid}_${itemId}`}
-function questionCounts(item,state){
-  const qs=autoQuestionsFor(item),answers=state.autoAnswers||{};
-  let seen=0,correct=0;
-  qs.forEach((q,i)=>{if(String(answers[i]||"")!==""){seen++;if(String(answers[i])===String(q.answer))correct++}});
-  return {seen,correct};
-}
-function canonicalProgress(uid,item,state,forceUnverified=false){
-  const counts=questionCounts(item,state),entry=typeof dwCurricEntry==="function"?dwCurricEntry(item):null;
-  return {
-    studentId:uid,itemId:item.id,grade:item.grade,day:Number(item.day),subject:item.subject,strand:item.strand||"",
-    standardCode:(entry?.standards||[]).join(","),watched:!!state.watched,
-    videoCoverage:Number(state.videoCoverage||0),videoReflection:String(state.videoReflection||""),
-    practiced:!!state.practiced,practiceEvidence:String(state.practiceEvidence||""),
-    questionsCorrect:counts.correct,questionsSeen:counts.seen,autoAnswers:state.autoAnswers||{},
-    autoAttempts:Number(state.autoAttempts||0),lastActivityAttempt:String(state.lastActivityAttempt||""),
-    activityAttempts:Number(state.activityAttempts||0),overrideStatus:String(state.overrideStatus||""),
-    verified:forceUnverified?false:!!state.verified,updatedAt:serverTimestamp()
-  };
-}
-function mergeProgressRows(local,rows){
-  const out={grade:local.grade||"I",day:Number(local.day||14),items:{...(local.items||{})}};
-  rows.forEach(r=>{const a=out.items[r.itemId]||{};out.items[r.itemId]={...a,...r,autoAnswers:{...(a.autoAnswers||{}),...(r.autoAnswers||{})},verified:!!r.verified}});
-  return out;
-}
-function standardCode(std){
-  const text=String(std?.standard||"").trim();
-  const match=text.match(/^((?:\d-\d\s+)?(?:[A-Z]+\.?\d*|\d+)(?:[.-][A-Z0-9]+)+)/i);
-  return match?match[1]:String(std?.code||"").trim();
-}
-function standardsMasteryReport(){
-  if(!isTeacher||!teacherAllProgress.length)return "";
-  const ids=[...new Set(teacherAllProgress.map(r=>r.studentId))];
-  const standards=D.standards.filter(x=>x.grade===S.grade);
-  return `<div class="title"><div><h2>🛡️ Standards Mastery Report</h2><p>Question evidence, written work, and video completion by scholar.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Standard</th>${ids.map(id=>`<th>${esc(teacherStudentNames[id]||id.slice(0,6))}</th>`).join("")}</tr></thead><tbody>${standards.map(std=>{const code=standardCode(std);return `<tr><td><b>${esc(code)}</b><br><small>${esc(std.proficiency||"")}</small></td>${ids.map(id=>{const rows=teacherAllProgress.filter(r=>r.studentId===id&&String(r.standardCode||"").split(",").includes(code));const seen=rows.reduce((n,r)=>n+Number(r.questionsSeen||0),0),correct=rows.reduce((n,r)=>n+Number(r.questionsCorrect||0),0),written=rows.filter(r=>r.practiced).length,verified=rows.filter(r=>r.verified).length,videos=rows.filter(r=>r.watched).length;return `<td>${correct}/${seen} questions<br>${written} written • ${verified} verified<br>${videos} videos</td>`}).join("")}</tr>`}).join("")}</tbody></table></div>`;
-}
-async function migrateLegacyProgress(uid,legacy){
-  const remote=await getDocs(query(collection(db,"curriculumProgress"),where("studentId","==",uid)));
-  const existing=new Set(remote.docs.map(d=>d.data().itemId));
-  const writes=[];
-  for(const [id,state] of Object.entries(legacy.items||{})){
-    const item=findItem(id);if(!item||existing.has(id))continue;
-    writes.push(setDoc(doc(db,"curriculumProgress",progressDocId(uid,id)),canonicalProgress(uid,item,state,true)));
-  }
-  for(let i=0;i<writes.length;i+=20)await Promise.all(writes.slice(i,i+20));
-  return remote.docs.map(d=>d.data());
-}
-window.queueCurriculumProgress=state=>{
-  if(!progressReady||!auth.currentUser||isTeacher)return;
-  clearTimeout(progressTimer);
-  const snapshot=JSON.parse(JSON.stringify(state));
-  progressTimer=setTimeout(async()=>{
-    for(const [id,itemState] of Object.entries(snapshot.items||{})){
-      const item=findItem(id);if(!item)continue;
-      const signature=JSON.stringify(itemState);if(syncedSignatures.get(id)===signature)continue;
-      try{await setDoc(doc(db,"curriculumProgress",progressDocId(auth.currentUser.uid,id)),canonicalProgress(auth.currentUser.uid,item,itemState),{merge:true});syncedSignatures.set(id,signature)}
-      catch(e){console.warn("Curriculum item sync",id,e)}
-    }
-  },500);
-};
-window.recordCurriculumAttempt=async(item,state,writtenPassed)=>{
-  if(!progressReady||!auth.currentUser||isTeacher)return;
-  const counts=questionCounts(item,state),attemptNumber=Math.max(1,Number(state.activityAttempts||1));
-  const total=Math.max(1,counts.seen),accuracy=Math.round(counts.correct/total*100);
-  try{await addDoc(collection(db,"curriculumAttempts"),{studentId:auth.currentUser.uid,itemId:item.id,grade:item.grade,day:Number(item.day),subject:item.subject,strand:item.strand||"",attemptNumber,questionsCorrect:counts.correct,questionsSeen:total,accuracy,writtenPassed:!!writtenPassed,createdAt:serverTimestamp()})}catch(e){console.warn("Curriculum attempt history",e)}
-};
-window.setCurriculumVerification=async(id,value)=>{
-  if(!isTeacher||!selectedStudentId){alert("Choose a scholar first.");return false}
-  try{await updateDoc(doc(db,"curriculumProgress",progressDocId(selectedStudentId,id)),{verified:!!value,updatedAt:serverTimestamp()});return true}
-  catch(e){alert("Verification was not saved: "+(e.code||e.message));return false}
-};
 window.submitCurriculumOverride=async (item,answer,attempts)=>{
   if(!auth.currentUser){
     alert("You are not signed in to Dragonswood on this page. Return to the Dragonswood portal, sign in, and open Curriculum Quest again.");
@@ -657,33 +394,11 @@ function watchMyOverrides(uid){
 onAuthStateChanged(auth,async u=>{
   currentStudent=u||null;
   isTeacher=!!u && String(u.email||"").toLowerCase()===TEACHER.toLowerCase();
-  const authStatus=document.getElementById("authStatus");
-  authStatus.textContent=u?"✓ Signed in":"Not signed in";
-  authStatus.style.color=u?"#7fffd4":"#ff9daf";
-  loadScopedState(isTeacher?"teacher":u?.uid||"anonymous");
-  studentCurriculumAccess=isTeacher;
-  currentQuestOpen=isTeacher;
-  accessMessage=u?"Checking today's school-day assignment…":"Open Curriculum Quest from your signed-in Dragonswood portal.";
   document.getElementById("teacherBadge").style.display=isTeacher?"inline-block":"none";
   if(u){
     watchMyOverrides(u.uid);
     document.getElementById("studentIdentity").textContent=isTeacher?"Teacher account":(u.displayName||u.email||"Student");
     if(!isTeacher){
-      try{
-        // Read the legacy whole-student document once, then migrate local/legacy
-        // evidence into canonical per-item records. Client-side verified flags
-        // are deliberately reset; only a teacher write can restore them.
-        const legacySnap=await getDoc(doc(db,"curriculumQuestProgress",u.uid));
-        const legacy=legacySnap.exists()?legacySnap.data():{};
-        const mergedLegacy={grade:S.grade||legacy.grade||"I",day:Math.max(Number(S.day||1),Number(legacy.day||1)),items:{...(legacy.items||{}),...(S.items||{})}};
-        Object.values(mergedLegacy.items).forEach(x=>{x.verified=false});
-        await migrateLegacyProgress(u.uid,mergedLegacy);
-        const progressSnap=await getDocs(query(collection(db,"curriculumProgress"),where("studentId","==",u.uid)));
-        S=mergeProgressRows(mergedLegacy,progressSnap.docs.map(d=>d.data()));
-        localStorage.setItem(K,JSON.stringify(S));
-      }catch(e){console.warn("Curriculum cloud progress unavailable; local progress remains safe",e)}
-      progressReady=true;
-      window.queueCurriculumProgress(S);
       try{
         const snap=await getDoc(doc(db,"students",u.uid));
         if(snap.exists()){
@@ -694,46 +409,12 @@ onAuthStateChanged(auth,async u=>{
           document.getElementById("grade").disabled=true;
         }
       }catch(e){console.warn("Could not load grade profile",e)}
-      try{
-        const today=await getDoc(doc(db,"dailyQuests",phoenixDateKey()));
-        if(!today.exists())throw new Error("no-school-day");
-        const assignment=today.data();
-        S.day=Math.max(1,Math.min(40,Number(assignment.day||1)));
-        studentCurriculumAccess=true;
-        currentQuestOpen=true;
-        accessMessage="";
-        save();
-      }catch(e){
-        S.day=q1CalendarCursor();
-        studentCurriculumAccess=true;
-        currentQuestOpen=false;
-        accessMessage="Current curriculum is closed, but unfinished work from earlier school days remains available in Recovery.";
-      }
       document.getElementById("day").disabled=true;
-    }else{
-      const picker=document.getElementById("teacherStudent");picker.style.display="inline-block";
-      try{
-        const students=await getDocs(collection(db,"students"));
-        teacherStudentNames=Object.fromEntries(students.docs.map(d=>{const x=d.data();return [d.id,x.firstName||x.displayName||x.email||d.id]}));
-        teacherAllProgress=(await getDocs(collection(db,"curriculumProgress"))).docs.map(d=>d.data());
-        picker.innerHTML='<option value="">Select a scholar…</option>'+students.docs.map(d=>{const x=d.data();return `<option value="${d.id}">${esc(x.firstName||x.displayName||x.email||d.id)}</option>`}).join("");
-        picker.onchange=async()=>{
-          selectedStudentId=picker.value;if(!selectedStudentId)return;
-          const snap=await getDocs(query(collection(db,"curriculumProgress"),where("studentId","==",selectedStudentId)));
-          teacherProgressRows=snap.docs.map(d=>d.data());
-          S=mergeProgressRows({grade:"I",day:40,items:{}},teacherProgressRows);
-          const first=teacherProgressRows[0];if(first)S.grade=first.grade;
-          document.getElementById("studentIdentity").textContent=picker.options[picker.selectedIndex].text+" • teacher view";
-          render();
-        };
-      }catch(e){console.warn("Could not load teacher curriculum roster",e)}
     }
   }else{
-    studentCurriculumAccess=false;
-    currentQuestOpen=false;
     document.getElementById("studentIdentity").textContent="Open from your signed-in Dragonswood portal";
     document.getElementById("grade").disabled=false;
   }
   render();
 });
-</script><script src="narration-manifest.js?v=56.19.6"></script><script src="dragonswood-narrator.js?v=56.19.6"></script></body></html>
+</script></body></html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Dragonswood Command</title><link rel="icon" type="image/png" href="dragonswood-volleyball-crest-v1.png"><style>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Dragonswood Command</title><style>
 :root{
  --bg:#05030c;--bg2:#090516;--panel:#0b0819;--panel2:#110b25;
  --purple:#652DC1;--purple2:#9d48ff;--cyan:#02CCFE;--cyan2:#77edff;
@@ -39,34 +39,8 @@ select option,select optgroup{background:#080718;color:#fff}
 .panel{display:none}.panel.active{display:block}.command-title{padding:12px 15px;margin-bottom:10px}.command-title h2{font-size:28px;margin:0;color:#e0a2ff}.command-title p{margin:3px 0}
 .card{padding:15px;border-radius:9px;background:linear-gradient(145deg,#0d0a23,#070617);border:1px solid rgba(244,201,93,.35);box-shadow:0 10px 24px rgba(0,0,0,.25)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.big{font-family:Georgia,serif;font-size:48px;color:var(--gold2)}.meter{height:19px;background:#030510;border:1px solid rgba(2,204,254,.2);border-radius:999px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#6f20d4,#d74dff,var(--cyan),var(--gold2));background-size:220% 100%;animation:shimmer 6s linear infinite}
-.actions{display:flex;gap:7px;flex-wrap:wrap}.reason{flex:1;min-width:170px}.titlebar{display:flex;justify-content:space-between;align-items:end;margin:16px 0 8px}.titlebar h2{margin:0;color:#e0a2ff}.titlebar p{margin:3px 0}.groupbox{display:grid;grid-template-columns:1.2fr .7fr .6fr 1.2fr;gap:9px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:12px;font-weight:900}.student-table,table{width:100%;border-collapse:collapse;font-size:12px}.student-table th,th{padding:9px;background:linear-gradient(90deg,#27104b,#08283b);color:var(--gold2);text-align:left;border-bottom:1px solid rgba(244,201,93,.24)}.student-table td,td{padding:9px;border-bottom:1px solid rgba(255,255,255,.05)}.student-avatar{font-size:25px}.badge{padding:4px 7px;border-radius:999px;background:#241044;color:#f2ddff}.list{display:grid;gap:7px}.item{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;padding:9px;border:1px solid rgba(101,45,193,.32);background:#0a081d}.modal{position:fixed;inset:0;background:rgba(1,2,8,.9);z-index:50;display:grid;place-items:center;padding:20px}.modalbox{width:min(680px,100%);max-height:92vh;overflow:auto;padding:20px}
+.actions{display:flex;gap:7px;flex-wrap:wrap}.reason{flex:1;min-width:170px}.titlebar{display:flex;justify-content:space-between;align-items:end;margin:16px 0 8px}.titlebar h2{margin:0;color:#e0a2ff}.titlebar p{margin:3px 0}.groupbox{display:grid;grid-template-columns:1.2fr .7fr .6fr 1.2fr;gap:9px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:12px;font-weight:900}.student-table,table{width:100%;border-collapse:collapse;font-size:12px}.student-table th,th{padding:9px;background:linear-gradient(90deg,#27104b,#08283b);color:var(--gold2);text-align:left;border-bottom:1px solid rgba(244,201,93,.24)}.student-table td,td{padding:9px;border-bottom:1px solid rgba(255,255,255,.05)}.student-avatar{font-size:25px}.badge{padding:4px 7px;border-radius:999px;background:#241044;color:#f2ddff}.list{display:grid;gap:7px}.item{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;padding:9px;border:1px solid rgba(101,45,193,.32);background:#0a081d}.recess-control{display:grid;grid-template-columns:1.2fr .8fr;gap:10px;margin-top:12px}.modal{position:fixed;inset:0;background:rgba(1,2,8,.9);z-index:50;display:grid;place-items:center;padding:20px}.modalbox{width:min(680px,100%);max-height:92vh;overflow:auto;padding:20px}
 @media(max-width:900px){.tabs{grid-template-columns:repeat(2,1fr)!important}.grid,.recess-control{grid-template-columns:1fr}.groupbox{grid-template-columns:1fr 1fr}}
-</style>
-<style id="dw-v5620-approved-teacher-command">
-/* v56.20 — approved teacher command layout. Current production DOM IDs and
-   Firebase handlers remain authoritative; this layer changes layout only. */
-:root{--dw20-side:218px;--dw20-text:#f7f2ff;--dw20-muted:#aeb5d2;--dw20-panel:rgba(6,17,39,.91);--dw20-border:rgba(122,151,221,.28);--dw20-strong:rgba(132,166,238,.45);--dw20-gold:#ffd971;--dw20-cyan:#25c6ea;--dw20-green:#47e0a1;--dw20-danger:#ff5d98}
-html,body{background:#020512!important}
-body{color:var(--dw20-text)!important;background:linear-gradient(90deg,rgba(2,5,18,.87),rgba(2,7,22,.74)),radial-gradient(circle at 20% 16%,rgba(126,64,207,.18),transparent 28%),url("dragonswood-teacher-command-background.webp") center/cover fixed no-repeat!important}
-body::after{background:linear-gradient(180deg,rgba(2,5,18,.12),rgba(2,5,18,.55))!important}
-.teacher-head{position:fixed!important;left:0;top:0;width:var(--dw20-side);height:76px;z-index:61;padding:8px!important;border:0!important;background:rgba(2,7,22,.95)!important}
-.teacher-head .shell{width:100%!important}.teacher-title{font:800 16px/1.1 Georgia!important;text-align:left!important;display:grid;grid-template-columns:42px 1fr;align-items:center;gap:7px}.teacher-title img{width:42px!important;height:42px!important;margin:0!important;grid-row:1/3}.teacher-title small{font:800 7px/1.25 Arial!important;letter-spacing:1px!important;color:#b9afd1!important;margin:3px 0 0!important}.teacher-title span{font-size:0}.teacher-title span::after{content:"TEACHER COMMAND";font-size:15px;color:var(--dw20-gold);-webkit-text-fill-color:var(--dw20-gold)}
-.teacher-main{width:auto!important;max-width:1500px!important;margin:0 auto 0 max(var(--dw20-side),calc((100vw - 1500px + var(--dw20-side))/2))!important;padding:18px 22px 110px!important}
-#dash{display:block!important}.command-tabs{position:fixed!important;left:0;top:76px;bottom:0;width:var(--dw20-side);z-index:60;display:flex!important;flex-direction:column;gap:4px!important;padding:9px 8px 80px!important;margin:0!important;border:0!important;border-radius:0!important;background:linear-gradient(180deg,rgba(3,9,26,.97),rgba(3,7,20,.94))!important;overflow-y:auto}
-.command-tabs .nav-crest{display:block!important;padding:4px 8px 8px!important;color:var(--dw20-gold);font:900 9px Arial;letter-spacing:1.7px}.command-tabs .nav-divider{display:none!important}.command-tabs .tab{flex:0 0 auto!important;width:100%;min-height:48px!important;padding:10px 12px!important;border:1px solid transparent!important;border-radius:10px!important;text-align:left;font:800 11px/1.2 Arial!important;color:#c7cbe0!important;background:transparent!important;text-shadow:none!important;box-shadow:none!important}.command-tabs .tab:hover{background:rgba(116,72,190,.14)!important;border-color:var(--dw20-border)!important}.command-tabs .tab.active{color:#fff!important;background:linear-gradient(100deg,rgba(148,86,255,.78),rgba(37,198,234,.24))!important;border-color:rgba(255,217,113,.62)!important;box-shadow:inset 3px 0 0 var(--dw20-gold),0 5px 18px rgba(0,0,0,.22)!important}
-.panel.active{display:block;animation:dw20in .16s ease-out}@keyframes dw20in{from{opacity:.45;transform:translateY(2px)}to{opacity:1;transform:none}}
-.command-title{min-height:92px!important;margin:0 0 11px!important;padding:17px 18px!important;border:1px solid var(--dw20-strong)!important;border-radius:14px!important;clip-path:none!important;background:linear-gradient(105deg,rgba(35,20,79,.92),rgba(4,32,56,.9))!important}.command-title::before,.command-title::after{display:none}.command-title h2{margin:0!important;color:var(--dw20-gold)!important;font-size:clamp(22px,2.3vw,30px)!important}.command-title p{margin:5px 0 0!important;color:var(--dw20-muted)!important;font-size:12px!important;max-width:850px}
-.card,.frame,.live-request-box,.teacher-score-board,.gb-student{border-color:var(--dw20-border)!important;border-radius:14px!important;background:linear-gradient(145deg,rgba(9,26,53,.92),rgba(5,12,34,.94))!important;box-shadow:0 10px 28px rgba(0,0,0,.22)!important;backdrop-filter:none!important}.card h3{color:var(--dw20-gold);font-size:18px}.muted,p,small{color:var(--dw20-muted)}
-button{min-height:38px;border-color:rgba(132,166,238,.35)!important;background:rgba(18,38,72,.92)!important}.actions button:first-child,button:not(.gray):not(.danger):not(.danger-soft).active{background:linear-gradient(100deg,#7840d2,#087eaa)!important;border-color:rgba(255,217,113,.7)!important}.danger,.danger-soft{background:rgba(112,20,57,.92)!important;border-color:rgba(255,93,152,.62)!important}
-.dw20-status-strip{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:11px}.dw20-status-strip>.card{min-height:76px;padding:12px!important}.dw20-status-strip h3{margin:0 0 4px;font:900 10px Arial!important;text-transform:uppercase;letter-spacing:.7px}.dw20-status-strip p{margin:0;font-size:10px}.dw20-student-workspace{display:grid;grid-template-columns:minmax(310px,.68fr) minmax(0,1.55fr);gap:11px;align-items:start}.dw20-roster-column{position:sticky;top:12px;max-height:calc(100vh - 28px);overflow:auto}.dw20-command-column{min-width:0}.dw20-student-workspace .dw-shared-selector{position:static!important;max-height:none!important;margin:0!important}.dw20-student-workspace .student-check-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.dw20-student-workspace .dw-reward-modes{position:sticky!important;top:8px!important;display:grid!important;grid-template-columns:repeat(4,1fr);z-index:30;margin:0 0 9px!important}.dw20-student-workspace .dw-reward-mode{min-width:0!important;font-size:11px;padding:8px 5px}.dw20-student-workspace .quick-award-grid,.dw20-student-workspace .quick-consequence-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-.dw20-review-bar{position:fixed;left:calc(var(--dw20-side) + 22px);right:22px;bottom:12px;z-index:70;min-height:78px;display:grid;grid-template-columns:minmax(180px,1fr) minmax(180px,1.3fr) auto;gap:12px;align-items:center;padding:10px 13px;border:1px solid rgba(255,217,113,.58);border-radius:14px;background:rgba(4,10,29,.97);box-shadow:0 12px 32px #000a}.dw20-review-bar strong{display:block;color:var(--dw20-gold)}.dw20-review-targets{color:#c9d8ef;font-size:11px}.dw20-review-bar button:disabled{opacity:.45;cursor:not-allowed}.dw20-review-dialog .modalbox{width:min(620px,100%)}.dw20-review-list{max-height:220px;overflow:auto;display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.dw20-review-chip{padding:6px 9px;border-radius:999px;border:1px solid var(--dw20-border);background:#0b1933;font-size:11px}.dw20-serious-check{display:flex;gap:8px;align-items:flex-start;padding:10px;border:1px solid rgba(255,93,152,.5);border-radius:9px;background:rgba(104,17,49,.2)}
-#writing>.live-request-grid{grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr)!important}.goal-command-grid-v21{grid-template-columns:repeat(3,minmax(0,1fr))!important}#plannerWorkspace,#toolsWorkspace{display:grid;grid-template-columns:1fr 1fr;gap:11px;align-items:start}#plannerWorkspace>.panel,#toolsWorkspace>.panel{display:block!important;min-width:0}#toolsWorkspace #picker{display:grid!important;grid-template-columns:1fr;gap:10px}.leaderboard-command{margin-top:0}.teacher-score-board{max-width:none!important}#scoreList{grid-template-columns:1fr!important}
-.dw20-podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:end;margin:12px 0 16px}.dw20-podium-card{position:relative;display:grid;grid-template-columns:42px 64px 1fr;gap:9px;align-items:center;min-height:132px;padding:14px;border:1px solid rgba(255,217,113,.42);border-radius:14px;background:linear-gradient(145deg,rgba(59,26,106,.8),rgba(5,31,51,.9));box-shadow:0 12px 28px #0006}.dw20-podium-card.place-1{min-height:160px;order:2;border-color:#ffd971;box-shadow:0 0 22px rgba(255,217,113,.18)}.dw20-podium-card.place-2{order:1}.dw20-podium-card.place-3{order:3}.dw20-podium-card .teacher-rank-avatar{width:62px;height:62px}.dw20-podium-card strong{grid-column:2/4;color:#ffd971;font:900 24px Georgia}.dw20-podium-card>span{grid-column:1/4;text-align:center;color:#8ff3c1;font-size:9px;font-weight:900}.dw20-rankings{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-details>summary{cursor:pointer}.live-request-list:has(>.muted:only-child){min-height:0}.live-request-list>.muted:only-child{padding:10px;border:1px solid rgba(71,224,161,.32);border-radius:9px;color:#9ff2cd;background:rgba(71,224,161,.07)}
-@media(max-width:1120px){.dw20-student-workspace{grid-template-columns:310px minmax(0,1fr)}.dw20-status-strip{grid-template-columns:repeat(2,1fr)}#plannerWorkspace,#toolsWorkspace,#writing>.live-request-grid{grid-template-columns:1fr!important}}
-@media(max-width:820px){.teacher-head{position:relative!important;width:100%;height:auto}.teacher-head .teacher-title{max-width:360px}.teacher-main{margin:0!important;padding:74px 12px 110px!important}.command-tabs{position:absolute!important;left:0;right:0;top:70px;bottom:auto;width:100%;height:58px;display:flex!important;flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:6px!important}.command-tabs .nav-crest{display:none!important}.command-tabs .tab{width:auto;min-width:50px;white-space:nowrap}.command-tabs .tab:not(.active){font-size:0!important}.command-tabs .tab:not(.active)::first-letter{font-size:19px}.dw20-student-workspace{grid-template-columns:1fr}.dw20-roster-column{position:static;max-height:none}.dw20-review-bar{left:10px;right:10px;bottom:8px;grid-template-columns:1fr auto}.dw20-review-targets{display:none}}
-@media(max-width:820px){.dw20-podium{grid-template-columns:1fr}.dw20-podium-card.place-1,.dw20-podium-card.place-2,.dw20-podium-card.place-3{order:initial;min-height:110px}.dw20-rankings{grid-template-columns:1fr}}
-@media(max-width:520px){.teacher-main{padding-left:8px!important;padding-right:8px!important}.dw20-status-strip{grid-template-columns:1fr}.dw20-student-workspace .student-check-grid,.dw20-student-workspace .quick-award-grid,.dw20-student-workspace .quick-consequence-grid,.goal-command-grid-v21{grid-template-columns:1fr!important}.dw20-student-workspace .dw-reward-modes{grid-template-columns:1fr 1fr}.dw20-review-bar{min-height:70px}.dw20-review-bar small{display:none}.gradebook-summary{grid-template-columns:1fr 1fr}}
 </style>
 <style id="dragonswood-v15-background">
 html, body {
@@ -226,11 +200,58 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   gap:12px;
 }
 
+.recess-main-card{
+  min-height:310px;
+  padding:24px;
+  background:
+    radial-gradient(circle at 18% 20%,rgba(166,76,255,.14),transparent 28%),
+    linear-gradient(135deg,rgba(42,11,86,.47),rgba(2,36,53,.43)) !important;
+}
+
+.recess-kicker{
+  color:#d791ff;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:1.1px;
+}
+
+.recess-number{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:82px;
+  line-height:1;
+  color:var(--gold2);
+  margin:8px 0 14px;
+  text-shadow:0 0 18px rgba(244,201,93,.22);
+}
+
 .large-meter{height:24px}
+
+.recess-status{
+  margin-top:10px;
+  color:#f5edff;
+  font-weight:800;
+}
+
+.recess-award-buttons{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-top:12px;
+}
 
 .recess-award-buttons button{
   min-height:48px;
   font-size:17px;
+}
+
+.recess-settings-card{padding:22px}
+
+.recess-date-box{
+  margin-top:18px;
+  padding:12px;
+  border:1px solid rgba(244,201,93,.35);
+  background:rgba(12,7,33,.44);
+  border-radius:8px;
 }
 .recess-date-box small{display:block}
 .recess-date-box b{display:block;color:var(--gold2);margin-top:3px}
@@ -485,6 +506,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 @media(max-width:950px){.goal-command-grid-v21{grid-template-columns:1fr}.universal-command-v21{grid-template-columns:1fr}}
 </style>
 <style id="dragonswood-v23-teacher-items">
+.catalog-toolbar{display:flex;gap:7px;flex-wrap:wrap}
 .shop-item-card .rarity-teacher{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.7px}
 .rarity-teacher.common{color:#bcc3d0}.rarity-teacher.uncommon{color:#61e29a}.rarity-teacher.rare{color:#5ab7ff}.rarity-teacher.epic{color:#c17cff}.rarity-teacher.legendary{color:#ffd266}
 .student-gear-admin{margin-top:10px;padding:10px;border:1px solid rgba(101,45,193,.3);border-radius:8px;background:rgba(6,6,25,.42)}
@@ -496,6 +518,10 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 <style id="v28-live-requests">.live-request-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.live-request-box{padding:14px!important}.live-request-list{display:grid;gap:7px;margin-top:9px}.live-request-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:9px;border:1px solid rgba(101,45,193,.35);background:#09081d;border-radius:8px}.live-request-item.out{border-color:rgba(82,239,177,.55)}.live-request-item b{color:#fff0a6}.live-request-item small{display:block;color:#cbbfe0}.live-actions{display:flex;gap:5px;flex-wrap:wrap}.live-actions button{padding:7px 9px}@media(max-width:800px){.live-request-grid{grid-template-columns:1fr}.live-request-item{grid-template-columns:1fr}}
 </style>
 <style id="dw-student-checkbox-style">
+.student-check-panel{
+  margin-top:12px;padding:12px;border:1px solid rgba(129,92,246,.45);
+  border-radius:12px;background:rgba(7,10,30,.48)
+}
 .student-check-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:9px}
 .student-check-head b{color:#ffe68b;margin-right:auto}
 .student-check-head button{padding:6px 9px;font-size:11px}
@@ -524,7 +550,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .v29-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.v29-form .full{grid-column:1/-1}.v29-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
 @media(max-width:900px){.v29-grid{grid-template-columns:1fr}.v29-form{grid-template-columns:1fr}}
 </style>
-<style id="dw-v31-teacher-style">\n.command-tabs{overflow-x:auto}.command-tabs .tab{min-width:130px}.dw31t-row{padding:9px;border:1px solid rgba(101,45,193,.3);border-radius:9px;background:rgba(5,7,23,.5);margin:6px 0}.dw31t-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.dw31t-form .full{grid-column:1/-1}.dw31t-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}@media(max-width:900px){.dw31t-grid{grid-template-columns:1fr}.dw31t-form{grid-template-columns:1fr}}\n</style>
+<style id="dw-v31-teacher-style">\n.command-tabs{overflow-x:auto}.command-tabs .tab{min-width:130px}.dw31t-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:12px}.dw31t-row{padding:9px;border:1px solid rgba(101,45,193,.3);border-radius:9px;background:rgba(5,7,23,.5);margin:6px 0}.dw31t-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.dw31t-form .full{grid-column:1/-1}.dw31t-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}@media(max-width:900px){.dw31t-grid{grid-template-columns:1fr}.dw31t-form{grid-template-columns:1fr}}\n</style>
 <style id="dw-poll-picker-teacher-style">
 .poll-admin-grid,.picker-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .poll-choice-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin:6px 0}
@@ -542,7 +568,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .pass-master-card{margin:0 0 12px;padding:14px!important;border:1px solid rgba(2,204,254,.45)!important}
 .pass-master-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
 #passBlackoutBtn.blackout-on{background:linear-gradient(90deg,#8d123a,#cf315a)!important;border-color:#ff91ad!important}
-.generic-pass-live{display:grid;gap:7px;margin-top:10px}
+.generic-pass-live{display:grid;gap:7px;margin-top:10px}.generic-pass-row{padding:8px;border:1px solid rgba(101,45,193,.28);border-radius:8px}
 .job-by-role-row{display:grid;grid-template-columns:minmax(180px,1fr) minmax(190px,1fr) 95px;gap:8px;align-items:center;padding:9px;border:1px solid rgba(101,45,193,.28);border-radius:8px;background:rgba(5,7,23,.48)}
 @media(max-width:800px){.pass-master-row,.job-by-role-row{grid-template-columns:1fr}}
 </style>
@@ -555,8 +581,8 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 </style>
 
 <style id="dw-v46-reward-ui">
-.dw-shared-selector{margin:12px 0;position:relative;z-index:8;border-color:rgba(2,204,254,.5)!important;box-shadow:0 8px 28px rgba(0,0,0,.35)}
-.dw-select-filters,.dw-reward-modes{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}.dw-select-filters button{padding:6px 12px;font-size:11px}.dw-selection-summary{margin-top:8px;padding:8px 10px;border-radius:8px;background:rgba(2,204,254,.08);color:#dff9ff;font-size:11px}.dw-reward-modes{position:sticky;top:72px;z-index:35;background:#05071b;padding:8px;border:1px solid rgba(244,201,93,.48);border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.48)}.dw-reward-mode{flex:1;min-width:180px;opacity:.7}.dw-reward-mode.active{opacity:1;outline:2px solid #ffe36d}.dw-reward-mode-panel{display:none}.dw-reward-mode-panel.active{display:block}.dw-custom-selection-note{margin:10px 0;padding:9px;border:1px solid rgba(2,204,254,.28);border-radius:8px;background:rgba(2,204,254,.06);color:#d9f8ff}.dw-reward-mode-panel[data-reward-panel="manage-roster"].active{display:block}
+.dw-shared-selector{margin:12px 0;position:sticky;top:0;z-index:8;border-color:rgba(2,204,254,.5)!important;box-shadow:0 8px 28px rgba(0,0,0,.35)}
+.dw-select-filters,.dw-reward-modes{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}.dw-select-filters button{padding:6px 12px;font-size:11px}.dw-selection-summary{margin-top:8px;padding:8px 10px;border-radius:8px;background:rgba(2,204,254,.08);color:#dff9ff;font-size:11px}.dw-reward-modes{position:sticky;top:190px;z-index:7;background:rgba(3,5,18,.92);padding:8px;border:1px solid rgba(244,201,93,.25);border-radius:10px}.dw-reward-mode{flex:1;min-width:180px;opacity:.7}.dw-reward-mode.active{opacity:1;outline:2px solid #ffe36d}.dw-reward-mode-panel{display:none}.dw-reward-mode-panel.active{display:block}.dw-custom-selection-note{margin:10px 0;padding:9px;border:1px solid rgba(2,204,254,.28);border-radius:8px;background:rgba(2,204,254,.06);color:#d9f8ff}.dw-reward-mode-panel[data-reward-panel="manage-roster"].active{display:block}
 @media(max-width:900px){.dw-shared-selector,.dw-reward-modes{position:static}.dw-reward-mode{min-width:140px}}
 </style>
 
@@ -568,89 +594,28 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .tw-score-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:8px 0}.tw-score-grid div{padding:7px;border:1px solid #3b2d61;border-radius:7px;text-align:center}.tw-score-grid small{display:block;font-size:8px}.tw-score-grid b{color:#ffe58b}
 .tw-teacher-review{display:grid;grid-template-columns:150px 1fr auto;gap:8px;align-items:end;margin-top:8px}
 @media(max-width:800px){#writing .grid2{grid-template-columns:1fr}.tw-score-grid{grid-template-columns:repeat(2,1fr)}.tw-teacher-review{grid-template-columns:1fr}}
-
-.rpg-snapshot{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start}
-.rpg-snapshot .rs-block{flex:1 1 190px;min-width:170px;background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:8px 10px}
-.rpg-snapshot h5{margin:0 0 5px;font-size:10.5px;letter-spacing:.08em;opacity:.72;text-transform:uppercase}
-.rpg-snapshot .rs-row{display:flex;align-items:center;gap:6px;font-size:12.5px;margin:3px 0}
-.rpg-snapshot img{width:26px;height:26px;object-fit:contain;image-rendering:pixelated;
-  border-radius:5px;background:rgba(0,0,0,.3)}
-.rpg-snapshot .rs-none{font-size:12px;opacity:.55}
-.rpg-snapshot .rs-on{color:#54d894;font-weight:700}
-</style>
-<style id="dw-v567-teacher-overhaul">
-/* Class Goals-inspired organization across Teacher Command. */
-.command-tabs{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;padding:8px}.command-tabs .tab{min-width:0!important;padding:9px 6px!important;font-size:10px!important}
-#students .command-title,#passes .command-title,#scores .command-title,#poll .titlebar,#picker .titlebar,#schedule .titlebar,#calendar .titlebar{background:linear-gradient(135deg,rgba(86,31,143,.45),rgba(4,110,145,.25));border:1px solid rgba(244,201,93,.45);border-radius:13px;padding:13px}
-#students .progression-plan{margin:9px 0}.dw-shared-selector{top:5px!important;max-height:44vh;overflow:auto;background:rgba(5,7,25,.97)!important}.student-check-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important}.student-check{padding:8px!important;border-radius:9px!important;background:rgba(255,255,255,.035)}
-.dw-select-filters select,.dw-select-filters input{min-height:34px;background:#080b22;color:#fff;border:1px solid #574083;border-radius:8px;padding:6px}.dw-select-filters input{width:150px}.student-selection-count{font-size:15px!important;color:#ffe36d!important}
-.dw-reward-modes{position:sticky!important;top:72px!important;z-index:35!important}.quick-award-grid,.quick-consequence-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}.teacher-admin-details summary{cursor:pointer;color:#ffe58b;font-weight:900;font-size:15px;padding:8px}
-/* One balanced page for Schedule + Calendar and one four-quadrant Tools page. */
-#dash:not(.hidden){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:start}
-#dash>.command-tabs,#dash>.panel{grid-column:1/-1;min-width:0}
-#dash>#schedule.active,#dash>#calendar.active,#dash>#poll.active,#dash>#picker.active{display:block!important;grid-column:auto;width:auto;margin:0;min-width:0}
-#schedule .v29-grid,#calendar .v29-grid,#poll .poll-admin-grid,#picker .picker-grid{grid-template-columns:1fr!important;gap:9px}
-#schedule .card,#calendar .card,#poll .card,#picker .card{min-height:235px;max-height:420px;overflow:auto}
-/* Pass types read as separate visual control cards; archives stay collapsed visually. */
-#passes .pass-master-card{border-color:#47bde2;background:linear-gradient(145deg,rgba(7,29,50,.96),rgba(21,11,45,.95))}
-#passes .live-request-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-#passes .live-request-box{min-height:190px;border-width:2px;border-radius:14px;background:rgba(6,13,35,.9)}
-#passes .live-request-box:nth-child(1){border-color:#56c7ff}#passes .live-request-box:nth-child(2){border-color:#f2a951}#passes .live-request-box:nth-child(3){border-color:#7edb9b}#passes .live-request-box:nth-child(4){border-color:#bd7cff}#passes .live-request-box:nth-child(5){border-color:#76819d;grid-column:1/-1;min-height:0}
-#genericPassLive .live-request-item,#passApprovalCenter .live-request-item{border-left:5px solid #4de1a0;background:rgba(77,225,160,.07)}
-/* Leaderboard: compact competition cards instead of a wide text table. */
-#scores .board,#scores .card{border-radius:14px;border:1px solid rgba(244,201,93,.38);background:linear-gradient(145deg,rgba(21,12,52,.94),rgba(5,21,38,.92))}
-#scoreList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.teacher-score-board{padding:12px;border:1px solid #604b91;border-radius:13px;background:rgba(5,9,31,.8)}.teacher-score-board h3{margin:0 0 8px;color:#ffe58b}.teacher-rank{display:grid!important;grid-template-columns:34px 1fr auto auto;align-items:center;gap:8px;margin:6px 0!important;border-radius:10px!important}.teacher-rank-place{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(145deg,#7539ca,#078eb0);border:1px solid #ffe36d;font-weight:900}.teacher-rank strong{color:#ffe36d;font-size:16px}
-#scores table{border-collapse:separate;border-spacing:0 7px}#scores tbody tr{background:rgba(255,255,255,.045)}#scores td{padding:10px!important}#scores tbody tr:nth-child(1){outline:2px solid #f3cf58}#scores tbody tr:nth-child(2){outline:1px solid #ccd6e8}#scores tbody tr:nth-child(3){outline:1px solid #be7d4d}
-@media(max-width:1050px){.command-tabs{grid-template-columns:repeat(4,1fr)}.student-check-grid{grid-template-columns:repeat(3,1fr)!important}.quick-award-grid,.quick-consequence-grid{grid-template-columns:repeat(2,1fr)!important}}
-@media(max-width:800px){#dash:not(.hidden){grid-template-columns:1fr}#dash>#schedule.active,#dash>#calendar.active,#dash>#poll.active,#dash>#picker.active{grid-column:1;width:100%}.command-tabs{grid-template-columns:repeat(2,1fr)}.student-check-grid{grid-template-columns:repeat(2,1fr)!important}.dw-shared-selector,.dw-reward-modes{position:static!important;max-height:none}#passes .live-request-grid{grid-template-columns:1fr}#passes .live-request-box:nth-child(5){grid-column:auto}#scoreList{grid-template-columns:1fr}}
-/* v56.8 — teacher navigation, avatar leaderboards, and assignment gradebook. */
-.command-tabs .tab{min-height:58px!important;font-size:12px!important;color:#fff2ad!important;border-color:rgba(244,201,93,.42)!important;text-shadow:0 1px 2px #000;box-shadow:inset 0 0 12px rgba(83,38,145,.14)}
-.command-tabs .tab:hover{border-color:#ffe36d!important;background:linear-gradient(90deg,#3d167e,#0b6080)!important}.command-tabs .tab.active{font-size:13px!important;box-shadow:0 0 18px rgba(2,204,254,.24)!important}
-.reward-purpose{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;margin:0 0 12px;padding:11px 13px;border-radius:12px;border:1px solid rgba(2,204,254,.38);background:rgba(2,204,254,.07)}.reward-purpose>span{font-size:27px}.reward-purpose p{margin:2px 0;font-size:11px}
-.teacher-rank-avatar{width:46px;height:46px;object-fit:contain;border-radius:12px;padding:3px;background:linear-gradient(145deg,#1c123c,#09253a);border:1px solid #8665c2;filter:drop-shadow(0 4px 7px rgba(0,0,0,.4))}.teacher-rank{grid-template-columns:34px 48px 1fr auto auto!important}.teacher-rank small{display:block;margin-top:2px}
-.gradebook-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:0 0 12px}.gradebook-summary>div{padding:12px;border-radius:12px;border:1px solid #584482;background:linear-gradient(145deg,rgba(35,14,69,.85),rgba(5,29,45,.78))}.gradebook-summary small{display:block;font-size:9px;letter-spacing:.7px}.gradebook-summary b{display:block;margin-top:3px;font-size:24px;color:#ffe58a}.gradebook-toolbar label{display:block;font-size:9px;font-weight:900;color:#d8c9e7;margin-bottom:4px}.gradebook-table thead{position:sticky;top:0;z-index:3}.gradebook-student img{width:38px;height:38px;object-fit:contain;border-radius:9px;background:#0a0b21;border:1px solid #5a4388}.gradebook-grade.a{color:#71eda5}.gradebook-grade.b{color:#8bd9ff}.gradebook-grade.c{color:#ffe178}.gradebook-grade.d{color:#ffb060}.gradebook-grade.f{color:#ff7f9c}.gradebook-assignment-card h4{margin:0 0 5px;color:#ffe58a}.gradebook-assignment-card small{display:block}.gradebook-assignment-card b{color:#8eeeff}.raw-results-details summary{cursor:pointer;color:#d9c7f0;font-weight:900}
-@media(max-width:900px){.gradebook-summary{grid-template-columns:repeat(2,1fr)}.gradebook-toolbar{grid-template-columns:1fr}.teacher-rank{grid-template-columns:34px 42px 1fr auto!important}.teacher-rank .danger{grid-column:4}.teacher-rank-avatar{width:40px;height:40px}}.gradebook-assignment-card small,.gradebook-assignment-card b,.gradebook-assignment-card span{display:block}.gradebook-assignment-card b{margin:4px 0;color:#ffe58a}.gradebook-assignment-card span{font-size:10px;color:#8eeeff}.raw-results{margin-top:12px;border:1px solid #49376d;border-radius:11px;padding:9px}.raw-results summary{cursor:pointer;color:#d9c7f0;font-weight:900}
-/* v56.9 student-first gradebook */
-.gb-controls{display:grid;grid-template-columns:1.2fr repeat(2,minmax(130px,.5fr)) auto;gap:8px;margin:0 0 8px}.gb-sort-header,.gb-student>summary{display:grid;grid-template-columns:52px minmax(150px,1fr) 95px repeat(3,105px) 90px 90px;gap:9px;align-items:center}.gb-sort-header{padding:0 11px 6px;color:#d9cfea}.gb-sort-header .gb-sort-spacer{width:52px}.gb-sort-button{appearance:none;border:0!important;background:transparent!important;box-shadow:none!important;padding:5px 2px!important;color:#d9cfea!important;font:800 10px/1.15 inherit!important;letter-spacing:.035em;text-transform:uppercase;text-align:left;white-space:normal;cursor:pointer}.gb-sort-button:hover,.gb-sort-button:focus-visible{color:#8eeeff!important;text-shadow:0 0 8px rgba(69,221,255,.45)}.gb-sort-arrow{display:inline-block;min-width:12px;margin-left:3px;color:#8eeeff;font-size:12px}.gb-sort-button:not(.active) .gb-sort-arrow{opacity:.55}.gb-student-list{display:grid;gap:9px}.gb-student{border:1px solid #4e3b76;border-radius:13px;background:linear-gradient(145deg,rgba(13,12,43,.94),rgba(3,28,43,.9));overflow:hidden}.gb-student>summary{list-style:none;padding:11px;cursor:pointer}.gb-student>summary::-webkit-details-marker{display:none}.gb-avatar{width:48px;height:48px;object-fit:contain;border-radius:12px;background:#0a0b21;border:1px solid #7258aa}.gb-name b{display:block;font-size:15px}.gb-name small,.gb-metric small{display:block;color:#bfb4d1;font-size:9px}.gb-overall{font-size:24px;font-weight:1000;color:#ffe376}.gb-cat{font-weight:900;color:#8eeeff}.gb-missing{color:#ff9db5;font-weight:900}.gb-student-body{padding:0 12px 12px}.gb-assignment-row{display:grid;grid-template-columns:minmax(220px,1fr) 90px 85px 105px 80px minmax(130px,.55fr) auto;gap:7px;align-items:center;padding:8px;border-top:1px solid #302650}.gb-assignment-row input,.gb-assignment-row select{padding:7px!important}.gb-category-settings{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0 12px}.gb-category-settings label{display:flex;align-items:center;gap:6px}.gb-category-settings input{width:62px;padding:6px!important}.gb-empty{padding:18px;text-align:center;color:#c8bed8}.leaderboard-command{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-bottom:12px}.leaderboard-tabs{display:flex;gap:7px;flex-wrap:wrap}.leaderboard-reward-note{padding:10px;border:1px solid #5e4a8d;border-radius:11px;background:rgba(125,60,205,.1)}
-@media(max-width:1100px){.gb-controls{grid-template-columns:1fr 1fr}.gb-sort-header{display:none}.gb-student>summary{grid-template-columns:48px 1fr repeat(2,85px)}.gb-student>summary>:nth-child(n+5){display:none}.gb-assignment-row{grid-template-columns:1fr 80px 80px}.gb-assignment-row>:nth-child(n+4){grid-column:auto}}
-</style>
-<script src="pet-registry-v5614.js"></script>
-<script src="dragonswood-rpg-v56.js"></script>
-<script src="dragonswood-gradebook-v5611.js"></script>
-<style id="dw-v5620-final-cascade">
-/* Kept last intentionally: older version layers above are preserved for
-   rollback, while this approved shell wins the cascade. */
-body{background:linear-gradient(90deg,rgba(2,5,18,.87),rgba(2,7,22,.74)),radial-gradient(circle at 20% 16%,rgba(126,64,207,.18),transparent 28%),url("dragonswood-teacher-command-background.webp") center/cover fixed no-repeat!important}
-.teacher-head{position:fixed!important;left:0!important;top:0!important;width:218px!important;height:76px!important;padding:8px!important;background:rgba(2,7,22,.95)!important}
-.teacher-main{width:auto!important;max-width:1500px!important;margin:0 auto 0 max(218px,calc((100vw - 1500px + 218px)/2))!important;padding:18px 22px 110px!important}
-#dash{display:block!important}.command-tabs{position:fixed!important;left:0!important;top:76px!important;bottom:0!important;width:218px!important;display:flex!important;flex-direction:column!important;grid-template-columns:none!important;gap:4px!important;padding:9px 8px 80px!important;margin:0!important;border-radius:0!important;overflow-y:auto!important}.command-tabs .tab{flex:0 0 auto!important;width:100%!important;min-height:48px!important;padding:10px 12px!important;text-align:left!important;font:800 11px/1.2 Arial!important}.command-tabs .nav-crest{display:block!important}.command-tabs .nav-divider{display:none!important}
-.dw20-student-workspace{display:grid!important;grid-template-columns:minmax(310px,.68fr) minmax(0,1.55fr)!important}.dw20-student-workspace .dw-reward-modes{display:grid!important;grid-template-columns:repeat(4,1fr)!important}.dw20-status-strip{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important}#students>.progression-plan{display:none!important}#plannerWorkspace,#toolsWorkspace{display:none!important;grid-template-columns:1fr 1fr!important;gap:11px}#plannerWorkspace:has(>.active),#toolsWorkspace:has(>.active){display:grid!important}#plannerWorkspace>.panel.active,#toolsWorkspace>.panel.active{display:block!important}
-@media(max-width:1120px){.dw20-status-strip{grid-template-columns:repeat(2,1fr)!important}#plannerWorkspace,#toolsWorkspace{grid-template-columns:1fr!important}}
-@media(max-width:820px){.teacher-head{position:relative!important;width:100%!important;height:auto!important}.teacher-main{margin:0!important;padding:74px 12px 110px!important}.command-tabs{position:absolute!important;top:70px!important;right:0!important;bottom:auto!important;width:100%!important;height:58px!important;flex-direction:row!important;overflow-x:auto!important;overflow-y:hidden!important}.dw20-student-workspace{grid-template-columns:1fr!important}.dw20-status-strip{grid-template-columns:repeat(2,1fr)!important}}
-@media(max-width:520px){.dw20-status-strip{grid-template-columns:1fr!important}}
 </style>
 </head><body>
-<header class="teacher-head"><div class="shell"><div class="teacher-title"><img src="dragonswood-volleyball-crest-v1.png" alt="Dragonswood volleyball dragon crest" style="width:58px;height:58px;object-fit:contain;vertical-align:middle;margin-right:10px"><span style="color:#f7c94f;background:linear-gradient(180deg,#fff9d8 0%,#ffe99a 27%,#f8ca50 58%,#ffe99a 82%,#dfa12a 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 1px 0 rgba(116,67,8,.95)) drop-shadow(0 2px 1px rgba(22,5,34,.95)) drop-shadow(0 0 5px rgba(255,216,91,.16));letter-spacing:.3px">DRAGONSWOOD COMMAND</span><small>EXPLORE ACADEMY • EVANS 4–5 • TEACHER PORTAL</small></div><div class="hidden" id="signed" style="text-align:right"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
+<header class="teacher-head"><div class="shell"><div class="teacher-title">🛡️ DRAGONSWOOD COMMAND<small>EXPLORE ACADEMY • EVANS 4–5 • TEACHER PORTAL</small></div><div class="hidden" id="signed" style="text-align:right"><span id="who"></span> <button id="logout">LOGOUT</button></div></div></header>
 <main class="shell teacher-main">
-<section class="card" id="login" style="max-width:520px;margin:45px auto"><h1>Teacher Login</h1><p>Use the authorized Dragonswood teacher Google account.</p><form id="loginForm"><button id="teacherSignInBtn" type="submit" style="width:100%;opacity:1!important;filter:none!important;background:linear-gradient(90deg,#7b2cd3,#048eb6)!important;color:white!important;border:1px solid #f4c95d!important;cursor:pointer!important">G SIGN IN WITH GOOGLE</button><div id="error" style="color:#ff9db5;margin-top:8px"></div></form></section>
+<section class="card" id="login" style="max-width:520px;margin:45px auto"><h1>Teacher Login</h1><form id="loginForm"><div class="field"><label>Email</label><input id="email" required="" type="email"/></div><div class="field"><label>Password</label><input id="password" required="" type="password"/></div><button id="teacherSignInBtn" type="submit" style="width:100%;opacity:1!important;filter:none!important;background:linear-gradient(90deg,#7b2cd3,#048eb6)!important;color:white!important;border:1px solid #f4c95d!important;cursor:pointer!important">SIGN IN</button><div id="error" style="color:#ff9db5;margin-top:8px"></div></form></section>
 <section class="hidden" id="dash">
 <div class="frame bevel tabs command-tabs">
-<div class="nav-crest">TEACHER PORTAL</div>
-<button class="tab active" data-p="students">👥 STUDENT COMMAND</button>
-<button class="tab" data-p="data">📊 GRADEBOOK</button>
-<button class="tab" data-p="writing">✍️ SCRIBE COMMAND</button>
-<div class="nav-divider"><span>CLASSROOM</span></div>
-<button class="tab" data-p="rewards">🛡️ CLASS REWARDS &amp; GOALS</button>
-<button class="tab" data-p="passes">🎟️ PASS CONTROL</button>
-<button class="tab" data-p="jobs">🧹 GUILD JOBS</button>
-<button class="tab" data-p="planner">🕐 SCHEDULE &amp; CALENDAR</button>
-<button class="tab" data-p="tools">🧰 CLASSROOM TOOLS</button>
-<div class="nav-divider"><span>COMPETITION</span></div>
+<button class="tab active" data-p="students">👥 STUDENTS</button>
+<button class="tab" data-p="rewards">🛡️ CLASS REWARDS</button>
+<button class="tab" data-p="recess">🏰 CLASS GOALS</button>
+<button class="tab" data-p="passes">🎟️ PASSES</button><button class="tab" data-p="jobs">🧹 JOBS</button>
+<button class="tab" data-p="schedule">🕐 SCHEDULE</button>
+<button class="tab" data-p="calendar">📅 CALENDAR</button>
+<button class="tab" data-p="poll">📊 POLL</button>
+<button class="tab" data-p="picker">🎲 PICKER</button>
+<button class="tab" data-p="shop">🧰 SHOP</button>
 <button class="tab" data-p="scores">🏆 LEADERBOARDS</button>
+<button class="tab" data-p="writing">✍️ WRITING</button>
+<button class="tab" data-p="data">📊 GAME DATA</button>
 </div>
 <div class="panel active" id="students">
-<div class="frame bevel command-title"><h2>🧙 STUDENT COMMAND CENTER</h2><p>Manage HP, Gold, XP, level progress, profiles, and group awards.</p></div>
+<div class="frame bevel command-title"><h2>🧙 STUDENT CONTROL CENTER</h2><p>Manage HP, Gold, XP, level progress, profiles, and group awards.</p></div>
 
 <div class="live-request-grid">
 
@@ -660,7 +625,7 @@ body{background:linear-gradient(90deg,rgba(2,5,18,.87),rgba(2,7,22,.74)),radial-
 <div class="progression-plan"><div><small>LEVEL CAP</small><b>20</b><small>Midyear target</small></div><div><small>LEVEL 20 XP</small><b>12,000</b><small>Daily hard cap 150 XP</small></div><div><small>CLASS HP</small><b>10 → 48</b><small>Grows by level</small></div><div><small>RPG BASE HP</small><b>18 → 94</b><small>Before gear</small></div></div>
 <div class="card dw-shared-selector" id="sharedStudentSelector">
 <div class="student-check-head"><b>☑ SELECT STUDENTS ONCE</b><span class="student-selection-count" id="quickSelectedCount">0 selected</span><button id="quickSelectAll" type="button">SELECT ALL</button><button class="gray" id="quickClearAll" type="button">CLEAR</button></div>
-<div class="dw-select-filters"><button type="button" data-select-filter="4">4TH</button><button type="button" data-select-filter="5">5TH</button><button type="button" data-select-filter="boy">BOYS</button><button type="button" data-select-filter="girl">GIRLS</button><select id="studentJobFilter" aria-label="Select students by classroom job"><option value="">JOB…</option></select><input id="savedGroupName" placeholder="Saved group name" aria-label="Saved group name"><button type="button" id="saveStudentGroup">SAVE GROUP</button><select id="loadStudentGroup" aria-label="Load a saved student group"><option value="">LOAD GROUP…</option></select></div>
+<div class="dw-select-filters"><button type="button" data-select-filter="4">4TH</button><button type="button" data-select-filter="5">5TH</button><button type="button" data-select-filter="boy">BOYS</button><button type="button" data-select-filter="girl">GIRLS</button></div>
 <div class="student-check-grid" id="quickStudentCheckboxes"></div>
 <div class="dw-selection-summary" id="sharedSelectionSummary">No students selected. Group choices like Whole Class still work without checking names.</div>
 </div>
@@ -696,16 +661,13 @@ body{background:linear-gradient(90deg,rgba(2,5,18,.87),rgba(2,7,22,.74)),radial-
 </div>
 <div class="dw-custom-selection-note">Uses the students selected at the top of this page when <b>☑ Selected Students</b> is chosen.</div>
 <div class="actions" style="margin-top:10px"><button onclick="document.getElementById('massAmount').value=1">+1</button><button onclick="document.getElementById('massAmount').value=5">+5</button><button onclick="document.getElementById('massAmount').value=10">+10</button><button onclick="document.getElementById('massAmount').value=-1">-1</button><button id="massApply" style="margin-left:auto">APPLY AWARD</button></div></div>
-</div><div class="dw-reward-mode-panel" data-reward-panel="manage-roster"><details class="card teacher-admin-details"><summary>🧙 FULL STUDENT ROSTER &amp; ADMINISTRATION</summary><p class="pace-note">Open detailed profile controls only when needed.</p>
-<div style="overflow:auto"><table class="student-table"><thead><tr><th>AVATAR</th><th>STUDENT</th><th>GRADE</th><th>QUEST TRACK</th><th>GROUP</th><th>LEVEL</th><th>HP</th><th>STATUS</th><th>RECESS</th><th>TRIP</th><th>HP MAX</th><th>GOLD</th><th>XP</th><th>DAILY XP</th><th>MANAGE</th></tr></thead><tbody id="studentRows"></tbody></table></div></details>
+</div><div class="dw-reward-mode-panel" data-reward-panel="manage-roster"><div class="titlebar"><div><h2>STUDENT ROSTER</h2><p>Profiles appear here after first sign-in.</p></div></div>
+<div class="card" style="overflow:auto"><table class="student-table"><thead><tr><th>AVATAR</th><th>STUDENT</th><th>GRADE</th><th>QUEST TRACK</th><th>GROUP</th><th>LEVEL</th><th>HP</th><th>STATUS</th><th>RECESS</th><th>TRIP</th><th>HP MAX</th><th>GOLD</th><th>XP</th><th>DAILY XP</th><th>MANAGE</th></tr></thead><tbody id="studentRows"></tbody></table></div>
 </div>
 </div>
 <div class="panel" id="rewards">
-<div class="frame bevel command-title"><h2>🛡️ CLASS REWARDS &amp; GOALS</h2><p>Shared class points and milestone rewards are below. Second Recess, Class Pet, and Field Trip goals continue underneath.</p></div>
 <div class="grid"><div class="card"><h2>CLASS POINTS</h2><div class="big" id="points">0</div><div class="meter"><div class="fill" id="fill"></div></div><div class="actions" style="margin-top:10px"><input class="reason" id="reason" placeholder="Reason (optional)"/><button class="add" data-n="1">+1</button><button class="add" data-n="5">+5</button><button class="add" data-n="10">+10</button><button id="minus">-1</button><button id="undo">UNDO LAST</button></div></div><div class="card"><h2>REWARD HISTORY</h2><div id="history"></div></div></div>
-<div class="titlebar"><div><h2>CLASS REWARD MILESTONES</h2><p>Choose what the class unlocks as its shared reward total grows.</p></div><button id="addReward">+ ADD REWARD</button></div>
-<div class="reward-purpose"><span>🎁</span><div><b>What this page does</b><p>These are class-wide reward thresholds. Editing a milestone changes what students work toward; it does not give or remove points.</p></div></div>
-<div class="card"><div class="list" id="rewardList"></div></div>
+<div class="titlebar"><div><h2>REWARD MILESTONES</h2><p>Add or edit rewards without touching GitHub.</p></div><button id="addReward">+ ADD REWARD</button></div><div class="card"><div class="list" id="rewardList"></div></div>
 </div>
 <div class="panel" id="recess">
 <div class="frame bevel command-title">
@@ -786,8 +748,7 @@ body{background:linear-gradient(90deg,rgba(2,5,18,.87),rgba(2,7,22,.74)),radial-
 </div><div class="live-request-grid">
 <div class="card live-request-box"><h3>🚻 BATHROOM HISTORY</h3><p class="pace-note">History only. 3 automatic passes per day; one boy and one girl may be out at a time.</p><div class="live-request-list" id="bathroomHistoryList"><div class="muted">No bathroom visits recorded today.</div></div></div>
 <div class="card live-request-box"><h3>🍎 SNACK HISTORY</h3><p class="pace-note">History only. 2 automatic snack passes per day.</p><div class="live-request-list" id="snackHistoryList"><div class="muted">No snack passes recorded today.</div></div></div>
-<div class="card live-request-box"><h3>🚶 OUT OF SEAT</h3><p class="pace-note">One automatic pass daily; extra uses require approval.</p><div class="live-request-list" id="outOfSeatHistory"><div class="muted">No Out of Seat history today.</div></div></div>
-<div class="card live-request-box"><h3>🆘 EMERGENCY OFFICE</h3><p class="pace-note">One automatic pass daily; extra uses require approval.</p><div class="live-request-list" id="officePassHistory"><div class="muted">No Office history today.</div></div></div>
+<div class="card live-request-box"><h3>🚶 OUT OF SEAT / 🆘 EMERGENCY OFFICE HISTORY</h3><p class="pace-note">History only. Each includes 1 automatic pass per day; extra uses require approval above.</p><div class="live-request-list" id="genericPassHistory"><div class="muted">No pass history yet.</div></div></div>
     <div class="card live-request-box" style="grid-column:1/-1">
       <h3>📚 STORED PASS ARCHIVE</h3>
       <p class="pace-note">Persistent pass records from today and previous days.</p>
@@ -878,11 +839,10 @@ body{background:linear-gradient(90deg,rgba(2,5,18,.87),rgba(2,7,22,.74)),radial-
 </div>
 </div>
 </div>
-<div class="panel" id="shop" style="display:none!important" aria-hidden="true">
+<div class="panel" id="shop">
 <div class="frame bevel command-title">
-<h2>📦 LEGACY SHOP ARCHIVE</h2>
-<p>The five-day shop is retired and does not control v56 classes, equipment, eggs, pets, or boss loot. Existing records remain visible only for reference.</p>
-<div class="actions" style="margin-top:10px"><a class="btn" href="adventurer-hall.html" target="_blank">OPEN V56 ADVENTURER HALL</a><a class="btn" href="boss-battle.html" target="_blank">OPEN DAILY BOSS</a></div>
+<h2>🧰 DRAGONSWOOD SHOP MANAGER</h2>
+<p>Create Gold-priced rewards once here. The student Shop will read these directly from Firebase.</p>
 </div>
 <div class="shop-summary-grid">
 <div class="card shop-summary-card"><span>🧰</span><b id="shopItemCount">0</b><small>SHOP ITEMS</small></div>
@@ -924,7 +884,7 @@ body{background:linear-gradient(90deg,rgba(2,5,18,.87),rgba(2,7,22,.74)),radial-
 <div class="card placeholder-card"><div>✅</div><h3>Approvals</h3><p>Review student submissions and approve completion from one queue.</p><span>COMING NEXT</span></div>
 </div>
 </div>
-<div class="panel" id="scores"><div class="frame bevel command-title"><h2>🏆 LEADERBOARD COMMAND</h2><p>Weekly standings reset automatically each Monday. All-time records never reset.</p></div><div class="leaderboard-command"><div class="leaderboard-tabs"><button id="teacherWeeklyBoard" class="active" type="button">THIS WEEK</button><button id="teacherAllTimeBoard" type="button">ALL TIME</button></div><button id="issueLeaderboardRewards" type="button">🎁 ISSUE TODAY'S TOP-5 REWARDS</button></div><div class="leaderboard-reward-note"><b>Daily weekly rewards:</b> 1st receives 5 Gold plus a Champion Choice; 2nd–3rd receive 3 Gold; 4th–5th receive 2 Gold. One award per student per day, maximum five reward days per week.</div><div class="card"><div class="list" id="scoreList"></div></div><details class="card raw-results"><summary>Reward history</summary><div id="leaderboardRewardHistory"></div></details></div>
+<div class="panel" id="scores"><div class="frame bevel command-title"><h2>🏆 LEADERBOARD MANAGER</h2><p>Review or delete submitted scores.</p></div><div class="card"><div class="list" id="scoreList"></div></div></div>
 
 <div class="panel" id="writing">
   <div class="frame bevel command-title"><h2>✍️ SCRIBE ARENA COMMAND</h2><p>Launch Quickwrites, watch submissions arrive, review AI rubric scores, and track writing growth.</p></div>
@@ -978,16 +938,7 @@ body{background:linear-gradient(90deg,rgba(2,5,18,.87),rgba(2,7,22,.74)),radial-
     <div id="twResponseList"><div class="muted">Launch a writing mission to begin.</div></div>
   </div>
 </div>
-<div class="panel" id="data">
-  <div class="frame bevel command-title" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><h2>📚 DRAGONSWOOD GRADEBOOK</h2><p>One cumulative record per student. Open a student only when you need assignment details.</p></div><button id="gradebookRefresh" type="button" title="Re-read grades from Firestore">↻ REFRESH</button></div>
-  <div class="gradebook-summary"><div><small>STUDENTS</small><b id="gradebookStudentCount">0</b></div><div><small>CLASS AVERAGE</small><b id="gradebookClassAverage">—</b></div><div><small>ASSIGNED WORK</small><b id="gradebookAssignmentCount">0</b></div><div><small>ACTUAL MISSING</small><b id="gradebookMissingCount">0</b></div></div>
-  <div class="gb-category-settings"><b>Category weights:</b><label>Daily Quest <input id="gbWeightDaily" type="number" min="0" max="100" value="40">%</label><label>Curriculum Quest <input id="gbWeightCurriculum" type="number" min="0" max="100" value="40">%</label><label>Reading Tests <input id="gbWeightReading" type="number" min="0" max="100" value="20">%</label><button id="gbSaveWeights" type="button">SAVE WEIGHTS</button></div>
-  <details class="card raw-results"><summary>⚙️ Manage assignments</summary><p class="pace-note">Rename activities, correct their category, set points or due dates, and choose whether they count in cumulative grades.</p><div id="gradebookAssignmentManager"></div></details>
-  <div class="gb-controls"><input id="gbSearch" placeholder="Search students…"><select id="gbGrade"><option value="all">All grades</option><option value="4">4th Grade</option><option value="5">5th Grade</option></select><select id="gbGroup"><option value="all">All groups</option><option value="girl">Girls</option><option value="boy">Boys</option></select><button id="gradebookExport" type="button">⬇ EXPORT CSV</button></div>
-  <div class="gb-sort-header" aria-label="Sort gradebook"><span class="gb-sort-spacer" aria-hidden="true"></span><button class="gb-sort-button active" type="button" data-gb-sort="name">Name <span class="gb-sort-arrow">↑</span></button><button class="gb-sort-button" type="button" data-gb-sort="overall">Total grade <span class="gb-sort-arrow">↕</span></button><button class="gb-sort-button" type="button" data-gb-sort="daily">Daily Quest <span class="gb-sort-arrow">↕</span></button><button class="gb-sort-button" type="button" data-gb-sort="curriculum">Curriculum <span class="gb-sort-arrow">↕</span></button><button class="gb-sort-button" type="button" data-gb-sort="reading">Reading <span class="gb-sort-arrow">↕</span></button><button class="gb-sort-button" type="button" data-gb-sort="missing">Missing <span class="gb-sort-arrow">↕</span></button><span aria-hidden="true"></span></div>
-  <div class="gb-student-list" id="gradebookStudents"></div>
-  <details class="card raw-results"><summary>View raw game attempts</summary><div style="overflow:auto;margin-top:10px"><table><thead><tr><th>Player</th><th>Game</th><th>Score</th><th>Accuracy</th><th>Details</th><th>Time</th></tr></thead><tbody id="results"></tbody></table></div></details>
-</div>
+<div class="panel" id="data"><div class="frame bevel command-title"><h2>📊 ACADEMIC GAME DATA</h2><p>Private game results for instructional use.</p></div><div class="card" style="overflow:auto"><table><thead><tr><th>Player</th><th>Game</th><th>Score</th><th>Accuracy</th><th>Details</th><th>Time</th></tr></thead><tbody id="results"></tbody></table></div></div>
 
 <section class="card teacher-queue" id="curriculumOverrideQueue">
   <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
@@ -999,10 +950,8 @@ body{background:linear-gradient(90deg,rgba(2,5,18,.87),rgba(2,7,22,.74)),radial-
 </section>
 
 </section></main>
-<div class="dw20-review-bar hidden" id="dw20ReviewBar" aria-live="polite"><div><small>SELECTED COMMAND</small><strong id="dw20ReviewCommand">Choose a reward or correction</strong></div><div class="dw20-review-targets" id="dw20ReviewTargets">Select scholars, then choose a command.</div><button id="dw20OpenReview" type="button" disabled>REVIEW CHANGES</button></div>
-<div class="modal hidden dw20-review-dialog" id="dw20ReviewDialog" role="dialog" aria-modal="true" aria-labelledby="dw20ReviewTitle"><div class="modalbox card"><h3 id="dw20ReviewTitle">Review Changes</h3><p id="dw20ReviewDetail"></p><div class="dw20-review-list" id="dw20ReviewList"></div><label class="dw20-serious-check hidden" id="dw20SeriousWrap"><input id="dw20SeriousConfirm" type="checkbox"> <span><b>I understand this is a serious consequence.</b><small>Apply it only after confirming the correct scholars and classroom incident.</small></span></label><div class="actions" style="margin-top:14px"><button id="dw20ApplyReview" type="button">APPLY CHANGES</button><button class="gray" id="dw20CancelReview" type="button">GO BACK</button></div><div class="muted" id="dw20ReviewStatus" role="status"></div></div></div>
 <div class="modal hidden" id="rewardModal"><div class="modalbox card"><h3 id="rewardModalTitle">Add Reward</h3><input id="rid" type="hidden"/><div class="field"><label>Name</label><input id="rname"/></div><div class="field"><label>Points Required</label><input id="rpoints" type="number"/></div><div class="field"><label>Icon</label><input id="ricon" value="🎁"/></div><div class="field"><label>Description</label><textarea id="rdesc"></textarea></div><div class="actions"><button id="saveReward">SAVE REWARD</button><button id="cancelReward">Cancel</button></div></div></div>
-<div class="modal hidden" id="studentModal"><div class="modalbox card"><h3>Manage Student</h3><input id="sid" type="hidden"/><div class="field"><label>First Name</label><input id="sname"/></div><div class="field"><label>Grade</label><select id="sgrade"><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div><div class="field"><label>Daily Quest Track</label><select id="squesttrack"><option value="auto">Auto by Grade</option><option value="foundation">Foundation (Grade 3 prerequisites)</option><option value="4">Force 4th Grade</option><option value="5">Force 5th Grade</option><option value="challenge">⭐ Challenge (Early–Mid 6th)</option></select></div><div class="field"><label>Group</label><select id="sgroup"><option value="girl">Girls</option><option value="boy">Boys</option></select></div><div class="field"><label>Title ID</label><input id="stitle"/></div><div class="field"><label>Avatar ID</label><input id="savatar"/></div><div class="groupbox"><div class="field"><label>HP</label><input id="shp" type="number"/></div><div class="field"><label>Gold</label><input id="sgold" type="number"/></div><div class="field"><label>XP</label><input id="sxp" type="number"/></div><div class="field"><label>Reason</label><input id="sreason"/></div></div><div class="student-gear-admin"><h4>🧭 RPG SNAPSHOT</h4><div id="srpgSnapshot" class="rpg-snapshot"><span class="muted">Select a student.</span></div></div><div class="student-gear-admin"><h4>⚔️ V56 CLASS, PETS &amp; EGGS</h4><div class="formgrid"><div class="field"><label>CLASS</label><select id="sclass"><option value="">Not chosen</option><option value="warrior">Warrior</option><option value="ranger">Ranger</option><option value="mage">Mage</option><option value="healer">Healer</option></select></div><div class="field"><label>WOODLAND EGGS</label><input id="seggs" min="0" type="number" value="0"/></div></div><div class="field"><label>V56 OWNED ITEM IDS (comma separated)</label><input id="srpgitems" list="rpgItemList" placeholder="click to pick, or type ids separated by commas"/><datalist id="rpgItemList"></datalist></div><div class="field"><label>OWNED PET IDS (comma separated)</label><input id="spets" list="rpgPetList" placeholder="click to pick, or type ids separated by commas"/><datalist id="rpgPetList"></datalist></div><div class="field"><label>ACTIVE PET ID</label><input id="sactivepet" list="rpgPetList" placeholder="click to pick one"/></div><div class="field"><label>BOSS WINS</label><input id="sbosswins" min="0" type="number" value="0"/></div><div class="field"><label>DAY CREDIT BEFORE TRACKING</label><input id="slegacydays" min="0" max="180" type="number" value="0"/><small class="pace-note">Days completed before the counter existed. Set 12 for the original roster, 0 for anyone who joined later.</small></div></div><div class="actions" style="margin-top:9px;flex-wrap:wrap"><button class="gray" id="resetClassBtn" type="button">RESET CLASS CHOICE</button><small class="pace-note" id="resetClassNote">Clears the one-time class pick so the student may choose again. Their items and pets are kept.</small></div><div class="student-gear-admin">
+<div class="modal hidden" id="studentModal"><div class="modalbox card"><h3>Manage Student</h3><input id="sid" type="hidden"/><div class="field"><label>First Name</label><input id="sname"/></div><div class="field"><label>Grade</label><select id="sgrade"><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div><div class="field"><label>Daily Quest Track</label><select id="squesttrack"><option value="auto">Auto by Grade</option><option value="4">Force 4th Grade</option><option value="5">Force 5th Grade</option><option value="challenge">⭐ Challenge (Early–Mid 6th)</option></select></div><div class="field"><label>Group</label><select id="sgroup"><option value="girl">Girls</option><option value="boy">Boys</option></select></div><div class="field"><label>Title ID</label><input id="stitle"/></div><div class="field"><label>Avatar ID</label><input id="savatar"/></div><div class="groupbox"><div class="field"><label>HP</label><input id="shp" type="number"/></div><div class="field"><label>Gold</label><input id="sgold" type="number"/></div><div class="field"><label>XP</label><input id="sxp" type="number"/></div><div class="field"><label>Reason</label><input id="sreason"/></div></div><div class="student-gear-admin">
 <b>🎒 STUDENT GEAR / INVENTORY</b>
 <div class="formgrid" style="margin-top:7px">
 <div class="field"><label>GIVE GEAR</label><select id="adminGiveGear"></select></div>
@@ -1068,8 +1017,8 @@ body{background:linear-gradient(90deg,rgba(2,5,18,.87),rgba(2,7,22,.74)),radial-
 </div>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserSessionPersistence} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import {getFirestore,doc,getDoc,setDoc,collection,onSnapshot,addDoc,deleteDoc,getDocs,writeBatch,runTransaction,increment,serverTimestamp,query,where,orderBy,limit} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged,setPersistence,browserSessionPersistence} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {getFirestore,doc,getDoc,setDoc,collection,onSnapshot,addDoc,deleteDoc,getDocs,writeBatch,serverTimestamp,query,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2", "measurementId": "G-LPRLDGVBD2"},TEACHER="jacobicusjax@gmail.com";
 const normalizedEmail = v => String(v||"").trim().toLowerCase();
@@ -1082,7 +1031,7 @@ const app=initializeApp(firebaseConfig,"DragonswoodTeacherPortal"),
       auth=getAuth(app),
       db=getFirestore(app),
       $=id=>document.getElementById(id);
-let points=0,history=[],rewards=[],scores=[],results=[],dailyQuestProgress=[],curriculumProgress=[],curriculumAttempts=[],gradebookGrades=[],gradebookAssignmentSettings=[],leaderboardRewards=[],bossLootRows=[],physicalPrizeDrops=[],gradebookSettings={daily:40,curriculum:40,reading:20,attemptRule:"first_best_average"},students=[],shopItems=[],purchases=[],bathroomStatuses=[],bathroomRequests=[],snackStatuses=[],snackRequests=[],pointRequests=[],genericPassRequests=[],passHistory=[],classJobsConfigV29={},jobWeeksV29=[],classScheduleV29={},calendarEventsV29=[],recessState={points:0,goal:10,dateKey:""},petGoalState={points:0,goal:250},tripGoalState={points:0,goal:750},universalPointState={points:0},dw20PendingCommand=null;
+let points=0,history=[],rewards=[],scores=[],results=[],students=[],shopItems=[],purchases=[],bathroomStatuses=[],bathroomRequests=[],snackStatuses=[],snackRequests=[],pointRequests=[],genericPassRequests=[],passHistory=[],classJobsConfigV29={},jobWeeksV29=[],classScheduleV29={},calendarEventsV29=[],recessState={points:0,goal:10,dateKey:""},petGoalState={points:0,goal:250},tripGoalState={points:0,goal:750},universalPointState={points:0};
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
 const AVATAR_EMOJI={"dragon-purple":"🐉","dragon-green":"🐲","knight":"🛡️","wizard":"🧙","witch":"🧙‍♀️","princess":"👸","prince":"🤴","ranger":"🏹","phoenix":"🔥","wolf":"🐺","owl":"🦉","crystal":"🔮"};
 const DRAGONSWOOD_XP_THRESHOLDS=[0,200,450,750,1100,1500,1950,2450,3000,3600,4250,4950,5700,6500,7350,8250,9200,10200,11100,12000];
@@ -1120,9 +1069,7 @@ $("loginForm").onsubmit = async e => {
   if(signBtn){signBtn.disabled=true;signBtn.textContent="SIGNING IN…";}
   try {
     await setPersistence(auth,browserSessionPersistence);
-    const provider=new GoogleAuthProvider();
-    provider.setCustomParameters({prompt:"select_account"});
-    const cred = await signInWithPopup(auth,provider);
+    const cred = await signInWithEmailAndPassword(auth, $("email").value.trim(), $("password").value);
     if (normalizedEmail(cred.user.email) !== normalizedEmail(TEACHER)) {
       $("error").textContent = `That account signed in successfully, but it is not the authorized teacher account (${TEACHER}).`;
     }
@@ -1130,7 +1077,7 @@ $("loginForm").onsubmit = async e => {
     console.error("Teacher login error:", err);
     $("error").textContent = `Sign in failed: ${err.code || "unknown"} — ${err.message || ""}`;
   } finally {
-    if(signBtn){signBtn.disabled=false;signBtn.textContent="G SIGN IN WITH GOOGLE";}
+    if(signBtn){signBtn.disabled=false;signBtn.textContent="SIGN IN";}
   }
 };
 $("logout").onclick=()=>signOut(auth);
@@ -1220,64 +1167,14 @@ async function saveDailyAccessOverride(all,ids){
  },{merge:false});
  window.DWAudio?.positive();
 }
-/* ==========================================================================
-   v56.19 — tab-aware data layer.
-
-   Before: listen() opened 34 Firestore listeners at once, and the `students`
-   listener — the only one the default Students tab renders from — was 19th in
-   that queue, behind gameResults, curriculumAttempts, passHistory and nine
-   other whole-collection reads. Seven separate listeners each called
-   renderGradebook() during startup, so the gradebook was rebuilt seven times
-   before the teacher saw a single student row.
-
-   After: 16 essential listeners, `students` first. The other 18 subscribe the
-   first time their tab (or a student record) is actually opened, and never
-   twice. No listener callback logic was changed; the statements below are the
-   originals, moved.
-   ========================================================================== */
-const DW_SUBSCRIBED=new Set();window.DW_SUBSCRIBED=DW_SUBSCRIBED;
-function dwSub(key,fn){
-  if(DW_SUBSCRIBED.has(key))return;      // reopening a tab must not re-subscribe
-  DW_SUBSCRIBED.add(key);
-  try{fn();}catch(e){console.warn("dwSub "+key,e);}
-}
-/* Coalesce repeat renders into one per animation frame. Seven gradebook
-   listeners firing together now cost one render, not seven. */
-const DW_RENDER_QUEUE=new Set();let DW_RENDER_FRAME=0;
-function dwQueue(fn){
-  if(typeof fn!=="function")return;
-  DW_RENDER_QUEUE.add(fn);
-  if(DW_RENDER_FRAME)return;
-  DW_RENDER_FRAME=requestAnimationFrame(function(){
-    DW_RENDER_FRAME=0;
-    const jobs=Array.from(DW_RENDER_QUEUE);DW_RENDER_QUEUE.clear();
-    for(const j of jobs){try{j();}catch(e){console.warn("render",e);}}
-  });
-}
-/* Render a deferred view only once its data group is actually subscribed.
-   Before this guard the students listener called renderShop, renderScores and
-   renderGradebook on every snapshot — building empty DOM for three hidden
-   panels, and paying for a full gradebook recompute every time a teacher
-   awarded a single point. Once the owning tab is opened the guard opens with
-   it, so the view still updates live. */
-function dwQueueFor(key,fn){ if(DW_SUBSCRIBED.has(key)) dwQueue(fn); }
-
-/* Honest loading state: a deferred tab says so until its first snapshot. */
-function dwTabLoading(on,panelId){
-  const p=document.getElementById(panelId);if(!p)return;
-  p.classList.toggle("dw-tab-loading",!!on);
-}
-
 function listen(){
-  dwSub("students",function(){
-   onSnapshot(collection(db,"students"),s=>{students=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.firstName||"").localeCompare(String(b.firstName||"")));dwQueue(renderStudents);dwQueueFor("shop",renderShop);dwQueueFor("leaderboard",renderScores);dwQueueFor("gradebook",renderGradebook)});
-  });
-  dwSub("classStatus",function(){
-   onSnapshot(doc(db,"classData","dailyAccessOverride"),s=>{
+
+ onSnapshot(doc(db,"classData","dailyAccessOverride"),s=>{
    dailyAccessOverrideTeacher=s.exists()?s.data():{};
    renderDailyAccessOverrideTeacher();
  },e=>console.warn("daily access override listener",e));
-   onSnapshot(doc(db,"classData","secondRecess"),async s=>{
+
+ onSnapshot(doc(db,"classData","secondRecess"),async s=>{
    const today=localDateKey();
    let data=s.exists()?s.data():{points:0,goal:10,dateKey:today};
 
@@ -1294,169 +1191,43 @@ function listen(){
    };
    renderTeacherRecess();
  });
-   onSnapshot(doc(db,"classData","classPet"),s=>{
+
+
+ onSnapshot(doc(db,"classData","classPet"),s=>{
    const d=s.exists()?s.data():{};
    petGoalState={points:Math.max(0,Number(d.points||0)),goal:Math.max(1,Number(d.goal||250))};
    renderPersistentGoal("pet",petGoalState);
  });
-   onSnapshot(doc(db,"classData","fieldTrip"),s=>{
+ onSnapshot(doc(db,"classData","fieldTrip"),s=>{
    const d=s.exists()?s.data():{};
    tripGoalState={points:Math.max(0,Number(d.points||0)),goal:Math.max(1,Number(d.goal||750))};
    renderPersistentGoal("trip",tripGoalState);
  });
-   onSnapshot(doc(db,"classData","universalPoints"),s=>{
+ onSnapshot(doc(db,"classData","universalPoints"),s=>{
    const d=s.exists()?s.data():{};
    universalPointState={points:Math.max(0,Number(d.points||0))};
    if($("universalTeacherPoints"))$("universalTeacherPoints").textContent=universalPointState.points;
  });
-   onSnapshot(doc(db,"classData","main"),s=>{if(!s.exists())return;let d=s.data();points=+d.points||0;history=Array.isArray(d.history)?d.history:[];dwQueue(renderPoints)});
-  });
-  dwSub("rewards",function(){
-   onSnapshot(collection(db,"rewards"),s=>{rewards=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+a.points||0)-(+b.points||0));dwQueue(renderRewards);dwQueue(renderPoints)});
-  });
-  dwSub("liveRequests",function(){
-   onSnapshot(collection(db,"bathroomStatus"),s=>{bathroomStatuses=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderLiveRequests)},e=>console.warn("bathroomStatus listener",e));
-   onSnapshot(collection(db,"bathroomRequests"),s=>{bathroomRequests=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderLiveRequests)},e=>console.warn("bathroomRequests listener",e));
-   onSnapshot(collection(db,"snackStatus"),s=>{snackStatuses=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderLiveRequests)},e=>console.warn("snackStatus listener",e));
-   onSnapshot(collection(db,"snackRequests"),s=>{snackRequests=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderLiveRequests)},e=>console.warn("snackRequests listener",e));
-   onSnapshot(collection(db,"passRequests"),s=>{genericPassRequests=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderLiveRequests)},e=>console.warn("passRequests listener",e));
-   onSnapshot(collection(db,"pointRequests"),s=>{pointRequests=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderLiveRequests)},e=>console.warn("pointRequests listener",e));
-   onSnapshot(doc(db,"classData","passBlackout"),s=>{passBlackoutTeacher=s.exists()?s.data():{active:false};dwQueue(renderPassControl)},e=>console.warn("pass blackout listener",e));
-   onSnapshot(collection(db,"passStatus"),s=>{genericPassStatuses=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderPassControl)},e=>console.warn("generic pass listener",e));
-  });
-}
 
-/* Called by the tab click handler. Safe to call on every click. */
-
-/* One-time gradebook load. Sorting matches the old listener callbacks exactly. */
-let DW_GRADEBOOK_LOADING=false;
-async function dwLoadGradebookOnce(){
-  if(DW_GRADEBOOK_LOADING)return;
-  DW_GRADEBOOK_LOADING=true;
-  dwTabLoading(true,"data");
-  const btn=document.getElementById("gradebookRefresh");
-  if(btn){btn.disabled=true;btn.textContent="REFRESHING\u2026";}
-  const grab=async n=>(await getDocs(collection(db,n))).docs.map(d=>({id:d.id,...d.data()}));
-  try{
-    const [gr,dq,gg,ga,cp,ca]=await Promise.all([
-      grab("gameResults"),grab("dailyQuestProgress"),grab("gradebookGrades"),
-      grab("gradebookAssignments"),grab("curriculumProgress"),grab("curriculumAttempts")
-    ]);
-    results=gr.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-    dailyQuestProgress=dq; gradebookGrades=gg; gradebookAssignmentSettings=ga;
-    curriculumProgress=cp; curriculumAttempts=ca;
-    renderResults(); renderGradebook();
-  }catch(e){
-    console.warn("gradebook load",e);
-    const box=document.getElementById("gradebookStudents");
-    if(box&&!box.innerHTML.trim())box.innerHTML='<div class="gb-empty">Could not load the gradebook. Check your connection, then press Refresh.</div>';
-  }finally{
-    dwTabLoading(false,"data");
-    DW_GRADEBOOK_LOADING=false;
-    if(btn){btn.disabled=false;btn.textContent="\u21bb REFRESH";}
-  }
-}
-
-document.addEventListener("click",function(e){
-  const b=e.target&&e.target.closest?e.target.closest("#gradebookRefresh"):null;
-  if(b){e.preventDefault();dwLoadGradebookOnce();}
-});
-
-/* Full history is read once, only if the teacher actually selects "All". */
-let passHistoryWindow=[],passHistoryFull=false,passHistoryLoading=false;
-async function dwLoadFullPassHistory(){
-  if(passHistoryFull||passHistoryLoading)return;
-  passHistoryLoading=true;
-  const sel=document.getElementById("passArchiveRange");
-  if(sel)sel.disabled=true;
-  try{
-    passHistory=(await getDocs(collection(db,"passHistory"))).docs.map(d=>({id:d.id,...d.data()}));
-    passHistoryFull=true;
-  }catch(e){
-    console.warn("full pass history",e);
-    passHistory=passHistoryWindow;          // fall back to the live window
-  }finally{
-    passHistoryLoading=false;
-    if(sel)sel.disabled=false;
-    renderPassArchive();
-  }
-}
-document.addEventListener("change",function(e){
-  const t=e.target;
-  if(t&&t.id==="passArchiveRange"&&t.value==="all")dwLoadFullPassHistory();
-});
-
-function dwEnsureTabData(p){
-  if(p==="data"){
-   dwSub("overrideQueue",function(){ if(window.__dwStartOverrideQueue)window.__dwStartOverrideQueue(); });
-   dwTabLoading(true,"data");
-   dwSub("gradebook",function(){
-    /* v56.19 — these six are written by STUDENTS, never by the teacher page.
-       As live listeners they re-rendered the gradebook under the teacher's
-       cursor every time a child finished a quiz. The gradebook is a review and
-       export surface, not a live monitor, so it now reads once when the tab
-       opens and offers a Refresh button. Same collections, same documents,
-       same computed grades - the query is unchanged, only onSnapshot->getDocs. */
-    dwLoadGradebookOnce();
-    onSnapshot(doc(db,"classData","gradebookSettings"),s=>{if(s.exists())gradebookSettings={...gradebookSettings,...s.data()};dwQueueFor("gradebook",renderGradebook)},e=>console.warn("gradebook settings",e));
-    dwQueue(function(){dwTabLoading(false,"data");});
-  
-   });
-  }
-  if(p==="scores"){
-   dwTabLoading(true,"scores");
-   dwSub("leaderboard",function(){
-    onSnapshot(collection(db,"scores"),s=>{scores=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+b.score||0)-(+a.score||0));dwQueueFor("leaderboard",renderScores)});
-    onSnapshot(collection(db,"leaderboardRewards"),s=>{leaderboardRewards=s.docs.map(d=>({id:d.id,...d.data()}));dwQueueFor("leaderboard",renderScores)},e=>console.warn("leaderboard rewards",e));
-    dwQueue(function(){dwTabLoading(false,"scores");});
-   });
-  }
-  if(p==="passes"){
-   dwTabLoading(true,"passes");
-   dwSub("passHistory",function(){
-    /* v56.19 — bounded live window + on-demand full history.
-
-   Proof this is lossless: archiveDateDiff() builds `new Date(dateKey+'T12:00:00')`,
-   so a record with no dateKey yields NaN, and every comparison against NaN is
-   false. A dateKey-less record therefore CANNOT appear under today/yesterday/
-   7/30 today - only under "All". So bounding the live listener by dateKey costs
-   those four views nothing, and "All" now triggers one unbounded read that still
-   catches every record, dateKey or not. */
-   onSnapshot(query(collection(db,"passHistory"),orderBy("dateKey","desc"),limit(400)),s=>{
-     passHistoryWindow=s.docs.map(d=>({id:d.id,...d.data()}));
-     if(!passHistoryFull)passHistory=passHistoryWindow;
-     dwQueue(renderPassArchive);
-   },e=>console.warn("passHistory listener",e));
-    dwQueue(function(){dwTabLoading(false,"passes");});
-   });
-  }
-  if(p==="jobs"){
-   dwTabLoading(true,"jobs");
-   dwSub("jobs",function(){
-    onSnapshot(doc(db,"classData","classJobs"),s=>{classJobsConfigV29=s.exists()?s.data():{};dwQueueFor("jobs",renderV29Jobs);dw499MigrateJobsConfig(classJobsConfigV29)},e=>console.warn("v29 jobs",e));
-    onSnapshot(collection(db,"studentJobWeeks"),s=>{jobWeeksV29=s.docs.map(d=>({id:d.id,...d.data()}));dwQueueFor("jobs",renderV29Jobs);setTimeout(runV29Payroll,250)},e=>console.warn("v29 job weeks",e));
-    dwQueue(function(){dwTabLoading(false,"jobs");});
-   });
-  }
-  if(p==="planner"){
-   dwTabLoading(true,"schedule");
-   dwSub("planner",function(){
-    onSnapshot(doc(db,"classData","classSchedule"),s=>{classScheduleV29=s.exists()?s.data():{};loadScheduleDay()},e=>console.warn("v29 schedule",e));
-    onSnapshot(collection(db,"classCalendarEvents"),s=>{calendarEventsV29=s.docs.map(d=>({id:d.id,...d.data()}));dwQueueFor("planner",renderTeacherCalendar)},e=>console.warn("v29 calendar",e));
-    dwQueue(function(){dwTabLoading(false,"schedule");});
-   });
-  }
-}
-
-/* Called when a student record is opened. The RPG snapshot and the legacy
-   shop are the only things that read these collections. */
-function dwEnsureStudentData(){
-  dwSub("rpgDetail",function(){
-   onSnapshot(collection(db,"bossLoot"),s=>{bossLootRows=s.docs.map(d=>({id:d.id,...d.data()}));const sid=$("sid")?.value;if(sid)dwRenderRpgSnapshot(students.find(x=>x.id===sid))},e=>console.warn("boss loot",e));
-   onSnapshot(collection(db,"physicalPrizeDrops"),s=>{physicalPrizeDrops=s.docs.map(d=>({id:d.id,...d.data()}));const sid=$("sid")?.value;if(sid)dwRenderRpgSnapshot(students.find(x=>x.id===sid))},e=>console.warn("physical prize drops",e));
-  });
-  dwSub("shop",function(){
-   onSnapshot(collection(db,"shopItems"),s=>{shopItems=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
+ onSnapshot(doc(db,"classData","main"),s=>{if(!s.exists())return;let d=s.data();points=+d.points||0;history=Array.isArray(d.history)?d.history:[];renderPoints()});
+ onSnapshot(collection(db,"rewards"),s=>{rewards=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+a.points||0)-(+b.points||0));renderRewards();renderPoints()});
+ onSnapshot(collection(db,"scores"),s=>{scores=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+b.score||0)-(+a.score||0));renderScores()});
+ onSnapshot(collection(db,"gameResults"),s=>{results=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));renderResults()});
+ onSnapshot(collection(db,"students"),s=>{students=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.firstName||"").localeCompare(String(b.firstName||"")));renderStudents();renderShop()});
+onSnapshot(collection(db,"bathroomStatus"),s=>{bathroomStatuses=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("bathroomStatus listener",e));
+onSnapshot(collection(db,"bathroomRequests"),s=>{bathroomRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("bathroomRequests listener",e));
+onSnapshot(collection(db,"snackStatus"),s=>{snackStatuses=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("snackStatus listener",e));
+onSnapshot(collection(db,"snackRequests"),s=>{snackRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("snackRequests listener",e));
+onSnapshot(collection(db,"passRequests"),s=>{genericPassRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("passRequests listener",e));
+onSnapshot(collection(db,"pointRequests"),s=>{pointRequests=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("pointRequests listener",e));
+onSnapshot(doc(db,"classData","passBlackout"),s=>{passBlackoutTeacher=s.exists()?s.data():{active:false};renderPassControl()},e=>console.warn("pass blackout listener",e));
+onSnapshot(collection(db,"passStatus"),s=>{genericPassStatuses=s.docs.map(d=>({id:d.id,...d.data()}));renderPassControl()},e=>console.warn("generic pass listener",e));
+onSnapshot(collection(db,"passHistory"),s=>{passHistory=s.docs.map(d=>({id:d.id,...d.data()}));renderPassArchive()},e=>console.warn("passHistory listener",e));
+onSnapshot(doc(db,"classData","classJobs"),s=>{classJobsConfigV29=s.exists()?s.data():{};renderV29Jobs();dw499MigrateJobsConfig(classJobsConfigV29)},e=>console.warn("v29 jobs",e));
+onSnapshot(collection(db,"studentJobWeeks"),s=>{jobWeeksV29=s.docs.map(d=>({id:d.id,...d.data()}));renderV29Jobs();setTimeout(runV29Payroll,250)},e=>console.warn("v29 job weeks",e));
+onSnapshot(doc(db,"classData","classSchedule"),s=>{classScheduleV29=s.exists()?s.data():{};loadScheduleDay()},e=>console.warn("v29 schedule",e));
+onSnapshot(collection(db,"classCalendarEvents"),s=>{calendarEventsV29=s.docs.map(d=>({id:d.id,...d.data()}));renderTeacherCalendar()},e=>console.warn("v29 calendar",e));
+ onSnapshot(collection(db,"shopItems"),s=>{shopItems=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
       const levelA=Math.max(1,Number(a.requiredLevel||1));
       const levelB=Math.max(1,Number(b.requiredLevel||1));
       if(levelA!==levelB) return levelA-levelB;
@@ -1468,11 +1239,9 @@ function dwEnsureStudentData(){
       const rarityB=rarityOrder[String(b.rarity||"common").toLowerCase()]||99;
       if(rarityA!==rarityB) return rarityA-rarityB;
       return String(a.name||"").localeCompare(String(b.name||""));
-    });dwQueueFor("shop",renderShop)});
-   onSnapshot(collection(db,"purchases"),s=>{purchases=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.purchasedAt?.seconds||0)-(a.purchasedAt?.seconds||0));dwQueueFor("shop",renderShop);});
-  });
+    });renderShop()});
+ onSnapshot(collection(db,"purchases"),s=>{purchases=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.purchasedAt?.seconds||0)-(a.purchasedAt?.seconds||0));renderShop();});
 }
-
 
 function localDateKey(){
   const d=new Date();
@@ -1599,7 +1368,7 @@ const QUICK_AWARDS=[
 {id:"legendary",icon:"🐉",name:"Legendary Day",note:"Exceptional academics, behavior, and leadership.",xp:100,gold:20,hp:3,pt:"universal",points:2}
 ];
 function pointText(p){return p.pt==="recess"?`🌤️ +${p.points} Recess`:p.pt==="pet"?`🐾 +${p.points} Pet`:p.pt==="trip"?`🚌 +${p.points} Trip`:p.pt==="universal"?`🌟 +${p.points} Universal`:""}
-function renderQuickAwards(){if(!$("quickAwardGrid"))return;$("quickAwardGrid").innerHTML=QUICK_AWARDS.map(p=>`<button class="quick-award" data-qa="${p.id}"><span class="qa-icon">${p.icon}</span><b>${esc(p.name)}</b><small>${esc(p.note)}</small><div class="qa-pay">⭐ +${p.xp} XP · 🪙 +${p.gold}${p.hp?` · ❤️ +${p.hp}`:""}</div>${p.pt?`<div class="qa-pay qa-point">${pointText(p)}</div>`:""}</button>`).join("");document.querySelectorAll("[data-qa]").forEach(b=>b.onclick=()=>dw20QueueCommand("award",b.dataset.qa))}
+function renderQuickAwards(){if(!$("quickAwardGrid"))return;$("quickAwardGrid").innerHTML=QUICK_AWARDS.map(p=>`<button class="quick-award" data-qa="${p.id}"><span class="qa-icon">${p.icon}</span><b>${esc(p.name)}</b><small>${esc(p.note)}</small><div class="qa-pay">⭐ +${p.xp} XP · 🪙 +${p.gold}${p.hp?` · ❤️ +${p.hp}`:""}</div>${p.pt?`<div class="qa-pay qa-point">${pointText(p)}</div>`:""}</button>`).join("");document.querySelectorAll("[data-qa]").forEach(b=>b.onclick=()=>applyQuickAward(b.dataset.qa))}
 
 const QUICK_CONSEQUENCES=[
   {id:"redirect",icon:"↩️",name:"Quick Redirect",note:"Minor reminder after choosing not to follow a direction.",hp:-1,gold:0,xp:0},
@@ -1621,15 +1390,15 @@ function renderQuickConsequences(){
       <small>${esc(p.note)}</small>
       <div class="qc-cost">${p.hp?`❤️ ${p.hp} HP`:""}${p.gold?` · 🪙 ${p.gold} Gold`:""}${p.xp?` · ⭐ ${p.xp} XP`:""}</div>
     </button>`).join("");
-  document.querySelectorAll("[data-qc]").forEach(b=>b.onclick=()=>dw20QueueCommand("consequence",b.dataset.qc));
+  document.querySelectorAll("[data-qc]").forEach(b=>b.onclick=()=>applyQuickConsequence(b.dataset.qc));
 }
 
-async function applyQuickConsequence(id,reviewed=false){
+async function applyQuickConsequence(id){
   const p=QUICK_CONSEQUENCES.find(x=>x.id===id); if(!p)return;
   const g=$("quickAwardGroup").value, t=quickTargets(g);
   if(!t.length)return alert("No students match that group.");
   const label=$("quickAwardGroup").selectedOptions[0]?.textContent||"selected students";
-  if(!reviewed){dw20QueueCommand("consequence",id);return}
+  if(!confirm(`${p.name} → ${label}\n\nEach student: ${p.hp||0} HP${p.gold?`, ${p.gold} Gold`:""}${p.xp?`, ${p.xp} XP`:""}\n\nStats will never fall below 0. Apply to ${t.length} student(s)?`))return;
 
   const b=writeBatch(db);
   for(const s of t){
@@ -1657,13 +1426,11 @@ async function applyQuickConsequence(id,reviewed=false){
   }
   try{
     await b.commit();
-    window.DWAudio?.takePoints?.();
-    return true;
+    window.DWAudio?.negative();
   }catch(err){
     console.error("Quick consequence error",err);
     window.DWAudio?.negative();
     alert("Could not apply consequence: "+(err.code||err.message||err));
-    return false;
   }
 }
 function quickTargets(g){
@@ -1671,35 +1438,7 @@ function quickTargets(g){
   if(g.startsWith("student:"))return students.filter(s=>s.id===g.split(":")[1]);
   return students.filter(s=>g==="all"||(g==="girl"&&s.genderGroup==="girl")||(g==="boy"&&s.genderGroup==="boy")||(g==="4"&&String(s.grade)==="4")||(g==="5"&&String(s.grade)==="5"));
 }
-function dw20CommandInfo(kind,id){return kind==="award"?QUICK_AWARDS.find(x=>x.id===id):QUICK_CONSEQUENCES.find(x=>x.id===id)}
-function dw20UpdateReviewBar(){
- const bar=$("dw20ReviewBar");if(!bar)return;
- const on=$("students")?.classList.contains("active");bar.classList.toggle("hidden",!on);
- const p=dw20PendingCommand&&dw20CommandInfo(dw20PendingCommand.kind,dw20PendingCommand.id),g=$("quickAwardGroup")?.value||"selected",targets=p?quickTargets(g):[];
- $("dw20ReviewCommand").textContent=p?`${p.icon||""} ${p.name}`:"Choose a reward or correction";
- $("dw20ReviewTargets").textContent=targets.length?`${targets.length} scholar${targets.length===1?"":"s"}: ${targets.slice(0,5).map(displayStudent).join(", ")}${targets.length>5?` +${targets.length-5} more`:""}`:"Select scholars, then choose a command.";
- $("dw20OpenReview").disabled=!(p&&targets.length);
-}
-function dw20QueueCommand(kind,id){
- const p=dw20CommandInfo(kind,id);if(!p)return;dw20PendingCommand={kind,id};
- document.querySelectorAll("[data-qa],[data-qc]").forEach(b=>b.classList.toggle("active",b.dataset[kind==="award"?"qa":"qc"]===id&&b.hasAttribute(kind==="award"?"data-qa":"data-qc")));
- dw20UpdateReviewBar();$("dw20OpenReview")?.focus();
-}
-function dw20OpenReview(){
- const p=dw20PendingCommand&&dw20CommandInfo(dw20PendingCommand.kind,dw20PendingCommand.id),targets=p?quickTargets($("quickAwardGroup").value):[];if(!p||!targets.length)return;
- const serious=dw20PendingCommand.kind==="consequence"&&["disrespect","unsafe","major"].includes(p.id);
- $("dw20ReviewTitle").textContent=`Review ${p.name}`;
- $("dw20ReviewDetail").textContent=dw20PendingCommand.kind==="award"?`Each scholar receives up to ${p.xp} XP, ${p.gold} Gold${p.hp?`, and ${p.hp} HP`:""}. The 150 daily XP cap remains enforced.`:`Each scholar receives ${p.hp||0} HP${p.gold?` and ${p.gold} Gold`:""}. Stats cannot fall below zero.`;
- $("dw20ReviewList").innerHTML=targets.map(s=>`<span class="dw20-review-chip">${esc(displayStudent(s))}</span>`).join("");
- $("dw20SeriousWrap").classList.toggle("hidden",!serious);$("dw20SeriousConfirm").checked=false;$("dw20ReviewStatus").textContent="";$("dw20ReviewDialog").classList.remove("hidden");$("dw20ApplyReview").focus();
-}
-async function dw20ApplyReviewedCommand(){
- const pending=dw20PendingCommand,p=pending&&dw20CommandInfo(pending.kind,pending.id);if(!p)return;
- const serious=pending.kind==="consequence"&&["disrespect","unsafe","major"].includes(p.id);if(serious&&!$("dw20SeriousConfirm").checked){$("dw20ReviewStatus").textContent="Confirm the serious-consequence checkbox first.";return}
- const button=$("dw20ApplyReview");button.disabled=true;button.textContent="APPLYING…";
- try{const ok=pending.kind==="award"?await applyQuickAward(pending.id,true):await applyQuickConsequence(pending.id,true);if(ok===false){$("dw20ReviewStatus").textContent=`${p.name} was not applied. Review the error and try again.`;return}$("dw20ReviewStatus").textContent=`${p.name} applied successfully.`;setTimeout(()=>{$("dw20ReviewDialog").classList.add("hidden");dw20PendingCommand=null;document.querySelectorAll("[data-qa],[data-qc]").forEach(b=>b.classList.remove("active"));dw20UpdateReviewBar()},550)}finally{button.disabled=false;button.textContent="APPLY CHANGES"}
-}
-async function applyQuickAward(id,reviewed=false){const p=QUICK_AWARDS.find(x=>x.id===id);if(!p)return;const g=$("quickAwardGroup").value,t=quickTargets(g);if(!t.length)return alert("No students match that group.");if(!reviewed){dw20QueueCommand("award",id);return}const b=writeBatch(db);for(const s of t){
+async function applyQuickAward(id){const p=QUICK_AWARDS.find(x=>x.id===id);if(!p)return;const g=$("quickAwardGroup").value,t=quickTargets(g);if(!t.length)return alert("No students match that group.");const label=$("quickAwardGroup").selectedOptions[0]?.textContent||"selected students";if(!confirm(`${p.name} → ${label}\n\nEach student: up to +${p.xp} XP (daily cap 150), +${p.gold} Gold${p.hp?`, +${p.hp} HP`:""}${p.pt?`\nClass goal: ${pointText(p)}`:""}\n\nApply to ${t.length} student(s)?`))return;const b=writeBatch(db);for(const s of t){
   const ox=+s.xp||0,og=+s.gold||0,oh=+s.hp||0;
   const dead=oh<=0;
   const cap=cappedXpAward(s,dead?0:p.xp);
@@ -1717,13 +1456,11 @@ async function applyQuickAward(id,reviewed=false){const p=QUICK_AWARDS.find(x=>x
 }if(p.pt==="recess"){const today=localDateKey(),base=recessState.dateKey===today?(+recessState.points||0):0;b.set(doc(db,"classData","secondRecess"),{points:base+p.points,goal:Math.max(1,+recessState.goal||10),dateKey:today,updatedAt:serverTimestamp()},{merge:true})}else if(p.pt==="pet")b.set(doc(db,"classData","classPet"),{points:(+petGoalState.points||0)+p.points,goal:Math.max(1,+petGoalState.goal||250),updatedAt:serverTimestamp()},{merge:true});else if(p.pt==="trip")b.set(doc(db,"classData","fieldTrip"),{points:(+tripGoalState.points||0)+p.points,goal:Math.max(1,+tripGoalState.goal||750),updatedAt:serverTimestamp()},{merge:true});else if(p.pt==="universal")b.set(doc(db,"classData","universalPoints"),{points:(+universalPointState.points||0)+p.points,updatedAt:serverTimestamp()},{merge:true});
 try{
   await b.commit();
-  window.DWAudio?.awardPoints?.();
-  return true;
+  window.DWAudio?.positive();
 }catch(err){
   console.error("Quick award error",err);
   window.DWAudio?.negative();
   alert("Could not apply quick award: "+(err.code||err.message||err));
-  return false;
 }}
 renderQuickAwards();renderQuickConsequences();
 $("quickSelectAll").onclick=()=>setAllStudentChecks("quick",true);
@@ -1800,32 +1537,11 @@ function setAllStudentChecks(kind,checked){
   document.querySelectorAll(`#${kind}StudentCheckboxes input[type="checkbox"]`).forEach(cb=>cb.checked=checked);
   updateStudentCheckCount(kind);
 }
-const SAVED_GROUP_KEY="dwTeacherSavedGroupsV567";
-function savedStudentGroups(){try{return JSON.parse(localStorage.getItem(SAVED_GROUP_KEY)||"{}")||{}}catch{return {}}}
-function renderSelectionUtilities(){
-  const jf=$("studentJobFilter"),lg=$("loadStudentGroup");
-  if(jf){const old=jf.value;jf.innerHTML='<option value="">JOB…</option>'+v29Jobs().map(j=>`<option value="${j.id}">${esc(j.icon||'🧹')} ${esc(j.name)}</option>`).join('');jf.value=old}
-  if(lg){const old=lg.value;lg.innerHTML='<option value="">LOAD GROUP…</option>'+Object.keys(savedStudentGroups()).sort().map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('');lg.value=old}
-}
-if($("studentJobFilter"))$("studentJobFilter").onchange=()=>{
-  const studentId=(classJobsConfigV29.assignments||{})[$("studentJobFilter").value]||"";
-  document.querySelectorAll('#quickStudentCheckboxes input[type="checkbox"]').forEach(cb=>cb.checked=cb.value===studentId);
-  updateStudentCheckCount('quick');
-};
-if($("saveStudentGroup"))$("saveStudentGroup").onclick=()=>{
-  const name=$("savedGroupName").value.trim(),ids=selectedCheckboxIds('quick');
-  if(!name||!ids.length)return alert('Name the group and select at least one student.');
-  const groups=savedStudentGroups();groups[name]=ids;localStorage.setItem(SAVED_GROUP_KEY,JSON.stringify(groups));$("savedGroupName").value='';renderSelectionUtilities();$("loadStudentGroup").value=name;
-};
-if($("loadStudentGroup"))$("loadStudentGroup").onchange=()=>{
-  const ids=new Set(savedStudentGroups()[$("loadStudentGroup").value]||[]);
-  document.querySelectorAll('#quickStudentCheckboxes input[type="checkbox"]').forEach(cb=>cb.checked=ids.has(cb.value));updateStudentCheckCount('quick');
-};
 
 function renderMassStudentOptions(){
   const group=$("individualStudentOptions");
   if(!group) return;
-  const opts=students.map(s=>{const label=(s.firstName||s.email||"Student")+(s.grade?` • Grade ${s.grade}`:"");return `<option value="student:${s.id}">${esc(label)}</option>`}).join("");group.innerHTML=opts;if($("quickIndividualStudentOptions"))$("quickIndividualStudentOptions").innerHTML=opts;renderSelectionUtilities();
+  const opts=students.map(s=>{const label=(s.firstName||s.email||"Student")+(s.grade?` • Grade ${s.grade}`:"");return `<option value="student:${s.id}">${esc(label)}</option>`}).join("");group.innerHTML=opts;if($("quickIndividualStudentOptions"))$("quickIndividualStudentOptions").innerHTML=opts;
   if($("eligibilityStudentSelect")){
     const current=$("eligibilityStudentSelect").value;
     $("eligibilityStudentSelect").innerHTML=`<option value="">Choose a student…</option>`+
@@ -1961,7 +1677,9 @@ function dw31TPrevWeek(){const d=new Date();d.setDate(d.getDate()-7);return dw31
 function dw31RenderTeacherJobs(){const box=$('dw31Assignments'),sum=$('dw31JobSummary');if(!box)return;const assignments=dw31TCfg.assignments||{},jobs=Array.isArray(dw31TCfg.jobs)&&dw31TCfg.jobs.length?dw31TCfg.jobs:DW31T_JOBS;box.innerHTML=students.slice().sort((a,b)=>displayStudent(a).localeCompare(displayStudent(b))).map(s=>{const a=assignments[s.id]||{};return `<div class="dw31t-row"><b>${esc(displayStudent(s))}</b><div class="dw31t-form"><select data-dw31-job="${s.id}"><option value="">No job</option>${jobs.map(j=>`<option value="${j.id}" ${a.id===j.id?'selected':''}>${j.icon} ${esc(j.name)} • ${esc(j.subtitle)}</option>`).join('')}</select><input type="number" min="0" step="5" data-dw31-pay="${s.id}" value="${Number(a.pay||50)}"></div></div>`;}).join('')||'<div class="muted">No students yet.</div>';document.querySelectorAll('[data-dw31-job]').forEach(el=>el.onchange=()=>dw31SaveAssignment(el.dataset.dw31Job));document.querySelectorAll('[data-dw31-pay]').forEach(el=>el.onchange=()=>dw31SaveAssignment(el.dataset.dw31Pay));const wk=dw31TWeekKey(),rows=dw31TWeeks.filter(x=>x.weekKey===wk);if(sum)sum.innerHTML=rows.length?rows.sort((a,b)=>String(a.studentName).localeCompare(String(b.studentName))).map(x=>`<div class="dw31t-row"><b>${esc(x.studentName||'Student')} • ${esc(x.jobIcon||'🧹')} ${esc(x.jobName||'Job')}</b><small>${Number(x.completedCount||0)}/5 days • ${x.paid?'💰 PAID':(Number(x.completedCount||0)>=4?'✅ QUALIFIED':'Working')}</small></div>`).join(''):'<div class="muted">No job check-offs yet this week.</div>';}
 async function dw31SaveAssignment(id){const jobs=Array.isArray(dw31TCfg.jobs)&&dw31TCfg.jobs.length?dw31TCfg.jobs:DW31T_JOBS,sel=document.querySelector(`[data-dw31-job="${id}"]`),inp=document.querySelector(`[data-dw31-pay="${id}"]`),job=jobs.find(j=>j.id===sel?.value),assignments={...(dw31TCfg.assignments||{})};if(!job)delete assignments[id];else assignments[id]={...job,pay:Math.max(0,Number(inp?.value||job.pay||50))};await setDoc(doc(db,'classData','classJobs'),{jobs,assignments,updatedAt:serverTimestamp()},{merge:true});window.DWAudio?.positive();}
 async function dw31RunPayroll(){const prev=dw31TPrevWeek(),eligible=dw31TWeeks.filter(x=>x.weekKey===prev&&Number(x.completedCount||0)>=4&&x.paid!==true);for(const x of eligible){const st=students.find(s=>s.id===x.studentId);if(!st)continue;const salary=Math.max(0,Number(x.pay||0)),award=Number(x.completedCount||0)>=5?salary:Math.floor(salary*.8);if(!award)continue;try{const batch=writeBatch(db);batch.set(doc(db,'students',st.id),{gold:(+st.gold||0)+award,updatedAt:serverTimestamp()},{merge:true});batch.set(doc(db,'studentJobWeeks',x.id),{paid:true,paidAt:serverTimestamp(),payAward:award},{merge:true});batch.set(doc(collection(db,'studentTransactions')),{studentId:st.id,studentName:displayStudent(st),stat:'gold',amount:award,reason:`Guild payroll • ${x.jobName||'Class Job'} • ${x.completedCount}/5 days`,category:'job-payroll',createdAt:serverTimestamp()});await batch.commit();}catch(e){console.warn('job payroll',e);}}}
+function dw31LoadScheduleDay(){dw31DraftDay=$('dw31ScheduleDay')?.value||'monday';dw31DraftBlocks=JSON.parse(JSON.stringify(dw31TSchedule?.days?.[dw31DraftDay]||DW31T_SCHEDULE[dw31DraftDay]||[]));dw31RenderScheduleEditor();}
 function dw31RenderScheduleEditor(){const box=$('dw31SchedList');if(!box)return;$('dw31SchedHeading').textContent=dw31DraftDay[0].toUpperCase()+dw31DraftDay.slice(1);box.innerHTML=dw31DraftBlocks.map((b,i)=>`<div class="dw31t-row"><b>${b[0]}–${b[1]} • ${b[3]||''} ${esc(b[2])}</b><small>${esc(b[4]||'')}</small><div class="dw31t-actions"><button data-dw31-up="${i}">↑</button><button data-dw31-down="${i}">↓</button><button class="danger-soft" data-dw31-sdel="${i}">DELETE</button></div></div>`).join('');document.querySelectorAll('[data-dw31-sdel]').forEach(b=>b.onclick=()=>{dw31DraftBlocks.splice(+b.dataset.dw31Sdel,1);dw31RenderScheduleEditor();});document.querySelectorAll('[data-dw31-up]').forEach(b=>b.onclick=()=>{const i=+b.dataset.dw31Up;if(i>0){[dw31DraftBlocks[i-1],dw31DraftBlocks[i]]=[dw31DraftBlocks[i],dw31DraftBlocks[i-1]];dw31RenderScheduleEditor();}});document.querySelectorAll('[data-dw31-down]').forEach(b=>b.onclick=()=>{const i=+b.dataset.dw31Down;if(i<dw31DraftBlocks.length-1){[dw31DraftBlocks[i+1],dw31DraftBlocks[i]]=[dw31DraftBlocks[i],dw31DraftBlocks[i+1]];dw31RenderScheduleEditor();}});}
+function dw31RenderTeacherEvents(){const box=$('dw31TeacherEvents');if(!box)return;box.innerHTML=dw31TEvents.slice().sort((a,b)=>String(a.startDate).localeCompare(String(b.startDate))).map(e=>`<div class="dw31t-row"><b>${e.icon||'📅'} ${esc(e.title||'Event')}</b><small>${e.startDate||''}${e.startTime?' • '+e.startTime:''} • ${e.category||'school'}</small><div class="dw31t-actions"><button data-dw31-edit="${e.id}">EDIT</button><button class="danger-soft" data-dw31-del="${e.id}">DELETE</button></div></div>`).join('');document.querySelectorAll('[data-dw31-del]').forEach(b=>b.onclick=async()=>{if(confirm('Delete this event?'))await deleteDoc(doc(db,'classCalendarEvents',b.dataset.dw31Del));});document.querySelectorAll('[data-dw31-edit]').forEach(b=>b.onclick=()=>{const e=dw31TEvents.find(x=>x.id===b.dataset.dw31Edit);if(!e)return;dw31EditingEvent=e.id;$('dw31CalTitle').value=e.title||'';$('dw31CalStart').value=e.startDate||'';$('dw31CalEnd').value=e.endDate||e.startDate||'';$('dw31CalStartTime').value=e.startTime||'';$('dw31CalEndTime').value=e.endTime||'';$('dw31CalCategory').value=e.category||'school';$('dw31CalIcon').value=e.icon||'📅';$('dw31CalSave').textContent='UPDATE EVENT';});}
 async function dw31SeedDefaults(){const [j,s,e]=await Promise.all([getDoc(doc(db,'classData','classJobs')),getDoc(doc(db,'classData','classSchedule')),getDocs(collection(db,'classCalendarEvents'))]);if(!j.exists())await setDoc(doc(db,'classData','classJobs'),{jobs:DW31T_JOBS,assignments:{},updatedAt:serverTimestamp()});if(!s.exists())await setDoc(doc(db,'classData','classSchedule'),{days:DW31T_SCHEDULE,updatedAt:serverTimestamp()});if(e.empty){const b=writeBatch(db);DW31T_EVENTS.forEach(x=>b.set(doc(db,'classCalendarEvents',x.id),{...x,createdAt:serverTimestamp(),updatedAt:serverTimestamp()}));await b.commit();}}
 
 
@@ -2082,7 +1800,19 @@ async function togglePassBlackout(){
 function teacherDateKey(){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Phoenix',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}
 function reqTime(x){try{return x?.createdAt?.toDate?.().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})||''}catch(e){return''}}
 // Request feeds are realtime via onSnapshot above.
+function refreshStudentRequests(){ /* intentionally no polling: realtime listeners are the source of truth */ }
 
+function visitClock(ts){
+ try{return ts?.toDate?.().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})||'—'}
+ catch(e){return'—'}
+}
+function visitDuration(v){
+ try{
+   const a=v?.leftAt?.toDate?.(),b=v?.returnedAt?.toDate?.()||new Date();
+   if(!a)return'';
+   return Math.max(0,Math.round((b-a)/60000))+' min';
+ }catch(e){return''}
+}
 
 
 // ===== DRAGONSWOOD AUTOMATIC TEACHER ALERTS v28d =====
@@ -2145,13 +1875,13 @@ function dwCheckTeacherAlerts(){
     const newGenericReq=[...genericReqNow].some(x=>!dwAlertGenericRequestIds.has(x));
 
     if(newBathroomOut || newBathroomReq){
-      window.DWAudio?.passRequest?.();
+      window.DWAudio?.bathroom();
       try{document.title="🚻 BATHROOM ALERT • Dragonswood Teacher"}catch(e){}
     }else if(newSnack){
-      window.DWAudio?.passRequest?.();
+      window.DWAudio?.notice();
       try{document.title="🍎 SNACK ALERT • Dragonswood Teacher"}catch(e){}
      }else if(newGenericReq){
-      window.DWAudio?.passRequest?.();
+      window.DWAudio?.notice();
       try{document.title="🎟️ PASS REQUEST • Dragonswood Teacher"}catch(e){}
     }else if(newRecognition){
       window.DWAudio?.notice();
@@ -2267,14 +1997,12 @@ function renderLiveRequests(){
  const gv=[];
  genericPassStatuses.forEach(x=>{if(x.dateKey!==key)return;(Array.isArray(x.visits)?x.visits:[]).forEach(v=>gv.push({...v,_student:x.studentName||v.studentName||'Student',_type:x.type||v.type||''}))});
  gv.sort((a,b)=>Number(b.startedMs||0)-Number(a.startedMs||0));
- const passRows=(rows,type)=>rows.length?rows.map(v=>`<div class="live-request-item"><div><b>${type==='office'?'🆘':'🚶'} ${esc(v._student)}</b><small>${esc(v.passType==='approved-extra'?'Approved extra pass':'Automatic pass')} • ${esc(v.startedAtText||'—')} ${v.endedText?'→ '+esc(v.endedText):'• ACTIVE'}${v.durationMinutes!=null?' • '+v.durationMinutes+' min':''}</small></div></div>`).join(''):`<div class="muted">No ${type==='office'?'Emergency Office':'Out of Seat'} history today.</div>`;
- if($('outOfSeatHistory'))$('outOfSeatHistory').innerHTML=passRows(gv.filter(v=>v._type!=='office'),'out');
- if($('officePassHistory'))$('officePassHistory').innerHTML=passRows(gv.filter(v=>v._type==='office'),'office');
+ const gh=$('genericPassHistory');
+ if(gh)gh.innerHTML=gv.length?gv.map(v=>`<div class="live-request-item"><div><b>${v._type==='office'?'🆘':'🚶'} ${esc(v._student)} • ${v._type==='office'?'Emergency Office':'Out of Seat'}</b><small>${esc(v.passType==='approved-extra'?'Approved extra pass':'Automatic pass')} • ${esc(v.startedAtText||'—')} ${v.endedText?'→ '+esc(v.endedText):'• ACTIVE'}${v.durationMinutes!=null?' • '+v.durationMinutes+' min':''}</small></div></div>`).join(''):'<div class="muted">No Out of Seat / Emergency Office history today.</div>';
 
  collapsePassHistoryList('bathroomHistoryList','bathroom visits');
  collapsePassHistoryList('snackHistoryList','snack visits');
- collapsePassHistoryList('outOfSeatHistory','Out of Seat passes');
- collapsePassHistoryList('officePassHistory','Office passes');
+ collapsePassHistoryList('genericPassHistory','other passes');
 
  document.querySelectorAll('[data-central-return]').forEach(b=>b.onclick=async()=>{
    b.disabled=true;
@@ -2307,12 +2035,6 @@ function renderLiveRequests(){
  if(pr)pr.innerHTML=pointPending.length?pointPending.map(x=>`<div class="live-request-item"><div><b>⭐ ${esc(x.studentName||'Student')}</b><small>${esc(x.reason||'Positive choice')} • ${reqTime(x)}</small></div><div class="live-actions"><button data-point-approve="${x.id}">APPROVE +1 XP</button><button class="danger-soft" data-point-deny="${x.id}">DISMISS</button></div></div>`).join(''):'<div class="muted">No pending recognition requests.</div>';
  document.querySelectorAll('[data-point-approve]').forEach(b=>b.onclick=()=>approvePoint(b.dataset.pointApprove,true));
  document.querySelectorAll('[data-point-deny]').forEach(b=>b.onclick=()=>approvePoint(b.dataset.pointDeny,false));
- const returned=[...bathVisits.filter(v=>v.status==='returned'),...snackVisits.filter(v=>v.status==='done'),...gv.filter(v=>v.endedText)];
- const over=bathroomStatuses.filter(x=>x.dateKey===key&&Number(x.passesUsed||0)>3).length+snackStatuses.filter(x=>x.dateKey===key&&Number(x.passesUsed||0)>2).length+genericPassStatuses.filter(x=>x.dateKey===key&&Number(x.passesUsed||0)>1).length;
- if($("dw20PassWaiting"))$("dw20PassWaiting").textContent=approvals.length;
- if($("dw20PassActive"))$("dw20PassActive").textContent=bathLive.length+snackLive.length+genLive.length;
- if($("dw20PassReturned"))$("dw20PassReturned").textContent=returned.length;
- if($("dw20PassOver"))$("dw20PassOver").textContent=over;
 }
 async function reviewCentralPass(kind,id,yes){
  if(kind==='bathroom')return approveBathroom(id,yes);
@@ -2365,9 +2087,8 @@ async function approveSnack(id,yes){
 async function approveBathroom(id,yes){const r=bathroomRequests.find(x=>x.id===id);if(!r)return;if(yes){const sr=doc(db,'bathroomStatus',r.studentId),snap=await getDoc(sr),d=snap.exists()?snap.data():{},same=d.dateKey===teacherDateKey();await setDoc(sr,{studentId:r.studentId,studentName:r.studentName,dateKey:teacherDateKey(),passesUsed:same?(+d.passesUsed||3):3,approvalCredits:(same?(+d.approvalCredits||0):0)+1,active:same&&d.active===true,updatedAt:serverTimestamp()},{merge:true})}await setDoc(doc(db,'bathroomRequests',id),{status:yes?'approved':'denied',reviewedAt:serverTimestamp()},{merge:true})}
 async function approvePoint(id,yes){const r=pointRequests.find(x=>x.id===id);if(!r)return;if(yes){const st=students.find(x=>x.id===r.studentId);if(st){await setDoc(doc(db,'students',st.id),{xp:(+st.xp||0)+1,updatedAt:serverTimestamp()},{merge:true});await addDoc(collection(db,'studentTransactions'),{studentId:st.id,studentName:displayStudent(st),stat:'xp',amount:1,reason:'Student recognition request: '+(r.reason||'Positive choice'),createdAt:serverTimestamp()})}}await setDoc(doc(db,'pointRequests',id),{status:yes?'approved':'dismissed',reviewedAt:serverTimestamp()},{merge:true})}
 
-function renderStudents(){$("studentRows").innerHTML=students.length?students.map(s=>`<tr><td class="student-avatar">${AVATAR_EMOJI[s.avatar]||"🐉"}</td><td><span class="student-name">${esc(displayStudent(s))}</span><br><small>${esc(s.email||"")}</small></td><td>${esc(s.grade||"—")}</td><td><span class="badge">${s.dailyQuestTrack==="challenge"?"⭐ Challenge":s.dailyQuestTrack==="foundation"?"Foundation":s.dailyQuestTrack==="5"?"5th":s.dailyQuestTrack==="4"?"4th":`Auto → ${esc(s.grade||"4")}th`}</span></td><td>${s.genderGroup==="girl"?"Girls":s.genderGroup==="boy"?"Boys":"—"}</td><td><span class="badge">Lv ${levelInfo(+s.xp||0)}</span></td><td>${+s.hp||0}</td><td>${isKnockedOut(s)?"💀 KO":"✅ Active"}</td><td>${(s.recessBlocked||isKnockedOut(s))?"🚫":"✅"}</td><td>${(s.fieldTripBlocked||isKnockedOut(s))?"🚫":"✅"}</td><td>${classroomHpMax(levelInfo(+s.xp||0))}</td><td>${+s.gold||0}</td><td>${+s.xp||0}</td><td>${dailyXpState(s).earned} / 150</td><td><button class="gray mini" data-manage="${s.id}">Manage</button></td></tr>`).join(""):'<tr><td colspan="15" class="muted">No students have created profiles yet.</td></tr>';document.querySelectorAll("[data-manage]").forEach(b=>b.onclick=()=>openStudent(b.dataset.manage));renderMassStudentOptions();dw31RenderTeacherJobs();if($("dw20ClassHp"))$("dw20ClassHp").textContent=students.reduce((n,s)=>n+Math.max(0,Number(s.hp||0)),0).toLocaleString();if($("dw20DailyXp"))$("dw20DailyXp").textContent=students.reduce((n,s)=>n+dailyXpState(s).earned,0).toLocaleString();dw20UpdateReviewBar()}
-function openStudent(id){
- dwEnsureStudentData();let s=students.find(x=>x.id===id);if(!s)return;$("studentModal").classList.remove("hidden");$("sid").value=id;$("sname").value=s.firstName||"";$("sgrade").value=s.grade||"4";$("squesttrack").value=s.dailyQuestTrack||"auto";$("sgroup").value=s.genderGroup||"girl";$("stitle").value=s.title||"";$("savatar").value=s.avatar||"dragon-purple";$("shp").value=+s.hp||0;$("shp").max=classroomHpMax(levelInfo(+s.xp||0));$("sgold").value=+s.gold||0;$("sxp").value=+s.xp||0;$("sreason").value="";$("sclass").value=s.classId||"";$("seggs").value=Math.max(0,Number(s.eggInventory||0));$("srpgitems").value=(s.rpgInventory||[]).join(", ");$("spets").value=(s.ownedPets||[]).join(", ");$("sactivepet").value=s.activePet||"";$("sbosswins").value=Math.max(0,Number(s.bossWins||0));$("slegacydays").value=Math.max(0,Number(s.legacyDayCredit||0));dwFillRpgPickers();dwRenderRpgSnapshot(s)}
+function renderStudents(){$("studentRows").innerHTML=students.length?students.map(s=>`<tr><td class="student-avatar">${AVATAR_EMOJI[s.avatar]||"🐉"}</td><td><span class="student-name">${esc(displayStudent(s))}</span><br><small>${esc(s.email||"")}</small></td><td>${esc(s.grade||"—")}</td><td><span class="badge">${s.dailyQuestTrack==="challenge"?"⭐ Challenge":s.dailyQuestTrack==="5"?"5th":s.dailyQuestTrack==="4"?"4th":`Auto → ${esc(s.grade||"4")}th`}</span></td><td>${s.genderGroup==="girl"?"Girls":s.genderGroup==="boy"?"Boys":"—"}</td><td><span class="badge">Lv ${levelInfo(+s.xp||0)}</span></td><td>${+s.hp||0}</td><td>${isKnockedOut(s)?"💀 KO":"✅ Active"}</td><td>${(s.recessBlocked||isKnockedOut(s))?"🚫":"✅"}</td><td>${(s.fieldTripBlocked||isKnockedOut(s))?"🚫":"✅"}</td><td>${classroomHpMax(levelInfo(+s.xp||0))}</td><td>${+s.gold||0}</td><td>${+s.xp||0}</td><td>${dailyXpState(s).earned} / 150</td><td><button class="gray mini" data-manage="${s.id}">Manage</button></td></tr>`).join(""):'<tr><td colspan="15" class="muted">No students have created profiles yet.</td></tr>';document.querySelectorAll("[data-manage]").forEach(b=>b.onclick=()=>openStudent(b.dataset.manage));renderMassStudentOptions();dw31RenderTeacherJobs()}
+function openStudent(id){let s=students.find(x=>x.id===id);if(!s)return;$("studentModal").classList.remove("hidden");$("sid").value=id;$("sname").value=s.firstName||"";$("sgrade").value=s.grade||"4";$("squesttrack").value=s.dailyQuestTrack||"auto";$("sgroup").value=s.genderGroup||"girl";$("stitle").value=s.title||"";$("savatar").value=s.avatar||"dragon-purple";$("shp").value=+s.hp||0;$("shp").max=classroomHpMax(levelInfo(+s.xp||0));$("sgold").value=+s.gold||0;$("sxp").value=+s.xp||0;$("sreason").value=""}
 $("cancelStudent").onclick=()=>$("studentModal").classList.add("hidden");
 
 $("deleteStudent").onclick = async () => {
@@ -2414,7 +2135,7 @@ $("deleteStudent").onclick = async () => {
   }
 };
 
-$("saveStudent").onclick=async()=>{let id=$("sid").value,s=students.find(x=>x.id===id);if(!s)return;let newHp=+$("shp").value||0,newGold=+$("sgold").value||0,newXp=+$("sxp").value||0,rpgInventory=$("srpgitems").value.split(",").map(x=>x.trim()).filter(Boolean),ownedPets=$("spets").value.split(",").map(x=>x.trim()).filter(Boolean);await setDoc(doc(db,"students",id),{firstName:$("sname").value.trim()||s.firstName,grade:$("sgrade").value,dailyQuestTrack:$("squesttrack").value,genderGroup:$("sgroup").value,title:$("stitle").value.trim(),avatar:$("savatar").value.trim(),hp:newHp,gold:newGold,xp:newXp,classId:$("sclass").value,eggInventory:Math.max(0,+$("seggs").value||0),rpgInventory,ownedPets,activePet:$("sactivepet").value.trim(),bossWins:Math.max(0,+$("sbosswins").value||0),legacyDayCredit:Math.min(180,Math.max(0,+$("slegacydays").value||0)),updatedAt:serverTimestamp()},{merge:true});let changes=[["hp",newHp-(+s.hp||0)],["gold",newGold-(+s.gold||0)],["xp",newXp-(+s.xp||0)]].filter(x=>x[1]!==0);for(const [stat,amount] of changes)await addDoc(collection(db,"studentTransactions"),{studentId:id,stat,amount,reason:$("sreason").value.trim()||"Teacher adjustment",createdAt:serverTimestamp()});$("studentModal").classList.add("hidden")};
+$("saveStudent").onclick=async()=>{let id=$("sid").value,s=students.find(x=>x.id===id);if(!s)return;let newHp=+$("shp").value||0,newGold=+$("sgold").value||0,newXp=+$("sxp").value||0;await setDoc(doc(db,"students",id),{firstName:$("sname").value.trim()||s.firstName,grade:$("sgrade").value,dailyQuestTrack:$("squesttrack").value,genderGroup:$("sgroup").value,title:$("stitle").value.trim(),avatar:$("savatar").value.trim(),hp:newHp,gold:newGold,xp:newXp,updatedAt:serverTimestamp()},{merge:true});let changes=[["hp",newHp-(+s.hp||0)],["gold",newGold-(+s.gold||0)],["xp",newXp-(+s.xp||0)]].filter(x=>x[1]!==0);for(const [stat,amount] of changes)await addDoc(collection(db,"studentTransactions"),{studentId:id,stat,amount,reason:$("sreason").value.trim()||"Teacher adjustment",createdAt:serverTimestamp()});$("studentModal").classList.add("hidden")};
 
 $("massApply").onclick=async()=>{
   const group=$("massGroup").value;
@@ -2486,8 +2207,8 @@ $("massApply").onclick=async()=>{
   try{
     await batch.commit();
     if(changed>0){
-      if(amount>0)window.DWAudio?.awardPoints?.();
-      else window.DWAudio?.takePoints?.();
+      if(amount>0)window.DWAudio?.positive();
+      else window.DWAudio?.negative();
     }else{
       window.DWAudio?.negative();
     }
@@ -2669,6 +2390,13 @@ $("deleteShopItem").onclick=async()=>{
 
 
 
+function refreshStudentGearAdmin(s){
+  if(!$("adminGiveGear")||!$("adminRemoveGear"))return;
+  const owned=new Set(Array.isArray(s?.inventory)?s.inventory:[]);
+  const gear=shopItems.filter(i=>i.kind==="gear"||i.equipSlot).sort((a,b)=>String(a.name||"").localeCompare(String(b.name||"")));
+  $("adminGiveGear").innerHTML='<option value="">Choose gear…</option>'+gear.filter(i=>!owned.has(i.id)).map(i=>`<option value="${i.id}">${esc(i.icon||"🎁")} ${esc(i.name)}</option>`).join("");
+  $("adminRemoveGear").innerHTML='<option value="">Choose owned gear…</option>'+gear.filter(i=>owned.has(i.id)).map(i=>`<option value="${i.id}">${esc(i.icon||"🎁")} ${esc(i.name)}</option>`).join("");
+}
 $("giveGearStudent").onclick=async()=>{
   const sid=$("sid").value,item=$("adminGiveGear").value;if(!sid||!item)return;
   const s=students.find(x=>x.id===sid);if(!s)return;
@@ -2685,105 +2413,22 @@ $("removeGearStudent").onclick=async()=>{
   alert("Gear removed.");
 };
 
-function teacherStudentForRecord(r){
-  const keys=[r?.studentId,r?.uid,r?.studentEmail,r?.email,r?.displayName,r?.playerName].filter(Boolean).map(v=>String(v).trim().toLowerCase());
-  return students.find(s=>[s.id,s.uid,s.email,s.firstName,s.displayName].filter(Boolean).some(v=>keys.includes(String(v).trim().toLowerCase())));
-}
-function teacherAvatarArt(r){
-  const st=teacherStudentForRecord(r),R=window.DWRPG;if(!st||!R)return "dragonswood-volleyball-crest-v1.png";
-  const owned=Array.isArray(st.rpgInventory)?st.rpgInventory:[],equipped=st.rpgEquipped?.appearance;
-  const packs=(R.appearancePacks||[]).filter(p=>owned.includes(p.id)||p.id===equipped);
-  const chosen=packs.find(p=>p.id===equipped)||packs[0],cls=R.classes?.[st.classId];
-  return chosen?.idleArt||chosen?.skinArt||chosen?.art||cls?.art||"dragonswood-volleyball-crest-v1.png";
-}
-let teacherLeaderboardPeriod="weekly";
-function phoenixDayKey(d=new Date()){return new Intl.DateTimeFormat("en-CA",{timeZone:"America/Phoenix",year:"numeric",month:"2-digit",day:"2-digit"}).format(d)}
-function phoenixWeekKey(d=new Date()){return DWGradebook.phoenixWeekKey(d)}
-function scoreDateKey(s){if(s.dateKey)return String(s.dateKey);if(s.createdAt?.seconds)return phoenixDayKey(new Date(s.createdAt.seconds*1000));return ""}
-function leaderboardStandings(period=teacherLeaderboardPeriod){
-  const week=phoenixWeekKey(),eligible=scores.filter(s=>period!=="weekly"||scoreDateKey(s)>=week),studentsMap=new Map();
-  eligible.forEach(s=>{const st=teacherStudentForRecord(s),sid=st?.id||String(s.studentId||s.uid||s.studentEmail||s.displayName||s.playerName||"player").toLowerCase(),assignment=String(s.assignmentId||`${s.gameName||s.game||"Game"}:${s.day||""}:${s.session||s.activityName||""}`),key=`${sid}|||${assignment}`;if(!studentsMap.has(sid))studentsMap.set(sid,{student:st,record:s,total:0,best:new Map(),activities:0});const row=studentsMap.get(sid),old=row.best.get(key);if(!old||Number(s.score||0)>Number(old.score||0))row.best.set(key,s)});
-  studentsMap.forEach(row=>{row.total=[...row.best.values()].reduce((n,s)=>n+Number(s.score||0),0);row.activities=row.best.size});return [...studentsMap.values()].sort((a,b)=>b.total-a.total||b.activities-a.activities);
+function teacherScoreDetail(s){
+  const parts=[s.subject,s.activityName||s.activity,s.lesson,s.session?String(s.session).replace(/\b\w/g,c=>c.toUpperCase()):""].filter(Boolean);
+  return [...new Set(parts)].join(" • ");
 }
 function renderScores(){
-  if(!$("scoreList"))return;const ranked=leaderboardStandings();
-  const card=(row,i,css="")=>{const s=row.record,name=row.student?.firstName||s.displayName||s.playerName||"Player",rewarded=leaderboardRewards.some(r=>r.studentId===(row.student?.id||s.studentId)&&r.dateKey===phoenixDayKey());return `<div class="${css||"item teacher-rank"}"><div class="teacher-rank-place">${i+1}</div><img class="teacher-rank-avatar" src="${esc(teacherAvatarArt(s))}" alt="${esc(name)} avatar"><div><b>${esc(name)}</b><small>${row.activities} qualifying activit${row.activities===1?"y":"ies"}${rewarded?" • 🎁 rewarded today":""}</small></div><strong>${row.total.toLocaleString()}</strong><span>${i<5&&teacherLeaderboardPeriod==="weekly"?"PRIZE ZONE":""}</span></div>`};
-  $("scoreList").innerHTML=ranked.length?`<section class="teacher-score-board"><h3>${teacherLeaderboardPeriod==="weekly"?"📅 This Week":"🏰 All-Time Hall of Fame"}</h3><div class="dw20-podium">${ranked.slice(0,3).map((row,i)=>card(row,i,`dw20-podium-card place-${i+1}`)).join("")}</div><div class="dw20-rankings">${ranked.slice(3,20).map((row,i)=>card(row,i+3)).join("")}</div></section>`:'<div class="muted">No qualifying scores in this period.</div>';
-  $("leaderboardRewardHistory").innerHTML=leaderboardRewards.slice().sort((a,b)=>String(b.dateKey||"").localeCompare(String(a.dateKey||""))).slice(0,40).map(r=>`<div class="item"><b>${esc(r.studentName||"Student")}</b><span>${esc(r.dateKey||"")} • Rank ${r.rank} • ${r.goldAward||0} Gold${r.championChoice?" • Champion Choice":""}</span></div>`).join("")||'<div class="muted">No weekly rewards issued yet.</div>';
+  $("scoreList").innerHTML=scores.length?scores.map(s=>{
+    const detail=teacherScoreDetail(s),meta=[];
+    if(s.accuracy!=null)meta.push(`${s.accuracy}% accuracy`);
+    if(s.correct!=null&&s.total!=null)meta.push(`${s.correct}/${s.total} correct`);
+    if(s.dateKey)meta.push(s.dateKey);
+    return `<div class="item"><div class="icon">🏆</div><div><b>${esc(s.displayName||s.playerName||"Player")} — ${(+s.score||0).toLocaleString()}</b><small>${esc(s.gameName||s.game||"Game")}${detail?` • ${esc(detail)}`:""}${meta.length?` • ${esc(meta.join(" • "))}`:""}</small></div><div><button class="danger mini" data-sdel="${s.id}">Delete</button></div></div>`;
+  }).join(""):'<div class="muted">No scores submitted yet.</div>';
+  document.querySelectorAll("[data-sdel]").forEach(b=>b.onclick=async()=>{if(confirm("Delete this score?"))await deleteDoc(doc(db,"scores",b.dataset.sdel))})
 }
-$("teacherWeeklyBoard")?.addEventListener("click",()=>{teacherLeaderboardPeriod="weekly";$("teacherWeeklyBoard").classList.add("active");$("teacherAllTimeBoard").classList.remove("active");renderScores()});
-$("teacherAllTimeBoard")?.addEventListener("click",()=>{teacherLeaderboardPeriod="all";$("teacherAllTimeBoard").classList.add("active");$("teacherWeeklyBoard").classList.remove("active");renderScores()});
-$("issueLeaderboardRewards")?.addEventListener("click",async()=>{const top=leaderboardStandings("weekly").slice(0,5),day=phoenixDayKey(),week=phoenixWeekKey();if(!top.length)return alert("There are no weekly scores to reward yet.");if(!confirm("Issue today's weekly Top-5 rewards? This can only happen once per student today."))return;let issued=0;for(let i=0;i<top.length;i++){const row=top[i],st=row.student;if(!st)continue;const id=`${week}_${day}_${st.id}`,rewardRef=doc(db,"leaderboardRewards",id),studentRef=doc(db,"students",st.id),gold=i===0?5:i<3?3:2;const didIssue=await runTransaction(db,async tx=>{const [rewardSnap,studentSnap]=await Promise.all([tx.get(rewardRef),tx.get(studentRef)]);if(rewardSnap.exists()||!studentSnap.exists())return false;const weekRewards=leaderboardRewards.filter(r=>r.studentId===st.id&&r.weekKey===week);if(weekRewards.length>=5)return false;tx.set(rewardRef,{studentId:st.id,studentName:st.firstName||"Student",weekKey:week,dateKey:day,rank:i+1,goldAward:gold,championChoice:i===0,status:"issued",createdAt:serverTimestamp()});tx.update(studentRef,{gold:increment(gold),updatedAt:serverTimestamp()});return true});if(didIssue)issued++}alert(`${issued} leaderboard reward${issued===1?"":"s"} issued. First place also receives a teacher-provided Champion Choice.`)});
 function renderResults(){$("results").innerHTML=results.length?results.map(r=>`<tr><td>${esc(r.displayName||r.playerName||"Player")}</td><td>${esc(r.gameName||r.game||"Game")}</td><td>${+r.score||0}</td><td>${r.accuracy!=null?esc(r.accuracy)+"%":"—"}</td><td>${esc(r.summary||r.details||"—")}</td><td>${r.createdAt?.seconds?new Date(r.createdAt.seconds*1000).toLocaleString():"—"}</td></tr>`).join(""):'<tr><td colspan="6" class="muted">No academic game results yet.</td></tr>'}
-function gbSafe(v){return String(v||"").toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"").slice(0,60)||"record"}
-function gbHash(v){let h=2166136261;for(const c of String(v||"")){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return(h>>>0).toString(36)}
-function gradebookAssignmentInfo(r){
-  const game=String(r.gameName||r.game||"Academic Assignment").trim(),raw=String(r.assignmentName||r.summary||r.details||r.activityName||"").replace(/\s*[•·-]\s*\d+s\s*$/i,"").trim();
-  const assignmentId=String(r.assignmentId||`${game} • ${raw||"Practice"}`),name=raw?`${game}: ${raw}`:game;
-  return {id:assignmentId,name};
-}
-function gbLetter(n){if(n==null||n==="")return "—";n=Number(n);return n>=90?"A":n>=80?"B":n>=70?"C":n>=60?"D":"F"}
-function gbCategoryFromResult(r){const t=`${r.gameId||""} ${r.gameName||r.game||""}`.toLowerCase();return /witch|reader|reading/.test(t)?"reading":/curriculum/.test(t)?"curriculum":"daily"}
-function gbScoreFromAttempts(list){return DWGradebook.attemptGrade(list)?.score??null}
-function gbStudentAssignments(st){
-  const map=new Map();
-  scores.filter(r=>(teacherStudentForRecord(r)?.id===st.id||String(r.studentId||r.uid||"")===st.id)&&/daily[_ ]quest/i.test(`${r.game||""} ${r.gameName||""}`)).forEach(r=>{const a={id:`daily:${r.day||r.dateKey}:${r.session||"work"}`,name:`Daily Quest: Day ${r.day||"—"} • ${r.session||"Work"}`},key=`daily:${a.id}`;if(!map.has(key))map.set(key,{id:a.id,name:a.name,category:"daily",attempts:[],latest:0});const x=map.get(key);x.attempts.push(r);x.latest=Math.max(x.latest,Number(r.createdAt?.seconds||0))});
-  scores.filter(r=>gbCategoryFromResult(r)==="reading"&&(teacherStudentForRecord(r)?.id===st.id||String(r.studentId||r.uid||"")===st.id)).forEach(r=>{const a=gradebookAssignmentInfo(r),key=`reading:${a.id}`;if(!map.has(key))map.set(key,{id:a.id,name:a.name,category:"reading",attempts:[],latest:0});const x=map.get(key);x.attempts.push(r);x.latest=Math.max(x.latest,Number(r.createdAt?.seconds||0))});
-  const curriculumSource=curriculumAttempts.filter(r=>String(r.studentId||"")===st.id);(curriculumSource.length?curriculumSource:curriculumProgress.filter(r=>String(r.studentId||"")===st.id)).forEach(r=>{const key=`curriculum:${r.itemId}`,seen=Number(r.questionsSeen||0),score=Number.isFinite(Number(r.accuracy))?Number(r.accuracy):(seen?Math.round(Number(r.questionsCorrect||0)/seen*100):(r.verified?100:null));if(!map.has(key))map.set(key,{id:String(r.itemId),name:`Curriculum Quest: ${r.subject||"Mission"} • Day ${r.day||"—"}${r.strand?` • ${r.strand}`:""}`,category:"curriculum",attempts:[],latest:0,verified:!!r.verified});const x=map.get(key);if(score!=null)x.attempts.push({...r,accuracy:score});x.latest=Math.max(x.latest,Number(r.createdAt?.seconds||r.updatedAt?.seconds||0))});
-  gradebookAssignmentSettings.forEach(setting=>{const ids=Array.isArray(setting.assignedStudentIds)?setting.assignedStudentIds:[],grades=Array.isArray(setting.assignedGrades)?setting.assignedGrades.map(String):[],groups=Array.isArray(setting.assignedGroups)?setting.assignedGroups:[],assigned=setting.assigned===true||ids.includes(st.id)||grades.includes(String(st.grade))||groups.includes(st.genderGroup);if(!assigned)return;const sourceCategory=setting.sourceCategory||setting.category||"daily",sourceId=String(setting.sourceId||setting.id),key=`${sourceCategory}:${sourceId}`;if(!map.has(key))map.set(key,{id:sourceId,name:setting.name||"Assigned work",category:sourceCategory,attempts:[],latest:0,setting})});
-  return [...map.values()].map(a=>{a.sourceCategory=a.category;a.settingsId=`assignment_${gbHash(a.sourceCategory+":"+a.id)}`;a.setting=a.setting||gradebookAssignmentSettings.find(x=>x.id===a.settingsId)||{};a.name=a.setting.name||a.name;a.category=a.setting.category||a.category;a.gradeId=`${gbSafe(st.id)}__${gbHash(a.sourceCategory+":"+a.id)}`;a.override=gradebookGrades.find(g=>g.id===a.gradeId)||{};a.auto=gbScoreFromAttempts(a.attempts);const actuallyMissing=!a.attempts.length&&DWGradebook.isActuallyMissing(a.setting,a.override);a.final=a.override.score??(actuallyMissing?0:a.auto);a.status=a.override.status||(a.attempts.length?"Complete":actuallyMissing?"Missing":"Assigned");a.counts=a.setting.countsTowardGrade!==false;a.hidden=a.setting.hidden===true;return a}).sort((a,b)=>b.latest-a.latest);
-}
-function gbStudentSummary(st){
-  const allAssignments=gbStudentAssignments(st),assignments=allAssignments.filter(a=>!a.hidden),cats={daily:[],curriculum:[],reading:[]};assignments.forEach(a=>{if(a.counts&&a.status!=="Excused"&&Number.isFinite(Number(a.final)))cats[a.category].push(Number(a.final))});
-  const averages={};Object.keys(cats).forEach(k=>averages[k]=cats[k].length?Math.round(cats[k].reduce((a,b)=>a+b,0)/cats[k].length):null);
-  let weighted=0,used=0;Object.entries(averages).forEach(([k,v])=>{if(v!=null){const w=Number(gradebookSettings[k]||0);weighted+=v*w;used+=w}});const overall=used?Math.round(weighted/used):null;
-  return {student:st,assignments,allAssignments,averages,overall,missing:assignments.filter(a=>a.status==="Missing").length,recent:Math.max(0,...assignments.map(a=>a.latest||0))};
-}
-function gbMetric(v){return v==null?'—':`${v}%`}
-let gbSortState={key:"name",direction:"asc"};
-function gbComparable(summary,key){
-  if(key==="name")return String(summary.student.firstName||summary.student.displayName||"").toLocaleLowerCase();
-  if(key==="overall")return summary.overall;
-  if(key==="missing")return summary.missing;
-  return summary.averages[key];
-}
-function renderGradebook(){
-  if(!$("gradebookStudents"))return;const summaries=students.map(gbStudentSummary),search=String($("gbSearch")?.value||"").toLowerCase(),grade=$("gbGrade")?.value||"all",group=$("gbGroup")?.value||"all";
-  let visible=summaries.filter(x=>(grade==="all"||String(x.student.grade)===grade)&&(group==="all"||x.student.genderGroup===group)&&String(x.student.firstName||x.student.displayName||"").toLowerCase().includes(search));
-  visible.sort((a,b)=>{const av=gbComparable(a,gbSortState.key),bv=gbComparable(b,gbSortState.key);if(av==null&&bv==null)return String(a.student.firstName||"").localeCompare(String(b.student.firstName||""));if(av==null)return 1;if(bv==null)return -1;const comparison=typeof av==="string"?av.localeCompare(bv):av-bv;return gbSortState.direction==="asc"?comparison:-comparison});
-  document.querySelectorAll("[data-gb-sort]").forEach(button=>{const active=button.dataset.gbSort===gbSortState.key,arrow=button.querySelector(".gb-sort-arrow");button.classList.toggle("active",active);button.setAttribute("aria-pressed",String(active));if(arrow)arrow.textContent=active?(gbSortState.direction==="asc"?"↑":"↓"):"↕"});
-  const graded=summaries.map(x=>x.overall).filter(v=>v!=null),uniqueAssignments=new Set(summaries.flatMap(x=>x.assignments.map(a=>`${a.category}:${a.id}`))),missing=summaries.reduce((n,x)=>n+x.missing,0);
-  $("gradebookStudentCount").textContent=students.length;$("gradebookClassAverage").textContent=graded.length?`${Math.round(graded.reduce((a,b)=>a+b,0)/graded.length)}%`:"—";$("gradebookAssignmentCount").textContent=uniqueAssignments.size;$("gradebookMissingCount").textContent=missing;
-  [["gbWeightDaily","daily"],["gbWeightCurriculum","curriculum"],["gbWeightReading","reading"]].forEach(([id,k])=>{if($(id)&&document.activeElement!==$(id))$(id).value=gradebookSettings[k]});
-  $("gradebookStudents").innerHTML=visible.length?visible.map(x=>`<details class="gb-student"><summary><img class="gb-avatar" src="${esc(teacherAvatarArt({studentId:x.student.id}))}" alt=""><div class="gb-name"><b>${esc(x.student.firstName||x.student.displayName||"Student")}</b><small>Grade ${esc(x.student.grade||"—")} • ${x.assignments.length} graded activities</small></div><div><span class="gb-overall">${gbMetric(x.overall)}</span><small>${gbLetter(x.overall)}</small></div><div class="gb-metric"><small>DAILY QUEST</small><span class="gb-cat">${gbMetric(x.averages.daily)}</span></div><div class="gb-metric"><small>CURRICULUM</small><span class="gb-cat">${gbMetric(x.averages.curriculum)}</span></div><div class="gb-metric"><small>READING</small><span class="gb-cat">${gbMetric(x.averages.reading)}</span></div><div class="gb-metric"><small>MISSING</small><span class="gb-missing">${x.missing}</span></div><div>Open ▾</div></summary><div class="gb-student-body">${x.assignments.length?x.assignments.map(a=>`<div class="gb-assignment-row"><div><b>${esc(a.name)}</b><small>${a.category.replace(/^./,c=>c.toUpperCase())} • ${a.attempts.length} attempt${a.attempts.length===1?"":"s"}</small></div><span>${a.auto==null?"—":`${a.auto}% auto`}</span><b>${gbMetric(a.final)} ${gbLetter(a.final)}</b><select data-gb-status="${a.gradeId}"><option${a.status==="Complete"?" selected":""}>Complete</option><option${a.status==="In Progress"?" selected":""}>In Progress</option><option${a.status==="Missing"?" selected":""}>Missing</option><option${a.status==="Late"?" selected":""}>Late</option><option${a.status==="Excused"?" selected":""}>Excused</option></select><input data-gb-score="${a.gradeId}" type="number" min="0" max="100" placeholder="${a.auto??"—"}" value="${a.override.score??""}"><input data-gb-note="${a.gradeId}" placeholder="Teacher note" value="${esc(a.override.note||"")}"><button class="mini" data-gb-save="${a.gradeId}" data-student="${esc(x.student.id)}" data-student-name="${esc(x.student.firstName||"Student")}" data-assignment="${esc(a.id)}" data-assignment-name="${esc(a.name)}" data-category="${a.category}">Save</button></div>`).join(""):'<div class="gb-empty">No graded Dragonswood work yet.</div>'}</div></details>`).join(""):'<div class="card gb-empty">No students match these filters.</div>';
-  const assignmentRows=[...new Map(summaries.flatMap(x=>x.allAssignments).map(a=>[a.settingsId,a])).values()];
-  $("gradebookAssignmentManager").innerHTML=assignmentRows.length?assignmentRows.map(a=>`<div class="gb-assignment-row"><input data-ga-name="${a.settingsId}" value="${esc(a.name)}"><select data-ga-category="${a.settingsId}"><option value="daily"${a.category==="daily"?" selected":""}>Daily Quest</option><option value="curriculum"${a.category==="curriculum"?" selected":""}>Curriculum Quest</option><option value="reading"${a.category==="reading"?" selected":""}>Reading Tests</option></select><input data-ga-points="${a.settingsId}" type="number" min="0" value="${a.setting.pointsPossible??100}" title="Points possible"><input data-ga-due="${a.settingsId}" type="date" value="${esc(a.setting.dueDate||"")}"><label><input data-ga-counts="${a.settingsId}" type="checkbox" ${a.counts?"checked":""}> Counts</label><label><input data-ga-hidden="${a.settingsId}" type="checkbox" ${a.hidden?"checked":""}> Hide</label><button data-ga-save="${a.settingsId}" data-source="${esc(a.id)}" data-source-category="${a.sourceCategory}">Save</button></div>`).join(""):'<div class="gb-empty">Assignments appear after the first submission.</div>';
-  document.querySelectorAll("[data-gb-save]").forEach(b=>b.onclick=async()=>{const id=b.dataset.gbSave,scoreEl=document.querySelector(`[data-gb-score="${id}"]`),statusEl=document.querySelector(`[data-gb-status="${id}"]`),noteEl=document.querySelector(`[data-gb-note="${id}"]`);await setDoc(doc(db,"gradebookGrades",id),{studentId:b.dataset.student,studentName:b.dataset.studentName,assignmentId:b.dataset.assignment,assignmentName:b.dataset.assignmentName,category:b.dataset.category,score:scoreEl.value===""?null:Number(scoreEl.value),status:statusEl.value,note:noteEl.value.trim(),updatedAt:serverTimestamp()},{merge:true});if(DW_SUBSCRIBED.has("gradebook"))dwLoadGradebookOnce();b.textContent="Saved ✓"});
-  document.querySelectorAll("[data-ga-save]").forEach(b=>b.onclick=async()=>{const id=b.dataset.gaSave;await setDoc(doc(db,"gradebookAssignments",id),{sourceId:b.dataset.source,sourceCategory:b.dataset.sourceCategory,name:document.querySelector(`[data-ga-name="${id}"]`).value.trim(),category:document.querySelector(`[data-ga-category="${id}"]`).value,pointsPossible:Number(document.querySelector(`[data-ga-points="${id}"]`).value)||100,dueDate:document.querySelector(`[data-ga-due="${id}"]`).value,countsTowardGrade:document.querySelector(`[data-ga-counts="${id}"]`).checked,hidden:document.querySelector(`[data-ga-hidden="${id}"]`).checked,assigned:true,updatedAt:serverTimestamp()},{merge:true});b.textContent="Saved ✓"});
-}
-["gbSearch","gbGrade","gbGroup"].forEach(id=>$(id)?.addEventListener(id==="gbSearch"?"input":"change",renderGradebook));
-document.querySelectorAll("[data-gb-sort]").forEach(button=>button.addEventListener("click",()=>{const key=button.dataset.gbSort;if(gbSortState.key===key)gbSortState.direction=gbSortState.direction==="asc"?"desc":"asc";else{gbSortState.key=key;gbSortState.direction=key==="name"?"asc":"desc"}renderGradebook()}));
-$("gbSaveWeights")?.addEventListener("click",async()=>{const d=Number($("gbWeightDaily").value)||0,c=Number($("gbWeightCurriculum").value)||0,r=Number($("gbWeightReading").value)||0;if(d+c+r!==100)return alert("Category weights must total 100%.");await setDoc(doc(db,"classData","gradebookSettings"),{daily:d,curriculum:c,reading:r,updatedAt:serverTimestamp()},{merge:true});alert("Gradebook weights saved.")});
-$("gradebookExport")?.addEventListener("click",()=>{const rows=students.map(gbStudentSummary),lines=[["Student","Grade","Overall","Letter","Daily Quest","Curriculum Quest","Reading Tests","Missing","Assignments"],...rows.map(x=>[x.student.firstName||"Student",x.student.grade||"",x.overall??"",gbLetter(x.overall),x.averages.daily??"",x.averages.curriculum??"",x.averages.reading??"",x.missing,x.assignments.length])],csv=lines.map(row=>row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n"),a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download=`dragonswood-cumulative-grades-${new Date().toISOString().slice(0,10)}.csv`;a.click();URL.revokeObjectURL(a.href)});
-document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");dwEnsureTabData(b.dataset.p);const names=b.dataset.p==="planner"?["schedule","calendar"]:b.dataset.p==="tools"?["poll","picker"]:b.dataset.p==="rewards"?["rewards","recess"]:[b.dataset.p];names.forEach(n=>$(n)?.classList.add("active"));dw20UpdateReviewBar()})
-
-function dw20InitApprovedLayout(){
- const studentsPanel=$("students"),selector=$("sharedStudentSelector"),modes=studentsPanel?.querySelector(".dw-reward-modes");if(studentsPanel&&selector&&modes&&!$("dw20StudentWorkspace")){
-   const quickButton=modes.querySelector('[data-reward-mode="quick"]'),correctionButton=document.createElement("button");correctionButton.type="button";correctionButton.className="dw-reward-mode";correctionButton.dataset.rewardMode="corrections";correctionButton.textContent="⚠️ CORRECTIONS";quickButton.after(correctionButton);
-   const quickPanel=studentsPanel.querySelector('[data-reward-panel="quick"]'),consequence=quickPanel?.querySelector(".quick-consequence-panel"),correctionPanel=document.createElement("div");correctionPanel.className="dw-reward-mode-panel";correctionPanel.dataset.rewardPanel="corrections";if(consequence)correctionPanel.append(consequence);
-   const workspace=document.createElement("div");workspace.id="dw20StudentWorkspace";workspace.className="dw20-student-workspace";const roster=document.createElement("aside");roster.className="dw20-roster-column";const command=document.createElement("section");command.className="dw20-command-column";selector.before(workspace);workspace.append(roster,command);roster.append(selector);command.append(modes);[quickPanel,correctionPanel,studentsPanel.querySelector('[data-reward-panel="custom"]'),studentsPanel.querySelector('[data-reward-panel="manage"]'),studentsPanel.querySelector('[data-reward-panel="manage-roster"]')].filter(Boolean).forEach(x=>command.append(x));
-   correctionButton.onclick=()=>setRewardMode("corrections");
- }
- const status=studentsPanel?.querySelector(":scope > .live-request-grid");if(status&&!status.classList.contains("dw20-status-strip")){
-   status.classList.add("dw20-status-strip");status.insertAdjacentHTML("beforeend",'<div class="card"><h3>❤️ CLASS HP</h3><b class="big" id="dw20ClassHp">0</b><p>Current combined scholar health</p></div><div class="card"><h3>⭐ DAILY XP</h3><b class="big" id="dw20DailyXp">0</b><p>Earned today across the class</p></div>');
- }
- const schedule=$("schedule"),calendar=$("calendar");if(schedule&&calendar&&!$("plannerWorkspace")){const w=document.createElement("div");w.id="plannerWorkspace";schedule.before(w);w.append(schedule,calendar)}
- const poll=$("poll"),picker=$("picker");if(poll&&picker&&!$("toolsWorkspace")){const w=document.createElement("div");w.id="toolsWorkspace";poll.before(w);w.append(poll,picker)}
- const passes=$("passes");if(passes&&!$("dw20PassMetrics")){passes.querySelector(".command-title")?.insertAdjacentHTML("afterend",'<div class="gradebook-summary" id="dw20PassMetrics"><div><small>WAITING</small><b id="dw20PassWaiting">0</b></div><div><small>ACTIVE NOW</small><b id="dw20PassActive">0</b></div><div><small>RETURNED TODAY</small><b id="dw20PassReturned">0</b></div><div><small>OVER LIMIT</small><b id="dw20PassOver">0</b></div></div>')}
- $("dw20OpenReview").onclick=dw20OpenReview;$("dw20ApplyReview").onclick=dw20ApplyReviewedCommand;$("dw20CancelReview").onclick=()=>{$("dw20ReviewDialog").classList.add("hidden");$("dw20OpenReview").focus()};$("dw20ReviewDialog").addEventListener("keydown",e=>{if(e.key==="Escape")$("dw20CancelReview").click()});$("quickAwardGroup")?.addEventListener("change",dw20UpdateReviewBar);
- dw20UpdateReviewBar();
-}
-dw20InitApprovedLayout();
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");$(b.dataset.p).classList.add("active")})
 
 setTimeout(()=>{seedV29Defaults().catch(e=>console.warn('seed defaults',e))},1200);
 document.addEventListener('DOMContentLoaded',()=>{
@@ -2798,105 +2443,6 @@ document.addEventListener('DOMContentLoaded',()=>{bindPollEditor();bindRandomPic
 
 document.getElementById('passBlackoutBtn')?.addEventListener('click',togglePassBlackout);
 document.getElementById('passArchiveRange')?.addEventListener('change',renderPassArchive);
-
-/* Read-only view of what a student actually owns. The editable fields below
-   it are still the way to change anything; this exists so a teacher can see
-   appearance packs, pets and boss progress without decoding item ids. */
-function dwRenderRpgSnapshot(st){
-  const box=$("srpgSnapshot"); if(!box) return;
-  const R=window.DWRPG;
-  if(!st||!R){ box.innerHTML='<span class="muted">Select a student.</span>'; return; }
-  const owned=Array.isArray(st.rpgInventory)?st.rpgInventory:[];
-  const pets=Array.isArray(st.ownedPets)?st.ownedPets:[];
-  const cls=R.classes[st.classId];
-  const lvl=R.levelForXp(st.xp);
-
-  const packs=(R.appearancePacks||[]).filter(a=>owned.indexOf(a.id)>=0);
-  const gear=(R.items||[]).filter(i=>!i.appearance&&!i.egg&&owned.indexOf(i.id)>=0);
-  const petObjs=[...(R.pets||[]),...(R.prestigePets||[])].filter(x=>pets.indexOf(x.id)>=0);
-  const pendingLoot=bossLootRows.filter(x=>x.studentId===st.id&&x.rareGoal!=="none"&&x.rareGoalStatus==="pending_teacher_approval");
-  const studentPrizes=physicalPrizeDrops.filter(x=>x.studentId===st.id).sort((a,b)=>String(b.dateKey||"").localeCompare(String(a.dateKey||"")));
-
-  const row=(img,label,on)=>`<div class="rs-row">${img?`<img src="${img}" alt="">`:""}`+
-    `<span class="${on?"rs-on":""}">${label}</span></div>`;
-
-  box.innerHTML=
-    `<div class="rs-block"><h5>Class &amp; level</h5>`+
-      (cls?row(cls.art,`${cls.name} • Level ${lvl}`,false)
-          :'<div class="rs-none">No class chosen yet</div>')+
-      row("",`Boss wins: ${Number(st.bossWins||0)}`,false)+
-      row("",`Eggs: ${Number(st.eggInventory||0)}`,false)+
-      row("",`Pet Tokens: ${Number(st.petTokens||0)}`,false)+
-      row("",`Day credit: ${Number(st.legacyDayCredit||0)}`,false)+
-    `</div>`+
-    `<div class="rs-block"><h5>Appearance packs (${packs.length}/3)</h5>`+
-      (packs.length?packs.map(a=>row(a.skinArt,`${a.name} • L${a.level}`,false)).join("")
-                   :'<div class="rs-none">None owned</div>')+
-    `</div>`+
-    `<div class="rs-block"><h5>Pets (${petObjs.length})</h5>`+
-      (petObjs.length?petObjs.map(x=>row(x.art,x.name,st.activePet===x.id)).join("")
-                     :'<div class="rs-none">None hatched</div>')+
-      (st.activePet?'<div class="rs-none">Green = active companion</div>':"")+
-    `</div>`+
-    `<div class="rs-block"><h5>Pending rare boss finds (${pendingLoot.length})</h5>`+
-      (pendingLoot.length?pendingLoot.map(x=>`<div class="rs-row"><span>${x.rareGoal==="classPet"?"🐾 Class Pet":"🚌 Field Trip"} • ${esc(x.dateKey||"")}</span><button type="button" class="mini" data-approve-boss-loot="${esc(x.id)}">APPROVE +25</button></div>`).join(""):'<div class="rs-none">No finds awaiting review</div>')+
-    `</div>`+
-    `<div class="rs-block"><h5>Rare real-world passes (${studentPrizes.length})</h5>`+
-      (studentPrizes.length?studentPrizes.map(x=>{const q=x.prizeType==="recess"?"🌤️ Recess Pass":x.prizeType==="icecream"?"🍦 Ice Cream Pass":"🍱 Lunch Pass";return`<div class="rs-row"><span>${q} • ${esc(x.dateKey||"")} • ${esc(x.status||"earned")}</span>${x.status==="requested"?`<button type="button" class="mini" data-redeem-real-prize="${esc(x.id)}">MARK REDEEMED</button>`:""}</div>`}).join(""):'<div class="rs-none">No real-world passes earned</div>')+
-    `</div>`+
-    `<div class="rs-block"><h5>Equipment (${gear.length})</h5>`+
-      (gear.length?gear.map(i=>row(i.art,`${i.name}`,
-          st.rpgEquipped&&st.rpgEquipped[i.slot]===i.id)).join("")
-                  :'<div class="rs-none">None owned</div>')+
-      (gear.length?'<div class="rs-none">Green = equipped</div>':"")+
-    `</div>`;
-  box.querySelectorAll("[data-approve-boss-loot]").forEach(button=>button.onclick=()=>approveBossGoalFind(button.dataset.approveBossLoot));
-  box.querySelectorAll("[data-redeem-real-prize]").forEach(button=>button.onclick=()=>redeemRealPrize(button.dataset.redeemRealPrize));
-}
-
-async function redeemRealPrize(prizeId){const row=physicalPrizeDrops.find(x=>x.id===prizeId);if(!row||row.status!=="requested")return;if(!confirm(`Confirm that ${row.studentName||"this student"} has received this one-time reward?`))return;await setDoc(doc(db,"physicalPrizeDrops",prizeId),{status:"redeemed",redeemedAt:serverTimestamp(),redeemedBy:auth.currentUser?.uid||"teacher"},{merge:true});}
-
-async function approveBossGoalFind(lootId){
-  const lootRef=doc(db,"bossLoot",lootId);
-  const approved=await runTransaction(db,async tx=>{const lootSnap=await tx.get(lootRef);if(!lootSnap.exists())return false;const loot=lootSnap.data();if(loot.rareGoalStatus!=="pending_teacher_approval"||!(loot.rareGoal==="classPet"||loot.rareGoal==="fieldTrip"))return false;const goalRef=doc(db,"classData",loot.rareGoal),goalSnap=await tx.get(goalRef),goal=goalSnap.exists()?goalSnap.data():{};tx.set(goalRef,{points:Number(goal.points||0)+25,goal:Number(goal.goal||(loot.rareGoal==="classPet"?250:750)),lastLootId:lootId,updatedAt:serverTimestamp()},{merge:true});tx.update(lootRef,{goalPoints:25,rareGoalStatus:"approved",approvedAt:serverTimestamp()});return true});
-  if(!approved)alert("This rare find was already reviewed.");
-}
-/* ---------- v56 RPG admin helpers ---------- */
-/* Fill the item and pet pickers from the shipped catalogue so a teacher
-   selects real ids instead of remembering "sunsteel_blade". */
-function dwFillRpgPickers(){
-  const R=window.DWRPG; if(!R) return;
-  const il=$("rpgItemList"), pl=$("rpgPetList");
-  if(il&&!il.dataset.filled){
-    il.innerHTML=R.items.filter(i=>!i.egg)
-      .sort((a,b)=>(a.classId+a.slot).localeCompare(b.classId+b.slot))
-      .map(i=>`<option value="${i.id}">${i.name} — ${i.classId} ${i.slot}</option>`).join("");
-    il.dataset.filled="1";
-  }
-  if(pl&&!pl.dataset.filled){
-    pl.innerHTML=[...R.pets,...R.prestigePets]
-      .map(p=>`<option value="${p.id}">${p.name} — ${p.rarity}${p.prestige?" (prestige)":""}</option>`).join("");
-    pl.dataset.filled="1";
-  }
-}
-
-/* Reset the one-time class choice. Items and pets are deliberately kept:
-   a child who switches class keeps what they earned, they just cannot use
-   the other class's gear until they pick again. */
-document.addEventListener("click",async ev=>{
-  if(ev.target?.id!=="resetClassBtn") return;
-  const note=$("resetClassNote");
-  const sidv=$("sid")?.value;
-  if(!sidv){ if(note)note.textContent="Pick a student first."; return; }
-  if(!confirm("Clear this student's class choice? They will pick again next time they open Adventurer Hall. Items and pets are kept.")) return;
-  try{
-    await setDoc(doc(db,"students",sidv),
-      {classId:"",classChosenAt:null,rpgEquipped:{},updatedAt:serverTimestamp()},{merge:true});
-    $("sclass").value="";
-    if(note)note.textContent="✓ Class cleared. The student may choose again.";
-  }catch(e){ if(note)note.textContent="Could not clear class: "+(e.code||e.message); }
-});
-
 </script>
 <script id="dragonswood-sound-engine">
 (() => {
@@ -2906,7 +2452,7 @@ document.addEventListener("click",async ev=>{
   let ctx = null;
   let unlocked = false;
   let enabled = localStorage.getItem(KEY) !== "off";
-  const lastPlayed = {positive:0, negative:0, awardPoints:0, takePoints:0, passRequest:0, notice:0};
+  const lastPlayed = {positive:0, negative:0, bathroom:0, notice:0};
 
   function getCtx(){
     if(!enabled) return null;
@@ -2957,42 +2503,30 @@ document.addEventListener("click",async ev=>{
     tone(174.61,.14,.25,"triangle",.075);
   }
 
-  function awardPoints(){
-    if(!canPlay("awardPoints",650)) return;
-    // Loud original high-fantasy treasure fanfare.
-    tone(392,0,.18,"triangle",.24);
-    tone(523.25,.11,.20,"triangle",.26);
-    tone(659.25,.23,.22,"triangle",.28);
-    tone(783.99,.37,.42,"triangle",.30);
-    tone(1174.66,.37,.48,"sine",.24);
-    tone(1567.98,.55,.50,"sine",.20);
-  }
-
-  function takePoints(){
-    if(!canPlay("takePoints",650)) return;
-    // Loud original magic-drained cue: unmistakable, but not a harsh buzzer.
-    tone(783.99,0,.16,"triangle",.25);
-    tone(587.33,.12,.20,"triangle",.27);
-    tone(440,.27,.24,"triangle",.29);
-    tone(293.66,.45,.38,"sawtooth",.20);
-    tone(146.83,.58,.48,"triangle",.26);
-    tone(220,.58,.38,"sine",.18);
-  }
-
-  function passRequest(){
-    if(!canPlay("passRequest",850)) return;
-    // Mystic Portal (#7): the teacher's new-pass-request notification.
-    tone(440,0,.40,"sine",.09);
-    tone(554.37,.10,.40,"sine",.085);
-    tone(659.25,.20,.45,"sine",.085);
-    tone(1108.73,.48,.48,"sine",.09);
+  function bathroom(){
+    if(!canPlay("bathroom",850)) return;
+    /*
+      EXTRA-LOUD classroom pass alert.
+      Multiple harmonics/pulses make this much more audible on laptop speakers.
+      Browser/OS volume still sets the absolute hardware ceiling.
+    */
+    tone(740,0,.20,"square",.22);
+    tone(988,0,.20,"sine",.18);
+    tone(880,.22,.20,"square",.23);
+    tone(1175,.22,.20,"sine",.18);
+    tone(740,.46,.22,"square",.24);
+    tone(988,.46,.22,"sine",.19);
+    tone(880,.72,.32,"square",.25);
+    tone(1175,.72,.32,"sine",.20);
   }
 
   function notice(){
     if(!canPlay("notice",500)) return;
-    tone(523.25,0,.18,"triangle",.075);
-    tone(783.99,.10,.28,"sine",.085);
-    tone(1046.50,.24,.36,"sine",.065);
+    // Louder two-stage general alert.
+    tone(660,0,.18,"square",.18);
+    tone(880,0,.18,"sine",.15);
+    tone(784,.20,.25,"square",.20);
+    tone(1047,.20,.25,"sine",.16);
   }
 
   function setEnabled(v){
@@ -3009,7 +2543,7 @@ document.addEventListener("click",async ev=>{
       badge.textContent = "🔇 Sounds Off";
       badge.dataset.state = "off";
     }else if(unlocked){
-      badge.textContent = "🔔 Dragonswood Alerts Armed";
+      badge.textContent = "🔊 LOUD Alerts Armed";
       badge.dataset.state = "armed";
     }else{
       badge.textContent = "🔔 Click to Arm Sounds";
@@ -3045,7 +2579,7 @@ document.addEventListener("click",async ev=>{
   });
 
   window.DWAudio = {
-    positive, negative, awardPoints, takePoints, passRequest, notice, unlock:getCtx,
+    positive, negative, bathroom, notice, unlock:getCtx,
     setEnabled, isEnabled:()=>enabled, isUnlocked:()=>unlocked,
     addTeacherBadge
   };
@@ -3287,236 +2821,10 @@ window.resolveCQOverride=async(id,status)=>{
  const note=status==="returned"?(prompt("Optional note for the student:")||"Please revise your answer and try again."):"Approved by teacher.";
  await updateDoc(doc(cqDb,"curriculumOverrideRequests",id),{status,teacherNote:note,resolvedAt:serverTimestamp(),updatedAt:serverTimestamp()});
 };
-/* v56.19 — the override queue renders into the Gradebook panel, so it now
-   waits for that tab instead of subscribing to the whole collection at
-   startup. dwEnsureTabData("data") fires this the first time Gradebook opens;
-   if the teacher opened it before auth resolved, this runs it then. */
-window.__dwStartOverrideQueue=null;
 onAuthStateChanged(cqAuth,u=>{
  if(!u||String(u.email||"").toLowerCase()!=="jacobicusjax@gmail.com")return;
- const start=()=>{
  onSnapshot(collection(cqDb,"curriculumOverrideRequests"),s=>{cqReq=s.docs.map(d=>({id:d.id,...d.data()}));renderCQOverrides()},e=>{console.error("curriculum override queue",e);const box=document.getElementById("overrideQueueList"),count=document.getElementById("overrideQueueCount");if(count)count.textContent="ERROR";if(box)box.innerHTML=`<div class="muted" style="color:#ff9b9b">Could not load override requests: ${qEsc(e.code||e.message||e)}. Check Firestore rules deployment.</div>`;});
- };
- window.__dwStartOverrideQueue=start;
- if(window.DW_SUBSCRIBED&&window.DW_SUBSCRIBED.has("overrideQueue"))start();
 });
 </script>
-<script id="dw-v5614-teacher-pet-manager">
-(function(){
- /* v56.19 BUGFIX — this is a plain (non-module) script, so it could never see
-    the $ and esc helpers, which live in module scope. Every call threw, so
-    install() never ran and the whole Pet Collection UI silently failed:
-    opening a student showed the raw comma-separated id text boxes instead of
-    the pet grid. Same definitions as the module versions. */
- const $=id=>document.getElementById(id);
- const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
- const allPets=()=>[...(window.DWRPG?.pets||[]),...(window.DWRPG?.prestigePets||[])];
- const ownedSet=()=>new Set(($('spets')?.value||'').split(',').map(x=>x.trim()).filter(Boolean));
- function install(){const ownedField=$('spets')?.closest('.field'),activeField=$('sactivepet')?.closest('.field');if(!ownedField||!activeField||$('tpmGrid'))return;ownedField.hidden=true;activeField.hidden=true;const host=document.createElement('div');host.className='teacher-pet-manager';host.innerHTML=`<div class="tpm-head"><div><h4>🐾 PET COLLECTION</h4><small>Search, grant or remove companions, and set exactly one active pet.</small></div><strong id="tpmCount">0 / 0</strong></div><div class="tpm-tools"><input id="tpmSearch" type="search" placeholder="Search pets"><select id="tpmRarity"><option value="all">All rarities</option><option>common</option><option>uncommon</option><option>rare</option><option>epic</option><option>legendary</option></select><select id="tpmHabitat"><option value="all">All habitats</option></select><label><input id="tpmOwned" type="checkbox"> Owned only</label></div><div id="tpmGrid" class="tpm-grid"></div>`;activeField.after(host);[...new Set(allPets().map(x=>x.habitat).filter(Boolean))].sort().forEach(x=>$('tpmHabitat').add(new Option(x,x)));['tpmSearch','tpmRarity','tpmHabitat','tpmOwned'].forEach(id=>$(id).addEventListener(id==='tpmSearch'?'input':'change',render));}
- function render(){if(!$('tpmGrid'))return;const owned=ownedSet(),active=$('sactivepet').value,search=$('tpmSearch').value.toLowerCase(),rarity=$('tpmRarity').value,habitat=$('tpmHabitat').value,ownedOnly=$('tpmOwned').checked,rows=allPets().filter(x=>(!search||`${x.name} ${x.habitat} ${x.nature}`.toLowerCase().includes(search))&&(rarity==='all'||x.rarity===rarity)&&(habitat==='all'||x.habitat===habitat)&&(!ownedOnly||owned.has(x.id)));$('tpmCount').textContent=`${owned.size} / ${allPets().length}`;$('tpmGrid').innerHTML=rows.map(x=>`<article class="tpm-card ${owned.has(x.id)?'owned':''} ${active===x.id?'active':''}"><img src="${x.art}" alt="${esc(x.name)}" loading="lazy"><div><b>${esc(x.name)}</b><small>${x.rarity} • ${esc(x.habitat||'Dragonswood')}</small></div><button type="button" data-tpm-own="${x.id}">${owned.has(x.id)?'REMOVE':'GRANT'}</button><button type="button" data-tpm-active="${x.id}" ${owned.has(x.id)?'':'disabled'}>${active===x.id?'ACTIVE':'SET ACTIVE'}</button></article>`).join('');$('tpmGrid').querySelectorAll('[data-tpm-own]').forEach(b=>b.onclick=()=>{const set=ownedSet();if(set.has(b.dataset.tpmOwn)){set.delete(b.dataset.tpmOwn);if($('sactivepet').value===b.dataset.tpmOwn)$('sactivepet').value=''}else set.add(b.dataset.tpmOwn);$('spets').value=[...set].join(', ');render()});$('tpmGrid').querySelectorAll('[data-tpm-active]').forEach(b=>b.onclick=()=>{$('sactivepet').value=b.dataset.tpmActive;render()});}
- install();document.addEventListener('click',e=>{if(e.target.closest('[data-manage]'))setTimeout(render,0)});window.dwRenderTeacherPets=render;
-})();
-</script>
 
-<style id="dw-v5610-command-parity">
-/* ============================================================
-   Dragonswood v56.10 aesthetic patch — TEACHER COMMAND
-   Brings the teacher portal up to the student portal's design
-   language. Appended last; removes nothing.
-   ============================================================ */
-
-/* --- 1. The 10 tabs become a fixed full-height rail, matching the student
-         portal. They were a 4-wide grid that wrapped to three rows and ate
-         the top of every screen. --- */
-@media(min-width:1051px){
-  body{padding-left:186px}
-
-  .tabs{
-    position:fixed!important;
-    left:0;top:0;bottom:0;
-    width:186px;
-    height:100vh!important;
-    z-index:40;
-    display:flex!important;
-    flex-direction:column!important;
-    gap:6px!important;
-    padding:16px 11px!important;
-    margin:0!important;
-    overflow-y:auto;
-    overscroll-behavior:contain;
-    scrollbar-width:none;
-    border:0!important;
-    border-right:1px solid rgba(190,148,255,.5)!important;
-    border-radius:0!important;
-    clip-path:none!important;
-    box-shadow:14px 0 34px rgba(0,0,0,.45);
-    background:
-      radial-gradient(circle at 50% 0%,rgba(120,52,214,.30),transparent 46%),
-      linear-gradient(180deg,rgba(7,10,38,.99),rgba(5,18,37,.98))!important;
-  }
-  .tabs::-webkit-scrollbar{width:0}
-  .tabs::before,.tabs::after{display:none!important}
-
-  .tabs .tab{
-    text-align:left!important;
-    min-height:52px;
-    font-size:11px!important;
-    letter-spacing:.3px;
-    line-height:1.2;
-    padding:10px 11px!important;
-    border-radius:11px!important;
-    background:transparent!important;
-    border:1px solid transparent!important;
-    color:#d8cce8!important;
-    transition:background .16s ease,transform .16s ease,border-color .16s ease;
-  }
-  .tabs .tab:hover{
-    background:rgba(120,60,210,.30)!important;
-    border-color:rgba(142,238,255,.45)!important;
-    transform:translateX(2px);
-  }
-  .tabs .tab.active{
-    position:relative;
-    background:linear-gradient(90deg,rgba(109,46,204,.85),rgba(5,142,181,.72))!important;
-    border-color:#8eeeff!important;
-    box-shadow:0 0 18px rgba(91,85,255,.28)!important;
-    color:#fff!important;
-  }
-  .tabs .tab.active::before{
-    content:"";position:absolute;left:-11px;top:8px;bottom:8px;width:4px;
-    border-radius:0 4px 4px 0;background:linear-gradient(180deg,#ffe36d,#8eeeff);
-  }
-}
-
-/* --- 2. Same glass-panel language the student portal got in v56.9. --- */
-.card,.command-title,.item,.modalbox{
-  background:linear-gradient(145deg,rgba(13,17,52,.93),rgba(3,25,45,.9))!important;
-  border:1px solid rgba(117,94,165,.5)!important;
-  border-radius:14px!important;
-  box-shadow:0 12px 30px rgba(0,0,0,.24);
-}
-.card:hover{border-color:rgba(255,227,109,.42)!important}
-.command-title h2{color:#ffe88b!important}
-
-/* Tables read as data, not as a spreadsheet dumped on the page. */
-.student-table,table{border-radius:12px;overflow:hidden}
-.student-table th,th{
-  position:sticky;top:0;z-index:2;
-  background:linear-gradient(90deg,#2a1250,#08283b)!important;
-  font-size:11px;letter-spacing:.5px;text-transform:uppercase;
-}
-.student-table tbody tr:hover td,table tbody tr:hover td{background:rgba(120,60,210,.14)}
-.badge{border:1px solid rgba(190,148,255,.4);font-weight:900;font-size:11px}
-
-/* --- 3. 82 bare text boxes become controls you can see and press. --- */
-input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
-select,textarea{
-  min-height:44px;
-  padding:11px 13px;
-  border-radius:10px;
-  border:1px solid rgba(2,204,254,.34);
-  background:linear-gradient(180deg,rgba(12,9,32,.96),rgba(6,6,22,.96));
-  transition:border-color .15s ease,box-shadow .15s ease;
-}
-input:hover,select:hover,textarea:hover{border-color:rgba(255,227,109,.55)}
-input:focus,select:focus,textarea:focus{
-  border-color:#ffe36d;
-  box-shadow:0 0 0 3px rgba(255,227,109,.22);
-  outline:none;
-}
-input::placeholder,textarea::placeholder{color:#8f88a6}
-select{
-  appearance:none;-webkit-appearance:none;
-  padding-right:34px;
-  background-image:linear-gradient(180deg,rgba(12,9,32,.96),rgba(6,6,22,.96)),
-    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'><path d='M1 1l6 6 6-6' fill='none' stroke='%23ffe36d' stroke-width='2' stroke-linecap='round'/></svg>");
-  background-repeat:no-repeat,no-repeat;
-  background-position:0 0,right 12px center;
-  background-size:100% 100%,14px 9px;
-  cursor:pointer;
-}
-.field label{color:#ffe88b;letter-spacing:.3px;text-transform:uppercase;font-size:10px}
-
-/* Buttons get depth and a pressed state so a click feels like it landed. */
-.btn,button{
-  border-radius:10px;
-  min-height:44px;
-  transition:filter .14s ease,transform .08s ease,box-shadow .14s ease;
-  box-shadow:0 6px 16px rgba(0,0,0,.3);
-}
-.btn:active,button:active{transform:translateY(1px);box-shadow:0 3px 9px rgba(0,0,0,.34)}
-.tabs .tab{box-shadow:none!important}
-
-/* --- 4. Keyboard focus. There was none in this file before now. --- */
-:where(button,.btn,a,[tabindex],input,select,textarea):focus-visible{
-  outline:3px solid #ffe36d!important;
-  outline-offset:2px!important;
-  border-radius:8px;
-}
-
-/* --- 5. Motion respect. This file had no reduced-motion rule at all,
-         and it runs two infinite shimmer animations. --- */
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
-}
-.teacher-pet-manager{margin:14px 0;padding:13px;border:1px solid #6c5195;border-radius:14px;background:#080922}.tpm-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.tpm-head h4{margin:0;color:#ffe58b;font:900 20px Georgia}.tpm-head strong{color:#67edb0;font-size:20px}.tpm-tools{display:grid;grid-template-columns:1fr 145px 165px auto;gap:8px;align-items:center;margin:12px 0}.tpm-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;max-height:420px;overflow:auto;padding-right:4px}.tpm-card{display:grid;grid-template-columns:54px 1fr auto auto;gap:7px;align-items:center;padding:7px;border:1px solid #453667;border-radius:10px;background:#0d0d2d}.tpm-card.owned{border-color:#3bbf86}.tpm-card.active{outline:2px solid #ffe36d}.tpm-card img{width:54px;height:54px;object-fit:contain}.tpm-card small{display:block;color:#bdb2cf;text-transform:capitalize}.tpm-card button{font-size:10px;padding:6px 8px;min-height:34px}@media(max-width:800px){.tpm-tools,.tpm-grid{grid-template-columns:1fr}.tpm-card{grid-template-columns:54px 1fr}.tpm-card button{grid-row:2}}
-</style>
-
-
-<style id="dw-v5618-nav-rework">
-/* v56.18 — navigation rework, teacher side. Ten tabs became nine, grouped
-   under headings in the fixed rail added in v56.10. Appended last. */
-.nav-crest{
-  font-family:Georgia,serif;font-size:9.5px;font-weight:900;letter-spacing:1.6px;
-  text-align:center;color:#ffe36d;text-transform:uppercase;
-  padding:4px 0 8px;margin-bottom:4px;
-  border-bottom:1px solid rgba(255,227,109,.28);
-  text-shadow:0 0 10px rgba(255,213,74,.35);
-}
-.nav-divider{
-  display:flex;align-items:center;gap:7px;
-  margin:9px 2px 5px;
-  font-family:Georgia,serif;font-size:8px;font-weight:900;letter-spacing:1.5px;
-  color:#b9a6e8;text-transform:uppercase;white-space:nowrap;
-}
-.nav-divider::before,.nav-divider::after{
-  content:"";flex:1;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(190,148,255,.55),transparent);
-}
-@media(min-width:1051px){
-  /* Nine rows + two dividers + a crest must clear a Chromebook's ~660px of
-     usable height, so rows are 48px rather than the roomier student sizing. */
-  .tabs .tab{min-height:45px;font-size:10.5px;padding:7px 10px!important}
-  .tabs{gap:4px!important;padding:11px 10px!important}
-  .tabs .nav-crest{padding:2px 0 6px;margin-bottom:2px}
-  .tabs .nav-divider{margin:6px 2px 3px}
-}
-/* On narrow screens the rail reverts to the stacked strip; headings would
-   stretch across it, so hide them there. */
-@media(max-width:1050px){
-  .nav-crest,.nav-divider{display:none}
-  .tabs{grid-template-columns:repeat(2,1fr)!important}
-}
-</style>
-
-<style id="dw-v5619-loading">
-/* v56.19 — honest loading state for tabs whose data now arrives on demand.
-   Without this a deferred tab would flash "no assignments yet" before its
-   first snapshot, which reads as data loss rather than as loading. */
-.panel.dw-tab-loading{position:relative;min-height:220px}
-.panel.dw-tab-loading::after{
-  content:"Loading\2026";
-  position:absolute;inset:0;z-index:5;
-  display:grid;place-items:center;
-  font-family:Georgia,serif;font-size:15px;letter-spacing:1px;
-  color:#ffe88b;
-  background:linear-gradient(180deg,rgba(5,6,20,.86),rgba(5,6,20,.94));
-  border-radius:12px;
-  backdrop-filter:blur(1px);
-}
-@media(prefers-reduced-motion:no-preference){
-  .panel.dw-tab-loading::after{animation:dwFadeIn .18s ease}
-  @keyframes dwFadeIn{from{opacity:0}to{opacity:1}}
-}
-</style>
 </body></html>

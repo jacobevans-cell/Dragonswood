@@ -2253,6 +2253,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 @media(max-width:520px){.home-relic-display{grid-template-columns:1fr}.home-relic{display:grid;grid-template-columns:76px 1fr;min-height:82px}.next-unlocks{grid-template-columns:1fr}.mastery-medal{width:65px}}
 @media(prefers-reduced-motion:reduce){.home-relic-gold .relic-art,.home-relic-gold .relic-art i,.home-energy-channel .home-xp-fill:after{animation:none!important}}
 </style>
+<link rel="stylesheet" href="dragonswood-student-redesign-v2.css">
 </head><body><!-- DRAGONSWOOD BUILD v48.9 COSMIC+JOBS -->
 <header class="topbar">
 <div class="shell">
@@ -2300,24 +2301,43 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
 <section id="signedIn" class="hidden">
 
+  <!-- V2 approved persistent student shell. Existing live controls are moved
+       into this shell at runtime so production IDs/listeners remain singular. -->
+  <header class="top-header" id="studentV2Header">
+    <button class="mobile-menu" id="studentV2Menu" type="button" aria-controls="portalNav" aria-expanded="false">☰ <span>Menu</span></button>
+    <div class="brand">
+      <img src="dragonswood-volleyball-crest-v1.png" alt="Dragonswood crest">
+      <div><b>DRAGONSWOOD</b><span>STUDENT ADVENTURE PORTAL</span></div>
+    </div>
+    <div class="top-tools" id="studentV2Tools">
+      <button id="studentReadPageButton" type="button" aria-label="Read this page aloud">🔊 <span>Read aloud</span></button>
+      <button class="student-chip" id="studentV2Profile" type="button" aria-label="Open student profile"><span id="studentV2Initial">A</span><p><b id="studentV2Name">Adventurer</b><small>Level <span id="studentV2Level">1</span></small></p></button>
+      <button id="studentV2SignOut" type="button" aria-label="Sign out">↪ <span>Sign out</span></button>
+    </div>
+  </header>
+  <button class="menu-scrim" id="studentV2Scrim" type="button" aria-label="Close navigation" hidden></button>
+
   <!-- Persistent Dragonswood navigation -->
-  <nav class="frame bevel portal-nav" id="portalNav" aria-label="Dragonswood navigation">
-    <div class="nav-crest">STUDENT PORTAL</div>
-    <button class="portal-tab active" type="button" data-view="home" onclick="DragonswoodNav('home')"><span>🛡️</span><b>MY ADVENTURER</b></button>
-    <button class="portal-tab" type="button" data-view="quests" onclick="DragonswoodNav('quests')"><span>📜</span><b>DAILY MISSIONS</b></button>
-    <button class="portal-tab" type="button" data-view="games" onclick="DragonswoodNav('games')"><span>🎮</span><b>ACADEMIC GAMES</b></button>
-    <button class="portal-tab" type="button" data-view="scribe" onclick="DragonswoodNav('scribe')"><span>✍️</span><b>SCRIBE ARENA</b></button>
-    <button class="portal-tab" type="button" data-view="planner" onclick="DragonswoodNav('planner')"><span>🕐</span><b>SCHEDULE &amp; CALENDAR</b></button>
-    <div class="nav-divider"><span>DRAGONSWOOD</span></div>
-    <button class="portal-tab" type="button" onclick="location.href='adventurer-hall.html'"><span>⚔️</span><b>ADVENTURER HALL</b></button>
-    <button class="portal-tab" type="button" onclick="location.href='boss-battle.html'"><span>👹</span><b>DAILY BOSS BATTLE</b></button>
-    <button class="portal-tab" type="button" data-view="leaderboard" onclick="DragonswoodNav('leaderboard')"><span>🏆</span><b>LEADERBOARDS</b></button>
+  <nav class="sidebar portal-nav" id="portalNav" aria-label="Dragonswood student navigation">
+    <div class="nav-label">EXPLORE</div>
+    <button class="portal-tab active" type="button" data-view="home" onclick="DragonswoodNav('home')"><span>🛡️</span><p><b>My Adventure</b><small>Home base</small></p></button>
+    <button class="portal-tab" type="button" data-view="quests" onclick="DragonswoodNav('quests')"><span>📜</span><p><b>Daily Missions</b><small>Do this first</small></p><i id="dailyMissionBadge">1</i></button>
+    <button class="portal-tab" type="button" data-view="games" onclick="DragonswoodNav('games')"><span>🎮</span><p><b>Academic Games</b><small>Learn &amp; play</small></p></button>
+    <button class="portal-tab" type="button" data-view="scribe" onclick="DragonswoodNav('scribe')"><span>✍️</span><p><b>Scribe Arena</b><small>Write &amp; grow</small></p></button>
+    <button class="portal-tab" type="button" data-view="planner" onclick="DragonswoodNav('planner')"><span>🗓️</span><p><b>My Day</b><small>Schedule</small></p></button>
+    <div class="nav-label">DRAGONSWOOD</div>
+    <button class="portal-tab" type="button" onclick="location.href='adventurer-hall.html'"><span>⚔️</span><p><b>Adventurer Hall</b><small>Gear &amp; pets</small></p></button>
+    <button class="portal-tab" type="button" onclick="location.href='boss-battle.html'"><span>🐲</span><p><b>Boss Battle</b><small>Daily challenge</small></p></button>
+    <button class="portal-tab" type="button" data-view="leaderboard" onclick="DragonswoodNav('leaderboard')"><span>🏆</span><p><b>Leaderboards</b><small>Class champions</small></p></button>
+    <div class="side-progress" id="studentWeeklyStreak"><div><span>🔥</span><p><b><span id="studentStreakDays">0</span> day streak!</b><small>Keep it going</small></p></div><div class="progress-wrap"><div class="progress-label"><span>Weekly goal</span><b id="studentWeeklyGoalPercent">0%</b></div><div class="progress-track"><div class="progress-fill gold" id="studentWeeklyGoalFill"></div></div></div></div>
   </nav>
 
   <!-- HOME -->
   <section class="portal-view active" id="view-home" data-page="home">
-
-    <section class="frame bevel home-hero-card">
+    <section class="welcome-strip"><div><span class="spark">✦</span><b id="studentV2Greeting">Welcome back, adventurer!</b><span>Your next win is ready.</span></div><button class="reader-button" type="button" data-v2-read-page>🔊 Read this page</button></section>
+    <header class="page-title"><div class="title-icon">🛡️</div><div><small>MY ADVENTURE</small><h1>Ready for today’s quest?</h1><p>Start with your mission, then choose how you want to explore Dragonswood.</p></div></header>
+    <section class="home-grid">
+    <section class="frame bevel home-hero-card hero-card glass-card">
       <div class="home-hero-avatar-wrap">
         <div class="home-hero-avatar" id="homeHeroAvatar"></div>
         <div class="home-level-medallion">
@@ -2361,6 +2381,16 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
       </div>
     </section>
+    <article class="next-card glass-card" id="studentV2NextStep">
+      <div class="card-kicker"><span>⭐</span> YOUR NEXT STEP</div>
+      <div class="quest-visual">📜<span>Required first</span></div>
+      <h2 id="studentV2NextTitle">Today’s Daily Mission</h2>
+      <p id="studentV2NextText">Complete your Morning Work first. Dragonswood will guide you one step at a time.</p>
+      <div class="mini-steps"><span class="current">1 Morning Work</span><span>2 Curriculum</span><span>3 Exit Quest</span></div>
+      <button class="primary-button" type="button" onclick="DragonswoodNav('quests')">Open daily missions <span>→</span></button>
+      <small>Read-aloud support is available on every learning page.</small>
+    </article>
+    </section>
 
     <div class="section-title class-goals-title">
       <div>
@@ -2369,8 +2399,8 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
       </div>
     </div>
 
-<div class="goal-command-student">
-      <article class="frame bevel goal-card-v21" id="studentRecessGoalCard">
+<div class="goal-command-student goal-grid">
+      <article class="frame bevel goal-card-v21 goal-card" id="studentRecessGoalCard">
         <div class="goal-icon">🌤️</div>
         <h3>SECOND RECESS</h3>
         <p>Resets every school day.</p>
@@ -2379,7 +2409,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
         <div class="goal-status" id="v21RecessStatus">Loading today's progress…</div>
       </article>
 
-      <article class="frame bevel goal-card-v21" id="studentPetGoalCard">
+      <article class="frame bevel goal-card-v21 goal-card" id="studentPetGoalCard">
         <div class="goal-icon">🐾</div>
         <h3>CLASS PET</h3>
         <p>Pet Points stay here until the class reaches the goal.</p>
@@ -2388,7 +2418,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
         <div class="goal-status" id="v21PetStatus">Building toward our class pet…</div>
       </article>
 
-      <article class="frame bevel goal-card-v21" id="studentTripGoalCard">
+      <article class="frame bevel goal-card-v21 goal-card" id="studentTripGoalCard">
         <div class="goal-icon">🚌</div>
         <h3>FIELD TRIP</h3>
         <p>Field Trip Points stay here until the class reaches the goal.</p>
@@ -2403,15 +2433,20 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
       <div><small>UNIVERSAL POINT BANK</small><br><strong id="v21UniversalPoints">0</strong> <span class="muted">available</span></div>
       <div class="muted">Universal Points can be assigned by your teacher to Recess, Class Pet, or Field Trip.</div>
     </div>
+    <section class="quick-row" aria-label="Adventure shortcuts">
+      <button type="button" onclick="DragonswoodNav('games')"><span>🎮</span><b>Play a learning game</b><small>Explore by subject</small></button>
+      <button type="button" onclick="DragonswoodNav('planner')"><span>🕐</span><b>See what’s next</b><small>Open My Day</small></button>
+      <button type="button" onclick="DragonswoodNav('leaderboard')"><span>🏆</span><b>Check the leaderboard</b><small>Celebrate class champions</small></button>
+    </section>
   </section>
 
 
   <!-- SCRIBE ARENA -->
   <section class="portal-view" id="view-scribe" data-page="scribe">
-    <div class="section-title"><div><h2>✍️ Scribe Arena &amp; Writing Portfolio</h2><p>Quickwrites, writing challenges, Scribe Battles, AI feedback, and your permanent writing portfolio.</p></div></div>
+    <header class="page-title"><div class="title-icon">✍️</div><div><small>SCRIBE ARENA</small><h1>Turn your ideas into magic</h1><p>Write freely. Your work saves as you type, and feedback helps you grow.</p></div></header>
 
-    <div class="scribe-grid">
-      <article class="frame bevel scribe-active-card">
+    <div class="scribe-grid scribe-layout">
+      <article class="frame bevel scribe-active-card glass-card writing-card">
         <div class="scribe-kicker">🔥 ACTIVE WRITING MISSION</div>
         <h2 id="scribeSessionTitle">No active Quickwrite</h2>
         <div id="scribeSessionMeta" class="scribe-meta">Your teacher has not launched a writing mission yet.</div>
@@ -2435,7 +2470,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
         <div id="scribeSubmitStatus" class="scribe-status"></div>
       </article>
 
-      <article class="frame bevel scribe-feedback-card">
+      <article class="frame bevel scribe-feedback-card glass-card feedback-card">
         <div class="scribe-kicker">🐉 DRAGONSWOOD WRITING SCORE</div>
         <div id="scribeNoFeedback" class="muted">Submit a Quickwrite to build your writing history.</div>
         <div id="scribeFeedback" class="hidden">
@@ -2454,7 +2489,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
       <div id="scribeBattleVoteStatus" class="scribe-status"></div>
     </article>
 
-    <article class="frame bevel scribe-portfolio-card">
+    <article class="frame bevel scribe-portfolio-card portfolio-card glass-card">
       <div class="section-title compact"><div><h2>📚 My Writing Portfolio</h2><p>Your saved Quickwrites and writing growth live here.</p></div></div>
       <div class="scribe-growth-grid" id="scribeGrowthGrid">
         <div><small>QUICKWRITES</small><b id="scribePortfolioCount">0</b></div>
@@ -2468,9 +2503,9 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
   <!-- GAMES -->
   <section class="portal-view" id="view-games" data-page="games">
-    <div class="section-title"><div><h2>🎮 Dragonswood Academic Games</h2><p>Choose a subject wing, then enter an academic adventure.</p></div></div>
+    <header class="page-title"><div class="title-icon">🎮</div><div><small>ACADEMIC GAMES</small><h1>Choose your adventure</h1><p>Every game practices a real school skill. Pick a subject wing to begin.</p></div></header>
 
-    <div class="game-subject-tabs" id="gameSubjectTabs">
+    <div class="game-subject-tabs filter-tabs" id="gameSubjectTabs" role="tablist">
       <button class="active" data-game-filter="all">✨ ALL</button>
       <button data-game-filter="math">➗ MATH</button>
       <button data-game-filter="ela">📚 ELA</button>
@@ -2559,10 +2594,10 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
   <!-- SCHEDULE + CALENDAR -->
   <section class="portal-view" id="view-planner" data-page="planner">
-    <div class="section-title"><div><h2>🕐 Schedule &amp; Calendar</h2><p>Today on the left; upcoming school events on the right.</p></div></div>
-    <div class="dw-planner-grid">
-      <div class="frame bevel dw31-card"><h3>🕐 Today's Schedule</h3><div class="dw31-muted">RIGHT NOW</div><div class="dw31-now" id="dw31Now">Loading…</div><div id="dw31NowDetail"></div><div class="dw31-next" id="dw31Next"></div><h3 style="margin-top:18px">Today's Timeline</h3><div class="dw31-list" id="dw31Timeline"></div></div>
-      <div class="frame bevel dw31-card"><h3>📅 Dragonwood Calendar</h3><p class="dw31-muted">School events, testing, breaks, and sports.</p><div class="dw31-filters" id="dw31CalFilters"><button data-cat="all" class="active">ALL</button><button data-cat="school">🏫 SCHOOL</button><button data-cat="sports">🏐 SPORTS</button><button data-cat="testing">🧪 TESTING</button><button data-cat="break">🌴 BREAKS</button><button data-cat="holiday">🇺🇸 HOLIDAYS</button></div><div class="dw31-list" id="dw31Calendar"></div></div>
+    <header class="page-title"><div class="title-icon">🗓️</div><div><small>MY DAY</small><h1>Know what’s next</h1><p>Your schedule, class jobs, and upcoming events in one calm place.</p></div></header>
+    <div class="dw-planner-grid planner-grid">
+      <div class="frame bevel dw31-card glass-card timeline-card"><h3>🕐 Today's Schedule</h3><div class="dw31-muted">RIGHT NOW</div><div class="dw31-now now-banner" id="dw31Now">Loading…</div><div id="dw31NowDetail"></div><div class="dw31-next" id="dw31Next"></div><h3 style="margin-top:18px">Today's Timeline</h3><div class="dw31-list" id="dw31Timeline"></div></div>
+      <div class="frame bevel dw31-card glass-card event-card"><h3>📅 Dragonswood Calendar</h3><p class="dw31-muted">School events, testing, breaks, and sports.</p><div class="dw31-filters" id="dw31CalFilters"><button data-cat="all" class="active">ALL</button><button data-cat="school">🏫 SCHOOL</button><button data-cat="sports">🏐 SPORTS</button><button data-cat="testing">🧪 TESTING</button><button data-cat="break">🌴 BREAKS</button><button data-cat="holiday">🇺🇸 HOLIDAYS</button></div><div class="dw31-list" id="dw31Calendar"></div></div>
     </div>
   </section>
 
@@ -2637,27 +2672,27 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
   <!-- DAILY MISSIONS -->
   <section class="portal-view" id="view-quests" data-page="quests">
-    <div class="section-title"><div><h2>📜 Daily Missions</h2><p>Your daily schoolwork hub: Morning Bell Work, Exit Quest, and class reading.</p></div></div>
-    <div class="frame bevel daily-access-banner" id="dailyAccessNotice">
+    <header class="page-title"><div class="title-icon">📜</div><div><small>DAILY MISSIONS</small><h1>Your quest path</h1><p>Finish the glowing mission first. Then choose a bonus adventure.</p></div></header>
+    <div class="frame bevel daily-access-banner mission-banner glass-card" id="dailyAccessNotice">
       <div><b>🔒 MORNING REQUIREMENT</b><span id="dailyAccessNoticeText">Finish today’s Daily Work or Level-Up Morning Challenge to unlock Academic Games and Scribe Arena.</span></div>
       <div class="daily-access-count"><strong id="dailyDaysCompleted">0</strong><small>DAYS COMPLETE</small></div>
     </div>
-    <div class="feature-grid quests-grid">
-      <article class="frame bevel feature-card quest-card">
+    <div class="feature-grid quests-grid mission-path">
+      <article class="frame bevel feature-card quest-card mission-card gold">
         <div class="feature-icon">🌅</div>
         <h3>Today’s Daily Quest</h3>
         <p>Finish today’s Morning Work and Exit Quest.</p>
         <a class="btn" href="daily-quest.html">📜 START TODAY’S WORK</a>
       </article>
 
-      <article class="frame bevel feature-card quest-card" id="curriculumQuestCard">
+      <article class="frame bevel feature-card quest-card mission-card purple" id="curriculumQuestCard">
         <div class="feature-icon">🐉</div>
         <h3>Curriculum Quest</h3>
         <p>Complete required lessons, videos, and unfinished missions.</p>
         <a class="btn" href="curriculum-quest.html">🐉 ENTER CURRICULUM QUEST</a>
       </article>
 
-      <article class="frame bevel feature-card quest-card" id="levelUpMissionCard">
+      <article class="frame bevel feature-card quest-card mission-card cyan" id="levelUpMissionCard">
         <div class="feature-icon">⭐</div>
         <h3>Level-Up Challenge</h3>
         <p id="levelUpMissionText">Ready for more? Try work one level above today’s mission.</p>
@@ -2729,7 +2764,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
       <span>⭐</span><div><h3>Request Teacher Review</h3><p>Finished your work and think Mr. Evans missed a positive choice? Send one quiet review request.</p></div>
       <div><div class="request-row"><select id="recognitionReason"><option>Great Effort</option><option>Ready &amp; Working</option><option>Kindness</option><option>Leadership</option><option>Helped Someone</option><option>Academic Win</option><option>Other Positive Choice</option></select><button id="recognitionRequestBtn" type="button">REQUEST REVIEW</button></div><p id="recognitionRequestStatus"></p></div>
     </section>
-    <section class="frame bevel student-grade-summary" id="studentGradeSummary">
+    <section class="frame bevel student-grade-summary grade-strip" id="studentGradeSummary">
       <div class="overall"><small>CURRENT GRADE</small><b id="studentOverallGrade">—</b> <span id="studentLetterGrade"></span></div>
       <div><small>DAILY QUEST</small><b id="studentDailyGrade">—</b></div>
       <div><small>CURRICULUM QUEST</small><b id="studentCurriculumGrade">—</b></div>
@@ -2742,8 +2777,8 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
   <!-- LEADERBOARD -->
   <section class="portal-view" id="view-leaderboard" data-page="leaderboard">
-    <div class="section-title"><div><h2>🏆 Leaderboard</h2><p>Weekly competition and the permanent Dragonswood Hall of Fame.</p></div></div>
-  <div class="lb-periodbar"><button id="studentWeeklyBoard" class="active" type="button">📅 THIS WEEK</button><button id="studentAllTimeBoard" type="button">🏰 ALL TIME</button><div class="lb-prize-note">Weekly Top 5 earn one reward each school day • maximum 5 days</div></div>
+    <header class="page-title"><div class="title-icon">🏆</div><div><small>LEADERBOARDS</small><h1>Celebrate class champions</h1><p>See effort, growth, and teamwork—not just who finished first.</p></div></header>
+  <div class="lb-periodbar leader-toolbar"><div><button id="studentWeeklyBoard" class="active" type="button">📅 THIS WEEK</button><button id="studentAllTimeBoard" type="button">🏰 ALL TIME</button></div><div class="lb-prize-note">⭐ Weekly Top 5 earn one reward each school day • maximum 5 days</div></div>
   <div class="lb-filterbar" id="leaderboardFilters">
       <button data-lb-filter="all" class="active">ALL</button>
       <button data-lb-filter="math">➗ MATH</button>
@@ -2791,9 +2826,37 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
         <div class="inventory-grid-v23" id="journalInventory"></div>
       </article>
     </div>
-  </section>
+</section>
 
 </section>
+
+<script id="dragonswood-student-v2-shell-bridge">
+(function(){
+  function text(id,fallback){return document.getElementById(id)?.textContent?.trim()||fallback}
+  function syncIdentity(){
+    const name=text('displayName','Adventurer'),level=text('levelShield','1');
+    const v2Name=document.getElementById('studentV2Name'),v2Level=document.getElementById('studentV2Level'),initial=document.getElementById('studentV2Initial');
+    if(v2Name)v2Name.textContent=name;if(v2Level)v2Level.textContent=level;if(initial)initial.textContent=(name[0]||'A').toUpperCase();
+    const greeting=document.getElementById('studentV2Greeting');if(greeting)greeting.textContent=`Welcome back, ${name.split(/\s+/)[0]}!`;
+    const nextTitle=document.getElementById('studentV2NextTitle'),nextText=document.getElementById('studentV2NextText');
+    if(window.DWDailyAccessUnlocked===true){if(nextTitle)nextTitle.textContent='Choose your next adventure';if(nextText)nextText.textContent='Morning Work is complete. Continue Curriculum Quest, finish your Exit Quest, or choose an unlocked learning adventure.'}
+  }
+  function closeMenu(){const nav=document.getElementById('portalNav'),menu=document.getElementById('studentV2Menu'),scrim=document.getElementById('studentV2Scrim');nav?.classList.remove('open');menu?.setAttribute('aria-expanded','false');if(scrim)scrim.hidden=true}
+  function init(){
+    const tools=document.getElementById('topStats'),target=document.getElementById('studentV2Tools');
+    if(tools&&target)target.insertBefore(tools,target.firstChild);
+    const menu=document.getElementById('studentV2Menu'),nav=document.getElementById('portalNav'),scrim=document.getElementById('studentV2Scrim');
+    menu?.addEventListener('click',()=>{const opening=!nav?.classList.contains('open');nav?.classList.toggle('open',opening);menu.setAttribute('aria-expanded',String(opening));if(scrim)scrim.hidden=!opening});
+    scrim?.addEventListener('click',closeMenu);nav?.addEventListener('click',e=>{if(e.target.closest('button'))closeMenu()});
+    const readPage=()=>{document.querySelector('.dw-narrator-launcher')?.click();setTimeout(()=>document.getElementById('dwNarratorReadPage')?.click(),0)};
+    document.getElementById('studentReadPageButton')?.addEventListener('click',readPage);document.querySelectorAll('[data-v2-read-page]').forEach(button=>button.addEventListener('click',readPage));
+    document.getElementById('studentV2Profile')?.addEventListener('click',()=>document.getElementById('profileBtn')?.click());
+    document.getElementById('studentV2SignOut')?.addEventListener('click',()=>document.getElementById('signOutBtn')?.click());
+    syncIdentity();new MutationObserver(syncIdentity).observe(document.body,{subtree:true,childList:true,characterData:true});
+  }
+  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init,{once:true}):init();
+})();
+</script>
 
 </main>
 <div id="dwBlockingPassOverlay" class="dw-pass-lock-overlay" aria-live="assertive">
@@ -2864,11 +2927,11 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   },true);
 
   window.addEventListener("hashchange",function(){
-    show((location.hash||"#home").slice(1),false);
+    const target=(location.hash||"#home").slice(1);show(target==="passes"?"home":target,false);if(target==="passes")setTimeout(()=>document.getElementById('headerPassToggle')?.click(),80);
   });
 
   document.addEventListener("DOMContentLoaded",function(){
-    show((location.hash||"#home").slice(1),false);
+    const target=(location.hash||"#home").slice(1);show(target==="passes"?"home":target,false);if(target==="passes")setTimeout(()=>document.getElementById('headerPassToggle')?.click(),80);
   });
 })();
 </script>
@@ -5189,8 +5252,8 @@ function leaderboardCategory(s){
 function renderBoards(){
  const eligible=scores.filter(s=>(studentLeaderboardPeriod!=="weekly"||studentScoreDate(s)>=studentWeekKey())&&(leaderboardFilter==="all"||leaderboardCategory(s)===leaderboardFilter)),players=new Map();
  eligible.forEach(s=>{const sid=String(s.uid||s.studentId||s.studentEmail||leaderboardName(s)).trim().toLowerCase(),assignment=String(s.assignmentId||`${s.gameName||s.game||"Game"}:${s.day||""}:${s.session||s.activityName||""}`),key=`${sid}|||${assignment}`;if(!players.has(sid))players.set(sid,{record:s,best:new Map(),total:0});const row=players.get(sid),old=row.best.get(key);if(!old||Number(s.score||0)>Number(old.score||0))row.best.set(key,s)});
- players.forEach(row=>row.total=[...row.best.values()].reduce((n,s)=>n+Number(s.score||0),0));const top=[...players.values()].sort((a,b)=>b.total-a.total||b.best.size-a.best.size).slice(0,10),title=studentLeaderboardPeriod==="weekly"?"📅 This Week":"🏰 All-Time Hall of Fame";
- $("boards").innerHTML=top.length?`<div class="board frame bevel" style="grid-column:1/-1"><h3>${title}</h3>${top.map((row,i)=>{const s=row.record,rewarded=studentLeaderboardRewards.some(r=>String(r.studentId||"")===String(s.studentId||s.uid||"")&&r.dateKey===studentPhoenixDayKey());return `<div class="rank"><div class="place">${i+1}</div><div class="miniavatar">${esc(s.avatarEmoji||"🐉")}</div><div class="lb-main"><div>${esc(leaderboardName(s))}</div><span class="lb-detail">${row.best.size} qualifying activit${row.best.size===1?"y":"ies"}</span>${studentLeaderboardPeriod==="weekly"&&i<5?`<span class="lb-prize">🎁 WEEKLY PRIZE ZONE${rewarded?" • REWARDED TODAY ✓":""}</span>`:""}</div><div class="score">${row.total.toLocaleString()}<span class="lb-scoretype">TOTAL POINTS</span></div></div>`}).join("")}</div>`:'<div class="board frame bevel"><h3>No records yet</h3><p class="muted">No scores match this period and category yet.</p></div>';
+ players.forEach(row=>row.total=[...row.best.values()].reduce((n,s)=>n+Number(s.score||0),0));const ranked=[...players.values()].sort((a,b)=>b.total-a.total||b.best.size-a.best.size),top=ranked.slice(0,10),title=studentLeaderboardPeriod==="weekly"?"This Week’s Adventurers":"All-Time Hall of Fame",currentId=String(user?.uid||"").toLowerCase(),myIndex=ranked.findIndex(row=>String(row.record.uid||row.record.studentId||"").toLowerCase()===currentId),myRow=myIndex>=0?ranked[myIndex]:null;
+ $("boards").innerHTML=top.length?`<section class="leader-grid"><article class="board frame bevel glass-card leaderboard"><div class="board-title"><span>✨</span><div><small>${studentLeaderboardPeriod==="weekly"?"OVERALL XP":"DRAGONSWOOD LEGACY"}</small><h2>${title}</h2></div></div>${top.map((row,i)=>{const s=row.record,rewarded=studentLeaderboardRewards.some(r=>String(r.studentId||"")===String(s.studentId||s.uid||"")&&r.dateKey===studentPhoenixDayKey()),isYou=String(s.uid||s.studentId||"").toLowerCase()===currentId,art=s.avatarArt||s.appearanceArt||"";return `<div class="rank leader-row${isYou?" you":""}"><div class="place">${i<3?["🥇","🥈","🥉"][i]:`#${i+1}`}</div><div class="miniavatar leader-avatar">${art?`<img src="${esc(art)}" alt="${esc(leaderboardName(s))} avatar">`:esc(s.avatarEmoji||"🐉")}</div><div class="lb-main"><div>${esc(leaderboardName(s))}${isYou?" <small>(You!)</small>":""}</div><span class="lb-detail">${row.best.size} qualifying activit${row.best.size===1?"y":"ies"}</span>${studentLeaderboardPeriod==="weekly"&&i<5?`<span class="lb-prize">🎁 WEEKLY PRIZE ZONE${rewarded?" • REWARDED TODAY ✓":""}</span>`:""}</div><div class="score">${row.total.toLocaleString()}<span class="lb-scoretype">TOTAL POINTS</span></div></div>`}).join("")}</article><aside class="leader-side"><article class="glass-card your-rank"><span>🐉</span><small>YOUR RANK</small><h2>${myIndex>=0?`#${myIndex+1}`:"—"}</h2><p>${myRow?`${myRow.total.toLocaleString()} points across ${myRow.best.size} activities.`:"Complete a scored adventure to join the board."}</p></article><article class="glass-card shoutouts"><small>MORE WAYS TO SHINE</small><h2>🌟 Class shout-outs</h2><p><span>💛</span><b>Kindness</b><small>Teacher recognition celebrates helpful choices.</small></p><p><span>🔥</span><b>Growth</b><small>Your best attempt improves your record.</small></p><p><span>📚</span><b>Consistency</b><small>Keep learning throughout the week.</small></p></article></aside></section>`:'<div class="board frame bevel glass-card"><h3>No records yet</h3><p class="muted">No scores match this period and category yet.</p></div>';
  glitterizeStaticIcons();
 }
 

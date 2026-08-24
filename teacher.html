@@ -1090,7 +1090,7 @@ const app=initializeApp(firebaseConfig,"DragonswoodTeacherPortal"),
       auth=getAuth(app),
       db=getFirestore(app),
       $=id=>document.getElementById(id);
-let points=0,history=[],rewards=[],scores=[],results=[],dailyQuestProgress=[],curriculumProgress=[],curriculumAttempts=[],gradebookGrades=[],gradebookAssignmentSettings=[],leaderboardRewards=[],bossLootRows=[],gradebookSettings={daily:40,curriculum:40,reading:20,attemptRule:"first_best_average"},students=[],shopItems=[],purchases=[],bathroomStatuses=[],bathroomRequests=[],snackStatuses=[],snackRequests=[],pointRequests=[],genericPassRequests=[],passHistory=[],classJobsConfigV29={},jobWeeksV29=[],classScheduleV29={},calendarEventsV29=[],recessState={points:0,goal:10,dateKey:""},petGoalState={points:0,goal:250},tripGoalState={points:0,goal:750},universalPointState={points:0};
+let points=0,history=[],rewards=[],scores=[],results=[],dailyQuestProgress=[],curriculumProgress=[],curriculumAttempts=[],gradebookGrades=[],gradebookAssignmentSettings=[],leaderboardRewards=[],bossLootRows=[],physicalPrizeDrops=[],gradebookSettings={daily:40,curriculum:40,reading:20,attemptRule:"first_best_average"},students=[],shopItems=[],purchases=[],bathroomStatuses=[],bathroomRequests=[],snackStatuses=[],snackRequests=[],pointRequests=[],genericPassRequests=[],passHistory=[],classJobsConfigV29={},jobWeeksV29=[],classScheduleV29={},calendarEventsV29=[],recessState={points:0,goal:10,dateKey:""},petGoalState={points:0,goal:250},tripGoalState={points:0,goal:750},universalPointState={points:0};
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
 const AVATAR_EMOJI={"dragon-purple":"🐉","dragon-green":"🐲","knight":"🛡️","wizard":"🧙","witch":"🧙‍♀️","princess":"👸","prince":"🤴","ranger":"🏹","phoenix":"🔥","wolf":"🐺","owl":"🦉","crystal":"🔮"};
 const DRAGONSWOOD_XP_THRESHOLDS=[0,200,450,750,1100,1500,1950,2450,3000,3600,4250,4950,5700,6500,7350,8250,9200,10200,11100,12000];
@@ -1281,6 +1281,7 @@ function listen(){
  onSnapshot(collection(db,"curriculumAttempts"),s=>{curriculumAttempts=s.docs.map(d=>({id:d.id,...d.data()}));renderGradebook()},e=>console.warn("curriculum attempts listener",e));
  onSnapshot(collection(db,"leaderboardRewards"),s=>{leaderboardRewards=s.docs.map(d=>({id:d.id,...d.data()}));renderScores()},e=>console.warn("leaderboard rewards",e));
  onSnapshot(collection(db,"bossLoot"),s=>{bossLootRows=s.docs.map(d=>({id:d.id,...d.data()}));const sid=$("sid")?.value;if(sid)dwRenderRpgSnapshot(students.find(x=>x.id===sid))},e=>console.warn("boss loot",e));
+ onSnapshot(collection(db,"physicalPrizeDrops"),s=>{physicalPrizeDrops=s.docs.map(d=>({id:d.id,...d.data()}));const sid=$("sid")?.value;if(sid)dwRenderRpgSnapshot(students.find(x=>x.id===sid))},e=>console.warn("physical prize drops",e));
  onSnapshot(doc(db,"classData","gradebookSettings"),s=>{if(s.exists())gradebookSettings={...gradebookSettings,...s.data()};renderGradebook()},e=>console.warn("gradebook settings",e));
  onSnapshot(collection(db,"students"),s=>{students=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.firstName||"").localeCompare(String(b.firstName||"")));renderStudents();renderShop();renderScores();renderGradebook()});
 onSnapshot(collection(db,"bathroomStatus"),s=>{bathroomStatuses=s.docs.map(d=>({id:d.id,...d.data()}));renderLiveRequests()},e=>console.warn("bathroomStatus listener",e));
@@ -2629,6 +2630,7 @@ function dwRenderRpgSnapshot(st){
   const gear=(R.items||[]).filter(i=>!i.appearance&&!i.egg&&owned.indexOf(i.id)>=0);
   const petObjs=[...(R.pets||[]),...(R.prestigePets||[])].filter(x=>pets.indexOf(x.id)>=0);
   const pendingLoot=bossLootRows.filter(x=>x.studentId===st.id&&x.rareGoal!=="none"&&x.rareGoalStatus==="pending_teacher_approval");
+  const studentPrizes=physicalPrizeDrops.filter(x=>x.studentId===st.id).sort((a,b)=>String(b.dateKey||"").localeCompare(String(a.dateKey||"")));
 
   const row=(img,label,on)=>`<div class="rs-row">${img?`<img src="${img}" alt="">`:""}`+
     `<span class="${on?"rs-on":""}">${label}</span></div>`;
@@ -2639,6 +2641,7 @@ function dwRenderRpgSnapshot(st){
           :'<div class="rs-none">No class chosen yet</div>')+
       row("",`Boss wins: ${Number(st.bossWins||0)}`,false)+
       row("",`Eggs: ${Number(st.eggInventory||0)}`,false)+
+      row("",`Pet Tokens: ${Number(st.petTokens||0)}`,false)+
       row("",`Day credit: ${Number(st.legacyDayCredit||0)}`,false)+
     `</div>`+
     `<div class="rs-block"><h5>Appearance packs (${packs.length}/3)</h5>`+
@@ -2653,6 +2656,9 @@ function dwRenderRpgSnapshot(st){
     `<div class="rs-block"><h5>Pending rare boss finds (${pendingLoot.length})</h5>`+
       (pendingLoot.length?pendingLoot.map(x=>`<div class="rs-row"><span>${x.rareGoal==="classPet"?"🐾 Class Pet":"🚌 Field Trip"} • ${esc(x.dateKey||"")}</span><button type="button" class="mini" data-approve-boss-loot="${esc(x.id)}">APPROVE +25</button></div>`).join(""):'<div class="rs-none">No finds awaiting review</div>')+
     `</div>`+
+    `<div class="rs-block"><h5>Rare real-world passes (${studentPrizes.length})</h5>`+
+      (studentPrizes.length?studentPrizes.map(x=>{const q=x.prizeType==="recess"?"🌤️ Recess Pass":x.prizeType==="icecream"?"🍦 Ice Cream Pass":"🍱 Lunch Pass";return`<div class="rs-row"><span>${q} • ${esc(x.dateKey||"")} • ${esc(x.status||"earned")}</span>${x.status==="requested"?`<button type="button" class="mini" data-redeem-real-prize="${esc(x.id)}">MARK REDEEMED</button>`:""}</div>`}).join(""):'<div class="rs-none">No real-world passes earned</div>')+
+    `</div>`+
     `<div class="rs-block"><h5>Equipment (${gear.length})</h5>`+
       (gear.length?gear.map(i=>row(i.art,`${i.name}`,
           st.rpgEquipped&&st.rpgEquipped[i.slot]===i.id)).join("")
@@ -2660,7 +2666,10 @@ function dwRenderRpgSnapshot(st){
       (gear.length?'<div class="rs-none">Green = equipped</div>':"")+
     `</div>`;
   box.querySelectorAll("[data-approve-boss-loot]").forEach(button=>button.onclick=()=>approveBossGoalFind(button.dataset.approveBossLoot));
+  box.querySelectorAll("[data-redeem-real-prize]").forEach(button=>button.onclick=()=>redeemRealPrize(button.dataset.redeemRealPrize));
 }
+
+async function redeemRealPrize(prizeId){const row=physicalPrizeDrops.find(x=>x.id===prizeId);if(!row||row.status!=="requested")return;if(!confirm(`Confirm that ${row.studentName||"this student"} has received this one-time reward?`))return;await setDoc(doc(db,"physicalPrizeDrops",prizeId),{status:"redeemed",redeemedAt:serverTimestamp(),redeemedBy:auth.currentUser?.uid||"teacher"},{merge:true});}
 
 async function approveBossGoalFind(lootId){
   const lootRef=doc(db,"bossLoot",lootId);

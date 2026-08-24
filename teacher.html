@@ -39,7 +39,7 @@ select option,select optgroup{background:#080718;color:#fff}
 .panel{display:none}.panel.active{display:block}.command-title{padding:12px 15px;margin-bottom:10px}.command-title h2{font-size:28px;margin:0;color:#e0a2ff}.command-title p{margin:3px 0}
 .card{padding:15px;border-radius:9px;background:linear-gradient(145deg,#0d0a23,#070617);border:1px solid rgba(244,201,93,.35);box-shadow:0 10px 24px rgba(0,0,0,.25)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.big{font-family:Georgia,serif;font-size:48px;color:var(--gold2)}.meter{height:19px;background:#030510;border:1px solid rgba(2,204,254,.2);border-radius:999px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#6f20d4,#d74dff,var(--cyan),var(--gold2));background-size:220% 100%;animation:shimmer 6s linear infinite}
-.actions{display:flex;gap:7px;flex-wrap:wrap}.reason{flex:1;min-width:170px}.titlebar{display:flex;justify-content:space-between;align-items:end;margin:16px 0 8px}.titlebar h2{margin:0;color:#e0a2ff}.titlebar p{margin:3px 0}.groupbox{display:grid;grid-template-columns:1.2fr .7fr .6fr 1.2fr;gap:9px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:12px;font-weight:900}.student-table,table{width:100%;border-collapse:collapse;font-size:12px}.student-table th,th{padding:9px;background:linear-gradient(90deg,#27104b,#08283b);color:var(--gold2);text-align:left;border-bottom:1px solid rgba(244,201,93,.24)}.student-table td,td{padding:9px;border-bottom:1px solid rgba(255,255,255,.05)}.student-avatar{font-size:25px}.badge{padding:4px 7px;border-radius:999px;background:#241044;color:#f2ddff}.list{display:grid;gap:7px}.item{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;padding:9px;border:1px solid rgba(101,45,193,.32);background:#0a081d}.recess-control{display:grid;grid-template-columns:1.2fr .8fr;gap:10px;margin-top:12px}.modal{position:fixed;inset:0;background:rgba(1,2,8,.9);z-index:50;display:grid;place-items:center;padding:20px}.modalbox{width:min(680px,100%);max-height:92vh;overflow:auto;padding:20px}
+.actions{display:flex;gap:7px;flex-wrap:wrap}.reason{flex:1;min-width:170px}.titlebar{display:flex;justify-content:space-between;align-items:end;margin:16px 0 8px}.titlebar h2{margin:0;color:#e0a2ff}.titlebar p{margin:3px 0}.groupbox{display:grid;grid-template-columns:1.2fr .7fr .6fr 1.2fr;gap:9px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:12px;font-weight:900}.student-table,table{width:100%;border-collapse:collapse;font-size:12px}.student-table th,th{padding:9px;background:linear-gradient(90deg,#27104b,#08283b);color:var(--gold2);text-align:left;border-bottom:1px solid rgba(244,201,93,.24)}.student-table td,td{padding:9px;border-bottom:1px solid rgba(255,255,255,.05)}.student-avatar{font-size:25px}.badge{padding:4px 7px;border-radius:999px;background:#241044;color:#f2ddff}.list{display:grid;gap:7px}.item{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;padding:9px;border:1px solid rgba(101,45,193,.32);background:#0a081d}.modal{position:fixed;inset:0;background:rgba(1,2,8,.9);z-index:50;display:grid;place-items:center;padding:20px}.modalbox{width:min(680px,100%);max-height:92vh;overflow:auto;padding:20px}
 @media(max-width:900px){.tabs{grid-template-columns:repeat(2,1fr)!important}.grid,.recess-control{grid-template-columns:1fr}.groupbox{grid-template-columns:1fr 1fr}}
 </style>
 <style id="dragonswood-v15-background">
@@ -200,58 +200,11 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   gap:12px;
 }
 
-.recess-main-card{
-  min-height:310px;
-  padding:24px;
-  background:
-    radial-gradient(circle at 18% 20%,rgba(166,76,255,.14),transparent 28%),
-    linear-gradient(135deg,rgba(42,11,86,.47),rgba(2,36,53,.43)) !important;
-}
-
-.recess-kicker{
-  color:#d791ff;
-  font-size:11px;
-  font-weight:900;
-  letter-spacing:1.1px;
-}
-
-.recess-number{
-  font-family:Georgia,"Times New Roman",serif;
-  font-size:82px;
-  line-height:1;
-  color:var(--gold2);
-  margin:8px 0 14px;
-  text-shadow:0 0 18px rgba(244,201,93,.22);
-}
-
 .large-meter{height:24px}
-
-.recess-status{
-  margin-top:10px;
-  color:#f5edff;
-  font-weight:800;
-}
-
-.recess-award-buttons{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
-  margin-top:12px;
-}
 
 .recess-award-buttons button{
   min-height:48px;
   font-size:17px;
-}
-
-.recess-settings-card{padding:22px}
-
-.recess-date-box{
-  margin-top:18px;
-  padding:12px;
-  border:1px solid rgba(244,201,93,.35);
-  background:rgba(12,7,33,.44);
-  border-radius:8px;
 }
 .recess-date-box small{display:block}
 .recess-date-box b{display:block;color:var(--gold2);margin-top:3px}
@@ -506,7 +459,6 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 @media(max-width:950px){.goal-command-grid-v21{grid-template-columns:1fr}.universal-command-v21{grid-template-columns:1fr}}
 </style>
 <style id="dragonswood-v23-teacher-items">
-.catalog-toolbar{display:flex;gap:7px;flex-wrap:wrap}
 .shop-item-card .rarity-teacher{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.7px}
 .rarity-teacher.common{color:#bcc3d0}.rarity-teacher.uncommon{color:#61e29a}.rarity-teacher.rare{color:#5ab7ff}.rarity-teacher.epic{color:#c17cff}.rarity-teacher.legendary{color:#ffd266}
 .student-gear-admin{margin-top:10px;padding:10px;border:1px solid rgba(101,45,193,.3);border-radius:8px;background:rgba(6,6,25,.42)}
@@ -518,10 +470,6 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 <style id="v28-live-requests">.live-request-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.live-request-box{padding:14px!important}.live-request-list{display:grid;gap:7px;margin-top:9px}.live-request-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:9px;border:1px solid rgba(101,45,193,.35);background:#09081d;border-radius:8px}.live-request-item.out{border-color:rgba(82,239,177,.55)}.live-request-item b{color:#fff0a6}.live-request-item small{display:block;color:#cbbfe0}.live-actions{display:flex;gap:5px;flex-wrap:wrap}.live-actions button{padding:7px 9px}@media(max-width:800px){.live-request-grid{grid-template-columns:1fr}.live-request-item{grid-template-columns:1fr}}
 </style>
 <style id="dw-student-checkbox-style">
-.student-check-panel{
-  margin-top:12px;padding:12px;border:1px solid rgba(129,92,246,.45);
-  border-radius:12px;background:rgba(7,10,30,.48)
-}
 .student-check-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:9px}
 .student-check-head b{color:#ffe68b;margin-right:auto}
 .student-check-head button{padding:6px 9px;font-size:11px}
@@ -550,7 +498,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .v29-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.v29-form .full{grid-column:1/-1}.v29-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
 @media(max-width:900px){.v29-grid{grid-template-columns:1fr}.v29-form{grid-template-columns:1fr}}
 </style>
-<style id="dw-v31-teacher-style">\n.command-tabs{overflow-x:auto}.command-tabs .tab{min-width:130px}.dw31t-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:12px}.dw31t-row{padding:9px;border:1px solid rgba(101,45,193,.3);border-radius:9px;background:rgba(5,7,23,.5);margin:6px 0}.dw31t-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.dw31t-form .full{grid-column:1/-1}.dw31t-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}@media(max-width:900px){.dw31t-grid{grid-template-columns:1fr}.dw31t-form{grid-template-columns:1fr}}\n</style>
+<style id="dw-v31-teacher-style">\n.command-tabs{overflow-x:auto}.command-tabs .tab{min-width:130px}.dw31t-row{padding:9px;border:1px solid rgba(101,45,193,.3);border-radius:9px;background:rgba(5,7,23,.5);margin:6px 0}.dw31t-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.dw31t-form .full{grid-column:1/-1}.dw31t-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}@media(max-width:900px){.dw31t-grid{grid-template-columns:1fr}.dw31t-form{grid-template-columns:1fr}}\n</style>
 <style id="dw-poll-picker-teacher-style">
 .poll-admin-grid,.picker-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .poll-choice-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin:6px 0}
@@ -568,7 +516,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .pass-master-card{margin:0 0 12px;padding:14px!important;border:1px solid rgba(2,204,254,.45)!important}
 .pass-master-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
 #passBlackoutBtn.blackout-on{background:linear-gradient(90deg,#8d123a,#cf315a)!important;border-color:#ff91ad!important}
-.generic-pass-live{display:grid;gap:7px;margin-top:10px}.generic-pass-row{padding:8px;border:1px solid rgba(101,45,193,.28);border-radius:8px}
+.generic-pass-live{display:grid;gap:7px;margin-top:10px}
 .job-by-role-row{display:grid;grid-template-columns:minmax(180px,1fr) minmax(190px,1fr) 95px;gap:8px;align-items:center;padding:9px;border:1px solid rgba(101,45,193,.28);border-radius:8px;background:rgba(5,7,23,.48)}
 @media(max-width:800px){.pass-master-row,.job-by-role-row{grid-template-columns:1fr}}
 </style>
@@ -635,10 +583,8 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 .command-tabs .tab:hover{border-color:#ffe36d!important;background:linear-gradient(90deg,#3d167e,#0b6080)!important}.command-tabs .tab.active{font-size:13px!important;box-shadow:0 0 18px rgba(2,204,254,.24)!important}
 .reward-purpose{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;margin:0 0 12px;padding:11px 13px;border-radius:12px;border:1px solid rgba(2,204,254,.38);background:rgba(2,204,254,.07)}.reward-purpose>span{font-size:27px}.reward-purpose p{margin:2px 0;font-size:11px}
 .teacher-rank-avatar{width:46px;height:46px;object-fit:contain;border-radius:12px;padding:3px;background:linear-gradient(145deg,#1c123c,#09253a);border:1px solid #8665c2;filter:drop-shadow(0 4px 7px rgba(0,0,0,.4))}.teacher-rank{grid-template-columns:34px 48px 1fr auto auto!important}.teacher-rank small{display:block;margin-top:2px}
-.gradebook-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:0 0 12px}.gradebook-summary>div{padding:12px;border-radius:12px;border:1px solid #584482;background:linear-gradient(145deg,rgba(35,14,69,.85),rgba(5,29,45,.78))}.gradebook-summary small{display:block;font-size:9px;letter-spacing:.7px}.gradebook-summary b{display:block;margin-top:3px;font-size:24px;color:#ffe58a}
-.gradebook-toolbar{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;margin-bottom:12px}.gradebook-toolbar label{display:block;font-size:9px;font-weight:900;color:#d8c9e7;margin-bottom:4px}.gradebook-table-wrap{max-height:62vh;overflow:auto;border:1px solid #4e3b76;border-radius:12px}.gradebook-table{min-width:1040px}.gradebook-table thead{position:sticky;top:0;z-index:3}.gradebook-student{display:flex;align-items:center;gap:8px}.gradebook-student img{width:38px;height:38px;object-fit:contain;border-radius:9px;background:#0a0b21;border:1px solid #5a4388}.gradebook-grade{font-size:18px;font-weight:1000}.gradebook-grade.a{color:#71eda5}.gradebook-grade.b{color:#8bd9ff}.gradebook-grade.c{color:#ffe178}.gradebook-grade.d{color:#ffb060}.gradebook-grade.f{color:#ff7f9c}.gradebook-score-input{width:76px;padding:7px!important}.gradebook-status{min-width:110px;padding:7px!important}.gradebook-note{min-width:145px;padding:7px!important}.gradebook-save{padding:7px 9px!important}.gradebook-assignment-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:9px;margin-bottom:12px}.gradebook-assignment-card{padding:11px;border:1px solid #574182;border-radius:12px;background:rgba(7,11,31,.82)}.gradebook-assignment-card h4{margin:0 0 5px;color:#ffe58a}.gradebook-assignment-card small{display:block}.gradebook-assignment-card b{color:#8eeeff}.raw-results-details{margin-top:12px;border:1px solid #49376d;border-radius:11px;padding:9px}.raw-results-details summary{cursor:pointer;color:#d9c7f0;font-weight:900}
-@media(max-width:900px){.gradebook-summary{grid-template-columns:repeat(2,1fr)}.gradebook-toolbar{grid-template-columns:1fr}.teacher-rank{grid-template-columns:34px 42px 1fr auto!important}.teacher-rank .danger{grid-column:4}.teacher-rank-avatar{width:40px;height:40px}}
-.gradebook-assignment-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:9px;margin-bottom:12px}.gradebook-assignment-card{text-align:left}.gradebook-assignment-card small,.gradebook-assignment-card b,.gradebook-assignment-card span{display:block}.gradebook-assignment-card b{margin:4px 0;color:#ffe58a}.gradebook-assignment-card span{font-size:10px;color:#8eeeff}.raw-results{margin-top:12px;border:1px solid #49376d;border-radius:11px;padding:9px}.raw-results summary{cursor:pointer;color:#d9c7f0;font-weight:900}.grade-letter{font-size:18px;font-weight:1000;color:#ffe58a}
+.gradebook-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:0 0 12px}.gradebook-summary>div{padding:12px;border-radius:12px;border:1px solid #584482;background:linear-gradient(145deg,rgba(35,14,69,.85),rgba(5,29,45,.78))}.gradebook-summary small{display:block;font-size:9px;letter-spacing:.7px}.gradebook-summary b{display:block;margin-top:3px;font-size:24px;color:#ffe58a}.gradebook-toolbar label{display:block;font-size:9px;font-weight:900;color:#d8c9e7;margin-bottom:4px}.gradebook-table thead{position:sticky;top:0;z-index:3}.gradebook-student img{width:38px;height:38px;object-fit:contain;border-radius:9px;background:#0a0b21;border:1px solid #5a4388}.gradebook-grade.a{color:#71eda5}.gradebook-grade.b{color:#8bd9ff}.gradebook-grade.c{color:#ffe178}.gradebook-grade.d{color:#ffb060}.gradebook-grade.f{color:#ff7f9c}.gradebook-assignment-card h4{margin:0 0 5px;color:#ffe58a}.gradebook-assignment-card small{display:block}.gradebook-assignment-card b{color:#8eeeff}.raw-results-details summary{cursor:pointer;color:#d9c7f0;font-weight:900}
+@media(max-width:900px){.gradebook-summary{grid-template-columns:repeat(2,1fr)}.gradebook-toolbar{grid-template-columns:1fr}.teacher-rank{grid-template-columns:34px 42px 1fr auto!important}.teacher-rank .danger{grid-column:4}.teacher-rank-avatar{width:40px;height:40px}}.gradebook-assignment-card small,.gradebook-assignment-card b,.gradebook-assignment-card span{display:block}.gradebook-assignment-card b{margin:4px 0;color:#ffe58a}.gradebook-assignment-card span{font-size:10px;color:#8eeeff}.raw-results{margin-top:12px;border:1px solid #49376d;border-radius:11px;padding:9px}.raw-results summary{cursor:pointer;color:#d9c7f0;font-weight:900}
 /* v56.9 student-first gradebook */
 .gb-controls{display:grid;grid-template-columns:1.2fr repeat(2,minmax(130px,.5fr)) auto;gap:8px;margin:0 0 8px}.gb-sort-header,.gb-student>summary{display:grid;grid-template-columns:52px minmax(150px,1fr) 95px repeat(3,105px) 90px 90px;gap:9px;align-items:center}.gb-sort-header{padding:0 11px 6px;color:#d9cfea}.gb-sort-header .gb-sort-spacer{width:52px}.gb-sort-button{appearance:none;border:0!important;background:transparent!important;box-shadow:none!important;padding:5px 2px!important;color:#d9cfea!important;font:800 10px/1.15 inherit!important;letter-spacing:.035em;text-transform:uppercase;text-align:left;white-space:normal;cursor:pointer}.gb-sort-button:hover,.gb-sort-button:focus-visible{color:#8eeeff!important;text-shadow:0 0 8px rgba(69,221,255,.45)}.gb-sort-arrow{display:inline-block;min-width:12px;margin-left:3px;color:#8eeeff;font-size:12px}.gb-sort-button:not(.active) .gb-sort-arrow{opacity:.55}.gb-student-list{display:grid;gap:9px}.gb-student{border:1px solid #4e3b76;border-radius:13px;background:linear-gradient(145deg,rgba(13,12,43,.94),rgba(3,28,43,.9));overflow:hidden}.gb-student>summary{list-style:none;padding:11px;cursor:pointer}.gb-student>summary::-webkit-details-marker{display:none}.gb-avatar{width:48px;height:48px;object-fit:contain;border-radius:12px;background:#0a0b21;border:1px solid #7258aa}.gb-name b{display:block;font-size:15px}.gb-name small,.gb-metric small{display:block;color:#bfb4d1;font-size:9px}.gb-overall{font-size:24px;font-weight:1000;color:#ffe376}.gb-cat{font-weight:900;color:#8eeeff}.gb-missing{color:#ff9db5;font-weight:900}.gb-student-body{padding:0 12px 12px}.gb-assignment-row{display:grid;grid-template-columns:minmax(220px,1fr) 90px 85px 105px 80px minmax(130px,.55fr) auto;gap:7px;align-items:center;padding:8px;border-top:1px solid #302650}.gb-assignment-row input,.gb-assignment-row select{padding:7px!important}.gb-category-settings{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0 12px}.gb-category-settings label{display:flex;align-items:center;gap:6px}.gb-category-settings input{width:62px;padding:6px!important}.gb-empty{padding:18px;text-align:center;color:#c8bed8}.leaderboard-command{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-bottom:12px}.leaderboard-tabs{display:flex;gap:7px;flex-wrap:wrap}.leaderboard-reward-note{padding:10px;border:1px solid #5e4a8d;border-radius:11px;background:rgba(125,60,205,.1)}
 @media(max-width:1100px){.gb-controls{grid-template-columns:1fr 1fr}.gb-sort-header{display:none}.gb-student>summary{grid-template-columns:48px 1fr repeat(2,85px)}.gb-student>summary>:nth-child(n+5){display:none}.gb-assignment-row{grid-template-columns:1fr 80px 80px}.gb-assignment-row>:nth-child(n+4){grid-column:auto}}
@@ -995,7 +941,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   </div>
 </div>
 <div class="panel" id="data">
-  <div class="frame bevel command-title"><h2>📚 DRAGONSWOOD GRADEBOOK</h2><p>One cumulative record per student. Open a student only when you need assignment details.</p></div>
+  <div class="frame bevel command-title" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><h2>📚 DRAGONSWOOD GRADEBOOK</h2><p>One cumulative record per student. Open a student only when you need assignment details.</p></div><button id="gradebookRefresh" type="button" title="Re-read grades from Firestore">↻ REFRESH</button></div>
   <div class="gradebook-summary"><div><small>STUDENTS</small><b id="gradebookStudentCount">0</b></div><div><small>CLASS AVERAGE</small><b id="gradebookClassAverage">—</b></div><div><small>ASSIGNED WORK</small><b id="gradebookAssignmentCount">0</b></div><div><small>ACTUAL MISSING</small><b id="gradebookMissingCount">0</b></div></div>
   <div class="gb-category-settings"><b>Category weights:</b><label>Daily Quest <input id="gbWeightDaily" type="number" min="0" max="100" value="40">%</label><label>Curriculum Quest <input id="gbWeightCurriculum" type="number" min="0" max="100" value="40">%</label><label>Reading Tests <input id="gbWeightReading" type="number" min="0" max="100" value="20">%</label><button id="gbSaveWeights" type="button">SAVE WEIGHTS</button></div>
   <details class="card raw-results"><summary>⚙️ Manage assignments</summary><p class="pace-note">Rename activities, correct their category, set points or due dates, and choose whether they count in cumulative grades.</p><div id="gradebookAssignmentManager"></div></details>
@@ -1083,7 +1029,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserSessionPersistence} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import {getFirestore,doc,getDoc,setDoc,collection,onSnapshot,addDoc,deleteDoc,getDocs,writeBatch,runTransaction,increment,serverTimestamp,query,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {getFirestore,doc,getDoc,setDoc,collection,onSnapshot,addDoc,deleteDoc,getDocs,writeBatch,runTransaction,increment,serverTimestamp,query,where,orderBy,limit} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const firebaseConfig={"apiKey": "AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE", "authDomain": "dragonswood-9289e.firebaseapp.com", "projectId": "dragonswood-9289e", "storageBucket": "dragonswood-9289e.firebasestorage.app", "messagingSenderId": "1064477064695", "appId": "1:1064477064695:web:283e1016ee2303d39042f2", "measurementId": "G-LPRLDGVBD2"},TEACHER="jacobicusjax@gmail.com";
 const normalizedEmail = v => String(v||"").trim().toLowerCase();
@@ -1249,7 +1195,7 @@ async function saveDailyAccessOverride(all,ids){
    twice. No listener callback logic was changed; the statements below are the
    originals, moved.
    ========================================================================== */
-const DW_SUBSCRIBED=new Set();
+const DW_SUBSCRIBED=new Set();window.DW_SUBSCRIBED=DW_SUBSCRIBED;
 function dwSub(key,fn){
   if(DW_SUBSCRIBED.has(key))return;      // reopening a tab must not re-subscribe
   DW_SUBSCRIBED.add(key);
@@ -1268,6 +1214,14 @@ function dwQueue(fn){
     for(const j of jobs){try{j();}catch(e){console.warn("render",e);}}
   });
 }
+/* Render a deferred view only once its data group is actually subscribed.
+   Before this guard the students listener called renderShop, renderScores and
+   renderGradebook on every snapshot — building empty DOM for three hidden
+   panels, and paying for a full gradebook recompute every time a teacher
+   awarded a single point. Once the owning tab is opened the guard opens with
+   it, so the view still updates live. */
+function dwQueueFor(key,fn){ if(DW_SUBSCRIBED.has(key)) dwQueue(fn); }
+
 /* Honest loading state: a deferred tab says so until its first snapshot. */
 function dwTabLoading(on,panelId){
   const p=document.getElementById(panelId);if(!p)return;
@@ -1276,7 +1230,7 @@ function dwTabLoading(on,panelId){
 
 function listen(){
   dwSub("students",function(){
-   onSnapshot(collection(db,"students"),s=>{students=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.firstName||"").localeCompare(String(b.firstName||"")));dwQueue(renderStudents);dwQueue(renderShop);dwQueue(renderScores);dwQueue(renderGradebook)});
+   onSnapshot(collection(db,"students"),s=>{students=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.firstName||"").localeCompare(String(b.firstName||"")));dwQueue(renderStudents);dwQueueFor("shop",renderShop);dwQueueFor("leaderboard",renderScores);dwQueueFor("gradebook",renderGradebook)});
   });
   dwSub("classStatus",function(){
    onSnapshot(doc(db,"classData","dailyAccessOverride"),s=>{
@@ -1333,40 +1287,114 @@ function listen(){
 }
 
 /* Called by the tab click handler. Safe to call on every click. */
+
+/* One-time gradebook load. Sorting matches the old listener callbacks exactly. */
+let DW_GRADEBOOK_LOADING=false;
+async function dwLoadGradebookOnce(){
+  if(DW_GRADEBOOK_LOADING)return;
+  DW_GRADEBOOK_LOADING=true;
+  dwTabLoading(true,"data");
+  const btn=document.getElementById("gradebookRefresh");
+  if(btn){btn.disabled=true;btn.textContent="REFRESHING\u2026";}
+  const grab=async n=>(await getDocs(collection(db,n))).docs.map(d=>({id:d.id,...d.data()}));
+  try{
+    const [gr,dq,gg,ga,cp,ca]=await Promise.all([
+      grab("gameResults"),grab("dailyQuestProgress"),grab("gradebookGrades"),
+      grab("gradebookAssignments"),grab("curriculumProgress"),grab("curriculumAttempts")
+    ]);
+    results=gr.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+    dailyQuestProgress=dq; gradebookGrades=gg; gradebookAssignmentSettings=ga;
+    curriculumProgress=cp; curriculumAttempts=ca;
+    renderResults(); renderGradebook();
+  }catch(e){
+    console.warn("gradebook load",e);
+    const box=document.getElementById("gradebookStudents");
+    if(box&&!box.innerHTML.trim())box.innerHTML='<div class="gb-empty">Could not load the gradebook. Check your connection, then press Refresh.</div>';
+  }finally{
+    dwTabLoading(false,"data");
+    DW_GRADEBOOK_LOADING=false;
+    if(btn){btn.disabled=false;btn.textContent="\u21bb REFRESH";}
+  }
+}
+
+document.addEventListener("click",function(e){
+  const b=e.target&&e.target.closest?e.target.closest("#gradebookRefresh"):null;
+  if(b){e.preventDefault();dwLoadGradebookOnce();}
+});
+
+/* Full history is read once, only if the teacher actually selects "All". */
+let passHistoryWindow=[],passHistoryFull=false,passHistoryLoading=false;
+async function dwLoadFullPassHistory(){
+  if(passHistoryFull||passHistoryLoading)return;
+  passHistoryLoading=true;
+  const sel=document.getElementById("passArchiveRange");
+  if(sel)sel.disabled=true;
+  try{
+    passHistory=(await getDocs(collection(db,"passHistory"))).docs.map(d=>({id:d.id,...d.data()}));
+    passHistoryFull=true;
+  }catch(e){
+    console.warn("full pass history",e);
+    passHistory=passHistoryWindow;          // fall back to the live window
+  }finally{
+    passHistoryLoading=false;
+    if(sel)sel.disabled=false;
+    renderPassArchive();
+  }
+}
+document.addEventListener("change",function(e){
+  const t=e.target;
+  if(t&&t.id==="passArchiveRange"&&t.value==="all")dwLoadFullPassHistory();
+});
+
 function dwEnsureTabData(p){
   if(p==="data"){
+   dwSub("overrideQueue",function(){ if(window.__dwStartOverrideQueue)window.__dwStartOverrideQueue(); });
    dwTabLoading(true,"data");
    dwSub("gradebook",function(){
-    onSnapshot(collection(db,"gameResults"),s=>{results=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));dwQueue(renderResults);dwQueue(renderGradebook)});
-    onSnapshot(collection(db,"dailyQuestProgress"),s=>{dailyQuestProgress=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderGradebook)},e=>console.warn("daily gradebook listener",e));
-    onSnapshot(collection(db,"gradebookGrades"),s=>{gradebookGrades=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderGradebook)},e=>console.warn("gradebook listener",e));
-    onSnapshot(collection(db,"gradebookAssignments"),s=>{gradebookAssignmentSettings=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderGradebook)},e=>console.warn("assignment settings",e));
-    onSnapshot(collection(db,"curriculumProgress"),s=>{curriculumProgress=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderGradebook)},e=>console.warn("curriculum gradebook listener",e));
-    onSnapshot(collection(db,"curriculumAttempts"),s=>{curriculumAttempts=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderGradebook)},e=>console.warn("curriculum attempts listener",e));
-    onSnapshot(doc(db,"classData","gradebookSettings"),s=>{if(s.exists())gradebookSettings={...gradebookSettings,...s.data()};dwQueue(renderGradebook)},e=>console.warn("gradebook settings",e));
+    /* v56.19 — these six are written by STUDENTS, never by the teacher page.
+       As live listeners they re-rendered the gradebook under the teacher's
+       cursor every time a child finished a quiz. The gradebook is a review and
+       export surface, not a live monitor, so it now reads once when the tab
+       opens and offers a Refresh button. Same collections, same documents,
+       same computed grades - the query is unchanged, only onSnapshot->getDocs. */
+    dwLoadGradebookOnce();
+    onSnapshot(doc(db,"classData","gradebookSettings"),s=>{if(s.exists())gradebookSettings={...gradebookSettings,...s.data()};dwQueueFor("gradebook",renderGradebook)},e=>console.warn("gradebook settings",e));
     dwQueue(function(){dwTabLoading(false,"data");});
+  
    });
   }
   if(p==="scores"){
    dwTabLoading(true,"scores");
    dwSub("leaderboard",function(){
-    onSnapshot(collection(db,"scores"),s=>{scores=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+b.score||0)-(+a.score||0));dwQueue(renderScores)});
-    onSnapshot(collection(db,"leaderboardRewards"),s=>{leaderboardRewards=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderScores)},e=>console.warn("leaderboard rewards",e));
+    onSnapshot(collection(db,"scores"),s=>{scores=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+b.score||0)-(+a.score||0));dwQueueFor("leaderboard",renderScores)});
+    onSnapshot(collection(db,"leaderboardRewards"),s=>{leaderboardRewards=s.docs.map(d=>({id:d.id,...d.data()}));dwQueueFor("leaderboard",renderScores)},e=>console.warn("leaderboard rewards",e));
     dwQueue(function(){dwTabLoading(false,"scores");});
    });
   }
   if(p==="passes"){
    dwTabLoading(true,"passes");
    dwSub("passHistory",function(){
-    onSnapshot(collection(db,"passHistory"),s=>{passHistory=s.docs.map(d=>({id:d.id,...d.data()}));renderPassArchive()},e=>console.warn("passHistory listener",e));
+    /* v56.19 — bounded live window + on-demand full history.
+
+   Proof this is lossless: archiveDateDiff() builds `new Date(dateKey+'T12:00:00')`,
+   so a record with no dateKey yields NaN, and every comparison against NaN is
+   false. A dateKey-less record therefore CANNOT appear under today/yesterday/
+   7/30 today - only under "All". So bounding the live listener by dateKey costs
+   those four views nothing, and "All" now triggers one unbounded read that still
+   catches every record, dateKey or not. */
+   onSnapshot(query(collection(db,"passHistory"),orderBy("dateKey","desc"),limit(400)),s=>{
+     passHistoryWindow=s.docs.map(d=>({id:d.id,...d.data()}));
+     if(!passHistoryFull)passHistory=passHistoryWindow;
+     dwQueue(renderPassArchive);
+   },e=>console.warn("passHistory listener",e));
     dwQueue(function(){dwTabLoading(false,"passes");});
    });
   }
   if(p==="jobs"){
    dwTabLoading(true,"jobs");
    dwSub("jobs",function(){
-    onSnapshot(doc(db,"classData","classJobs"),s=>{classJobsConfigV29=s.exists()?s.data():{};dwQueue(renderV29Jobs);dw499MigrateJobsConfig(classJobsConfigV29)},e=>console.warn("v29 jobs",e));
-    onSnapshot(collection(db,"studentJobWeeks"),s=>{jobWeeksV29=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderV29Jobs);setTimeout(runV29Payroll,250)},e=>console.warn("v29 job weeks",e));
+    onSnapshot(doc(db,"classData","classJobs"),s=>{classJobsConfigV29=s.exists()?s.data():{};dwQueueFor("jobs",renderV29Jobs);dw499MigrateJobsConfig(classJobsConfigV29)},e=>console.warn("v29 jobs",e));
+    onSnapshot(collection(db,"studentJobWeeks"),s=>{jobWeeksV29=s.docs.map(d=>({id:d.id,...d.data()}));dwQueueFor("jobs",renderV29Jobs);setTimeout(runV29Payroll,250)},e=>console.warn("v29 job weeks",e));
     dwQueue(function(){dwTabLoading(false,"jobs");});
    });
   }
@@ -1374,7 +1402,7 @@ function dwEnsureTabData(p){
    dwTabLoading(true,"schedule");
    dwSub("planner",function(){
     onSnapshot(doc(db,"classData","classSchedule"),s=>{classScheduleV29=s.exists()?s.data():{};loadScheduleDay()},e=>console.warn("v29 schedule",e));
-    onSnapshot(collection(db,"classCalendarEvents"),s=>{calendarEventsV29=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderTeacherCalendar)},e=>console.warn("v29 calendar",e));
+    onSnapshot(collection(db,"classCalendarEvents"),s=>{calendarEventsV29=s.docs.map(d=>({id:d.id,...d.data()}));dwQueueFor("planner",renderTeacherCalendar)},e=>console.warn("v29 calendar",e));
     dwQueue(function(){dwTabLoading(false,"schedule");});
    });
   }
@@ -1400,8 +1428,8 @@ function dwEnsureStudentData(){
       const rarityB=rarityOrder[String(b.rarity||"common").toLowerCase()]||99;
       if(rarityA!==rarityB) return rarityA-rarityB;
       return String(a.name||"").localeCompare(String(b.name||""));
-    });dwQueue(renderShop)});
-   onSnapshot(collection(db,"purchases"),s=>{purchases=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.purchasedAt?.seconds||0)-(a.purchasedAt?.seconds||0));dwQueue(renderShop);});
+    });dwQueueFor("shop",renderShop)});
+   onSnapshot(collection(db,"purchases"),s=>{purchases=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.purchasedAt?.seconds||0)-(a.purchasedAt?.seconds||0));dwQueueFor("shop",renderShop);});
   });
 }
 
@@ -1861,9 +1889,7 @@ function dw31TPrevWeek(){const d=new Date();d.setDate(d.getDate()-7);return dw31
 function dw31RenderTeacherJobs(){const box=$('dw31Assignments'),sum=$('dw31JobSummary');if(!box)return;const assignments=dw31TCfg.assignments||{},jobs=Array.isArray(dw31TCfg.jobs)&&dw31TCfg.jobs.length?dw31TCfg.jobs:DW31T_JOBS;box.innerHTML=students.slice().sort((a,b)=>displayStudent(a).localeCompare(displayStudent(b))).map(s=>{const a=assignments[s.id]||{};return `<div class="dw31t-row"><b>${esc(displayStudent(s))}</b><div class="dw31t-form"><select data-dw31-job="${s.id}"><option value="">No job</option>${jobs.map(j=>`<option value="${j.id}" ${a.id===j.id?'selected':''}>${j.icon} ${esc(j.name)} • ${esc(j.subtitle)}</option>`).join('')}</select><input type="number" min="0" step="5" data-dw31-pay="${s.id}" value="${Number(a.pay||50)}"></div></div>`;}).join('')||'<div class="muted">No students yet.</div>';document.querySelectorAll('[data-dw31-job]').forEach(el=>el.onchange=()=>dw31SaveAssignment(el.dataset.dw31Job));document.querySelectorAll('[data-dw31-pay]').forEach(el=>el.onchange=()=>dw31SaveAssignment(el.dataset.dw31Pay));const wk=dw31TWeekKey(),rows=dw31TWeeks.filter(x=>x.weekKey===wk);if(sum)sum.innerHTML=rows.length?rows.sort((a,b)=>String(a.studentName).localeCompare(String(b.studentName))).map(x=>`<div class="dw31t-row"><b>${esc(x.studentName||'Student')} • ${esc(x.jobIcon||'🧹')} ${esc(x.jobName||'Job')}</b><small>${Number(x.completedCount||0)}/5 days • ${x.paid?'💰 PAID':(Number(x.completedCount||0)>=4?'✅ QUALIFIED':'Working')}</small></div>`).join(''):'<div class="muted">No job check-offs yet this week.</div>';}
 async function dw31SaveAssignment(id){const jobs=Array.isArray(dw31TCfg.jobs)&&dw31TCfg.jobs.length?dw31TCfg.jobs:DW31T_JOBS,sel=document.querySelector(`[data-dw31-job="${id}"]`),inp=document.querySelector(`[data-dw31-pay="${id}"]`),job=jobs.find(j=>j.id===sel?.value),assignments={...(dw31TCfg.assignments||{})};if(!job)delete assignments[id];else assignments[id]={...job,pay:Math.max(0,Number(inp?.value||job.pay||50))};await setDoc(doc(db,'classData','classJobs'),{jobs,assignments,updatedAt:serverTimestamp()},{merge:true});window.DWAudio?.positive();}
 async function dw31RunPayroll(){const prev=dw31TPrevWeek(),eligible=dw31TWeeks.filter(x=>x.weekKey===prev&&Number(x.completedCount||0)>=4&&x.paid!==true);for(const x of eligible){const st=students.find(s=>s.id===x.studentId);if(!st)continue;const salary=Math.max(0,Number(x.pay||0)),award=Number(x.completedCount||0)>=5?salary:Math.floor(salary*.8);if(!award)continue;try{const batch=writeBatch(db);batch.set(doc(db,'students',st.id),{gold:(+st.gold||0)+award,updatedAt:serverTimestamp()},{merge:true});batch.set(doc(db,'studentJobWeeks',x.id),{paid:true,paidAt:serverTimestamp(),payAward:award},{merge:true});batch.set(doc(collection(db,'studentTransactions')),{studentId:st.id,studentName:displayStudent(st),stat:'gold',amount:award,reason:`Guild payroll • ${x.jobName||'Class Job'} • ${x.completedCount}/5 days`,category:'job-payroll',createdAt:serverTimestamp()});await batch.commit();}catch(e){console.warn('job payroll',e);}}}
-function dw31LoadScheduleDay(){dw31DraftDay=$('dw31ScheduleDay')?.value||'monday';dw31DraftBlocks=JSON.parse(JSON.stringify(dw31TSchedule?.days?.[dw31DraftDay]||DW31T_SCHEDULE[dw31DraftDay]||[]));dw31RenderScheduleEditor();}
 function dw31RenderScheduleEditor(){const box=$('dw31SchedList');if(!box)return;$('dw31SchedHeading').textContent=dw31DraftDay[0].toUpperCase()+dw31DraftDay.slice(1);box.innerHTML=dw31DraftBlocks.map((b,i)=>`<div class="dw31t-row"><b>${b[0]}–${b[1]} • ${b[3]||''} ${esc(b[2])}</b><small>${esc(b[4]||'')}</small><div class="dw31t-actions"><button data-dw31-up="${i}">↑</button><button data-dw31-down="${i}">↓</button><button class="danger-soft" data-dw31-sdel="${i}">DELETE</button></div></div>`).join('');document.querySelectorAll('[data-dw31-sdel]').forEach(b=>b.onclick=()=>{dw31DraftBlocks.splice(+b.dataset.dw31Sdel,1);dw31RenderScheduleEditor();});document.querySelectorAll('[data-dw31-up]').forEach(b=>b.onclick=()=>{const i=+b.dataset.dw31Up;if(i>0){[dw31DraftBlocks[i-1],dw31DraftBlocks[i]]=[dw31DraftBlocks[i],dw31DraftBlocks[i-1]];dw31RenderScheduleEditor();}});document.querySelectorAll('[data-dw31-down]').forEach(b=>b.onclick=()=>{const i=+b.dataset.dw31Down;if(i<dw31DraftBlocks.length-1){[dw31DraftBlocks[i+1],dw31DraftBlocks[i]]=[dw31DraftBlocks[i],dw31DraftBlocks[i+1]];dw31RenderScheduleEditor();}});}
-function dw31RenderTeacherEvents(){const box=$('dw31TeacherEvents');if(!box)return;box.innerHTML=dw31TEvents.slice().sort((a,b)=>String(a.startDate).localeCompare(String(b.startDate))).map(e=>`<div class="dw31t-row"><b>${e.icon||'📅'} ${esc(e.title||'Event')}</b><small>${e.startDate||''}${e.startTime?' • '+e.startTime:''} • ${e.category||'school'}</small><div class="dw31t-actions"><button data-dw31-edit="${e.id}">EDIT</button><button class="danger-soft" data-dw31-del="${e.id}">DELETE</button></div></div>`).join('');document.querySelectorAll('[data-dw31-del]').forEach(b=>b.onclick=async()=>{if(confirm('Delete this event?'))await deleteDoc(doc(db,'classCalendarEvents',b.dataset.dw31Del));});document.querySelectorAll('[data-dw31-edit]').forEach(b=>b.onclick=()=>{const e=dw31TEvents.find(x=>x.id===b.dataset.dw31Edit);if(!e)return;dw31EditingEvent=e.id;$('dw31CalTitle').value=e.title||'';$('dw31CalStart').value=e.startDate||'';$('dw31CalEnd').value=e.endDate||e.startDate||'';$('dw31CalStartTime').value=e.startTime||'';$('dw31CalEndTime').value=e.endTime||'';$('dw31CalCategory').value=e.category||'school';$('dw31CalIcon').value=e.icon||'📅';$('dw31CalSave').textContent='UPDATE EVENT';});}
 async function dw31SeedDefaults(){const [j,s,e]=await Promise.all([getDoc(doc(db,'classData','classJobs')),getDoc(doc(db,'classData','classSchedule')),getDocs(collection(db,'classCalendarEvents'))]);if(!j.exists())await setDoc(doc(db,'classData','classJobs'),{jobs:DW31T_JOBS,assignments:{},updatedAt:serverTimestamp()});if(!s.exists())await setDoc(doc(db,'classData','classSchedule'),{days:DW31T_SCHEDULE,updatedAt:serverTimestamp()});if(e.empty){const b=writeBatch(db);DW31T_EVENTS.forEach(x=>b.set(doc(db,'classCalendarEvents',x.id),{...x,createdAt:serverTimestamp(),updatedAt:serverTimestamp()}));await b.commit();}}
 
 
@@ -1984,19 +2010,7 @@ async function togglePassBlackout(){
 function teacherDateKey(){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Phoenix',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}
 function reqTime(x){try{return x?.createdAt?.toDate?.().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})||''}catch(e){return''}}
 // Request feeds are realtime via onSnapshot above.
-function refreshStudentRequests(){ /* intentionally no polling: realtime listeners are the source of truth */ }
 
-function visitClock(ts){
- try{return ts?.toDate?.().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})||'—'}
- catch(e){return'—'}
-}
-function visitDuration(v){
- try{
-   const a=v?.leftAt?.toDate?.(),b=v?.returnedAt?.toDate?.()||new Date();
-   if(!a)return'';
-   return Math.max(0,Math.round((b-a)/60000))+' min';
- }catch(e){return''}
-}
 
 
 // ===== DRAGONSWOOD AUTOMATIC TEACHER ALERTS v28d =====
@@ -2577,13 +2591,6 @@ $("deleteShopItem").onclick=async()=>{
 
 
 
-function refreshStudentGearAdmin(s){
-  if(!$("adminGiveGear")||!$("adminRemoveGear"))return;
-  const owned=new Set(Array.isArray(s?.inventory)?s.inventory:[]);
-  const gear=shopItems.filter(i=>i.kind==="gear"||i.equipSlot).sort((a,b)=>String(a.name||"").localeCompare(String(b.name||"")));
-  $("adminGiveGear").innerHTML='<option value="">Choose gear…</option>'+gear.filter(i=>!owned.has(i.id)).map(i=>`<option value="${i.id}">${esc(i.icon||"🎁")} ${esc(i.name)}</option>`).join("");
-  $("adminRemoveGear").innerHTML='<option value="">Choose owned gear…</option>'+gear.filter(i=>owned.has(i.id)).map(i=>`<option value="${i.id}">${esc(i.icon||"🎁")} ${esc(i.name)}</option>`).join("");
-}
 $("giveGearStudent").onclick=async()=>{
   const sid=$("sid").value,item=$("adminGiveGear").value;if(!sid||!item)return;
   const s=students.find(x=>x.id===sid);if(!s)return;
@@ -2600,10 +2607,6 @@ $("removeGearStudent").onclick=async()=>{
   alert("Gear removed.");
 };
 
-function teacherScoreDetail(s){
-  const parts=[s.subject,s.activityName||s.activity,s.lesson,s.session?String(s.session).replace(/\b\w/g,c=>c.toUpperCase()):""].filter(Boolean);
-  return [...new Set(parts)].join(" • ");
-}
 function teacherStudentForRecord(r){
   const keys=[r?.studentId,r?.uid,r?.studentEmail,r?.email,r?.displayName,r?.playerName].filter(Boolean).map(v=>String(v).trim().toLowerCase());
   return students.find(s=>[s.id,s.uid,s.email,s.firstName,s.displayName].filter(Boolean).some(v=>keys.includes(String(v).trim().toLowerCase())));
@@ -2640,25 +2643,7 @@ function gradebookAssignmentInfo(r){
   const assignmentId=String(r.assignmentId||`${game} • ${raw||"Practice"}`),name=raw?`${game}: ${raw}`:game;
   return {id:assignmentId,name};
 }
-function gradebookRowsData(){
-  const assignments=new Map(),attempts=new Map();
-  results.forEach(r=>{const a=gradebookAssignmentInfo(r);assignments.set(a.id,a);const st=teacherStudentForRecord(r),sid=st?.id||String(r.studentId||r.uid||r.studentEmail||r.displayName||r.playerName||"unknown"),key=`${sid}|||${a.id}`;if(!attempts.has(key))attempts.set(key,[]);attempts.get(key).push(r)});
-  const roster=students.length?students:[...new Map(results.map(r=>{const id=String(r.studentId||r.uid||r.studentEmail||r.displayName||r.playerName||"unknown");return[id,{id,firstName:r.displayName||r.playerName||"Player"}]})).values()];
-  const rows=[];roster.forEach(st=>assignments.forEach(a=>{const key=`${st.id}|||${a.id}`,tries=attempts.get(key)||[],best=tries.reduce((top,r)=>Number(r.accuracy??-1)>Number(top?.accuracy??-1)?r:top,null),gradeId=`${gbSafe(st.id)}__${gbHash(a.id)}`,override=gradebookGrades.find(g=>g.id===gradeId)||{};rows.push({gradeId,student:st,assignment:a,tries,best,override})}));
-  return {assignments:[...assignments.values()],rows};
-}
 function gbLetter(n){if(n==null||n==="")return "—";n=Number(n);return n>=90?"A":n>=80?"B":n>=70?"C":n>=60?"D":"F"}
-function renderGradebookMatrixLegacy(){
-  if(!$("gradebookRows"))return;const data=gradebookRowsData(),af=$("gradebookAssignmentFilter"),sf=$("gradebookStudentFilter"),keepA=af.value||"all",keepS=sf.value||"all";
-  af.innerHTML='<option value="all">All assignments</option>'+data.assignments.map(a=>`<option value="${esc(a.id)}">${esc(a.name)}</option>`).join("");sf.innerHTML='<option value="all">All students</option>'+students.map(s=>`<option value="${esc(s.id)}">${esc(s.firstName||s.displayName||"Student")}</option>`).join("");af.value=[...af.options].some(o=>o.value===keepA)?keepA:"all";sf.value=[...sf.options].some(o=>o.value===keepS)?keepS:"all";
-  const completed=data.rows.filter(r=>r.tries.length),scoresForAvg=completed.map(r=>Number(r.override.score??r.best?.accuracy)).filter(Number.isFinite),missing=data.rows.filter(r=>!r.tries.length&&r.override.status!=="Excused").length;
-  $("gradebookAssignmentCount").textContent=data.assignments.length;$("gradebookStudentCount").textContent=students.length;$("gradebookClassAverage").textContent=scoresForAvg.length?`${Math.round(scoresForAvg.reduce((a,b)=>a+b,0)/scoresForAvg.length)}%`:"—";$("gradebookMissingCount").textContent=missing;
-  $("gradebookAssignments").innerHTML=data.assignments.map(a=>{const rs=data.rows.filter(r=>r.assignment.id===a.id),done=rs.filter(r=>r.tries.length).length,vals=rs.map(r=>Number(r.override.score??r.best?.accuracy)).filter(Number.isFinite);return `<button type="button" class="gradebook-assignment-card" data-grade-assignment="${esc(a.id)}"><small>ASSIGNMENT</small><b>${esc(a.name)}</b><span>${done}/${rs.length} complete${vals.length?` • ${Math.round(vals.reduce((x,y)=>x+y,0)/vals.length)}% avg`:""}</span></button>`}).join("")||'<div class="card muted">Student assignment results will appear here after work is submitted.</div>';
-  const visible=data.rows.filter(r=>(af.value==="all"||r.assignment.id===af.value)&&(sf.value==="all"||r.student.id===sf.value));
-  $("gradebookRows").innerHTML=visible.length?visible.map(r=>{const auto=r.best?.accuracy,status=r.override.status||(r.tries.length?"Complete":"Missing"),grade=r.override.score??auto;return `<tr><td><b>${esc(r.student.firstName||r.student.displayName||"Student")}</b></td><td>${esc(r.assignment.name)}</td><td>${r.tries.length}</td><td>${auto!=null?`${esc(auto)}%`:"—"}</td><td><span class="grade-letter">${gbLetter(grade)}</span></td><td><select data-gb-status="${r.gradeId}"><option${status==="Complete"?" selected":""}>Complete</option><option${status==="Missing"?" selected":""}>Missing</option><option${status==="Late"?" selected":""}>Late</option><option${status==="Excused"?" selected":""}>Excused</option></select></td><td><input data-gb-score="${r.gradeId}" type="number" min="0" max="100" placeholder="${auto??"—"}" value="${r.override.score??""}"></td><td><input data-gb-note="${r.gradeId}" placeholder="Optional note" value="${esc(r.override.note||"")}"></td><td><button class="mini" data-gb-save="${r.gradeId}" data-student="${esc(r.student.id)}" data-student-name="${esc(r.student.firstName||r.student.displayName||"Student")}" data-assignment="${esc(r.assignment.id)}" data-assignment-name="${esc(r.assignment.name)}">Save</button></td></tr>`}).join(""):'<tr><td colspan="9" class="muted">No rows match these filters.</td></tr>';
-  document.querySelectorAll("[data-grade-assignment]").forEach(b=>b.onclick=()=>{af.value=b.dataset.gradeAssignment;renderGradebook()});
-  document.querySelectorAll("[data-gb-save]").forEach(b=>b.onclick=async()=>{const id=b.dataset.gbSave,scoreEl=document.querySelector(`[data-gb-score="${id}"]`),statusEl=document.querySelector(`[data-gb-status="${id}"]`),noteEl=document.querySelector(`[data-gb-note="${id}"]`);await setDoc(doc(db,"gradebookGrades",id),{studentId:b.dataset.student,studentName:b.dataset.studentName,assignmentId:b.dataset.assignment,assignmentName:b.dataset.assignmentName,score:scoreEl.value===""?null:Number(scoreEl.value),status:statusEl.value,note:noteEl.value.trim(),updatedAt:serverTimestamp()},{merge:true});b.textContent="Saved ✓";setTimeout(()=>b.textContent="Save",1200)});
-}
 function gbCategoryFromResult(r){const t=`${r.gameId||""} ${r.gameName||r.game||""}`.toLowerCase();return /witch|reader|reading/.test(t)?"reading":/curriculum/.test(t)?"curriculum":"daily"}
 function gbScoreFromAttempts(list){return DWGradebook.attemptGrade(list)?.score??null}
 function gbStudentAssignments(st){
@@ -2694,7 +2679,7 @@ function renderGradebook(){
   $("gradebookStudents").innerHTML=visible.length?visible.map(x=>`<details class="gb-student"><summary><img class="gb-avatar" src="${esc(teacherAvatarArt({studentId:x.student.id}))}" alt=""><div class="gb-name"><b>${esc(x.student.firstName||x.student.displayName||"Student")}</b><small>Grade ${esc(x.student.grade||"—")} • ${x.assignments.length} graded activities</small></div><div><span class="gb-overall">${gbMetric(x.overall)}</span><small>${gbLetter(x.overall)}</small></div><div class="gb-metric"><small>DAILY QUEST</small><span class="gb-cat">${gbMetric(x.averages.daily)}</span></div><div class="gb-metric"><small>CURRICULUM</small><span class="gb-cat">${gbMetric(x.averages.curriculum)}</span></div><div class="gb-metric"><small>READING</small><span class="gb-cat">${gbMetric(x.averages.reading)}</span></div><div class="gb-metric"><small>MISSING</small><span class="gb-missing">${x.missing}</span></div><div>Open ▾</div></summary><div class="gb-student-body">${x.assignments.length?x.assignments.map(a=>`<div class="gb-assignment-row"><div><b>${esc(a.name)}</b><small>${a.category.replace(/^./,c=>c.toUpperCase())} • ${a.attempts.length} attempt${a.attempts.length===1?"":"s"}</small></div><span>${a.auto==null?"—":`${a.auto}% auto`}</span><b>${gbMetric(a.final)} ${gbLetter(a.final)}</b><select data-gb-status="${a.gradeId}"><option${a.status==="Complete"?" selected":""}>Complete</option><option${a.status==="In Progress"?" selected":""}>In Progress</option><option${a.status==="Missing"?" selected":""}>Missing</option><option${a.status==="Late"?" selected":""}>Late</option><option${a.status==="Excused"?" selected":""}>Excused</option></select><input data-gb-score="${a.gradeId}" type="number" min="0" max="100" placeholder="${a.auto??"—"}" value="${a.override.score??""}"><input data-gb-note="${a.gradeId}" placeholder="Teacher note" value="${esc(a.override.note||"")}"><button class="mini" data-gb-save="${a.gradeId}" data-student="${esc(x.student.id)}" data-student-name="${esc(x.student.firstName||"Student")}" data-assignment="${esc(a.id)}" data-assignment-name="${esc(a.name)}" data-category="${a.category}">Save</button></div>`).join(""):'<div class="gb-empty">No graded Dragonswood work yet.</div>'}</div></details>`).join(""):'<div class="card gb-empty">No students match these filters.</div>';
   const assignmentRows=[...new Map(summaries.flatMap(x=>x.allAssignments).map(a=>[a.settingsId,a])).values()];
   $("gradebookAssignmentManager").innerHTML=assignmentRows.length?assignmentRows.map(a=>`<div class="gb-assignment-row"><input data-ga-name="${a.settingsId}" value="${esc(a.name)}"><select data-ga-category="${a.settingsId}"><option value="daily"${a.category==="daily"?" selected":""}>Daily Quest</option><option value="curriculum"${a.category==="curriculum"?" selected":""}>Curriculum Quest</option><option value="reading"${a.category==="reading"?" selected":""}>Reading Tests</option></select><input data-ga-points="${a.settingsId}" type="number" min="0" value="${a.setting.pointsPossible??100}" title="Points possible"><input data-ga-due="${a.settingsId}" type="date" value="${esc(a.setting.dueDate||"")}"><label><input data-ga-counts="${a.settingsId}" type="checkbox" ${a.counts?"checked":""}> Counts</label><label><input data-ga-hidden="${a.settingsId}" type="checkbox" ${a.hidden?"checked":""}> Hide</label><button data-ga-save="${a.settingsId}" data-source="${esc(a.id)}" data-source-category="${a.sourceCategory}">Save</button></div>`).join(""):'<div class="gb-empty">Assignments appear after the first submission.</div>';
-  document.querySelectorAll("[data-gb-save]").forEach(b=>b.onclick=async()=>{const id=b.dataset.gbSave,scoreEl=document.querySelector(`[data-gb-score="${id}"]`),statusEl=document.querySelector(`[data-gb-status="${id}"]`),noteEl=document.querySelector(`[data-gb-note="${id}"]`);await setDoc(doc(db,"gradebookGrades",id),{studentId:b.dataset.student,studentName:b.dataset.studentName,assignmentId:b.dataset.assignment,assignmentName:b.dataset.assignmentName,category:b.dataset.category,score:scoreEl.value===""?null:Number(scoreEl.value),status:statusEl.value,note:noteEl.value.trim(),updatedAt:serverTimestamp()},{merge:true});b.textContent="Saved ✓"});
+  document.querySelectorAll("[data-gb-save]").forEach(b=>b.onclick=async()=>{const id=b.dataset.gbSave,scoreEl=document.querySelector(`[data-gb-score="${id}"]`),statusEl=document.querySelector(`[data-gb-status="${id}"]`),noteEl=document.querySelector(`[data-gb-note="${id}"]`);await setDoc(doc(db,"gradebookGrades",id),{studentId:b.dataset.student,studentName:b.dataset.studentName,assignmentId:b.dataset.assignment,assignmentName:b.dataset.assignmentName,category:b.dataset.category,score:scoreEl.value===""?null:Number(scoreEl.value),status:statusEl.value,note:noteEl.value.trim(),updatedAt:serverTimestamp()},{merge:true});if(DW_SUBSCRIBED.has("gradebook"))dwLoadGradebookOnce();b.textContent="Saved ✓"});
   document.querySelectorAll("[data-ga-save]").forEach(b=>b.onclick=async()=>{const id=b.dataset.gaSave;await setDoc(doc(db,"gradebookAssignments",id),{sourceId:b.dataset.source,sourceCategory:b.dataset.sourceCategory,name:document.querySelector(`[data-ga-name="${id}"]`).value.trim(),category:document.querySelector(`[data-ga-category="${id}"]`).value,pointsPossible:Number(document.querySelector(`[data-ga-points="${id}"]`).value)||100,dueDate:document.querySelector(`[data-ga-due="${id}"]`).value,countsTowardGrade:document.querySelector(`[data-ga-counts="${id}"]`).checked,hidden:document.querySelector(`[data-ga-hidden="${id}"]`).checked,assigned:true,updatedAt:serverTimestamp()},{merge:true});b.textContent="Saved ✓"});
 }
 ["gbSearch","gbGrade","gbGroup"].forEach(id=>$(id)?.addEventListener(id==="gbSearch"?"input":"change",renderGradebook));
@@ -3205,13 +3190,29 @@ window.resolveCQOverride=async(id,status)=>{
  const note=status==="returned"?(prompt("Optional note for the student:")||"Please revise your answer and try again."):"Approved by teacher.";
  await updateDoc(doc(cqDb,"curriculumOverrideRequests",id),{status,teacherNote:note,resolvedAt:serverTimestamp(),updatedAt:serverTimestamp()});
 };
+/* v56.19 — the override queue renders into the Gradebook panel, so it now
+   waits for that tab instead of subscribing to the whole collection at
+   startup. dwEnsureTabData("data") fires this the first time Gradebook opens;
+   if the teacher opened it before auth resolved, this runs it then. */
+window.__dwStartOverrideQueue=null;
 onAuthStateChanged(cqAuth,u=>{
  if(!u||String(u.email||"").toLowerCase()!=="jacobicusjax@gmail.com")return;
+ const start=()=>{
  onSnapshot(collection(cqDb,"curriculumOverrideRequests"),s=>{cqReq=s.docs.map(d=>({id:d.id,...d.data()}));renderCQOverrides()},e=>{console.error("curriculum override queue",e);const box=document.getElementById("overrideQueueList"),count=document.getElementById("overrideQueueCount");if(count)count.textContent="ERROR";if(box)box.innerHTML=`<div class="muted" style="color:#ff9b9b">Could not load override requests: ${qEsc(e.code||e.message||e)}. Check Firestore rules deployment.</div>`;});
+ };
+ window.__dwStartOverrideQueue=start;
+ if(window.DW_SUBSCRIBED&&window.DW_SUBSCRIBED.has("overrideQueue"))start();
 });
 </script>
 <script id="dw-v5614-teacher-pet-manager">
 (function(){
+ /* v56.19 BUGFIX — this is a plain (non-module) script, so it could never see
+    the $ and esc helpers, which live in module scope. Every call threw, so
+    install() never ran and the whole Pet Collection UI silently failed:
+    opening a student showed the raw comma-separated id text boxes instead of
+    the pet grid. Same definitions as the module versions. */
+ const $=id=>document.getElementById(id);
+ const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
  const allPets=()=>[...(window.DWRPG?.pets||[]),...(window.DWRPG?.prestigePets||[])];
  const ownedSet=()=>new Set(($('spets')?.value||'').split(',').map(x=>x.trim()).filter(Boolean));
  function install(){const ownedField=$('spets')?.closest('.field'),activeField=$('sactivepet')?.closest('.field');if(!ownedField||!activeField||$('tpmGrid'))return;ownedField.hidden=true;activeField.hidden=true;const host=document.createElement('div');host.className='teacher-pet-manager';host.innerHTML=`<div class="tpm-head"><div><h4>🐾 PET COLLECTION</h4><small>Search, grant or remove companions, and set exactly one active pet.</small></div><strong id="tpmCount">0 / 0</strong></div><div class="tpm-tools"><input id="tpmSearch" type="search" placeholder="Search pets"><select id="tpmRarity"><option value="all">All rarities</option><option>common</option><option>uncommon</option><option>rare</option><option>epic</option><option>legendary</option></select><select id="tpmHabitat"><option value="all">All habitats</option></select><label><input id="tpmOwned" type="checkbox"> Owned only</label></div><div id="tpmGrid" class="tpm-grid"></div>`;activeField.after(host);[...new Set(allPets().map(x=>x.habitat).filter(Boolean))].sort().forEach(x=>$('tpmHabitat').add(new Option(x,x)));['tpmSearch','tpmRarity','tpmHabitat','tpmOwned'].forEach(id=>$(id).addEventListener(id==='tpmSearch'?'input':'change',render));}

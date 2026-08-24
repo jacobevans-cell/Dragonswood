@@ -2436,16 +2436,16 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
   <!-- Persistent Dragonswood navigation -->
   <nav class="frame bevel portal-nav" id="portalNav" aria-label="Dragonswood navigation">
+    <div class="nav-crest">STUDENT PORTAL</div>
     <button class="portal-tab active" type="button" data-view="home" onclick="DragonswoodNav('home')"><span>🛡️</span><b>MY ADVENTURER</b></button>
     <button class="portal-tab" type="button" data-view="quests" onclick="DragonswoodNav('quests')"><span>📜</span><b>DAILY MISSIONS</b></button>
-    <button class="portal-tab" type="button" data-view="games" onclick="DragonswoodNav('games')"><span>🎮</span><b>GAMES</b></button>
-    <button class="portal-tab" type="button" data-view="scribe" onclick="DragonswoodNav('scribe')"><span>✍️</span><b>SCRIBE &amp; JOURNAL</b></button>
-
+    <button class="portal-tab" type="button" data-view="games" onclick="DragonswoodNav('games')"><span>🎮</span><b>ACADEMIC GAMES</b></button>
+    <button class="portal-tab" type="button" data-view="scribe" onclick="DragonswoodNav('scribe')"><span>✍️</span><b>SCRIBE ARENA</b></button>
     <button class="portal-tab" type="button" data-view="planner" onclick="DragonswoodNav('planner')"><span>🕐</span><b>SCHEDULE &amp; CALENDAR</b></button>
-    <button class="portal-tab" type="button" data-view="poll" onclick="DragonswoodNav('poll')"><span>📊</span><b>POLL</b></button>
+    <div class="nav-divider"><span>DRAGONSWOOD</span></div>
     <button class="portal-tab" type="button" onclick="location.href='adventurer-hall.html'"><span>⚔️</span><b>ADVENTURER HALL</b></button>
-    <button class="portal-tab" type="button" onclick="location.href='boss-battle.html'"><span>👹</span><b>DAILY BOSS</b></button>
-    <button class="portal-tab" type="button" data-view="leaderboard" onclick="DragonswoodNav('leaderboard')"><span>🏆</span><b>LEADERBOARD</b></button>
+    <button class="portal-tab" type="button" onclick="location.href='boss-battle.html'"><span>👹</span><b>DAILY BOSS BATTLE</b></button>
+    <button class="portal-tab" type="button" data-view="leaderboard" onclick="DragonswoodNav('leaderboard')"><span>🏆</span><b>LEADERBOARDS</b></button>
   </nav>
 
   <!-- HOME -->
@@ -2542,7 +2542,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
   <!-- SCRIBE ARENA -->
   <section class="portal-view" id="view-scribe" data-page="scribe">
-    <div class="section-title"><div><h2>✍️ Dragonswood Scribe &amp; Journal</h2><p>Quickwrites, writing challenges, feedback, reflections, and your permanent writing portfolio.</p></div></div>
+    <div class="section-title"><div><h2>✍️ Scribe Arena &amp; Writing Portfolio</h2><p>Quickwrites, writing challenges, Scribe Battles, AI feedback, and your permanent writing portfolio.</p></div></div>
 
     <div class="scribe-grid">
       <article class="frame bevel scribe-active-card">
@@ -2602,7 +2602,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
   <!-- GAMES -->
   <section class="portal-view" id="view-games" data-page="games">
-    <div class="section-title"><div><h2>🎮 Dragonswood Games</h2><p>Choose a subject wing, then enter an academic adventure.</p></div></div>
+    <div class="section-title"><div><h2>🎮 Dragonswood Academic Games</h2><p>Choose a subject wing, then enter an academic adventure.</p></div></div>
 
     <div class="game-subject-tabs" id="gameSubjectTabs">
       <button class="active" data-game-filter="all">✨ ALL</button>
@@ -2702,7 +2702,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
   <!-- SHOP -->
   <section class="portal-view" id="view-poll" data-page="poll">
-    <div class="section-title"><div><h2>📊 Live Class Poll</h2><p>Vote once and watch the class results update live.</p></div></div>
+    <div class="section-title"><div><h2>📊 Live Class Poll</h2><p>Vote once and watch the class results update live.</p></div><button class="btn" type="button" data-open-quests="1">← BACK TO DAILY MISSIONS</button></div>
     <section class="frame bevel poll-card">
       <div id="pollEmpty" class="poll-status">No active poll right now.</div>
       <div id="pollLive" style="display:none">
@@ -2773,7 +2773,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
   <section class="portal-view" id="view-quests" data-page="quests">
     <div class="section-title"><div><h2>📜 Daily Missions</h2><p>Your daily schoolwork hub: Morning Bell Work, Exit Quest, and class reading.</p></div></div>
     <div class="frame bevel daily-access-banner" id="dailyAccessNotice">
-      <div><b>🔒 MORNING REQUIREMENT</b><span id="dailyAccessNoticeText">Finish today’s Daily Work or Level-Up Morning Challenge to unlock Games and My Journal.</span></div>
+      <div><b>🔒 MORNING REQUIREMENT</b><span id="dailyAccessNoticeText">Finish today’s Daily Work or Level-Up Morning Challenge to unlock Academic Games and Scribe Arena.</span></div>
       <div class="daily-access-count"><strong id="dailyDaysCompleted">0</strong><small>DAYS COMPLETE</small></div>
     </div>
     <div class="feature-grid quests-grid">
@@ -2796,6 +2796,14 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
         <h3>Level-Up Challenge</h3>
         <p id="levelUpMissionText">Ready for more? Try work one level above today’s mission.</p>
         <a class="btn" id="levelUpMissionBtn" href="daily-quest.html?levelup=1">⭐ TAKE THE LEVEL-UP CHALLENGE</a>
+      </article>
+
+      <!-- v56.18 — Class Poll moved here from the sidebar. -->
+      <article class="frame bevel feature-card quest-card" id="classPollCard">
+        <div class="feature-icon">📊</div>
+        <h3>Class Poll</h3>
+        <p id="classPollCardText">Vote in today’s class poll and watch the results update live.</p>
+        <button class="btn" type="button" data-open-poll="1">📊 OPEN CLASS POLL</button>
       </article>
 
       <article class="frame bevel feature-card quest-card">
@@ -2941,7 +2949,7 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
 <div id="profileModal" class="modal hidden"><div class="modalbox frame bevel" style="max-width:980px"><h2 id="profileTitle">Create Your Dragonswood Character</h2><div class="formgrid"><div class="field"><label>First Name</label><input id="firstName" readonly></div><div class="field"><label>Grade</label><select id="grade"><option value="">Choose</option><option value="4">4th Grade</option><option value="5">5th Grade</option></select></div><div class="field"><label>Group</label><select id="group"><option value="">Choose</option><option value="girl">Girls</option><option value="boy">Boys</option></select></div><div class="field"><label>Fantasy Title</label><select id="titleSelect"></select></div></div>
 <div class="avatar-studio profile-rpg-studio"><div class="avatar-preview-card"><h3>Your Dragonswood Adventurer</h3><div id="avatarPreview"></div><div class="avatar-statline"><div><b id="statAtk">1</b>ATK</div><div><b id="statDef">0</b>DEF</div><div><b id="statHp">10</b>MAX HP</div><div><b id="statHeal">0</b>HEAL</div></div><div id="profileGearBadges" class="profile-gear-badges"></div><div id="profilePetLabel" class="avatar-studio-note"></div></div>
-<div class="avatar-controls profile-rpg-summary"><h3>Class, Gear &amp; Pets</h3><p>Your selected appearance, equipped battle gear, and one active pet are managed in Adventurer Hall. Changes made there automatically appear on Home, Profile, and Scribe &amp; Journal.</p><a class="btn" href="adventurer-hall.html">⚔️ OPEN ADVENTURER HALL</a><div><h3 style="margin:4px 0 7px">Choose Your Home Scene</h3><p style="margin:0 0 9px">Pick the place where your adventurer and active pet live.</p><div id="profileBackgroundChoices" class="profile-background-picker" role="radiogroup" aria-label="Home scene"></div></div></div></div>
+<div class="avatar-controls profile-rpg-summary"><h3>Class, Gear &amp; Pets</h3><p>Your selected appearance, equipped battle gear, and one active pet are managed in Adventurer Hall. Changes made there automatically appear on Home, Profile, and Scribe Arena.</p><a class="btn" href="adventurer-hall.html">⚔️ OPEN ADVENTURER HALL</a><div><h3 style="margin:4px 0 7px">Choose Your Home Scene</h3><p style="margin:0 0 9px">Pick the place where your adventurer and active pet live.</p><div id="profileBackgroundChoices" class="profile-background-picker" role="radiogroup" aria-label="Home scene"></div></div></div></div>
 <div style="display:flex;gap:8px;margin-top:13px;flex-wrap:wrap"><button id="saveProfile">SAVE PROFILE</button><a class="btn" href="adventurer-hall.html">⚔️ CLASS, GEAR &amp; PETS</a><button id="closeProfile" class="hidden">Close</button></div><div id="profileError" style="color:#ff9db5;margin-top:8px"></div></div></div>
 
 <script id="dragonswood-navigation-core">
@@ -4026,12 +4034,12 @@ function dwUpdateDailyAccess(){
   const banner=$("dailyAccessNotice"),txt=$("dailyAccessNoticeText");
   if(banner)banner.classList.toggle("unlocked",open);
   if(txt)txt.textContent=isTesterAccount
-    ?"🧪 Approved tester access. Games and Scribe & Journal are unlocked."
+    ?"🧪 Approved tester access. Academic Games and Scribe Arena are unlocked."
     :academicComplete
-    ?"✅ Morning requirement complete. Games and Scribe & Journal are unlocked for today."
+    ?"✅ Morning requirement complete. Academic Games and Scribe Arena are unlocked for today."
     :overrideToday
-      ?"🔓 Teacher override active. Games and Scribe & Journal are unlocked for today."
-      :"Finish today’s assigned Morning Daily Work OR the Level-Up Morning Challenge to unlock Games and Scribe & Journal.";
+      ?"🔓 Teacher override active. Academic Games and Scribe Arena are unlocked for today."
+      :"Finish today’s assigned Morning Daily Work OR the Level-Up Morning Challenge to unlock Academic Games and Scribe Arena.";
   if($("dailyProgressDetail")){
     const credit=dwLegacyDayCredit();
     $("dailyProgressDetail").textContent=credit>0
@@ -6301,4 +6309,64 @@ select{
 }
 </style>
 
+
+<style id="dw-v5618-nav-rework">
+/* v56.18 — navigation rework. Group headings, engraved divider, renamed labels.
+   Appended last; overrides by cascade order and removes nothing. */
+.nav-crest{
+  font-family:Georgia,serif;font-size:9.5px;font-weight:900;letter-spacing:1.6px;
+  text-align:center;color:#ffe36d;text-transform:uppercase;
+  padding:4px 0 8px;margin-bottom:4px;
+  border-bottom:1px solid rgba(255,227,109,.28);
+  text-shadow:0 0 10px rgba(255,213,74,.35);
+}
+.nav-divider{
+  display:flex;align-items:center;gap:7px;
+  margin:9px 2px 5px;
+  font-family:Georgia,serif;font-size:8px;font-weight:900;letter-spacing:1.5px;
+  color:#b9a6e8;text-transform:uppercase;white-space:nowrap;
+}
+.nav-divider::before,.nav-divider::after{
+  content:"";flex:1;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(190,148,255,.55),transparent);
+}
+/* The rail is not a horizontal strip any more, so headings must not stretch. */
+@media(max-width:1050px){
+  .nav-crest,.nav-divider{display:none}
+}
+</style>
+
+<script id="dw-v5618-nav-rework-js">
+/* v56.18 — the Class Poll left the sidebar and now lives inside Daily Missions.
+   Nothing about routing changed: view-poll and DragonswoodNav('poll') are
+   untouched. This only supplies the new entry point and keeps the Daily
+   Missions tab lit while the poll is open, so no tab looks orphaned. */
+(function(){
+  function go(view){
+    if(typeof window.DragonswoodNav==="function"){
+      try{ window.DragonswoodNav(view); }catch(e){}
+    }
+  }
+  document.addEventListener("click",function(e){
+    var t=e.target && e.target.closest ? e.target.closest("[data-open-poll],[data-open-quests]") : null;
+    if(!t) return;
+    e.preventDefault();
+    go(t.hasAttribute("data-open-poll") ? "poll" : "quests");
+  });
+  // show() lights the tab whose data-view matches. Poll has no tab now, so
+  // borrow Daily Missions' highlight while the poll view is showing.
+  function relight(){
+    var pollOpen=document.getElementById("view-poll");
+    pollOpen=!!(pollOpen && pollOpen.classList.contains("active"));
+    if(!pollOpen) return;
+    var q=document.querySelector('.portal-tab[data-view="quests"]');
+    if(q) q.classList.add("active");
+  }
+  document.addEventListener("click",function(){ window.setTimeout(relight,0); },true);
+  window.addEventListener("hashchange",function(){ window.setTimeout(relight,0); });
+  if(document.readyState==="loading")
+    document.addEventListener("DOMContentLoaded",function(){ window.setTimeout(relight,60); });
+  else window.setTimeout(relight,60);
+})();
+</script>
 </body></html>

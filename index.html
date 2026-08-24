@@ -6183,6 +6183,25 @@ select{
 }
 </style>
 
+<style id="dw-v5619-profile-modal-fix">
+/* Keep the full Profile editor above the persistent Dragonswood header. */
+#profileModal{
+  z-index:100000!important;
+  place-items:start center!important;
+  padding:24px 20px!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain;
+}
+#profileModal>.modalbox{
+  max-height:none!important;
+  margin:auto!important;
+}
+body:has(#profileModal:not(.hidden)){overflow:hidden}
+@media(max-width:720px){
+  #profileModal{padding:10px!important}
+}
+</style>
+
 <script id="dw-v5618-nav-rework-js">
 /* v56.18 — the Class Poll left the sidebar and now lives inside Daily Missions.
    Nothing about routing changed: view-poll and DragonswoodNav('poll') are

@@ -178,5 +178,5 @@
   function hash(s){let h=2166136261;for(const c of String(s)){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
   function dailyEnemy(uid,day){return enemies[hash(`${uid}|${dateKey()}|${day}`)%enemies.length]}
 
-  window.DWRPG={classes,pets,prestigePets,petRegistry,enemies,items,appearancePacks,dateKey,levelForXp,hash,dailyEnemy,version:"56.16"};
+  window.DWRPG={classes,pets,prestigePets,petRegistry,enemies,items,appearancePacks,dateKey,levelForXp,hash,dailyEnemy,version:"56.17"};
 })();

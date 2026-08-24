@@ -1083,7 +1083,7 @@ const app=initializeApp(firebaseConfig,"DragonswoodTeacherPortal"),
       auth=getAuth(app),
       db=getFirestore(app),
       $=id=>document.getElementById(id);
-let points=0,history=[],rewards=[],scores=[],results=[],dailyQuestProgress=[],curriculumProgress=[],curriculumAttempts=[],gradebookGrades=[],gradebookAssignmentSettings=[],leaderboardRewards=[],bossLootRows=[],physicalPrizeDrops=[],gradebookSettings={daily:40,curriculum:40,reading:20,attemptRule:"first_best_average"},students=[],shopItems=[],purchases=[],bathroomStatuses=[],bathroomRequests=[],snackStatuses=[],snackRequests=[],pointRequests=[],genericPassRequests=[],passHistory=[],classJobsConfigV29={},jobWeeksV29=[],classScheduleV29={},calendarEventsV29=[],recessState={points:0,goal:10,dateKey:""},petGoalState={points:0,goal:250},tripGoalState={points:0,goal:750},universalPointState={points:0},dw20PendingCommand=null;
+let points=0,history=[],rewards=[],scores=[],results=[],dailyQuestProgress=[],curriculumProgress=[],curriculumAttempts=[],gradebookGrades=[],gradebookAssignmentSettings=[],leaderboardRewards=[],bossLootRows=[],physicalPrizeDrops=[],gradebookSettings={daily:40,curriculum:40,reading:20,attemptRule:"first_best_average"},students=[],shopItems=[],purchases=[],bathroomStatuses=[],bathroomSlots=[],bathroomRequests=[],snackStatuses=[],snackRequests=[],pointRequests=[],genericPassRequests=[],passHistory=[],classJobsConfigV29={},jobWeeksV29=[],classScheduleV29={},calendarEventsV29=[],recessState={points:0,goal:10,dateKey:""},petGoalState={points:0,goal:250},tripGoalState={points:0,goal:750},universalPointState={points:0},dw20PendingCommand=null;
 const esc=v=>String(v??"").replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
 const AVATAR_EMOJI={"dragon-purple":"🐉","dragon-green":"🐲","knight":"🛡️","wizard":"🧙","witch":"🧙‍♀️","princess":"👸","prince":"🤴","ranger":"🏹","phoenix":"🔥","wolf":"🐺","owl":"🦉","crystal":"🔮"};
 const DRAGONSWOOD_XP_THRESHOLDS=[0,200,450,750,1100,1500,1950,2450,3000,3600,4250,4950,5700,6500,7350,8250,9200,10200,11100,12000];
@@ -1316,7 +1316,8 @@ function listen(){
    onSnapshot(collection(db,"rewards"),s=>{rewards=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+a.points||0)-(+b.points||0));dwQueue(renderRewards);dwQueue(renderPoints)});
   });
   dwSub("liveRequests",function(){
-   onSnapshot(collection(db,"bathroomStatus"),s=>{bathroomStatuses=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderLiveRequests)},e=>console.warn("bathroomStatus listener",e));
+   onSnapshot(collection(db,"bathroomStatus"),s=>{bathroomStatuses=s.docs.map(d=>({id:d.id,...d.data()}));dwBathroomStatusReady=true;dwReconcileBathroomSlots();dwQueue(renderLiveRequests)},e=>console.warn("bathroomStatus listener",e));
+   onSnapshot(collection(db,"bathroomSlots"),s=>{bathroomSlots=s.docs.map(d=>({id:d.id,...d.data()}));dwBathroomSlotsReady=true;dwReconcileBathroomSlots();},e=>console.warn("bathroomSlots listener",e));
    onSnapshot(collection(db,"bathroomRequests"),s=>{bathroomRequests=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderLiveRequests)},e=>console.warn("bathroomRequests listener",e));
    onSnapshot(collection(db,"snackStatus"),s=>{snackStatuses=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderLiveRequests)},e=>console.warn("snackStatus listener",e));
    onSnapshot(collection(db,"snackRequests"),s=>{snackRequests=s.docs.map(d=>({id:d.id,...d.data()}));dwQueue(renderLiveRequests)},e=>console.warn("snackRequests listener",e));
@@ -2098,6 +2099,48 @@ let dwAlertRecognitionIds=new Set();
 let dwAlertSnackActiveIds=new Set();
 let dwAlertSnackRequestIds=new Set();
 let dwAlertGenericRequestIds=new Set();
+let dwBathroomStatusReady=false,dwBathroomSlotsReady=false,dwBathroomSlotRepairing=false;
+
+/* Shared slot is the student lock; bathroomStatus is the teacher/live source.
+   If those ever disagree, clear only slots whose owner is no longer active. */
+async function dwReconcileBathroomSlots(){
+  if(!dwBathroomStatusReady||!dwBathroomSlotsReady||dwBathroomSlotRepairing)return;
+  const key=teacherDateKey();
+  const activeIds=new Set(
+    bathroomStatuses
+      .filter(x=>x.dateKey===key&&x.active===true)
+      .map(x=>String(x.id))
+  );
+  const stale=bathroomSlots.filter(slot=>
+    slot.dateKey===key &&
+    slot.occupied===true &&
+    String(slot.studentId||"") &&
+    !activeIds.has(String(slot.studentId))
+  );
+  if(!stale.length)return;
+  dwBathroomSlotRepairing=true;
+  try{
+    const batch=writeBatch(db);
+    stale.forEach(slot=>{
+      batch.set(doc(db,"bathroomSlots",slot.id),{
+        group:slot.id,
+        occupied:false,
+        studentId:"",
+        studentName:"",
+        activeVisitId:"",
+        releasedAt:serverTimestamp(),
+        repairedAt:serverTimestamp(),
+        updatedAt:serverTimestamp()
+      },{merge:true});
+    });
+    await batch.commit();
+    console.warn("[Dragonswood] Repaired stale bathroom slot(s):",stale.map(x=>x.id));
+  }catch(e){
+    console.error("bathroom slot reconciliation",e);
+  }finally{
+    dwBathroomSlotRepairing=false;
+  }
+}
 
 function dwCurrentOutKeys(){
   const key=teacherDateKey();
@@ -2291,7 +2334,14 @@ function renderLiveRequests(){
        const updated=visits.map(v=>String(v?.id||'')!==activeId?v:{...v,returnedAt:now.toISOString(),returnedText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),durationMinutes:Number(v?.leftMs||0)?Math.max(0,Math.round((now.getTime()-Number(v.leftMs))/60000)):null,status:'returned'});
        const group=status.genderGroup==="girl"?"girl":"boy",batch=writeBatch(db);
        batch.set(doc(db,'bathroomStatus',id),{active:false,activeVisitId:'',returnedAt:serverTimestamp(),returnedAtText:now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),visits:updated,updatedAt:serverTimestamp()},{merge:true});
-       batch.set(doc(db,'bathroomSlots',group),{group,occupied:false,studentId:'',studentName:'',releasedAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});
+       // Clear the slot that ACTUALLY belongs to this student. Do not trust an
+       // old/missing genderGroup field to identify the shared lock.
+       const ownedSlots=bathroomSlots.filter(slot=>String(slot.studentId||"")===String(id));
+       if(ownedSlots.length){
+         ownedSlots.forEach(slot=>batch.set(doc(db,'bathroomSlots',slot.id),{group:slot.id,occupied:false,studentId:'',studentName:'',activeVisitId:'',releasedAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true}));
+       }else{
+         batch.set(doc(db,'bathroomSlots',group),{group,occupied:false,studentId:'',studentName:'',activeVisitId:'',releasedAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});
+       }
        if(activeId){const archived=updated.find(v=>String(v?.id||'')===activeId);if(archived)batch.set(doc(db,'passHistory',activeId),{...archived,type:'bathroom',label:'Bathroom',updatedAt:serverTimestamp()},{merge:true})}
        await batch.commit();
      }else if(kind==='snack'){

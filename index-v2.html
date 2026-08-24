@@ -797,7 +797,7 @@ function watchBathroom(){
 
   bathroomUnsub=onSnapshot(
     doc(db,'bathroomStatus',user.uid),
-    snap=>{currentBathroomData=snap.exists()?snap.data():null;renderBathroomStudent(currentBathroomData);dwSyncPassLockAndOverdue()}, 
+    snap=>{currentBathroomData=snap.exists()?snap.data():null;renderBathroomStudent(currentBathroomData);refreshPassHub();dwSyncPassLockAndOverdue()}, 
     err=>console.warn("bathroom status",err)
   );
 
@@ -806,7 +806,7 @@ function watchBathroom(){
     doc(db,'bathroomSlots',group),
     snap=>{
       bathroomSlotData=snap.exists()?snap.data():null;
-      getDoc(doc(db,'bathroomStatus',user.uid)).then(s=>{currentBathroomData=s.exists()?s.data():null;renderBathroomStudent(currentBathroomData);dwSyncPassLockAndOverdue()}).catch(()=>{});
+      getDoc(doc(db,'bathroomStatus',user.uid)).then(s=>{currentBathroomData=s.exists()?s.data():null;renderBathroomStudent(currentBathroomData);refreshPassHub();dwSyncPassLockAndOverdue()}).catch(()=>{});
     },
     err=>console.warn("bathroom slot",err)
   );
@@ -1805,6 +1805,9 @@ onAuthStateChanged(auth,async u=>{
     const snap=await getDoc(ref);
     if(snap.exists()){
       profile=snap.data();
+      // Bathroom slot group depends on profile.genderGroup. The first watcher
+      // starts before the profile is loaded, so re-bind now that group is known.
+      watchBathroom();
       window.DWVoicePreferences?.set?.(profile.narrationVoice||"automatic");
       renderProfile();
     }else{
@@ -1822,6 +1825,8 @@ onAuthStateChanged(auth,async u=>{
         else if(rewardDelta<0)window.DWAudio?.takePoints?.();
       }
       profile=nextProfile;
+      // Keep the shared bathroom-slot listener aligned with the live profile.
+      if((previousProfile?.genderGroup||"")!==(nextProfile?.genderGroup||""))watchBathroom();
       window.DWVoicePreferences?.set?.(profile.narrationVoice||"automatic");
       try{
         renderProfile();

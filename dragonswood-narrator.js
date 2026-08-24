@@ -3,7 +3,7 @@
   const SPEED_STORE="dwNarrationSpeed",VOICE_STORE="dwNarrationVoice";
   const manifest=window.DRAGONSWOOD_NARRATION_MANIFEST||{clips:{},voices:{}};
   const voices=manifest.voices||{},clips=manifest.clips||{};
-  let audio=null,utterance=null,current=null,raf=0;
+  let audio=null,utterance=null,current=null,raf=0,speechQueue=[],speechIndex=0;
   const normalize=text=>String(text||"").trim().replace(/\s+/g," ");
   const hash=text=>{let h=2166136261;for(const ch of normalize(text)){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return(h>>>0).toString(16).padStart(8,"0")};
   const fmt=n=>`${Math.floor((n||0)/60)}:${String(Math.floor((n||0)%60)).padStart(2,"0")}`;
@@ -23,7 +23,7 @@
   const requestedVoice=(contentType="general")=>pref()==="automatic"?(contentType==="ela"?"us-liam":"gb-lewis"):(voices[pref()]?pref():"gb-lewis");
   const voiceLabel=id=>voices[id]?.label||"Dragonswood Narrator";
   function tick(){if(audio){q("#dwNarratorProgress").value=audio.duration?audio.currentTime/audio.duration*100:0;q("#dwNarratorTime").textContent=`${fmt(audio.currentTime)} / ${fmt(audio.duration)}`;if(!audio.paused)raf=requestAnimationFrame(tick)}}
-  function stop(hide=false){cancelAnimationFrame(raf);if(audio){audio.pause();audio.removeAttribute("src");audio.load();audio=null}if(utterance&&"speechSynthesis" in window){speechSynthesis.cancel();utterance=null}current=null;if(root.isConnected){q("#dwNarratorPlay").textContent="▶ Play";if(hide)root.hidden=true}}
+  function stop(hide=false){cancelAnimationFrame(raf);if(audio){audio.pause();audio.removeAttribute("src");audio.load();audio=null}if("speechSynthesis" in window)speechSynthesis.cancel();utterance=null;speechQueue=[];speechIndex=0;current=null;if(root.isConnected){q("#dwNarratorPlay").textContent="▶ Play";if(hide)root.hidden=true}}
   function chooseBrowserVoice(voiceId){
     const list=speechSynthesis.getVoices(),wanted=String(voices[voiceId]?.lang||"en-US").toLowerCase();
     const exact=list.filter(v=>String(v.lang||"").toLowerCase()===wanted),language=wanted.slice(0,2);
@@ -35,11 +35,21 @@
     const fallbackIndex={"gb-lewis":0,"us-liam":0,"us-bella":1,"es-alex":0}[voiceId]||0;
     return pool[fallbackIndex%Math.max(1,pool.length)]||list.find(v=>/^en/i.test(v.lang))||list[0]||null;
   }
-  function fallback(text,voiceId,note=""){if(audio){audio.pause();audio=null}if(!("speechSynthesis" in window)){status("Narration unavailable. You can continue your work normally.");return}speechSynthesis.cancel();utterance=new SpeechSynthesisUtterance(text);utterance.lang=voiceId==="es-alex"?"es-ES":voices[voiceId]?.lang||"en-US";utterance.voice=chooseBrowserVoice(voiceId);utterance.rate=Number(q("#dwNarratorSpeed").value||1);const actual=utterance.voice?.name?` (${utterance.voice.name})`:"";status(note||`${voiceLabel(voiceId)} recording unavailable — browser fallback${actual}`);utterance.onend=()=>{utterance=null;q("#dwNarratorPlay").textContent="▶ Replay"};utterance.onerror=()=>status("Browser narration could not start. Press Replay or try another narrator.");speechSynthesis.speak(utterance);q("#dwNarratorPlay").textContent="⏸ Pause"}
+  function splitForSpeech(text){
+    const sentences=normalize(text).match(/[^.!?]+[.!?]+|[^.!?]+$/g)||[];const chunks=[];
+    for(const sentence of sentences){if(sentence.length<=240){chunks.push(sentence.trim());continue}const words=sentence.trim().split(/\s+/);let chunk="";for(const word of words){if((chunk+" "+word).trim().length>220){if(chunk)chunks.push(chunk);chunk=word}else chunk=(chunk+" "+word).trim()}if(chunk)chunks.push(chunk)}
+    return chunks.filter(Boolean);
+  }
+  function speakQueueItem(voiceId,note=""){
+    if(speechIndex>=speechQueue.length){utterance=null;q("#dwNarratorPlay").textContent="▶ Replay";status("Scroll complete");return}
+    utterance=new SpeechSynthesisUtterance(speechQueue[speechIndex]);utterance.lang=voiceId==="es-alex"?"es-ES":voices[voiceId]?.lang||"en-US";utterance.voice=chooseBrowserVoice(voiceId);utterance.rate=Number(q("#dwNarratorSpeed").value||1);const actual=utterance.voice?.name?` (${utterance.voice.name})`:"";status(note||`${voiceLabel(voiceId)} is reading${actual}`);utterance.onend=()=>{speechIndex++;speakQueueItem(voiceId,note)};utterance.onerror=e=>{if(e.error==="interrupted"||e.error==="canceled")return;status("Browser narration could not continue. Press Replay or try another narrator.")};speechSynthesis.speak(utterance);q("#dwNarratorPlay").textContent="⏸ Pause";
+  }
+  function fallback(text,voiceId,note=""){if(audio){audio.pause();audio=null}if(!("speechSynthesis" in window)){status("Narration unavailable. You can continue your work normally.");return}speechSynthesis.cancel();speechQueue=splitForSpeech(text);speechIndex=0;if(!speechQueue.length){status("No readable text was found.");return}speakQueueItem(voiceId,note)}
   function resolveSource(entry,voiceId){return entry?.sources?.[voiceId]||entry?.sources?.[entry.defaultVoice]||entry?.src||""}
   function play(opts={}){mount();stop(false);root.hidden=false;q("#dwNarratorVoice").value=pref();current={id:String(opts.id||""),text:String(opts.text||""),spanishText:String(opts.spanishText||""),contentType:String(opts.contentType||"general"),assessmentLanguage:String(opts.assessmentLanguage||""),voiceId:String(opts.voiceId||"")};const entry=clips[current.id];let voiceId=current.voiceId||requestedVoice(current.contentType),spokenText=current.text,note="";if(voiceId==="es-alex"){if(current.spanishText)spokenText=current.spanishText;else if(current.assessmentLanguage==="en"){voiceId="us-liam";note="This English assessment stays in English; Liam will pronounce it clearly."}}const src=resolveSource(entry,voiceId),expectedHash=entry?.voiceHashes?.[voiceId]||entry?.hash,valid=entry&&expectedHash===hash(spokenText)&&src;if(!valid){fallback(spokenText,voiceId,note);return}status(`Loading ${voiceLabel(voiceId)}…`);audio=new Audio(src);audio.preload="auto";audio.playbackRate=Number(q("#dwNarratorSpeed").value||1);audio.onerror=()=>fallback(spokenText,voiceId,note);audio.onended=()=>{q("#dwNarratorPlay").textContent="▶ Replay";status("Scroll complete")};audio.play().then(()=>{status(`${voiceLabel(voiceId)} is playing`);q("#dwNarratorPlay").textContent="⏸ Pause";tick()}).catch(()=>{status("Audio is ready — press Play to begin");q("#dwNarratorPlay").textContent="▶ Play"})}
   function setVoicePreference(id){const safe=id==="automatic"||voices[id]?id:"automatic";localStorage.setItem(VOICE_STORE,safe);if(root.isConnected)q("#dwNarratorVoice").value=safe;window.dispatchEvent(new CustomEvent("dw:narration-voice-change",{detail:{voiceId:safe}}));return safe}
   function readablePageText(){
+    if(typeof window.DWReadAloudText==="function")return normalize(window.DWReadAloudText());
     const clone=document.body.cloneNode(true);
     clone.querySelectorAll("script,style,noscript,nav,header,footer,button,input,select,textarea,label,[hidden],[aria-hidden='true'],.dw-narrator,.dw-narrator-launcher,.teacher-only,.answer,.answers,.choices,.choice").forEach(node=>node.remove());
     return normalize(clone.innerText).slice(0,24000);

@@ -2224,8 +2224,8 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 <script src="pet-registry-v5614.js"></script>
 <script src="dragonswood-rpg-v56.js"></script>
 <script src="dragonswood-gradebook-v5611.js"></script>
-<script src="narration-manifest.js"></script>
-<script src="dragonswood-narrator.js"></script>
+<script src="narration-manifest.js?v=56.19.6"></script>
+<script src="dragonswood-narrator.js?v=56.19.6"></script>
 <style id="v56-12-adventurer-trophy-display">
 /* A live, data-driven version of the Champion concept art. */
 .home-hero-card{grid-template-columns:minmax(330px,43%) minmax(0,1fr)!important;align-items:stretch!important}
@@ -4788,7 +4788,11 @@ $("closeProfile").onclick=()=>$("profileModal").classList.add("hidden");
 $("previewNarrationVoice").onclick=()=>{
   const selected=$("narrationVoice").value;
   const button=$("previewNarrationVoice");
-  if(!window.DWNarrator?.previewVoice){button.textContent="⚠️ RELOAD TO ENABLE VOICE";return}
+  if(!window.DWNarrator?.previewVoice){
+    const voiceId=selected==="automatic"?"gb-lewis":selected;
+    window.DWNarrator?.play?.({id:"system/welcome",text:"Hello, adventurer, and welcome to Dragonswood. We hope to see you soon—and hear the tales of your journey.",spanishText:"Hola, aventurero, y bienvenido a Dragonswood. Esperamos verte pronto y escuchar los relatos de tu viaje.",voiceId,contentType:"general"});
+    button.textContent="🔊 PLAYING SAMPLE…";setTimeout(()=>{button.textContent="🔊 HEAR THIS VOICE"},1800);return;
+  }
   button.textContent="🔊 PLAYING SAMPLE…";
   window.DWNarrator.previewVoice(selected);
   setTimeout(()=>{button.textContent="🔊 HEAR THIS VOICE"},1800);

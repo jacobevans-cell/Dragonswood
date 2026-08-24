@@ -27,17 +27,21 @@
   function chooseBrowserVoice(voiceId){
     const list=speechSynthesis.getVoices(),wanted=String(voices[voiceId]?.lang||"en-US").toLowerCase();
     const exact=list.filter(v=>String(v.lang||"").toLowerCase()===wanted),language=wanted.slice(0,2);
-    const pool=exact.length?exact:list.filter(v=>String(v.lang||"").toLowerCase().startsWith(language));
+    const languagePool=list.filter(v=>String(v.lang||"").toLowerCase().startsWith(language));
+    // ChromeOS usually exposes only one en-US voice but does expose a distinct
+    // English female voice under en-GB. Bella must search the full English pool.
+    const pool=voiceId==="us-bella"?languagePool:(exact.length?exact:languagePool);
     const patterns={
       "gb-lewis":/google uk english male|microsoft ryan|microsoft george|daniel|lewis|british.*male|male.*british/i,
       "us-liam":/google us english(?!.*female)|microsoft guy|microsoft david|liam|american.*male|male.*american/i,
-      "us-bella":/google us english.*female|microsoft aria|microsoft zira|samantha|victoria|bella|american.*female|female.*american/i,
+      "us-bella":/google uk english female|google us english.*female|microsoft aria|microsoft zira|samantha|victoria|bella|english.*female|female.*english/i,
       "es-alex":/google espa[ñn]ol|microsoft alvaro|microsoft jorge|alex|spanish.*male|male.*spanish/i
     };
     const preferred=pool.find(v=>patterns[voiceId]?.test(v.name));
     if(preferred)return preferred;
     const local=pool.find(v=>v.localService!==false);
-    return local||pool[0]||list.find(v=>/^en/i.test(v.lang))||list[0]||null;
+    const index=voiceId==="us-bella"&&pool.length>1?1:0;
+    return local||pool[index]||pool[0]||list.find(v=>/^en/i.test(v.lang))||list[0]||null;
   }
   function waitForBrowserVoices(){
     if(!("speechSynthesis" in window))return Promise.resolve([]);

@@ -28,12 +28,21 @@
     const list=speechSynthesis.getVoices(),wanted=String(voices[voiceId]?.lang||"en-US").toLowerCase();
     const exact=list.filter(v=>String(v.lang||"").toLowerCase()===wanted),language=wanted.slice(0,2);
     const pool=exact.length?exact:list.filter(v=>String(v.lang||"").toLowerCase().startsWith(language));
-    const female=/female|bella|zira|samantha|victoria|karen|moira|tessa|ava|aria|jenny|susan|hazel/i;
-    const male=/male|lewis|liam|david|mark|daniel|george|james|ryan|guy|aaron|fred|alex/i;
-    const preferred=voiceId==="us-bella"?pool.find(v=>female.test(v.name)):pool.find(v=>male.test(v.name)&&!female.test(v.name));
+    const patterns={
+      "gb-lewis":/google uk english male|microsoft ryan|microsoft george|daniel|lewis|british.*male|male.*british/i,
+      "us-liam":/google us english(?!.*female)|microsoft guy|microsoft david|liam|american.*male|male.*american/i,
+      "us-bella":/google us english.*female|microsoft aria|microsoft zira|samantha|victoria|bella|american.*female|female.*american/i,
+      "es-alex":/google espa[ñn]ol|microsoft alvaro|microsoft jorge|alex|spanish.*male|male.*spanish/i
+    };
+    const preferred=pool.find(v=>patterns[voiceId]?.test(v.name));
     if(preferred)return preferred;
-    const fallbackIndex={"gb-lewis":0,"us-liam":0,"us-bella":1,"es-alex":0}[voiceId]||0;
-    return pool[fallbackIndex%Math.max(1,pool.length)]||list.find(v=>/^en/i.test(v.lang))||list[0]||null;
+    const local=pool.find(v=>v.localService!==false);
+    return local||pool[0]||list.find(v=>/^en/i.test(v.lang))||list[0]||null;
+  }
+  function waitForBrowserVoices(){
+    if(!("speechSynthesis" in window))return Promise.resolve([]);
+    const ready=speechSynthesis.getVoices();if(ready.length)return Promise.resolve(ready);
+    return new Promise(resolve=>{let done=false;const finish=()=>{if(done)return;done=true;speechSynthesis.removeEventListener?.("voiceschanged",finish);resolve(speechSynthesis.getVoices())};speechSynthesis.addEventListener?.("voiceschanged",finish,{once:true});setTimeout(finish,1200)});
   }
   function splitForSpeech(text){
     const sentences=normalize(text).match(/[^.!?]+[.!?]+|[^.!?]+$/g)||[];const chunks=[];
@@ -44,10 +53,14 @@
     if(speechIndex>=speechQueue.length){utterance=null;q("#dwNarratorPlay").textContent="▶ Replay";status("Scroll complete");return}
     utterance=new SpeechSynthesisUtterance(speechQueue[speechIndex]);utterance.lang=voiceId==="es-alex"?"es-ES":voices[voiceId]?.lang||"en-US";utterance.voice=chooseBrowserVoice(voiceId);utterance.rate=Number(q("#dwNarratorSpeed").value||1);const actual=utterance.voice?.name?` (${utterance.voice.name})`:"";status(note||`${voiceLabel(voiceId)} is reading${actual}`);utterance.onend=()=>{speechIndex++;speakQueueItem(voiceId,note)};utterance.onerror=e=>{if(e.error==="interrupted"||e.error==="canceled")return;status("Browser narration could not continue. Press Replay or try another narrator.")};speechSynthesis.speak(utterance);q("#dwNarratorPlay").textContent="⏸ Pause";
   }
-  function fallback(text,voiceId,note=""){if(audio){audio.pause();audio=null}if(!("speechSynthesis" in window)){status("Narration unavailable. You can continue your work normally.");return}speechSynthesis.cancel();speechQueue=splitForSpeech(text);speechIndex=0;if(!speechQueue.length){status("No readable text was found.");return}speakQueueItem(voiceId,note)}
+  async function fallback(text,voiceId,note=""){if(audio){audio.pause();audio=null}if(!("speechSynthesis" in window)){status("Narration unavailable. You can continue your work normally.");return}status(`Preparing ${voiceLabel(voiceId)}…`);await waitForBrowserVoices();speechSynthesis.cancel();speechQueue=splitForSpeech(text);speechIndex=0;if(!speechQueue.length){status("No readable text was found.");return}setTimeout(()=>speakQueueItem(voiceId,note),60)}
   function resolveSource(entry,voiceId){return entry?.sources?.[voiceId]||entry?.sources?.[entry.defaultVoice]||entry?.src||""}
   function play(opts={}){mount();stop(false);root.hidden=false;q("#dwNarratorVoice").value=pref();current={id:String(opts.id||""),text:String(opts.text||""),spanishText:String(opts.spanishText||""),contentType:String(opts.contentType||"general"),assessmentLanguage:String(opts.assessmentLanguage||""),voiceId:String(opts.voiceId||"")};const entry=clips[current.id];let voiceId=current.voiceId||requestedVoice(current.contentType),spokenText=current.text,note="";if(voiceId==="es-alex"){if(current.spanishText)spokenText=current.spanishText;else if(current.assessmentLanguage==="en"){voiceId="us-liam";note="This English assessment stays in English; Liam will pronounce it clearly."}}const src=resolveSource(entry,voiceId),expectedHash=entry?.voiceHashes?.[voiceId]||entry?.hash,valid=entry&&expectedHash===hash(spokenText)&&src;if(!valid){fallback(spokenText,voiceId,note);return}status(`Loading ${voiceLabel(voiceId)}…`);audio=new Audio(src);audio.preload="auto";audio.playbackRate=Number(q("#dwNarratorSpeed").value||1);audio.onerror=()=>fallback(spokenText,voiceId,note);audio.onended=()=>{q("#dwNarratorPlay").textContent="▶ Replay";status("Scroll complete")};audio.play().then(()=>{status(`${voiceLabel(voiceId)} is playing`);q("#dwNarratorPlay").textContent="⏸ Pause";tick()}).catch(()=>{status("Audio is ready — press Play to begin");q("#dwNarratorPlay").textContent="▶ Play"})}
   function setVoicePreference(id){const safe=id==="automatic"||voices[id]?id:"automatic";localStorage.setItem(VOICE_STORE,safe);if(root.isConnected)q("#dwNarratorVoice").value=safe;window.dispatchEvent(new CustomEvent("dw:narration-voice-change",{detail:{voiceId:safe}}));return safe}
+  function previewVoice(voiceId){
+    const selected=voiceId==="automatic"?"gb-lewis":voiceId;
+    play({id:"system/welcome",text:"Hello, adventurer, and welcome to Dragonswood. We hope to see you soon—and hear the tales of your journey.",spanishText:"Hola, aventurero, y bienvenido a Dragonswood. Esperamos verte pronto y escuchar los relatos de tu viaje.",voiceId:selected,contentType:"general"});
+  }
   function readablePageText(){
     if(typeof window.DWReadAloudText==="function")return normalize(window.DWReadAloudText());
     const clone=document.body.cloneNode(true);
@@ -60,6 +73,6 @@
   q("#dwNarratorReadSelection").onclick=()=>{const text=normalize(getSelection()?.toString());if(text)play({id:`selection/${location.pathname}`,text,contentType:/spelling|reader|writing|witch/i.test(location.pathname)?"ela":"general"});else status("Highlight words or a sentence first, then press Read selected text.")};
   mount();q("#dwNarratorVoice").value=pref();q("#dwNarratorVoice").onchange=()=>{setVoicePreference(q("#dwNarratorVoice").value);if(current)play({...current,voiceId:""})};q("#dwNarratorSpeed").value=localStorage.getItem(SPEED_STORE)||"1";q("#dwNarratorSpeed").onchange=()=>{localStorage.setItem(SPEED_STORE,q("#dwNarratorSpeed").value);if(audio)audio.playbackRate=Number(q("#dwNarratorSpeed").value)};q("#dwNarratorClose").onclick=()=>stop(true);q("#dwNarratorRestart").onclick=()=>{if(audio){audio.currentTime=0;audio.play();tick()}else if(current)play(current)};q("#dwNarratorPlay").onclick=()=>{if(audio){if(audio.paused){audio.play();q("#dwNarratorPlay").textContent="⏸ Pause";tick()}else{audio.pause();q("#dwNarratorPlay").textContent="▶ Resume"}}else if(utterance){if(speechSynthesis.paused){speechSynthesis.resume();q("#dwNarratorPlay").textContent="⏸ Pause"}else{speechSynthesis.pause();q("#dwNarratorPlay").textContent="▶ Resume"}}else if(current)play(current)};q("#dwNarratorProgress").oninput=()=>{if(audio&&audio.duration)audio.currentTime=Number(q("#dwNarratorProgress").value)/100*audio.duration};["pagehide","beforeunload","hashchange"].forEach(e=>addEventListener(e,()=>stop(true)));document.addEventListener("visibilitychange",()=>{if(document.hidden)stop(true)});
   window.DWVoicePreferences=Object.freeze({get:pref,set:setVoicePreference,voices});
-  window.DWNarrator=Object.freeze({play,stop,hash,normalize,setVoicePreference,getVoicePreference:pref});
+  window.DWNarrator=Object.freeze({play,previewVoice,stop,hash,normalize,setVoicePreference,getVoicePreference:pref});
   window.DWCedar=window.DWNarrator;
 })();

@@ -290,6 +290,7 @@ function acceptedTypedAnswers(q){
 }
 function typedAnswerIsCorrect(q,value){
  if(window.DWGrading?.questionAnswerEquivalent)return window.DWGrading.questionAnswerEquivalent(q,value);
+ if(window.DWGrading&&window.DWGrading.answersEquivalent&&window.DWGrading.answersEquivalent(q?.answer,value))return true;
  return acceptedTypedAnswers(q).includes(normalizeTypedAnswer(value));
 }
 async function gradeTypedAnswerWithRescue(q,value,t){
@@ -5738,6 +5739,7 @@ const DW_TOPIC_RULES=[
   [/first or third person|point of view|who.?s telling/i, ["ela.pov"]],
   [/character/i,                    ["ela.character","ela.meaning"]],
   [/inference|between the lines/i,  ["ela.meaning","ela.supporting"]],
+  [/compound sentence/i,             ["ela.sent.compound","ela.pk.combining_sentences"]],
   [/fanboys|coordinating conjunction/i, ["ela.conj.coordinating","ela.sent.compound"]],
   [/capitaliz/i,                    ["ela.capitalization"]],
   [/comma|quotation|dialogue|direct speech/i, ["ela.commas","ela.dialogue"]],
@@ -5835,13 +5837,19 @@ function dwQuestion(skillId, seed, i, subject, fallbackLabel){
 
 
 function makeQ(task,i){
- const q=dwQuestion(task&&task.skillId, task&&task.seed, i, task&&task.subject, task&&task.skill);
+ const q=task?.questionParams
+   ? dwQuestionWithParams(task.skillId,task.questionParams,task.seed,i)
+   : dwQuestion(task&&task.skillId, task&&task.seed, i, task&&task.subject, task&&task.skill);
  if(q&&window.DWGrading)window.DWGrading.assertQuestion(q,`${task?.skillId||task?.skill||"unknown"} #${i+1}`);
  if(q&&q.source==="registry"){
    // carry the Challenge-track Word of the Day through to the support bar
    if(task&&task.wordOfDay&&!q.wordOfDay) q.wordOfDay=task.wordOfDay;
    return q;
  }
+ /* Pacing-locked work must fail closed. A generic fallback can be answerable
+    while still teaching the wrong lesson, which is worse than showing a clear
+    recovery message. */
+ if(task?.pacingLocked) throw new Error(`No verified generator for ${task.pacingItemId||task.skillId||task.skill}`);
  const subject=String(task?.subject||"").trim().toUpperCase();
  if(subject==="MATH") return numQ(task.skill,task.seed,i);
  if(subject==="ELA") return elaQ(task.skill,task.seed,i);
@@ -5877,36 +5885,58 @@ function resolvedTrack(){
   return"challenge";
 }
 function task(subject,skill,engine,count,seed){return {subject,skill,engine,count,seed}}
-function dwSetQuestionTarget(L){
- if(!L||!Array.isArray(L.morning)||!L.morning.length)return L;
- /* Keep each generator run short and broaden the spiral before increasing
-    counts. Large same-skill runs exhaust small banks; seven distinct rounds
-    give the learner 35 real questions without filler or avoidable repeats. */
- const authored=L.morning.map(t=>({...t})),rounds=[],used=new Set();
- authored.forEach(t=>{if(!used.has(t.skillId)){used.add(t.skillId);rounds.push(t)}});
- const day=Math.max(1,Number(L.day||1));
- const grade4Spiral=["math.placevalue","ela.meaning","math.add.multi","ela.synonyms","math.mult.facts","ela.usage","math.frac.equiv","ela.prefixes","math.geom.polygons","ela.sent.compound","math.time.elapsed","ela.transitions"];
- const sourcePool=L.track==="5"?DW_T5_IDS:L.track==="challenge"?DW_CH_IDS:grade4Spiral;
- for(let j=0;rounds.length<7&&j<sourcePool.length;j++){
-  const id=sourcePool[(day*3+j)%sourcePool.length];if(used.has(id)||!DW_SKILLS[id])continue;
-  used.add(id);rounds.push({subject:id.startsWith("math.")?"MATH":"ELA",skillId:id,skill:dwLabelOf(id),engine:authored[rounds.length%authored.length].engine,count:5,seed:day*100003+j*7919});
+const DW_PACING_ENGINES=["ranger","potion","bridge","dragonGate","rune","crystal","smash","tower","dragSort","choice"];
+const DW_MATH_TOPIC_RULES=[
+ [/multi-digit addition|addition algorithm/i,["math.add.multi"]],
+ [/subtraction algorithm|multi-digit subtraction/i,["math.sub.multi"]],
+ [/add\/?subtract|addition\s*&\s*subtraction|computation review/i,["math.add.multi","math.sub.multi"]],
+ [/multi-step|problem solving/i,["math.wordproblems"]],[/division problem/i,["math.div.basic"]],
+ [/value of digits|place value relationship|place value introduction|place value review/i,["math.placevalue"]],
+ [/read large numbers|write large numbers/i,["math.write.multidigit"]],
+ [/compare and order numbers|compare numbers/i,["math.compare.whole"]],
+ [/round to tens|round to hundreds|rounding introduction|rounding review/i,["math.rounding"]],
+ [/points and lines|rays and segments/i,["math.geom.lines"]],
+ [/parallel lines|perpendicular lines/i,["math.geom.parallel"]],
+ [/classify shapes|shape attributes|categories of shapes|shape review/i,["math.geom.polygons"]],
+ [/symmetr/i,["math.symmetry"]],[/measuring and comparing angles/i,["math.angle.measure"]],
+ [/understanding angles/i,["math.pk.acute_right_obtuse_and_straight_angles"]],[/expanded decimal form/i,["math.dec.expanded"]],
+ [/read decimals|write decimals|decimal models/i,["math.dec.wordform"]],[/compare decimals/i,["math.dec.compare"]],
+ [/ordering decimals/i,["math.dec.order"]],
+ [/round to tenths|round to hundredths|round to thousandth|rounding decimals|decimal rounding review/i,["math.pk.rounding_decimals"]],
+ [/add decimals/i,["math.dec.add"]],[/subtract decimals/i,["math.dec.sub"]],
+ [/decimal addition\s*&\s*subtraction|decimal operations review/i,["math.dec.add","math.dec.sub"]],
+ [/multiply decimals|decimal multiplication/i,["math.pk.multiplying_a_decimal_by_a_one_digit_number"]],[/divide decimals|decimal division/i,["math.pk.division_with_decimal_quotients"]],
+ [/multi-step decimal|decimal strategies/i,["math.wordproblems"]],
+ [/multiplying by powers? of 10/i,["math.pk.multiplying_a_decimal_by_a_power_of_ten"]],
+ [/dividing by powers? of 10/i,["math.pk.dividing_by_powers_of_ten"]],
+ [/powers? of 10|place value patterns|relationships between places/i,["math.pk.multiplication_patterns_over_increasing_place_"]],
+ [/classifying shapes|shape relationships|categories of figures/i,["math.geom.polygons"]]
+];
+function dwPacingTopicSkills(item){
+ if(item.subject==="Math"){const text=`${item.requirement||""} ${item.resourceName||""}`;for(const [re,skills] of DW_MATH_TOPIC_RULES)if(re.test(text))return skills.filter(id=>DW_SKILLS[id])}
+ if(item.subject==="HUM"){
+  const text=`${item.requirement||""} ${item.resourceName||""}`.replace(/\n/g," "),topic=[];
+  for(const [re,skills] of DW_TOPIC_RULES)if(re.test(text))for(const id of skills)if(DW_SKILLS[id]&&!topic.includes(id))topic.push(id);
+  if(topic.length)return topic;
  }
- /* Foundation already authors eight distinct, grade-appropriate rounds. */
- if(L.track==="foundation")L.morning=authored;
- else L.morning=rounds;
- const target=35,base=Math.floor(target/L.morning.length),extra=target%L.morning.length;
- L.morning=L.morning.map((t,i)=>({...t,count:base+(i<extra?1:0)}));
- const reteach=[...new Set(dqProgressRows.filter(x=>x.session==="morning"&&x.status==="complete").sort((a,b)=>(b.completedAt?.seconds||0)-(a.completedAt?.seconds||0)).slice(0,5).flatMap(x=>x.needsReteach||[]))].slice(0,2);
- reteach.forEach((skillId,i)=>{const at=L.morning.length-1-i;if(at<0)return;L.morning[at]={...L.morning[at],subject:skillId.startsWith("math.")?"MATH":"ELA",skillId,skill:typeof dwLabelOf==="function"?dwLabelOf(skillId):skillId,seed:Number(L.morning[at].seed||1)+880001+i*991}});
- return L;
+ const entry=dwCurricEntry(item),prefix=item.subject==="Math"?/^math\./:/^(ela|writing|morph|curric)\./;
+ return [...new Set((entry?.skills||[]).filter(id=>prefix.test(id)&&DW_SKILLS[id]))];
 }
-function makeTrackLesson(base){const track=resolvedTrack(),day=Number(base.day||1),eng=["choice","ranger","potion","bridge","dragonGate","rune","crystal","smash","dragSort","tower"];
- if(track==="foundation"){const L=window.dwFoundationLesson(day,base,eng,dwLabelOf);if(L)return dwSetQuestionTarget(L)}
- if(track==="4"){const x=structuredClone(base);x.track="4";x.trackName="4TH GRADE";x.morning=(x.morning||[]).map((t,i)=>({...t,count:4})).slice(0,4);x.exit=(x.exit||[]).map((t,i)=>({...t,count:4}));while(x.exit.length<4)x.exit.push(task(x.exit.length%2?"ELA":"MATH",x.exit.length%2?x.elaSkill:x.mathSkill,eng[(day+x.exit.length)%eng.length],4,day*100+x.exit.length));return dwSetQuestionTarget(x)}
- if(track==="5"){const L=dwTrackLesson("5",day,base,eng);if(L)return dwSetQuestionTarget(L)}
- const C=dwTrackLesson("challenge",day,base,eng);if(C)return dwSetQuestionTarget(C);
- return dwSetQuestionTarget({...base,track:"challenge",trackName:"⭐ CHALLENGE",title:`⭐ Day ${day}: Challenge Expedition`});
+function dwPacingLabel(item){return String(item.resourceName||item.requirement||item.strand||"Pacing lesson").replace(/STEM[\s\S]*$/i,"").replace(/Video:[\s\S]*$/i,"").replace(/\s+/g," ").trim()}
+function dwPacingSpecs(day,gradeCode){
+ const items=DW_CURRIC_ITEMS.filter(x=>x.grade===gradeCode&&Number(x.day)===day&&((x.subject==="Math"&&/Core Math/i.test(x.strand||""))||(x.subject==="HUM"&&/-L\d+$/.test(x.id)&&!dwObservationOnly(x))));
+ const specs=[];for(const item of items){const mp=dwMorphParts(item),skills=mp.root?["curric.morph"]:dwPacingTopicSkills(item);for(const skillId of skills.slice(0,2))specs.push({item,skillId,questionParams:mp.root?{root:mp.root,word:mp.word}:null})}return specs;
 }
+function dwBuildPacingLesson(base){
+ const day=Math.max(1,Number(base.day||1)),gradeCode=String(profile?.grade||"4")==="5"?"K":"I",specs=dwPacingSpecs(day,gradeCode);
+ if(!specs.length)throw new Error(`No verified pacing contract exists for grade ${gradeCode==="K"?5:4}, day ${day}.`);
+ const make=(spec,i,count)=>({subject:spec.item.subject==="Math"?"MATH":"ELA",skillId:spec.skillId,skill:dwPacingLabel(spec.item)||dwLabelOf(spec.skillId),engine:DW_PACING_ENGINES[(day+i)%DW_PACING_ENGINES.length],count,seed:day*100003+i*7919,questionParams:spec.questionParams,pacingLocked:true,pacingItemId:spec.item.id,pacingRequirement:spec.item.requirement,pacingStrand:spec.item.strand});
+ const morning=Array.from({length:7},(_,i)=>make(specs[i%specs.length],i,5)),exit=specs.slice(0,Math.min(4,specs.length)).map((s,i)=>make(s,i+7,4));
+ const math=specs.find(s=>s.item.subject==="Math"),ela=specs.find(s=>s.item.subject==="HUM"),track=resolvedTrack(),trackName=track==="foundation"?"FOUNDATION SUPPORT":track==="challenge"?"⭐ PACING ENRICHMENT":gradeCode==="K"?"5TH GRADE":"4TH GRADE";
+ return {...base,track,trackName,pacingGrade:gradeCode,pacingLocked:true,title:`${base.chapterIcon||"📜"} Day ${day}: ${dwPacingLabel(math?.item||ela?.item)}`,mathSkill:math?dwPacingLabel(math.item):"Pacing Guide",elaSkill:ela?dwPacingLabel(ela.item):"Pacing Guide",morning,exit};
+}
+function dwValidatePacingLesson(L){const all=[...(L?.morning||[]),...(L?.exit||[])];if(!L?.pacingLocked||!all.length)throw new Error("Daily work has no verified pacing contract.");for(const t of all){if(!t.pacingItemId||!t.skillId||!DW_SKILLS[t.skillId])throw new Error(`Unmapped pacing task: ${t.pacingItemId||t.skill||"unknown"}`);const q=makeQ(t,0);if(!q||q.source!=="registry"||!dwValidQuestion(q))throw new Error(`Ungradable pacing task: ${t.pacingItemId}`)}return L}
+function makeTrackLesson(base){return dwValidatePacingLesson(dwBuildPacingLesson(base))}
 function translateWord(w,lang){if(lang==="es")return WORD_ES[String(w).toLowerCase()]||"Use context + word parts";return String(w)}
 function speakText(text,lang="en-US"){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=({es:"es-US",fr:"fr-FR",ar:"ar-SA",zh:"zh-CN",vi:"vi-VN",en:"en-US"})[lang]||"en-US";speechSynthesis.speak(u)}catch(e){}}
 
@@ -6119,8 +6149,9 @@ async function requestDailyQuestionReview(){
    source:"daily",overrideType:"daily-question",questionKey:key,
    studentId:user.uid,studentName:profile?.firstName||user.displayName||user.email||"Student",studentEmail:user.email||"",
    lessonId:`daily:${dateKey()}:${sessionName}:${key}`,
-   lessonTitle:`${sessionName==="morning"?"Morning Daily Work":"Exit Quest"} • ${dwCleanLabel(t.skill||currentSkillId())}`,
-   grade:String(profile?.grade||""),day:Number(lesson?.day||0),subject:String(t.subject||"Daily Work"),strand:String(t.skill||""),
+   lessonTitle:`${sessionName==="morning"?"Morning Daily Work":"Exit Quest"} • ${dwCleanLabel(currentQuestion?.label||t.skill||currentSkillId())}`,
+   grade:String(profile?.grade||""),day:Number(lesson?.day||0),subject:String(t.subject||"Daily Work"),strand:String(t.pacingStrand||t.skill||""),
+   pacingItemId:String(t.pacingItemId||""),pacingRequirement:String(t.pacingRequirement||""),engine:engineName(t.engine),
    questionPrompt:String(currentQuestion.prompt||"").slice(0,5000),expectedAnswer:String(currentQuestion.answer||"").slice(0,1000),
    studentAnswer:answer,attempts:Number(attempts||0),status:"pending",requestedAt:serverTimestamp(),updatedAt:serverTimestamp()
   });
@@ -6148,7 +6179,7 @@ function watchDailyQuestionOverrides(uid){
 
 function totalQuestions(){return tasks.reduce((n,t)=>n+t.count,0)}
 function completedBefore(){let n=0;for(let i=0;i<taskIndex;i++)n+=tasks[i].count;return n+qIndex}
-function updateRun(){const done=completedBefore(),tot=totalQuestions();$("prog").style.width=`${Math.min(100,done/tot*100)}%`;$("runStats").textContent=`High Score ${score.toLocaleString()} • ${attempts?Math.round(correct/attempts*100):100}%`;const t=tasks[taskIndex];if(t)$("taskMeta").textContent=`${t.subject} • ${dwCleanLabel(t.skill)} • ${engineName(t.engine)} • ${qIndex+1}/${t.count}`}
+function updateRun(){const done=completedBefore(),tot=totalQuestions();$("prog").style.width=`${Math.min(100,done/tot*100)}%`;$("runStats").textContent=`High Score ${score.toLocaleString()} • ${attempts?Math.round(correct/attempts*100):100}%`;const t=tasks[taskIndex];if(t)$("taskMeta").textContent=`${t.subject} • ${dwCleanLabel(currentQuestion?.label||t.skill)} • ${engineName(t.engine)} • ${qIndex+1}/${t.count}`}
 function engineName(e){return ({choice:"Rune Choice",dragSort:"Drag & Drop",catcher:"Answer Catcher",tower:"Siege the Tower",ranger:"Ranger Shot",potion:"Potion Lab",bridge:"Bridge Builder",dragonGate:"Dragon Gates",rune:"Rune Lock",crystal:"Crystal Match",smash:"Smash the Wall"})[e]||e}
 function currentSkillId(){const t=tasks[taskIndex]||{};return String(currentQuestion?.skillId||t.skillId||(typeof dwSkillIdForLabel==="function"?dwSkillIdForLabel(t.skill):"")||t.skill||"unknown")}
 function queueRetry(skillId){
@@ -6270,7 +6301,7 @@ function renderCurrent(){
  }catch(err){
    console.error("Daily Quest render error",err,tasks?.[taskIndex]);
    const t=tasks?.[taskIndex]||{subject:"ELA",skill:lesson?.elaSkill||"Language Arts",seed:Date.now()};
-   try{ const q=String(t.subject||"").trim().toUpperCase()==="ELA"?elaQ(t.skill,t.seed||1,qIndex):numQ(t.skill,t.seed||1,qIndex); choiceEngine(q,t); }
+   try{ if(t.pacingLocked)throw err;const q=String(t.subject||"").trim().toUpperCase()==="ELA"?elaQ(t.skill,t.seed||1,qIndex):numQ(t.skill,t.seed||1,qIndex);choiceEngine(q,t); }
    catch(fallbackErr){ console.error("Fallback render error",fallbackErr); $("arena").innerHTML=`<div class="complete"><h2>QUEST RECOVERY</h2><p>This question failed to load.</p><button class="choice" id="skipBroken">CONTINUE QUEST →</button></div>`; $("skipBroken").onclick=advance; }
  }
 }

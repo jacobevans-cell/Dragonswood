@@ -5401,6 +5401,7 @@ const DW_TOPIC_RULES=[
   [/first or third person|point of view|who.?s telling/i, ["ela.pov"]],
   [/character/i,                    ["ela.character","ela.meaning"]],
   [/inference|between the lines/i,  ["ela.meaning","ela.supporting"]],
+  [/compound sentence/i,             ["ela.sent.compound","ela.pk.combining_sentences"]],
   [/fanboys|coordinating conjunction/i, ["ela.conj.coordinating","ela.sent.compound"]],
   [/capitaliz/i,                    ["ela.capitalization"]],
   [/comma|quotation|dialogue|direct speech/i, ["ela.commas","ela.dialogue"]],
@@ -5419,14 +5420,37 @@ const DW_TOPIC_RULES=[
   [/narrator|narrative/i,           ["ela.pov"]],
   [/sentence|fragment|run.?on/i,    ["ela.sent.three"]],
 ];
+const DW_MATH_TOPIC_RULES=[
+ [/multi-digit addition|addition algorithm/i,["math.add.multi"]],
+ [/subtraction algorithm|multi-digit subtraction/i,["math.sub.multi"]],
+ [/add\/?subtract|addition\s*&\s*subtraction|computation review/i,["math.add.multi","math.sub.multi"]],
+ [/multi-step|problem solving/i,["math.wordproblems"]],[/division problem/i,["math.div.basic"]],
+ [/value of digits|place value relationship|place value introduction|place value review/i,["math.placevalue"]],
+ [/read large numbers|write large numbers/i,["math.write.multidigit"]],
+ [/compare and order numbers|compare numbers/i,["math.compare.whole"]],
+ [/round to tens|round to hundreds|rounding introduction|rounding review/i,["math.rounding"]],
+ [/points and lines|rays and segments/i,["math.geom.lines"]],[/parallel lines|perpendicular lines/i,["math.geom.parallel"]],
+ [/classify shapes|shape attributes|categories of shapes|shape review|classifying shapes|shape relationships|categories of figures/i,["math.geom.polygons"]],
+ [/symmetr/i,["math.symmetry"]],[/measuring and comparing angles/i,["math.angle.measure"]],
+ [/understanding angles/i,["math.pk.acute_right_obtuse_and_straight_angles"]],
+ [/expanded decimal form/i,["math.dec.expanded"]],[/read decimals|write decimals|decimal models/i,["math.dec.wordform"]],
+ [/compare decimals/i,["math.dec.compare"]],[/ordering decimals/i,["math.dec.order"]],
+ [/round to tenths|round to hundredths|round to thousandth|rounding decimals|decimal rounding review/i,["math.pk.rounding_decimals"]],
+ [/add decimals/i,["math.dec.add"]],[/subtract decimals/i,["math.dec.sub"]],
+ [/decimal addition\s*&\s*subtraction|decimal operations review/i,["math.dec.add","math.dec.sub"]],
+ [/multiply decimals|decimal multiplication/i,["math.pk.multiplying_a_decimal_by_a_one_digit_number"]],
+ [/divide decimals|decimal division/i,["math.pk.division_with_decimal_quotients"]],
+ [/multi-step decimal|decimal strategies/i,["math.wordproblems"]],
+ [/multiplying by powers? of 10/i,["math.pk.multiplying_a_decimal_by_a_power_of_ten"]],
+ [/dividing by powers? of 10/i,["math.pk.dividing_by_powers_of_ten"]],
+ [/powers? of 10|place value patterns|relationships between places/i,["math.pk.multiplication_patterns_over_increasing_place_"]]
+];
 function dwTopicSkills(item){
-  // HUM only. Math and Science already get precise skills from their standard's
-  // day range, and a word like "comparing" in a science lesson must not pull in
-  // an ELA compare-and-contrast question.
-  if(item.subject!=="HUM") return [];
   const t=((item.resourceName||"")+" "+(item.requirement||"")).replace(/\n/g," ");
-  for(const [re,skills] of DW_TOPIC_RULES) if(re.test(t)) return skills;
-  return [];
+  if(item.subject==="Math")for(const [re,skills] of DW_MATH_TOPIC_RULES)if(re.test(t))return skills.filter(id=>DW_SKILLS[id]);
+  if(item.subject!=="HUM")return [];
+  const out=[];for(const [re,skills] of DW_TOPIC_RULES)if(re.test(t))for(const id of skills)if(DW_SKILLS[id]&&!out.includes(id))out.push(id);
+  return out;
 }
 
 /* Never allow a mapped or cumulative fallback skill to cross subjects. */

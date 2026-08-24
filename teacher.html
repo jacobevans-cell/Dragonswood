@@ -3322,23 +3322,31 @@ const cqCfg={"apiKey":"AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE","authDomain":"dr
 const cqApp=getApp("DragonswoodTeacherPortal"),cqAuth=getAuth(cqApp),cqDb=getFirestore(cqApp);
 const qEsc=(x="")=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 let cqReq=[];
+let cqGroups=new Map();
 function renderCQOverrides(){
  const box=document.getElementById("overrideQueueList"),count=document.getElementById("overrideQueueCount");if(!box||!count)return;
- const pending=cqReq.filter(x=>x.status==="pending").sort((a,b)=>(a.requestedAt?.seconds||0)-(b.requestedAt?.seconds||0));
- count.textContent=`${pending.length} waiting`;
- if(!pending.length){box.innerHTML='<div class="muted">No grading overrides are waiting.</div>';return}
- box.innerHTML=pending.map(r=>`<div class="card" style="margin:9px 0;border-color:#6e4b91">
+ const raw=cqReq.filter(x=>x.status==="pending").sort((a,b)=>(a.requestedAt?.seconds||0)-(b.requestedAt?.seconds||0)),grouped=new Map();
+ for(const r of raw){const key=[r.studentId||r.studentEmail,r.questionKey||r.lessonId,r.questionPrompt||r.lessonTitle,r.studentAnswer,r.overrideType].join("|");if(!grouped.has(key))grouped.set(key,[]);grouped.get(key).push(r)}
+ cqGroups=new Map([...grouped.values()].map((rows,i)=>[`g${i}`,rows]));
+ count.textContent=`${grouped.size} waiting${raw.length>grouped.size?` • ${raw.length-grouped.size} duplicate${raw.length-grouped.size===1?"":"s"} combined`:""}`;
+ if(!grouped.size){box.innerHTML='<div class="muted">No grading overrides are waiting.</div>';return}
+ box.innerHTML=[...cqGroups].map(([groupId,rows])=>{const r=rows[rows.length-1];return `<div class="card" style="margin:9px 0;border-color:#6e4b91">
    <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>${r.source==="daily"?"📜 DAILY WORK QUESTION":"🐉 CURRICULUM QUEST"} • ${qEsc(r.studentName||r.studentEmail||"Student")}</b><span class="badge">${qEsc(r.overrideType||"activity")}</span></div>
    <div style="margin-top:6px"><b>${qEsc(r.lessonTitle||r.lessonId||"Lesson")}</b></div>
+   ${r.pacingItemId?`<div style="margin-top:6px"><small>PACING GUIDE • DAY ${qEsc(r.day||"")} • ${qEsc(r.pacingItemId)}</small><div>${qEsc(r.pacingRequirement||r.strand||"")}</div></div>`:""}
+   ${r.engine?`<div style="margin-top:6px"><small>ACTIVITY</small><div>${qEsc(r.engine)}</div></div>`:""}
    ${r.questionPrompt?`<div style="margin-top:8px;padding:8px;border:1px solid #45366b;border-radius:8px"><small>QUESTION</small><div>${qEsc(r.questionPrompt)}</div></div>`:""}
    <div style="margin-top:8px"><small>STUDENT ANSWER</small><div>${qEsc(r.studentAnswer||"")}</div></div>
    ${r.expectedAnswer?`<div style="margin-top:8px"><small>GRADER EXPECTED</small><div style="color:#ffe58b">${qEsc(r.expectedAnswer)}</div></div>`:""}
-   <div class="actions" style="margin-top:10px"><button onclick="resolveCQOverride('${r.id}','approved')">✅ APPROVE AS CORRECT</button><button class="gray" onclick="resolveCQOverride('${r.id}','returned')">↩ RETURN TO STUDENT</button></div>
- </div>`).join("");
+   ${rows.length>1?`<div class="muted" style="margin-top:8px">${rows.length} identical requests combined into this one decision.</div>`:""}
+   <div class="actions" style="margin-top:10px"><button onclick="resolveCQOverrideGroup('${groupId}','approved')">✅ APPROVE AS CORRECT</button><button class="gray" onclick="resolveCQOverrideGroup('${groupId}','returned')">↩ RETURN THIS QUESTION</button></div>
+   <div class="muted" style="margin-top:6px">Return sends this exact question back for revision; it does not erase or restart the whole assignment.</div>
+ </div>`}).join("");
 }
-window.resolveCQOverride=async(id,status)=>{
+window.resolveCQOverrideGroup=async(groupId,status)=>{
+ const rows=cqGroups.get(groupId)||[];if(!rows.length)return;
  const note=status==="returned"?(prompt("Optional note for the student:")||"Please revise your answer and try again."):"Approved by teacher.";
- await updateDoc(doc(cqDb,"curriculumOverrideRequests",id),{status,teacherNote:note,resolvedAt:serverTimestamp(),updatedAt:serverTimestamp()});
+ await Promise.all(rows.map(r=>updateDoc(doc(cqDb,"curriculumOverrideRequests",r.id),{status,teacherNote:note,resolvedAt:serverTimestamp(),updatedAt:serverTimestamp()})));
 };
 /* v56.19 — the override queue renders into the Gradebook panel, so it now
    waits for that tab instead of subscribing to the whole collection at

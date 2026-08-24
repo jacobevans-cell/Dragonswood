@@ -13,6 +13,10 @@
     {id:"goblin_scout",name:"Briar Goblin Scout",art:A+"enemy-goblin.png",element:"nature",hp:28,atk:5,loot:"Briar Cache"},
     {id:"orc_guard",name:"Ironwood Orc Guard",art:A+"enemy-orc.png",element:"earth",hp:34,atk:6,loot:"Ironwood Chest"},
     {id:"shaman",name:"Storm Shaman",art:A+"enemy-ogre.png",element:"storm",hp:31,atk:7,loot:"Stormbound Satchel"},
+    {id:"elder_rootwarden",name:"Elder Rootwarden",art:A+"enemies/elder-rootwarden-idle.gif",staticArt:A+"enemies/elder-rootwarden.webp",element:"nature",hp:44,atk:7,loot:"Ancient Grove Chest"},
+    {id:"mossstone_colossus",name:"Mossstone Colossus",art:A+"enemies/mossstone-colossus-idle.gif",staticArt:A+"enemies/mossstone-colossus.webp",element:"earth",hp:48,atk:7,loot:"Colossus Coffer"},
+    {id:"boneguard_captain",name:"Boneguard Captain",art:A+"enemies/boneguard-captain-idle.gif",staticArt:A+"enemies/boneguard-captain.webp",element:"arcane",hp:42,atk:8,loot:"Captain's Lockbox"},
+    {id:"frosthorn_yeti",name:"Frosthorn Yeti",art:A+"enemies/frosthorn-yeti-idle.gif",staticArt:A+"enemies/frosthorn-yeti.webp",element:"frost",hp:46,atk:8,loot:"Frostbound Chest"},
     {id:"night_magician",name:"Nightfall Magician",icon:"🧙",element:"arcane",hp:30,atk:8,loot:"Arcane Lockbox"},
     {id:"anubis",name:"Dune Gatekeeper",icon:"🐺",element:"light",hp:38,atk:8,loot:"Sunstone Coffer"},
     {id:"medusa",name:"Emerald Gaze",icon:"🐍",element:"nature",hp:36,atk:8,loot:"Emerald Vault"},
@@ -174,5 +178,5 @@
   function hash(s){let h=2166136261;for(const c of String(s)){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
   function dailyEnemy(uid,day){return enemies[hash(`${uid}|${dateKey()}|${day}`)%enemies.length]}
 
-  window.DWRPG={classes,pets,prestigePets,petRegistry,enemies,items,appearancePacks,dateKey,levelForXp,hash,dailyEnemy,version:"56.14"};
+  window.DWRPG={classes,pets,prestigePets,petRegistry,enemies,items,appearancePacks,dateKey,levelForXp,hash,dailyEnemy,version:"56.15"};
 })();

@@ -176,7 +176,7 @@
         <div class="feature-icon">🐉</div>
         <h3>Curriculum Quest</h3>
         <p>Complete required lessons, videos, and unfinished missions.</p>
-        <a class="btn" href="curriculum-quest.html">🐉 ENTER CURRICULUM QUEST</a>
+        <a class="btn" href="curriculum-quest.html?v=56.23">🐉 ENTER CURRICULUM QUEST</a>
       </article>
 
       <article class="frame bevel feature-card quest-card" id="levelUpMissionCard">
@@ -735,7 +735,9 @@ if($("googleBtn")) $("googleBtn").onclick=async()=>{
   $("googleBtn").textContent = "SIGNING IN…";
   try{
     const provider=new GoogleAuthProvider();
-    provider.setCustomParameters({hd:DOMAIN,prompt:"select_account"});
+    // Keep the Google chooser open to the authorized teacher Gmail too.
+    // Dragonswood still enforces the account allowlist after sign-in.
+    provider.setCustomParameters({prompt:"select_account"});
     const result = await signInWithPopup(auth,provider);
     console.log("Google sign-in completed:", result.user?.email);
   }catch(err){

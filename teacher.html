@@ -657,6 +657,7 @@ body{background:linear-gradient(90deg,rgba(2,5,18,.87),rgba(2,7,22,.74)),radial-
 
 
 <div class="card live-request-box"><h3>⭐ STUDENT RECOGNITION REQUESTS</h3><p class="pace-note">Students can ask you to notice a positive choice. Nothing is awarded until you approve it.</p><div class="live-request-list" id="pointRequestList"><div class="muted">No pending requests.</div></div></div><div class="card live-request-box"><h3>🔓 DAILY WORK ACCESS OVERRIDE</h3><p class="pace-note">Games + Journal unlock automatically after assigned Morning Work OR Level-Up Morning Work. Use this only when the schedule needs an exception; overrides reset by date.</p><div id="dailyAccessOverrideStatus" class="muted">No override active today.</div><div class="actions" style="margin-top:9px;flex-wrap:wrap"><button id="unlockAllDailyAccess">UNLOCK WHOLE CLASS TODAY</button><button id="unlockSelectedDailyAccess">UNLOCK SELECTED TODAY</button><button class="gray" id="clearDailyAccessOverride">CLEAR OVERRIDES</button></div></div>
+<div class="card live-request-box" id="curriculumAttentionShortcut"><h3>🐉 CURRICULUM QUEST</h3><p class="pace-note">Passing work auto-approves. Only answers that need your judgment appear in the review queue.</p><div id="curriculumAttentionStatus" class="muted">Checking Curriculum Quest…</div><button id="openCurriculumAttention" type="button" style="margin-top:9px">OPEN CURRICULUM REVIEW</button></div>
 </div>
 <div class="progression-plan"><div><small>LEVEL CAP</small><b>20</b><small>Midyear target</small></div><div><small>LEVEL 20 XP</small><b>12,000</b><small>Daily hard cap 150 XP</small></div><div><small>CLASS HP</small><b>10 → 48</b><small>Grows by level</small></div><div><small>RPG BASE HP</small><b>18 → 94</b><small>Before gear</small></div></div>
 <div class="card dw-shared-selector" id="sharedStudentSelector">
@@ -992,10 +993,10 @@ body{background:linear-gradient(90deg,rgba(2,5,18,.87),rgba(2,7,22,.74)),radial-
 
 <section class="card teacher-queue" id="curriculumOverrideQueue">
   <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
-    <div><div class="eyebrow">CURRICULUM QUEST</div><h2 style="margin:4px 0">🛡️ Teacher Override Requests</h2></div>
+    <div><div class="eyebrow">CURRICULUM QUEST</div><h2 style="margin:4px 0">🐉 Curriculum Quest • Needs Attention</h2></div>
     <span class="pill" id="overrideQueueCount">0 waiting</span>
   </div>
-  <p class="muted">Students use this only when they believe a correct response was rejected by the automatic activity checker.</p>
+  <p class="muted">Passing Curriculum Quest work auto-approves. This queue is only for answers Dragonswood could not confidently accept or that a student asked you to review.</p>
   <div id="overrideQueueList"><div class="muted">Loading override requests…</div></div>
 </section>
 
@@ -3106,6 +3107,30 @@ document.addEventListener("click",async ev=>{
   };
 })();
 </script>
+<script id="dw-v5623-curriculum-attention-shortcut">
+(() => {
+  function install(){
+    const status=document.getElementById("curriculumAttentionStatus");
+    const count=document.getElementById("overrideQueueCount");
+    const open=document.getElementById("openCurriculumAttention");
+    if(!status||!count||!open)return;
+    const update=()=>{
+      const raw=String(count.textContent||"").trim();
+      const match=raw.match(/\d+/);const n=match?Number(match[0]):0;
+      if(/ERROR/i.test(raw)) status.textContent="⚠️ Curriculum review queue could not load.";
+      else if(n>0) status.innerHTML=`<b style="color:#ffe36d">${n}</b> Curriculum Quest review${n===1?"":"s"} need your attention.`;
+      else status.textContent="✅ Nothing needs you right now. Passing work is auto-approved.";
+    };
+    new MutationObserver(update).observe(count,{childList:true,subtree:true,characterData:true});
+    update();
+    open.addEventListener("click",()=>{
+      document.querySelector('.tab[data-p="data"]')?.click();
+      window.setTimeout(()=>document.getElementById("curriculumOverrideQueue")?.scrollIntoView({behavior:"smooth",block:"start"}),120);
+    });
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",install,{once:true});else install();
+})();
+</script>
 <script id="dragonswood-feedback-sounds">
 (() => {
   if(window.__dwFeedbackSoundsInstalled) return;
@@ -3329,7 +3354,7 @@ function renderCQOverrides(){
  for(const r of raw){const key=[r.studentId||r.studentEmail,r.questionKey||r.lessonId,r.questionPrompt||r.lessonTitle,r.studentAnswer,r.overrideType].join("|");if(!grouped.has(key))grouped.set(key,[]);grouped.get(key).push(r)}
  cqGroups=new Map([...grouped.values()].map((rows,i)=>[`g${i}`,rows]));
  count.textContent=`${grouped.size} waiting${raw.length>grouped.size?` • ${raw.length-grouped.size} duplicate${raw.length-grouped.size===1?"":"s"} combined`:""}`;
- if(!grouped.size){box.innerHTML='<div class="muted">No grading overrides are waiting.</div>';return}
+ if(!grouped.size){box.innerHTML='<div class="muted">✅ No Curriculum Quest work needs attention. Successful work is auto-approved.</div>';return}
  box.innerHTML=[...cqGroups].map(([groupId,rows])=>{const r=rows[rows.length-1];return `<div class="card" style="margin:9px 0;border-color:#6e4b91">
    <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>${r.source==="daily"?"📜 DAILY WORK QUESTION":"🐉 CURRICULUM QUEST"} • ${qEsc(r.studentName||r.studentEmail||"Student")}</b><span class="badge">${qEsc(r.overrideType||"activity")}</span></div>
    <div style="margin-top:6px"><b>${qEsc(r.lessonTitle||r.lessonId||"Lesson")}</b></div>
@@ -3359,7 +3384,9 @@ onAuthStateChanged(cqAuth,u=>{
  onSnapshot(collection(cqDb,"curriculumOverrideRequests"),s=>{cqReq=s.docs.map(d=>({id:d.id,...d.data()}));renderCQOverrides()},e=>{console.error("curriculum override queue",e);const box=document.getElementById("overrideQueueList"),count=document.getElementById("overrideQueueCount");if(count)count.textContent="ERROR";if(box)box.innerHTML=`<div class="muted" style="color:#ff9b9b">Could not load override requests: ${qEsc(e.code||e.message||e)}. Check Firestore rules deployment.</div>`;});
  };
  window.__dwStartOverrideQueue=start;
- if(window.DW_SUBSCRIBED&&window.DW_SUBSCRIBED.has("overrideQueue"))start();
+ if(window.DW_SUBSCRIBED){
+   if(!window.DW_SUBSCRIBED.has("overrideQueue")){window.DW_SUBSCRIBED.add("overrideQueue");start()}
+ }else start();
 });
 </script>
 <script id="dw-v5614-teacher-pet-manager">

@@ -43,6 +43,7 @@ main{padding:20px 0 35px}.hero{padding:22px;display:grid;grid-template-columns:1
 .override-btn{background:#3a284d;color:#f4e8ff;border:1px solid #775998;border-radius:7px;padding:8px 10px;font-weight:900}
 .override-btn.pending{background:#624b18;color:#ffeca8}.override-btn.approved{background:#18583f;color:#bff7d7}
 .override-note{font-size:11px;color:#bfb5ce;flex:1}
+.teacher-note{margin-top:9px;padding:10px;border-radius:7px;background:#211735;color:#ffe8a0;border:1px solid #775998;line-height:1.45}
 .teacher-queue{margin-top:18px}.override-card{padding:12px;margin:8px 0}.override-card .answer{background:#050411;border:1px solid #36274c;padding:9px;border-radius:7px;white-space:pre-wrap;margin:7px 0;color:#f2edf8}
 
 .self-lesson{margin-top:10px;padding:14px;border:1px solid #4a3763;border-radius:9px;background:linear-gradient(135deg,#110b22,#090715)}
@@ -115,7 +116,7 @@ body>*{position:relative;z-index:1}
       <a class="btn" href="index.html">← Portal</a>
     </div></div></header>
 <main class="shell">
-<section class="frame hero"><div><span class="eyebrow">THE ACADEMIC PATH THROUGH DRAGONSWOOD</span><h2 id="hero">Current Quest</h2><p>Your assigned curriculum lives here. Current work keeps moving forward while unfinished earlier requirements stay in Recovery Quest until they are completed.</p><div class="notice">Required curriculum videos remain separate tracked requirements. Opening a video marks it watched, not mastered.</div></div><div class="ring" id="ring"><span id="pct">0%</span></div></section>
+<section class="frame hero"><div><span class="eyebrow">THE ACADEMIC PATH THROUGH DRAGONSWOOD</span><h2 id="hero">Current Quest</h2><p>Your assigned curriculum lives here. Current work keeps moving forward while unfinished earlier requirements stay in Recovery Quest until they are completed.</p><div class="notice">Required curriculum videos remain separate tracked requirements. Opening a video marks it watched, not mastered. Once your required work passes, the mission completes automatically. Teacher review is only used when Dragonswood cannot confidently accept an answer.</div></div><div class="ring" id="ring"><span id="pct">0%</span></div></section>
 <nav class="tabs" id="curriculumTabs"><button class="active" data-tab="current">📜 CURRENT</button><button data-tab="recovery">🗝️ RECOVERY</button><button data-tab="videos">🔮 VIDEOS</button><button data-tab="standards">📚 STANDARDS</button><button data-tab="morph">⚒️ WORDSMITH</button><button data-tab="audit">🛡️ AUDIT</button></nav>
 <section class="kpis" id="kpis"></section>
 <section class="panel active" id="current"></section><section class="panel" id="recovery"></section><section class="panel" id="videos"></section><section class="panel" id="standards"></section><section class="panel" id="morph"></section><section class="panel" id="audit"></section>
@@ -407,7 +408,7 @@ function renderActivity(x){
   else if(spec.kind==="morph"||spec.kind==="readingPov"){
     controls=`<div class="activity-options">${spec.options.map(o=>`<label class="activity-option"><input type="radio" name="act-${x.id}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join("")}</div><textarea class="activity-input" id="actText-${x.id}" placeholder="Write your evidence or example here…">${esc(answer.includes("Response:")?answer.split("Response:").slice(1).join("Response:").trim():answer)}</textarea>`;
   } else controls=`<textarea class="activity-input" id="actText-${x.id}" placeholder="Write your answer here…">${esc(answer)}</textarea>`;
-  return `${renderAutoPractice(x)}<div class="activity-shell"><div class="activity-title">Apply What You Learned • ${esc(spec.title)}</div><div class="activity-prompt">${esc(spec.prompt)}</div>${controls}<div class="actions"><button class="btn" onclick="checkActivity('${x.id}')">${s.practiced?"CHECK AGAIN":"CHECK MY WORK"}</button></div><div class="activity-feedback" id="actFeedback-${x.id}"></div><div class="override-row"><button class="override-btn ${status}" id="overrideBtn-${x.id}" onclick="requestOverride('${x.id}')">${status==="pending"?"🟡 TEACHER REVIEW REQUESTED":status==="approved"?"✅ TEACHER OVERRIDE APPROVED":"🛡️ REQUEST TEACHER REVIEW"}</button><span class="override-note">Use this if you believe your answer is correct but Dragonswood will not accept it.</span></div></div>`;
+  return `${renderAutoPractice(x)}<div class="activity-shell"><div class="activity-title">Apply What You Learned • ${esc(spec.title)}</div><div class="activity-prompt">${esc(spec.prompt)}</div>${controls}<div class="actions"><button class="btn" onclick="checkActivity('${x.id}')">${s.practiced?"CHECK AGAIN":"CHECK MY WORK"}</button></div><div class="activity-feedback" id="actFeedback-${x.id}"></div><div class="override-row"><button class="override-btn ${status}" id="overrideBtn-${x.id}" onclick="requestOverride('${x.id}')">${status==="pending"?"🟡 TEACHER REVIEW REQUESTED":status==="approved"?"✅ TEACHER OVERRIDE APPROVED":"🛡️ REQUEST TEACHER REVIEW"}</button><span class="override-note">Use this if you believe your answer is correct but Dragonswood will not accept it.</span></div>${status==="returned"&&s.teacherNote?`<div class="teacher-note"><b>↩ Teacher feedback:</b> ${esc(s.teacherNote)}</div>`:""}</div>`;
 }
 function findItem(id){return D.items.find(x=>x.id===id)}
 function autoQuestionsFor(x){
@@ -418,7 +419,9 @@ function autoPassed(x){
   const q=autoQuestionsFor(x),s=st(x.id),a=s.autoAnswers||{};
   return !q.length||q.every((item,i)=>(window.DWGrading?window.DWGrading.questionAnswerEquivalent(item,a[i]||""):String(a[i]||"")===String(item.answer))||s.autoOverrideStatus?.[i]==="approved");
 }
-function missionNeedsTeacher(x){return typeof dwNeedsTeacherVerify==="function"?dwNeedsTeacherVerify(x):x.subject==="Science"||/writing/i.test(x.strand||"")}
+// v56.23 — routine passing work auto-completes. Human review is reserved
+// for exception requests when Dragonswood cannot confidently accept an answer.
+function missionNeedsTeacher(x){return false}
 function missionComplete(x){
   const s=st(x.id),videoOk=!vid(x)||s.watched||mediaPending(x);
   return videoOk&&autoPassed(x)&&!!s.practiced&&(!missionNeedsTeacher(x)||!!s.verified)&&!mediaPending(x);
@@ -427,9 +430,9 @@ function renderAutoPractice(x){
   const q=autoQuestionsFor(x),s=st(x.id),answers=s.autoAnswers||{},review=s.autoOverrideStatus||{};
   if(!q.length)return `<div class="activity-feedback show good">This mission is observation or written-performance based, so it does not add a fake multiple-choice quiz.</div>`;
   const renderSet=(items,offset,title,help)=>`<div class="activity-title">${title}</div><p class="kid-task">${help}</p>`+items.map((item,j)=>{const i=j+offset;
-    const chosen=String(answers[i]||""),correct=chosen&&(window.DWGrading?window.DWGrading.questionAnswerEquivalent(item,chosen):chosen===String(item.answer)),status=review[i]||"";
+    const chosen=String(answers[i]||""),correct=chosen&&(window.DWGrading?window.DWGrading.questionAnswerEquivalent(item,chosen):chosen===String(item.answer)),status=review[i]||"",note=s.autoOverrideNotes?.[i]||"";
     const label=status==="pending"?"🟡 TEACHER REVIEW REQUESTED":status==="approved"?"✅ TEACHER APPROVED":status==="returned"?"🛡️ REQUEST REVIEW AGAIN":"🛡️ REQUEST TEACHER REVIEW";
-    return `<fieldset class="activity-shell"><legend>${i+1}. ${esc(item.prompt)}</legend><div class="activity-options">${item.choices.map(o=>`<label class="activity-option"><input type="radio" name="auto-${x.id}-${i}" value="${esc(o)}" ${chosen===String(o)?"checked":""} onchange="checkAutoQuestion('${x.id}',${i},this.value)"><span>${esc(o)}</span></label>`).join("")}</div>${chosen?`<div class="activity-feedback show ${correct||status==="approved"?"good":"bad"}">${correct?"✓ Correct":status==="approved"?"✓ Teacher approved":"Not yet—review the lesson and try again."}</div>`:""}<div class="override-row"><button type="button" class="override-btn ${status}" ${status==="pending"||status==="approved"?"disabled":""} onclick="requestAutoQuestionOverride('${x.id}',${i})">${label}</button><span class="override-note">Think Dragonswood rejected a correct answer? Send this exact question to your teacher.</span></div></fieldset>`;
+    return `<fieldset class="activity-shell"><legend>${i+1}. ${esc(item.prompt)}</legend><div class="activity-options">${item.choices.map(o=>`<label class="activity-option"><input type="radio" name="auto-${x.id}-${i}" value="${esc(o)}" ${chosen===String(o)?"checked":""} onchange="checkAutoQuestion('${x.id}',${i},this.value)"><span>${esc(o)}</span></label>`).join("")}</div>${chosen?`<div class="activity-feedback show ${correct||status==="approved"?"good":"bad"}">${correct?"✓ Correct":status==="approved"?"✓ Teacher approved":"Not yet—review the lesson and try again."}</div>`:""}<div class="override-row"><button type="button" class="override-btn ${status}" ${status==="pending"||status==="approved"?"disabled":""} onclick="requestAutoQuestionOverride('${x.id}',${i})">${label}</button><span class="override-note">Think Dragonswood rejected a correct answer? Send this exact question to your teacher.</span></div>${status==="returned"&&note?`<div class="teacher-note"><b>↩ Teacher feedback:</b> ${esc(note)}</div>`:""}</fieldset>`;
   }).join("");
   const videoCount=vid(x)?Math.min(2,q.length):0;
   return (videoCount?renderSet(q.slice(0,videoCount),0,"Video Check • 2 questions","Use what the lesson video taught you."):"")+
@@ -555,7 +558,7 @@ function compactMinutes(total){const n=Math.max(0,Math.round(total));if(n<60)ret
 function dayEstimate(list){const totals=list.reduce((sum,x)=>{const range=missionMinutes(x).range;sum[0]+=range[0];sum[1]+=range[1];return sum},[0,0]);return `EST. ${compactMinutes(totals[0])}–${compactMinutes(totals[1])} TOTAL`}
 function card(x){
   const s=st(x.id),hasVideo=vid(x),readyVideo=mediaReady(x),pendingVideo=mediaPending(x),canPractice=!hasVideo||s.watched||pendingVideo,m=mediaFor(x),needsTeacher=missionNeedsTeacher(x),complete=missionComplete(x),workReady=(!hasVideo||s.watched)&&autoPassed(x)&&s.practiced;
-  const finalText=pendingVideo?(s.practiced?"Activity saved. Final completion waits for the restored video.":"Complete the activity while video access is restored."):complete?"✅ Curriculum mission complete.":needsTeacher?(workReady?"Your work is ready for teacher verification.":"Finish the video, standard check, and written application first."):"Pass the standard check and written application to complete this mission.";
+  const finalText=pendingVideo?(s.practiced?"Activity saved. Final completion waits for the restored video.":"Complete the activity while video access is restored."):complete?"✅ Curriculum mission complete. Your work passed the lesson checks automatically.":needsTeacher?(workReady?"Your work is ready for teacher verification.":"Finish the video, standard check, and written application first."):"Pass the standard check and written application to complete this mission.";
   const verifyButton=isTeacher&&needsTeacher&&!pendingVideo?`<div class="actions"><button class="stage verify ${workReady?"":"locked"}" ${workReady?"":"disabled"} onclick="teacherVerify('${x.id}')">${s.verified?"UNVERIFY":"TEACHER VERIFY"}</button></div>`:"";
   const timing=missionMinutes(x),open=openMissionIds.has(x.id)?" open":"";
   return `<details class="frame quest ${subjectQuestClass(x)} ${x.resourceUrl?"link":""} ${complete?"done":""}"${open} ontoggle="rememberMissionOpen('${x.id}',this.open)"><summary class="mission-summary"><div><div class="meta"><span class="tag subject-tag">${esc(subjectLabel(x))}</span>${hasVideo?'<span class="tag video">REQUIRED VIDEO</span>':""}${pendingVideo?'<span class="tag" style="background:#5a3b12;color:#ffe8a0">SOURCE PENDING</span>':""}${complete?'<span class="tag complete">MISSION COMPLETE</span>':""}</div><h4>${esc(friendlyTitle(x))}</h4></div><div class="mission-time">${esc(timing.total)}<span>${timing.video?esc(timing.video)+" • ":""}${timing.work.check[0]}–${timing.work.check[1]} min check • ${timing.work.application[0]}–${timing.work.application[1]} min application</span></div></summary><div class="mission-body"><p class="kid-task">${esc(kidIntro(x))}</p><div class="step"><strong>1. ${hasVideo?"Watch the lesson":"Learn It in Dragonswood"}</strong><br>${pendingVideo?"⏳ This video is temporarily waiting on school access. You are not behind.":hasVideo?(s.watched?"✅ Video check complete.":"Watch the lesson here. Skipping ahead does not count as viewing."):"Everything needed for this lesson is here."}${!hasVideo||s.watched&&morphFor(x)?renderMiniLesson(x):""}<div class="actions">${readyVideo?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">${s.watched?"REWATCH VIDEO":"WATCH REQUIRED VIDEO"} ▶</button>`:""}${pendingVideo?'<button class="stage locked" disabled>VIDEO ACCESS PENDING</button>':""}${hasVideo&&!pendingVideo?`<button class="stage ${s.watched?"on":"locked"}" disabled>${s.watched?"✓ WATCHED":"WATCH"}</button>`:""}</div></div><div class="step"><strong>2. Standard Check + Application</strong>${canPractice?renderActivity(x):'<p class="kid-task">Finish the required video first to unlock this activity.</p>'}</div><div class="step"><strong>3. ${needsTeacher?"Teacher Verification":"Completion Check"}</strong><br>${finalText}${verifyButton}</div>${isTeacher?`<details class="source-details"><summary>Teacher/source details</summary><p>${esc(x.requirement)}</p><p>${x.resourceName?esc(x.resourceName):""}</p><p>Human verification: ${needsTeacher?"required":"not required"}</p>${m?`<p>Media status: ${esc(m.status)}</p>`:""}</details>`:""}</div></details>`;
@@ -708,12 +711,16 @@ function watchMyOverrides(uid){
       const r=d.data();if(r.source==="daily"||r.overrideType==="daily-question")return;
       const s=st(r.lessonId);
       if(r.overrideType==="auto-question"&&Number.isInteger(r.questionIndex)){
-        const i=r.questionIndex;s.autoOverrideStatus=s.autoOverrideStatus||{};
+        const i=r.questionIndex;s.autoOverrideStatus=s.autoOverrideStatus||{};s.autoOverrideNotes=s.autoOverrideNotes||{};
+        const teacherNote=String(r.teacherNote||"");
+        if(teacherNote&&s.autoOverrideNotes[i]!==teacherNote){s.autoOverrideNotes[i]=teacherNote;changed=true}
         if(r.status==="approved"){const item=findItem(r.lessonId),q=item?autoQuestionsFor(item)[i]:null;if(q){s.autoAnswers=s.autoAnswers||{};s.autoAnswers[i]=String(q.answer)}if(s.autoOverrideStatus[i]!=="approved"){s.autoOverrideStatus[i]="approved";changed=true}}
         else if(r.status==="pending"&&s.autoOverrideStatus[i]!=="approved"&&s.autoOverrideStatus[i]!=="pending"){s.autoOverrideStatus[i]="pending";changed=true}
         else if(r.status==="returned"&&s.autoOverrideStatus[i]==="pending"){s.autoOverrideStatus[i]="returned";changed=true}
         S.items[r.lessonId]=s;return;
       }
+      const teacherNote=String(r.teacherNote||"");
+      if(teacherNote&&s.teacherNote!==teacherNote){s.teacherNote=teacherNote;changed=true}
       if(r.status==="approved"&&(!s.practiced||s.overrideStatus!=="approved")){s.practiced=true;s.overrideStatus="approved";s.overrideApprovedAt=Date.now();s.practiceEvidence=r.studentAnswer||s.practiceEvidence||"Teacher override approved";S.items[r.lessonId]=s;changed=true}
       else if(r.status==="pending"&&s.overrideStatus!=="approved"&&s.overrideStatus!=="pending"){s.overrideStatus="pending";S.items[r.lessonId]=s;changed=true}
       else if(r.status==="returned"&&s.overrideStatus==="pending"){s.overrideStatus="returned";S.items[r.lessonId]=s;changed=true}
@@ -739,8 +746,8 @@ onAuthStateChanged(auth,async u=>{
     if(!isTeacher){
       try{
         // Read the legacy whole-student document once, then migrate local/legacy
-        // evidence into canonical per-item records. Client-side verified flags
-        // are deliberately reset; only a teacher write can restore them.
+        // evidence into canonical per-item records. The verified field remains a
+        // teacher-only audit flag; routine successful completion no longer waits on it.
         const legacySnap=await getDoc(doc(db,"curriculumQuestProgress",u.uid));
         const legacy=legacySnap.exists()?legacySnap.data():{};
         const mergedLegacy={grade:S.grade||legacy.grade||"I",day:Math.max(Number(S.day||1),Number(legacy.day||1)),items:{...(legacy.items||{}),...(S.items||{})}};

@@ -72,7 +72,10 @@ service cloud.firestore {
       allow update: if isOwner(studentId)
                     && isExploreStudent()
                     && request.resource.data.diff(resource.data).affectedKeys()
-                       .hasOnly(['title','avatar','avatarConfig','equipped','homeBackgroundId','updatedAt'])
+                       .hasOnly(['title','avatar','avatarConfig','equipped','homeBackgroundId','narrationVoice','updatedAt'])
+                    && request.resource.data.get('narrationVoice','automatic') in [
+                      'automatic','gb-lewis','us-liam','us-bella','es-alex'
+                    ]
                     && request.resource.data.get('homeBackgroundId','fairy-purple') in [
                       'fairy-purple','fairy-bamboo','fairy-mushroom','crystal-cave',
                       'jungle','mountain-night','snow-aurora','snow-village'
@@ -750,6 +753,85 @@ service cloud.firestore {
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid;
       allow update, delete: if isTeacher();
+    }
+
+    // ============================================================
+    // v56.19.1 — curriculum history, gradebook, leaderboard rewards,
+    // and one-time physical prize drops.
+    // ============================================================
+
+    // Immutable history of a student's Curriculum Quest attempts.
+    match /curriculumAttempts/{attemptId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+
+      allow create: if isExploreStudent()
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.itemId is string
+                    && request.resource.data.attemptNumber is number
+                    && request.resource.data.attemptNumber >= 1
+                    && request.resource.data.questionsCorrect is number
+                    && request.resource.data.questionsSeen is number
+                    && request.resource.data.questionsSeen >= 1
+                    && request.resource.data.questionsSeen <= 100
+                    && request.resource.data.questionsCorrect >= 0
+                    && request.resource.data.questionsCorrect
+                       <= request.resource.data.questionsSeen
+                    && request.resource.data.accuracy is number
+                    && request.resource.data.accuracy >= 0
+                    && request.resource.data.accuracy <= 100;
+
+      allow update, delete: if isTeacher();
+    }
+
+    // Assignment configuration is classroom-wide. Signed-in students need to
+    // read it to calculate their own grade, but only the teacher may change it.
+    match /gradebookAssignments/{assignmentId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isTeacher();
+    }
+
+    // Teacher-entered grades and notes are private to the individual student.
+    match /gradebookGrades/{gradeId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+      allow create, update, delete: if isTeacher();
+    }
+
+    // The weekly leaderboard display needs these issued-reward records.
+    // Rewards can change Gold, so issuance remains teacher-only.
+    match /leaderboardRewards/{rewardId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isTeacher();
+    }
+
+    // Rare real-world rewards are created only by the same authenticated
+    // student and only when a matching Daily Boss loot record exists in the
+    // same committed batch. Students may make one earned reward into a
+    // redemption request; only the teacher can mark it redeemed or delete it.
+    match /physicalPrizeDrops/{dropId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+
+      allow create: if isExploreStudent()
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.status == 'earned'
+                    && request.resource.data.prizeType in ['recess','lunch','icecream']
+                    && request.resource.data.bossLootId == dropId
+                    && getAfter(/databases/$(database)/documents/bossLoot/$(dropId)).data.studentId
+                       == request.auth.uid
+                    && getAfter(/databases/$(database)/documents/bossLoot/$(dropId)).data.rarePrizeType
+                       == request.resource.data.prizeType;
+
+      allow update: if isExploreStudent()
+                    && resource.data.studentId == request.auth.uid
+                    && request.resource.data.studentId == resource.data.studentId
+                    && resource.data.status == 'earned'
+                    && request.resource.data.status == 'requested'
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['status','requestedAt']);
+
+      allow create, update, delete: if isTeacher();
     }
 
     // Documentation-only default deny. Firestore ORs matching allow rules, so

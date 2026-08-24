@@ -4001,7 +4001,8 @@ function renderStudentGradeSummary(){
 function showLiveV2Welcome(u){
   const modal=$("dwLiveV2Welcome"),enter=$("dwLiveV2WelcomeEnter"),countdown=$("dwLiveV2WelcomeCountdown");
   if(!modal||!enter||!u?.uid)return;
-  const key=`dwV2WelcomeSeen:${u.uid}`;
+  // Versioned key intentionally resets the one-time welcome for every account.
+  const key=`dwV2WelcomeSeen:live-launch-1:${u.uid}`;
   if(localStorage.getItem(key)==="1")return;
   modal.classList.remove("hidden");
   let seconds=10;

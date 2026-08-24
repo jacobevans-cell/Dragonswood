@@ -1,0 +1,416 @@
+/* ============================================================================
+   DRAGONSWOOD V2 - TEACHER COMMAND (teacher-v2.html)
+   Loads after dragonswood-v2-core.css. Covers every class the teacher page
+   uses, including the ones dw20InitApprovedLayout() creates at runtime
+   (.dw20-student-workspace, .dw20-roster-column, .dw20-command-column,
+   .dw20-status-strip, #plannerWorkspace, #toolsWorkspace, #dw20PassMetrics).
+   ========================================================================= */
+
+/* ---------- ACCOUNT BADGE (rail-anchored, per your latest edit) ---------- */
+#signed{
+  display:grid;gap:6px;padding:var(--sp-3);margin-bottom:var(--sp-3);
+  border:1px solid var(--line);border-radius:var(--radius-sm);
+  background:rgba(7,10,22,.75);text-align:center;
+}
+#signed.hidden{display:none !important}
+#who{
+  display:block;min-width:0;font-size:11px;color:var(--text-dim);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+#logout{width:100%;min-height:36px;padding:6px 10px;font-size:12px}
+
+/* ---------- LOGIN ---------- */
+#login{max-width:520px;margin:clamp(24px,8vh,72px) auto;padding:var(--sp-6);text-align:center}
+#login h1{margin-bottom:var(--sp-2)}
+#login p{color:var(--text-dim)}
+#loginForm button{width:100%;margin-top:var(--sp-3)}
+
+/* ---------- TITLES ---------- */
+.teacher-title{display:flex;align-items:center;gap:var(--sp-3);flex-wrap:wrap}
+.teacher-title small{
+  flex:1 1 100%;font-size:11px;font-weight:800;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--text-faint);
+}
+.titlebar{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);flex-wrap:wrap}
+
+/* ---------- STUDENT COMMAND WORKSPACE (built by JS at runtime) ---------- */
+.dw20-student-workspace{
+  display:grid;grid-template-columns:minmax(280px,340px) minmax(0,1fr);
+  gap:var(--sp-4);align-items:start;margin-top:var(--sp-4);
+}
+.dw20-roster-column{position:sticky;top:var(--sp-4);display:grid;gap:var(--sp-3)}
+.dw20-command-column{min-width:0;display:grid;gap:var(--sp-4)}
+
+.dw20-status-strip,.live-request-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:var(--sp-3);margin-bottom:var(--sp-4);
+}
+.live-request-box{padding:var(--sp-4)}
+.live-request-box h3{margin:0 0 var(--sp-1)}
+.live-request-list{display:grid;gap:6px;margin-top:var(--sp-3);max-height:300px;overflow-y:auto}
+.live-request-item{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--sp-2);align-items:center;
+  padding:9px 10px;border-radius:var(--radius-sm);
+  background:var(--ink-700);border:1px solid var(--line);
+}
+.live-request-item.out{border-color:rgba(74,222,128,.5)}
+.live-request-item b{color:var(--gold-soft);font-size:14px}
+.live-request-item small{display:block;font-size:12px;color:var(--text-dim)}
+.live-actions button{min-height:36px;padding:6px 11px;font-size:13px}
+.big{display:block;font-family:var(--font-display);font-size:34px;color:var(--gold-soft);line-height:1.1}
+
+.progression-plan{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:var(--sp-3);margin-bottom:var(--sp-4);
+}
+.progression-plan>div{
+  padding:var(--sp-3);border-radius:var(--radius-sm);text-align:center;
+  background:var(--ink-700);border:1px solid var(--line);
+}
+.progression-plan small{display:block;font-size:10px;font-weight:900;letter-spacing:.1em;color:var(--text-faint)}
+.progression-plan b{display:block;font-family:var(--font-display);font-size:24px;color:var(--gold-soft)}
+
+/* ---------- SHARED STUDENT SELECTOR ---------- */
+.dw-shared-selector{padding:var(--sp-4)}
+.student-check-head{
+  display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap;margin-bottom:var(--sp-3);
+}
+.student-check-head b{font-size:13px;letter-spacing:.06em}
+.student-check-head button{min-height:32px;padding:5px 11px;font-size:12px}
+.student-selection-count{
+  margin-left:auto;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:800;
+  background:var(--ink-600);border:1px solid var(--line);color:var(--text-dim);
+}
+.dw-select-filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:var(--sp-3)}
+.dw-select-filters button{min-height:32px;padding:5px 11px;font-size:12px;border-radius:999px;
+  background:transparent;border:1px solid var(--line);color:var(--text-dim)}
+.dw-select-filters button.active{background:var(--purple);border-color:var(--purple-soft);color:#fff}
+.dw-select-filters select,.dw-select-filters input{min-height:34px;padding:5px 10px;font-size:13px;width:auto;min-width:130px}
+.student-check-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:6px;max-height:340px;overflow-y:auto;padding-right:4px;
+}
+.student-check{
+  display:flex;align-items:center;gap:8px;padding:7px 9px;
+  border-radius:var(--radius-sm);background:var(--ink-700);border:1px solid var(--line);
+  font-size:13px;cursor:pointer;
+}
+.student-check:hover{background:var(--ink-600)}
+.student-check input{flex:0 0 auto}
+.student-check .student-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.student-avatar,.gb-avatar,.purchase-avatar,.teacher-rank-avatar{
+  width:30px;height:30px;border-radius:50%;object-fit:cover;flex:0 0 auto;
+  background:var(--ink-900);border:1px solid var(--line);
+}
+.dw-selection-summary{margin-top:var(--sp-3);font-size:13px}
+
+/* ---------- REWARD MODE TABS ---------- */
+.dw-reward-modes{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:var(--sp-3)}
+.dw-reward-mode{
+  min-height:40px;padding:8px 14px;border-radius:999px;font-size:13px;
+  background:transparent;border:1px solid var(--line);color:var(--text-dim);
+}
+.dw-reward-mode:hover{background:var(--ink-700);color:var(--text)}
+.dw-reward-mode.active{background:var(--purple);border-color:var(--purple-soft);color:#fff}
+.dw-reward-mode-panel{display:none}
+.dw-reward-mode-panel.active{display:block}
+
+/* ---------- QUICK AWARDS / CONSEQUENCES ---------- */
+.quick-award-panel,.quick-consequence-panel{padding:var(--sp-4);margin-bottom:var(--sp-4)}
+.quick-target-row{
+  display:grid;grid-template-columns:minmax(220px,320px) minmax(0,1fr);
+  gap:var(--sp-3);align-items:center;margin-bottom:var(--sp-3);
+}
+.pace-note{font-size:13px;color:var(--text-dim)}
+.pace-note b{color:var(--gold)}
+.quick-award-grid,.quick-consequence-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:var(--sp-2);
+}
+.quick-award,.quick-consequence{
+  display:flex;flex-direction:column;align-items:flex-start;gap:4px;
+  min-height:110px;padding:var(--sp-3);text-align:left;
+  border-radius:var(--radius-sm);background:var(--ink-700);border:1px solid var(--line);
+}
+.quick-award:hover{border-color:var(--purple-soft);background:var(--ink-600)}
+.quick-consequence:hover{border-color:rgba(248,113,113,.5);background:var(--ink-600)}
+.qa-icon,.qc-icon{font-size:24px;line-height:1}
+.quick-award b,.quick-consequence b{font-size:14px;font-weight:800}
+.quick-award small,.quick-consequence small{font-size:12px;color:var(--text-dim);font-weight:500;line-height:1.35}
+.qa-point,.qa-pay{font-size:11px;color:var(--gold)}
+.qc-cost{margin-top:auto;color:#ffb4c0;border-color:rgba(248,113,113,.4)}
+.groupbox{margin-bottom:var(--sp-3)}
+.dw-custom-selection-note{margin-bottom:var(--sp-2)}
+.teacher-admin-details{padding:var(--sp-4)}
+.teacher-admin-details summary{cursor:pointer;font-weight:800;font-size:15px}
+.student-table{width:100%;border-collapse:collapse;font-size:14px}
+.student-table th,.student-table td{
+  padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);
+}
+.student-table th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint)}
+.student-card{padding:var(--sp-3);border-radius:var(--radius-sm);
+  background:var(--ink-700);border:1px solid var(--line);margin-bottom:var(--sp-2)}
+.student-gear-admin{display:flex;flex-wrap:wrap;gap:6px;margin-top:var(--sp-2)}
+.rpg-snapshot{display:flex;flex-wrap:wrap;gap:var(--sp-2);font-size:12px;color:var(--text-dim)}
+
+/* ---------- REVIEW BAR / DIALOG ---------- */
+.dw20-review-bar{
+  display:flex;align-items:center;gap:var(--sp-3);flex-wrap:wrap;
+  padding:var(--sp-3) var(--sp-4);margin-bottom:var(--sp-3);
+  border-radius:var(--radius);background:var(--ink-700);border:1px solid var(--line);
+}
+.dw20-review-chip{
+  padding:4px 11px;border-radius:999px;font-size:12px;font-weight:800;
+  background:var(--ink-900);border:1px solid var(--line-strong);color:var(--text-dim);
+}
+.dw20-review-dialog{
+  position:fixed;inset:0;z-index:220;display:grid;place-items:center;padding:var(--sp-4);
+  background:rgba(4,6,14,.85);
+}
+.dw20-review-dialog.hidden{display:none !important}
+.dw20-review-dialog>div{
+  width:min(640px,100%);max-height:88vh;overflow:auto;padding:var(--sp-5);
+  border-radius:var(--radius);background:var(--ink-800);
+  border:1px solid var(--line-strong);box-shadow:var(--shadow-lg);
+}
+.dw20-review-list{display:grid;gap:6px;margin:var(--sp-3) 0}
+.dw20-review-targets{display:flex;flex-wrap:wrap;gap:6px;max-height:180px;overflow-y:auto}
+.dw20-serious-check{
+  display:flex;align-items:center;gap:8px;padding:var(--sp-3);border-radius:var(--radius-sm);
+  background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.4);
+}
+.dw20-serious-check label{margin:0;text-transform:none;font-size:14px;color:var(--text)}
+
+/* ---------- GOALS COMMAND ---------- */
+.goal-command-grid-v21{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--sp-3)}
+.goal-control-v21{padding:var(--sp-4);display:grid;gap:var(--sp-2);align-content:start}
+.goal-symbol{font-size:28px;line-height:1}
+.goal-big{font-family:var(--font-display);font-size:32px;color:var(--gold-soft);line-height:1}
+.goal-settings-v21{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:var(--sp-2)}
+.universal-command-v21{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:var(--sp-3);padding:var(--sp-4);margin-top:var(--sp-3);
+}
+.universal-big{font-family:var(--font-display);font-size:32px;color:var(--gold-soft)}
+.universal-award-v21,.universal-spend-v21{display:grid;gap:var(--sp-2)}
+.reward-purpose{font-size:13px}
+.recess-control,.recess-date-box{padding:var(--sp-3);border-radius:var(--radius-sm);
+  background:var(--ink-700);border:1px solid var(--line)}
+.recess-command-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:var(--sp-3)}
+.recess-award-buttons{display:flex;flex-wrap:wrap;gap:6px}
+.rs-row{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);
+  padding:8px 10px;border-radius:var(--radius-sm);background:var(--ink-700);
+  border:1px solid var(--line);margin-bottom:6px}
+.rs-on{border-color:rgba(74,222,128,.5)}
+.rs-none{color:var(--text-dim);font-size:13px}
+.rs-block{color:#ffb4c0}
+.historyrow{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);
+  padding:8px 10px;border-bottom:1px solid var(--line);font-size:13px}
+.reward-card,.milestone{padding:var(--sp-3);border-radius:var(--radius-sm);
+  background:var(--ink-700);border:1px solid var(--line)}
+.milestone.earned{border-color:rgba(74,222,128,.5)}
+
+/* ---------- PASS CONTROL ---------- */
+.pass-master-card{padding:var(--sp-4);margin-bottom:var(--sp-3)}
+.pass-master-row{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);
+  flex-wrap:wrap;padding:10px 12px;border-radius:var(--radius-sm);
+  background:var(--ink-700);border:1px solid var(--line);margin-bottom:6px}
+.pass-master-row.blackout-on{border-color:rgba(251,191,36,.5)}
+.pass-timer{font-family:var(--font-display);font-size:18px;color:var(--gold-soft)}
+.pass-timer.overdue,.pass-timer.OVER{color:#ffb4c0}
+.generic-pass-live{display:grid;gap:6px}
+.pass-history-older{display:none}
+.pass-history-more.open + .pass-history-older,.pass-history-older.open{display:grid;gap:6px}
+.gradebook-summary{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:var(--sp-3);margin:var(--sp-3) 0;
+}
+.gradebook-summary>div{padding:var(--sp-3);border-radius:var(--radius-sm);text-align:center;
+  background:var(--ink-700);border:1px solid var(--line)}
+.gradebook-summary small{display:block;font-size:10px;font-weight:900;letter-spacing:.1em;color:var(--text-faint)}
+.gradebook-summary b{display:block;font-family:var(--font-display);font-size:26px;color:var(--gold-soft)}
+
+/* ---------- JOBS ---------- */
+.job-by-role-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(140px,auto);
+  gap:var(--sp-2);align-items:center;padding:8px 10px;border-radius:var(--radius-sm);
+  background:var(--ink-700);border:1px solid var(--line);margin-bottom:6px}
+.v29-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:var(--sp-3)}
+.v29-list{display:grid;gap:6px;max-height:420px;overflow-y:auto}
+.v29-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--sp-3);align-items:center;
+  padding:9px 10px;border-radius:var(--radius-sm);background:var(--ink-700);border:1px solid var(--line)}
+
+/* ---------- PLANNER / TOOLS WORKSPACES (built by JS) ---------- */
+#plannerWorkspace,#toolsWorkspace{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+  gap:var(--sp-4);align-items:start;
+}
+#plannerWorkspace>.panel,#toolsWorkspace>.panel{display:block}
+.dw31t-row{padding:9px 10px;border-radius:var(--radius-sm);
+  background:var(--ink-700);border:1px solid var(--line);margin-bottom:6px}
+.dw31t-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:var(--sp-3)}
+
+/* ---------- POLL / PICKER ---------- */
+.poll-admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:var(--sp-3)}
+.poll-choice-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;margin-bottom:6px}
+.poll-remove-choice{min-height:40px;padding:6px 12px}
+.live-poll-results{display:grid;gap:var(--sp-2);margin-top:var(--sp-3)}
+.live-poll-result b{font-size:14px}
+.live-poll-bar{height:10px;margin-top:5px}
+.picker-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--sp-3)}
+.picker-output{
+  min-height:110px;display:grid;place-items:center;padding:var(--sp-4);
+  border-radius:var(--radius-sm);background:var(--ink-700);border:1px solid var(--line);
+}
+.picked-name{font-family:var(--font-display);font-size:30px;color:var(--gold-soft);text-align:center}
+.group-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--sp-2);width:100%}
+.group-card{padding:var(--sp-3);border-radius:var(--radius-sm);
+  background:var(--ink-900);border:1px solid var(--line)}
+.group-card h4{margin:0 0 6px;font-size:14px;color:var(--gold)}
+.groupSizeBtn{min-height:34px;padding:5px 11px;font-size:13px}
+.raw-results{font-size:12px;color:var(--text-dim);white-space:pre-wrap}
+.raw-results-details summary{cursor:pointer;font-size:13px}
+
+/* ---------- LEADERBOARD COMMAND ---------- */
+.leaderboard-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:var(--sp-3)}
+.leaderboard-tabs button{min-height:36px;padding:6px 13px;border-radius:999px;font-size:13px;
+  background:transparent;border:1px solid var(--line);color:var(--text-dim)}
+.leaderboard-tabs button.active{background:var(--purple);border-color:var(--purple-soft);color:#fff}
+.leaderboard-command{display:grid;gap:var(--sp-4)}
+.dw20-podium{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:var(--sp-3);margin-bottom:var(--sp-4)}
+.dw20-podium-card{padding:var(--sp-4);border-radius:var(--radius);text-align:center;
+  background:var(--ink-700);border:1px solid var(--line)}
+.dw20-podium-card.place-1{border-color:var(--gold)}
+.dw20-podium-card.place-2{border-color:#c8d2e6}
+.dw20-podium-card.place-3{border-color:#d19a5c}
+.dw20-rankings,.teacher-score-board{display:grid;gap:6px}
+.teacher-rank{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;gap:var(--sp-3);
+  align-items:center;padding:9px 10px;border-radius:var(--radius-sm);
+  background:var(--ink-700);border:1px solid var(--line)}
+.teacher-rank-place{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;
+  background:var(--ink-900);border:1px solid var(--line-strong);
+  font-family:var(--font-display);font-weight:800;font-size:14px}
+
+/* ---------- GRADEBOOK ---------- */
+.gb-controls,.gradebook-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3)}
+.gb-controls input,.gb-controls select{width:auto;min-width:150px;min-height:38px;padding:6px 10px;font-size:14px}
+.gb-category-settings{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:var(--sp-2);padding:var(--sp-3);border-radius:var(--radius-sm);
+  background:var(--ink-700);border:1px solid var(--line);margin-bottom:var(--sp-3)}
+.gb-sort-header,.gradebook-table{
+  display:grid;grid-template-columns:minmax(180px,2fr) repeat(4,minmax(78px,1fr)) minmax(78px,1fr);
+  gap:var(--sp-2);align-items:center;
+}
+.gb-sort-header{padding:0 10px var(--sp-2);border-bottom:1px solid var(--line)}
+.gb-sort-button{min-height:32px;padding:4px 8px;font-size:11px;font-weight:900;
+  letter-spacing:.07em;text-transform:uppercase;color:var(--text-faint);
+  background:transparent;border:0;justify-content:flex-start}
+.gb-sort-button:hover{color:var(--text);background:transparent}
+.gb-sort-arrow{font-size:10px;color:var(--cyan)}
+.gb-sort-spacer{min-width:1px}
+.gb-student-list{display:grid;gap:6px;margin-top:var(--sp-2)}
+.gb-student,.gradebook-student{
+  display:grid;grid-template-columns:minmax(180px,2fr) repeat(4,minmax(78px,1fr)) minmax(78px,1fr);
+  gap:var(--sp-2);align-items:center;padding:9px 10px;border-radius:var(--radius-sm);
+  background:var(--ink-700);border:1px solid var(--line);
+}
+.gb-name{display:flex;align-items:center;gap:8px;min-width:0}
+.gb-name span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gb-overall,.gb-metric,.gb-cat,.gradebook-grade{text-align:center;font-family:var(--font-display);font-size:17px}
+.gb-overall{color:var(--gold-soft);font-size:20px}
+.gb-missing{text-align:center;color:#ffb4c0;font-weight:800}
+.gb-student-body{grid-column:1/-1;padding-top:var(--sp-3);margin-top:var(--sp-3);border-top:1px solid var(--line)}
+.gb-assignment-row,.gradebook-assignment-card{
+  display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:var(--sp-2);align-items:center;
+  padding:7px 9px;border-radius:var(--radius-sm);background:var(--ink-900);
+  border:1px solid var(--line);margin-bottom:5px;font-size:13px;
+}
+.gb-empty{padding:var(--sp-5);text-align:center;color:var(--text-dim)}
+.gb-load-warning{
+  padding:var(--sp-3);border-radius:var(--radius-sm);margin-bottom:var(--sp-3);
+  background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.4);
+  color:#ffe0a3;font-size:13px;
+}
+.dw-tab-loading{position:relative;min-height:120px;opacity:.6}
+.dw-tab-loading::after{
+  content:"Loading…";position:absolute;inset:0;display:grid;place-items:center;
+  font-weight:800;color:var(--text-dim);
+}
+
+/* ---------- SCRIBE COMMAND ---------- */
+.tw-response{padding:var(--sp-3);border-radius:var(--radius-sm);
+  background:var(--ink-700);border:1px solid var(--line);margin-bottom:var(--sp-2)}
+.tw-response-head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);flex-wrap:wrap}
+.tw-response-body{margin-top:var(--sp-2);font-size:14px;line-height:1.6;white-space:pre-wrap}
+.tw-score-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:6px;margin-top:var(--sp-2)}
+.tw-score-grid>div{padding:7px 9px;border-radius:var(--radius-sm);text-align:center;
+  background:var(--ink-900);border:1px solid var(--line);font-size:12px}
+.tw-teacher-review{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:var(--sp-2)}
+.tw-teacher-review input{width:auto;min-width:80px;min-height:36px;padding:5px 9px}
+
+/* ---------- SHOP ADMIN ---------- */
+.shop-summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:var(--sp-3);margin-bottom:var(--sp-4)}
+.shop-summary-card{padding:var(--sp-3);border-radius:var(--radius-sm);text-align:center;
+  background:var(--ink-700);border:1px solid var(--line)}
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:var(--sp-3)}
+.shop-item-card{display:flex;flex-direction:column;gap:var(--sp-2);padding:var(--sp-3)}
+.shop-item-icon,.shop-icon-preview{font-size:34px;text-align:center}
+.shop-item-meta{font-size:12px;color:var(--text-dim)}
+.shop-price{font-family:var(--font-display);font-size:19px;color:var(--gold-soft)}
+.shop-icon-field{display:flex;gap:var(--sp-2);align-items:center}
+.shop-toggle-row{display:flex;flex-wrap:wrap;gap:var(--sp-3);align-items:center}
+.purchase-list{display:grid;gap:6px}
+.purchase-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:var(--sp-3);
+  align-items:center;padding:9px 10px;border-radius:var(--radius-sm);
+  background:var(--ink-700);border:1px solid var(--line)}
+.purchase-status{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+.teacher-queue{display:grid;gap:6px}
+
+/* ---------- PET MANAGER ---------- */
+.teacher-pet-manager{display:grid;gap:var(--sp-3)}
+.tpm-head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);flex-wrap:wrap}
+.tpm-tools{display:flex;flex-wrap:wrap;gap:6px}
+.tpm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--sp-2)}
+.tpm-card{display:grid;justify-items:center;gap:5px;padding:var(--sp-3);text-align:center;
+  border-radius:var(--radius-sm);background:var(--ink-700);border:1px solid var(--line)}
+.tpm-card img{width:64px;height:64px;object-fit:contain}
+.rarity-teacher{font-size:11px;font-weight:800;letter-spacing:.06em}
+
+/* ---------- MISC LISTS ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:var(--sp-3)}
+.list{display:grid;gap:6px}
+.item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--sp-3);align-items:center;
+  padding:9px 10px;border-radius:var(--radius-sm);background:var(--ink-700);border:1px solid var(--line)}
+.reason{font-size:12px;color:var(--text-dim)}
+.icon{font-size:22px;line-height:1}
+.add,.pet-add,.recess-add,.trip-add,.universal-add,.award{min-height:38px;padding:7px 12px;font-size:13px}
+.placeholder-card{padding:var(--sp-5);text-align:center;color:var(--text-dim)}
+
+/* ---------- RESPONSIVE ---------- */
+@media(max-width:1280px){
+  .dw20-student-workspace{grid-template-columns:minmax(0,1fr)}
+  .dw20-roster-column{position:static}
+  .gb-sort-header,.gb-student,.gradebook-student,.gradebook-table{
+    grid-template-columns:minmax(140px,1.6fr) repeat(3,minmax(64px,1fr));
+  }
+  .gb-sort-header>:nth-child(n+5),.gb-student>:nth-child(n+5),
+  .gradebook-student>:nth-child(n+5){display:none}
+}
+@media(max-width:860px){
+  .quick-target-row{grid-template-columns:minmax(0,1fr)}
+  .live-request-item{grid-template-columns:minmax(0,1fr)}
+  .job-by-role-row{grid-template-columns:minmax(0,1fr)}
+  .student-check-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));max-height:260px}
+}
+@media(max-width:560px){
+  .gb-sort-header,.gb-student,.gradebook-student,.gradebook-table{
+    grid-template-columns:minmax(120px,1.6fr) repeat(2,minmax(58px,1fr));
+  }
+  .gb-sort-header>:nth-child(n+4),.gb-student>:nth-child(n+4),
+  .gradebook-student>:nth-child(n+4){display:none}
+  .purchase-row,.item{grid-template-columns:auto minmax(0,1fr)}
+}
+
+/* ---------- MISC GRIDS ---------- */
+.feature-placeholder-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:var(--sp-3)}
+.poll-choice-input{width:100%}

@@ -1,0 +1,401 @@
+/* ============================================================================
+   DRAGONSWOOD V2 - CORE DESIGN SYSTEM
+   Shared by index-v2.html (student) and teacher-v2.html (teacher).
+
+   Replaces 42 stacked <style> blocks on the student page and 24 on the
+   teacher page. One token set, one card treatment, one button hierarchy.
+   No !important cascade wars, no decorative glow, no 3.95MB fixed-attachment
+   background image.
+   ========================================================================= */
+
+/* ---------- 1. TOKENS ---------- */
+:root{
+  /* Surfaces - one ink ramp, used consistently */
+  --ink-900:#070a16;
+  --ink-800:#0b1020;
+  --ink-700:#111830;
+  --ink-600:#1a2340;
+  --ink-500:#243050;
+
+  /* Text */
+  --text:#eef2fb;
+  --text-dim:#b6c0d8;
+  --text-faint:#8994ad;
+
+  /* Brand accents - used sparingly */
+  --gold:#f2c65c;
+  --gold-soft:#ffe3a3;
+  --gold-deep:#8a6416;
+  --purple:#8b5cf6;
+  --purple-soft:#c4b1ff;
+  --cyan:#38bdf8;
+  --cyan-soft:#a5e8ff;
+
+  /* Semantic */
+  --ok:#4ade80;
+  --warn:#fbbf24;
+  --danger:#f87171;
+
+  /* Structure */
+  --line:rgba(148,163,208,.18);
+  --line-strong:rgba(148,163,208,.34);
+  --radius-sm:8px;
+  --radius:14px;
+  --radius-lg:20px;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.28);
+  --shadow-lg:0 2px 4px rgba(0,0,0,.4), 0 18px 44px rgba(0,0,0,.4);
+
+  /* Rhythm */
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px;
+  --sp-5:24px; --sp-6:32px; --sp-7:48px;
+
+  /* Type */
+  --font-ui:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  --font-display:Georgia,"Times New Roman",serif;
+
+  /* Shell metrics */
+  --rail-w:236px;
+
+  --focus:0 0 0 3px #050810, 0 0 0 6px var(--cyan);
+}
+
+/* ---------- 2. RESET ---------- */
+*,*::before,*::after{box-sizing:border-box}
+html{
+  background:var(--ink-900);
+  -webkit-text-size-adjust:100%;
+  scroll-behavior:smooth;
+}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:var(--font-ui);
+  font-size:16px;
+  line-height:1.55;
+  color:var(--text);
+  /* Lightweight painted ground - replaces the 3.95MB fixed cover image. */
+  background:
+    radial-gradient(1200px 620px at 50% -8%, rgba(139,92,246,.16), transparent 62%),
+    radial-gradient(900px 500px at 88% 4%, rgba(56,189,248,.10), transparent 60%),
+    linear-gradient(180deg,#070a16 0%,#0a0f1f 45%,#070a16 100%);
+  background-attachment:scroll;
+}
+img,svg,video{max-width:100%;height:auto}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;margin:0}
+h1,h2,h3,h4{font-family:var(--font-display);margin:0 0 var(--sp-2);line-height:1.15;color:var(--text)}
+h1{font-size:clamp(28px,3.4vw,40px)}
+h2{font-size:clamp(21px,2.3vw,28px)}
+h3{font-size:clamp(17px,1.6vw,20px)}
+p{margin:0 0 var(--sp-3)}
+a{color:var(--cyan-soft)}
+a:hover{color:#fff}
+hr{border:0;border-top:1px solid var(--line);margin:var(--sp-5) 0}
+:focus-visible{outline:none;box-shadow:var(--focus);border-radius:var(--radius-sm)}
+
+/* ---------- 3. UTILITIES ---------- */
+.hidden{display:none !important}   /* JS toggles this everywhere; must win. */
+.muted,.dw-subtle,.dw31-muted,.pace-note,.consequence-note,.goal-note,
+.student-grade-note,.avatar-studio-note,.leaderboard-reward-note,
+.lb-prize-note,.dw-custom-selection-note,.dw-selection-summary,
+.reward-purpose,.shop-description,.goal-status{
+  color:var(--text-dim);font-size:14px;
+}
+.shell{width:min(1560px,100%);margin-inline:auto;padding-inline:clamp(12px,2.2vw,28px)}
+.error,#error,#loginError,#profileError{color:#ffb4c0}
+.skip-link{
+  position:absolute;left:-9999px;top:0;z-index:999;
+  padding:12px 18px;background:var(--gold);color:#1a1204;font-weight:800;
+  border-radius:0 0 var(--radius-sm) 0;
+}
+.skip-link:focus{left:0}
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+
+/* ---------- 4. SURFACES ---------- */
+/* .frame / .bevel / .card all collapse into ONE panel treatment. */
+.frame,.card,.modalbox,.login-card,.placeholder-card{
+  background:linear-gradient(180deg,rgba(17,24,48,.92),rgba(11,16,32,.94));
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.bevel{border-radius:var(--radius)}   /* legacy hook: no clip-path bevel */
+.card{padding:var(--sp-4)}
+.frame::before,.frame::after{content:none}  /* remove the decorative corners */
+.card h3:first-child,.frame h3:first-child{margin-top:0}
+
+.section-title,.command-title{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-4);
+  flex-wrap:wrap;margin:var(--sp-6) 0 var(--sp-4);
+  padding-bottom:var(--sp-3);border-bottom:1px solid var(--line);
+}
+.command-title{
+  margin-top:0;padding:var(--sp-4);border:1px solid var(--line);
+  border-radius:var(--radius);background:linear-gradient(180deg,rgba(17,24,48,.92),rgba(11,16,32,.94));
+}
+.section-title:first-child{margin-top:0}
+.section-title h2,.command-title h2{margin:0}
+.section-title p,.command-title p{
+  margin:var(--sp-1) 0 0;color:var(--text-dim);font-size:14px;max-width:78ch;
+}
+.section-title.compact{margin:0 0 var(--sp-3)}
+.section-title::after{content:none}
+.eyebrow,.card-kicker,.scribe-kicker,.journal-label,.mastery-kicker,
+.home-hero-eyebrow,.nav-label{
+  font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:var(--sp-1);display:block;
+}
+
+/* ---------- 5. BUTTONS ---------- */
+.btn,button{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:44px;padding:10px 16px;
+  border:1px solid var(--line-strong);border-radius:var(--radius-sm);
+  background:var(--ink-600);color:var(--text);
+  font-weight:700;font-size:15px;text-decoration:none;text-align:center;
+  transition:background .15s ease,border-color .15s ease,transform .1s ease;
+}
+.btn:hover,button:hover{background:var(--ink-500);color:#fff}
+.btn:active,button:active{transform:translateY(1px)}
+button[disabled],.btn[disabled],button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+/* Primary - one call to action per region */
+.btn-primary,#googleBtn,#teacherSignInBtn,#saveProfile,#massApply,
+#studentPassHubBtn,#scribeSubmitBtn,#dwBlockingPassReturn,#dw20ApplyReview{
+  background:linear-gradient(180deg,var(--purple),#6d33e0);
+  border-color:#a982ff;color:#fff;
+}
+.btn-primary:hover,#googleBtn:hover,#teacherSignInBtn:hover,#saveProfile:hover,
+#massApply:hover,#studentPassHubBtn:hover,#scribeSubmitBtn:hover,
+#dwBlockingPassReturn:hover,#dw20ApplyReview:hover{
+  background:linear-gradient(180deg,#9d76ff,#7c45ee);
+}
+/* Quiet */
+.gray,.scribe-secondary,.btn-ghost{background:transparent;border-color:var(--line)}
+.gray:hover,.scribe-secondary:hover,.btn-ghost:hover{background:var(--ink-700)}
+/* Destructive */
+.danger,.danger-soft{background:rgba(248,113,113,.13);border-color:rgba(248,113,113,.5);color:#ffc9c9}
+.danger:hover,.danger-soft:hover{background:rgba(248,113,113,.24);color:#fff}
+/* Small pill buttons (filters, sorts, chips) */
+.mini,.btn.mini{min-height:34px;padding:6px 12px;font-size:13px;border-radius:999px}
+.mini.active,.btn.mini.active{background:var(--purple);border-color:var(--purple-soft);color:#fff}
+
+/* ---------- 6. FORMS ---------- */
+input,select,textarea{
+  width:100%;min-height:44px;padding:10px 12px;
+  background:var(--ink-900);border:1px solid var(--line-strong);
+  border-radius:var(--radius-sm);color:var(--text);
+}
+input[type=checkbox],input[type=radio]{width:auto;min-height:0;accent-color:var(--purple)}
+input:hover,select:hover,textarea:hover{border-color:var(--cyan)}
+textarea{min-height:140px;resize:vertical;line-height:1.6}
+select option,select optgroup{background:var(--ink-800);color:var(--text)}
+label,.toggle-label{
+  display:block;font-size:12px;font-weight:800;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--text-faint);margin-bottom:6px;
+}
+.toggle-label{display:flex;align-items:center;gap:8px;text-transform:none;
+  font-size:14px;color:var(--text-dim);margin:0}
+.field{display:flex;flex-direction:column;margin-bottom:var(--sp-3)}
+.formgrid,.grid2,.groupbox,.v29-form,.dw31t-form,.shop-form-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:var(--sp-3);
+}
+.full{grid-column:1/-1}
+.actions,.v29-actions,.dw31t-actions,.live-actions,.goal-actions-v21,
+.shop-item-actions,.scribe-actions{
+  display:flex;gap:var(--sp-2);flex-wrap:wrap;margin-top:var(--sp-3);
+}
+
+/* ---------- 7. PROGRESS ---------- */
+.progress,.meter,.large-meter,.poll-bar-wrap,.live-poll-bar{
+  height:12px;border-radius:999px;overflow:hidden;
+  background:var(--ink-900);border:1px solid var(--line);
+}
+.large-meter{height:18px}
+.progress>div,.meter>.fill,.large-meter>.fill,.fill,
+.poll-bar,.live-poll-fill{
+  height:100%;border-radius:999px;
+  background:linear-gradient(90deg,var(--purple),var(--cyan));
+  transition:width .35s ease;
+}
+
+/* ---------- 8. BADGES / TAGS / RARITY ---------- */
+.tag,.pill,.badge,.rarity-label,.shop-pill,.stat-chip,.qc-cost,.qa-pay,
+.lb-scoretype,.item-rarity{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:3px 10px;border-radius:999px;
+  background:var(--ink-600);border:1px solid var(--line);
+  font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--text-dim);
+}
+.tag{color:var(--cyan-soft);border-color:rgba(56,189,248,.35)}
+
+.rarity-common,.common{--rar:#9aa6bf}
+.rarity-uncommon,.uncommon{--rar:#4ade80}
+.rarity-rare,.rare{--rar:#38bdf8}
+.rarity-epic,.epic{--rar:#c084fc}
+.rarity-legendary,.legendary{--rar:#f2c65c}
+.rarity-mythic{--rar:#fb7185}
+.rarity-common,.rarity-uncommon,.rarity-rare,.rarity-epic,
+.rarity-legendary,.rarity-mythic,.common,.uncommon,.rare,.epic,.legendary{
+  border-color:color-mix(in srgb,var(--rar) 55%,transparent);
+  color:var(--rar);
+}
+
+/* Status colouring shared by both pages */
+.blocked,.overdue,.missed,.cancelled,.OVER{color:#ffb4c0}
+.unlocked,.earned,.done,.today{color:var(--ok)}
+.daily-locked,.locked,.pending{color:var(--warn)}
+
+/* ---------- 9. MODALS ---------- */
+.modal{
+  position:fixed;inset:0;z-index:200;
+  display:grid;place-items:center;padding:var(--sp-4);
+  background:rgba(4,6,14,.82);
+}
+.modal.hidden{display:none !important}
+.modalbox,.modal-content,.shop-modal-box{
+  width:min(980px,100%);max-height:90vh;overflow:auto;
+  padding:var(--sp-5);box-shadow:var(--shadow-lg);
+}
+.modal-heading{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)}
+
+/* ---------- 10. APP SHELL (rail + content) ---------- */
+.dw-shell{display:grid;grid-template-columns:var(--rail-w) minmax(0,1fr);min-height:100vh}
+.dw-rail{
+  position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;
+  padding:var(--sp-4) var(--sp-3);
+  background:linear-gradient(180deg,rgba(11,16,32,.97),rgba(7,10,22,.97));
+  border-right:1px solid var(--line);
+}
+.dw-rail-brand{
+  display:flex;align-items:center;gap:10px;padding:0 4px var(--sp-4);
+  border-bottom:1px solid var(--line);margin-bottom:var(--sp-3);
+  color:inherit;text-decoration:none;
+}
+.dw-rail-brand img{width:40px;height:40px;object-fit:contain;flex:0 0 auto}
+.dw-rail-brand b{
+  display:block;font-family:var(--font-display);font-size:18px;
+  letter-spacing:.04em;color:var(--gold-soft);line-height:1.1;
+}
+.dw-rail-brand small{
+  display:block;font-size:10px;font-weight:800;letter-spacing:.11em;
+  color:var(--text-faint);text-transform:uppercase;
+}
+.dw-content{min-width:0;padding:var(--sp-5) clamp(14px,2.4vw,32px) var(--sp-7)}
+
+/* Nav group labels (replaces .nav-crest / .nav-divider theatrics) */
+.nav-crest,.nav-divider{
+  display:block;margin:var(--sp-4) 4px var(--sp-2);
+  font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--text-faint);
+}
+.nav-crest{margin-top:0}
+.nav-divider span{font:inherit;color:inherit}
+
+/* Nav items - .portal-tab (student) and .tab (teacher) share one look */
+.portal-nav,.command-tabs,.tabs{
+  display:flex;flex-direction:column;gap:2px;
+  background:none;border:0;box-shadow:none;padding:0;
+}
+.portal-tab,.tab{
+  display:flex;align-items:center;gap:10px;width:100%;
+  min-height:46px;padding:8px 12px;
+  border:1px solid transparent;border-radius:var(--radius-sm);
+  background:transparent;color:var(--text-dim);
+  font-size:14px;font-weight:700;text-align:left;line-height:1.2;
+}
+.portal-tab>span,.tab>span{font-size:19px;flex:0 0 auto}
+.portal-tab>b,.tab>b{font-weight:700;font-size:14px}
+.portal-tab:hover,.tab:hover{background:var(--ink-700);color:var(--text)}
+.portal-tab.active,.tab.active{
+  background:linear-gradient(90deg,rgba(139,92,246,.3),rgba(56,189,248,.14));
+  border-color:rgba(139,92,246,.5);color:#fff;
+}
+
+/* View/panel switching - JS toggles .active */
+.portal-view,.panel{display:none}
+.portal-view.active,.panel.active{display:block;animation:dwFade .18s ease both}
+@keyframes dwFade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ---------- 11. RESPONSIVE SHELL ---------- */
+@media(max-width:1080px){
+  :root{--rail-w:0px}
+  .dw-shell{grid-template-columns:minmax(0,1fr)}
+  .dw-rail{
+    position:sticky;top:0;z-index:60;height:auto;
+    border-right:0;border-bottom:1px solid var(--line);
+    padding:var(--sp-3);
+  }
+  .dw-rail-brand{border-bottom:0;margin-bottom:var(--sp-2);padding-bottom:0}
+  .nav-crest,.nav-divider{display:none}
+  .portal-nav,.command-tabs,.tabs{
+    flex-direction:row;flex-wrap:nowrap;
+    overflow-x:auto;overscroll-behavior-x:contain;
+    gap:6px;padding-bottom:4px;scrollbar-width:thin;
+  }
+  .portal-tab,.tab{width:auto;flex:0 0 auto;white-space:nowrap;min-height:42px}
+  .dw-content{padding:var(--sp-4) clamp(12px,3vw,20px) var(--sp-6)}
+}
+@media(max-width:640px){
+  body{font-size:15px}
+  .portal-tab>b,.tab>b{font-size:13px}
+  .modalbox,.modal-content,.shop-modal-box{padding:var(--sp-4)}
+}
+
+/* ---------- 12. MOTION / PRINT ---------- */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;scroll-behavior:auto !important;
+  }
+}
+@media print{
+  .dw-rail,.portal-nav,.command-tabs,.tabs,.modal{display:none !important}
+  body{background:#fff;color:#000}
+  .dw-shell{grid-template-columns:1fr}
+}
+
+/* ---------- 13. TOP BAR (shared by both portals) ---------- */
+:root{--topbar-h:62px}
+.dw-topbar{
+  position:sticky;top:0;z-index:70;
+  display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);
+  min-height:var(--topbar-h);padding:var(--sp-2) clamp(12px,2.4vw,26px);
+  background:rgba(7,10,22,.94);
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(8px);
+}
+.dw-topbar-brand{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none;min-width:0}
+.dw-topbar-brand img{width:38px;height:38px;object-fit:contain;flex:0 0 auto}
+.dw-topbar-brand b{
+  display:block;font-family:var(--font-display);font-size:clamp(17px,2.1vw,23px);
+  letter-spacing:.06em;color:var(--gold-soft);line-height:1.1;
+}
+.dw-topbar-brand small{
+  display:block;font-size:10px;font-weight:800;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--text-faint);
+}
+.dw-topbar-status{display:flex;align-items:center;gap:var(--sp-3);min-width:0;flex-wrap:wrap;justify-content:flex-end}
+
+/* Rail sits under the sticky top bar */
+.dw-shell>.dw-rail{top:var(--topbar-h);height:calc(100vh - var(--topbar-h))}
+@media(max-width:1080px){
+  .dw-shell>.dw-rail{top:var(--topbar-h);height:auto}
+  .dw-topbar{flex-wrap:wrap;gap:var(--sp-2)}
+  .dw-topbar-status{width:100%;justify-content:flex-start}
+}
+
+/* ---------- 14. FOCUS (last, so it always wins) ----------
+   Declared at the end of the sheet so no component rule can override the
+   keyboard focus ring with its own box-shadow. */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,
+textarea:focus-visible,summary:focus-visible,[tabindex]:focus-visible,
+.portal-tab:focus-visible,.tab:focus-visible,.dw-reward-mode:focus-visible{
+  outline:3px solid var(--cyan);
+  outline-offset:2px;
+  box-shadow:var(--focus);
+}

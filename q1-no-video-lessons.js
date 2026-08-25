@@ -1,5 +1,5 @@
 /* ==========================================================================
-   v56.23 — NO-VIDEO LESSON ENGINE
+   v56.23.1 — NO-VIDEO LESSON ENGINE
    Scope lock: this engine is forbidden from changing any mission that the
    existing Curriculum Quest classifies as a video mission.
 
@@ -34,7 +34,10 @@
     "mit":"send","miss":"send","mit/miss":"send",
     "pend":"hang or weigh","pens":"hang or weigh","pend/pens":"hang or weigh",
     "rupt":"break",
-    "pose":"put or place","pon":"put or place","pose/pon":"put or place"
+    "pose":"put or place","pon":"put or place","pose/pon":"put or place",
+    "leg":"law, choose, or appoint depending on the word","legis":"law",
+    "pence":"weigh, think, or consider",
+    "ven":"come","vent":"come","ven/vent":"come"
   };
 
   const FLUENCY_PASSAGES={
@@ -76,8 +79,9 @@
     if(/fluency|partner read|read aloud/i.test(t))return "fluency";
     if(/progress monitor|progress monitoring/i.test(t)&&/writing/i.test(x.strand||""))return "writing-progress";
     if(/progress monitor|progress monitoring/i.test(t))return "progress";
-    if(/present|publish|share their work|ready,\s*set,\s*publish/i.test(t))return "performance";
+    if(/\bpresent(?:ing|ations?)?\b|publish|share their work|ready,\s*set,\s*publish/i.test(t))return "performance";
     if(/^cursive(?:\s+warm\s+up)?\s*$/i.test(req))return "cursive-only";
+    if(currentWordStudy(x))return "word-lesson";
     return "lesson";
   }
   function cleanLine(v){return String(v||"").replace(/^[-•]\s*/,"").replace(/\s+/g," ").trim()}
@@ -122,42 +126,134 @@
     return candidates.slice(0,5);
   }
   function writingReview(x){
-    const items=recentItems(x,"Writing",4),out=[];
+    const items=recentItems(x,"Writing",4),preferred=[],fallback=[];
+    const reject=/^(video:?|in class:?|cursive(?: warm up)?:?|journal journeys|would you rather.*|ready, set, publish!?|build it, expand it, prove it!?|opinion writing graphic organizer)$/i;
+    const logistics=/students? will need|provide time|allow students?|teacher conferencing|make an anchor chart|graphic organizer|practice as needed|extra time/i;
     for(const item of items){
-      const req=String(item.requirement||"");
-      const bullets=req.split(/\r?\n/).map(cleanLine).filter(v=>v&&
-        !/^(video|in class|cursive warm up|journal journeys|would you rather)$/i.test(v)&&
-        v.length<90
-      );
-      for(const b of bullets){
-        if(/day\s*\d+|q1|language and writing/i.test(b))continue;
-        if(!out.some(v=>v.toLowerCase()===b.toLowerCase()))out.push(b);
+      const rawLines=String(item.requirement||"").split(/\r?\n/).map(v=>String(v||"").trim()).filter(Boolean);
+      for(const raw of rawLines){
+        const wasBullet=/^[-•]/.test(raw),v=cleanLine(raw);
+        if(!v||reject.test(v)||logistics.test(v)||/day\s*\d+|q1|language and writing/i.test(v)||v.length>=90)continue;
+        const target=wasBullet?preferred:fallback;
+        if(!target.some(x=>x.toLowerCase()===v.toLowerCase()))target.push(v);
       }
     }
-    return out.slice(-7);
+    const out=[...preferred,...fallback.filter(v=>!preferred.some(p=>p.toLowerCase()===v.toLowerCase()))];
+    return out.slice(0,7);
+  }
+  function currentWordStudy(x){
+    const wr=extractWordRoot(x);
+    if(!wr.word)return null;
+    const word=wr.word.trim();
+    const m=(D.morphology||[]).find(row=>row.grade===x.grade&&String(row.word||"").trim().toLowerCase()===word.toLowerCase())||null;
+    if(!m)return null;
+    return {item:x,row:m,word,root:wr.root||m.root||""};
+  }
+  function normalizeMorphText(v){
+    let text=String(v||"").trim();
+    // Correct obvious source-extraction prefix typos without altering the stored curriculum.
+    text=text.replace(/^n-\s*=/i,"in- =").replace(/^e-\s*=/i,"re- =");
+    return text;
+  }
+  function wordLessonHtml(x){
+    const w=currentWordStudy(x);
+    if(!w)return richLessonHtml(x,window.__DW_NO_VIDEO_ORIGINALS.renderMiniLesson);
+    const m=w.row,root=w.root||"word root";
+    const layers=[
+      ["Say It",m.phonological],
+      ["Spell It",m.orthographic],
+      ["Build It",normalizeMorphText(m.morphological)],
+      ["Use It",m.syntactic],
+      ["Word History",m.etymological]
+    ].filter(([,v])=>String(v||"").trim());
+    return `<div class="self-lesson">
+      <div class="lesson-banner">📖 WORD LAB • ${escHtml(w.word)}</div>
+      <div class="key-idea"><strong>Today you will learn:</strong> how the word <b>${escHtml(w.word)}</b> is built and how its parts help explain its meaning.</div>
+      <div style="margin-top:8px" class="key-idea"><strong>Root to watch:</strong> ${escHtml(root)}. Use the word's Build It explanation below as the source of truth for this word.</div>
+      ${layers.map(([label,value])=>`<div style="margin-top:8px" class="key-idea"><strong>${escHtml(label)}:</strong> ${escHtml(value)}</div>`).join("")}
+      <div class="example-box"><strong>Watch the thinking:</strong> Locate the root first, connect its meaning to the prefix or suffix, then check whether that meaning fits the example sentence.</div>
+      <div style="margin-top:10px;padding:10px;border:1px solid #3d2a59;border-radius:8px;background:#0b0819;color:#eee8f8"><strong style="color:#ffe8a0">Try one with me:</strong> Point to the root in <b>${escHtml(w.word)}</b>. What meaning does that root contribute before the other word parts are added?</div>
+      ${m.application?`<div class="remember"><strong>Apply it:</strong> ${escHtml(m.application)}</div>`:""}
+      <span class="mission-note">No video today • Learn → Model → Try → Apply</span>
+    </div>`;
   }
   function fluencyPassage(x){
     const bank=FLUENCY_PASSAGES[x.grade]||FLUENCY_PASSAGES.I;
     const checkpoint=Math.max(0,Math.floor((Number(x.day)-7)/5));
     return bank[checkpoint%bank.length];
   }
-  function priorQuestions(x,limit=6,wide=false){
-    if(!window.__DW_NO_VIDEO_ORIGINALS?.autoQuestionsFor)return [];
-    const pool=D.items.filter(i=>i.grade===x.grade&&i.subject===x.subject&&String(i.strand||"")===String(x.strand||"")&&Number(i.day)<Number(x.day)&&(
-      wide||Number(i.day)>=Number(x.day)-6
-    )).sort((a,b)=>Number(b.day)-Number(a.day));
-    const out=[],seen=new Set();
-    for(const item of pool){
-      let q=[];
-      try{q=window.__DW_NO_VIDEO_ORIGINALS.autoQuestionsFor(item)||[]}catch(e){q=[]}
-      for(const row of q){
-        const key=String(row?.prompt||"").trim().toLowerCase();
-        if(!key||seen.has(key)||!Array.isArray(row.choices)||row.choices.length<2)continue;
-        seen.add(key);out.push(row);
-        if(out.length>=limit)return out;
-      }
+  function rotateChoices(answer,decoys,seedText=""){
+    const all=[String(answer),...decoys.map(String).filter(v=>String(v)!==String(answer))].slice(0,4);
+    while(all.length<4)all.push(`choice ${all.length+1}`);
+    const seed=[...String(seedText)].reduce((n,ch)=>n+ch.charCodeAt(0),0)%all.length;
+    return all.slice(seed).concat(all.slice(0,seed));
+  }
+  function wordLessonQuestions(x){
+    const w=currentWordStudy(x);if(!w)return [];
+    const m=w.row,build=normalizeMorphText(m.morphological),word=w.word,root=w.root||m.root||"root";
+    const others=(D.morphology||[]).filter(r=>r.grade===x.grade&&String(r.word||"").trim()&&String(r.word||"").toLowerCase()!==word.toLowerCase()).map(r=>String(r.word).trim());
+    const q=[];
+    if(build){
+      const decoys=[
+        `The word “${word}” has no meaningful parts and must only be memorized.`,
+        `The root makes “${word}” mean the opposite of its actual meaning.`,
+        `The spelling of “${word}” is unrelated to its meaning.`
+      ];
+      q.push({source:"no-video-word-lesson",sourceItemId:x.id,skillId:"morph.word-parts",prompt:`Which explanation best shows how “${word}” is built and what it means?`,answer:build,choices:rotateChoices(build,decoys,word+"build")});
+    }
+    const syntactic=String(m.syntactic||"").split(/\r?\n/).map(v=>v.trim()).filter(Boolean);
+    const example=syntactic.find(v=>new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}\\b`,"i").test(v));
+    if(example){
+      const blanked=example.replace(new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}\\b`,"i"),"_____");
+      q.push({source:"no-video-word-lesson",sourceItemId:x.id,skillId:"morph.context",prompt:`Which target word correctly completes the sentence? ${blanked}`,answer:word,choices:rotateChoices(word,others.slice(0,3),word+"context")});
+    }
+    const rootAnswer=`the root ${root}`;
+    q.push({source:"no-video-word-lesson",sourceItemId:x.id,skillId:"morph.strategy",prompt:`When you analyze “${word},” what should you identify first before combining word parts and checking the sentence context?`,answer:rootAnswer,choices:rotateChoices(rootAnswer,["only the first letter","the number of words in the sentence","punctuation by itself"],word+"root")});
+    return q;
+  }
+  function validPriorQuestion(row){
+    return !!row&&String(row.prompt||"").trim()&&Array.isArray(row.choices)&&row.choices.length>=2&&row.answer!==undefined&&row.answer!==null;
+  }
+  function questionsForSourceItem(item){
+    if(!window.__DW_NO_VIDEO_ORIGINALS?.autoQuestionsFor)return noVideo(item)&&currentWordStudy(item)?wordLessonQuestions(item):[];
+    let rows=[];
+    try{rows=(window.__DW_NO_VIDEO_ORIGINALS.autoQuestionsFor(item)||[]).filter(validPriorQuestion)}catch(e){rows=[]}
+    if(!rows.length&&noVideo(item)&&currentWordStudy(item))rows=wordLessonQuestions(item).filter(validPriorQuestion);
+    return rows;
+  }
+  function spreadSources(items,maxSources){
+    if(items.length<=maxSources)return items;
+    const out=[],used=new Set();
+    for(let i=0;i<maxSources;i++){
+      const idx=Math.round(i*(items.length-1)/(maxSources-1));
+      if(!used.has(idx)){used.add(idx);out.push(items[idx])}
     }
     return out;
+  }
+  function balancedQuestions(items,limit=6){
+    const banks=items.map(item=>({item,rows:questionsForSourceItem(item)})).filter(b=>b.rows.length);
+    const out=[],seen=new Set();
+    let round=0,progress=true;
+    while(out.length<limit&&progress){
+      progress=false;
+      for(const bank of banks){
+        const row=bank.rows[round];
+        if(!row)continue;
+        progress=true;
+        const key=String(row.prompt||"").trim().toLowerCase();
+        if(key&& !seen.has(key)){seen.add(key);out.push(row)}
+        if(out.length>=limit)break;
+      }
+      round++;
+    }
+    return out;
+  }
+  function priorQuestions(x,limit=6,wide=false,specificItems=null){
+    let pool=specificItems||D.items.filter(i=>i.grade===x.grade&&i.subject===x.subject&&String(i.strand||"")===String(x.strand||"")&&Number(i.day)<Number(x.day)&&(
+      wide||Number(i.day)>=Number(x.day)-6
+    )).sort((a,b)=>Number(a.day)-Number(b.day));
+    if(wide&&!specificItems)pool=spreadSources(pool,Math.min(limit,8));
+    return balancedQuestions(pool,limit);
   }
   function objectiveFor(x,type){
     if(type==="word-progress")return "Show what you remember from the word-study lessons you have already completed.";
@@ -165,6 +261,7 @@
     if(type==="writing-progress")return "Show that you can independently use the writing skills from your recent lessons.";
     if(type==="assessment")return "Show what you know from the lessons that came before this assessment.";
     if(type==="performance")return "Use, present, or share work you have already prepared.";
+    if(type==="word-lesson"){const w=currentWordStudy(x);return w?`Learn how “${w.word}” is built, what it means, and how to use it correctly.`:"Learn today’s word-study target.";}
     const req=cleanLine(String(x.requirement||"").split(/\r?\n/).find(Boolean)||"");
     return req&&req.length<140?req:"Learn today's assigned skill, study a worked example, and apply it independently.";
   }
@@ -267,8 +364,8 @@
       if(++tries<80)setTimeout(install,25);
       return;
     }
-    if(window.__DW_NO_VIDEO_LESSON_ENGINE_V1__)return;
-    window.__DW_NO_VIDEO_LESSON_ENGINE_V1__=true;
+    if(window.__DW_NO_VIDEO_LESSON_ENGINE_V2__)return;
+    window.__DW_NO_VIDEO_LESSON_ENGINE_V2__=true;
 
     const O=window.__DW_NO_VIDEO_ORIGINALS={
       friendlyTitle:window.friendlyTitle,
@@ -285,6 +382,16 @@
       supportMetadataRow:window.supportMetadataRow
     };
 
+    if(!document.getElementById("dwNoVideoLayoutV56231")){
+      const style=document.createElement("style");
+      style.id="dwNoVideoLayoutV56231";
+      style.textContent=`
+        .grid > .quest.dw-no-video{align-self:start;height:auto;min-height:0}
+        .quest.dw-no-video{align-self:start}
+      `;
+      document.head.appendChild(style);
+    }
+
     window.supportMetadataRow=function(x){
       if(noVideo(x)&&classify(x)==="cursive-only")return true;
       return O.supportMetadataRow(x);
@@ -298,6 +405,7 @@
       if(type==="writing-progress")return "Writing Progress Check";
       if(type==="assessment")return /core assessment/i.test(textOf(x))?"Core Assessment":"Quarter Assessment";
       if(type==="performance")return "Publish & Share";
+      if(type==="word-lesson"){const w=currentWordStudy(x);return w?`Word Mission: ${w.word}`:"Word Study Mission";}
       return O.friendlyTitle(x);
     };
 
@@ -309,6 +417,7 @@
       if(type==="writing-progress")return "No new writing lesson today. Review the recent skills below, then complete the writing check independently.";
       if(type==="assessment")return "This is a check of previously taught skills. Dragonswood will use only verified questions from earlier lessons in this strand.";
       if(type==="performance")return "No new lesson today. Use the mission brief below to prepare, share your work, and reflect.";
+      if(type==="word-lesson"){const w=currentWordStudy(x);return w?`No video today. Learn the word “${w.word}” here in Dragonswood, then prove what its parts mean and use it correctly.`:"No video today. Complete the word-study lesson below.";}
       return "Learn today's skill here in Dragonswood. Study the model, try the guided thinking step, then complete the mission.";
     };
 
@@ -320,6 +429,7 @@
       if(type==="writing-progress")return writingProgressHtml(x);
       if(type==="assessment")return assessmentHtml(x);
       if(type==="performance")return performanceHtml(x);
+      if(type==="word-lesson")return wordLessonHtml(x);
       return richLessonHtml(x,O.renderMiniLesson);
     };
 
@@ -340,6 +450,10 @@
       }
       if(type==="assessment")return "After you finish the check questions, explain one answer you were confident about and name the rule, evidence, or strategy that helped you answer it.";
       if(type==="performance")return "After you present or share your work, write 2 sentences: what you shared and one revision, speaking choice, or detail that made the final work stronger.";
+      if(type==="word-lesson"){
+        const w=currentWordStudy(x);
+        if(w)return `${w.row.application?`${w.row.application} `:""}Then explain how the root or another word part helps with the meaning of “${w.word},” and use “${w.word}” correctly in your own complete sentence.`;
+      }
       return O.activityFor(x);
     };
 
@@ -347,13 +461,23 @@
       if(!noVideo(x))return O.autoQuestionsFor(x);
       const type=classify(x);
       if(type==="fluency"||type==="writing-progress"||type==="performance")return [];
-      if(type==="word-progress"||type==="progress"){
+      if(type==="word-progress"){
+        const sources=recentWordStudy(x).map(v=>v.item);
+        const q=priorQuestions(x,6,false,sources);
+        return q.length?q:[];
+      }
+      if(type==="progress"){
         const q=priorQuestions(x,6,false);
         return q.length?q:[];
       }
       if(type==="assessment"){
         const q=priorQuestions(x,8,true);
         return q.length?q:[];
+      }
+      if(type==="word-lesson"){
+        let q=[];
+        try{q=(O.autoQuestionsFor(x)||[]).filter(validPriorQuestion)}catch(e){q=[]}
+        return q.length?q:wordLessonQuestions(x);
       }
       return O.autoQuestionsFor(x);
     };
@@ -384,6 +508,7 @@
       }
       if(type==="assessment")return {kind:"explain",title:"Assessment Reflection",prompt,minWords:8};
       if(type==="performance")return {kind:"explain",title:"Performance Reflection",prompt,minWords:10};
+      if(type==="word-lesson")return {kind:"explain",title:"Word Meaning & Use",prompt,minWords:10};
       return O.activitySpec(x);
     };
 
@@ -397,9 +522,21 @@
         return {ok:true};
       }
       if(type==="word-progress"){
-        const review=recentWordStudy(x),targets=review.flatMap(v=>[v.word,v.root]).filter(Boolean);
-        if(words.length<8)return {ok:false,msg:"Explain the root connection and use the word in a complete sentence."};
-        if(targets.length&&!targets.some(t=>new RegExp(`\\b${String(t).split("/")[0].replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}\\b`,"i").test(written)))return {ok:false,msg:"Use one of the reviewed words or roots from the progress check in your explanation."};
+        const review=recentWordStudy(x);
+        if(words.length<10)return {ok:false,msg:"Explain the root connection and use one reviewed word in a complete sentence."};
+        const match=review.find(v=>v.word&&new RegExp(`\\b${String(v.word).replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}\\b`,"i").test(written));
+        if(!match)return {ok:false,msg:"Use one of the reviewed target words in your explanation and sentence."};
+        const roots=String(match.root||"").split("/").map(v=>v.trim()).filter(Boolean);
+        const meaning=rootMeaning(match.root).toLowerCase().split(/[^a-z]+/).filter(v=>v.length>3);
+        const hasRoot=roots.some(r=>new RegExp(`\\b${r.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}\\b`,"i").test(written));
+        const hasMeaning=meaning.some(v=>new RegExp(`\\b${v.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}\\b`,"i").test(written));
+        if(!hasRoot&&!hasMeaning)return {ok:false,msg:"Explain what the reviewed root contributes to the word's meaning."};
+        return {ok:true};
+      }
+      if(type==="word-lesson"){
+        const w=currentWordStudy(x);
+        if(words.length<10)return {ok:false,msg:"Explain the word parts and use the target word in a complete sentence."};
+        if(w&&!new RegExp(`\\b${String(w.word).replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}\\b`,"i").test(written))return {ok:false,msg:`Use the target word “${w.word}” in your response.`};
         return {ok:true};
       }
       if(type==="assessment"||type==="performance"){
@@ -411,20 +548,33 @@
     };
 
     window.card=function(x){
-      const html=O.card(x);
+      let html=O.card(x);
       if(!noVideo(x))return html;
       const type=classify(x);
+      const timingLabel={
+        "word-progress":"Review included",
+        "progress":"Review included",
+        "writing-progress":"Review included",
+        "fluency":"Fluency passage + two reads included",
+        "assessment":"Prior-skill assessment included",
+        "performance":"Performance brief included"
+      }[type];
+      html=html.replace('class="frame quest ',`class="frame quest dw-no-video dw-nv-${type} `);
+      if(timingLabel)html=html.replace(/Dragonswood lesson included/g,timingLabel);
       if(type==="word-progress"||type==="progress"||type==="writing-progress"||type==="assessment"){
         return html.replace("1. Learn It in Dragonswood","1. Review What You Know").replace("Everything needed for this lesson is here.","Everything needed for this check is here.");
       }
       if(type==="fluency")return html.replace("1. Learn It in Dragonswood","1. Fluency Training").replace("Everything needed for this lesson is here.","Your reading passage and fluency directions are below.");
       if(type==="performance")return html.replace("1. Learn It in Dragonswood","1. Mission Brief").replace("Everything needed for this lesson is here.","Your performance directions are below.");
+      if(type==="word-lesson")return html.replace("1. Learn It in Dragonswood","1. Learn the Word in Dragonswood").replace("Everything needed for this lesson is here.","Your complete word lesson is below.");
       return html;
     };
 
     window.grouped=function(title,desc,a,byDay=false){
-      if(Array.isArray(a)&&a.length&&a.every(noVideo)&&/Current Quest/i.test(title)){
-        desc=String(desc||"").replace("Watch the lesson, pass the standard check, then apply what you learned.","Complete today's Dragonswood lesson or progress check, then apply what you know.");
+      if(Array.isArray(a)&&a.length&&/Current Quest/i.test(title)&&a.some(noVideo)){
+        desc=a.every(noVideo)
+          ?String(desc||"").replace("Watch the lesson, pass the standard check, then apply what you learned.","Complete today's Dragonswood lesson or progress check, then apply what you know.")
+          :String(desc||"").replace("Watch the lesson, pass the standard check, then apply what you learned.","Complete each mission using the lesson format shown. Some missions use a required video; others teach or check the skill directly in Dragonswood.");
       }
       return O.grouped(title,desc,a,byDay);
     };

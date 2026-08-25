@@ -90,7 +90,19 @@
   if(window.__DW_NO_VIDEO_ENGINE_LOADER__)return;
   window.__DW_NO_VIDEO_ENGINE_LOADER__=true;
   const s=document.createElement("script");
-  s.src="q1-no-video-lessons.js?v=56.23";
+  s.src="q1-no-video-lessons.js?v=56.24.2";
+  s.async=false;
+  document.head.appendChild(s);
+})();
+
+
+/* v56.24.2 — curriculum interaction layer.
+   Practice-only enhancement. Required-video playback/tracking remains in curriculum-quest.html. */
+(function(){
+  if(window.__DW_CURRICULUM_INTERACTION_LOADER__)return;
+  window.__DW_CURRICULUM_INTERACTION_LOADER__=true;
+  const s=document.createElement("script");
+  s.src="q1-curriculum-interactions.js?v=56.24.2";
   s.async=false;
   document.head.appendChild(s);
 })();

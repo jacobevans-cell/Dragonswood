@@ -358,8 +358,16 @@ function activityAnswerText(x){
   if(spec.kind==="morph"||spec.kind==="readingPov")return `Choice: ${choice}\nResponse: ${written}`;
   return written;
 }
+function systemAuthoredResponse(x,value){
+  const normalize=v=>String(v||"").replace(/^\s*\d+[.)]\s*/,"").replace(/\s+/g," ").trim().toLowerCase();
+  const answer=normalize(value);if(!answer)return false;
+  const prompts=[kidIntro(x),activityFor(x),activitySpec(x).prompt];
+  try{prompts.push(...autoQuestionsFor(x).map(q=>q.prompt))}catch(e){}
+  return prompts.some(prompt=>normalize(prompt)===answer)||/^no (?:new lesson|video) today\b/.test(answer)||/^which (?:previously learned )?target word correctly completes the sentence\b/.test(answer);
+}
 function validateActivity(x){
   const spec=activitySpec(x),id=x.id,choice=document.querySelector(`input[name="act-${CSS.escape(id)}"]:checked`)?.value||"",written=(document.getElementById("actText-"+id)?.value||"").trim(),number=(document.getElementById("actNumber-"+id)?.value||"").trim();
+  if(systemAuthoredResponse(x,written))return {ok:false,reviewable:false,msg:"Answer in your own words instead of copying Dragonswood's directions or question."};
   if(spec.kind==="number")return (window.DWGrading?window.DWGrading.answersEquivalent(spec.answer,number):number.replace(/,/g,"")===String(spec.answer).replace(/,/g,""))?{ok:true}:{ok:false,msg:"That number is not correct yet. Check your work and try again."};
   if(spec.kind==="mc")return choice===spec.answer?{ok:true}:{ok:false,msg:"That choice does not match the lesson target. Try again or request teacher review."};
   if(spec.kind==="morph"){
@@ -401,7 +409,7 @@ function validateActivity(x){
   return {ok:true};
 }
 function renderActivity(x){
-  const spec=activitySpec(x),s=st(x.id),answer=s.practiceEvidence||"",status=s.overrideStatus||"";
+  const spec=activitySpec(x),s=st(x.id),savedAnswer=s.practiceEvidence||"",answer=systemAuthoredResponse(x,savedAnswer)?"":savedAnswer,status=s.overrideStatus||"";
   let controls="";
   if(spec.kind==="number")controls=`<div class="activity-line"><input id="actNumber-${x.id}" type="text" inputmode="decimal" placeholder="Enter your answer" value="${esc(answer)}"></div>`;
   else if(spec.kind==="mc")controls=`<div class="activity-options">${spec.options.map(o=>`<label class="activity-option"><input type="radio" name="act-${x.id}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join("")}</div>`;

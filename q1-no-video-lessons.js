@@ -523,6 +523,7 @@
     window.validateActivity=function(x){
       if(!noVideo(x))return O.validateActivity(x);
       const type=classify(x),id=x.id,written=(document.getElementById("actText-"+id)?.value||"").trim();
+      if(window.systemAuthoredResponse?.(x,written))return {ok:false,reviewable:false,msg:"Answer in your own words instead of copying Dragonswood's directions or question."};
       const words=written.split(/\s+/).filter(Boolean);
       if(type==="fluency"){
         if(words.length<7)return {ok:false,msg:"Write at least one complete sentence about what changed on your second read."};

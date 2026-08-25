@@ -18,4 +18,5 @@ pass("Grayson Mode is loaded by every math game",()=>mathPages.forEach(f=>assert
 pass("Grayson Mode teaches before asking",()=>assert(grayson.includes("YOU NEED THIS FIRST")&&grayson.includes("lesson:")));
 pass("Grayson Mode is reward-free",()=>assert(grayson.includes("rewardFree:true")&&grayson.includes("no gameplay rewards")));
 pass("copied curriculum prompts cannot trigger uncertain AI review",()=>assert(curriculum.includes("result.reviewable===false")&&noVideo.includes('reviewable:false,msg:"Answer in your own words')));
+pass("system-authored curriculum text is removed from answer boxes",()=>assert(curriculum.includes("function systemAuthoredResponse")&&curriculum.includes('answer=systemAuthoredResponse(x,savedAnswer)?"":savedAnswer')&&noVideo.includes("window.systemAuthoredResponse?.(x,written)")));
 if(process.exitCode)process.exit(process.exitCode);console.log("\n✅ ALL V57 IMPROVEMENT SELF-TESTS PASSED");

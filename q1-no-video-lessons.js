@@ -1,0 +1,435 @@
+/* ==========================================================================
+   v56.23 — NO-VIDEO LESSON ENGINE
+   Scope lock: this engine is forbidden from changing any mission that the
+   existing Curriculum Quest classifies as a video mission.
+
+   No-video missions are classified as:
+   - self-contained Dragonswood lesson
+   - progress monitor / assessment
+   - fluency performance
+   - writing performance
+   - publish/share performance
+
+   The engine derives progress checks from already-taught Q1 lessons instead of
+   turning labels such as "Progress Monitor" into fake instruction.
+   ========================================================================== */
+(function(){
+  const D=window.DRAGONSWOOD_DATA;
+  if(!D||!Array.isArray(D.items))return;
+  if(!/curriculum-quest\.html$/i.test(location.pathname)&&!document.getElementById("curriculumTabs"))return;
+
+  const ROOT_MEANINGS={
+    "form":"shape or make",
+    "port":"carry",
+    "scrib":"write","script":"write","scrib/script":"write",
+    "spec":"look or see","spect":"look or see","spec/spect":"look or see",
+    "struc":"build","struct":"build","struc/struct":"build",
+    "flect":"bend","flex":"bend","flect/flex":"bend",
+    "dic":"say or speak","dict":"say or speak","dic/dict":"say or speak",
+    "cede":"go, yield, or give way","cess":"go, yield, or give way","ceed":"go, yield, or give way","cede/cess/ceed":"go, yield, or give way",
+    "cred":"believe or trust",
+    "fer":"carry or bear",
+    "ject":"throw",
+    "tract":"pull or draw",
+    "mit":"send","miss":"send","mit/miss":"send",
+    "pend":"hang or weigh","pens":"hang or weigh","pend/pens":"hang or weigh",
+    "rupt":"break",
+    "pose":"put or place","pon":"put or place","pose/pon":"put or place"
+  };
+
+  const FLUENCY_PASSAGES={
+    I:[
+      "At the edge of Dragonswood, a young mapmaker unfolded a worn chart beside the river. The path ahead looked simple, but the morning rain had covered several trail marks. She slowed down, studied each sign, and compared the map with the land around her. A bent pine pointed toward the bridge, and smooth stones marked the safer crossing. By the time the clouds cleared, she had found the route. She did not rush. She read every clue carefully, paused when she needed to think, and reached the village with the map dry and the message safe.",
+      "The class garden looked different after the weekend storm. Small branches covered the walkway, but the new plants were still standing. Mateo and Lena began by observing before they touched anything. They noticed which pots had drained well and which held too much water. Then they made a plan. One student cleared the path while the other moved the wettest pots into the sun. When they finished, they wrote down what they had noticed. Careful observation helped them decide what to change instead of simply guessing what the plants needed.",
+      "A messenger arrived at the castle just before sunset with a sealed note. The guard could have hurried to the tower, but one line on the envelope made him stop: Deliver to the west gate first. He reread the direction, checked the symbol beside it, and chose the correct path. Along the way, he passed two staircases and a crowded courtyard. The longer route took a few extra minutes, yet it followed the instructions exactly. When he finally handed over the note, the captain thanked him for reading carefully instead of assuming that the fastest route was the right one.",
+      "Nia wanted her model bridge to hold more weight, so she studied what happened during the first test. The center bent before either end moved. Instead of rebuilding everything, she strengthened only the weak section and tested again. This time the bridge held three more books. Nia recorded the result, changed one feature, and ran a third test. Each trial gave her useful evidence. By changing one thing at a time, she could tell which improvement actually helped. Her final bridge was not the prettiest model in the room, but it was strong because every change had a reason.",
+      "The old library had one rule that surprised every new visitor: return each book to the exact place where you found it. The shelves were arranged by topic, then by author, so even a small mistake could hide a book for days. Jordan carried a stack carefully and checked every label twice. History belonged upstairs, science stayed near the windows, and stories filled the long wall by the door. At first the system seemed slow. After a few trips, Jordan understood why it worked. Organization made it possible for hundreds of readers to find what they needed without searching every shelf.",
+      "During practice, the volleyball team tried a new way to communicate. Before each serve, players called the space they were responsible for covering. At first, everyone talked at once. The coach stopped the drill and asked them to use short, clear calls. On the next attempt, one player called short, another called deep, and a third reminded the group to move forward. The ball still dropped twice, but the team could explain why. Their communication was becoming more useful because each message had a purpose. By the end of practice, the court sounded calmer even though the players were talking more.",
+      "A tiny lantern glowed beside the trail, then another appeared farther ahead. The hikers realized that someone had placed the lights to mark a safe path through the dark woods. They moved from one lantern to the next, checking the ground before every step. Some parts of the trail were rocky, and one section curved behind a hill where the next light was hard to see. The group stayed together and waited until everyone found the marker. Moving carefully took longer, but no one wandered off the path. The lanterns helped because the hikers used them as evidence, not as decorations."
+    ],
+    K:[
+      "The archivist opened a wooden case and removed three letters written by travelers who had crossed Dragonswood years apart. Each writer described the same mountain pass, but their details were not identical. One called the route peaceful, another warned about sudden storms, and the third focused on the trading carts that crowded the road. Mara compared the accounts instead of choosing one as the whole truth. She noticed the dates, the purposes of the journeys, and the evidence each traveler included. By reading the sources together, she formed a stronger picture of the pass than any single letter could provide.",
+      "When the river wheel stopped turning, the workshop lost power. The apprentices first blamed the old gears, but their teacher asked them to gather evidence before replacing anything. They inspected the wheel, traced the moving parts, and watched the water near the bank. A pile of branches had changed the current, so less water reached the wheel. Once the branches were cleared, the wheel began moving again. The gears had never been the problem. The apprentices learned that a reasonable explanation must connect the observed effect to a cause supported by evidence, not simply to the first possibility that comes to mind.",
+      "Elena had two strong ideas for the opening of her speech. The first began with a surprising fact, while the second started with a short story. She read both versions aloud and listened for the effect each one created. The fact sounded direct and serious. The story sounded personal and inviting. Elena chose the story because it matched her audience and purpose, then moved the fact into the next paragraph. Revision did not mean that her first idea was bad. It meant she was deciding where each idea would work best. Strong writers make choices based on what they want the reader or listener to understand.",
+      "A group of students studied a model ecosystem after one population suddenly decreased. They resisted the temptation to explain the change with a single guess. Instead, they traced several relationships. Fewer plants meant less food for one consumer, but a change in shelter also affected where animals could hide. The students drew arrows between the parts of the model and labeled each connection. Their explanation became more precise as they added evidence. Systems can be complicated because one change may produce several effects. A useful model helps scientists follow those connections rather than treating each part as if it exists alone.",
+      "The debate team practiced disagreeing without losing the point of the discussion. Each speaker had to state a claim, give evidence, and respond to the strongest idea from the other side. At first, several students repeated their own arguments instead of addressing what someone else had said. Their coach asked them to begin each response by accurately summarizing the previous speaker. That small change improved the conversation. Students listened more carefully because they knew they would need to explain another person's reasoning before adding their own. A strong response does more than speak loudly. It shows that the speaker understood the evidence being discussed.",
+      "Theo tested three paper gliders that looked almost identical. One had wider wings, one had a heavier nose, and one was the original design. If he threw them from different places, he would not know whether the design or the launch caused the result. So he marked one starting line, used the same throwing motion, and measured each flight. The wider-wing model stayed in the air longest. Theo repeated the trials before making a conclusion. A fair test controls important conditions so that the variable being studied is the most likely reason for a difference in results.",
+      "The council received two maps of the same valley. One emphasized roads and settlements, while the other showed elevation and streams. Neither map was wrong. Each had been designed to answer a different kind of question. The council compared both before choosing a location for a new bridge. Roads mattered because travelers needed access, but elevation and water flow mattered because the bridge had to be safe. Using both sources revealed information that either map alone would have missed. Good readers and researchers ask what a source shows clearly, what it leaves out, and why that difference matters."
+    ]
+  };
+
+  function escHtml(v){
+    return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+  }
+  function textOf(x){return `${x.resourceName||""} ${x.requirement||""} ${x.strand||""}`.toLowerCase()}
+  function hasVideo(x){
+    try{
+      if(typeof window.vid==="function")return !!window.vid(x);
+    }catch(e){}
+    return !!(x&&x.resourceUrl&&(/google\.com\/videos/i.test(x.resourceUrl)||/video/i.test(x.resourceName||"")));
+  }
+  function noVideo(x){return !!x&&!hasVideo(x)}
+  function classify(x){
+    const t=textOf(x),req=String(x.requirement||"").trim();
+    if(/flavor assessment|core assessment/i.test(t))return "assessment";
+    if(/progress monitor|progress monitoring/i.test(t)&&/foundational skills/i.test(`${x.strand||""} ${req}`))return "word-progress";
+    if(/fluency|partner read|read aloud/i.test(t))return "fluency";
+    if(/progress monitor|progress monitoring/i.test(t)&&/writing/i.test(x.strand||""))return "writing-progress";
+    if(/progress monitor|progress monitoring/i.test(t))return "progress";
+    if(/present|publish|share their work|ready,\s*set,\s*publish/i.test(t))return "performance";
+    if(/^cursive(?:\s+warm\s+up)?\s*$/i.test(req))return "cursive-only";
+    return "lesson";
+  }
+  function cleanLine(v){return String(v||"").replace(/^[-•]\s*/,"").replace(/\s+/g," ").trim()}
+  function extractWordRoot(item){
+    const lines=String(item.requirement||"").split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+    let root="",word="";
+    for(let i=0;i<lines.length;i++){
+      if(/moph|morph/i.test(lines[i])&&lines[i+1])root=cleanLine(lines[i+1]);
+      if(/^word:?$/i.test(lines[i])&&lines[i+1])word=cleanLine(lines[i+1]);
+    }
+    if(!word&&typeof window.morphFor==="function"){
+      const m=window.morphFor(item);if(m){word=m.word||"";root=root||m.root||""}
+    }
+    return {root,word};
+  }
+  function rootMeaning(root){
+    const r=String(root||"").toLowerCase().replace(/\s+/g,"");
+    if(ROOT_MEANINGS[r])return ROOT_MEANINGS[r];
+    for(const part of r.split("/"))if(ROOT_MEANINGS[part])return ROOT_MEANINGS[part];
+    return "a meaning you have practiced in this word family";
+  }
+  function recentItems(x,strand,count=4){
+    return D.items.filter(i=>i.grade===x.grade&&i.subject===x.subject&&String(i.strand||"")===String(strand||x.strand||"")&&Number(i.day)<Number(x.day))
+      .sort((a,b)=>Number(a.day)-Number(b.day)).slice(-count);
+  }
+  function recentWordStudy(x){
+    return D.items.filter(i=>i.grade===x.grade&&i.subject==="HUM"&&i.strand==="Foundational Skills"&&Number(i.day)<Number(x.day)&&(
+      /morphology/i.test(i.resourceName||"")||/moph|morph/i.test(i.requirement||"")
+    )).sort((a,b)=>Number(a.day)-Number(b.day)).slice(-4).map(item=>{
+      const wr=extractWordRoot(item),m=typeof window.morphFor==="function"?window.morphFor(item):null;
+      return {item,word:wr.word||m?.word||"",root:wr.root||m?.root||"",detail:m?.morphological||""};
+    }).filter(v=>v.word||v.root);
+  }
+  function skillLines(item){
+    const raw=String(item.requirement||"");
+    const lines=raw.split(/\r?\n/).map(cleanLine).filter(Boolean);
+    const preferred=lines.filter(v=>/^[-•]/.test(v)||false);
+    const candidates=(preferred.length?preferred:lines).filter(v=>
+      !/^(video|in class|cursive warm up|journal journeys|would you rather|foundational skills)$/i.test(v)&&
+      !/^https?:/i.test(v)&&v.length>3&&v.length<95
+    );
+    return candidates.slice(0,5);
+  }
+  function writingReview(x){
+    const items=recentItems(x,"Writing",4),out=[];
+    for(const item of items){
+      const req=String(item.requirement||"");
+      const bullets=req.split(/\r?\n/).map(cleanLine).filter(v=>v&&
+        !/^(video|in class|cursive warm up|journal journeys|would you rather)$/i.test(v)&&
+        v.length<90
+      );
+      for(const b of bullets){
+        if(/day\s*\d+|q1|language and writing/i.test(b))continue;
+        if(!out.some(v=>v.toLowerCase()===b.toLowerCase()))out.push(b);
+      }
+    }
+    return out.slice(-7);
+  }
+  function fluencyPassage(x){
+    const bank=FLUENCY_PASSAGES[x.grade]||FLUENCY_PASSAGES.I;
+    const checkpoint=Math.max(0,Math.floor((Number(x.day)-7)/5));
+    return bank[checkpoint%bank.length];
+  }
+  function priorQuestions(x,limit=6,wide=false){
+    if(!window.__DW_NO_VIDEO_ORIGINALS?.autoQuestionsFor)return [];
+    const pool=D.items.filter(i=>i.grade===x.grade&&i.subject===x.subject&&String(i.strand||"")===String(x.strand||"")&&Number(i.day)<Number(x.day)&&(
+      wide||Number(i.day)>=Number(x.day)-6
+    )).sort((a,b)=>Number(b.day)-Number(a.day));
+    const out=[],seen=new Set();
+    for(const item of pool){
+      let q=[];
+      try{q=window.__DW_NO_VIDEO_ORIGINALS.autoQuestionsFor(item)||[]}catch(e){q=[]}
+      for(const row of q){
+        const key=String(row?.prompt||"").trim().toLowerCase();
+        if(!key||seen.has(key)||!Array.isArray(row.choices)||row.choices.length<2)continue;
+        seen.add(key);out.push(row);
+        if(out.length>=limit)return out;
+      }
+    }
+    return out;
+  }
+  function objectiveFor(x,type){
+    if(type==="word-progress")return "Show what you remember from the word-study lessons you have already completed.";
+    if(type==="fluency")return "Read a new passage accurately, smoothly, and with phrasing that follows the punctuation.";
+    if(type==="writing-progress")return "Show that you can independently use the writing skills from your recent lessons.";
+    if(type==="assessment")return "Show what you know from the lessons that came before this assessment.";
+    if(type==="performance")return "Use, present, or share work you have already prepared.";
+    const req=cleanLine(String(x.requirement||"").split(/\r?\n/).find(Boolean)||"");
+    return req&&req.length<140?req:"Learn today's assigned skill, study a worked example, and apply it independently.";
+  }
+  function wordProgressHtml(x){
+    const review=recentWordStudy(x);
+    const cards=review.length?review.map(v=>`<div style="padding:10px;border:1px solid #46345f;border-radius:8px;background:#0c0918"><b style="color:#ffe8a0">${escHtml(v.word||"Word family")}</b><div style="margin-top:4px;color:#d9d0e7"><strong>Root:</strong> ${escHtml(v.root||"review")} = ${escHtml(rootMeaning(v.root))}</div>${v.detail?`<div style="margin-top:5px;color:#bfb5ce">${escHtml(v.detail)}</div>`:""}</div>`).join(""):`<div class="teacher-note">Dragonswood could not identify the preceding word-study set. This check will use only questions already attached to earlier lessons.</div>`;
+    return `<div class="self-lesson">
+      <div class="lesson-banner">🛡️ PROGRESS CHECK • WORD STUDY</div>
+      <div class="key-idea"><strong>No new lesson today.</strong> This is a check of skills you have already practiced. Review the targets below, then work independently.</div>
+      <div style="margin-top:12px"><strong style="color:#ffe8a0">What this check covers</strong><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin-top:7px">${cards}</div></div>
+      <div class="example-box"><strong>How to reason:</strong> Find the root first. Recall its meaning. Then use the other word parts and the sentence context to decide what the whole word means.</div>
+      <div class="remember"><strong>Progress-check rule:</strong> Try independently first. If you get stuck, review the word family above and try again.</div>
+      <span class="mission-note">No video today • Review → Check → Apply</span>
+    </div>`;
+  }
+  function fluencyHtml(x){
+    const passage=fluencyPassage(x),wc=passage.trim().split(/\s+/).length,id=escHtml(x.id);
+    return `<div class="self-lesson">
+      <div class="lesson-banner">📜 FLUENCY TRAINING GROUND</div>
+      <div class="key-idea"><strong>Goal:</strong> Read accurately, smoothly, and with expression. Fluency is not a race. Your voice should sound like the punctuation and meaning of the text.</div>
+      <div class="example-box"><strong>Before you read:</strong> At a comma, make a short pause. At a period, stop the thought. If a sentence contains an important word or feeling, let your voice show it.</div>
+      <div style="margin-top:12px;padding:14px;border:1px solid #5c4776;border-radius:9px;background:#080611;font-size:16px;line-height:1.75;color:#fff8e9"><div style="font-size:11px;color:#8eeeff;font-weight:900;margin-bottom:7px">ORIGINAL DRAGONSWOOD PASSAGE • ${wc} WORDS</div>${escHtml(passage)}</div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px">
+        <button type="button" class="resource" onclick="dwNvStartFluency('${id}')">START READING TIMER</button>
+        <button type="button" class="stage" onclick="dwNvStopFluency('${id}')">STOP</button>
+        <span id="nvFluency-${id}" class="mission-note">Timer ready</span>
+      </div>
+      <div class="remember"><strong>Read twice:</strong> First read for accuracy. Second read for smoother phrasing and expression. Correct a mistake and keep going if you notice one.</div>
+      <span class="mission-note">No video today • Passage provided inside Dragonswood</span>
+    </div>`;
+  }
+  function writingProgressHtml(x){
+    const skills=writingReview(x);
+    const chips=(skills.length?skills:["Use complete sentences","Reread and revise for clarity"]).map(v=>`<span style="display:inline-block;margin:3px;padding:6px 8px;border-radius:999px;background:#1d1533;border:1px solid #5d4477;color:#f0e7fb">${escHtml(v)}</span>`).join("");
+    return `<div class="self-lesson">
+      <div class="lesson-banner">✍️ PROGRESS CHECK • WRITING</div>
+      <div class="key-idea"><strong>No new writing lesson today.</strong> Use the skills from your recent lessons independently. The list below is your review map, not an answer key.</div>
+      <div style="margin-top:10px"><strong style="color:#ffe8a0">Recent skills</strong><div style="margin-top:6px">${chips}</div></div>
+      <div class="example-box"><strong>Before you submit:</strong> Reread every sentence. Check that the sentence is complete, the punctuation matches the structure, and the writing does what the prompt asks.</div>
+      <div class="remember"><strong>Progress-check rule:</strong> Show what you can do on your own first. Teacher review remains available if Dragonswood rejects a response you believe is correct.</div>
+      <span class="mission-note">No video today • Review → Write → Revise</span>
+    </div>`;
+  }
+  function assessmentHtml(x){
+    return `<div class="self-lesson">
+      <div class="lesson-banner">🛡️ QUARTER CHECK • PREVIOUSLY TAUGHT SKILLS</div>
+      <div class="key-idea"><strong>This is an assessment, not a new lesson.</strong> Dragonswood will build the check only from questions attached to lessons you have already completed in this strand.</div>
+      <div class="example-box"><strong>How to work:</strong> Read each question carefully, solve or reason independently, and use the lesson method you practiced. Questions are not generated from unrelated skills.</div>
+      <div class="remember"><strong>Important:</strong> If Dragonswood cannot find enough verified prior questions, it will show fewer questions rather than inventing unrelated work.</div>
+      <span class="mission-note">No video today • Prior lessons only</span>
+    </div>`;
+  }
+  function performanceHtml(x){
+    const req=String(x.requirement||"").replace(/\n+/g," ").replace(/\s+/g," ").trim();
+    return `<div class="self-lesson">
+      <div class="lesson-banner">🏰 PERFORMANCE MISSION</div>
+      <div class="key-idea"><strong>No new lesson today.</strong> This mission is for using, presenting, or sharing work you have already prepared.</div>
+      <div class="example-box"><strong>Your task:</strong> ${escHtml(req||"Present or share your completed work clearly, then reflect on one choice you made.")}</div>
+      <div class="remember"><strong>Before you finish:</strong> Make sure your work is complete, understandable to your audience, and reflects the revisions you already made.</div>
+      <span class="mission-note">No video today • Prepare → Share → Reflect</span>
+    </div>`;
+  }
+  function richLessonHtml(x,originalRender){
+    let base=null;
+    try{base=window.__DW_NO_VIDEO_ORIGINALS.miniLessonFor(x)}catch(e){}
+    if(!base)return originalRender(x);
+    const generic=/briefing/i.test(base.title||"");
+    const teach=base.idea||"Study the assigned concept and connect it to the task.";
+    const example=base.example||"Work through one example and explain why each step or piece of evidence matters.";
+    const remember=base.remember||"Explain how you know, not only what answer you chose.";
+    const source=String(x.requirement||"").replace(/\n+/g," ").replace(/\s+/g," ").trim();
+    return `<div class="self-lesson">
+      <div class="lesson-banner">📖 LEARN IT HERE • ${escHtml(base.title||"Dragonswood Lesson")}</div>
+      <div class="key-idea"><strong>Today you will learn:</strong> ${escHtml(objectiveFor(x,"lesson"))}</div>
+      <div style="margin-top:10px" class="key-idea"><strong>Teach It:</strong> ${escHtml(teach)}</div>
+      <div class="example-box"><strong>Watch the thinking:</strong> ${escHtml(example)}</div>
+      <div style="margin-top:10px;padding:10px;border:1px solid #3d2a59;border-radius:8px;background:#0b0819;color:#eee8f8"><strong style="color:#ffe8a0">Try one with me:</strong> Before you move on, explain what rule, clue, model, or evidence you would use first and why.</div>
+      ${generic&&source?`<div style="margin-top:10px;color:#c9bee0"><strong>Mission context:</strong> ${escHtml(source)}</div>`:""}
+      <div class="remember"><strong>Remember:</strong> ${escHtml(remember)}</div>
+      <span class="mission-note">No video today • Teach → Model → Try → Apply</span>
+    </div>`;
+  }
+
+  const timerStarts={};
+  window.dwNvStartFluency=function(id){
+    timerStarts[id]=performance.now();
+    const el=document.getElementById("nvFluency-"+id);if(el)el.textContent="Reading…";
+  };
+  window.dwNvStopFluency=function(id){
+    const start=timerStarts[id],el=document.getElementById("nvFluency-"+id);
+    if(!start){if(el)el.textContent="Press START first";return}
+    const secs=Math.max(1,Math.round((performance.now()-start)/1000));delete timerStarts[id];
+    if(el)el.textContent=`Reading time: ${Math.floor(secs/60)}:${String(secs%60).padStart(2,"0")}`;
+  };
+
+  let tries=0;
+  function install(){
+    const required=["render","vid","friendlyTitle","miniLessonFor","renderMiniLesson","activityFor","kidIntro","card","grouped","autoQuestionsFor","renderAutoPractice","activitySpec","validateActivity","supportMetadataRow"];
+    if(required.some(k=>typeof window[k]!=="function")){
+      if(++tries<80)setTimeout(install,25);
+      return;
+    }
+    if(window.__DW_NO_VIDEO_LESSON_ENGINE_V1__)return;
+    window.__DW_NO_VIDEO_LESSON_ENGINE_V1__=true;
+
+    const O=window.__DW_NO_VIDEO_ORIGINALS={
+      friendlyTitle:window.friendlyTitle,
+      miniLessonFor:window.miniLessonFor,
+      renderMiniLesson:window.renderMiniLesson,
+      activityFor:window.activityFor,
+      kidIntro:window.kidIntro,
+      card:window.card,
+      grouped:window.grouped,
+      autoQuestionsFor:window.autoQuestionsFor,
+      renderAutoPractice:window.renderAutoPractice,
+      activitySpec:window.activitySpec,
+      validateActivity:window.validateActivity,
+      supportMetadataRow:window.supportMetadataRow
+    };
+
+    window.supportMetadataRow=function(x){
+      if(noVideo(x)&&classify(x)==="cursive-only")return true;
+      return O.supportMetadataRow(x);
+    };
+
+    window.friendlyTitle=function(x){
+      if(!noVideo(x))return O.friendlyTitle(x);
+      const type=classify(x);
+      if(type==="word-progress")return "Word Study Progress Check";
+      if(type==="fluency")return "Fluency Training Ground";
+      if(type==="writing-progress")return "Writing Progress Check";
+      if(type==="assessment")return /core assessment/i.test(textOf(x))?"Core Assessment":"Quarter Assessment";
+      if(type==="performance")return "Publish & Share";
+      return O.friendlyTitle(x);
+    };
+
+    window.kidIntro=function(x){
+      if(!noVideo(x))return O.kidIntro(x);
+      const type=classify(x);
+      if(type==="word-progress")return "No new lesson today. Review the word-study targets below, then show what you can do independently.";
+      if(type==="fluency")return "No video today. Read the Dragonswood passage twice: first for accuracy, then for smoother phrasing and expression.";
+      if(type==="writing-progress")return "No new writing lesson today. Review the recent skills below, then complete the writing check independently.";
+      if(type==="assessment")return "This is a check of previously taught skills. Dragonswood will use only verified questions from earlier lessons in this strand.";
+      if(type==="performance")return "No new lesson today. Use the mission brief below to prepare, share your work, and reflect.";
+      return "Learn today's skill here in Dragonswood. Study the model, try the guided thinking step, then complete the mission.";
+    };
+
+    window.renderMiniLesson=function(x){
+      if(!noVideo(x))return O.renderMiniLesson(x);
+      const type=classify(x);
+      if(type==="word-progress")return wordProgressHtml(x);
+      if(type==="fluency")return fluencyHtml(x);
+      if(type==="writing-progress")return writingProgressHtml(x);
+      if(type==="assessment")return assessmentHtml(x);
+      if(type==="performance")return performanceHtml(x);
+      return richLessonHtml(x,O.renderMiniLesson);
+    };
+
+    window.activityFor=function(x){
+      if(!noVideo(x))return O.activityFor(x);
+      const type=classify(x);
+      if(type==="word-progress"){
+        const words=recentWordStudy(x).map(v=>v.word).filter(Boolean);
+        return `Choose one reviewed word${words.length?` (${words.join(", ")})`:""} and explain how its root helps you understand its meaning. Then use the word correctly in a complete sentence.`;
+      }
+      if(type==="fluency")return "Read the passage aloud twice. Then write 1–2 sentences explaining what improved on your second read. Mention accuracy, phrasing, punctuation, expression, or pace.";
+      if(type==="writing-progress"){
+        const review=writingReview(x).join(" ").toLowerCase();
+        if(/fanboys|compound sentence|compound sentences|conjunction/.test(review))return "Write one correct compound sentence using a comma plus a FANBOYS conjunction. Then add a second sentence that works as a clear conclusion or wrap-up.";
+        if(/comma.*series|commas in a series/.test(review))return "Write one sentence with a series of at least three items and use commas correctly. Then reread and correct any capitalization or ending punctuation.";
+        if(/opinion/.test(review))return "Write a clear opinion and support it with at least one specific reason. Then add a concluding sentence.";
+        return "Write a short example that demonstrates at least two skills from the recent-skills review above. Then reread and revise one part for clarity.";
+      }
+      if(type==="assessment")return "After you finish the check questions, explain one answer you were confident about and name the rule, evidence, or strategy that helped you answer it.";
+      if(type==="performance")return "After you present or share your work, write 2 sentences: what you shared and one revision, speaking choice, or detail that made the final work stronger.";
+      return O.activityFor(x);
+    };
+
+    window.autoQuestionsFor=function(x){
+      if(!noVideo(x))return O.autoQuestionsFor(x);
+      const type=classify(x);
+      if(type==="fluency"||type==="writing-progress"||type==="performance")return [];
+      if(type==="word-progress"||type==="progress"){
+        const q=priorQuestions(x,6,false);
+        return q.length?q:[];
+      }
+      if(type==="assessment"){
+        const q=priorQuestions(x,8,true);
+        return q.length?q:[];
+      }
+      return O.autoQuestionsFor(x);
+    };
+
+    window.renderAutoPractice=function(x){
+      if(!noVideo(x))return O.renderAutoPractice(x);
+      const type=classify(x);
+      if(type==="fluency")return `<div class="activity-feedback show good">Fluency is a reading performance, so Dragonswood gives you the passage and reflection instead of inventing a multiple-choice quiz.</div>`;
+      if(type==="writing-progress")return `<div class="activity-feedback show good">This is a writing performance check. Your evidence is the writing you produce below, not a fake multiple-choice quiz.</div>`;
+      if(type==="performance")return `<div class="activity-feedback show good">This mission is based on presenting or sharing your work. Complete the reflection below after the performance.</div>`;
+      let html=O.renderAutoPractice(x);
+      if(type==="word-progress"||type==="progress")html=html.replace(/Practice •/g,"Progress Check •").replace(/Prove the lesson skill with fresh examples\./g,"Use only skills from the lessons you already completed.");
+      if(type==="assessment")html=html.replace(/Practice •/g,"Assessment •").replace(/Prove the lesson skill with fresh examples\./g,"These questions come from earlier verified lessons in this strand.");
+      return html;
+    };
+
+    window.activitySpec=function(x){
+      if(!noVideo(x))return O.activitySpec(x);
+      const type=classify(x),prompt=window.activityFor(x);
+      if(type==="fluency")return {kind:"explain",title:"Fluency Reflection",prompt,minWords:7};
+      if(type==="word-progress")return {kind:"explain",title:"Word Meaning Proof",prompt,minWords:8};
+      if(type==="writing-progress"){
+        const review=writingReview(x).join(" ").toLowerCase();
+        if(/fanboys|compound sentence|compound sentences|conjunction/.test(review))return {kind:"fanboys",title:"Writing Progress Check",prompt};
+        if(/comma.*series|commas in a series/.test(review))return {kind:"commas",title:"Writing Progress Check",prompt};
+        if(/opinion/.test(review))return {kind:"opinion",title:"Writing Progress Check",prompt};
+        return {kind:"explain",title:"Writing Progress Check",prompt,minWords:12};
+      }
+      if(type==="assessment")return {kind:"explain",title:"Assessment Reflection",prompt,minWords:8};
+      if(type==="performance")return {kind:"explain",title:"Performance Reflection",prompt,minWords:10};
+      return O.activitySpec(x);
+    };
+
+    window.validateActivity=function(x){
+      if(!noVideo(x))return O.validateActivity(x);
+      const type=classify(x),id=x.id,written=(document.getElementById("actText-"+id)?.value||"").trim();
+      const words=written.split(/\s+/).filter(Boolean);
+      if(type==="fluency"){
+        if(words.length<7)return {ok:false,msg:"Write at least one complete sentence about what changed on your second read."};
+        if(!/\b(accur|smooth|phrase|punctuation|expression|pace|pause|correct|mistake|read|voice)\w*/i.test(written))return {ok:false,msg:"Mention something about accuracy, phrasing, punctuation, expression, pace, or a correction you made."};
+        return {ok:true};
+      }
+      if(type==="word-progress"){
+        const review=recentWordStudy(x),targets=review.flatMap(v=>[v.word,v.root]).filter(Boolean);
+        if(words.length<8)return {ok:false,msg:"Explain the root connection and use the word in a complete sentence."};
+        if(targets.length&&!targets.some(t=>new RegExp(`\\b${String(t).split("/")[0].replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}\\b`,"i").test(written)))return {ok:false,msg:"Use one of the reviewed words or roots from the progress check in your explanation."};
+        return {ok:true};
+      }
+      if(type==="assessment"||type==="performance"){
+        const min=type==="assessment"?8:10;
+        if(words.length<min)return {ok:false,msg:`Give a complete reflection of at least ${min} words.`};
+        return {ok:true};
+      }
+      return O.validateActivity(x);
+    };
+
+    window.card=function(x){
+      const html=O.card(x);
+      if(!noVideo(x))return html;
+      const type=classify(x);
+      if(type==="word-progress"||type==="progress"||type==="writing-progress"||type==="assessment"){
+        return html.replace("1. Learn It in Dragonswood","1. Review What You Know").replace("Everything needed for this lesson is here.","Everything needed for this check is here.");
+      }
+      if(type==="fluency")return html.replace("1. Learn It in Dragonswood","1. Fluency Training").replace("Everything needed for this lesson is here.","Your reading passage and fluency directions are below.");
+      if(type==="performance")return html.replace("1. Learn It in Dragonswood","1. Mission Brief").replace("Everything needed for this lesson is here.","Your performance directions are below.");
+      return html;
+    };
+
+    window.grouped=function(title,desc,a,byDay=false){
+      if(Array.isArray(a)&&a.length&&a.every(noVideo)&&/Current Quest/i.test(title)){
+        desc=String(desc||"").replace("Watch the lesson, pass the standard check, then apply what you learned.","Complete today's Dragonswood lesson or progress check, then apply what you know.");
+      }
+      return O.grouped(title,desc,a,byDay);
+    };
+
+    window.render();
+  }
+  setTimeout(install,0);
+})();

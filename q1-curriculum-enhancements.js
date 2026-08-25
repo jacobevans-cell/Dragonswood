@@ -83,3 +83,14 @@
   };
   D.morphology.forEach(row=>{if(lessons[row.id])Object.assign(row,lessons[row.id])});
 })();
+
+/* v56.23 — load the no-video-only lesson engine.
+   The engine itself hard-stops on every mission classified as a video lesson. */
+(function(){
+  if(window.__DW_NO_VIDEO_ENGINE_LOADER__)return;
+  window.__DW_NO_VIDEO_ENGINE_LOADER__=true;
+  const s=document.createElement("script");
+  s.src="q1-no-video-lessons.js?v=56.23";
+  s.async=false;
+  document.head.appendChild(s);
+})();

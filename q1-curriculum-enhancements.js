@@ -90,7 +90,7 @@
   if(window.__DW_NO_VIDEO_ENGINE_LOADER__)return;
   window.__DW_NO_VIDEO_ENGINE_LOADER__=true;
   const s=document.createElement("script");
-  s.src="q1-no-video-lessons.js?v=56.24.2";
+  s.src="q1-no-video-lessons.js?v=56.25.3";
   s.async=false;
   document.head.appendChild(s);
 })();
@@ -103,6 +103,18 @@
   window.__DW_CURRICULUM_INTERACTION_LOADER__=true;
   const s=document.createElement("script");
   s.src="q1-curriculum-interactions.js?v=56.24.2";
+  s.async=false;
+  document.head.appendChild(s);
+})();
+
+
+/* v56.25.3 - answer-integrity policy.
+   Separates selection from submission and applies practice/check/assessment attempt rules. */
+(function(){
+  if(window.__DW_CURRICULUM_ANSWER_POLICY_LOADER__)return;
+  window.__DW_CURRICULUM_ANSWER_POLICY_LOADER__=true;
+  const s=document.createElement("script");
+  s.src="q1-curriculum-answer-policy.js?v=56.25.3";
   s.async=false;
   document.head.appendChild(s);
 })();

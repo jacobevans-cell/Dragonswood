@@ -215,10 +215,18 @@
     return !!row&&String(row.prompt||"").trim()&&Array.isArray(row.choices)&&row.choices.length>=2&&row.answer!==undefined&&row.answer!==null;
   }
   function questionsForSourceItem(item){
-    if(!window.__DW_NO_VIDEO_ORIGINALS?.autoQuestionsFor)return noVideo(item)&&currentWordStudy(item)?wordLessonQuestions(item):[];
     let rows=[];
-    try{rows=(window.__DW_NO_VIDEO_ORIGINALS.autoQuestionsFor(item)||[]).filter(validPriorQuestion)}catch(e){rows=[]}
-    if(!rows.length&&noVideo(item)&&currentWordStudy(item))rows=wordLessonQuestions(item).filter(validPriorQuestion);
+    if(window.__DW_NO_VIDEO_ORIGINALS?.autoQuestionsFor){
+      try{rows=(window.__DW_NO_VIDEO_ORIGINALS.autoQuestionsFor(item)||[]).filter(validPriorQuestion)}catch(e){rows=[]}
+    }
+    if(noVideo(item)&&currentWordStudy(item)){
+      const supplemental=wordLessonQuestions(item).filter(validPriorQuestion);
+      const seen=new Set(rows.map(r=>String(r.prompt||"").trim().toLowerCase()));
+      for(const row of supplemental){
+        const key=String(row.prompt||"").trim().toLowerCase();
+        if(key&&!seen.has(key)){seen.add(key);rows.push(row)}
+      }
+    }
     return rows;
   }
   function spreadSources(items,maxSources){

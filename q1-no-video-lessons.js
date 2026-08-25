@@ -531,6 +531,9 @@
       }
       if(type==="word-progress"){
         const review=recentWordStudy(x);
+        if(/\bwhich (?:previously learned )?target word correctly completes the sentence\b|_{3,}|\bchoose (?:one|the) (?:reviewed |lesson'?s )?target word\b/i.test(written)){
+          return {ok:false,reviewable:false,msg:"Answer in your own words instead of copying the question. Explain the root connection, then write your own complete sentence using one reviewed word."};
+        }
         if(words.length<10)return {ok:false,msg:"Explain the root connection and use one reviewed word in a complete sentence."};
         const match=review.find(v=>v.word&&new RegExp(`\\b${String(v.word).replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}\\b`,"i").test(written));
         if(!match)return {ok:false,msg:"Use one of the reviewed target words in your explanation and sentence."};

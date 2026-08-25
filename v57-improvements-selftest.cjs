@@ -1,6 +1,6 @@
 const fs=require("fs"),assert=require("assert"),read=f=>fs.readFileSync(f,"utf8");
 function pass(name,fn){try{fn();console.log("PASS",name)}catch(e){console.error("FAIL",name,"\n ",e.message);process.exitCode=1}}
-const boss=read("boss-battle.html"),rules=read("firestore.rules"),student=read("dragonswood-student-tools.js"),teacher=read("dragonswood-teacher-tools.js"),grayson=read("dragonswood-grayson-mode.js");
+const boss=read("boss-battle.html"),rules=read("firestore.rules"),student=read("dragonswood-student-tools.js"),teacher=read("dragonswood-teacher-tools.js"),grayson=read("dragonswood-grayson-mode.js"),curriculum=read("curriculum-quest.html"),noVideo=read("q1-no-video-lessons.js");
 pass("boss no longer loops by resetting qi to zero",()=>assert(!boss.includes("if(qi>=qs.length)qi=0")));
 pass("boss varies each run",()=>assert(boss.includes("dwBossRun:")&&boss.includes("battleRun")));
 pass("boss regenerates exhausted question pools",()=>assert(boss.includes("questionCycle++;qs=makeQuestions(questionCycle)")));
@@ -16,4 +16,5 @@ const mathPages=["math-operations-quest.html","long-division-quest.html","long-d
 pass("Grayson Mode is loaded by every math game",()=>mathPages.forEach(f=>assert(read(f).includes("dragonswood-grayson-mode.js"),f)));
 pass("Grayson Mode teaches before asking",()=>assert(grayson.includes("YOU NEED THIS FIRST")&&grayson.includes("lesson:")));
 pass("Grayson Mode is reward-free",()=>assert(grayson.includes("rewardFree:true")&&grayson.includes("no gameplay rewards")));
+pass("copied curriculum prompts cannot trigger uncertain AI review",()=>assert(curriculum.includes("result.reviewable===false")&&noVideo.includes('reviewable:false,msg:"Answer in your own words')));
 if(process.exitCode)process.exit(process.exitCode);console.log("\n✅ ALL V57 IMPROVEMENT SELF-TESTS PASSED");

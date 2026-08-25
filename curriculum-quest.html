@@ -452,7 +452,7 @@ async function requestAutoQuestionOverride(id,index){
 }
 
 function curriculumAiEligible(spec,result,answer){
-  if(result.ok||!String(answer||"").trim())return false;
+  if(result.ok||result.reviewable===false||!String(answer||"").trim())return false;
   return spec.kind==="explain"||spec.kind==="opinion";
 }
 async function curriculumAiRescue(x,spec,answer,result){

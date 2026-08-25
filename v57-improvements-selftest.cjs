@@ -10,6 +10,7 @@ pass("clipboard guard covers all required surfaces",()=>assert(student.includes(
 pass("admin/tester clipboard exemptions exist",()=>assert(student.includes("adminEmails")&&student.includes("tester|admin|teacher")));
 pass("student suggestions are restricted and teacher-readable",()=>assert(student.includes("studentSuggestions")&&teacher.includes("studentSuggestions")&&rules.includes("match /studentSuggestions/")));
 pass("teacher attention center includes passes and approvals",()=>assert(teacher.includes("ACTIVE PASSES")&&teacher.includes("PENDING APPROVALS")&&teacher.includes("dwTeacherAttention")));
+pass("teacher attention center can approve or deny inline",()=>assert(teacher.includes("data-attn-yes")&&teacher.includes("reviewRequest")&&teacher.includes("data-pass-${yes?\"approve\":\"deny\"}")));
 pass("teacher egg award uses atomic increments",()=>assert(teacher.includes("eggInventory:increment(1)")&&teacher.includes("writeBatch")));
 pass("focus events are logged without grading or rewards",()=>assert(student.includes("focusEvents")&&rules.includes("match /focusEvents/")));
 const mathPages=["math-operations-quest.html","long-division-quest.html","long-division-custom.html","fraction-forge.html","decimal-deception.html","elemental-laboratory.html","arcane-forge.html"];

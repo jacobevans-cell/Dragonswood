@@ -522,7 +522,7 @@ function showToast(message) {
 
 
 
-/* DRAGONSWOOD ROOM BUILDER V2.3
+/* DRAGONSWOOD ROOM BUILDER V2.4
    Physical furniture and student assignment are deliberately separate:
    Edit Room moves desks. Assign Students moves names. */
 Object.assign(state, {
@@ -530,6 +530,8 @@ Object.assign(state, {
   roomName: state.layout === 'evans' ? 'Evans Room' : 'Current Room',
   selectedDeskIds: [],
   snapRoomGrid: true,
+  multiSelectMode: false,
+  suppressDeskClickId: null,
   referenceVisible: false,
   roomDirty: false
 });
@@ -587,6 +589,12 @@ function installRoomBuilderUi() {
       <button class="button compact quiet" id="rotateDeskButton" type="button">↻ Rotate</button>
       <button class="button compact quiet" id="deleteDeskButton" type="button">Delete</button>
     </div>
+    <div class="builder-tool-group desk-selection-tools">
+      <button class="button compact quiet" id="multiSelectDeskButton" type="button" aria-pressed="false">☑ Multi Select</button>
+      <button class="button compact quiet" id="selectAllDeskButton" type="button">Select All</button>
+      <button class="button compact quiet" id="clearDeskSelectionButton" type="button">Clear</button>
+      <span class="desk-selection-count" id="deskSelectionCount">0 selected</span>
+    </div>
     <div class="builder-tool-group">
       <button class="button compact quiet" id="alignDeskHButton" type="button">Align Row</button>
       <button class="button compact quiet" id="alignDeskVButton" type="button">Align Column</button>
@@ -594,7 +602,7 @@ function installRoomBuilderUi() {
       <button class="button compact quiet" id="spaceDeskVButton" type="button">Space ↕</button>
     </div>
     <div class="builder-tool-group builder-options">
-      <label><input id="snapRoomGridToggle" type="checkbox" checked> Snap</label>
+      <label title="Magnetically align desks with nearby desk centers"><input id="snapRoomGridToggle" type="checkbox" checked> Snap Alignment</label>
       <button class="button compact quiet" id="referenceToggleButton" type="button">Reference</button>
       <label class="reference-opacity">Opacity <input id="referenceOpacity" type="range" min="15" max="85" value="42"></label>
       <button class="button compact primary" id="saveRoomButton" type="button">Save Room</button>
@@ -608,6 +616,16 @@ function installRoomBuilderUi() {
   reference.alt = '';
   reference.hidden = true;
   stage.prepend(reference);
+
+  const guideX = document.createElement('div');
+  guideX.id = 'roomAlignmentGuideX';
+  guideX.className = 'room-alignment-guide room-alignment-guide-x';
+  guideX.hidden = true;
+  const guideY = document.createElement('div');
+  guideY.id = 'roomAlignmentGuideY';
+  guideY.className = 'room-alignment-guide room-alignment-guide-y';
+  guideY.hidden = true;
+  stage.prepend(guideX, guideY);
 
   const fixtures = document.createElement('div');
   fixtures.id = 'roomFixtureLayer';
@@ -636,7 +654,10 @@ function installRoomBuilderUi() {
   document.getElementById('alignDeskVButton').addEventListener('click', () => alignRoomDesks('column'));
   document.getElementById('spaceDeskHButton').addEventListener('click', () => spaceRoomDesks('x'));
   document.getElementById('spaceDeskVButton').addEventListener('click', () => spaceRoomDesks('y'));
-  document.getElementById('snapRoomGridToggle').addEventListener('change', event => { state.snapRoomGrid = event.target.checked; });
+  document.getElementById('multiSelectDeskButton').addEventListener('click', toggleRoomMultiSelect);
+  document.getElementById('selectAllDeskButton').addEventListener('click', selectAllRoomDesks);
+  document.getElementById('clearDeskSelectionButton').addEventListener('click', clearRoomDeskSelection);
+  document.getElementById('snapRoomGridToggle').addEventListener('change', event => { state.snapRoomGrid = event.target.checked; clearRoomAlignmentGuides(); });
   document.getElementById('referenceToggleButton').addEventListener('click', toggleRoomReference);
   document.getElementById('referenceOpacity').addEventListener('input', event => {
     reference.style.opacity = String(Number(event.target.value) / 100);
@@ -665,16 +686,15 @@ function renderRoomBuilder() {
   stage.classList.remove('flipped');
   const selected = new Set(state.selectedDeskIds);
   layer.innerHTML = state.plan.map(seat => {
-    const student = studentById(seat.studentId);
-    const label = student ? escapeHtml(student.name) : 'Open desk';
+    const deskNumber = escapeHtml(seat.id.replace('seat-', '#'));
     const selectedClass = selected.has(seat.id) ? ' selected' : '';
-    return `<button class="desk-object${selectedClass}" type="button" data-desk-id="${seat.id}" style="left:${seat.x}%;top:${seat.y}%;--desk-rotation:${Number(seat.rotation || 0)}deg" aria-label="${label}">
-      <span class="desk-surface"><span class="desk-number">${escapeHtml(seat.id.replace('seat-', '#'))}</span><strong>${label}</strong></span><span class="desk-chair" aria-hidden="true"></span>
+    return `<button class="desk-object${selectedClass}" type="button" data-desk-id="${seat.id}" style="left:${seat.x}%;top:${seat.y}%;--desk-rotation:${Number(seat.rotation || 0)}deg" aria-label="Desk ${deskNumber}">
+      <span class="desk-surface"><span class="desk-number">DESK ${deskNumber}</span></span><span class="desk-chair" aria-hidden="true"></span>
     </button>`;
   }).join('');
   bindRoomDeskInteractions(layer);
   const center = document.querySelector('.room-center-label');
-  if (center) center.textContent = 'ROOM BUILDER • drag desks • Shift+click selects several';
+  if (center) center.textContent = 'ROOM BUILDER • drag desks • Multi Select chooses several • alignment snaps automatically';
   updateRoomBuilderUi();
 }
 
@@ -688,7 +708,98 @@ function updateRoomBuilderUi() {
   document.querySelectorAll('[data-room-mode]').forEach(button => button.classList.toggle('active', button.dataset.roomMode === state.roomMode));
   const builderToolbar = document.getElementById('roomBuilderToolbar');
   if (builderToolbar) builderToolbar.hidden = state.roomMode !== 'build';
+  const multiButton = document.getElementById('multiSelectDeskButton');
+  if (multiButton) {
+    multiButton.classList.toggle('active', state.multiSelectMode);
+    multiButton.setAttribute('aria-pressed', String(state.multiSelectMode));
+  }
+  const selectionCount = document.getElementById('deskSelectionCount');
+  if (selectionCount) selectionCount.textContent = `${state.selectedDeskIds.length} selected`;
   document.querySelector('.room-panel')?.classList.toggle('room-builder-active', state.roomMode === 'build');
+}
+
+function toggleRoomMultiSelect() {
+  state.multiSelectMode = !state.multiSelectMode;
+  updateRoomBuilderUi();
+  showToast(state.multiSelectMode ? 'Multi Select on: click desks to add or remove them from the selection.' : 'Multi Select off. Your current selection stays active until you clear it.');
+}
+
+function selectAllRoomDesks() {
+  state.multiSelectMode = true;
+  state.selectedDeskIds = state.plan.map(seat => seat.id);
+  renderRoomBuilder();
+}
+
+function clearRoomDeskSelection() {
+  state.selectedDeskIds = [];
+  clearRoomAlignmentGuides();
+  renderRoomBuilder();
+}
+
+function setRoomAlignmentGuides(x, y) {
+  const guideX = document.getElementById('roomAlignmentGuideX');
+  const guideY = document.getElementById('roomAlignmentGuideY');
+  if (guideX) {
+    guideX.hidden = !Number.isFinite(x);
+    if (Number.isFinite(x)) guideX.style.left = `${x}%`;
+  }
+  if (guideY) {
+    guideY.hidden = !Number.isFinite(y);
+    if (Number.isFinite(y)) guideY.style.top = `${y}%`;
+  }
+}
+
+function clearRoomAlignmentGuides() {
+  setRoomAlignmentGuides(null, null);
+}
+
+function alignedRoomDragDelta(anchorId, rawDx, rawDy, originals) {
+  const selected = new Set(state.selectedDeskIds);
+  const anchor = originals.get(anchorId) || originals.values().next().value;
+  let dx = rawDx;
+  let dy = rawDy;
+
+  if (state.snapRoomGrid && anchor) {
+    // Light 1% grid snapping keeps movement clean without forcing desks far away.
+    dx = Math.round(anchor.x + rawDx) - anchor.x;
+    dy = Math.round(anchor.y + rawDy) - anchor.y;
+  }
+
+  const values = [...originals.values()];
+  if (values.length) {
+    const minX = Math.min(...values.map(item => item.x));
+    const maxX = Math.max(...values.map(item => item.x));
+    const minY = Math.min(...values.map(item => item.y));
+    const maxY = Math.max(...values.map(item => item.y));
+    dx = Math.max(7 - minX, Math.min(93 - maxX, dx));
+    dy = Math.max(8 - minY, Math.min(92 - maxY, dy));
+  }
+
+  let guideX = null;
+  let guideY = null;
+  if (state.snapRoomGrid) {
+    const tolerance = 1.6;
+    let bestX = { distance: Infinity, adjustment: 0, guide: null };
+    let bestY = { distance: Infinity, adjustment: 0, guide: null };
+    const others = state.plan.filter(seat => !selected.has(seat.id));
+
+    for (const original of originals.values()) {
+      const tentativeX = original.x + dx;
+      const tentativeY = original.y + dy;
+      for (const other of others) {
+        const xAdjustment = Number(other.x) - tentativeX;
+        const yAdjustment = Number(other.y) - tentativeY;
+        const xDistance = Math.abs(xAdjustment);
+        const yDistance = Math.abs(yAdjustment);
+        if (xDistance <= tolerance && xDistance < bestX.distance) bestX = { distance: xDistance, adjustment: xAdjustment, guide: Number(other.x) };
+        if (yDistance <= tolerance && yDistance < bestY.distance) bestY = { distance: yDistance, adjustment: yAdjustment, guide: Number(other.y) };
+      }
+    }
+    if (bestX.guide !== null) { dx += bestX.adjustment; guideX = bestX.guide; }
+    if (bestY.guide !== null) { dy += bestY.adjustment; guideY = bestY.guide; }
+  }
+
+  return { dx, dy, guideX, guideY };
 }
 
 function bindRoomDeskInteractions(layer) {
@@ -696,11 +807,16 @@ function bindRoomDeskInteractions(layer) {
     desk.addEventListener('click', event => {
       event.preventDefault();
       const id = desk.dataset.deskId;
-      if (event.shiftKey) {
+      if (state.suppressDeskClickId === id) {
+        state.suppressDeskClickId = null;
+        return;
+      }
+      const additive = event.shiftKey || state.multiSelectMode;
+      if (additive) {
         state.selectedDeskIds = state.selectedDeskIds.includes(id)
           ? state.selectedDeskIds.filter(item => item !== id)
           : [...state.selectedDeskIds, id];
-      } else if (!state.selectedDeskIds.includes(id)) {
+      } else {
         state.selectedDeskIds = [id];
       }
       renderRoomBuilder();
@@ -713,31 +829,40 @@ function beginDeskDrag(event) {
   if (state.roomMode !== 'build') return;
   event.preventDefault();
   const id = event.currentTarget.dataset.deskId;
-  if (!state.selectedDeskIds.includes(id)) state.selectedDeskIds = [id];
+  const additive = state.multiSelectMode || event.shiftKey;
+  const dragIds = state.selectedDeskIds.includes(id)
+    ? [...state.selectedDeskIds]
+    : (additive ? [...state.selectedDeskIds, id] : [id]);
   const stage = document.getElementById('roomStage');
   const rect = stage.getBoundingClientRect();
   const start = { x: event.clientX, y: event.clientY };
-  const originals = new Map(state.selectedDeskIds.map(seatId => {
+  const originals = new Map(dragIds.map(seatId => {
     const seat = state.plan.find(item => item.id === seatId);
     return [seatId, { x: Number(seat.x), y: Number(seat.y) }];
   }));
   let moved = false;
+  let dragSelectionApplied = false;
 
   const onMove = moveEvent => {
-    const dx = ((moveEvent.clientX - start.x) / rect.width) * 100;
-    const dy = ((moveEvent.clientY - start.y) / rect.height) * 100;
-    if (Math.abs(dx) + Math.abs(dy) > 0.25) moved = true;
+    const rawDx = ((moveEvent.clientX - start.x) / rect.width) * 100;
+    const rawDy = ((moveEvent.clientY - start.y) / rect.height) * 100;
+    if (Math.abs(rawDx) + Math.abs(rawDy) > 0.25) moved = true;
+    if (moved && !dragSelectionApplied) {
+      state.selectedDeskIds = dragIds;
+      dragSelectionApplied = true;
+    }
+    const snapped = alignedRoomDragDelta(id, rawDx, rawDy, originals);
+    setRoomAlignmentGuides(snapped.guideX, snapped.guideY);
+
     for (const seatId of state.selectedDeskIds) {
       const original = originals.get(seatId);
       const seat = state.plan.find(item => item.id === seatId);
       const geometry = state.seats.find(item => item.id === seatId);
       if (!original || !seat || !geometry) continue;
-      let x = Math.max(7, Math.min(93, original.x + dx));
-      let y = Math.max(8, Math.min(92, original.y + dy));
-      if (state.snapRoomGrid) { x = Math.round(x / 2) * 2; y = Math.round(y / 2) * 2; }
+      const x = Math.max(7, Math.min(93, original.x + snapped.dx));
+      const y = Math.max(8, Math.min(92, original.y + snapped.dy));
       seat.x = geometry.x = x;
       seat.y = geometry.y = y;
-      // Custom placement makes zones explicit from physical position.
       seat.frontZone = geometry.frontZone = y >= 70;
       seat.doorZone = geometry.doorZone = x <= 35;
     }
@@ -747,7 +872,10 @@ function beginDeskDrag(event) {
   const onUp = () => {
     window.removeEventListener('pointermove', onMove);
     window.removeEventListener('pointerup', onUp);
+    clearRoomAlignmentGuides();
     if (moved) {
+      state.suppressDeskClickId = id;
+      window.setTimeout(() => { if (state.suppressDeskClickId === id) state.suppressDeskClickId = null; }, 250);
       state.candidates = [];
       state.previewPlan = null;
       renderRoster();
@@ -834,7 +962,7 @@ function applySeatCoordinates(id, x, y) {
 
 function alignRoomDesks(axis) {
   const seats = selectedRoomSeats();
-  if (seats.length < 2) { showToast('Select at least two desks with Shift+click.'); return; }
+  if (seats.length < 2) { showToast('Select at least two desks. Turn on Multi Select to choose several.'); return; }
   snapshot();
   if (axis === 'row') {
     const y = seats.reduce((sum, seat) => sum + Number(seat.y), 0) / seats.length;
@@ -849,7 +977,7 @@ function alignRoomDesks(axis) {
 
 function spaceRoomDesks(axis) {
   const seats = selectedRoomSeats();
-  if (seats.length < 3) { showToast('Select at least three desks to space them evenly.'); return; }
+  if (seats.length < 3) { showToast('Select at least three desks. Turn on Multi Select to choose several.'); return; }
   snapshot();
   const key = axis === 'x' ? 'x' : 'y';
   const sorted = seats.slice().sort((a, b) => Number(a[key]) - Number(b[key]));

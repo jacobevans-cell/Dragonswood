@@ -6,3 +6,4 @@
 - Room Builder supports drag, Shift+click multi-select, rotate, duplicate, delete-empty-desk, row/column alignment, even spacing, snap-to-grid, reference overlay, Undo, and Save Room.
 - `Smart Arrange` continues to optimize student-to-desk assignments against the current saved furniture geometry. It does not move desks.
 - Saved room geometry is stored as `roomLayout` in `classrooms/evans-4-5/seatingPlans/current`, so the existing teacher-only Firestore rule covers it.
+- **V2.4 UX:** Edit Room hides student names, Multi Select works without Shift, and desk movement magnetically snaps to nearby row/column alignments with visible guides.

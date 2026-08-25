@@ -14,9 +14,11 @@ pass("teacher attention center can approve or deny inline",()=>assert(teacher.in
 pass("teacher egg award uses atomic increments",()=>assert(teacher.includes("eggInventory:increment(1)")&&teacher.includes("writeBatch")));
 pass("focus events are logged without grading or rewards",()=>assert(student.includes("focusEvents")&&rules.includes("match /focusEvents/")));
 const mathPages=["math-operations-quest.html","long-division-quest.html","long-division-custom.html","fraction-forge.html","decimal-deception.html","elemental-laboratory.html","arcane-forge.html"];
+const studentPortals=["index.html","index-v2.html","index-live-welcome-test.html","Tester1111.html"];
 pass("Grayson Mode is loaded by every math game",()=>mathPages.forEach(f=>assert(read(f).includes("dragonswood-grayson-mode.js"),f)));
 pass("Grayson Mode teaches before asking",()=>assert(grayson.includes("YOU NEED THIS FIRST")&&grayson.includes("lesson:")));
 pass("Grayson Mode is reward-free",()=>assert(grayson.includes("rewardFree:true")&&grayson.includes("no gameplay rewards")));
 pass("copied curriculum prompts cannot trigger uncertain AI review",()=>assert(curriculum.includes("result.reviewable===false")&&noVideo.includes('reviewable:false,msg:"Answer in your own words')));
 pass("system-authored curriculum text is removed from answer boxes",()=>assert(curriculum.includes("function systemAuthoredResponse")&&curriculum.includes('answer=systemAuthoredResponse(x,savedAnswer)?"":savedAnswer')&&noVideo.includes("window.systemAuthoredResponse?.(x,written)")));
+pass("bathroom group slot binds only after profile load",()=>studentPortals.forEach(f=>{const page=read(f),profileAt=page.indexOf("profile=snap.data();"),watchAt=page.indexOf("watchBathroom();",profileAt);assert(profileAt>=0&&watchAt>profileAt,`${f} must bind after profile load`);const pre=page.slice(page.lastIndexOf('const ref=doc(db,"students",u.uid);',profileAt),profileAt);assert(!pre.includes("watchBathroom();"),`${f} binds before profile load`);assert(page.includes('if((previousProfile?.genderGroup||"")!==(nextProfile?.genderGroup||""))watchBathroom();'),`${f} must rebind when group changes`) }));
 if(process.exitCode)process.exit(process.exitCode);console.log("\n✅ ALL V57 IMPROVEMENT SELF-TESTS PASSED");

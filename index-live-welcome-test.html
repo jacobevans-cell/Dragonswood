@@ -4080,7 +4080,6 @@ onAuthStateChanged(auth,async u=>{
 
   try{
     const ref=doc(db,"students",u.uid);
-    watchBathroom();
     watchSnack();
     dwWatchDailyCompletion();
     watchUnifiedPassHub();
@@ -4090,6 +4089,7 @@ onAuthStateChanged(auth,async u=>{
     const snap=await getDoc(ref);
     if(snap.exists()){
       profile=snap.data();
+      watchBathroom();
       window.DWVoicePreferences?.set?.(profile.narrationVoice||"automatic");
       renderProfile();
       showLiveV2Welcome(u);
@@ -4108,6 +4108,7 @@ onAuthStateChanged(auth,async u=>{
         else if(rewardDelta<0)window.DWAudio?.takePoints?.();
       }
       profile=nextProfile;
+      if((previousProfile?.genderGroup||"")!==(nextProfile?.genderGroup||""))watchBathroom();
       window.DWVoicePreferences?.set?.(profile.narrationVoice||"automatic");
       try{
         renderProfile();

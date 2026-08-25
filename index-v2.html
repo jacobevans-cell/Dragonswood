@@ -1799,7 +1799,6 @@ onAuthStateChanged(auth,async u=>{
 
   try{
     const ref=doc(db,"students",u.uid);
-    watchBathroom();
     watchSnack();
     dwWatchDailyCompletion();
     watchUnifiedPassHub();
@@ -1809,8 +1808,7 @@ onAuthStateChanged(auth,async u=>{
     const snap=await getDoc(ref);
     if(snap.exists()){
       profile=snap.data();
-      // Bathroom slot group depends on profile.genderGroup. The first watcher
-      // starts before the profile is loaded, so re-bind now that group is known.
+      // Bathroom slot group is known only after the profile is loaded.
       watchBathroom();
       window.DWVoicePreferences?.set?.(profile.narrationVoice||"automatic");
       renderProfile();

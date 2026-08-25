@@ -14,9 +14,10 @@ pass("teacher attention center includes passes and approvals",()=>assert(teacher
 pass("teacher attention center can approve or deny inline",()=>assert(teacher.includes("data-attn-yes")&&teacher.includes("reviewRequest")&&teacher.includes("data-pass-${yes?\"approve\":\"deny\"}")));
 pass("teacher egg award uses atomic increments",()=>assert(teacher.includes("eggInventory:increment(1)")&&teacher.includes("writeBatch")));
 pass("focus events are logged without grading or rewards",()=>assert(student.includes("focusEvents")&&rules.includes("match /focusEvents/")));
-const mathPages=["math-operations-quest.html","long-division-quest.html","long-division-custom.html","fraction-forge.html","decimal-deception.html","elemental-laboratory.html","arcane-forge.html"];
+const mathPages=[...read("index.html").matchAll(/<article class="frame bevel game" data-game-subject="math">[\s\S]*?<a class="btn" href="([^"?]+\.html)/g)].map(x=>x[1]);
 const studentPortals=["index.html","index-v2.html","index-live-welcome-test.html","Tester1111.html"];
 pass("Grayson Mode is loaded by every math game",()=>mathPages.forEach(f=>assert(read(f).includes("dragonswood-grayson-mode.js"),f)));
+pass("Grayson Mode is visibly mounted in every current math game",()=>{assert.deepStrictEqual(mathPages.sort(),["decimal-deception.html","fraction-forge.html","math-operations-quest.html"]);for(const [page,target] of [["decimal-deception.html",".controls"],["fraction-forge.html",".difficulty-toggle"],["math-operations-quest.html",".difficulty-row"]])assert(grayson.includes(`page===\"${page}\"`)&&grayson.includes(`querySelector(\"${target}\")`),page)});
 pass("Grayson Mode teaches before asking",()=>assert(grayson.includes("YOU NEED THIS FIRST")&&grayson.includes("lesson:")));
 pass("Grayson Mode is reward-free",()=>assert(grayson.includes("rewardFree:true")&&grayson.includes("no gameplay rewards")));
 pass("copied curriculum prompts cannot trigger uncertain AI review",()=>assert(curriculum.includes("result.reviewable===false")&&noVideo.includes('reviewable:false,msg:"Answer in your own words')));

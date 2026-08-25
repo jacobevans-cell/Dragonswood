@@ -505,13 +505,20 @@ async function checkActivity(id){
     f.textContent=aiResult?.decision==="approve"?"✓ Quest complete. Your wording was accepted by the semantic rescue check.":"✓ Quest complete. Your answer passed the lesson check.";
     render();
   }else{
-    f.textContent="Not yet: "+result.msg+" Your answer was saved. You can revise it or request teacher review.";
-    document.getElementById("overrideBtn-"+id)?.classList.remove("approved");
+    const reviewButton=document.getElementById("overrideBtn-"+id);
+    reviewButton?.classList.remove("approved");
+    if(result.reviewable===false){
+      const field=document.getElementById("actText-"+id);if(field){field.value="";field.oninput=()=>{if(reviewButton)reviewButton.hidden=false}};
+      s.lastActivityAttempt="";if(systemAuthoredResponse(x,s.practiceEvidence)){s.practiceEvidence="";s.practiced=false}s.overrideStatus="";S.items[id]=s;save();
+      if(reviewButton)reviewButton.hidden=true;
+      f.textContent="Not yet: "+result.msg+" Dragonswood cleared the copied text. Write your own response, then check it again.";
+    }else f.textContent="Not yet: "+result.msg+" Your answer was saved. You can revise it or request teacher review.";
   }
 }
 async function requestOverride(id){
   const x=findItem(id);if(!x)return;const answer=activityAnswerText(x).trim();
   if(answer.length<3){alert("Enter your answer first so your teacher can review what Dragonswood rejected.");return}
+  if(systemAuthoredResponse(x,answer)){const field=document.getElementById("actText-"+id);if(field)field.value="";alert("Dragonswood cleared its own directions from the answer box. Write your own response before requesting teacher review.");return}
   const s=st(id);s.lastActivityAttempt=answer;S.items[id]=s;save();
   if(!window.submitCurriculumOverride){
     alert("Teacher review is not connected yet. Your answer is saved, but no request was sent.");

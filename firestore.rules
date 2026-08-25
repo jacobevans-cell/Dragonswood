@@ -826,7 +826,7 @@ service cloud.firestore {
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.status == 'earned'
-                    && request.resource.data.prizeType in ['recess','lunch','icecream']
+                    && request.resource.data.prizeType in ['recess','snack','lunch','icecream']
                     && request.resource.data.bossLootId == dropId
                     && getAfter(/databases/$(database)/documents/bossLoot/$(dropId)).data.studentId
                        == request.auth.uid
@@ -842,6 +842,33 @@ service cloud.firestore {
                        .hasOnly(['status','requestedAt']);
 
       allow create, update, delete: if isTeacher();
+    }
+
+    // Student-submitted Dragonswood ideas and bug reports. Students may
+    // create and read their own entries; only a teacher changes workflow
+    // status or adds the response shown back to the student.
+    match /studentSuggestions/{suggestionId} {
+      allow create: if isExploreStudent()
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.status == 'new'
+                    && request.resource.data.type in ['idea','change','bug','content']
+                    && request.resource.data.text is string
+                    && request.resource.data.text.size() >= 8
+                    && request.resource.data.text.size() <= 1200;
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+      allow update, delete: if isTeacher();
+    }
+
+    // Lightweight classroom-focus history. This never changes grades or
+    // rewards; it records only meaningful (3+ second) tab departures.
+    match /focusEvents/{eventId} {
+      allow create: if isExploreStudent()
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.awaySeconds is number
+                    && request.resource.data.awaySeconds >= 3
+                    && request.resource.data.awaySeconds <= 86400;
+      allow read, update, delete: if isTeacher();
     }
 
     // Academic AI Answer Rescue. Cloud Functions Admin SDK owns writes.

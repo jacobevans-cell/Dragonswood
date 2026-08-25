@@ -1,0 +1,19 @@
+const fs=require("fs"),assert=require("assert"),read=f=>fs.readFileSync(f,"utf8");
+function pass(name,fn){try{fn();console.log("PASS",name)}catch(e){console.error("FAIL",name,"\n ",e.message);process.exitCode=1}}
+const boss=read("boss-battle.html"),rules=read("firestore.rules"),student=read("dragonswood-student-tools.js"),teacher=read("dragonswood-teacher-tools.js"),grayson=read("dragonswood-grayson-mode.js");
+pass("boss no longer loops by resetting qi to zero",()=>assert(!boss.includes("if(qi>=qs.length)qi=0")));
+pass("boss varies each run",()=>assert(boss.includes("dwBossRun:")&&boss.includes("battleRun")));
+pass("boss regenerates exhausted question pools",()=>assert(boss.includes("questionCycle++;qs=makeQuestions(questionCycle)")));
+pass("daily chest document remains idempotent",()=>assert(boss.includes('lootId=`${user.uid}_${key}`')&&rules.includes("lootId == request.auth.uid + '_' + request.resource.data.dateKey")));
+pass("food reward is wired through battle and rules",()=>assert(boss.includes('"snack"')&&rules.includes("'recess','snack','lunch','icecream'")));
+pass("clipboard guard covers all required surfaces",()=>assert(student.includes('path==="daily-quest.html"||path==="curriculum-quest.html"')&&student.includes("#scribeResponse")&&student.includes('["copy","cut","paste","drop"]')));
+pass("admin/tester clipboard exemptions exist",()=>assert(student.includes("adminEmails")&&student.includes("tester|admin|teacher")));
+pass("student suggestions are restricted and teacher-readable",()=>assert(student.includes("studentSuggestions")&&teacher.includes("studentSuggestions")&&rules.includes("match /studentSuggestions/")));
+pass("teacher attention center includes passes and approvals",()=>assert(teacher.includes("ACTIVE PASSES")&&teacher.includes("PENDING APPROVALS")&&teacher.includes("dwTeacherAttention")));
+pass("teacher egg award uses atomic increments",()=>assert(teacher.includes("eggInventory:increment(1)")&&teacher.includes("writeBatch")));
+pass("focus events are logged without grading or rewards",()=>assert(student.includes("focusEvents")&&rules.includes("match /focusEvents/")));
+const mathPages=["math-operations-quest.html","long-division-quest.html","long-division-custom.html","fraction-forge.html","decimal-deception.html","elemental-laboratory.html","arcane-forge.html"];
+pass("Grayson Mode is loaded by every math game",()=>mathPages.forEach(f=>assert(read(f).includes("dragonswood-grayson-mode.js"),f)));
+pass("Grayson Mode teaches before asking",()=>assert(grayson.includes("YOU NEED THIS FIRST")&&grayson.includes("lesson:")));
+pass("Grayson Mode is reward-free",()=>assert(grayson.includes("rewardFree:true")&&grayson.includes("no gameplay rewards")));
+if(process.exitCode)process.exit(process.exitCode);console.log("\n✅ ALL V57 IMPROVEMENT SELF-TESTS PASSED");

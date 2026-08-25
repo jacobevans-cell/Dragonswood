@@ -2903,7 +2903,7 @@ function dwRenderRpgSnapshot(st){
       (pendingLoot.length?pendingLoot.map(x=>`<div class="rs-row"><span>${x.rareGoal==="classPet"?"🐾 Class Pet":"🚌 Field Trip"} • ${esc(x.dateKey||"")}</span><button type="button" class="mini" data-approve-boss-loot="${esc(x.id)}">APPROVE +25</button></div>`).join(""):'<div class="rs-none">No finds awaiting review</div>')+
     `</div>`+
     `<div class="rs-block"><h5>Rare real-world passes (${studentPrizes.length})</h5>`+
-      (studentPrizes.length?studentPrizes.map(x=>{const q=x.prizeType==="recess"?"🌤️ Recess Pass":x.prizeType==="icecream"?"🍦 Ice Cream Pass":"🍱 Lunch Pass";return`<div class="rs-row"><span>${q} • ${esc(x.dateKey||"")} • ${esc(x.status||"earned")}</span>${x.status==="requested"?`<button type="button" class="mini" data-redeem-real-prize="${esc(x.id)}">MARK REDEEMED</button>`:""}</div>`}).join(""):'<div class="rs-none">No real-world passes earned</div>')+
+      (studentPrizes.length?studentPrizes.map(x=>{const q=x.prizeType==="recess"?"🌤️ Recess Pass":x.prizeType==="snack"?"🍿 Snack Pass":x.prizeType==="icecream"?"🍦 Ice Cream Pass":"🍱 Lunch Pass";return`<div class="rs-row"><span>${q} • ${esc(x.dateKey||"")} • ${esc(x.status||"earned")}</span>${x.status==="requested"?`<button type="button" class="mini" data-redeem-real-prize="${esc(x.id)}">MARK REDEEMED</button>`:""}</div>`}).join(""):'<div class="rs-none">No real-world passes earned</div>')+
     `</div>`+
     `<div class="rs-block"><h5>Equipment (${gear.length})</h5>`+
       (gear.length?gear.map(i=>row(i.art,`${i.name}`,
@@ -3624,4 +3624,5 @@ select{
 @media(max-width:820px){#signed:not(.hidden){top:8px!important;left:auto!important;right:8px!important;width:auto!important;max-width:calc(100vw - 165px)!important;display:flex!important}#who{display:none}#logout{width:auto!important}}
 </style>
 <script type="module" src="dragonswood-academic-ai-teacher.js?v=56.21.0"></script>
+<script type="module" src="dragonswood-teacher-tools.js?v=57.0"></script>
 </body></html>

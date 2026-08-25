@@ -304,3 +304,66 @@ body.embedded .page-wrap{
 .purpose-select{display:grid;gap:4px;color:var(--muted);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
 .purpose-select select{min-width:210px;text-transform:none;letter-spacing:0}
 .auth-block{max-width:620px;margin:10vh auto;padding:28px;border:1px solid var(--border-gold);border-radius:18px;background:var(--panel);color:var(--text)}
+
+/* DRAGONSWOOD ROOM BUILDER V2 */
+body.embedded .app-shell{display:block;width:100%;min-height:100vh;grid-template-columns:none}
+body.embedded .sidebar,body.embedded .topbar{display:none}
+body.embedded .main-shell{display:block;width:100%;max-width:none;min-width:0;margin:0;min-height:100vh}
+body.embedded .page-wrap{width:100%;max-width:none;padding:16px 24px 40px}
+
+.room-mode-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 14px 10px}
+.room-mode-switch{display:inline-flex;padding:4px;border:1px solid rgba(112,130,174,.25);border-radius:12px;background:rgba(3,10,28,.76)}
+.room-mode-button{min-height:36px;padding:0 14px;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--dw-text-muted);font-weight:800;font-size:11px}
+.room-mode-button.active{border-color:rgba(244,207,115,.5);background:linear-gradient(90deg,rgba(118,76,218,.82),rgba(19,146,185,.78));color:#fff}
+.room-name-chip{display:flex;align-items:center;gap:8px;color:var(--dw-text-muted);font-size:9px;letter-spacing:.12em;text-transform:uppercase}
+.room-name-chip strong{color:var(--dw-gold);font-family:var(--dw-font-display);font-size:14px;letter-spacing:.02em;text-transform:none}
+
+.room-builder-toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;margin:0 14px 10px;padding:10px;border:1px solid rgba(244,207,115,.25);border-radius:12px;background:linear-gradient(100deg,rgba(34,25,76,.76),rgba(6,38,58,.78))}
+.room-builder-toolbar[hidden]{display:none}
+.builder-tool-group{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.builder-options{margin-left:auto}
+.builder-options label{display:flex;align-items:center;gap:5px;color:var(--dw-text-muted);font-size:9px;font-weight:800}
+.reference-opacity input{width:78px}
+
+.room-stage.evans-room{min-height:760px;max-width:760px;aspect-ratio:674/775;margin-inline:auto;background:linear-gradient(rgba(8,18,40,.12),rgba(8,18,40,.12)),repeating-linear-gradient(90deg,transparent 0 9.95%,rgba(81,112,160,.045) 10%),repeating-linear-gradient(0deg,transparent 0 9.95%,rgba(81,112,160,.045) 10%),#0a1730}
+.room-stage.evans-room .front-wall{top:auto;bottom:8px;width:62%}
+.student-room.evans-room .student-front{top:auto;bottom:12px}
+.room-builder-active .room-stage{cursor:crosshair}
+.room-builder-active .seat-layer{z-index:5}
+.room-builder-active .room-toolbar .toolbar-actions{display:none}
+.room-builder-active #layoutSelector{opacity:.5;pointer-events:none}
+
+.room-reference-overlay{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:.42;z-index:1;pointer-events:none;filter:saturate(.82) brightness(.82)}
+.room-reference-overlay[hidden]{display:none}
+.room-fixture-layer{position:absolute;inset:0;z-index:2;pointer-events:none}
+.room-stage:not(.evans-room) .room-fixture-layer{display:none}
+.room-fixture{position:absolute;display:grid;place-items:center;border:1px solid rgba(183,194,220,.34);border-radius:5px;background:rgba(29,36,51,.72);color:#cbd3e5;font-size:7px;font-weight:900;letter-spacing:.05em;text-align:center;box-shadow:0 3px 10px rgba(0,0,0,.18)}
+.backpack-hooks{left:6%;top:1.5%;width:34%;height:3%;background:rgba(133,85,38,.58);color:#ead4ad}
+.cubbies{top:1.5%;height:5.5%;color:#fff}
+.cubbies-4{left:40%;width:23%;background:rgba(255,82,43,.78)}
+.bookshelf{left:63.5%;top:1.5%;width:9%;height:5.5%;background:rgba(37,40,48,.88)}
+.cubbies-5{left:73%;width:22%;background:rgba(52,76,232,.82)}
+.cow{right:.7%;top:1.5%;width:4%;height:8%;writing-mode:vertical-rl;background:rgba(225,225,225,.88);color:#202735}
+.screen{left:.5%;top:28%;width:1.7%;height:15%;writing-mode:vertical-rl;background:rgba(5,7,11,.92)}
+.actual-door{left:.5%;top:44%;width:1.7%;height:14%;writing-mode:vertical-rl;background:rgba(225,225,225,.72);color:#202735}
+.actual-teacher-desk{left:4%;bottom:22%;width:9%;height:15%;background:rgba(26,30,39,.88);writing-mode:vertical-rl}
+.station{right:3.2%;width:9%;height:18%;background:rgba(132,132,119,.86);color:#202735;writing-mode:vertical-rl}
+.station-1{top:31%}.station-2{top:68%}
+
+.desk-object{position:absolute;width:62px;height:43px;transform:translate(-50%,-50%) rotate(var(--desk-rotation));padding:0;border:0;background:transparent;color:var(--dw-text);touch-action:none;user-select:none;z-index:7;cursor:grab}
+.desk-object:active{cursor:grabbing}
+.desk-surface{position:absolute;inset:0 13px 0 0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:1px solid rgba(111,68,22,.85);border-radius:4px;background:linear-gradient(90deg,#d99c4c,#f5c779 42%,#d99947);box-shadow:inset 0 0 0 1px rgba(255,236,188,.38),0 4px 10px rgba(0,0,0,.25);color:#2e1a0b;overflow:hidden}
+.desk-surface strong{max-width:44px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:7px;line-height:1.1}
+.desk-number{font-size:6px;opacity:.66}
+.desk-chair{position:absolute;right:0;top:50%;width:14px;height:22px;transform:translateY(-50%);border-radius:4px 9px 9px 4px;background:linear-gradient(90deg,#7b3c1e,#c8763c);box-shadow:inset 0 0 0 1px rgba(85,40,20,.5)}
+.desk-object.selected .desk-surface{outline:3px solid var(--dw-cyan-soft);outline-offset:2px;box-shadow:0 0 20px rgba(35,201,232,.35)}
+.desk-object.selected .desk-chair{box-shadow:0 0 12px rgba(35,201,232,.45)}
+.room-builder-active .room-center-label{top:13%;color:rgba(244,207,115,.7);font-weight:800;letter-spacing:.08em}
+
+@media(max-width:840px){
+  .room-mode-bar{align-items:stretch;flex-direction:column}
+  .room-mode-switch{width:100%}.room-mode-button{flex:1}
+  .room-builder-toolbar{margin-inline:10px}
+  .builder-options{margin-left:0}
+  .room-stage.evans-room{min-height:700px;aspect-ratio:auto}
+}

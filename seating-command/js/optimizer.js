@@ -4,7 +4,25 @@ export function seatGeometry(layout, count = 24) {
   const seats = [];
   const add = (x, y, group) => seats.push({ id: `seat-${seats.length + 1}`, x, y, group });
 
-  if (layout === 'rows') {
+  if (layout === 'evans') {
+    // Physical Evans classroom: three banks, four desk columns, two desks per pair.
+    // Front of room is at the BOTTOM, matching the teacher-provided floor plan.
+    const xs = [25, 40, 55, 70];
+    const pairs = [[25, 34], [52, 61], [78, 87]];
+    let pair = 1;
+    pairs.forEach((ys, bankIndex) => {
+      xs.forEach((x, colIndex) => {
+        ys.forEach(y => {
+          add(x, y, `Pair ${pair}`);
+          const seat = seats[seats.length - 1];
+          seat.rotation = 0;
+          seat.frontZone = bankIndex === 2;
+          seat.doorZone = colIndex === 0;
+        });
+        pair += 1;
+      });
+    });
+  } else if (layout === 'rows') {
     const xs = [20, 32, 44, 56, 68, 80];
     const ys = [28, 44, 60, 76];
     ys.forEach((y, row) => xs.forEach(x => add(x, y, `R${row + 1}`)));
@@ -55,8 +73,8 @@ export function evaluatePlan(plan, students, rules, previousPlan = null) {
     let satisfied = true;
     if (rule.type === 'apart') satisfied = !isNear(a, b);
     if (rule.type === 'together') satisfied = isNear(a, b);
-    if (rule.type === 'front') satisfied = Boolean(a && a.y <= 46);
-    if (rule.type === 'door') satisfied = Boolean(a && a.x >= 64);
+    if (rule.type === 'front') satisfied = Boolean(a && (a.frontZone === true || a.y <= 46));
+    if (rule.type === 'door') satisfied = Boolean(a && (a.doorZone === true || a.x >= 64));
     if (rule.type === 'lock') satisfied = Boolean(a && a.id === rule.seatId);
 
     if (!satisfied) {

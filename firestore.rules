@@ -860,6 +860,13 @@ service cloud.firestore {
       allow update, delete: if isTeacher();
     }
 
+    // Private workflow notes for the teacher's Student Requests Center.
+    // Students receive teacherResponse on their suggestion document but can
+    // never read the teacher's internal planning notes.
+    match /studentSuggestionNotes/{suggestionId} {
+      allow read, create, update, delete: if isTeacher();
+    }
+
     // Lightweight classroom-focus history. This never changes grades or
     // rewards; it records only meaningful (3+ second) tab departures.
     match /focusEvents/{eventId} {

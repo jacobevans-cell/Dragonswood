@@ -72,9 +72,13 @@ Current local result:
 - 8/8 student pixel routes: 0 changed pixels
 - 9/9 teacher pixel routes: 0 changed pixels
 
-## Required Firebase gate
+## Firebase baseline gate
 
-Do **not** begin Stage 4 until the real emulator suite runs this command successfully:
+The real emulator suite was subsequently executed successfully in the
+Dragonswood Codespace at checkpoint `87822e5`. The durable result is recorded
+in `docs/CODESPACE-ACCEPTANCE-GATE-2026-08-26.md`.
+
+Re-run the gate after every material identity/rules/read-model change:
 
 ```bash
 ./tools/run-firebase-gate.sh
@@ -99,9 +103,12 @@ It creates only fictional Auth users/data in `demo-dragonswood-v33` and verifies
 15. all static checks
 16. all 17 visual pixel checks
 
-The current ChatGPT sandbox cannot fetch the Firebase CLI/emulator artifacts, so this one process-level verification is still honestly pending.
+The original Stage 2–3 process gate is no longer pending. New subsystem gates
+remain required as feature wiring expands.
 
-Because the connected GitHub tool also cannot create the safety branch, `CODESPACE-ONE-COMMAND.md` and `tools/install-into-dragonswood-repo.sh` provide the guarded bridge: they create the branch from the exact current production SHA, run every gate, and push only that branch. A branch-only GitHub Actions workflow reruns the same gate after push.
+`CODESPACE-ONE-COMMAND.md` and `tools/install-into-dragonswood-repo.sh` remain
+the guarded bridge for reproducing the branch and gate. They never deploy or
+push `main`.
 
 ## After the Firebase gate passes
 

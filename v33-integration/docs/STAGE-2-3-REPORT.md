@@ -72,16 +72,19 @@ The gate rules deliberately allow only unauthenticated creation of records marke
 - Visual-freeze hash verification: all 31 protected CSS/art files unchanged.
 - Fresh 1440×1000 pixel regression: 8/8 student routes and 9/9 teacher routes each produced **0 changed pixels** against the frozen `f8f9acd` V3.3 visual baseline.
 
-## Gate not yet claimable
+## Codespace gate result
 
-The actual Firebase Auth + Firestore emulator process has **not** been executed in this container because the Firebase CLI/emulator binary is not installed and this sandbox cannot download the official emulator artifacts through its restricted network path.
+The actual Firebase Auth + Firestore emulator process was executed after this
+candidate was installed in the Dragonswood Codespace. At branch checkpoint
+`87822e5`, all 13 original fictional identity/security checks passed, all 17
+approved routes rendered at zero changed pixels, and all 31 protected visual
+files remained unchanged. See
+`docs/CODESPACE-ACCEPTANCE-GATE-2026-08-26.md`.
 
-The gate is now executable in one command in a normal Codespace or other environment with outbound package access:
+The gate remains reproducible with:
 
 ```bash
 ./tools/run-firebase-gate.sh
 ```
 
-The script uses installed `firebase` when present, otherwise `npx --yes firebase-tools@15.28.1`, launches Auth + Firestore emulators for `demo-dragonswood-v33`, runs the fictional identity matrix, then reruns static and all 17 pixel checks.
-
-Per the controlling `START-HERE.md`, Stage 4 curriculum integration remains blocked until that command genuinely passes. We do not mark a Firebase handshake green merely because the harness exists.
+The script uses installed `firebase` when present, otherwise `npx --yes firebase-tools@15.28.1`, launches Auth + Firestore emulators for `demo-dragonswood-v33`, runs the fictional identity matrix, then reruns static and all 17 pixel checks. Expanded later-stage read/write contracts still require their own adversarial emulator coverage.

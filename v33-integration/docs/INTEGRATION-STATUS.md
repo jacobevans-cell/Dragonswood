@@ -14,13 +14,19 @@
 - Firebase Auth/Firestore identity gate harness created with fictional data and read-only gate rules.
 - Static/unit/smoke validation for Stage 2–3.
 - Fresh pixel regression: 8/8 student + 9/9 teacher routes at 0 changed pixels.
+- Real Codespace Firebase Auth + Firestore emulator baseline gate passed at
+  `87822e5`: 13/13 checks, 17/17 zero-pixel routes, and 31 protected files
+  unchanged.
 
-## Required before Stage 4
+## Required while later stages proceed
 
-- Actually execute `./tools/run-firebase-gate.sh` in an environment able to obtain/use Firebase Emulator Suite.
-- Require all fictional identity/read/isolation/write-denial checks to pass.
-- Preserve the 17-route zero-pixel visual result in that same gate run.
-- Re-query GitHub `main` immediately before beginning Stage 4. If production moves again, reconcile the delta first.
+- Re-run `./tools/run-firebase-gate.sh` after material identity, rules, or
+  read-model changes.
+- Require all expanded fictional identity/read/isolation/write-denial checks
+  to pass.
+- Preserve the 17-route zero-pixel visual result in every full gate run.
+- Keep the integration line anchored to frozen production `2258a321…` unless
+  a future production delta is explicitly reconciled.
 
 ## Stage 4 functional authority already mapped
 

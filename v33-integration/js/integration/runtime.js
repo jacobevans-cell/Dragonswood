@@ -1,13 +1,14 @@
 (function(){
   'use strict';
   const Core=window.DWV33Core;
-  if(!Core)throw new Error('DWV33Core must load before integration runtime.');
+  const Academic=window.DWV33Academic;
+  if(!Core||!Academic)throw new Error('DWV33Core and DWV33Academic must load before integration runtime.');
 
   const PRODUCTION_FIREBASE_CONFIG=Object.freeze({apiKey:'AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE',authDomain:'dragonswood-9289e.firebaseapp.com',projectId:'dragonswood-9289e',storageBucket:'dragonswood-9289e.firebasestorage.app',messagingSenderId:'1064477064695',appId:'1:1064477064695:web:283e1016ee2303d39042f2',measurementId:'G-LPRLDGVBD2'});
   const EMULATOR_FIREBASE_CONFIG=Object.freeze({apiKey:'demo-key',authDomain:'demo-dragonswood-v33.localhost',projectId:'demo-dragonswood-v33',storageBucket:'demo-dragonswood-v33.appspot.com',messagingSenderId:'000000000000',appId:'1:000000000000:web:demo-v33'});
   const DOMAIN=Core.STUDENT_DOMAIN;
   const TEACHER=Core.TEACHER_EMAIL;
-  const VERSION='v33-stage-identity-2';
+  const VERSION='v33-academic-systems-1';
   const params=new URLSearchParams(location.search);
   const requestedEnv=params.get('dw-env')||'emulator';
   const prodReadOnly=requestedEnv==='production-readonly'&&params.get('dw-readonly')==='I_UNDERSTAND';
@@ -53,9 +54,22 @@
     emit(onUpdate,{status:'loading',message:'Loading secure student sign-in…'});
     let F;
     try{F=await createFirebase('student')}catch(err){emit(onUpdate,{status:'error',message:`Firebase could not load: ${err?.message||err}`});return {environment,signIn:async()=>{},signOut:async()=>{},dispose(){}}}
-    const {S,auth,db}=F; let profileUnsub=null,dailyUnsub=null,overrideUnsub=null,lastProfile=null,lastDaily=[],lastOverride={},currentUser=null,dailyReady=false,profileReady=false,overrideReady=false,testerAuthorized=false;
-    const clear=()=>{for(const fn of [profileUnsub,dailyUnsub,overrideUnsub])try{fn?.()}catch{} profileUnsub=dailyUnsub=overrideUnsub=null;lastProfile=null;lastDaily=[];lastOverride={};dailyReady=profileReady=overrideReady=false;testerAuthorized=false};
-    const push=()=>{if(!currentUser||!profileReady||!dailyReady||!overrideReady)return;emit(onUpdate,{status:'authorized',user:currentUser,student:Core.normalizeStudent(currentUser,lastProfile,lastDaily,lastOverride,testerAuthorized)})};
+    const {S,auth,db}=F;
+    let profileUnsub=null,dailyUnsub=null,overrideUnsub=null,scribeUnsub=null,responsesUnsub=null,gamesUnsub=null;
+    let lastProfile=null,lastDaily=[],lastOverride={},lastScribe={},lastResponses=[],lastGames=[],currentUser=null,testerAuthorized=false;
+    let profileReady=false,dailyReady=false,overrideReady=false,scribeReady=false,responsesReady=false,gamesReady=false;
+    const clear=()=>{
+      for(const fn of [profileUnsub,dailyUnsub,overrideUnsub,scribeUnsub,responsesUnsub,gamesUnsub])try{fn?.()}catch{}
+      profileUnsub=dailyUnsub=overrideUnsub=scribeUnsub=responsesUnsub=gamesUnsub=null;
+      lastProfile=null;lastDaily=[];lastOverride={};lastScribe={};lastResponses=[];lastGames=[];
+      profileReady=dailyReady=overrideReady=scribeReady=responsesReady=gamesReady=false;testerAuthorized=false;
+    };
+    const push=()=>{
+      if(!currentUser||![profileReady,dailyReady,overrideReady,scribeReady,responsesReady,gamesReady].every(Boolean))return;
+      emit(onUpdate,{status:'authorized',user:currentUser,
+        student:Core.normalizeStudent(currentUser,lastProfile,lastDaily,lastOverride,testerAuthorized),
+        academic:Academic.studentAcademic(lastScribe,lastResponses,lastGames)});
+    };
     const authUnsub=S.auth.onAuthStateChanged(auth,async user=>{
       clear();currentUser=user||null;
       if(!user){emit(onUpdate,{status:'signed-out',message:'Sign in with your school Google account.'});return}
@@ -72,8 +86,18 @@
       profileUnsub=S.firestore.onSnapshot(S.firestore.doc(db,'students',user.uid),snap=>{lastProfile=snap.exists()?{id:snap.id,...snap.data()}:null;profileReady=true;push()},err=>emit(onUpdate,{status:'error',user,message:`Student profile read failed: ${err?.code||err?.message||err}`}));
       dailyUnsub=S.firestore.onSnapshot(S.firestore.query(S.firestore.collection(db,'dailyQuestProgress'),S.firestore.where('studentId','==',user.uid)),snap=>{lastDaily=snap.docs.map(d=>({id:d.id,...d.data()}));dailyReady=true;push()},err=>emit(onUpdate,{status:'error',user,message:`Daily progress read failed: ${err?.code||err?.message||err}`}));
       overrideUnsub=S.firestore.onSnapshot(S.firestore.doc(db,'classData','dailyAccessOverride'),snap=>{lastOverride=snap.exists()?snap.data():{};overrideReady=true;push()},err=>{console.warn('[V3.3 daily access override]',err);lastOverride={};overrideReady=true;push()});
+      scribeUnsub=S.firestore.onSnapshot(S.firestore.doc(db,'classData','activeWritingSession'),snap=>{lastScribe=snap.exists()?{id:snap.id,...snap.data()}:{};scribeReady=true;push()},err=>emit(onUpdate,{status:'error',user,message:`Writing mission read failed: ${err?.code||err?.message||err}`}));
+      responsesUnsub=S.firestore.onSnapshot(S.firestore.query(S.firestore.collection(db,'writingResponses'),S.firestore.where('studentId','==',user.uid)),snap=>{lastResponses=snap.docs.map(d=>({id:d.id,...d.data()}));responsesReady=true;push()},err=>emit(onUpdate,{status:'error',user,message:`Writing portfolio read failed: ${err?.code||err?.message||err}`}));
+      gamesUnsub=S.firestore.onSnapshot(S.firestore.query(S.firestore.collection(db,'gameResults'),S.firestore.where('studentId','==',user.uid)),snap=>{lastGames=snap.docs.map(d=>({id:d.id,...d.data()}));gamesReady=true;push()},err=>emit(onUpdate,{status:'error',user,message:`Academic game history read failed: ${err?.code||err?.message||err}`}));
     });
-    const controller={environment,async signIn(){const provider=new S.auth.GoogleAuthProvider();return S.auth.signInWithPopup(auth,provider)},async signOut(){return S.auth.signOut(auth)},dispose(){clear();try{authUnsub()}catch{}}};
+    const requireEmulator=()=>{if(environment!=='emulator')throw new Error('Academic writes are locked outside the fictional Firebase emulator.');if(!currentUser)throw new Error('Sign in before saving academic work.')};
+    const writingPayload=(session,responseText,status)=>{const metrics=Academic.writingMetrics(responseText);return {studentId:currentUser.uid,studentName:lastProfile?.firstName||currentUser.displayName||currentUser.email||'Scholar',sessionId:session.id,status,...metrics,sessionTitle:session.title,writingType:session.writingType,targetSkill:session.targetSkill,prompt:session.prompt,updatedAt:S.firestore.serverTimestamp(),...(status==='submitted'?{submittedAt:S.firestore.serverTimestamp()}:{})}};
+    const controller={environment,
+      async signIn(){const provider=new S.auth.GoogleAuthProvider();return S.auth.signInWithPopup(auth,provider)},async signOut(){return S.auth.signOut(auth)},
+      async saveWriting(responseText){requireEmulator();const session=Academic.normalizeSession(lastScribe);if(!session)throw new Error('No active writing mission.');const id=Academic.sessionResponseId(session.id,currentUser.uid);await S.firestore.setDoc(S.firestore.doc(db,'writingResponses',id),writingPayload(session,responseText,'draft'),{merge:true});return id},
+      async submitWriting(responseText){requireEmulator();const session=Academic.normalizeSession(lastScribe);if(!session)throw new Error('No active writing mission.');const metrics=Academic.writingMetrics(responseText);if(metrics.wordCount<session.minWords)throw new Error(`Write at least ${session.minWords} words before submitting.`);const id=Academic.sessionResponseId(session.id,currentUser.uid);const existing=lastResponses.find(row=>row.id===id);if(existing?.status==='submitted')throw new Error('This writing mission was already submitted.');await S.firestore.setDoc(S.firestore.doc(db,'writingResponses',id),writingPayload(session,responseText,'submitted'),{merge:true});return id},
+      dispose(){clear();try{authUnsub()}catch{}}
+    };
     controllers.push(controller);return controller;
   }
 
@@ -82,24 +106,32 @@
     emit(onUpdate,{status:'loading',message:'Loading secure teacher sign-in…'});
     let F;
     try{F=await createFirebase('teacher')}catch(err){emit(onUpdate,{status:'error',message:`Firebase could not load: ${err?.message||err}`});return {environment,signIn:async()=>{},signOut:async()=>{},dispose(){}}}
-    const {S,auth,db}=F; let rosterUnsub=null;
+    const {S,auth,db}=F;
+    let rosterUnsub=null,dailyUnsub=null,curriculumUnsub=null,scribeUnsub=null,responsesUnsub=null,gamesUnsub=null,currentUser=null;
+    let roster=[],daily=[],curriculum=[],scribe={},responses=[],games=[];
+    const ready={roster:false,daily:false,curriculum:false,scribe:false,responses:false,games:false};
     try{await S.auth.setPersistence(auth,S.auth.browserSessionPersistence)}catch{}
-    const clear=()=>{try{rosterUnsub?.()}catch{} rosterUnsub=null};
+    const clear=()=>{for(const fn of [rosterUnsub,dailyUnsub,curriculumUnsub,scribeUnsub,responsesUnsub,gamesUnsub])try{fn?.()}catch{} rosterUnsub=dailyUnsub=curriculumUnsub=scribeUnsub=responsesUnsub=gamesUnsub=null;for(const key of Object.keys(ready))ready[key]=false};
+    const push=()=>{if(!currentUser||!Object.values(ready).every(Boolean))return;const students=Core.normalizeTeacherRoster(roster);emit(onUpdate,{status:'authorized',user:currentUser,teacherName:currentUser.displayName||'Mr. Evans',students,academic:Academic.teacherAcademic(students,scribe,responses,daily,curriculum,games)})};
     const authUnsub=S.auth.onAuthStateChanged(auth,user=>{
-      clear();
+      clear();currentUser=user||null;
       if(!user){emit(onUpdate,{status:'signed-out',message:'Sign in with the authorized teacher Google account.'});return}
       const email=Core.normalizedEmail(user.email);
       if(!Core.isTeacherEmail(email)){emit(onUpdate,{status:'unauthorized',user,message:'This account does not have Teacher Command access.'});return}
-      emit(onUpdate,{status:'checking',user,message:'Loading the live roster read-only…'});
-      rosterUnsub=S.firestore.onSnapshot(S.firestore.collection(db,'students'),snap=>{
-        const rows=snap.docs.map(d=>({id:d.id,...d.data()}));
-        emit(onUpdate,{status:'authorized',user,teacherName:user.displayName||'Mr. Evans',students:Core.normalizeTeacherRoster(rows)});
-      },err=>emit(onUpdate,{status:'error',user,message:`Teacher roster read failed: ${err?.code||err?.message||err}`}));
+      emit(onUpdate,{status:'checking',user,message:'Loading the live academic command view…'});
+      const watch=(collection,key,setter)=>S.firestore.onSnapshot(S.firestore.collection(db,collection),snap=>{setter(snap.docs.map(d=>({id:d.id,...d.data()})));ready[key]=true;push()},err=>emit(onUpdate,{status:'error',user,message:`${collection} read failed: ${err?.code||err?.message||err}`}));
+      rosterUnsub=watch('students','roster',value=>{roster=value});dailyUnsub=watch('dailyQuestProgress','daily',value=>{daily=value});curriculumUnsub=watch('curriculumAttempts','curriculum',value=>{curriculum=value});responsesUnsub=watch('writingResponses','responses',value=>{responses=value});gamesUnsub=watch('gameResults','games',value=>{games=value});
+      scribeUnsub=S.firestore.onSnapshot(S.firestore.doc(db,'classData','activeWritingSession'),snap=>{scribe=snap.exists()?{id:snap.id,...snap.data()}:{};ready.scribe=true;push()},err=>emit(onUpdate,{status:'error',user,message:`Writing mission read failed: ${err?.code||err?.message||err}`}));
     });
-    const controller={environment,async signIn(){const provider=new S.auth.GoogleAuthProvider();return S.auth.signInWithPopup(auth,provider)},async signOut(){return S.auth.signOut(auth)},dispose(){clear();try{authUnsub()}catch{}}};
+    const requireEmulator=()=>{if(environment!=='emulator')throw new Error('Teacher academic writes are locked outside the fictional Firebase emulator.');if(!currentUser)throw new Error('Teacher sign-in required.')};
+    const controller={environment,async signIn(){const provider=new S.auth.GoogleAuthProvider();return S.auth.signInWithPopup(auth,provider)},async signOut(){return S.auth.signOut(auth)},
+      async launchWritingSession(input){requireEmulator();const ref=S.firestore.doc(S.firestore.collection(db,'writingSessions'));const payload={title:String(input.title||'Morning Quickwrite').slice(0,120),mode:String(input.mode||'Quickwrite').slice(0,40),writingType:String(input.writingType||'Narrative').slice(0,40),targetSkill:String(input.targetSkill||'Sensory Details').slice(0,80),prompt:String(input.prompt||'').slice(0,2000),timeMinutes:Math.max(1,Math.min(90,Number(input.timeMinutes)||5)),minWords:Math.max(1,Math.min(2000,Number(input.minWords)||75)),status:'active',createdBy:currentUser.uid,createdAt:S.firestore.serverTimestamp(),updatedAt:S.firestore.serverTimestamp()};await S.firestore.setDoc(ref,payload);await S.firestore.setDoc(S.firestore.doc(db,'classData','activeWritingSession'),{...payload,sessionId:ref.id});return ref.id},
+      async closeWritingSession(){requireEmulator();const session=Academic.normalizeSession(scribe);if(session)await S.firestore.setDoc(S.firestore.doc(db,'writingSessions',session.id),{status:'closed',closedAt:S.firestore.serverTimestamp(),updatedAt:S.firestore.serverTimestamp()},{merge:true});await S.firestore.setDoc(S.firestore.doc(db,'classData','activeWritingSession'),{status:'closed',sessionId:'',closedAt:S.firestore.serverTimestamp(),updatedAt:S.firestore.serverTimestamp()})},
+      async reviewWriting(responseId,score,feedback){requireEmulator();const value=Math.max(0,Math.min(20,Number(score)));await S.firestore.setDoc(S.firestore.doc(db,'writingResponses',responseId),{teacherScore:value,teacherFeedback:String(feedback||'').slice(0,2000),teacherReviewedAt:S.firestore.serverTimestamp(),updatedAt:S.firestore.serverTimestamp()},{merge:true})},
+      dispose(){clear();try{authUnsub()}catch{}}};
     controllers.push(controller);return controller;
   }
 
   window.addEventListener('pagehide',()=>controllers.splice(0).forEach(c=>{try{c.dispose()}catch{}}),{once:true});
-  window.DWV33Integration=Object.freeze({version:VERSION,environment,startStudent,startTeacher,core:Core});
+  window.DWV33Integration=Object.freeze({version:VERSION,environment,startStudent,startTeacher,core:Core,academic:Academic});
 })();

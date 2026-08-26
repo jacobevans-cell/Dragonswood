@@ -3,6 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const Core=require('../js/integration/core.js');
+const Academic=require('../js/integration/academic.js');
 
 const PROJECT='demo-dragonswood-v33';
 const AUTH='http://127.0.0.1:9099';
@@ -78,6 +79,10 @@ async function runStudentQuery(uid,token){
   };
   return jsonFetch(`${DB}/documents:runQuery`,{method:'POST',headers:bearer(token),body:JSON.stringify({structuredQuery})});
 }
+async function runOwnerQuery(collection,uid,token){
+  const structuredQuery={from:[{collectionId:collection}],where:{fieldFilter:{field:{fieldPath:'studentId'},op:'EQUAL',value:{stringValue:uid}}}};
+  return jsonFetch(`${DB}/documents:runQuery`,{method:'POST',headers:bearer(token),body:JSON.stringify({structuredQuery})});
+}
 async function attemptAuthenticatedWrite(account){
   const url=`${DB}/documents/students/${encodeURIComponent(account.uid)}?updateMask.fieldPaths=gold`;
   return jsonFetch(url,{method:'PATCH',headers:bearer(account.token),body:JSON.stringify({fields:{gold:{integerValue:'999999'}}})});
@@ -104,6 +109,9 @@ async function attemptAuthenticatedWrite(account){
     await seed('dailyQuestProgress',`${accounts.grade4.uid}_2026-08-24_v48`,{studentId:accounts.grade4.uid,dateKey:'2026-08-24',session:'morning',status:'complete',score:100});
     await seed('dailyQuests',today,{date:today,day:14,chapter:'The Crystal Crossing',chapterIcon:'💎',morningXp:4,exitXp:2,gold:1});
     await seed('classData','dailyAccessOverride',{dateKey:today,all:false,studentIds:[]});
+    await seed('classData','activeWritingSession',{sessionId:'scribe-gate-1',status:'active',title:'Emulator Quickwrite',mode:'Quickwrite',writingType:'Narrative',targetSkill:'Sensory Details',prompt:'Describe the hidden gate using three sensory details.',hints:['Use a strong verb'],timeMinutes:5,minWords:5});
+    await seed('writingSessions','scribe-gate-1',{status:'active',title:'Emulator Quickwrite',prompt:'Describe the hidden gate using three sensory details.',minWords:5});
+    await seed('curriculumAttempts','attempt-grade4-1',{studentId:accounts.grade4.uid,itemId:'I-D14-MATH',attemptNumber:1,questionsCorrect:8,questionsSeen:10,accuracy:80});
     record('Demo Firestore seeded without production access',true,PROJECT);
 
     assert.equal(Core.isStudentEligibleEmail(accounts.grade4.email,false),true);
@@ -167,6 +175,32 @@ async function attemptAuthenticatedWrite(account){
     assert.equal(decodeFields(savedCurriculum.body.fields).practiced,true);
     record('Curriculum canonical progress persistence',true,'owner create + constrained evidence update');
 
+    const writingId=Academic.sessionResponseId('scribe-gate-1',accounts.grade5.uid);
+    const writingDraft={studentId:accounts.grade5.uid,studentName:'Fifth',sessionId:'scribe-gate-1',status:'draft',responseText:'The silver gate hummed under my hand.',wordCount:8,sentenceCount:1,paragraphCount:1,capitalizedSentenceStarts:1,hasEndingPunctuation:true,sessionTitle:'Emulator Quickwrite',writingType:'Narrative',targetSkill:'Sensory Details',prompt:'Describe the hidden gate using three sensory details.',updatedAt:new Date().toISOString()};
+    const draftCreate=await writeDoc('writingResponses',writingId,writingDraft,accounts.grade5.token);
+    assert.equal(draftCreate.res.ok,true,JSON.stringify(draftCreate.body));
+    const writingSubmit=await writeDoc('writingResponses',writingId,{status:'submitted',submittedAt:new Date().toISOString()},accounts.grade5.token,['status','submittedAt']);
+    assert.equal(writingSubmit.res.ok,true,JSON.stringify(writingSubmit.body));
+    const ownWriting=await runOwnerQuery('writingResponses',accounts.grade5.uid,accounts.grade5.token);
+    assert.equal(ownWriting.res.ok,true,JSON.stringify(ownWriting.body));
+    assert.equal((ownWriting.body||[]).filter(row=>row.document).length,1);
+    record('Scribe draft and one-time submission persistence',true,'deterministic owner record');
+
+    const crossWriting=await getDoc('writingResponses',writingId,accounts.grade4.token);
+    assert.equal(crossWriting.res.status,403,`Expected 403, got ${crossWriting.res.status}: ${crossWriting.text}`);
+    record('Scribe cross-student isolation',true,'other student denied');
+
+    const teacherReview=await writeDoc('writingResponses',writingId,{teacherScore:17,teacherFeedback:'Strong sensory verb.'},accounts.teacher.token,['teacherScore','teacherFeedback']);
+    assert.equal(teacherReview.res.ok,true,JSON.stringify(teacherReview.body));
+    record('Teacher Scribe review write',true,'score + feedback constrained to emulator');
+
+    const gameId=`decimal-${accounts.grade5.uid}`;
+    const gameCreate=await writeDoc('gameResults',gameId,{studentId:accounts.grade5.uid,gameId:'decimal-deception',subject:'Math',status:'complete',score:92,xpAward:12,goldAward:3},accounts.grade5.token);
+    assert.equal(gameCreate.res.ok,true,JSON.stringify(gameCreate.body));
+    const badReward=await writeDoc('gameResults',`bad-${accounts.grade4.uid}`,{studentId:accounts.grade4.uid,gameId:'decimal-deception',subject:'Math',status:'complete',score:100,xpAward:99,goldAward:99},accounts.grade4.token);
+    assert.equal(badReward.res.status,403,`Expected 403 reward cap, got ${badReward.res.status}: ${badReward.text}`);
+    record('Academic game result and reward caps',true,'valid result saved; oversized reward denied');
+
     const crossCurriculum=await getDoc('curriculumProgress',curriculumId,accounts.grade4.token);
     assert.equal(crossCurriculum.res.status,403,`Expected 403, got ${crossCurriculum.res.status}: ${crossCurriculum.text}`);
     record('Curriculum cross-student isolation',true,'other student denied');
@@ -203,6 +237,19 @@ async function attemptAuthenticatedWrite(account){
     assert.equal(new Set(roster.map(x=>x.id)).size,5);
     record('Authorized teacher roster read',true,'stable Firestore document IDs preserved');
 
+    const teacherDaily=await listDocs('dailyQuestProgress',accounts.teacher.token),teacherAttempts=await listDocs('curriculumAttempts',accounts.teacher.token),teacherGames=await listDocs('gameResults',accounts.teacher.token);
+    const decodeList=result=>(result.body.documents||[]).map(d=>({id:d.name.split('/').pop(),...decodeFields(d.fields)}));
+    const book=Academic.gradebook(roster,decodeList(teacherDaily),decodeList(teacherAttempts),decodeList(teacherGames));
+    assert.equal(book.rows.length,roster.length);assert.ok(book.rows.some(row=>row.total>0));
+    record('Teacher gradebook aggregation',true,'Daily + Curriculum + Reading/Game categories');
+
+    const replacement={sessionId:'scribe-gate-2',status:'active',title:'Teacher Mission',mode:'Quickwrite',writingType:'Opinion',targetSkill:'Strong Evidence',prompt:'Explain which realm rule is fairest.',timeMinutes:8,minWords:20};
+    const teacherSession=await writeDoc('classData','activeWritingSession',replacement,accounts.teacher.token);
+    assert.equal(teacherSession.res.ok,true,JSON.stringify(teacherSession.body));
+    const sessionRead=await getDoc('classData','activeWritingSession',accounts.grade4.token);
+    assert.equal(decodeFields(sessionRead.body.fields).sessionId,'scribe-gate-2');
+    record('Teacher launch → student Scribe visibility',true,'active session updated in emulator');
+
     const teacherCurriculum=await listDocs('curriculumProgress',accounts.teacher.token);
     assert.equal(teacherCurriculum.res.ok,true,JSON.stringify(teacherCurriculum.body));
     assert.equal((teacherCurriculum.body.documents||[]).length,1);
@@ -214,7 +261,7 @@ async function attemptAuthenticatedWrite(account){
 
     const deniedWrite=await attemptAuthenticatedWrite(accounts.grade4);
     assert.equal(deniedWrite.res.status,403,`Expected 403 write denial, got ${deniedWrite.res.status}: ${deniedWrite.text}`);
-    record('Authenticated candidate-stage write denied',true,'read-only gate rules enforced');
+    record('Unauthorized student profile write denied',true,'academic writes do not unlock profile mutation');
 
     const output={project:PROJECT,passed:true,generatedAt:new Date().toISOString(),results};
     const out=path.resolve(__dirname,'../test-results/firebase-identity-gate.json');

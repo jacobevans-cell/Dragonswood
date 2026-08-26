@@ -42,6 +42,11 @@ const state = {
   completedMissions: new Set(),
   gameFilter: 'All',
   writing: storageGet('writing',''),
+  academicConnected: false,
+  scribeSession: null,
+  scribeResponse: null,
+  scribePortfolio: null,
+  writingSaveTimer: null,
   day: 'Today',
   characterClass: 'Unchosen',
   pet: 'No active pet',
@@ -215,9 +220,15 @@ function gamesPage(){
 function wordCount(text){return text.trim()?text.trim().split(/\s+/).length:0}
 function scribePage(){
   const wc=wordCount(state.writing);
+  const connected=state.academicConnected,session=state.scribeSession;
+  const title=connected?(session?.title||'No active writing mission'):'A door appears in the oldest tree…';
+  const prompt=connected?(session?.prompt||'Your teacher has not opened a writing mission yet.'):'You find a tiny golden key under your desk. At recess, it begins to glow and points toward the oldest tree in Dragonswood. What happens next?';
+  const hints=session?.hints?.length?session.hints:['Show, don’t tell','Add one sensory detail','Use complete sentences'];
+  const portfolio=state.scribePortfolio||{count:12,average:16.8,growth:3};
+  const submitted=state.scribeResponse?.status==='submitted';
   return `${studentTitle('✍️','Scribe Arena','Turn your ideas into magic','Write freely. Your work saves as you type, and feedback helps you grow.')}
-  <section class="scribe-layout"><div><article class="panel scribe-main-card"><div class="mission-prompt"><span class="rarity-chip">🔥 ACTIVE WRITING MISSION</span><h3>A door appears in the oldest tree…</h3><div class="prompt-box">You find a tiny golden key under your desk. At recess, it begins to glow and points toward the oldest tree in Dragonswood. What happens next?</div><div class="prompt-tags"><span>💡 Show, don’t tell</span><span>👀 Add one sensory detail</span><span>▣ Use complete sentences</span></div></div><div class="writing-area"><textarea id="scribe-text" aria-label="Your writing" placeholder="Start your story here…">${escapeHtml(state.writing)}</textarea><div class="writing-meta"><span>☁ Saved just now</span><span>${wc} words</span><span>⏱ 12:48</span></div><div class="row"><button class="btn btn-primary" data-submit-writing ${wc<5?'disabled':''}>📜 Submit quickwrite</button><button class="btn btn-secondary" data-writing-hint>✨ Get a writing hint</button></div></div></article></div><aside class="panel coach-card"><div class="coach-avatar">🐉</div><div class="eyebrow center">DRAGONSWOOD WRITING COACH</div><h3>Your ideas belong here.</h3><p>Write at least 5 words and submit when you’re ready. Your coach will celebrate a strength and give you one clear next step.</p><button class="btn btn-secondary w-full" data-writing-hint>✨ Feedback appears here</button></aside></section>
-  <div class="panel portfolio-strip"><div class="portfolio-title"><span>📚</span><div><div class="eyebrow">MY WRITING PORTFOLIO</div><b>Your writing is growing</b></div></div><div class="portfolio-stats"><div class="portfolio-stat"><strong>12</strong><small>Quickwrites</small></div><div class="portfolio-stat"><strong>16.8</strong><small>Average score</small></div><div class="portfolio-stat"><strong>+3</strong><small>Points grown</small></div></div><button class="btn btn-secondary btn-sm" data-toast="Portfolio opened in tester mode.">Open portfolio →</button></div>`;
+  <section class="scribe-layout"><div><article class="panel scribe-main-card"><div class="mission-prompt"><span class="rarity-chip">${session||!connected?'🔥 ACTIVE WRITING MISSION':'○ WAITING FOR TEACHER'}</span><h3>${escapeHtml(title)}</h3><div class="prompt-box">${escapeHtml(prompt)}</div><div class="prompt-tags">${hints.slice(0,3).map((hint,index)=>`<span>${['💡','👀','▣'][index]||'✦'} ${escapeHtml(hint)}</span>`).join('')}</div></div><div class="writing-area"><textarea id="scribe-text" aria-label="Your writing" placeholder="Start your story here…" ${connected&&!session?'disabled':''}>${escapeHtml(state.writing)}</textarea><div class="writing-meta"><span>☁ ${submitted?'Submitted':'Saved just now'}</span><span>${wc} words</span><span>⏱ ${session?session.timeMinutes+':00':'12:48'}</span></div><div class="row"><button class="btn btn-primary" data-submit-writing ${submitted||!session&&connected||wc<(session?.minWords||5)?'disabled':''}>${submitted?'✓ Submitted':'📜 Submit quickwrite'}</button><button class="btn btn-secondary" data-writing-hint>✨ Get a writing hint</button></div></div></article></div><aside class="panel coach-card"><div class="coach-avatar">🐉</div><div class="eyebrow center">DRAGONSWOOD WRITING COACH</div><h3>Your ideas belong here.</h3><p>Write at least ${session?.minWords||5} words and submit when you’re ready. Your coach will celebrate a strength and give you one clear next step.</p><button class="btn btn-secondary w-full" data-writing-hint>✨ Feedback appears here</button></aside></section>
+  <div class="panel portfolio-strip"><div class="portfolio-title"><span>📚</span><div><div class="eyebrow">MY WRITING PORTFOLIO</div><b>Your writing is growing</b></div></div><div class="portfolio-stats"><div class="portfolio-stat"><strong>${portfolio.count}</strong><small>Quickwrites</small></div><div class="portfolio-stat"><strong>${portfolio.average??'—'}</strong><small>Average score</small></div><div class="portfolio-stat"><strong>${Number(portfolio.growth)>=0?'+':''}${portfolio.growth??0}</strong><small>Points grown</small></div></div><button class="btn btn-secondary btn-sm" data-toast="Portfolio opened in tester mode.">Open portfolio →</button></div>`;
 }
 
 function dayPage(){
@@ -265,7 +276,7 @@ function kingdomPage(){
 
 function escapeHtml(value){return String(value??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 
-function applyStudentModel(model){
+function applyStudentModel(model,academic){
   if(!model)return;
   state.firstName=model.firstName;state.displayName=model.displayName;state.initial=model.initial;state.grade=model.grade;
   state.level=model.level;state.hp=model.hp;state.gold=model.gold;state.streak=model.streak;state.xp=model.xp;state.xpFloor=model.xpFloor;state.xpMax=model.xpNext;state.xpPct=model.xpPct;
@@ -276,6 +287,10 @@ function applyStudentModel(model){
     state.missionDate=model.dailyMissions.dateKey||'';
     setMissionStatus('morning',model.dailyMissions.morning);
     setMissionStatus('exit',model.dailyMissions.exit);
+  }
+  if(academic?.scribe){
+    state.academicConnected=true;state.scribeSession=academic.scribe.session||null;state.scribeResponse=academic.scribe.current||null;state.scribePortfolio=academic.scribe.portfolio||null;
+    if(state.scribeResponse)state.writing=state.scribeResponse.responseText||'';
   }
 }
 function setMissionStatus(id,status){
@@ -329,7 +344,7 @@ function bind(){
   app.querySelector('[data-passes]')?.addEventListener('click',passesDialog);
   app.querySelector('[data-reference]')?.addEventListener('click',showReference);
   app.querySelectorAll('[data-game-filter]').forEach(el=>el.addEventListener('click',()=>{state.gameFilter=el.dataset.gameFilter;render()}));
-  app.querySelector('#scribe-text')?.addEventListener('input',e=>{state.writing=e.target.value;storageSet('writing',state.writing);const meta=e.target.nextElementSibling?.querySelector('span:last-child');if(meta)meta.textContent=`${wordCount(state.writing)} words`});
+  app.querySelector('#scribe-text')?.addEventListener('input',e=>{state.writing=e.target.value;storageSet('writing',state.writing);const count=wordCount(state.writing),spans=e.target.nextElementSibling?.querySelectorAll('span');if(spans?.[1])spans[1].textContent=`${count} words`;const submit=app.querySelector('[data-submit-writing]');if(submit&&state.scribeResponse?.status!=='submitted')submit.disabled=count<(state.scribeSession?.minWords||5);clearTimeout(state.writingSaveTimer);if(state.scribeSession&&integrationController?.saveWriting)state.writingSaveTimer=setTimeout(()=>integrationController.saveWriting(state.writing).catch(err=>showToast(err?.message||'Draft could not save.')),500)});
   app.querySelectorAll('[data-writing-hint]').forEach(el=>el.addEventListener('click',writingHint));
   app.querySelector('[data-submit-writing]')?.addEventListener('click',submitWriting);
   app.querySelectorAll('[data-day]').forEach(el=>el.addEventListener('click',()=>{state.day=el.dataset.day;render()}));
@@ -373,8 +388,10 @@ function showReference(){
 function writingHint(){
   const wc=wordCount(state.writing);const hint=wc<10?'Start by naming what the character can see, hear, or feel.':wc<40?'Choose one moment and slow it down with a sensory detail.':'Reread your last two sentences. Which one could use a stronger verb?';openDialog('Writing Coach Hint',`<p>${hint}</p><p class="muted">The coach gives a nudge, not the answer.</p>`)
 }
-function submitWriting(){
-  const wc=wordCount(state.writing);if(wc<5){openDialog('Checkpoint not ready',`<p>You have <b>${wc} words</b>. Add a little more detail before submitting so your teacher has enough writing to review.</p>`);return}openDialog('Checkpoint ready',`<p>Your draft has <b>${wc} words</b>. In production this would submit once, show a success state, and prevent duplicate submission.</p>`)
+async function submitWriting(){
+  const minimum=state.scribeSession?.minWords||5,wc=wordCount(state.writing);if(wc<minimum){openDialog('Checkpoint not ready',`<p>You have <b>${wc} words</b>. Add a little more detail before submitting so your teacher has enough writing to review.</p>`);return}
+  if(state.scribeSession&&integrationController?.submitWriting){try{await integrationController.submitWriting(state.writing);openDialog('Checkpoint submitted',`<p>Your <b>${wc}-word</b> response is saved. Your teacher can review it, and the writing coach will add feedback when the grading service is available.</p>`)}catch(err){openDialog('Submission needs attention',`<p>${escapeHtml(err?.message||'Writing could not be submitted.')}</p>`)}return}
+  openDialog('Checkpoint ready',`<p>Your draft has <b>${wc} words</b>. In production this would submit once, show a success state, and prevent duplicate submission.</p>`)
 }
 window.addEventListener('hashchange',()=>{if(integrationSession.status==='authorized')render()});
 window.addEventListener('message',handleModuleState);
@@ -382,7 +399,7 @@ window.addEventListener('message',handleModuleState);
   if(!window.DWV33Integration){integrationSession={status:'error',message:'Integration runtime did not load.'};render();return}
   integrationController=await window.DWV33Integration.startStudent(session=>{
     integrationSession=session;
-    if(session.status==='authorized')applyStudentModel(session.student);
+    if(session.status==='authorized')applyStudentModel(session.student,session.academic);
     if(!currentModuleId()||!app.querySelector('[data-module-frame]'))render();
   });
 })();

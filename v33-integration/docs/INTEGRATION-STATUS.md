@@ -19,8 +19,11 @@
   unchanged.
 - Isolated manual acceptance preview passed and was approved by Jacob at the
   GitHub-backed checkpoint `9bfe2a19b730034f6919ca6c74fbff6ece531846`.
+- Stage 4 Daily + Curriculum integration passed its fictional Firebase,
+  browser, parser, safety, and 17-route zero-pixel gates and was committed and
+  backed up at `fc6298808affc7faa642a8605cccb96fb96bce47`.
 
-## Stage 4 candidate prepared — Codespace gate pending
+## Academic Systems Wave candidate — Codespace gate pending
 
 - The authoritative production `daily-quest.html` and
   `curriculum-quest.html` remain the lesson, pacing, recovery, grading, and
@@ -40,8 +43,20 @@
   teacher evidence reads, cross-student isolation, and unauthorized denial.
 - Static safety, unit, module-host, manual-preview, render-smoke, protected
   visual-file, and all 96 production parser checks pass locally.
+- The V3.3 student Scribe now reads the active teacher mission, autosaves one
+  deterministic owned draft, submits once, and reads the student's portfolio.
+- Teacher Command now derives a live read model across Daily Quest,
+  Curriculum attempts, reading/game results, and Scribe responses. Teacher
+  Scribe launch, close, and review writes are enabled only in the fictional
+  emulator candidate.
+- The missing `gradeWriting` callable is implemented with owner checks,
+  submitted-work checks, strict 0–20 structured output, prompt-injection
+  boundaries, usage caps, audit records, and a teacher-review fallback.
+- All 11 current Academic Game/Reader module IDs share one audited catalog;
+  V3.3 keeps the six approved visible cards while every registered destination
+  retains the Morning Work gate and emulator environment propagation.
 - The actual Firebase emulator process and 17-route pixel suite must pass in
-  the Codespace before this Stage 4 candidate may be accepted or committed.
+  the Codespace before this combined candidate may be accepted or committed.
 
 ## Required while later stages proceed
 
@@ -67,20 +82,22 @@ Daily Missions / curriculum / pacing / video integrate from the current producti
 
 The current production contract includes no-video scope locking, no-cold-guess interaction design, purpose-specific attempt limits, completed-work grandfathering, duplicate-safe review workflow, and the recovered final 14 Q1 videos.
 
-## Still intentionally mock / not promoted
+## Still intentionally pending after this wave
 
-Stage 4 is not accepted until its Codespace gate passes. The later ordered
-stages—expanded grading/recovery surfaces, Scribe, Academic Games, My Day,
-Adventurer Hall writes, full pet registry/animation integration, Boss writes,
-leaderboards, passes/rewards/jobs, teacher command writes, narration wiring,
-and production rules promotion—remain pending.
+My Day, Adventurer Hall writes, full pet registry/animation integration, Boss
+writes, leaderboards, passes/rewards/jobs, remaining teacher command writes,
+narration wiring, final production-rules reconciliation, and launch remain
+pending.
 
 ## Safety
 
 - Default runtime mode is emulator-only using `demo-dragonswood-v33`.
 - Production mode is explicitly read-only and opt-in.
-- The Stage 2–3 integration runtime contains no Firestore write methods.
+- Academic writes fail closed unless the runtime is connected to the fictional
+  `demo-dragonswood-v33` emulator.
 - Production `main`, its live entry points, live Firestore rules, and live data
   remain untouched. Stage 4 edits exist only in the isolated candidate.
-- Remote `v33-integration-safe` creation was retried from current production and still failed with GitHub integration HTTP 403. No fallback write to `main` was attempted.
-- A guarded Codespace installer and branch-only GitHub Actions workflow are bundled so the remaining branch/emulator gate can be completed without any direct `main` write.
+- The isolated recovery branch is backed up on GitHub; no fallback write to
+  `main` was attempted.
+- A guarded Codespace installer runs the combined wave in a detached worktree
+  before copying or committing it to the isolated branch.

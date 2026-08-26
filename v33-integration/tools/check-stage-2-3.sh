@@ -4,6 +4,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 node --check "$ROOT/js/integration/core.js"
+node --check "$ROOT/js/integration/academic.js"
 node --check "$ROOT/js/integration/runtime.js"
 node --check "$ROOT/js/integration/modules.js"
 node --check "$ROOT/js/integration/kingdom-portal.js"
@@ -25,10 +26,11 @@ node "$ROOT/tools/test-manual-preview-runtime.cjs"
 node "$ROOT/tools/render-smoke.cjs"
 python "$ROOT/tools/verify_visual_freeze.py"
 
-if rg -n 'setDoc|addDoc|updateDoc|deleteDoc|writeBatch|runTransaction|increment|serverTimestamp' "$ROOT/js/integration"; then
-  echo 'FAIL: write primitive found in Stage 2–3 integration runtime' >&2
+if rg -n 'setDoc|addDoc|updateDoc|deleteDoc|writeBatch|runTransaction|increment|serverTimestamp' "$ROOT/js/integration" -g '!runtime.js'; then
+  echo 'FAIL: write primitive found outside the guarded integration runtime' >&2
   exit 1
 fi
+node "$ROOT/tools/test-academic-systems.cjs"
 
 if rg -n 'DWV33_VISUAL_TEST_MODE|integrationIsFixture|visual-student|visual-teacher|visual-test-only' \
   "$ROOT/student-test.html" "$ROOT/teacher-test.html" \

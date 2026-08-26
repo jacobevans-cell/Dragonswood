@@ -72,8 +72,17 @@ service cloud.firestore {
 
     match /classData/{documentId} {
       allow read: if signedIn();
-      allow create: if gateSeed();
-      allow update, delete: if false;
+      allow create: if gateSeed()
+                    || (isTeacher()
+                        && documentId == 'activeWritingSession'
+                        && request.resource.data.status in ['active','closed']);
+      allow update: if isTeacher()
+                    && documentId == 'activeWritingSession'
+                    && request.resource.data.status in ['active','closed']
+                    && (request.resource.data.status == 'closed'
+                        || (request.resource.data.prompt is string
+                            && request.resource.data.prompt.size() <= 2000));
+      allow delete: if false;
     }
 
     match /curriculumQuestProgress/{studentId} {
@@ -151,6 +160,72 @@ service cloud.firestore {
                         && request.resource.data.lessonId is string
                         && request.resource.data.studentAnswer is string
                         && request.resource.data.studentAnswer.size() <= 5000);
+      allow update, delete: if false;
+    }
+
+    match /writingSessions/{sessionId} {
+      allow read: if signedIn();
+      allow create: if gateSeed()
+                    || (isTeacher()
+                        && request.resource.data.status == 'active'
+                        && request.resource.data.prompt is string
+                        && request.resource.data.prompt.size() <= 2000
+                        && request.resource.data.minWords is number
+                        && request.resource.data.minWords >= 1
+                        && request.resource.data.minWords <= 2000);
+      allow update: if isTeacher()
+                    && request.resource.data.status in ['active','closed'];
+      allow delete: if false;
+    }
+
+    match /writingResponses/{responseId} {
+      allow read: if isTeacher()
+                  || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && responseId == request.resource.data.sessionId + '_' + request.auth.uid
+                        && request.resource.data.status in ['draft','submitted']
+                        && request.resource.data.responseText is string
+                        && request.resource.data.responseText.size() <= 12000);
+      allow update: if isTeacher()
+                    || (isStudent()
+                        && resource.data.studentId == request.auth.uid
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.sessionId == resource.data.sessionId
+                        && request.resource.data.status in ['draft','submitted']
+                        && request.resource.data.responseText is string
+                        && request.resource.data.responseText.size() <= 12000
+                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+                          'responseText','wordCount','sentenceCount','paragraphCount',
+                          'capitalizedSentenceStarts','hasEndingPunctuation','status',
+                          'sessionTitle','writingType','targetSkill','prompt','submittedAt','updatedAt'
+                        ]));
+      allow delete: if false;
+    }
+
+    match /gameResults/{resultId} {
+      allow read: if isTeacher()
+                  || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.gameId in [
+                          'decimal-deception','math-operations','fraction-forge',
+                          'long-division','long-division-custom','spelling-practice',
+                          'witches-test','elemental-laboratory','cosmic-architect',
+                          'arcane-forge','class-reader'
+                        ]
+                        && request.resource.data.status == 'complete'
+                        && request.resource.data.score is number
+                        && request.resource.data.score >= 0
+                        && request.resource.data.score <= 100
+                        && request.resource.data.xpAward is number
+                        && request.resource.data.xpAward >= 0
+                        && request.resource.data.xpAward <= 12
+                        && request.resource.data.goldAward is number
+                        && request.resource.data.goldAward >= 0
+                        && request.resource.data.goldAward <= 3);
       allow update, delete: if false;
     }
 

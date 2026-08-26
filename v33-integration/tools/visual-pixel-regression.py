@@ -7,7 +7,8 @@ from PIL import Image, ImageChops
 from playwright.sync_api import sync_playwright
 
 ROOT=Path(__file__).resolve().parents[1]
-BASE='f8f9acd'
+REPO_ROOT=ROOT.parent
+BASE='fc6298808affc7faa642a8605cccb96fb96bce47'
 VIEWPORT={'width':1440,'height':1000}
 ROUTES={
   'student':['adventure','missions','games','scribe','day','hall','boss','leaderboards'],
@@ -15,7 +16,7 @@ ROUTES={
 }
 
 def git_show(path):
-    return subprocess.check_output(['git','show',f'{BASE}:{path}'],cwd=ROOT,text=True)
+    return subprocess.check_output(['git','show',f'{BASE}:v33-integration/{path}'],cwd=REPO_ROOT,text=True)
 
 def skeleton(kind):
     body_class='student-app' if kind=='student' else 'teacher-app'

@@ -128,17 +128,22 @@
           const oldXp = Number(profile.xp || 0);
           const oldGold = Number(profile.gold || 0);
           const dateKey = localDateKey();
-          const claimId = `${user.uid}_math_operations_${dateKey}_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
+          const runId = String(result.runId || 'legacy').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,48) || 'legacy';
+          const claimId = `${user.uid}_math_operations_${dateKey}_${runId}_r${Math.max(1,Math.min(3,Number(result.round||1)))}`;
+          const claimRef = firestoreMod.doc(db,'gameResults',claimId);
+          const priorClaim = await firestoreMod.getDoc(claimRef);
+          if(priorClaim.exists()) return {message:'🐉 This round reward was already saved.',statusText:'This completed round has already claimed its Dragonswood reward. No duplicate XP or Gold was added.',profile:publicProfile(profile)};
 
           const batch = firestoreMod.writeBatch(db);
-          batch.set(firestoreMod.doc(db,'gameResults',claimId), {
+          batch.set(claimRef, {
             studentId: user.uid,
             studentEmail: user.email || '',
             gameId: 'math_operations_quest',
             gameName: 'Math Operations Quest',
             status: 'complete',
             dateKey,
-            problemsSolved: 10,
+            problemsSolved: Number(result.solved || 0),
+            roundSolved: Number(result.roundSolved || 0),
             round: Number(result.round || 1),
             roundScore: Number(result.roundScore || 0),
             accuracy: Math.round(accuracy * 100),

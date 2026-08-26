@@ -181,5 +181,6 @@ const app=getApps().length?getApp():initializeApp(firebaseConfig),auth=getAuth(a
 onAuthStateChanged(auth,async u=>{currentUser=u;if(u){const s=await getDoc(doc(db,"students",u.uid));currentProfile=s.exists()?s.data():null}});
 window.addEventListener("witches-test-graded",async e=>{if(!currentUser)return alert("Sign in through Dragonswood before taking the test so your grade can be saved.");const d=e.detail||{};try{await setDoc(doc(collection(db,"scores")),{studentId:currentUser.uid,studentEmail:currentUser.email||"",displayName:currentProfile?.firstName||String(currentUser.email||"").split("@")[0],playerName:currentProfile?.firstName||"Student",avatarEmoji:"📖",game:"witches_reading_test",gameName:"The Witches Reading Test",activityName:"Pages 1–15 Challenge Test",assignmentId:"witches-pages-1-15",subject:"Reading",category:"reading",score:Number(d.score||0),correct:Number(d.score||0),total:Number(d.max||30),accuracy:Number(d.accuracy||0),scoreType:"points",createdAt:serverTimestamp()});document.getElementById("breakdown").textContent+=" Your grade was saved to the Dragonswood Gradebook."}catch(err){console.warn(err);alert("Your score is visible here, but it could not be saved. Please tell Mr. Evans.")}});
 </script>
+<script src="dragonswood-grayson-mode.js?v=58.0"></script>
 </body>
 </html>

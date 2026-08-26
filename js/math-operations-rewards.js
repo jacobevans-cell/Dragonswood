@@ -107,9 +107,14 @@
   window.addEventListener('dragonswood-math-operations-complete', async event => {
     const detail = event.detail || {};
 
-    if (detail.eligibleForRewards === false || detail.difficulty === 'easy') {
-      if (loot) loot.textContent = 'Easy practice complete • 0 account rewards by design.';
-      setStatus('Easy difficulty is practice-only. No Player XP, Gold, or other account rewards were requested.', 'preview');
+    if (detail.eligibleForRewards === false || detail.difficulty === 'easy' || detail.practiceMode === 'custom') {
+      const worksheet = detail.practiceMode === 'custom';
+      if (loot) loot.textContent = worksheet
+        ? 'Worksheet practice complete • Quest Points recorded locally • 0 account rewards.'
+        : 'Easy practice complete • 0 account rewards by design.';
+      setStatus(worksheet
+        ? 'Custom / Worksheet Mode is coaching-only for account progression. No Player XP or Gold were requested.'
+        : 'Easy difficulty is practice-only. No Player XP, Gold, or other account rewards were requested.', 'preview');
       return;
     }
 

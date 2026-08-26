@@ -26,6 +26,8 @@ assert.match(core,/\['ready','responsible','complete'\]/);
 const functions=read('functions-arcade-access/index.js');
 for(const name of ['getArcadeAccess','getArcadeTeacherState','awardArcadeCriterion','startArcadeSession','endArcadeSession','setArcadeAvailability','refundArcadeSession'])assert.match(functions,new RegExp(`exports\\.${name}=`),`missing callable ${name}`);
 assert.match(functions,/runTransaction/);assert.match(functions,/wallet-full/);assert.match(functions,/already-awarded/);assert.match(functions,/reused:true/);assert.match(functions,/already received its one technical refund/);
+assert.match(functions,/require\('firebase-admin\/firestore'\)/,'Arcade Functions must use the supported modular Firestore Admin API');
+assert.doesNotMatch(functions,/admin\.firestore\.(?:FieldValue|Timestamp)/,'legacy Firestore Admin timestamp API is incompatible with firebase-admin v13');
 
 const access=read('arcade/js/access-client.js'),bootstrap=read('arcade/js/access-bootstrap.js');
 assert.match(access,/dw-arcade-live/);assert.match(access,/I_UNDERSTAND/);assert.match(access,/connectFunctionsEmulator/);

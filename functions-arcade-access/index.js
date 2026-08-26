@@ -1,12 +1,11 @@
 'use strict';
 const {onCall,HttpsError}=require('firebase-functions/v2/https');
 const admin=require('firebase-admin');
+const {getFirestore,FieldValue,Timestamp}=require('firebase-admin/firestore');
 const C=require('./core.js');
 
 if(!admin.apps.length)admin.initializeApp();
-const db=admin.firestore();
-const FieldValue=admin.firestore.FieldValue;
-const Timestamp=admin.firestore.Timestamp;
+const db=getFirestore();
 const REGION='us-central1';
 const OPTIONS={region:REGION,timeoutSeconds:30,memory:'256MiB',maxInstances:10};
 const accessRef=uid=>db.doc(`arcadeAccess/${uid}`);

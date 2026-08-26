@@ -1,0 +1,55 @@
+name: V3.3 Integration Gate
+
+on:
+  push:
+    branches:
+      - v33-integration-safe
+    paths:
+      - 'v33-integration/**'
+      - '.github/workflows/v33-integration-gate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout safety branch
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Set up Java for Firestore emulator
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Install Firebase and visual test dependencies
+        run: |
+          npm install --global firebase-tools@15.28.1
+          python -m pip install --disable-pip-version-check playwright pillow
+          python -m playwright install --with-deps chromium
+
+      - name: Run isolated Firebase and V3.3 visual gates
+        working-directory: v33-integration
+        run: ./tools/run-firebase-gate.sh
+
+      - name: Upload gate reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v33-integration-gate-reports
+          path: v33-integration/test-results/
+          if-no-files-found: warn

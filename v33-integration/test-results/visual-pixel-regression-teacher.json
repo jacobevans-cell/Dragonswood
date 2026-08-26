@@ -1,0 +1,91 @@
+{
+  "baselineCommit": "f8f9acd",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "routes": {
+    "teacher:student-command": {
+      "equal": true,
+      "size": [
+        1440,
+        1000
+      ],
+      "bbox": null,
+      "diffPixels": 0
+    },
+    "teacher:gradebook": {
+      "equal": true,
+      "size": [
+        1440,
+        1000
+      ],
+      "bbox": null,
+      "diffPixels": 0
+    },
+    "teacher:scribe": {
+      "equal": true,
+      "size": [
+        1440,
+        1000
+      ],
+      "bbox": null,
+      "diffPixels": 0
+    },
+    "teacher:rewards": {
+      "equal": true,
+      "size": [
+        1440,
+        1000
+      ],
+      "bbox": null,
+      "diffPixels": 0
+    },
+    "teacher:passes": {
+      "equal": true,
+      "size": [
+        1440,
+        1000
+      ],
+      "bbox": null,
+      "diffPixels": 0
+    },
+    "teacher:jobs": {
+      "equal": true,
+      "size": [
+        1440,
+        1000
+      ],
+      "bbox": null,
+      "diffPixels": 0
+    },
+    "teacher:schedule": {
+      "equal": true,
+      "size": [
+        1440,
+        1000
+      ],
+      "bbox": null,
+      "diffPixels": 0
+    },
+    "teacher:tools": {
+      "equal": true,
+      "size": [
+        1440,
+        1000
+      ],
+      "bbox": null,
+      "diffPixels": 0
+    },
+    "teacher:leaderboards": {
+      "equal": true,
+      "size": [
+        1440,
+        1000
+      ],
+      "bbox": null,
+      "diffPixels": 0
+    }
+  },
+  "passed": true
+}

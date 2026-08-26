@@ -1,0 +1,5 @@
+Post-fixture-separation representative pixel regression:
+- student / adventure: same size, 0 differing pixels, no difference bounding box
+- teacher / student-command: same size, 0 differing pixels, no difference bounding box
+
+The visual test fixture is not loaded by student-test.html, teacher-test.html, or js/integration/*. It is test-only under tools/.

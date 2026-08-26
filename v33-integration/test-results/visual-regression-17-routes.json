@@ -1,0 +1,410 @@
+[
+  {
+    "kind": "student",
+    "route": "adventure",
+    "orig_size": [
+      1440,
+      1000
+    ],
+    "cand_size": [
+      1440,
+      1000
+    ],
+    "orig_scroll": [
+      1440,
+      1000
+    ],
+    "cand_scroll": [
+      1440,
+      1000
+    ],
+    "errors": [],
+    "bbox": null,
+    "diff_pixels": 0,
+    "pixels": 1440000
+  },
+  {
+    "kind": "student",
+    "route": "missions",
+    "orig_size": [
+      1440,
+      1000
+    ],
+    "cand_size": [
+      1440,
+      1000
+    ],
+    "orig_scroll": [
+      1440,
+      1000
+    ],
+    "cand_scroll": [
+      1440,
+      1000
+    ],
+    "errors": [],
+    "bbox": null,
+    "diff_pixels": 0,
+    "pixels": 1440000
+  },
+  {
+    "kind": "student",
+    "route": "games",
+    "orig_size": [
+      1440,
+      1000
+    ],
+    "cand_size": [
+      1440,
+      1000
+    ],
+    "orig_scroll": [
+      1440,
+      1000
+    ],
+    "cand_scroll": [
+      1440,
+      1000
+    ],
+    "errors": [],
+    "bbox": null,
+    "diff_pixels": 0,
+    "pixels": 1440000
+  },
+  {
+    "kind": "student",
+    "route": "scribe",
+    "orig_size": [
+      1440,
+      1000
+    ],
+    "cand_size": [
+      1440,
+      1000
+    ],
+    "orig_scroll": [
+      1440,
+      1000
+    ],
+    "cand_scroll": [
+      1440,
+      1000
+    ],
+    "errors": [],
+    "bbox": null,
+    "diff_pixels": 0,
+    "pixels": 1440000
+  },
+  {
+    "kind": "student",
+    "route": "day",
+    "orig_size": [
+      1440,
+      1306
+    ],
+    "cand_size": [
+      1440,
+      1306
+    ],
+    "orig_scroll": [
+      1440,
+      1306
+    ],
+    "cand_scroll": [
+      1440,
+      1306
+    ],
+    "errors": [],
+    "bbox": null,
+    "diff_pixels": 0,
+    "pixels": 1880640
+  },
+  {
+    "kind": "student",
+    "route": "hall",
+    "orig_size": [
+      1440,
+      1000
+    ],
+    "cand_size": [
+      1440,
+      1000
+    ],
+    "orig_scroll": [
+      1440,
+      1000
+    ],
+    "cand_scroll": [
+      1440,
+      1000
+    ],
+    "errors": [],
+    "bbox": null,
+    "diff_pixels": 0,
+    "pixels": 1440000
+  },
+  {
+    "kind": "student",
+    "route": "boss",
+    "orig_size": [
+      1440,
+      1000
+    ],
+    "cand_size": [
+      1440,
+      1000
+    ],
+    "orig_scroll": [
+      1440,
+      1000
+    ],
+    "cand_scroll": [
+      1440,
+      1000
+    ],
+    "errors": [],
+    "bbox": null,
+    "diff_pixels": 0,
+    "pixels": 1440000
+  },
+  {
+    "kind": "student",
+    "route": "leaderboards",
+    "orig_size": [
+      1440,
+      1000
+    ],
+    "cand_size": [
+      1440,
+      1000
+    ],
+    "orig_scroll": [
+      1440,
+      1000
+    ],
+    "cand_scroll": [
+      1440,
+      1000
+    ],
+    "errors": [],
+    "bbox": null,
+    "diff_pixels": 0,
+    "pixels": 1440000
+  },
+  {
+    "kind": "teacher",
+    "route": "student-command",
+    "orig_size": [
+      1443,
+      1000
+    ],
+    "cand_size": [
+      1443,
+      1000
+    ],
+    "orig_scroll": [
+      1443,
+      1000
+    ],
+    "cand_scroll": [
+      1443,
+      1000
+    ],
+    "errors": [],
+    "bbox": null,
+    "diff_pixels": 0,
+    "pixels": 1443000
+  },
+  {
+    "kind": "teacher",
+    "route": "gradebook",
+    "orig_size": [
+      1440,
+      1000
+    ],
+    "cand_size": [
+      1440,
+      1000
+    ],
+    "orig_scroll": [
+      1440,
+      1000
+    ],
+    "cand_scroll": [
+      1440,
+      1000
+    ],
+    "errors": [],
+    "bbox": null,
+    "diff_pixels": 0,
+    "pixels": 1440000
+  },
+  {
+    "kind": "teacher",
+    "route": "scribe",
+    "orig_size": [
+      1440,
+      1000
+    ],
+    "cand_size": [
+      1440,
+      1000
+    ],
+    "orig_scroll": [
+      1440,
+      1000
+    ],
+    "cand_scroll": [
+      1440,
+      1000
+    ],
+    "errors": [],
+    "bbox": null,
+    "diff_pixels": 0,
+    "pixels": 1440000
+  },
+  {
+    "kind": "teacher",
+    "route": "rewards",
+    "orig_size": [
+      1440,
+      1000
+    ],
+    "cand_size": [
+      1440,
+      1000
+    ],
+    "orig_scroll": [
+      1440,
+      1000
+    ],
+    "cand_scroll": [
+      1440,
+      1000
+    ],
+    "errors": [],
+    "bbox": null,
+    "diff_pixels": 0,
+    "pixels": 1440000
+  },
+  {
+    "kind": "teacher",
+    "route": "passes",
+    "orig_size": [
+      1440,
+      1000
+    ],
+    "cand_size": [
+      1440,
+      1000
+    ],
+    "orig_scroll": [
+      1440,
+      1000
+    ],
+    "cand_scroll": [
+      1440,
+      1000
+    ],
+    "errors": [],
+    "bbox": null,
+    "diff_pixels": 0,
+    "pixels": 1440000
+  },
+  {
+    "kind": "teacher",
+    "route": "jobs",
+    "orig_size": [
+      1440,
+      1000
+    ],
+    "cand_size": [
+      1440,
+      1000
+    ],
+    "orig_scroll": [
+      1440,
+      1000
+    ],
+    "cand_scroll": [
+      1440,
+      1000
+    ],
+    "errors": [],
+    "bbox": null,
+    "diff_pixels": 0,
+    "pixels": 1440000
+  },
+  {
+    "kind": "teacher",
+    "route": "schedule",
+    "orig_size": [
+      1440,
+      1042
+    ],
+    "cand_size": [
+      1440,
+      1042
+    ],
+    "orig_scroll": [
+      1440,
+      1042
+    ],
+    "cand_scroll": [
+      1440,
+      1042
+    ],
+    "errors": [],
+    "bbox": null,
+    "diff_pixels": 0,
+    "pixels": 1500480
+  },
+  {
+    "kind": "teacher",
+    "route": "tools",
+    "orig_size": [
+      1440,
+      1000
+    ],
+    "cand_size": [
+      1440,
+      1000
+    ],
+    "orig_scroll": [
+      1440,
+      1000
+    ],
+    "cand_scroll": [
+      1440,
+      1000
+    ],
+    "errors": [],
+    "bbox": null,
+    "diff_pixels": 0,
+    "pixels": 1440000
+  },
+  {
+    "kind": "teacher",
+    "route": "leaderboards",
+    "orig_size": [
+      1440,
+      1000
+    ],
+    "cand_size": [
+      1440,
+      1000
+    ],
+    "orig_scroll": [
+      1440,
+      1000
+    ],
+    "cand_scroll": [
+      1440,
+      1000
+    ],
+    "errors": [],
+    "bbox": null,
+    "diff_pixels": 0,
+    "pixels": 1440000
+  }
+]

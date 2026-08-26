@@ -1,0 +1,41 @@
+rules_version = '2';
+
+// ISOLATED V3.3 IDENTITY GATE ONLY.
+// This file is intentionally NOT the production ruleset. It exists to prove
+// authentication, ownership, roster access, tester eligibility and read-only
+// behavior against Firebase emulators without creating any live write path.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isTeacher() {
+      return signedIn() && request.auth.token.email == 'jacobicusjax@gmail.com';
+    }
+    function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+    function gateSeed() {
+      return request.auth == null && request.resource.data.__gateSeed == true;
+    }
+
+    match /students/{studentId} {
+      allow read: if isTeacher() || isOwner(studentId);
+      allow create: if gateSeed();
+      allow update, delete: if false;
+    }
+
+    match /testerAccounts/{testerId} {
+      allow read: if isTeacher() || isOwner(testerId);
+      allow create: if gateSeed();
+      allow update, delete: if false;
+    }
+
+    match /dailyQuestProgress/{progressId} {
+      allow read: if isTeacher()
+                  || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed();
+      allow update, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

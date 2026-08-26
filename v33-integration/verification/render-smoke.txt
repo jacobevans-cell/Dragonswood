@@ -1,0 +1,2 @@
+student PASS: 8 routes rendered without exceptions
+teacher PASS: 9 routes rendered without exceptions

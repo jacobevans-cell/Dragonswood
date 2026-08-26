@@ -38,6 +38,7 @@ const state = {
   xpFloor: 0,
   xpMax: 200,
   xpPct: 0,
+  missionDate: '',
   completedMissions: new Set(),
   gameFilter: 'All',
   writing: storageGet('writing',''),
@@ -270,6 +271,30 @@ function applyStudentModel(model){
   state.level=model.level;state.hp=model.hp;state.gold=model.gold;state.streak=model.streak;state.xp=model.xp;state.xpFloor=model.xpFloor;state.xpMax=model.xpNext;state.xpPct=model.xpPct;
   state.characterClass=model.classLabel;state.pet=model.petName;state.equipment=model.equipped||{};state.inventory=model.inventory||[];
   state.dailyAccessUnlocked=model.dailyAccessUnlocked===true;
+  if(model.dailyMissions){
+    if(state.missionDate&&state.missionDate!==model.dailyMissions.dateKey)state.completedMissions.delete('curriculum');
+    state.missionDate=model.dailyMissions.dateKey||'';
+    setMissionStatus('morning',model.dailyMissions.morning);
+    setMissionStatus('exit',model.dailyMissions.exit);
+  }
+}
+function setMissionStatus(id,status){
+  if(status==='complete')state.completedMissions.add(id);
+  else state.completedMissions.delete(id);
+}
+function handleModuleState(event){
+  if(event.origin!==location.origin||event.data?.channel!=='dw-v33-module')return;
+  const frame=app.querySelector('[data-module-frame]');
+  if(!frame||event.source!==frame.contentWindow)return;
+  const message=event.data;
+  if(message.type==='daily-mission-state'){
+    if(message.dateKey!==window.DWV33Core?.phoenixDateKey())return;
+    setMissionStatus('morning',message.morning);
+    setMissionStatus('exit',message.exit);
+  }else if(message.type==='curriculum-mission-state'){
+    setMissionStatus('curriculum',message.currentComplete?'complete':'not_started');
+  }else return;
+  if(!currentModuleId())render();
 }
 function authGate(){
   const status=integrationSession.status||'loading',message=integrationSession.message||'Checking Dragonswood access…';
@@ -352,11 +377,12 @@ function submitWriting(){
   const wc=wordCount(state.writing);if(wc<5){openDialog('Checkpoint not ready',`<p>You have <b>${wc} words</b>. Add a little more detail before submitting so your teacher has enough writing to review.</p>`);return}openDialog('Checkpoint ready',`<p>Your draft has <b>${wc} words</b>. In production this would submit once, show a success state, and prevent duplicate submission.</p>`)
 }
 window.addEventListener('hashchange',()=>{if(integrationSession.status==='authorized')render()});
+window.addEventListener('message',handleModuleState);
 (async function bootstrapIntegration(){
   if(!window.DWV33Integration){integrationSession={status:'error',message:'Integration runtime did not load.'};render();return}
   integrationController=await window.DWV33Integration.startStudent(session=>{
     integrationSession=session;
     if(session.status==='authorized')applyStudentModel(session.student);
-    render();
+    if(!currentModuleId()||!app.querySelector('[data-module-frame]'))render();
   });
 })();

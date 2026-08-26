@@ -108,6 +108,18 @@
     return {dateKey,morningComplete,overrideToday,unlocked:morningComplete||overrideToday||tester===true};
   }
 
+  function dailyMissionState(rows=[],now=new Date()){
+    const dateKey=phoenixDateKey(now);
+    const current=rows.filter(row=>String(row?.id||'').endsWith('_v48')&&text(row?.dateKey)===dateKey);
+    const status=session=>{
+      const matches=current.filter(row=>text(row?.session)===session);
+      if(matches.some(row=>row?.status==='complete'))return 'complete';
+      if(matches.some(row=>row?.status==='in_progress'))return 'in_progress';
+      return 'not_started';
+    };
+    return Object.freeze({dateKey,morning:status('morning'),exit:status('exit')});
+  }
+
   function normalizeStudent(user,profile,dailyRows=[],dailyOverride={},tester=false,now=new Date()){
     const p=profile||{};
     const xp=Math.max(0,finite(p.xp));
@@ -116,6 +128,7 @@
     const classId=text(p.classId).toLowerCase();
     const activePet=text(p.activePet);
     const access=dailyAccessState(dailyRows,dailyOverride,user?.uid,tester,now);
+    const dailyMissions=dailyMissionState(dailyRows,now);
     return {
       uid:text(user?.uid),email:text(user?.email),firstName:first,initial:(first[0]||'A').toUpperCase(),displayName:formatDisplayName(p,user),
       grade:text(p.grade)||'—',genderGroup:text(p.genderGroup),
@@ -125,7 +138,8 @@
       activePet,petName:humanizeId(activePet),
       inventory:Array.isArray(p.rpgInventory)?[...p.rpgInventory]:[],equipped:p.rpgEquipped&&typeof p.rpgEquipped==='object'?{...p.rpgEquipped}:{},
       title:text(p.title),narrationVoice:text(p.narrationVoice),profileMissing:!profile,
-      morningWorkComplete:access.morningComplete,dailyAccessOverride:access.overrideToday,dailyAccessUnlocked:access.unlocked
+      morningWorkComplete:access.morningComplete,dailyAccessOverride:access.overrideToday,dailyAccessUnlocked:access.unlocked,
+      dailyMissions
     };
   }
 
@@ -141,5 +155,5 @@
 
 
 
-  return Object.freeze({XP_THRESHOLDS,CLASS_LABELS,TITLE_RULES,STUDENT_DOMAIN,TEACHER_EMAIL,normalizedEmail,isTeacherEmail,isExploreEmail,isStudentEligibleEmail,levelInfo,formatDisplayName,humanizeId,phoenixDateKey,previousSchoolDayKey,completedMorningDates,schoolDayStreak,dailyAccessState,normalizeStudent,normalizeTeacherRoster});
+  return Object.freeze({XP_THRESHOLDS,CLASS_LABELS,TITLE_RULES,STUDENT_DOMAIN,TEACHER_EMAIL,normalizedEmail,isTeacherEmail,isExploreEmail,isStudentEligibleEmail,levelInfo,formatDisplayName,humanizeId,phoenixDateKey,previousSchoolDayKey,completedMorningDates,schoolDayStreak,dailyAccessState,dailyMissionState,normalizeStudent,normalizeTeacherRoster});
 });

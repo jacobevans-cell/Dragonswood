@@ -11,6 +11,12 @@ service cloud.firestore {
       return signedIn() && request.auth.token.email == 'jacobicusjax@gmail.com';
     }
     function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+    function isStudent() {
+      return signedIn() && (
+        request.auth.token.email.matches('.*@explore[.]academy$')
+        || exists(/databases/$(database)/documents/testerAccounts/$(request.auth.uid))
+      );
+    }
     function gateSeed() {
       return request.auth == null && request.resource.data.__gateSeed == true;
     }
@@ -30,7 +36,121 @@ service cloud.firestore {
     match /dailyQuestProgress/{progressId} {
       allow read: if isTeacher()
                   || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.session in ['morning','exit']
+                        && request.resource.data.status in ['in_progress','complete']
+                        && request.resource.data.score is number
+                        && request.resource.data.correct is number
+                        && request.resource.data.attempts is number
+                        && request.resource.data.attempts >= 0
+                        && request.resource.data.attempts <= 60
+                        && request.resource.data.correct >= 0
+                        && request.resource.data.correct <= request.resource.data.attempts);
+      allow update: if isStudent()
+                    && resource.data.studentId == request.auth.uid
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.session == resource.data.session
+                    && request.resource.data.dateKey == resource.data.dateKey
+                    && request.resource.data.status in ['in_progress','complete']
+                    && request.resource.data.score is number
+                    && request.resource.data.correct is number
+                    && request.resource.data.attempts is number
+                    && request.resource.data.attempts >= 0
+                    && request.resource.data.attempts <= 60
+                    && request.resource.data.correct >= 0
+                    && request.resource.data.correct <= request.resource.data.attempts;
+      allow delete: if false;
+    }
+
+    match /dailyQuests/{dateKey} {
+      allow read: if isTeacher() || isStudent();
       allow create: if gateSeed();
+      allow update, delete: if false;
+    }
+
+    match /classData/{documentId} {
+      allow read: if signedIn();
+      allow create: if gateSeed();
+      allow update, delete: if false;
+    }
+
+    match /curriculumQuestProgress/{studentId} {
+      allow read: if isTeacher() || isOwner(studentId);
+      allow create: if gateSeed();
+      allow update, delete: if false;
+    }
+
+    match /curriculumProgress/{progressId} {
+      allow read: if isTeacher()
+                  || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.itemId is string
+                        && progressId == request.auth.uid + '_' + request.resource.data.itemId
+                        && request.resource.data.grade in ['I','K']
+                        && request.resource.data.day is number
+                        && request.resource.data.day >= 1
+                        && request.resource.data.day <= 40
+                        && request.resource.data.subject in ['Math','Science','HUM']
+                        && request.resource.data.verified == false
+                        && request.resource.data.questionsCorrect is number
+                        && request.resource.data.questionsSeen is number
+                        && request.resource.data.questionsCorrect >= 0
+                        && request.resource.data.questionsCorrect <= request.resource.data.questionsSeen
+                        && request.resource.data.questionsSeen <= 20);
+      allow update: if isStudent()
+                    && resource.data.studentId == request.auth.uid
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.itemId == resource.data.itemId
+                    && request.resource.data.verified == resource.data.verified
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+                      'watched','videoCoverage','videoReflection','practiced',
+                      'practiceEvidence','questionsCorrect','questionsSeen',
+                      'autoAnswers','autoAttempts','lastActivityAttempt',
+                      'activityAttempts','overrideStatus','updatedAt'
+                    ])
+                    && request.resource.data.questionsCorrect is number
+                    && request.resource.data.questionsSeen is number
+                    && request.resource.data.questionsCorrect >= 0
+                    && request.resource.data.questionsCorrect <= request.resource.data.questionsSeen
+                    && request.resource.data.questionsSeen <= 20;
+      allow delete: if false;
+    }
+
+    match /curriculumAttempts/{attemptId} {
+      allow read: if isTeacher()
+                  || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.itemId is string
+                        && request.resource.data.attemptNumber is number
+                        && request.resource.data.attemptNumber >= 1
+                        && request.resource.data.questionsCorrect is number
+                        && request.resource.data.questionsSeen is number
+                        && request.resource.data.questionsSeen >= 1
+                        && request.resource.data.questionsSeen <= 100
+                        && request.resource.data.questionsCorrect >= 0
+                        && request.resource.data.questionsCorrect <= request.resource.data.questionsSeen
+                        && request.resource.data.accuracy is number
+                        && request.resource.data.accuracy >= 0
+                        && request.resource.data.accuracy <= 100);
+      allow update, delete: if false;
+    }
+
+    match /curriculumOverrideRequests/{requestId} {
+      allow read: if isTeacher()
+                  || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.status == 'pending'
+                        && request.resource.data.lessonId is string
+                        && request.resource.data.studentAnswer is string
+                        && request.resource.data.studentAnswer.size() <= 5000);
       allow update, delete: if false;
     }
 

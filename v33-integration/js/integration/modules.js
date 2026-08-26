@@ -38,11 +38,13 @@
     if(mod.morningGate&&student.dailyAccessUnlocked!==true)return {ok:false,reason:'morning-work'};
     return {ok:true,reason:''};
   }
-  function href(id,baseHref){
+  function href(id,baseHref,requestedEnvironment){
     const mod=definition(id);if(!mod)return '';
     const url=new URL(`../${mod.path}`,baseHref);
     if(mod.query)new URLSearchParams(mod.query).forEach((value,key)=>url.searchParams.set(key,value));
     url.searchParams.set('dwEmbed','1');
+    const environment=requestedEnvironment||globalThis.DWV33Integration?.environment||'';
+    if(environment==='emulator'||environment==='production-readonly')url.searchParams.set('dw-env',environment);
     return url.href;
   }
   function markup(id){
@@ -69,11 +71,14 @@
     const loading=root?.querySelector?.('[data-module-loading]');
     const error=root?.querySelector?.('[data-module-error]');
     if(!frame)return false;
-    if(globalThis.DWV33Integration?.environment==='manual-preview'){
+    const environment=globalThis.DWV33Integration?.environment;
+    if(environment==='manual-preview'||environment==='production-readonly'){
       // The manual acceptance build may display current production module markup,
-      // but it must never execute a production module script or submit a form.
+      // and production-readonly may inspect markup, but neither may execute a
+      // production module script or submit a form.
       frame.setAttribute('sandbox','allow-same-origin');
-      frame.setAttribute('data-manual-preview-read-only','true');
+      frame.setAttribute('data-v33-read-only','true');
+      if(environment==='manual-preview')frame.setAttribute('data-manual-preview-read-only','true');
     }
     frame.onload=()=>{if(loading)loading.hidden=true;if(error)error.hidden=true;prepareChild(frame)};
     frame.onerror=()=>{if(loading)loading.hidden=true;if(error)error.hidden=false};

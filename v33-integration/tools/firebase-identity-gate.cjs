@@ -61,6 +61,13 @@ function bearer(token){return {authorization:`Bearer ${token}`}}
 async function getDoc(collection,id,token){
   return jsonFetch(`${DB}/documents/${collection}/${encodeURIComponent(id)}`,{headers:bearer(token)});
 }
+async function writeDoc(collection,id,data,token,mask=[]){
+  const query=mask.map(field=>`updateMask.fieldPaths=${encodeURIComponent(field)}`).join('&');
+  const suffix=query?`?${query}`:'';
+  return jsonFetch(`${DB}/documents/${collection}/${encodeURIComponent(id)}${suffix}`,{
+    method:'PATCH',headers:bearer(token),body:JSON.stringify({fields:fields(data)})
+  });
+}
 async function listDocs(collection,token){
   return jsonFetch(`${DB}/documents/${collection}?pageSize=100`,{headers:bearer(token)});
 }
@@ -85,6 +92,7 @@ async function attemptAuthenticatedWrite(account){
       unauthorized:'outsider@example.com',teacher:'jacobicusjax@gmail.com',wrongTeacher:'wrongteacher@example.com'
     }))accounts[key]=await signUp(email);
     record('Auth emulator issued fictional identities',true,`${Object.keys(accounts).length} accounts`);
+    const today=Core.phoenixDateKey(new Date());
 
     await seed('students',accounts.grade4.uid,{firstName:'Fourth',grade:4,genderGroup:'girls',hp:10,gold:15,xp:450,classId:'warrior',activePet:'pet-emberbean',rpgInventory:['gear_training_sword'],rpgEquipped:{weapon:'gear_training_sword'}});
     await seed('students',accounts.grade5.uid,{firstName:'Fifth',grade:5,genderGroup:'boys',hp:9,gold:22,xp:1520,classId:'mage',activePet:'pet-nyx',rpgInventory:[],rpgEquipped:{}});
@@ -94,6 +102,8 @@ async function attemptAuthenticatedWrite(account){
     await seed('testerAccounts',accounts.tester.uid,{enabled:true,label:'V3 gate tester'});
     await seed('dailyQuestProgress',`${accounts.grade4.uid}_2026-08-25_v48`,{studentId:accounts.grade4.uid,dateKey:'2026-08-25',session:'morning',status:'complete',score:100});
     await seed('dailyQuestProgress',`${accounts.grade4.uid}_2026-08-24_v48`,{studentId:accounts.grade4.uid,dateKey:'2026-08-24',session:'morning',status:'complete',score:100});
+    await seed('dailyQuests',today,{date:today,day:14,chapter:'The Crystal Crossing',chapterIcon:'💎',morningXp:4,exitXp:2,gold:1});
+    await seed('classData','dailyAccessOverride',{dateKey:today,all:false,studentIds:[]});
     record('Demo Firestore seeded without production access',true,PROJECT);
 
     assert.equal(Core.isStudentEligibleEmail(accounts.grade4.email,false),true);
@@ -132,6 +142,39 @@ async function attemptAuthenticatedWrite(account){
     assert.ok(queryDocs.every(x=>x.studentId===accounts.grade4.uid));
     record('Student daily progress query isolation',true,`${queryDocs.length} own rows`);
 
+    const assignment=await getDoc('dailyQuests',today,accounts.grade4.token);
+    assert.equal(assignment.res.ok,true,JSON.stringify(assignment.body));
+    assert.equal(decodeFields(assignment.body.fields).day,14);
+    record('Current Daily Quest assignment read',true,`${today} • day 14`);
+
+    const dailyId=`${accounts.grade5.uid}_${today}_5_morning_v48`;
+    const dailyCreate=await writeDoc('dailyQuestProgress',dailyId,{studentId:accounts.grade5.uid,dateKey:today,day:14,session:'morning',status:'in_progress',score:0,correct:0,attempts:0},accounts.grade5.token);
+    assert.equal(dailyCreate.res.ok,true,JSON.stringify(dailyCreate.body));
+    const dailyUpdate=await writeDoc('dailyQuestProgress',dailyId,{status:'complete',score:100,correct:1,attempts:1},accounts.grade5.token,['status','score','correct','attempts']);
+    assert.equal(dailyUpdate.res.ok,true,JSON.stringify(dailyUpdate.body));
+    const dailyRows=await runStudentQuery(accounts.grade5.uid,accounts.grade5.token);
+    const ownDaily=(dailyRows.body||[]).filter(x=>x.document).map(x=>({id:x.document.name.split('/').pop(),...decodeFields(x.document.fields)}));
+    assert.equal(Core.dailyMissionState(ownDaily,new Date(`${today}T18:00:00Z`)).morning,'complete');
+    record('Daily Quest progress persistence',true,'in-progress → complete → V3.3 mission state');
+
+    const curriculumId=`${accounts.grade5.uid}_K-D14-MATH`;
+    const curriculumBase={studentId:accounts.grade5.uid,itemId:'K-D14-MATH',grade:'K',day:14,subject:'Math',strand:'Core Math',standardCode:'5.NBT',watched:false,videoCoverage:0,videoReflection:'',practiced:false,practiceEvidence:'',questionsCorrect:0,questionsSeen:0,autoAnswers:{},autoAttempts:0,lastActivityAttempt:'',activityAttempts:0,overrideStatus:'',verified:false};
+    const curriculumCreate=await writeDoc('curriculumProgress',curriculumId,curriculumBase,accounts.grade5.token);
+    assert.equal(curriculumCreate.res.ok,true,JSON.stringify(curriculumCreate.body));
+    const curriculumUpdate=await writeDoc('curriculumProgress',curriculumId,{practiced:true,practiceEvidence:'I solved the sample and checked the result.'},accounts.grade5.token,['practiced','practiceEvidence']);
+    assert.equal(curriculumUpdate.res.ok,true,JSON.stringify(curriculumUpdate.body));
+    const savedCurriculum=await getDoc('curriculumProgress',curriculumId,accounts.grade5.token);
+    assert.equal(decodeFields(savedCurriculum.body.fields).practiced,true);
+    record('Curriculum canonical progress persistence',true,'owner create + constrained evidence update');
+
+    const crossCurriculum=await getDoc('curriculumProgress',curriculumId,accounts.grade4.token);
+    assert.equal(crossCurriculum.res.status,403,`Expected 403, got ${crossCurriculum.res.status}: ${crossCurriculum.text}`);
+    record('Curriculum cross-student isolation',true,'other student denied');
+
+    const outsiderCurriculum=await writeDoc('curriculumProgress',`${accounts.unauthorized.uid}_outside`,{...curriculumBase,studentId:accounts.unauthorized.uid,itemId:'outside'},accounts.unauthorized.token);
+    assert.equal(outsiderCurriculum.res.status,403,`Expected 403, got ${outsiderCurriculum.res.status}: ${outsiderCurriculum.text}`);
+    record('Unauthorized curriculum write denied',true);
+
     const testerMarker=await getDoc('testerAccounts',accounts.tester.uid,accounts.tester.token);
     assert.equal(testerMarker.res.ok,true,JSON.stringify(testerMarker.body));
     const testerProfile=await getDoc('students',accounts.tester.uid,accounts.tester.token);
@@ -159,6 +202,11 @@ async function attemptAuthenticatedWrite(account){
     assert.equal(roster.length,5);
     assert.equal(new Set(roster.map(x=>x.id)).size,5);
     record('Authorized teacher roster read',true,'stable Firestore document IDs preserved');
+
+    const teacherCurriculum=await listDocs('curriculumProgress',accounts.teacher.token);
+    assert.equal(teacherCurriculum.res.ok,true,JSON.stringify(teacherCurriculum.body));
+    assert.equal((teacherCurriculum.body.documents||[]).length,1);
+    record('Authorized teacher curriculum evidence read',true,'canonical records visible');
 
     const wrongTeacherList=await listDocs('students',accounts.wrongTeacher.token);
     assert.equal(wrongTeacherList.res.status,403,`Expected 403, got ${wrongTeacherList.res.status}`);

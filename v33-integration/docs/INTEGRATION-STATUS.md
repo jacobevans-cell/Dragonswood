@@ -17,6 +17,31 @@
 - Real Codespace Firebase Auth + Firestore emulator baseline gate passed at
   `87822e5`: 13/13 checks, 17/17 zero-pixel routes, and 31 protected files
   unchanged.
+- Isolated manual acceptance preview passed and was approved by Jacob at the
+  GitHub-backed checkpoint `9bfe2a19b730034f6919ca6c74fbff6ece531846`.
+
+## Stage 4 candidate prepared — Codespace gate pending
+
+- The authoritative production `daily-quest.html` and
+  `curriculum-quest.html` remain the lesson, pacing, recovery, grading, and
+  video engines. V3.3 does not duplicate or replace those contracts.
+- Embedded lesson URLs now inherit `dw-env=emulator`, and both lesson engines
+  pin Auth, Firestore, and Functions to the fictional
+  `demo-dragonswood-v33` environment in that mode.
+- The production-readonly inspection mode executes embedded production pages
+  in a scriptless, formless sandbox.
+- The V3.3 mission shell now reads today's authoritative Morning/Exit v48
+  progress and receives exact Curriculum completion state from the hosted
+  curriculum engine through an origin-, frame-, and date-validated bridge.
+- Active lesson iframes are preserved while Firestore progress snapshots
+  update, preventing a save from reloading a student mid-question.
+- The fictional gate now exercises current assignment reads, Daily Quest
+  in-progress-to-complete persistence, canonical Curriculum evidence writes,
+  teacher evidence reads, cross-student isolation, and unauthorized denial.
+- Static safety, unit, module-host, manual-preview, render-smoke, protected
+  visual-file, and all 96 production parser checks pass locally.
+- The actual Firebase emulator process and 17-route pixel suite must pass in
+  the Codespace before this Stage 4 candidate may be accepted or committed.
 
 ## Required while later stages proceed
 
@@ -28,9 +53,9 @@
 - Keep the integration line anchored to frozen production `2258a321…` unless
   a future production delta is explicitly reconciled.
 
-## Stage 4 functional authority already mapped
+## Stage 4 functional authority
 
-Once the Firebase gate passes, Daily Missions / curriculum / pacing / video must integrate from the current production set, especially:
+Daily Missions / curriculum / pacing / video integrate from the current production set, especially:
 
 - `curriculum-quest.html`
 - `daily-quest.html`
@@ -44,13 +69,18 @@ The current production contract includes no-video scope locking, no-cold-guess i
 
 ## Still intentionally mock / not promoted
 
-Daily Missions/curriculum/pacing/video, grading/recovery, Scribe, Academic Games, My Day, Adventurer Hall writes, full pet registry/animation integration, Boss writes, leaderboards, passes/rewards/jobs, teacher command writes, narration wiring, and production rules changes remain pending in the mandated order.
+Stage 4 is not accepted until its Codespace gate passes. The later ordered
+stages—expanded grading/recovery surfaces, Scribe, Academic Games, My Day,
+Adventurer Hall writes, full pet registry/animation integration, Boss writes,
+leaderboards, passes/rewards/jobs, teacher command writes, narration wiring,
+and production rules promotion—remain pending.
 
 ## Safety
 
 - Default runtime mode is emulator-only using `demo-dragonswood-v33`.
 - Production mode is explicitly read-only and opt-in.
 - The Stage 2–3 integration runtime contains no Firestore write methods.
-- Root production files and live Firestore rules/data remain untouched.
+- Production `main`, its live entry points, live Firestore rules, and live data
+  remain untouched. Stage 4 edits exist only in the isolated candidate.
 - Remote `v33-integration-safe` creation was retried from current production and still failed with GitHub integration HTTP 403. No fallback write to `main` was attempted.
 - A guarded Codespace installer and branch-only GitHub Actions workflow are bundled so the remaining branch/emulator gate can be completed without any direct `main` write.

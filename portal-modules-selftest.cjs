@@ -12,13 +12,15 @@ const index=read("index.html");
 const host=read("dragonswood-module-host.js");
 const css=read("dragonswood-module-host.css");
 
-check("current portal loads the module shell stylesheet",/dragonswood-module-host\.css\?v=57\.1/.test(index));
-check("current portal loads the module host",/dragonswood-module-host\.js\?v=57\.1/.test(index));
+check("current portal loads the polished module shell stylesheet",/dragonswood-module-host\.css\?v=57\.2/.test(index));
+check("current portal loads the polished module host",/dragonswood-module-host\.js\?v=57\.2/.test(index));
 check("module view is part of the signed-in portal",/id="view-module"[^>]*data-page="module"/.test(index));
 check("module frame is created without loading a feature at startup",/id="dwModuleFrame"[^>]*><\/iframe>/.test(index));
 check("module frame is destroyed on close",/frame\.src="about:blank"/.test(host));
 check("embedded standalone portal links are hidden",host.includes('a[href^="index.html"]'));
-check("duplicate standalone headers are hidden in the portal",/querySelectorAll\("body>header"\)/.test(host));
+check("duplicate standalone headers are force-hidden in the portal",/querySelectorAll\("body>header"\)/.test(host)&&/style\.setProperty\("display","none","important"\)/.test(host));
+check("technical module toolbar buttons are removed",!index.includes("OPEN SEPARATELY")&&!index.includes("BACK TO PORTAL")&&!index.includes("data-close-module"));
+check("academic and mission modules keep their parent navigation highlighted",/tab\.dataset\.view===mod\.returnView/.test(host));
 check("browser history and close routing are supported",/history\.pushState/.test(host)&&/history\.back\(\)/.test(host)&&/popstate/.test(index));
 check("daily access gate still protects academic games",/dailyGate&&window\.DWDailyAccessUnlocked!==true/.test(host));
 check("active passes still block feature modules",/window\.DWBlockingPassType/.test(host));

@@ -2279,6 +2279,11 @@ function renderPassArchive(){
   }
 }
 
+function newestPendingPer(rows,keyFn){
+ const byKey=new Map();
+ rows.filter(x=>x.status==='pending').forEach(x=>{const key=keyFn(x),prior=byKey.get(key);if(!prior||(x.createdAt?.seconds||0)>(prior.createdAt?.seconds||0))byKey.set(key,x)});
+ return [...byKey.values()];
+}
 function renderLiveRequests(){
  ensureTeacherPassTimer();
  setTimeout(dwCheckTeacherAlerts,0);
@@ -2299,9 +2304,9 @@ function renderLiveRequests(){
  }
 
  const approvals=[];
- bathroomRequests.filter(x=>x.dateKey===key&&x.status==='pending').forEach(x=>approvals.push({...x,_kind:'bathroom',_icon:'🚻',_label:'Extra Bathroom'}));
- snackRequests.filter(x=>x.dateKey===key&&x.status==='pending').forEach(x=>approvals.push({...x,_kind:'snack',_icon:'🍎',_label:'Extra Snack'}));
- genericPassRequests.filter(x=>x.dateKey===key&&x.status==='pending').forEach(x=>approvals.push({...x,_kind:'generic',_icon:x.type==='office'?'🆘':'🚶',_label:x.type==='office'?'Extra Emergency Office':'Extra Out of Seat'}));
+ newestPendingPer(bathroomRequests.filter(x=>x.dateKey===key),x=>x.studentId).forEach(x=>approvals.push({...x,_kind:'bathroom',_icon:'🚻',_label:'Extra Bathroom'}));
+ newestPendingPer(snackRequests.filter(x=>x.dateKey===key),x=>x.studentId).forEach(x=>approvals.push({...x,_kind:'snack',_icon:'🍎',_label:'Extra Snack'}));
+ newestPendingPer(genericPassRequests.filter(x=>x.dateKey===key),x=>`${x.studentId}:${x.type}`).forEach(x=>approvals.push({...x,_kind:'generic',_icon:x.type==='office'?'🆘':'🚶',_label:x.type==='office'?'Extra Emergency Office':'Extra Out of Seat'}));
  approvals.sort((a,b)=>(a.createdAt?.seconds||0)-(b.createdAt?.seconds||0));
  const ac=$('passApprovalCenter');
  if(ac)ac.innerHTML=approvals.length?approvals.map(x=>`<div class="live-request-item"><div><b>${x._icon} ${esc(x.studentName||'Student')} • ${x._label}</b><small>Requested ${reqTime(x)}</small></div><div class="live-actions"><button data-pass-approve="${x._kind}" data-request-id="${x.id}">APPROVE</button><button class="danger-soft" data-pass-deny="${x._kind}" data-request-id="${x.id}">DENY</button></div></div>`).join(''):'<div class="muted">No pending pass approvals.</div>';
@@ -2364,7 +2369,7 @@ function renderLiveRequests(){
  document.querySelectorAll('[data-pass-approve]').forEach(b=>b.onclick=()=>reviewCentralPass(b.dataset.passApprove,b.dataset.requestId,true));
  document.querySelectorAll('[data-pass-deny]').forEach(b=>b.onclick=()=>reviewCentralPass(b.dataset.passDeny,b.dataset.requestId,false));
 
- const pointPending=pointRequests.filter(x=>x.status==='pending'),pr=$('pointRequestList');
+ const pointPending=newestPendingPer(pointRequests,x=>`${x.studentId}:${x.dateKey||''}`),pr=$('pointRequestList');
  if(pr)pr.innerHTML=pointPending.length?pointPending.map(x=>`<div class="live-request-item"><div><b>⭐ ${esc(x.studentName||'Student')}</b><small>${esc(x.reason||'Positive choice')} • ${reqTime(x)}</small></div><div class="live-actions"><button data-point-approve="${x.id}">APPROVE +1 XP</button><button class="danger-soft" data-point-deny="${x.id}">DISMISS</button></div></div>`).join(''):'<div class="muted">No pending recognition requests.</div>';
  document.querySelectorAll('[data-point-approve]').forEach(b=>b.onclick=()=>approvePoint(b.dataset.pointApprove,true));
  document.querySelectorAll('[data-point-deny]').forEach(b=>b.onclick=()=>approvePoint(b.dataset.pointDeny,false));
@@ -2380,14 +2385,17 @@ async function reviewCentralPass(kind,id,yes){
  if(kind==='snack')return approveSnack(id,yes);
  return approveGenericPass(id,yes);
 }
+async function closeLegacyRequestDuplicates(collectionName,rows,keepId,keyFn){
+ const keep=rows.find(x=>x.id===keepId);if(!keep)return;
+ const duplicates=rows.filter(x=>x.id!==keepId&&x.status==='pending'&&keyFn(x)===keyFn(keep));
+ if(!duplicates.length)return;
+ const batch=writeBatch(db);duplicates.forEach(x=>batch.set(doc(db,collectionName,x.id),{status:'duplicate',duplicateOf:keepId,reviewedAt:serverTimestamp()},{merge:true}));await batch.commit();
+}
 async function approveGenericPass(id,yes){
  const r=genericPassRequests.find(x=>x.id===id);if(!r)return;
  try{
-   if(yes){
-     const ref=doc(db,'passStatus',`${r.studentId}_${r.type}`),snap=await getDoc(ref),d=snap.exists()?snap.data():{},same=d.dateKey===teacherDateKey();
-     await setDoc(ref,{studentId:r.studentId,studentName:r.studentName,type:r.type,label:r.type==='office'?'Emergency Office':'Out of Seat',dateKey:teacherDateKey(),passesUsed:same?(+d.passesUsed||1):1,approvalCredits:(same?(+d.approvalCredits||0):0)+1,active:same&&d.active===true,updatedAt:serverTimestamp()},{merge:true});
-   }
-   await setDoc(doc(db,'passRequests',id),{status:yes?'approved':'denied',reviewedAt:serverTimestamp()},{merge:true});
+   await runTransaction(db,async tx=>{const requestRef=doc(db,'passRequests',id),requestSnap=await tx.get(requestRef);if(!requestSnap.exists()||requestSnap.data().status!=='pending')return false;if(yes){const ref=doc(db,'passStatus',`${r.studentId}_${r.type}`),snap=await tx.get(ref),d=snap.exists()?snap.data():{},same=d.dateKey===teacherDateKey();tx.set(ref,{studentId:r.studentId,studentName:r.studentName,type:r.type,label:r.type==='office'?'Emergency Office':'Out of Seat',dateKey:teacherDateKey(),passesUsed:same?(+d.passesUsed||1):1,approvalCredits:(same?(+d.approvalCredits||0):0)+1,active:same&&d.active===true,updatedAt:serverTimestamp()},{merge:true})}tx.update(requestRef,{status:yes?'approved':'denied',reviewedAt:serverTimestamp()});return true});
+   await closeLegacyRequestDuplicates('passRequests',genericPassRequests,id,x=>`${x.studentId}:${x.type}:${x.dateKey||''}`);
    yes?window.DWAudio?.positive():window.DWAudio?.negative();
  }catch(err){console.error('generic pass review',err);window.DWAudio?.negative();alert('Could not review pass request: '+(err.code||err.message||err))}
 }
@@ -2395,12 +2403,9 @@ async function approveSnack(id,yes){
  const r=snackRequests.find(x=>x.id===id);
  if(!r)return;
  try{
-   if(yes){
-     const sr=doc(db,'snackStatus',r.studentId);
-     const snap=await getDoc(sr);
-     const d=snap.exists()?snap.data():{};
-     const same=d.dateKey===teacherDateKey();
-     await setDoc(sr,{
+   await runTransaction(db,async tx=>{const requestRef=doc(db,'snackRequests',id),requestSnap=await tx.get(requestRef);if(!requestSnap.exists()||requestSnap.data().status!=='pending')return false;if(yes){
+     const sr=doc(db,'snackStatus',r.studentId),snap=await tx.get(sr),d=snap.exists()?snap.data():{},same=d.dateKey===teacherDateKey();
+     tx.set(sr,{
        studentId:r.studentId,
        studentName:r.studentName,
        dateKey:teacherDateKey(),
@@ -2409,11 +2414,8 @@ async function approveSnack(id,yes){
        active:same&&d.active===true,
        updatedAt:serverTimestamp()
      },{merge:true});
-   }
-   await setDoc(doc(db,'snackRequests',id),{
-     status:yes?'approved':'denied',
-     reviewedAt:serverTimestamp()
-   },{merge:true});
+   }tx.update(requestRef,{status:yes?'approved':'denied',reviewedAt:serverTimestamp()});return true});
+   await closeLegacyRequestDuplicates('snackRequests',snackRequests,id,x=>`${x.studentId}:${x.dateKey||''}`);
    if(yes)window.DWAudio?.positive();
    else window.DWAudio?.negative();
  }catch(err){
@@ -2423,8 +2425,8 @@ async function approveSnack(id,yes){
  }
 }
 
-async function approveBathroom(id,yes){const r=bathroomRequests.find(x=>x.id===id);if(!r)return;if(yes){const sr=doc(db,'bathroomStatus',r.studentId),snap=await getDoc(sr),d=snap.exists()?snap.data():{},same=d.dateKey===teacherDateKey();await setDoc(sr,{studentId:r.studentId,studentName:r.studentName,dateKey:teacherDateKey(),passesUsed:same?(+d.passesUsed||3):3,approvalCredits:(same?(+d.approvalCredits||0):0)+1,active:same&&d.active===true,updatedAt:serverTimestamp()},{merge:true})}await setDoc(doc(db,'bathroomRequests',id),{status:yes?'approved':'denied',reviewedAt:serverTimestamp()},{merge:true})}
-async function approvePoint(id,yes){const r=pointRequests.find(x=>x.id===id);if(!r)return;if(yes){const st=students.find(x=>x.id===r.studentId);if(st){await setDoc(doc(db,'students',st.id),{xp:(+st.xp||0)+1,updatedAt:serverTimestamp()},{merge:true});await addDoc(collection(db,'studentTransactions'),{studentId:st.id,studentName:displayStudent(st),stat:'xp',amount:1,reason:'Student recognition request: '+(r.reason||'Positive choice'),createdAt:serverTimestamp()})}}await setDoc(doc(db,'pointRequests',id),{status:yes?'approved':'dismissed',reviewedAt:serverTimestamp()},{merge:true})}
+async function approveBathroom(id,yes){const r=bathroomRequests.find(x=>x.id===id);if(!r)return;await runTransaction(db,async tx=>{const requestRef=doc(db,'bathroomRequests',id),requestSnap=await tx.get(requestRef);if(!requestSnap.exists()||requestSnap.data().status!=='pending')return false;if(yes){const sr=doc(db,'bathroomStatus',r.studentId),snap=await tx.get(sr),d=snap.exists()?snap.data():{},same=d.dateKey===teacherDateKey();tx.set(sr,{studentId:r.studentId,studentName:r.studentName,dateKey:teacherDateKey(),passesUsed:same?(+d.passesUsed||3):3,approvalCredits:(same?(+d.approvalCredits||0):0)+1,active:same&&d.active===true,updatedAt:serverTimestamp()},{merge:true})}tx.update(requestRef,{status:yes?'approved':'denied',reviewedAt:serverTimestamp()});return true});await closeLegacyRequestDuplicates('bathroomRequests',bathroomRequests,id,x=>`${x.studentId}:${x.dateKey||''}`)}
+async function approvePoint(id,yes){const r=pointRequests.find(x=>x.id===id);if(!r)return;await runTransaction(db,async tx=>{const requestRef=doc(db,'pointRequests',id),requestSnap=await tx.get(requestRef);if(!requestSnap.exists()||requestSnap.data().status!=='pending')return false;if(yes){const st=students.find(x=>x.id===r.studentId);if(st){const studentRef=doc(db,'students',st.id),studentSnap=await tx.get(studentRef);if(studentSnap.exists())tx.update(studentRef,{xp:(+studentSnap.data().xp||0)+1,updatedAt:serverTimestamp()});tx.set(doc(collection(db,'studentTransactions')),{studentId:st.id,studentName:displayStudent(st),stat:'xp',amount:1,reason:'Student recognition request: '+(r.reason||'Positive choice'),createdAt:serverTimestamp()})}}tx.update(requestRef,{status:yes?'approved':'dismissed',reviewedAt:serverTimestamp()});return true});await closeLegacyRequestDuplicates('pointRequests',pointRequests,id,x=>`${x.studentId}:${x.dateKey||''}`)}
 
 function renderStudents(){$("studentRows").innerHTML=students.length?students.map(s=>`<tr><td class="student-avatar">${AVATAR_EMOJI[s.avatar]||"🐉"}</td><td><span class="student-name">${esc(displayStudent(s))}</span><br><small>${esc(s.email||"")}</small></td><td>${esc(s.grade||"—")}</td><td><span class="badge">${s.dailyQuestTrack==="challenge"?"⭐ Challenge":s.dailyQuestTrack==="foundation"?"Foundation":s.dailyQuestTrack==="5"?"5th":s.dailyQuestTrack==="4"?"4th":`Auto → ${esc(s.grade||"4")}th`}</span></td><td>${s.genderGroup==="girl"?"Girls":s.genderGroup==="boy"?"Boys":"—"}</td><td><span class="badge">Lv ${levelInfo(+s.xp||0)}</span></td><td>${+s.hp||0}</td><td>${isKnockedOut(s)?"💀 KO":"✅ Active"}</td><td>${(s.recessBlocked||isKnockedOut(s))?"🚫":"✅"}</td><td>${(s.fieldTripBlocked||isKnockedOut(s))?"🚫":"✅"}</td><td>${classroomHpMax(levelInfo(+s.xp||0))}</td><td>${+s.gold||0}</td><td>${+s.xp||0}</td><td>${dailyXpState(s).earned} / 150</td><td><button class="gray mini" data-manage="${s.id}">Manage</button></td></tr>`).join(""):'<tr><td colspan="15" class="muted">No students have created profiles yet.</td></tr>';document.querySelectorAll("[data-manage]").forEach(b=>b.onclick=()=>openStudent(b.dataset.manage));renderMassStudentOptions();dw31RenderTeacherJobs();if($("dw20ClassHp"))$("dw20ClassHp").textContent=students.reduce((n,s)=>n+Math.max(0,Number(s.hp||0)),0).toLocaleString();if($("dw20DailyXp"))$("dw20DailyXp").textContent=students.reduce((n,s)=>n+dailyXpState(s).earned,0).toLocaleString();dw20UpdateReviewBar()}
 function openStudent(id){

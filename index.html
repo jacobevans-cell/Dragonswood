@@ -3266,7 +3266,7 @@ function renderBathroomStudent(d){
 
        window.DWAudio?.passStart?.();
      }else{
-       const id=user.uid+'_'+Date.now();
+       const id=`${user.uid}_${key}`;
        await setDoc(doc(db,'bathroomRequests',id),{
          studentId:user.uid,
          studentName:studentDisplayName(),
@@ -3275,7 +3275,7 @@ function renderBathroomStudent(d){
          status:'pending',
          createdAt:serverTimestamp(),
          updatedAt:serverTimestamp()
-       });
+       },{merge:true});
        txt.textContent='Extra bathroom pass requested. Waiting for teacher approval.';
        window.DWAudio?.notice();
      }
@@ -3672,10 +3672,10 @@ async function useGenericPass(type){
 
   const same=d?.dateKey===key,used=same?(+d?.passesUsed||0):0,credits=same?(+d?.approvalCredits||0):0;
   if(used>=1&&credits<=0){
-    const requestId=user.uid+'_'+type+'_'+Date.now();
+    const requestId=`${user.uid}_${type}_${key}`;
     await setDoc(doc(db,'passRequests',requestId),{
       studentId:user.uid,studentName:studentDisplayName(),type,label:meta.label,dateKey:key,status:'pending',createdAt:serverTimestamp(),updatedAt:serverTimestamp()
-    });
+    },{merge:true});
     $('studentPassHubStatus').textContent=`🙋 Extra ${meta.label} pass requested. Waiting for teacher approval.`;
     window.DWAudio?.notice();return;
   }
@@ -3806,11 +3806,11 @@ function renderSnackStudent(d){
         },{merge:true});
         window.DWAudio?.passStart?.();
       }else{
-        const id=user.uid+'_'+Date.now();
+        const id=`${user.uid}_${key}`;
         await setDoc(doc(db,'snackRequests',id),{
           studentId:user.uid,studentName:studentDisplayName(),dateKey:key,status:'pending',
           createdAt:serverTimestamp(),updatedAt:serverTimestamp()
-        });
+        },{merge:true});
         txt.textContent='Extra snack pass requested. Waiting for teacher approval.';
         window.DWAudio?.notice();
       }
@@ -3827,7 +3827,7 @@ async function sendRecognitionRequest(){
  if(!user||!b)return;
  b.disabled=true;
  try{
-   const id=user.uid+'_'+Date.now();
+   const id=`${user.uid}_${phoenixDateKey()}`;
    await setDoc(doc(db,'pointRequests',id),{
      studentId:user.uid,
      studentName:studentDisplayName(),
@@ -3836,14 +3836,15 @@ async function sendRecognitionRequest(){
      status:'pending',
      createdAt:serverTimestamp(),
      updatedAt:serverTimestamp()
-   });
+   },{merge:true});
    st.textContent='✓ Sent to Mr. Evans for review.';
  }catch(err){
    console.warn('recognition request',err);
    st.textContent='Could not send the request. Please tell Mr. Evans.';
- }finally{
+  }finally{
+   // The deterministic request ID makes rapid repeat clicks idempotent.
    setTimeout(()=>b.disabled=false,900);
- }
+  }
 }
 document.getElementById('recognitionRequestBtn')?.addEventListener('click',sendRecognitionRequest);
 const headerPassToggle=document.getElementById('headerPassToggle'),headerPassPopover=document.getElementById('headerPassPopover');

@@ -697,7 +697,9 @@ window.submitCurriculumOverride=async (item,answer,attempts,meta={})=>{
     return false;
   }
   try{
-    await addDoc(collection(db,"curriculumOverrideRequests"),{
+    const requestKind=meta.overrideType||"activity",questionPart=Number.isInteger(meta.questionIndex)?String(meta.questionIndex):"activity";
+    const requestId=`${auth.currentUser.uid}_${String(item.id||"").replace(/[^a-zA-Z0-9_-]/g,"_")}_${requestKind.replace(/[^a-zA-Z0-9_-]/g,"_")}_${questionPart}`;
+    await setDoc(doc(db,"curriculumOverrideRequests",requestId),{
       studentId:auth.currentUser.uid,
       studentName:auth.currentUser.displayName||auth.currentUser.email||"Student",
       studentEmail:auth.currentUser.email||"",
@@ -709,7 +711,7 @@ window.submitCurriculumOverride=async (item,answer,attempts,meta={})=>{
       expectedAnswer:String(meta.expectedAnswer||"").slice(0,1000),
       studentAnswer:answer,attempts:Number(attempts||1),status:"pending",
       requestedAt:serverTimestamp(),updatedAt:serverTimestamp()
-    });
+    },{merge:true});
     return true;
   }catch(e){
     console.error("override request",e);

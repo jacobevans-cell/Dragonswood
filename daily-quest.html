@@ -6145,7 +6145,8 @@ async function requestDailyQuestionReview(){
  const key=dwDailyQuestionKey(),prior=dwDailyReviewRow(key);if(prior?.status==="pending"||prior?.status==="approved")return;
  const t=tasks[taskIndex]||{},answer=String(dwCurrentStudentAnswer()||"Interactive response").slice(0,5000);
  try{
-  await setDoc(doc(collection(db,"curriculumOverrideRequests")),{
+  const requestId=`${user.uid}_daily_${String(key).replace(/[^a-zA-Z0-9_-]/g,"_")}`;
+  await setDoc(doc(db,"curriculumOverrideRequests",requestId),{
    source:"daily",overrideType:"daily-question",questionKey:key,
    studentId:user.uid,studentName:profile?.firstName||user.displayName||user.email||"Student",studentEmail:user.email||"",
    lessonId:`daily:${dateKey()}:${sessionName}:${key}`,
@@ -6154,7 +6155,7 @@ async function requestDailyQuestionReview(){
    pacingItemId:String(t.pacingItemId||""),pacingRequirement:String(t.pacingRequirement||""),engine:engineName(t.engine),
    questionPrompt:String(currentQuestion.prompt||"").slice(0,5000),expectedAnswer:String(currentQuestion.answer||"").slice(0,1000),
    studentAnswer:answer,attempts:Number(attempts||0),status:"pending",requestedAt:serverTimestamp(),updatedAt:serverTimestamp()
-  });
+  },{merge:true});
   dwCancelFalseRetry();feedback("Teacher review requested. Your exact question and response were sent.","good");
  }catch(e){console.error("daily review",e);feedback(`Teacher review was not sent: ${e.code||e.message||e}`,"bad")}
 }

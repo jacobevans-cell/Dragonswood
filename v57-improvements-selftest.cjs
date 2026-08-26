@@ -1,6 +1,6 @@
 const fs=require("fs"),assert=require("assert"),read=f=>fs.readFileSync(f,"utf8");
 function pass(name,fn){try{fn();console.log("PASS",name)}catch(e){console.error("FAIL",name,"\n ",e.message);process.exitCode=1}}
-const boss=read("boss-battle.html"),hall=read("adventurer-hall.html"),subpageShell=read("dragonswood-subpage-shell-v2.js"),rules=read("firestore.rules"),student=read("dragonswood-student-tools.js"),teacher=read("dragonswood-teacher-tools.js"),teacherPage=read("teacher.html"),index=read("index.html"),daily=read("daily-quest.html"),requestCenter=read("dragonswood-request-center.js"),grayson=read("dragonswood-grayson-mode.js"),curriculum=read("curriculum-quest.html"),noVideo=read("q1-no-video-lessons.js");
+const boss=read("boss-battle.html"),hall=read("adventurer-hall.html"),rules=read("firestore.rules"),student=read("dragonswood-student-tools.js"),teacher=read("dragonswood-teacher-tools.js"),teacherPage=read("teacher.html"),index=read("index.html"),daily=read("daily-quest.html"),requestCenter=read("dragonswood-request-center.js"),grayson=read("dragonswood-grayson-mode.js"),curriculum=read("curriculum-quest.html"),noVideo=read("q1-no-video-lessons.js");
 pass("boss no longer loops by resetting qi to zero",()=>assert(!boss.includes("if(qi>=qs.length)qi=0")));
 pass("boss varies each run",()=>assert(boss.includes("dwBossRun:")&&boss.includes("battleRun")));
 pass("boss regenerates exhausted question pools",()=>assert(boss.includes("questionCycle++;qs=makeQuestions(questionCycle)")));
@@ -15,7 +15,7 @@ pass("teacher attention center can approve or deny inline",()=>assert(teacher.in
 pass("teacher egg award uses atomic increments",()=>assert(teacher.includes("eggInventory:increment(1)")&&teacher.includes("writeBatch")));
 pass("focus events are logged without grading or rewards",()=>assert(student.includes("focusEvents")&&rules.includes("match /focusEvents/")));
 const mathPages=[...read("index.html").matchAll(/<article class="frame bevel game" data-game-subject="math">[\s\S]*?<a class="btn" href="([^"?]+\.html)/g)].map(x=>x[1]);
-const studentPortals=["index.html","index-v2.html","index-live-welcome-test.html","Tester1111.html"];
+const studentPortals=["index.html","index-live-welcome-test.html","Tester1111.html"];
 pass("Grayson Mode is loaded by every math game",()=>mathPages.forEach(f=>assert(read(f).includes("dragonswood-grayson-mode.js"),f)));
 pass("Grayson Mode is visibly mounted in every current math game",()=>{assert.deepStrictEqual(mathPages.sort(),["decimal-deception.html","fraction-forge.html","math-operations-quest.html"]);for(const [page,target] of [["decimal-deception.html",".controls"],["fraction-forge.html",".difficulty-toggle"],["math-operations-quest.html",".difficulty-row"]])assert(grayson.includes(`page===\"${page}\"`)&&grayson.includes(`querySelector(\"${target}\")`),page)});
 pass("Grayson Mode teaches before asking",()=>assert(grayson.includes("YOU NEED THIS FIRST")&&grayson.includes("lesson:")));
@@ -29,5 +29,9 @@ pass("pending request rewrites are limited and idempotent",()=>assert(rules.incl
 pass("teacher queues hide legacy duplicate requests",()=>assert(teacher.includes("function uniquePending")&&teacherPage.includes("function newestPendingPer")));
 pass("teacher approval is atomic and awards only once",()=>{assert(teacherPage.includes("requestSnap.data().status!=='pending'"));assert(teacherPage.includes("async function approveBathroom")&&teacherPage.includes("async function approvePoint"));assert(teacherPage.includes("closeLegacyRequestDuplicates"))});
 pass("one pending extra pass locks every extra-pass type per student",()=>{studentPortals.forEach(f=>{const page=read(f);assert(page.includes("function pendingExtraPassRequest"),f);assert(page.includes("You cannot request another extra pass yet"),f);assert(page.includes("watchExtraPassRequests();"),f)});assert(rules.includes("function hasNoOtherPendingExtraPass"));assert(rules.includes("requestId == request.auth.uid + '_' + request.resource.data.type + '_' + request.resource.data.dateKey"))});
-pass("Adventurer Hall and Boss Battle use the portal subpage shell",()=>{assert(hall.includes("dragonswood-subpage-shell-v2.js?v=57.1"));assert(boss.includes("dragonswood-subpage-shell-v2.js?v=57.1"));assert(subpageShell.includes("legacyPortal.hidden=true"))});
+pass("student-facing production pages do not link to retired V2 portals",()=>{
+  const pages=["index.html","adventurer-hall.html","boss-battle.html","daily-quest.html","curriculum-quest.html","decimal-deception.html","math-operations-quest.html","fraction-forge.html","spelling-practice.html","the_witches_pages_1_15_interactive_test.html","elemental-laboratory.html","cosmic-architect.html","arcane-forge.html","witches-reader.html","long-division-custom.html","long-division-quest.html"];
+  for(const file of pages){const page=read(file);assert(!/index-v2\.html|teacher-v2\.html|dragonswood-subpage-shell-v2\.js|dragonswood-student-redesign-v2\.css/i.test(page),file)}
+});
+pass("Adventurer Hall and Boss Battle return to the current portal",()=>{for(const [file,page] of [["adventurer-hall.html",hall],["boss-battle.html",boss]]){assert(page.includes('href="index.html"'),file);assert(!page.includes("subpage-shell-v2"),file)}});
 if(process.exitCode)process.exit(process.exitCode);console.log("\n✅ ALL V57 IMPROVEMENT SELF-TESTS PASSED");

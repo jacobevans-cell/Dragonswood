@@ -42,7 +42,7 @@ pass("Curriculum imports Firebase Functions",curr.includes("firebase-functions.j
 pass("Curriculum checker async",curr.includes("async function checkActivity(id)"));
 pass("Curriculum reasoning rescue",curr.includes("async function curriculumAiRescue"));
 
-for(const f of ["teacher.html","teacher-v2.html"]){
+for(const f of ["teacher.html"]){
   const t=fs.readFileSync(f,"utf8");
   pass(`${f} loads AI controls`,t.includes("dragonswood-academic-ai-teacher.js?v=56.21.0"));
 }

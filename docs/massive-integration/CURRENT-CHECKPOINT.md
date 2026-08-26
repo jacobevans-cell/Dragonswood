@@ -4,7 +4,7 @@
 
 - Frozen production authority: `2258a321077a39ca71e36409d9bc6a1fb5bb3ecc`.
 - Safety branch: `massive-v33-integration-safe-2258a321`.
-- Current implementation checkpoint: `79ada5d` plus this documentation commit.
+- Current implementation checkpoint: `aad84a7` plus this documentation update.
 - Production `main` has not been changed, pushed, or deployed.
 - No integration branch has been pushed from this environment.
 - Every major integration step is a separate commit and can be reviewed independently.
@@ -16,6 +16,7 @@
 3. `e12680e` installs Unified Math v56.27 and Grayson v58 into the current academic pages without replacing their current portal behavior.
 4. `0d5af98` installs Arcade v1.6 under `/arcade/` with server-authoritative Arcade Tokens and timed access.
 5. `79ada5d` installs hardened Kingdom Wars V11.1 under `/kingdom-wars/` and adds its V3.3 route behind Morning Work plus tester/admin authorization.
+6. `aad84a7` repairs the Arcade callable runtime for `firebase-admin` v13 by using the supported modular Firestore Admin API and adds a regression guard against the incompatible legacy timestamp path.
 
 ## Arcade contract implemented
 
@@ -51,9 +52,11 @@
 - Original V3.3 rendered markup is byte-identical on 8/8 student and 9/9 teacher routes.
 - All 31 protected V3.3 CSS/art files remain unchanged.
 
-## Remaining executable gate
+## Codespace emulator result and remaining executable gate
 
-The Arcade callable Functions and new Firestore rules still require the real emulator process in a normal Dragonswood Codespace. Run from this safety branch:
+The full Codespace gate was executed from recovery checkpoint `688b609`. Every pre-emulator, identity, rendering and 17-route visual test passed. The Arcade Functions matrix then exposed one real compatibility defect before any deployment: `FieldValue` and `Timestamp` were loaded through the legacy `admin.firestore.*` path, which is undefined under the installed `firebase-admin` v13 runtime.
+
+Commit `aad84a7` fixes that root cause and adds a static regression assertion. The complete local pre-emulator suite passes after the repair. The real Codespace emulator process must now be rerun from the corrected recovery checkpoint:
 
 ```bash
 bash tools/massive-integration/run-codespace-firebase-gate.sh
@@ -67,6 +70,6 @@ That command reruns the entire local suite, the original Auth/Firestore identity
 - The candidate has not been deployed, pushed, merged, or promoted to `main`.
 - The actual browser-based 17-route pixel test has not been rerun in this restricted container because Chromium is unavailable; the Codespace command above includes it.
 - Chromebook Arcade performance/offline/cold-open acceptance is not complete.
-- Arcade callable Functions and Firestore rules are not deployed.
+- The corrected Arcade callable Functions emulator matrix still needs its confirming rerun; no Functions or Firestore rules are deployed.
 - Kingdom Wars remains tester-only and local; V12 live PvP is not authorized.
 - Final root-home promotion, production Firebase configuration, rollback tag/branch, and deployment require Jacob's explicit approval after acceptance testing.

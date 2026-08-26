@@ -11,6 +11,8 @@ python -m playwright install chromium
 
 cd "$ROOT/v33-integration"
 ./tools/run-firebase-gate.sh
+cd "$ROOT"
+bash tools/massive-integration/run-arcade-functions-emulator-gate.sh
 
 echo 'CODESPACE FIREBASE GATE: PASS'
 echo "branch=$(git -C "$ROOT" branch --show-current)"

@@ -1,0 +1,15 @@
+'use strict';
+const assert=require('node:assert/strict');
+const C=require('./core.js');
+assert.equal(C.clampTokens(-8),0);assert.equal(C.clampTokens(2.9),2);assert.equal(C.clampTokens(99),3);
+assert.deepEqual(C.CRITERIA,['ready','responsible','complete']);
+assert.equal(C.criterion(' RESPONSIBLE '),'responsible');assert.equal(C.criterion('fast'),'');
+assert.equal(C.periodId('Math / P2'),'Math___P2');assert.equal(C.periodId(''),'');
+assert.equal(C.isTeacherEmail(' JACOBICUSJAX@GMAIL.COM '),true);
+assert.equal(C.effectiveEnabled({},{}),false);assert.equal(C.effectiveEnabled({}, {enabled:true}),true);
+assert.equal(C.effectiveEnabled({individualEnabled:false},{enabled:true}),false);assert.equal(C.effectiveEnabled({individualEnabled:true},{enabled:false}),true);
+const future={id:'s1',status:'active',endAt:{toMillis:()=>2000}};
+assert.equal(C.activeSession(future,1000),true);assert.equal(C.activeSession(future,2000),false);
+const view=C.publicAccess({tokens:7,individualEnabled:true},{enabled:false},future,1000);
+assert.equal(view.tokens,3);assert.equal(view.active,true);assert.equal(view.remainingMs,1000);assert.equal(view.sessionCost,3);
+console.log('Arcade access core tests: PASS');

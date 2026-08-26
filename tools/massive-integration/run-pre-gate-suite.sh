@@ -20,5 +20,7 @@ python dragonswood-v33-test/tools/verify.py
 (cd staged-systems/arcade-v1.6 && node scripts/preflight.mjs)
 (cd staged-systems/unified-math-v56.27-grayson-v58 && bash tools/verify-staged-donors.sh)
 bash tools/massive-integration/run-integrated-math-grayson-gate.sh
+node functions-arcade-access/core-selftest.cjs
+node tools/massive-integration/verify-integrated-arcade.cjs
 
 echo 'Massive integration pre-emulator suite: PASS'

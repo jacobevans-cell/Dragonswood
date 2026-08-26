@@ -28,10 +28,10 @@
 
   async function createFirebase(role){
     const S=await sdk();
-    const appName=role==='teacher'?'DragonswoodV33TeacherIntegration':'DragonswoodV33StudentIntegration';
+    const appName=role==='teacher'?'DragonswoodV33TeacherIntegration':'';
     const firebaseConfig=environment==='emulator'?EMULATOR_FIREBASE_CONFIG:PRODUCTION_FIREBASE_CONFIG;
     let firebaseApp;
-    try{firebaseApp=S.app.getApp(appName)}catch{firebaseApp=S.app.initializeApp(firebaseConfig,appName)}
+    try{firebaseApp=appName?S.app.getApp(appName):S.app.getApp()}catch{firebaseApp=appName?S.app.initializeApp(firebaseConfig,appName):S.app.initializeApp(firebaseConfig)}
     const auth=S.auth.getAuth(firebaseApp),db=S.firestore.getFirestore(firebaseApp);
     if(environment==='emulator'){
       try{S.auth.connectAuthEmulator(auth,'http://127.0.0.1:9099',{disableWarnings:true})}catch{}

@@ -7,6 +7,7 @@ const dialogRoot = document.querySelector('#dialog-root');
 let integrationController=null;
 let integrationSession={status:'loading',message:'Loading Dragonswood identity…'};
 const moduleHost=window.DWV33Modules;
+const arcadePortal=window.DWV33ArcadePortal;
 
 const navItems = [
   ['adventure','🛡️','My Adventure','Home base'],
@@ -18,6 +19,8 @@ const navItems = [
   ['boss','👹','Boss Battle','Daily challenge'],
   ['leaderboards','🏆','Leaderboards','Class champions']
 ];
+const arcadeNav=['arcade','🕹️','Arcade Time','3 Tokens • 30 min'];
+function studentNavItems(){return arcadePortal?[...navItems,arcadeNav]:navItems}
 
 const state = {
   page: 'adventure',
@@ -44,7 +47,10 @@ const state = {
   bossHp: 72,
   bossMax: 100,
   bossMessage: '',
-  dailyAccessUnlocked: false
+  dailyAccessUnlocked: false,
+  arcadeStatus: 'idle',
+  arcadeAccess: null,
+  arcadeOpen: false
 };
 
 const references = {
@@ -78,13 +84,14 @@ function currentPage(){
   const hash = location.hash.replace('#','');
   const moduleId=moduleHost?.routeId(hash);
   if(moduleId)return moduleHost.definition(moduleId).returnPage;
-  const page=navItems.some(n=>n[0]===hash) ? hash : 'adventure';
+  const page=studentNavItems().some(n=>n[0]===hash) ? hash : 'adventure';
   return (page==='games'||page==='scribe')&&!state.dailyAccessUnlocked?'missions':page;
 }
 
 function currentModuleId(){return moduleHost?.routeId(location.hash)||''}
 
 function navMarkup(){
+  const extras=studentNavItems().slice(navItems.length);
   return `
     <div class="nav-group-title">Explore</div>
     <nav class="portal-nav" aria-label="Student portal">
@@ -93,7 +100,7 @@ function navMarkup(){
     <div class="nav-group-title">Dragonswood</div>
     <nav class="portal-nav" aria-label="Dragonswood features">
       ${navItems.slice(5).map(navButton).join('')}
-    </nav>
+    </nav>${extras.length?`\n    <div class="nav-group-title">Free Time</div><nav class="portal-nav" aria-label="Free-time features">${extras.map(navButton).join('')}</nav>`:''}
     <div class="streak-card">
       <div class="streak-top"><span class="streak-flame">🔥</span><div><b>${state.streak} day streak!</b><small>Keep it going</small></div></div>
       <div class="row between mt-12"><small>Weekly goal</small><small>70%</small></div>
@@ -137,6 +144,7 @@ function pageMarkup(){
     case 'hall': return hallPage();
     case 'boss': return bossPage();
     case 'leaderboards': return leaderboardPage();
+    case 'arcade': return arcadePage();
     default: return adventurePage();
   }
 }
@@ -238,6 +246,15 @@ function leaderboardPage(){
   <div class="leader-topline"><div class="filter-tabs"><button class="filter-tab active">📅 This Week</button><button class="filter-tab">🏰 All Time</button></div><span class="leader-reward-note">⭐ Top 5 earn one reward each school day</span></div><section class="leader-layout"><article class="panel rank-list"><div class="rank-heading"><span class="sparkle-big">✨</span><div><div class="eyebrow">OVERALL XP</div><h2>This Week’s Adventurers</h2></div></div>${ranks.map((r,i)=>`<div class="rank-row ${i===4?'you':''}"><div class="rank-medal">${r[0]}</div><div class="rank-avatar">${r[1]}</div><div><b>${r[2]}</b><div class="muted text-9">${r[3]}</div></div><div class="rank-score">${r[4]}<small> XP</small></div></div>`).join('')}</article><aside class="rank-side"><article class="panel rank-card"><div class="rank-dragon">🐉</div><div class="eyebrow">YOUR RANK</div><h2>#5</h2><p>You moved up <b>2 places</b> this week!</p><div class="xp-labels"><span>120 XP to #4</span><span>82%</span></div><progress class="dw-progress" max="100" value="82">82%</progress></article><article class="panel shine-card"><div class="eyebrow">MORE WAYS TO SHINE</div><h3>🌟 Class shout-outs</h3>${[['💛','Kindness','Alaina helped a classmate'],['🔥','Biggest Growth','Alejandro gained +4 points'],['📚','Reading Streak','Joshua reached 10 days']].map(s=>`<div class="shine-row"><span>${s[0]}</span><div><b>${s[1]}</b><small>${s[2]}</small></div></div>`).join('')}</article></aside></section>`;
 }
 
+function arcadePage(){
+  if(state.arcadeOpen&&state.arcadeAccess?.teacherEnabled){
+    return `<section class="v33-module-shell"><div class="v33-module-toolbar"><div class="v33-module-heading"><span>🕹️</span><div><small>FREE-TIME ADVENTURE</small><h2>Dragonswood Arcade</h2></div></div><button class="btn btn-secondary btn-sm" type="button" data-arcade-close>Back</button></div><div class="v33-module-stage"><iframe class="v33-module-frame" title="Dragonswood Arcade" src="${escapeHtml(arcadePortal.href())}"></iframe></div></section>`;
+  }
+  const a=state.arcadeAccess||{},count=Math.max(0,Math.min(3,Number(a.tokens)||0));
+  const ready=a.teacherEnabled===true&&(count===3||a.active===true),loading=state.arcadeStatus==='loading';
+  return `${studentTitle('🕹️','Free-time currency','Arcade Time','Earn Ready, Responsible, and Complete Tokens. Three Tokens unlock one teacher-approved 30-minute session.')}<section class="adventure-grid"><article class="panel adventurer-card"><div class="adventurer-info"><span class="rarity-chip">ARCADE TOKEN WALLET</span><h2>${count} / 3 Tokens</h2><p>Your wallet cannot hold more than three.</p><div class="stat-row">${[1,2,3].map(i=>`<div class="stat-box"><strong>${i<=count?'🪙':'○'}</strong><small>${i<=count?'Earned':'Empty'}</small></div>`).join('')}</div><button class="btn btn-secondary w-full" type="button" data-arcade-refresh ${loading?'disabled':''}>${loading?'Checking…':'Refresh access'}</button></div></article><article class="panel next-step"><div class="eyebrow">${a.teacherEnabled?'ARCADE TIME OPEN':'TEACHER LOCK'}</div><div class="next-icon">${a.teacherEnabled?'🕹️':'🔒'}</div><h2>${a.active?'Session in progress':a.teacherEnabled?'Ready when you have 3 Tokens':'Arcade is closed right now'}</h2><p>${a.active?'Your authoritative timer follows you across refreshes, tabs, and devices.':a.teacherEnabled?'Spend all 3 Tokens inside the Arcade to start exactly 30 minutes.':'Like a field trip or second recess, Arcade opens only when your teacher activates it.'}</p><button class="btn btn-primary w-full" type="button" data-arcade-enter ${ready?'':'disabled'}>${a.active?'Return to Arcade':'Open Arcade Time'}</button><p class="center muted mt-12 text-11">Games record scores only • No Gold, XP, or Tokens from gameplay</p></article></section>`;
+}
+
 function escapeHtml(value){return String(value??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 
 function applyStudentModel(model){
@@ -260,7 +277,7 @@ function render(){
   app.innerHTML=shell();
   bind();
   const moduleId=currentModuleId();
-  document.title=`[TESTER] Dragonswood | ${moduleId?moduleHost.definition(moduleId).title:navItems.find(n=>n[0]===state.page)[2]}`;
+  document.title=`[TESTER] Dragonswood | ${moduleId?moduleHost.definition(moduleId).title:studentNavItems().find(n=>n[0]===state.page)[2]}`;
 }
 function bindAuthGate(){
   app.querySelector('[data-signin]')?.addEventListener('click',async()=>{try{await integrationController?.signIn()}catch(err){showToast(`Sign-in failed: ${err?.code||err?.message||err}`)}});
@@ -271,6 +288,9 @@ function bind(){
   app.querySelectorAll('[data-module]').forEach(el=>el.addEventListener('click',()=>openModule(el.dataset.module)));
   app.querySelector('[data-close-module]')?.addEventListener('click',closeModule);
   app.querySelector('[data-retry-module]')?.addEventListener('click',()=>mountModule(currentModuleId()));
+  app.querySelector('[data-arcade-refresh]')?.addEventListener('click',refreshArcadePortal);
+  app.querySelector('[data-arcade-enter]')?.addEventListener('click',()=>{state.arcadeOpen=true;render()});
+  app.querySelector('[data-arcade-close]')?.addEventListener('click',()=>{state.arcadeOpen=false;render()});
   app.querySelectorAll('[data-toast]').forEach(el=>el.addEventListener('click',()=>showToast(el.dataset.toast)));
   app.querySelector('[data-signout]')?.addEventListener('click',async()=>{try{await integrationController?.signOut()}catch(err){showToast(`Sign-out failed: ${err?.message||err}`)}});
   app.querySelectorAll('[data-read]').forEach(el=>el.addEventListener('click',readPage));
@@ -285,6 +305,13 @@ function bind(){
   app.querySelectorAll('[data-pet]').forEach(el=>el.addEventListener('click',()=>openModule('adventurer-hall')));
   app.querySelectorAll('[data-move]').forEach(el=>el.addEventListener('click',()=>openModule('boss-battle')));
   if(currentModuleId())mountModule(currentModuleId());
+  if(state.page==='arcade'&&state.arcadeStatus==='idle')refreshArcadePortal();
+}
+
+async function refreshArcadePortal(){
+  if(!arcadePortal)return;state.arcadeStatus='loading';if(state.page==='arcade')render();
+  try{state.arcadeAccess=await arcadePortal.getAccess();state.arcadeStatus='ready'}catch(err){state.arcadeStatus='error';state.arcadeAccess={tokens:0,teacherEnabled:false};showToast(err?.message||'Arcade access is unavailable.')}
+  if(state.page==='arcade')render();
 }
 
 function openPage(page){
@@ -302,12 +329,13 @@ function closeModule(){
 function mountModule(id){if(id)moduleHost?.mount(app,id,location.href)}
 
 function readPage(){
-  const title=navItems.find(n=>n[0]===state.page)[2];
+  const title=studentNavItems().find(n=>n[0]===state.page)?.[2]||'Dragonswood';
   if('speechSynthesis' in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(`Dragonswood. ${title}. ${document.querySelector('#page-content h1')?.textContent||''}`);u.rate=.9;speechSynthesis.speak(u);showToast('Read-aloud started.');}else showToast('Read-aloud is not available in this browser.');
 }
 function passesDialog(){openDialog('Passes',`<p class="muted">Pass controls live in their own protected area so they never cover the Dragonswood title.</p><div class="grid-2 mt-12"><button class="btn btn-primary" data-close-dialog>🚻 Request Bathroom Pass</button><button class="btn btn-secondary" data-close-dialog>💧 Request Water Pass</button></div>`)}
 function showReference(){
   const path=references[state.page];
+  if(!path){openDialog('New approved route',`<p>Arcade Time is an approved addition after the original eight-page V3.3 visual baseline. It uses the same V3.3 shell without modifying the protected original routes.</p>`);return}
   const overlay=document.createElement('div');overlay.className='reference-overlay';overlay.innerHTML=`<button class="btn btn-gold reference-close">Close reference</button><img src="${path}" alt="Approved reference screenshot for current page">`;document.body.appendChild(overlay);overlay.querySelector('button').addEventListener('click',()=>overlay.remove());
 }
 function writingHint(){

@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dragonswood | Student Portal</title><link rel="icon" type="image/png" href="dragonswood-volleyball-crest-v1.png"><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dragonswood | Student Portal</title><link rel="icon" type="image/png" href="dragonswood-volleyball-crest-v1.png"><link rel="stylesheet" href="dragonswood-module-host.css?v=57.1"><style>
 :root{
  --bg:#05030c;--bg2:#090516;--panel:#0b0819;--panel2:#110b25;
  --purple:#652DC1;--purple2:#9d48ff;--cyan:#02CCFE;--cyan2:#77edff;
@@ -2309,8 +2309,8 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
     <button class="portal-tab" type="button" data-view="scribe" onclick="DragonswoodNav('scribe')"><span>✍️</span><b>SCRIBE ARENA</b></button>
     <button class="portal-tab" type="button" data-view="planner" onclick="DragonswoodNav('planner')"><span>🕐</span><b>SCHEDULE &amp; CALENDAR</b></button>
     <div class="nav-divider"><span>DRAGONSWOOD</span></div>
-    <button class="portal-tab" type="button" onclick="location.href='adventurer-hall.html'"><span>⚔️</span><b>ADVENTURER HALL</b></button>
-    <button class="portal-tab" type="button" onclick="location.href='boss-battle.html'"><span>👹</span><b>DAILY BOSS BATTLE</b></button>
+    <button class="portal-tab" type="button" data-module="adventurer-hall"><span>⚔️</span><b>ADVENTURER HALL</b></button>
+    <button class="portal-tab" type="button" data-module="boss-battle"><span>👹</span><b>DAILY BOSS BATTLE</b></button>
     <button class="portal-tab" type="button" data-view="leaderboard" onclick="DragonswoodNav('leaderboard')"><span>🏆</span><b>LEADERBOARDS</b></button>
   </nav>
 
@@ -2795,6 +2795,29 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
     </div>
   </section>
 
+  <!-- LARGE FEATURE MODULES
+       The current portal remains the visual/navigation shell. Existing feature
+       files load only while students use them and are destroyed on close. -->
+  <section class="portal-view" id="view-module" data-page="module" aria-hidden="true">
+    <div class="dw-module-shell">
+      <div class="dw-module-toolbar">
+        <div class="dw-module-heading">
+          <span class="dw-module-icon" id="dwModuleIcon" aria-hidden="true">🛡️</span>
+          <div><small>DRAGONSWOOD ADVENTURE</small><h2 id="dwModuleTitle">Loading Adventure…</h2></div>
+        </div>
+        <div class="dw-module-actions">
+          <a id="dwModuleExternal" href="index.html" target="_blank" rel="noopener" data-module-direct>OPEN SEPARATELY</a>
+          <button type="button" data-close-module>← BACK TO PORTAL</button>
+        </div>
+      </div>
+      <div class="dw-module-stage">
+        <div class="dw-module-loading" id="dwModuleLoading"><div><span>🛡️</span><b>Opening your adventure…</b><small>The portal remains protected while this feature loads.</small></div></div>
+        <div class="dw-module-error" id="dwModuleError" hidden><div><h3>This adventure did not load.</h3><p>Your work and student data were not changed. You may retry or return safely.</p><button type="button" data-retry-module>RETRY</button></div></div>
+        <iframe class="dw-module-frame" id="dwModuleFrame" title="Dragonswood adventure" allow="autoplay; clipboard-read; clipboard-write; fullscreen" referrerpolicy="same-origin"></iframe>
+      </div>
+    </div>
+  </section>
+
 </section>
 
 </main>
@@ -2822,10 +2845,15 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
 
 <script id="dragonswood-navigation-core">
 (function(){
-  const views=["home","games","planner","poll","shop","quests","leaderboard","scribe"];
+  const views=["home","games","planner","poll","shop","quests","leaderboard","scribe","module"];
 
   window.DWDailyAccessUnlocked=false;
   function show(view, updateHash){
+    let moduleId="";
+    if(typeof view==="string"&&view.indexOf("module/")===0){
+      moduleId=decodeURIComponent(view.slice(7));
+      view="module";
+    }
     if(view==="schedule"||view==="calendar") view="planner";
     if(view==="journal") view="scribe";
     if(!views.includes(view)) view="home";
@@ -2850,22 +2878,35 @@ main, .main, .content, .shell, .page, .portal-shell, .teacher-shell {
       tab.setAttribute("aria-current",active?"page":"false");
     });
 
+    if(view==="module"&&moduleId){
+      window.setTimeout(function(){
+        if(window.DragonswoodModules)window.DragonswoodModules.syncFromRoute(moduleId);
+      },0);
+    }else if(window.DragonswoodModules){
+      window.DragonswoodModules.unload();
+    }
+
     if(updateHash!==false){
-      try{ history.replaceState(null,"","#"+view); }
+      const nextHash=view==="module"&&moduleId?"#module/"+encodeURIComponent(moduleId):"#"+view;
+      try{ history.replaceState(null,"",nextHash); }
       catch(e){ location.hash=view; }
     }
   }
 
-  window.DragonswoodNav=function(view){ show(view,true); };
+  window.DragonswoodNav=function(view,updateHash){ show(view,updateHash!==false); };
 
   document.addEventListener("click",function(e){
     const tab=e.target.closest ? e.target.closest(".portal-tab") : null;
     if(!tab) return;
+    if(tab.hasAttribute("data-module")) return;
     e.preventDefault();
     show(tab.getAttribute("data-view")||"home",true);
   },true);
 
   window.addEventListener("hashchange",function(){
+    show((location.hash||"#home").slice(1),false);
+  });
+  window.addEventListener("popstate",function(){
     show((location.hash||"#home").slice(1),false);
   });
 
@@ -6287,5 +6328,6 @@ body:has(#profileModal:not(.hidden)){overflow:hidden}
   .header-restrictions{justify-content:center!important}
 }
 </style>
+<script src="dragonswood-module-host.js?v=57.1"></script>
 <script type="module" src="dragonswood-student-tools.js?v=57.0"></script>
 </body></html>

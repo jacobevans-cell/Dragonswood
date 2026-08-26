@@ -1,0 +1,90 @@
+/* Dragonswood current-portal module host.
+   Large systems stay isolated in their existing HTML files while students
+   keep the current portal navigation and visual shell around them. */
+#view-module{
+  min-width:0;
+}
+.dw-module-shell{
+  min-height:calc(100vh - 120px);
+  overflow:hidden;
+  border:1px solid rgba(190,148,255,.56);
+  border-radius:16px;
+  background:linear-gradient(180deg,rgba(7,10,38,.98),rgba(3,12,29,.98));
+  box-shadow:0 18px 48px rgba(0,0,0,.38);
+}
+.dw-module-toolbar{
+  position:relative;
+  z-index:3;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:12px;
+  align-items:center;
+  min-height:70px;
+  padding:11px 14px;
+  border-bottom:1px solid rgba(255,227,109,.34);
+  background:
+    radial-gradient(circle at 20% 0,rgba(115,57,205,.28),transparent 46%),
+    linear-gradient(100deg,rgba(13,17,52,.98),rgba(3,25,45,.98));
+}
+.dw-module-heading{display:flex;align-items:center;gap:11px;min-width:0}
+.dw-module-icon{font-size:31px;line-height:1;filter:drop-shadow(0 0 9px rgba(141,222,255,.4))}
+.dw-module-heading small{display:block;color:#8feeff;font-size:8px;font-weight:1000;letter-spacing:1.5px}
+.dw-module-heading h2{margin:2px 0 0;color:#fff0a0;font:900 clamp(19px,2.5vw,29px) Georgia,serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dw-module-actions{display:flex;align-items:center;gap:8px}
+.dw-module-actions button,.dw-module-actions a{
+  min-height:40px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid #ffe36d;
+  border-radius:10px;
+  padding:8px 12px;
+  color:#fff;
+  background:linear-gradient(90deg,#7132c9,#078eb2);
+  font:900 10px Arial,sans-serif;
+  text-decoration:none;
+  cursor:pointer;
+}
+.dw-module-actions a{border-color:#75618f;background:#0b102d;color:#d8cde6}
+.dw-module-stage{position:relative;min-height:720px;background:#030416}
+.dw-module-frame{
+  display:block;
+  width:100%;
+  height:calc(100vh - 205px);
+  min-height:720px;
+  border:0;
+  background:#030416;
+}
+.dw-module-loading,.dw-module-error{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  display:grid;
+  place-items:center;
+  padding:30px;
+  text-align:center;
+  color:#e9e3f4;
+  background:radial-gradient(circle at 50% 35%,rgba(90,50,165,.28),transparent 45%),#05071d;
+}
+.dw-module-loading[hidden],.dw-module-error[hidden]{display:none}
+.dw-module-loading div,.dw-module-error div{max-width:520px}
+.dw-module-loading span{display:block;font-size:46px;animation:dwModulePulse 1.2s ease-in-out infinite}
+.dw-module-loading b,.dw-module-error h3{display:block;margin:9px 0;color:#fff0a0;font:900 24px Georgia,serif}
+.dw-module-loading small,.dw-module-error p{color:#c4bad3}
+.dw-module-error button{margin-top:10px}
+@keyframes dwModulePulse{50%{transform:scale(1.12);filter:drop-shadow(0 0 16px #8deeff)}}
+body.dw-module-open #profileModal{display:none!important}
+@media(max-width:1050px){
+  .dw-module-shell{min-height:calc(100vh - 215px)}
+  .dw-module-frame{height:calc(100vh - 285px);min-height:650px}
+  .dw-module-stage{min-height:650px}
+}
+@media(max-width:620px){
+  .dw-module-toolbar{grid-template-columns:1fr;padding:9px}
+  .dw-module-actions{display:grid;grid-template-columns:1fr auto}
+  .dw-module-actions button,.dw-module-actions a{min-height:38px;padding:7px 9px}
+  .dw-module-heading h2{font-size:20px}
+  .dw-module-frame{height:calc(100vh - 330px);min-height:600px}
+  .dw-module-stage{min-height:600px}
+}
+@media(prefers-reduced-motion:reduce){.dw-module-loading span{animation:none}}

@@ -34,6 +34,23 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid == uid;
     }
 
+    // A student may have only one pending extra-pass request across every
+    // pass type. The exceptType record is the one being created or refreshed.
+    function hasNoOtherPendingExtraPass(uid, dateKey, exceptType) {
+      return (exceptType == 'bathroom'
+              || !exists(/databases/$(database)/documents/bathroomRequests/$(uid + '_' + dateKey))
+              || get(/databases/$(database)/documents/bathroomRequests/$(uid + '_' + dateKey)).data.status != 'pending')
+          && (exceptType == 'snack'
+              || !exists(/databases/$(database)/documents/snackRequests/$(uid + '_' + dateKey))
+              || get(/databases/$(database)/documents/snackRequests/$(uid + '_' + dateKey)).data.status != 'pending')
+          && (exceptType == 'outOfSeat'
+              || !exists(/databases/$(database)/documents/passRequests/$(uid + '_outOfSeat_' + dateKey))
+              || get(/databases/$(database)/documents/passRequests/$(uid + '_outOfSeat_' + dateKey)).data.status != 'pending')
+          && (exceptType == 'office'
+              || !exists(/databases/$(database)/documents/passRequests/$(uid + '_office_' + dateKey))
+              || get(/databases/$(database)/documents/passRequests/$(uid + '_office_' + dateKey)).data.status != 'pending');
+    }
+
     // Seating Command is teacher-only. Student presentation is rendered from
     // the authenticated teacher page and never reads these private rules.
     match /classrooms/{classroomId}/seatingPlans/{planId} {
@@ -590,12 +607,18 @@ service cloud.firestore {
     match /bathroomRequests/{requestId} {
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid
-                    && request.resource.data.status == "pending";
-      allow read: if isTeacher() || (isSignedIn() && resource.data.studentId == request.auth.uid);
+                    && request.resource.data.status == "pending"
+                    && requestId == request.auth.uid + '_' + request.resource.data.dateKey
+                    && hasNoOtherPendingExtraPass(request.auth.uid, request.resource.data.dateKey, 'bathroom');
+      allow read: if isTeacher()
+                  || (isSignedIn() && requestId.matches('^' + request.auth.uid + '_.*$'))
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
       allow update: if isExploreStudent()
                     && resource.data.studentId == request.auth.uid
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.status == "pending"
+                    && requestId == request.auth.uid + '_' + request.resource.data.dateKey
+                    && hasNoOtherPendingExtraPass(request.auth.uid, request.resource.data.dateKey, 'bathroom')
                     && request.resource.data.diff(resource.data).affectedKeys()
                          .hasOnly(['status','createdAt','updatedAt']);
       allow update, delete: if isTeacher();
@@ -637,12 +660,18 @@ service cloud.firestore {
     match /snackRequests/{requestId} {
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid
-                    && request.resource.data.status == "pending";
-      allow read: if isTeacher() || (isSignedIn() && resource.data.studentId == request.auth.uid);
+                    && request.resource.data.status == "pending"
+                    && requestId == request.auth.uid + '_' + request.resource.data.dateKey
+                    && hasNoOtherPendingExtraPass(request.auth.uid, request.resource.data.dateKey, 'snack');
+      allow read: if isTeacher()
+                  || (isSignedIn() && requestId.matches('^' + request.auth.uid + '_.*$'))
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
       allow update: if isExploreStudent()
                     && resource.data.studentId == request.auth.uid
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.status == "pending"
+                    && requestId == request.auth.uid + '_' + request.resource.data.dateKey
+                    && hasNoOtherPendingExtraPass(request.auth.uid, request.resource.data.dateKey, 'snack')
                     && request.resource.data.diff(resource.data).affectedKeys()
                          .hasOnly(['status','createdAt','updatedAt']);
       allow update, delete: if isTeacher();
@@ -729,12 +758,18 @@ service cloud.firestore {
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.status == "pending"
-                    && request.resource.data.type in ['outOfSeat','office'];
-      allow read: if isTeacher() || (isSignedIn() && resource.data.studentId == request.auth.uid);
+                    && request.resource.data.type in ['outOfSeat','office']
+                    && requestId == request.auth.uid + '_' + request.resource.data.type + '_' + request.resource.data.dateKey
+                    && hasNoOtherPendingExtraPass(request.auth.uid, request.resource.data.dateKey, request.resource.data.type);
+      allow read: if isTeacher()
+                  || (isSignedIn() && requestId.matches('^' + request.auth.uid + '_.*$'))
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
       allow update: if isExploreStudent()
                     && resource.data.studentId == request.auth.uid
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.status == "pending"
+                    && requestId == request.auth.uid + '_' + request.resource.data.type + '_' + request.resource.data.dateKey
+                    && hasNoOtherPendingExtraPass(request.auth.uid, request.resource.data.dateKey, request.resource.data.type)
                     && request.resource.data.diff(resource.data).affectedKeys()
                          .hasOnly(['status','createdAt','updatedAt']);
       allow update, delete: if isTeacher();

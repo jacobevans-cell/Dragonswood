@@ -626,6 +626,7 @@ const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const DOMAIN="explore.academy",TEACHER="jacobicusjax@gmail.com";
 const $=id=>document.getElementById(id);
 let bathroomUnsub=null,bathroomSlotUnsub=null,bathroomSlotData=null,snackUnsub=null,currentBathroomData=null,currentSnackData=null;
+let extraPassRequestUnsubs=[],extraPassRequestRows={};
 let user=null,profile=null,rewards=[],classPoints=0,scores=[],studentLeaderboardRewards=[],studentCurriculumRows=[],studentCurriculumAttempts=[],studentGradeOverrides=[],studentGradeAssignments=[],studentGradeSettings={daily:40,curriculum:40,reading:20},shopItems=[],myPurchases=[],classJobsConfig=null,myJobWeek=null,classScheduleConfig=null,classCalendarEvents=[],shopFilter="all",shopSort="level",inventoryFilter="all",profileUnsub=null,purchasesUnsub=null,dailyProgressUnsub=null,dailyOverrideUnsub=null,studentCurriculumUnsub=null,studentCurriculumAttemptsUnsub=null,studentGradeOverridesUnsub=null,studentGradeAssignmentsUnsub=null,dailyProgressRows=[],dailyOverrideData={},isTesterAccount=false;
 window.addEventListener("dw:narration-voice-change",async e=>{const voiceId=e.detail?.voiceId||"automatic";if(!user||profile?.narrationVoice===voiceId)return;profile={...(profile||{}),narrationVoice:voiceId};if($("narrationVoice"))$("narrationVoice").value=voiceId;try{await setDoc(doc(db,"students",user.uid),{narrationVoice:voiceId,updatedAt:serverTimestamp()},{merge:true})}catch(err){console.warn("Could not sync narration preference",err)}});
 
@@ -793,6 +794,18 @@ function studentBathroomGroup(){
 function bathroomGroupLabel(g){
   return g==="girl"?"Girls":"Boys";
 }
+function pendingExtraPassRequest(){return Object.values(extraPassRequestRows).find(x=>x?.status==="pending")||null}
+function pendingExtraPassLabel(r){if(!r)return"extra pass";if(r._kind==="bathroom")return"Water & Bathroom";if(r._kind==="snack")return"Snack";return r.type==="office"?"Emergency Office":"Out of Seat"}
+function watchExtraPassRequests(){
+ extraPassRequestUnsubs.forEach(u=>{try{u()}catch(e){}});extraPassRequestUnsubs=[];extraPassRequestRows={};if(!user)return;
+ const key=phoenixDateKey(),refs=[
+  ["bathroom",doc(db,"bathroomRequests",`${user.uid}_${key}`)],
+  ["snack",doc(db,"snackRequests",`${user.uid}_${key}`)],
+  ["outOfSeat",doc(db,"passRequests",`${user.uid}_outOfSeat_${key}`)],
+  ["office",doc(db,"passRequests",`${user.uid}_office_${key}`)]
+ ];
+ refs.forEach(([kind,ref])=>extraPassRequestUnsubs.push(onSnapshot(ref,s=>{extraPassRequestRows[kind]=s.exists()?{...s.data(),_kind:kind}:null;renderBathroomStudent(currentBathroomData);renderSnackStudent(currentSnackData);refreshPassHub()},e=>console.warn(kind+" request",e))));
+}
 function watchBathroom(){
   if(bathroomUnsub){try{bathroomUnsub()}catch(e){} bathroomUnsub=null}
   if(bathroomSlotUnsub){try{bathroomSlotUnsub()}catch(e){} bathroomSlotUnsub=null}
@@ -914,6 +927,9 @@ function renderBathroomStudent(d){
    baseText+=` ⏳ ${who} is currently using the ${bathroomGroupLabel(group)} bathroom pass. Wait until ${who} returns. Your pass will NOT be used.`;
  }
  txt.textContent=baseText;
+
+ const pendingRequest=pendingExtraPassRequest();
+ if(used>=3&&credits<=0&&pendingRequest){txt.textContent=`⏳ Your ${pendingExtraPassLabel(pendingRequest)} extra-pass request is waiting for teacher review. You cannot request another extra pass yet.`;btn.textContent='⏳ REQUEST SENT';btn.disabled=true;btn.onclick=null;return}
 
  btn.textContent=used<3?'🚻 USE BATHROOM PASS':credits>0?'🚻 USE APPROVED PASS':'🙋 REQUEST EXTRA PASS';
  btn.disabled=slotOccupied&&!slotMine;
@@ -1413,6 +1429,8 @@ async function useGenericPass(type){
 
   const same=d?.dateKey===key,used=same?(+d?.passesUsed||0):0,credits=same?(+d?.approvalCredits||0):0;
   if(used>=1&&credits<=0){
+    const pendingRequest=pendingExtraPassRequest();
+    if(pendingRequest){$('studentPassHubStatus').textContent=`⏳ Your ${pendingExtraPassLabel(pendingRequest)} extra-pass request is still pending. You cannot request another extra pass yet.`;return}
     const requestId=`${user.uid}_${type}_${key}`;
     await setDoc(doc(db,'passRequests',requestId),{
       studentId:user.uid,studentName:studentDisplayName(),type,label:meta.label,dateKey:key,status:'pending',createdAt:serverTimestamp(),updatedAt:serverTimestamp()
@@ -1430,6 +1448,7 @@ async function useGenericPass(type){
 }
 function watchUnifiedPassHub(){
   if(!user)return;
+  watchExtraPassRequests();
   dwStartPassReminderEngine();
   if(passBlackoutUnsub){try{passBlackoutUnsub()}catch(e){}}
   passBlackoutUnsub=onSnapshot(doc(db,'classData','passBlackout'),s=>{passBlackoutState=s.exists()?s.data():{active:false};refreshPassHub()},e=>console.warn('pass blackout',e));
@@ -1520,6 +1539,8 @@ function renderSnackStudent(d){
 
   btn.textContent=used<2?'🍎 USE SNACK PASS':credits>0?'🍎 USE APPROVED SNACK PASS':'🙋 REQUEST EXTRA SNACK PASS';
   btn.disabled=false;
+  const pendingRequest=pendingExtraPassRequest();
+  if(used>=2&&credits<=0&&pendingRequest){txt.textContent=`⏳ Your ${pendingExtraPassLabel(pendingRequest)} extra-pass request is waiting for teacher review. You cannot request another extra pass yet.`;btn.textContent='⏳ REQUEST SENT';btn.disabled=true;btn.onclick=null;return}
   btn.onclick=async()=>{
     btn.disabled=true;
     try{

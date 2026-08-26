@@ -1,5 +1,6 @@
 (function(){
   const page=/boss-battle/i.test(location.pathname)?'boss':'hall';document.body.classList.add('v2-subpage');document.body.dataset.v2Page=page;
+  const legacyPortal=document.querySelector('body > header.shell.top a.btn[href^="index.html"]');if(legacyPortal)legacyPortal.hidden=true;
   if(!document.querySelector('link[href="dragonswood-student-redesign-v2.css"]')){const css=document.createElement('link');css.rel='stylesheet';css.href='dragonswood-student-redesign-v2.css';document.head.append(css)}
   const nav=[['home','🛡️','My Adventure','Home base','index.html#home'],['quests','📜','Daily Missions','Do this first','index.html#quests'],['games','🎮','Academic Games','Learn & play','index.html#games'],['scribe','✍️','Scribe Arena','Write & grow','index.html#scribe'],['planner','🗓️','My Day','Schedule','index.html#planner'],['hall','⚔️','Adventurer Hall','Gear & pets','adventurer-hall.html'],['boss','🐲','Boss Battle','Daily challenge','boss-battle.html'],['leaderboard','🏆','Leaderboards','Class champions','index.html#leaderboard']];
   const row=item=>`<a class="${item[0]===page?'active':''}" href="${item[4]}"><span>${item[1]}</span><p><b>${item[2]}</b><small>${item[3]}</small></p></a>`;

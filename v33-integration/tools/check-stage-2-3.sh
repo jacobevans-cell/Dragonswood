@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
 
 node --check "$ROOT/js/integration/core.js"
 node --check "$ROOT/js/integration/runtime.js"
@@ -10,9 +11,17 @@ node --check "$ROOT/js/integration/arcade-portal.js"
 node --check "$ROOT/js/integration/arcade-teacher.js"
 node --check "$ROOT/js/student-app.js"
 node --check "$ROOT/js/teacher-app.js"
+node --check "$ROOT/../arcade/js/manual-preview-store.js"
+node --check "$ROOT/../arcade/js/manual-preview-bootstrap.js"
+node --check "$ROOT/../arcade/js/manual-preview-arcade.js"
+node --check "$ROOT/../kingdom-wars/manual-preview-access.mjs"
+node --check "$ROOT/tools/manual-preview-runtime.js"
+node --check "$ROOT/tools/manual-preview-launcher.js"
 node --check "$ROOT/tools/firebase-identity-gate.cjs"
 node "$ROOT/tools/test-integration-core.cjs"
 node "$ROOT/tools/test-module-host.cjs"
+node "$ROOT/tools/test-manual-preview-store.cjs"
+node "$ROOT/tools/test-manual-preview-runtime.cjs"
 node "$ROOT/tools/render-smoke.cjs"
 python "$ROOT/tools/verify_visual_freeze.py"
 

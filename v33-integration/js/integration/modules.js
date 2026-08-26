@@ -69,6 +69,12 @@
     const loading=root?.querySelector?.('[data-module-loading]');
     const error=root?.querySelector?.('[data-module-error]');
     if(!frame)return false;
+    if(globalThis.DWV33Integration?.environment==='manual-preview'){
+      // The manual acceptance build may display current production module markup,
+      // but it must never execute a production module script or submit a form.
+      frame.setAttribute('sandbox','allow-same-origin');
+      frame.setAttribute('data-manual-preview-read-only','true');
+    }
     frame.onload=()=>{if(loading)loading.hidden=true;if(error)error.hidden=true;prepareChild(frame)};
     frame.onerror=()=>{if(loading)loading.hidden=true;if(error)error.hidden=false};
     frame.src=href(id,baseHref);

@@ -17,6 +17,10 @@ function status(text) {
 export async function initCloudSync({ getSnapshot, applySnapshot, onStatus } = {}) {
   state.getSnapshot = getSnapshot || null;
   state.onStatus = onStatus || null;
+  if(new URLSearchParams(location.search).get('dw-manual-preview')==='1'){
+    status('LOCAL PREVIEW');
+    return {enabled:false,preview:true};
+  }
   try {
     status('CONNECTING…');
     const C=await getFirebaseContext(),user=C.user,dbMod=C.fsMod;

@@ -39,11 +39,11 @@ Passed at the frozen SHA:
 
 The bundled Stage 2-3 candidate additionally passed its integration-core, route smoke, 31-file visual freeze, and emulator-isolation static checks.
 
-## Pending process gate
+## Historical process gate (completed after this baseline)
 
 The real Firebase Auth + Firestore emulator suite could not start in this environment because the official Firestore emulator JAR is hosted on a blocked download domain. The Firebase CLI itself installed successfully. No production Firebase project, data, rules, or account was used.
 
-Per the controlling V3.3 rules, Stage 4 production-behavior wiring remains blocked until `tools/run-firebase-gate.sh` passes with fictional project `demo-dragonswood-v33`.
+That original Auth + Firestore gate later passed in Codespace and is recorded by commit `0b448ee`. The current remaining process gate is the expanded Arcade Functions/Firestore matrix in `tools/massive-integration/run-codespace-firebase-gate.sh`; see `CURRENT-CHECKPOINT.md`.
 
 ## Rollback authority
 

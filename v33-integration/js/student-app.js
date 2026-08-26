@@ -8,6 +8,7 @@ let integrationController=null;
 let integrationSession={status:'loading',message:'Loading Dragonswood identity…'};
 const moduleHost=window.DWV33Modules;
 const arcadePortal=window.DWV33ArcadePortal;
+const kingdomPortal=window.DWV33KingdomPortal;
 
 const navItems = [
   ['adventure','🛡️','My Adventure','Home base'],
@@ -20,7 +21,8 @@ const navItems = [
   ['leaderboards','🏆','Leaderboards','Class champions']
 ];
 const arcadeNav=['arcade','🕹️','Arcade Time','3 Tokens • 30 min'];
-function studentNavItems(){return arcadePortal?[...navItems,arcadeNav]:navItems}
+const kingdomNav=['kingdom','🏰','Kingdom Wars','After Morning Work'];
+function studentNavItems(){return [...navItems,...(kingdomPortal?[kingdomNav]:[]),...(arcadePortal?[arcadeNav]:[])]}
 
 const state = {
   page: 'adventure',
@@ -85,13 +87,13 @@ function currentPage(){
   const moduleId=moduleHost?.routeId(hash);
   if(moduleId)return moduleHost.definition(moduleId).returnPage;
   const page=studentNavItems().some(n=>n[0]===hash) ? hash : 'adventure';
-  return (page==='games'||page==='scribe')&&!state.dailyAccessUnlocked?'missions':page;
+  return (page==='games'||page==='scribe'||page==='kingdom')&&!state.dailyAccessUnlocked?'missions':page;
 }
 
 function currentModuleId(){return moduleHost?.routeId(location.hash)||''}
 
 function navMarkup(){
-  const extras=studentNavItems().slice(navItems.length);
+  const kingdomExtras=kingdomPortal?[kingdomNav]:[],freeExtras=arcadePortal?[arcadeNav]:[];
   return `
     <div class="nav-group-title">Explore</div>
     <nav class="portal-nav" aria-label="Student portal">
@@ -100,7 +102,7 @@ function navMarkup(){
     <div class="nav-group-title">Dragonswood</div>
     <nav class="portal-nav" aria-label="Dragonswood features">
       ${navItems.slice(5).map(navButton).join('')}
-    </nav>${extras.length?`\n    <div class="nav-group-title">Free Time</div><nav class="portal-nav" aria-label="Free-time features">${extras.map(navButton).join('')}</nav>`:''}
+    </nav>${kingdomExtras.length?`\n    <div class="nav-group-title">Kingdom</div><nav class="portal-nav" aria-label="Kingdom features">${kingdomExtras.map(navButton).join('')}</nav>`:''}${freeExtras.length?`\n    <div class="nav-group-title">Free Time</div><nav class="portal-nav" aria-label="Free-time features">${freeExtras.map(navButton).join('')}</nav>`:''}
     <div class="streak-card">
       <div class="streak-top"><span class="streak-flame">🔥</span><div><b>${state.streak} day streak!</b><small>Keep it going</small></div></div>
       <div class="row between mt-12"><small>Weekly goal</small><small>70%</small></div>
@@ -144,6 +146,7 @@ function pageMarkup(){
     case 'hall': return hallPage();
     case 'boss': return bossPage();
     case 'leaderboards': return leaderboardPage();
+    case 'kingdom': return kingdomPage();
     case 'arcade': return arcadePage();
     default: return adventurePage();
   }
@@ -255,6 +258,10 @@ function arcadePage(){
   return `${studentTitle('🕹️','Free-time currency','Arcade Time','Earn Ready, Responsible, and Complete Tokens. Three Tokens unlock one teacher-approved 30-minute session.')}<section class="adventure-grid"><article class="panel adventurer-card"><div class="adventurer-info"><span class="rarity-chip">ARCADE TOKEN WALLET</span><h2>${count} / 3 Tokens</h2><p>Your wallet cannot hold more than three.</p><div class="stat-row">${[1,2,3].map(i=>`<div class="stat-box"><strong>${i<=count?'🪙':'○'}</strong><small>${i<=count?'Earned':'Empty'}</small></div>`).join('')}</div><button class="btn btn-secondary w-full" type="button" data-arcade-refresh ${loading?'disabled':''}>${loading?'Checking…':'Refresh access'}</button></div></article><article class="panel next-step"><div class="eyebrow">${a.teacherEnabled?'ARCADE TIME OPEN':'TEACHER LOCK'}</div><div class="next-icon">${a.teacherEnabled?'🕹️':'🔒'}</div><h2>${a.active?'Session in progress':a.teacherEnabled?'Ready when you have 3 Tokens':'Arcade is closed right now'}</h2><p>${a.active?'Your authoritative timer follows you across refreshes, tabs, and devices.':a.teacherEnabled?'Spend all 3 Tokens inside the Arcade to start exactly 30 minutes.':'Like a field trip or second recess, Arcade opens only when your teacher activates it.'}</p><button class="btn btn-primary w-full" type="button" data-arcade-enter ${ready?'':'disabled'}>${a.active?'Return to Arcade':'Open Arcade Time'}</button><p class="center muted mt-12 text-11">Games record scores only • No Gold, XP, or Tokens from gameplay</p></article></section>`;
 }
 
+function kingdomPage(){
+  return `<section class="v33-module-shell"><div class="v33-module-toolbar"><div class="v33-module-heading"><span>🏰</span><div><small>UNLOCKED AFTER MORNING WORK</small><h2>Kingdom Wars</h2></div></div><button class="btn btn-secondary btn-sm" type="button" data-page="adventure">Back</button></div><div class="v33-module-stage"><iframe class="v33-module-frame" title="Kingdom Wars tester realm" src="${escapeHtml(kingdomPortal.href())}"></iframe></div></section>`;
+}
+
 function escapeHtml(value){return String(value??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 
 function applyStudentModel(model){
@@ -315,7 +322,7 @@ async function refreshArcadePortal(){
 }
 
 function openPage(page){
-  if((page==='games'||page==='scribe')&&!state.dailyAccessUnlocked){showToast('Finish Morning Work or ask for today’s teacher override first.');location.hash='missions';return}
+  if((page==='games'||page==='scribe'||page==='kingdom')&&!state.dailyAccessUnlocked){showToast('Finish Morning Work or ask for today’s teacher override first.');location.hash='missions';return}
   location.hash=page;
 }
 function openModule(id){
@@ -335,7 +342,7 @@ function readPage(){
 function passesDialog(){openDialog('Passes',`<p class="muted">Pass controls live in their own protected area so they never cover the Dragonswood title.</p><div class="grid-2 mt-12"><button class="btn btn-primary" data-close-dialog>🚻 Request Bathroom Pass</button><button class="btn btn-secondary" data-close-dialog>💧 Request Water Pass</button></div>`)}
 function showReference(){
   const path=references[state.page];
-  if(!path){openDialog('New approved route',`<p>Arcade Time is an approved addition after the original eight-page V3.3 visual baseline. It uses the same V3.3 shell without modifying the protected original routes.</p>`);return}
+  if(!path){openDialog('New approved route',`<p>This approved addition uses the V3.3 shell without modifying the protected original routes.</p>`);return}
   const overlay=document.createElement('div');overlay.className='reference-overlay';overlay.innerHTML=`<button class="btn btn-gold reference-close">Close reference</button><img src="${path}" alt="Approved reference screenshot for current page">`;document.body.appendChild(overlay);overlay.querySelector('button').addEventListener('click',()=>overlay.remove());
 }
 function writingHint(){

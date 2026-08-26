@@ -17,6 +17,7 @@ python dragonswood-v33-test/tools/verify.py
 
 (cd v33-integration && ./tools/check-stage-2-3.sh)
 (cd staged-systems/kingdom-wars-v11.1 && bash tools/verify-deploy-stage.sh)
+bash tools/massive-integration/run-integrated-kingdom-gate.sh
 (cd staged-systems/arcade-v1.6 && node scripts/preflight.mjs)
 (cd staged-systems/unified-math-v56.27-grayson-v58 && bash tools/verify-staged-donors.sh)
 bash tools/massive-integration/run-integrated-math-grayson-gate.sh

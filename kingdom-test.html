@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dragonswood Kingdom Wars • Hidden Tester</title>
+  <link rel="stylesheet" href="kingdom-wars/kingdom-wars.css">
+  <script src="pet-registry-v5614.js"></script>
+  <script src="dragonswood-rpg-v56.js"></script>
+  <script src="kingdom-wars/kingdom-wars-core.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <img class="crest" src="dragonswood-volleyball-crest-v1.png" alt="Dragonswood crest">
+    <div class="brand"><h1>KINGDOM WARS <small style="font-size:.34em;vertical-align:middle;color:#79e7ff">TESTER REALM</small></h1><p>Build your keep • Prepare your defenses • Raid fairly • Protect academic progress</p></div>
+    <div class="top-actions"><div class="claim-wrap"><button class="btn secondary" id="claimBtn">Collect Resources</button><small id="claimBanked">Checking banked production…</small></div><button class="btn secondary" id="resetTesterBtn" title="Reset only this browser's tester kingdom">Reset Test</button><a class="btn" href="v33-integration/student-test.html">← Portal</a></div>
+  </div>
+</header>
+<main class="shell">
+  <div id="status" class="notice" role="status" aria-live="polite">Loading your kingdom…</div>
+  <div id="demoNotice" class="notice demo">🧪 <b>Hidden Tester Realm.</b> Kingdom state is stored only in this browser. Normal students cannot enter this page.</div>
+  <div id="boostNotice" class="notice boost hidden" role="status"></div>
+  <div class="resource-bar">
+    <div class="resource"><span>🪵 Timber</span><strong id="timber">0</strong><small id="timberRate">+0/hr</small></div>
+    <div class="resource"><span>🪨 Stone</span><strong id="stone">0</strong><small id="stoneRate">+0/hr</small></div>
+    <div class="resource"><span>✨ Essence</span><strong id="essence">0</strong><small id="essenceRate">+0/hr</small></div>
+    <div class="resource"><span>👑 Crowns</span><strong id="crowns">0</strong><small id="seasonLabel">Season ranking</small></div>
+  </div>
+  <nav class="tabs" aria-label="Kingdom Wars sections">
+    <button class="tab active" data-tab="kingdom">🏰 My Kingdom</button>
+    <button class="tab" data-tab="war">⚔️ War Table</button>
+    <button class="tab" data-tab="history">📜 Battle Reports</button>
+    <button class="tab" data-tab="rankings">🏆 Rankings</button>
+  </nav>
+
+  <section id="tab-kingdom">
+    <div class="grid">
+      <div class="panel">
+        <div class="section-title"><h2 id="kingdomName">My Kingdom</h2><div class="title-actions"><button class="btn small gold" id="customizeBtn">🎨 Customize</button><button class="btn small secondary" id="renameBtn">Rename</button></div></div>
+        <section id="customizer" class="customizer hidden"><div class="customizer-head"><div><h3>🎨 Kingdom Appearance</h3><p>Architecture and colors are cosmetic only.</p></div><button class="btn small secondary" id="closeCustomizer">Close</button></div><h4>Base Style</h4><div class="style-picker"><button class="style-choice" data-style="dark"><span class="style-preview dark"></span><b>🌑 Dark Keep</b><small>Super evil • gothic • crystals • skull motifs</small></button><button class="style-choice" data-style="dragon"><span class="style-preview dragon"></span><b>🐉 Dragon Nest</b><small>Adventurous • horns • eggs • vines • blue magic</small></button><button class="style-choice" data-style="bright"><span class="style-preview bright"></span><b>🌼 Bright Keep</b><small>Warm • flowers • lanterns • eggs • no skulls</small></button></div><div class="customizer-row"><h4>Kingdom Colors</h4><div><button class="btn tiny secondary" id="classPaletteBtn">Class Default</button> <button class="btn tiny secondary" id="randomPaletteBtn">Randomize</button></div></div><div class="palette-picker" id="palettePicker"></div><details class="custom-colors"><summary>Custom Colors</summary><div class="color-fields"><label>Primary<input type="color" id="customPrimary" value="#1769d2"></label><label>Trim<input type="color" id="customSecondary" value="#f4c85a"></label><label>Magic Glow<input type="color" id="customGlow" value="#54d9ff"></label><button class="btn small" id="applyCustomPalette">Apply Custom</button></div></details><div class="life-controls"><h4>Living Kingdom</h4><label class="life-toggle"><input id="kingdomMotionToggle" type="checkbox" checked><span><b>Animate my realm</b><small>Adventurer and pet roam; buildings and ambience move. Automatically pauses offscreen.</small></span></label></div><h4>Tester Condition Preview</h4><div class="condition-picker"><button data-condition="actual">🏰 Actual HP</button><button data-condition="healthy">✨ Healthy</button><button data-condition="damaged">🛠️ Damaged</button><button data-condition="burning">🔥 Burning</button><button data-condition="repair">🔨 Repairing</button><button data-condition="destroyed">💥 Destroyed</button></div><p class="customizer-note">Style and colors save. Condition preview is tester-only.</p></section>
+<div class="kingdom-scene kingdom-scene-v3" aria-label="Your kingdom scene">
+          <div id="kingdomVisualStage" class="kingdom-visual-stage"></div>
+          <div class="scene-label scene-label-v3"><strong id="sceneKingdomName">My Kingdom</strong><span id="sceneSub">Frontier Camp • Keep Level 1</span></div>
+          <div class="kingdom-actor-layer" aria-label="Your adventurer and active pet">
+            <div class="actor-card hero-actor"><img id="heroArt" class="scene-hero" alt="Your adventurer"><span id="heroLabel">Adventurer</span></div>
+            <div class="actor-card pet-actor hidden" id="petStage"><img id="petArt" class="scene-pet" alt="Your active pet"><span id="petLabel" class="pet-label"></span></div>
+          </div>
+          <div id="upgradeBanner" class="upgrade-banner hidden" role="status" aria-live="polite"></div>
+        </div>
+        <div class="damage-toolbar" aria-label="Damage and repair tester controls">
+          <div><b>🧱 Kingdom Integrity</b><small id="integrityText">100% healthy</small></div>
+          <button class="btn small danger" id="testDamageBtn">💥 Test Incoming Raid</button>
+          <button class="btn small secondary" id="repairAllBtn">🔨 Repair All</button>
+        </div>
+        <div class="building-grid" id="buildingGrid"></div>
+      </div>
+      <aside class="panel">
+        <h2>Kingdom Power</h2>
+        <div class="stat-grid"><div class="stat"><span>⚔️ Raid Power</span><b id="attackPower">0</b></div><div class="stat"><span>🛡️ Defense Power</span><b id="defensePower">0</b></div><div class="stat"><span>⭐ Power Rating</span><b id="powerRating">0</b></div><div class="stat"><span>🏰 Keep Level</span><b id="keepLevel">1</b></div></div>
+        <h3 style="margin-top:16px">Set Your Defense</h3><div class="strategy-grid" id="defenseGrid"></div>
+        <p class="muted">Your defense is automatic while you are offline. Academic XP, pets, gear, normal Gold, grades, passes, and teacher rewards can never be stolen.</p>
+      </aside>
+    </div>
+  </section>
+
+  <section id="tab-war" class="hidden">
+    <div class="panel">
+      <div class="section-title"><h2>⚔️ Ranked War Raid</h2><button class="btn" id="findTargetsBtn">Find Fair Opponents</button></div>
+      <div id="raidEligibility" class="lock">Checking today’s Daily Boss…</div><div id="targetGrid" class="target-grid" style="margin-top:12px"></div>
+    </div>
+    <div class="panel" style="margin-top:14px">
+      <h2>🏹 Friendly Challenge</h2>
+      <p class="muted">Challenge a classmate for fun. Friendly battles move no resources, change no Crowns, and never trigger shields. Repeated challenges are capped so “friendly” stays friendly.</p>
+      <div class="form-row"><select id="classmateSelect"><option value="">Choose a classmate…</option></select><button class="btn" id="friendlyBtn">Challenge</button></div>
+      <p class="muted" id="friendlyLimitText"></p>
+    </div>
+  </section>
+
+  <section id="tab-history" class="hidden"><div class="panel"><div class="section-title"><h2>📜 Battle Reports</h2><button class="btn secondary" id="refreshHistoryBtn">Refresh</button></div><div id="historyList"><p class="muted">No battles yet.</p></div></div></section>
+  <section id="tab-rankings" class="hidden"><div class="panel"><div class="section-title"><div><h2>🏆 Many Ways to Lead</h2><p class="muted" style="margin:2px 0 0">There is no single “best student” ranking. Kingdoms can shine in different ways.</p></div><button class="btn secondary" id="refreshRankingsBtn">Refresh</button></div><div id="rankingGrid" class="ranking-grid"></div></div></section>
+</main>
+
+<div id="battleModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="battleTitle" tabindex="-1">
+  <div class="modal-card"><button class="btn small secondary modal-close" id="closeModalBtn">Close</button><h2 id="battleTitle">Battle Report</h2><div id="battleBody"></div></div>
+</div>
+<script type="module" src="kingdom-wars/kingdom-wars-test-app.mjs"></script>
+</body>
+</html>

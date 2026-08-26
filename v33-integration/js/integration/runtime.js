@@ -53,9 +53,9 @@
     emit(onUpdate,{status:'loading',message:'Loading secure student sign-in…'});
     let F;
     try{F=await createFirebase('student')}catch(err){emit(onUpdate,{status:'error',message:`Firebase could not load: ${err?.message||err}`});return {environment,signIn:async()=>{},signOut:async()=>{},dispose(){}}}
-    const {S,auth,db}=F; let profileUnsub=null,dailyUnsub=null,lastProfile=null,lastDaily=[],currentUser=null,dailyReady=false,profileReady=false;
-    const clear=()=>{for(const fn of [profileUnsub,dailyUnsub])try{fn?.()}catch{} profileUnsub=dailyUnsub=null;lastProfile=null;lastDaily=[];dailyReady=profileReady=false};
-    const push=()=>{if(!currentUser||!profileReady||!dailyReady)return;emit(onUpdate,{status:'authorized',user:currentUser,student:Core.normalizeStudent(currentUser,lastProfile,lastDaily)})};
+    const {S,auth,db}=F; let profileUnsub=null,dailyUnsub=null,overrideUnsub=null,lastProfile=null,lastDaily=[],lastOverride={},currentUser=null,dailyReady=false,profileReady=false,overrideReady=false,testerAuthorized=false;
+    const clear=()=>{for(const fn of [profileUnsub,dailyUnsub,overrideUnsub])try{fn?.()}catch{} profileUnsub=dailyUnsub=overrideUnsub=null;lastProfile=null;lastDaily=[];lastOverride={};dailyReady=profileReady=overrideReady=false;testerAuthorized=false};
+    const push=()=>{if(!currentUser||!profileReady||!dailyReady||!overrideReady)return;emit(onUpdate,{status:'authorized',user:currentUser,student:Core.normalizeStudent(currentUser,lastProfile,lastDaily,lastOverride,testerAuthorized)})};
     const authUnsub=S.auth.onAuthStateChanged(auth,async user=>{
       clear();currentUser=user||null;
       if(!user){emit(onUpdate,{status:'signed-out',message:'Sign in with your school Google account.'});return}
@@ -68,8 +68,10 @@
       if(!Core.isStudentEligibleEmail(email,tester)){
         emit(onUpdate,{status:'unauthorized',user,message:'This account is not authorized for Dragonswood.'});return;
       }
+      testerAuthorized=tester;
       profileUnsub=S.firestore.onSnapshot(S.firestore.doc(db,'students',user.uid),snap=>{lastProfile=snap.exists()?{id:snap.id,...snap.data()}:null;profileReady=true;push()},err=>emit(onUpdate,{status:'error',user,message:`Student profile read failed: ${err?.code||err?.message||err}`}));
       dailyUnsub=S.firestore.onSnapshot(S.firestore.query(S.firestore.collection(db,'dailyQuestProgress'),S.firestore.where('studentId','==',user.uid)),snap=>{lastDaily=snap.docs.map(d=>({id:d.id,...d.data()}));dailyReady=true;push()},err=>emit(onUpdate,{status:'error',user,message:`Daily progress read failed: ${err?.code||err?.message||err}`}));
+      overrideUnsub=S.firestore.onSnapshot(S.firestore.doc(db,'classData','dailyAccessOverride'),snap=>{lastOverride=snap.exists()?snap.data():{};overrideReady=true;push()},err=>{console.warn('[V3.3 daily access override]',err);lastOverride={};overrideReady=true;push()});
     });
     const controller={environment,async signIn(){const provider=new S.auth.GoogleAuthProvider();return S.auth.signInWithPopup(auth,provider)},async signOut(){return S.auth.signOut(auth)},dispose(){clear();try{authUnsub()}catch{}}};
     controllers.push(controller);return controller;

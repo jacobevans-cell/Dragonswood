@@ -6,6 +6,7 @@ const toast = document.querySelector('#toast');
 const dialogRoot = document.querySelector('#dialog-root');
 let integrationController=null;
 let integrationSession={status:'loading',message:'Loading Dragonswood identity…'};
+const moduleHost=window.DWV33Modules;
 
 const navItems = [
   ['adventure','🛡️','My Adventure','Home base'],
@@ -42,7 +43,8 @@ const state = {
   inventory: [],
   bossHp: 72,
   bossMax: 100,
-  bossMessage: ''
+  bossMessage: '',
+  dailyAccessUnlocked: false
 };
 
 const references = {
@@ -74,8 +76,13 @@ function closeDialog(){dialogRoot.innerHTML=''}
 
 function currentPage(){
   const hash = location.hash.replace('#','');
-  return navItems.some(n=>n[0]===hash) ? hash : 'adventure';
+  const moduleId=moduleHost?.routeId(hash);
+  if(moduleId)return moduleHost.definition(moduleId).returnPage;
+  const page=navItems.some(n=>n[0]===hash) ? hash : 'adventure';
+  return (page==='games'||page==='scribe')&&!state.dailyAccessUnlocked?'missions':page;
 }
+
+function currentModuleId(){return moduleHost?.routeId(location.hash)||''}
 
 function navMarkup(){
   return `
@@ -120,6 +127,8 @@ function studentTitle(icon,eyebrow,title,sub){const src=titleIcons[state.page];r
 function questCard(icon,kicker,title,count,pct,copy){return `<article class="panel quest-card"><div class="quest-top"><span class="text-26">${icon}</span><span class="big-count">${count}</span></div><div class="eyebrow">${kicker}</div><h3>${title}</h3><p>${copy}</p><progress class="dw-progress" max="100" value="${pct}" aria-label="${title} progress">${pct}%</progress></article>`}
 
 function pageMarkup(){
+  const moduleId=currentModuleId();
+  if(moduleId)return moduleHost.markup(moduleId);
   switch(state.page){
     case 'missions': return missionsPage();
     case 'games': return gamesPage();
@@ -157,38 +166,38 @@ function adventurePage(){
 }
 
 const missions = [
-  {id:'morning',n:'1',kicker:'DO THIS FIRST',icon:'🌅',title:'Morning Math Quest',desc:'8 decimal problems with step-by-step help.',time:'10–15 min',reward:'+40 XP',button:'Start mission →'},
-  {id:'curriculum',n:'2',kicker:'CLASS MISSION',icon:'🐉',title:'Curriculum Quest',desc:'Watch the short lesson, try it, then ask for teacher verification.',time:'10–15 min',reward:'+50 XP',button:'Open quest →'},
-  {id:'exit',n:'3',kicker:'END OF DAY',icon:'✅',title:'Exit Quest',desc:'Show what you learned in 3 quick questions.',time:'10–15 min',reward:'+25 XP',button:'Open quest →'}
+  {id:'morning',module:'daily-quest',n:'1',kicker:'DO THIS FIRST',icon:'🌅',title:'Morning Math Quest',desc:'8 decimal problems with step-by-step help.',time:'10–15 min',reward:'+40 XP',button:'Start mission →'},
+  {id:'curriculum',module:'curriculum-quest',n:'2',kicker:'CLASS MISSION',icon:'🐉',title:'Curriculum Quest',desc:'Watch the short lesson, try it, then ask for teacher verification.',time:'10–15 min',reward:'+50 XP',button:'Open quest →'},
+  {id:'exit',module:'daily-quest',n:'3',kicker:'END OF DAY',icon:'✅',title:'Exit Quest',desc:'Show what you learned in 3 quick questions.',time:'10–15 min',reward:'+25 XP',button:'Open quest →'}
 ];
 function missionsPage(){
   const completeCount=state.completedMissions.size;
   return `${studentTitle('📜','Daily Missions','Your quest path','Finish the glowing mission first. Then choose a bonus adventure.')}
     <div class="panel path-summary"><div class="path-count"><strong>${completeCount}</strong><small>of 3</small></div><div class="path-copy"><div class="eyebrow">TODAY’S PROGRESS</div><b>One mission at a time.</b><div>Games and Scribe Arena unlock after Morning Math.</div></div><div class="path-lock">🔒 Games locked</div></div>
     <div class="mission-list">${missions.map((m,i)=>missionRow(m,i)).join('')}</div>
-    <div class="mission-extra"><article class="panel extra-card"><div class="extra-icon">📖</div><div><div class="extra-kicker">CLASS READING</div><h3>The Witches</h3><p>Continue from page 46. Page memory and read-aloud are ready.</p></div><button class="btn btn-secondary btn-sm" data-toast="Class reading opened in prototype mode.">Open reader</button></article><article class="panel extra-card"><div class="extra-icon">⭐</div><div><div class="extra-kicker">BONUS CHALLENGE</div><h3>Level-Up Mission</h3><p>Ready for more? Try a mission one level above.</p></div><button class="btn btn-secondary btn-sm" data-toast="Bonus challenge queued.">Try the challenge</button></article></div>`;
+    <div class="mission-extra"><article class="panel extra-card"><div class="extra-icon">📖</div><div><div class="extra-kicker">CLASS READING</div><h3>The Witches</h3><p>Continue from page 46. Page memory and read-aloud are ready.</p></div><button class="btn btn-secondary btn-sm" data-module="class-reader">Open reader</button></article><article class="panel extra-card"><div class="extra-icon">⭐</div><div><div class="extra-kicker">BONUS CHALLENGE</div><h3>Level-Up Mission</h3><p>Ready for more? Try a mission one level above.</p></div><button class="btn btn-secondary btn-sm" data-module="level-up-challenge">Try the challenge</button></article></div>`;
 }
 function missionRow(m,i){
   const done=state.completedMissions.has(m.id);
   const previousDone=i===0||state.completedMissions.has(missions[i-1].id);
   const current=!done&&previousDone;
   const locked=!done&&!previousDone;
-  return `<article class="panel mission-row ${done?'complete':''} ${current?'current':''} ${locked?'locked':''}"><div class="mission-num">${done?'✓':m.n}</div><div class="mission-art">${m.icon}</div><div><div class="eyebrow">${done?'COMPLETE':m.kicker}</div><h3>${m.title}</h3><p>${m.desc}</p><div class="reward-line"><span>🔊 Read aloud</span><span>⏱ ${m.time}</span><span>✨ ${m.reward}</span></div></div><button class="btn ${current?'btn-primary':'btn-secondary'} btn-sm" type="button" data-mission="${m.id}" ${locked?'disabled':''}>${done?'Review quest':m.button}</button></article>`;
+  return `<article class="panel mission-row ${done?'complete':''} ${current?'current':''} ${locked?'locked':''}"><div class="mission-num">${done?'✓':m.n}</div><div class="mission-art">${m.icon}</div><div><div class="eyebrow">${done?'COMPLETE':m.kicker}</div><h3>${m.title}</h3><p>${m.desc}</p><div class="reward-line"><span>🔊 Read aloud</span><span>⏱ ${m.time}</span><span>✨ ${m.reward}</span></div></div><button class="btn ${current?'btn-primary':'btn-secondary'} btn-sm" type="button" data-module="${m.module}" ${locked?'disabled':''}>${done?'Review quest':m.button}</button></article>`;
 }
 
 const games=[
-  ['Math','assets/art/game-visual-1.jpg','Decimal Deception','Restore the crystal grid with decimal clues.'],
-  ['Math','assets/art/game-visual-2.jpg','Long Division Quest','Solve each family step as a mini battle.'],
-  ['Math','assets/art/game-visual-3.jpg','Fraction Forge','Forge fractions and power up your battle skills.'],
-  ['ELA','assets/art/game-visual-4.jpg','Spelling Practice','Hear, practice, and master this week’s words.'],
-  ['ELA','assets/art/game-visual-5.jpg','The Witches Reader','Continue the class novel with read-aloud.'],
-  ['Science','assets/art/game-visual-6.jpg','Elemental Laboratory','Build atoms and investigate matter.']
+  ['decimal-deception','Math','assets/art/game-visual-1.jpg','Decimal Deception','Restore the crystal grid with decimal clues.'],
+  ['math-operations','Math','assets/art/game-visual-2.jpg','Long Division Quest','Solve each family step as a mini battle.'],
+  ['fraction-forge','Math','assets/art/game-visual-3.jpg','Fraction Forge','Forge fractions and power up your battle skills.'],
+  ['spelling-practice','ELA','assets/art/game-visual-4.jpg','Spelling Practice','Hear, practice, and master this week’s words.'],
+  ['class-reader','ELA','assets/art/game-visual-5.jpg','The Witches Reader','Continue the class novel with read-aloud.'],
+  ['elemental-laboratory','Science','assets/art/game-visual-6.jpg','Elemental Laboratory','Build atoms and investigate matter.']
 ];
 function gamesPage(){
-  const visible=state.gameFilter==='All'?games:games.filter(g=>g[0]===state.gameFilter);
+  const visible=state.gameFilter==='All'?games:games.filter(g=>g[1]===state.gameFilter);
   return `${studentTitle('🎮','Academic Games','Choose your adventure','Every game practices a real school skill. Pick a subject and jump in.')}
   <div class="filter-tabs game-filters">${['All','Math','ELA','Science','History'].map(f=>`<button class="filter-tab ${state.gameFilter===f?'active':''}" data-game-filter="${f}">${f==='All'?'✦ ':''}${f}</button>`).join('')}</div>
-  <section class="game-grid">${visible.map(g=>`<article class="panel game-card"><div class="game-visual"><img src="${g[1]}" alt=""></div><div class="game-copy"><div class="subject">${g[0]} ADVENTURE</div><h3>${g[2]}</h3><p>${g[3]}</p><div class="game-badges"><span>✨ Earn XP</span><span>🔊 Read-aloud</span></div><button class="btn btn-primary" type="button" data-toast="${g[2]} opened in safe tester mode.">Play quest →</button></div></article>`).join('')}</section>`;
+  <section class="game-grid">${visible.map(g=>`<article class="panel game-card"><div class="game-visual"><img src="${g[2]}" alt=""></div><div class="game-copy"><div class="subject">${g[1]} ADVENTURE</div><h3>${g[3]}</h3><p>${g[4]}</p><div class="game-badges"><span>✨ Earn XP</span><span>🔊 Read-aloud</span></div><button class="btn btn-primary" type="button" data-module="${g[0]}">Play quest →</button></div></article>`).join('')}</section>`;
 }
 
 function wordCount(text){return text.trim()?text.trim().split(/\s+/).length:0}
@@ -236,6 +245,7 @@ function applyStudentModel(model){
   state.firstName=model.firstName;state.displayName=model.displayName;state.initial=model.initial;state.grade=model.grade;
   state.level=model.level;state.hp=model.hp;state.gold=model.gold;state.streak=model.streak;state.xp=model.xp;state.xpFloor=model.xpFloor;state.xpMax=model.xpNext;state.xpPct=model.xpPct;
   state.characterClass=model.classLabel;state.pet=model.petName;state.equipment=model.equipped||{};state.inventory=model.inventory||[];
+  state.dailyAccessUnlocked=model.dailyAccessUnlocked===true;
 }
 function authGate(){
   const status=integrationSession.status||'loading',message=integrationSession.message||'Checking Dragonswood access…';
@@ -249,29 +259,47 @@ function render(){
   }
   app.innerHTML=shell();
   bind();
-  document.title=`[TESTER] Dragonswood | ${navItems.find(n=>n[0]===state.page)[2]}`;
+  const moduleId=currentModuleId();
+  document.title=`[TESTER] Dragonswood | ${moduleId?moduleHost.definition(moduleId).title:navItems.find(n=>n[0]===state.page)[2]}`;
 }
 function bindAuthGate(){
   app.querySelector('[data-signin]')?.addEventListener('click',async()=>{try{await integrationController?.signIn()}catch(err){showToast(`Sign-in failed: ${err?.code||err?.message||err}`)}});
 }
 
 function bind(){
-  app.querySelectorAll('[data-page]').forEach(el=>el.addEventListener('click',()=>{location.hash=el.dataset.page}));
+  app.querySelectorAll('[data-page]').forEach(el=>el.addEventListener('click',()=>openPage(el.dataset.page)));
+  app.querySelectorAll('[data-module]').forEach(el=>el.addEventListener('click',()=>openModule(el.dataset.module)));
+  app.querySelector('[data-close-module]')?.addEventListener('click',closeModule);
+  app.querySelector('[data-retry-module]')?.addEventListener('click',()=>mountModule(currentModuleId()));
   app.querySelectorAll('[data-toast]').forEach(el=>el.addEventListener('click',()=>showToast(el.dataset.toast)));
   app.querySelector('[data-signout]')?.addEventListener('click',async()=>{try{await integrationController?.signOut()}catch(err){showToast(`Sign-out failed: ${err?.message||err}`)}});
   app.querySelectorAll('[data-read]').forEach(el=>el.addEventListener('click',readPage));
   app.querySelector('[data-passes]')?.addEventListener('click',passesDialog);
   app.querySelector('[data-reference]')?.addEventListener('click',showReference);
-  app.querySelectorAll('[data-mission]').forEach(el=>el.addEventListener('click',()=>completeMission(el.dataset.mission)));
   app.querySelectorAll('[data-game-filter]').forEach(el=>el.addEventListener('click',()=>{state.gameFilter=el.dataset.gameFilter;render()}));
   app.querySelector('#scribe-text')?.addEventListener('input',e=>{state.writing=e.target.value;storageSet('writing',state.writing);const meta=e.target.nextElementSibling?.querySelector('span:last-child');if(meta)meta.textContent=`${wordCount(state.writing)} words`});
   app.querySelectorAll('[data-writing-hint]').forEach(el=>el.addEventListener('click',writingHint));
   app.querySelector('[data-submit-writing]')?.addEventListener('click',submitWriting);
   app.querySelectorAll('[data-day]').forEach(el=>el.addEventListener('click',()=>{state.day=el.dataset.day;render()}));
-  app.querySelectorAll('[data-class]').forEach(el=>el.addEventListener('click',()=>{showToast('Class changes are locked until Adventurer Hall integration.');return}));
-  app.querySelectorAll('[data-pet]').forEach(el=>el.addEventListener('click',()=>{showToast('Pet changes are locked until pet integration.');return}));
-  app.querySelectorAll('[data-move]').forEach(el=>el.addEventListener('click',()=>bossMove(el.dataset.move)));
+  app.querySelectorAll('[data-class]').forEach(el=>el.addEventListener('click',()=>openModule('adventurer-hall')));
+  app.querySelectorAll('[data-pet]').forEach(el=>el.addEventListener('click',()=>openModule('adventurer-hall')));
+  app.querySelectorAll('[data-move]').forEach(el=>el.addEventListener('click',()=>openModule('boss-battle')));
+  if(currentModuleId())mountModule(currentModuleId());
 }
+
+function openPage(page){
+  if((page==='games'||page==='scribe')&&!state.dailyAccessUnlocked){showToast('Finish Morning Work or ask for today’s teacher override first.');location.hash='missions';return}
+  location.hash=page;
+}
+function openModule(id){
+  const gate=moduleHost?.allowed(id,{dailyAccessUnlocked:state.dailyAccessUnlocked});
+  if(!gate?.ok){if(gate?.reason==='morning-work'){showToast('Academic Games unlock after Morning Work or today’s teacher override.');location.hash='missions'}return}
+  location.hash=`module/${encodeURIComponent(id)}`;
+}
+function closeModule(){
+  const mod=moduleHost?.definition(currentModuleId());location.hash=mod?.returnPage||'adventure';
+}
+function mountModule(id){if(id)moduleHost?.mount(app,id,location.href)}
 
 function readPage(){
   const title=navItems.find(n=>n[0]===state.page)[2];
@@ -282,23 +310,12 @@ function showReference(){
   const path=references[state.page];
   const overlay=document.createElement('div');overlay.className='reference-overlay';overlay.innerHTML=`<button class="btn btn-gold reference-close">Close reference</button><img src="${path}" alt="Approved reference screenshot for current page">`;document.body.appendChild(overlay);overlay.querySelector('button').addEventListener('click',()=>overlay.remove());
 }
-function completeMission(id){
-  showToast('Daily Mission writes are locked until curriculum integration.');return
-  if(state.completedMissions.has(id)){showToast('Quest review opened. No live progress was changed.');return}
-  state.completedMissions.add(id);state.xp=Math.min(state.xpMax,state.xp+40);state.gold+=3;showToast('Quest marked complete locally. Next step unlocked.');render();
-}
-
 function writingHint(){
   const wc=wordCount(state.writing);const hint=wc<10?'Start by naming what the character can see, hear, or feel.':wc<40?'Choose one moment and slow it down with a sensory detail.':'Reread your last two sentences. Which one could use a stronger verb?';openDialog('Writing Coach Hint',`<p>${hint}</p><p class="muted">The coach gives a nudge, not the answer.</p>`)
 }
 function submitWriting(){
   const wc=wordCount(state.writing);if(wc<5){openDialog('Checkpoint not ready',`<p>You have <b>${wc} words</b>. Add a little more detail before submitting so your teacher has enough writing to review.</p>`);return}openDialog('Checkpoint ready',`<p>Your draft has <b>${wc} words</b>. In production this would submit once, show a success state, and prevent duplicate submission.</p>`)
 }
-function bossMove(move){
-  if(state.bossHp<=0){showToast('Gloomfang is already defeated for today.');return}
-  const damage=move==='Pet Power'?8:12;state.bossHp=Math.max(0,state.bossHp-damage);state.bossMessage=state.bossHp===0?'🏆 Gloomfang defeated!':`${move}: −${damage} HP`;render();setTimeout(()=>{state.bossMessage='';const fb=document.querySelector('.boss-feedback');fb?.classList.remove('show')},1600)
-}
-
 window.addEventListener('hashchange',()=>{if(integrationSession.status==='authorized')render()});
 (async function bootstrapIntegration(){
   if(!window.DWV33Integration){integrationSession={status:'error',message:'Integration runtime did not load.'};render();return}

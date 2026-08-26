@@ -99,13 +99,23 @@
     return count;
   }
 
-  function normalizeStudent(user,profile,dailyRows=[]){
+  function dailyAccessState(rows=[],override={},uid='',tester=false,now=new Date()){
+    const dateKey=phoenixDateKey(now);
+    const morningComplete=completedMorningDates(rows).has(dateKey);
+    const overrideToday=text(override?.dateKey)===dateKey&&(
+      override?.all===true||(Array.isArray(override?.studentIds)&&override.studentIds.map(text).includes(text(uid)))
+    );
+    return {dateKey,morningComplete,overrideToday,unlocked:morningComplete||overrideToday||tester===true};
+  }
+
+  function normalizeStudent(user,profile,dailyRows=[],dailyOverride={},tester=false,now=new Date()){
     const p=profile||{};
     const xp=Math.max(0,finite(p.xp));
     const li=levelInfo(xp);
     const first=text(p.firstName)||firstNameFromUser(user);
     const classId=text(p.classId).toLowerCase();
     const activePet=text(p.activePet);
+    const access=dailyAccessState(dailyRows,dailyOverride,user?.uid,tester,now);
     return {
       uid:text(user?.uid),email:text(user?.email),firstName:first,initial:(first[0]||'A').toUpperCase(),displayName:formatDisplayName(p,user),
       grade:text(p.grade)||'—',genderGroup:text(p.genderGroup),
@@ -114,7 +124,8 @@
       streak:schoolDayStreak(dailyRows),classId,classLabel:CLASS_LABELS[classId]||'Unchosen',
       activePet,petName:humanizeId(activePet),
       inventory:Array.isArray(p.rpgInventory)?[...p.rpgInventory]:[],equipped:p.rpgEquipped&&typeof p.rpgEquipped==='object'?{...p.rpgEquipped}:{},
-      title:text(p.title),narrationVoice:text(p.narrationVoice),profileMissing:!profile
+      title:text(p.title),narrationVoice:text(p.narrationVoice),profileMissing:!profile,
+      morningWorkComplete:access.morningComplete,dailyAccessOverride:access.overrideToday,dailyAccessUnlocked:access.unlocked
     };
   }
 
@@ -130,5 +141,5 @@
 
 
 
-  return Object.freeze({XP_THRESHOLDS,CLASS_LABELS,TITLE_RULES,STUDENT_DOMAIN,TEACHER_EMAIL,normalizedEmail,isTeacherEmail,isExploreEmail,isStudentEligibleEmail,levelInfo,formatDisplayName,humanizeId,phoenixDateKey,previousSchoolDayKey,completedMorningDates,schoolDayStreak,normalizeStudent,normalizeTeacherRoster});
+  return Object.freeze({XP_THRESHOLDS,CLASS_LABELS,TITLE_RULES,STUDENT_DOMAIN,TEACHER_EMAIL,normalizedEmail,isTeacherEmail,isExploreEmail,isStudentEligibleEmail,levelInfo,formatDisplayName,humanizeId,phoenixDateKey,previousSchoolDayKey,completedMorningDates,schoolDayStreak,dailyAccessState,normalizeStudent,normalizeTeacherRoster});
 });

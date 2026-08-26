@@ -24,6 +24,9 @@ const rows=[
 assert.equal(C.schoolDayStreak(rows,new Date('2026-08-25T15:00:00Z')),3,'before Tuesday completion, Monday+Friday+Thursday remain a 3-school-day streak');
 rows.push({id:'d_v48',status:'complete',session:'morning',dateKey:'2026-08-25'});
 assert.equal(C.schoolDayStreak(rows,new Date('2026-08-25T18:00:00Z')),4);
+assert.equal(C.dailyAccessState(rows,{},'u1',false,new Date('2026-08-25T18:00:00Z')).unlocked,true);
+assert.equal(C.dailyAccessState([],{},'u1',false,new Date('2026-08-25T18:00:00Z')).unlocked,false);
+assert.equal(C.dailyAccessState([],{dateKey:'2026-08-25',studentIds:['u1']},'u1',false,new Date('2026-08-25T18:00:00Z')).overrideToday,true);
 const p=C.normalizeStudent({uid:'u1',email:'scholar@explore.academy',displayName:'Test Scholar'},{firstName:'Test',grade:5,hp:10,gold:9,xp:450,classId:'mage',activePet:'pet-emberbean',rpgInventory:['x'],rpgEquipped:{weapon:'x'}},rows);
 assert.equal(p.level,3);assert.equal(p.classLabel,'Mage');assert.equal(p.petName,'Emberbean');assert.deepEqual(p.inventory,['x']);
 const roster=C.normalizeTeacherRoster([{id:'2',firstName:'Nala',grade:4,genderGroup:'girls'},{id:'1',firstName:'Aliya',grade:5,genderGroup:'girls'}]);

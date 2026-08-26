@@ -4,10 +4,12 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 node --check "$ROOT/js/integration/core.js"
 node --check "$ROOT/js/integration/runtime.js"
+node --check "$ROOT/js/integration/modules.js"
 node --check "$ROOT/js/student-app.js"
 node --check "$ROOT/js/teacher-app.js"
 node --check "$ROOT/tools/firebase-identity-gate.cjs"
 node "$ROOT/tools/test-integration-core.cjs"
+node "$ROOT/tools/test-module-host.cjs"
 node "$ROOT/tools/render-smoke.cjs"
 python "$ROOT/tools/verify_visual_freeze.py"
 

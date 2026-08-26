@@ -22,8 +22,12 @@
 - Stage 4 Daily + Curriculum integration passed its fictional Firebase,
   browser, parser, safety, and 17-route zero-pixel gates and was committed and
   backed up at `fc6298808affc7faa642a8605cccb96fb96bce47`.
+- The Academic Systems wave passed 25 fictional Firebase checks, its student
+  and teacher browser gates, all 96 parser checks, and all 17 zero-pixel visual
+  routes. It was committed and backed up at
+  `2c0fd7457470d1abb709879473c46e02df38276f`.
 
-## Academic Systems Wave candidate — Codespace gate pending
+## Student World Wave candidate — Codespace gate pending
 
 - The authoritative production `daily-quest.html` and
   `curriculum-quest.html` remain the lesson, pacing, recovery, grading, and
@@ -55,6 +59,18 @@
 - All 11 current Academic Game/Reader module IDs share one audited catalog;
   V3.3 keeps the six approved visible cards while every registered destination
   retains the Morning Work gate and emulator environment propagation.
+- My Day reads the current `classSchedule`, `classJobs`,
+  `classCalendarEvents`, and the signed-in student's deterministic weekly job
+  record. Job check-off is transaction-backed and emulator-only.
+- The approved Adventurer Hall summary reads the student's current RPG class,
+  pet, inventory, and equipment. The full authoritative Hall and Pet Sanctuary
+  retain the complete production registry and motion controller while honoring
+  `dw-env=emulator` when embedded from V3.3.
+- The authoritative Daily Boss retains Morning + Exit completion gating,
+  capped/idempotent loot, pet animation, one chest per day, and fictional
+  emulator persistence when embedded from V3.3.
+- The V3.3 leaderboard uses the production best-score-per-assignment algorithm,
+  weekly Phoenix reset, daily reward markers, and live signed-in score reads.
 - The actual Firebase emulator process and 17-route pixel suite must pass in
   the Codespace before this combined candidate may be accepted or committed.
 
@@ -84,10 +100,9 @@ The current production contract includes no-video scope locking, no-cold-guess i
 
 ## Still intentionally pending after this wave
 
-My Day, Adventurer Hall writes, full pet registry/animation integration, Boss
-writes, leaderboards, passes/rewards/jobs, remaining teacher command writes,
-narration wiring, final production-rules reconciliation, and launch remain
-pending.
+Passes/rewards, remaining teacher command writes, narration wiring, final
+production-rules reconciliation, launch acceptance, and production promotion
+remain pending.
 
 ## Safety
 

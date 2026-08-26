@@ -100,7 +100,7 @@ async function attemptAuthenticatedWrite(account){
     const today=Core.phoenixDateKey(new Date());
 
     await seed('students',accounts.grade4.uid,{firstName:'Fourth',grade:4,genderGroup:'girls',hp:10,gold:15,xp:450,classId:'warrior',activePet:'pet-emberbean',rpgInventory:['gear_training_sword'],rpgEquipped:{weapon:'gear_training_sword'}});
-    await seed('students',accounts.grade5.uid,{firstName:'Fifth',grade:5,genderGroup:'boys',hp:9,gold:22,xp:1520,classId:'mage',activePet:'pet-nyx',rpgInventory:[],rpgEquipped:{}});
+    await seed('students',accounts.grade5.uid,{firstName:'Fifth',grade:5,genderGroup:'boys',hp:9,gold:22,xp:1520,classId:'mage',activePet:'pet-nyx',ownedPets:['pet-nyx'],rpgInventory:['gear_mage_wand'],rpgEquipped:{weapon:'gear_mage_wand'},eggInventory:1,petTokens:0,bossWins:0});
     await seed('students',accounts.noClass.uid,{firstName:'NoClass',grade:4,genderGroup:'boys',hp:10,gold:0,xp:0,classId:'',activePet:'',rpgInventory:[],rpgEquipped:{}});
     await seed('students',accounts.noPet.uid,{firstName:'NoPet',grade:5,genderGroup:'girls',hp:10,gold:4,xp:750,classId:'ranger',activePet:'',rpgInventory:[],rpgEquipped:{}});
     await seed('students',accounts.tester.uid,{firstName:'Tester',grade:5,genderGroup:'girls',hp:10,gold:3,xp:200,classId:'healer',activePet:'',rpgInventory:[],rpgEquipped:{}});
@@ -110,6 +110,14 @@ async function attemptAuthenticatedWrite(account){
     await seed('dailyQuests',today,{date:today,day:14,chapter:'The Crystal Crossing',chapterIcon:'💎',morningXp:4,exitXp:2,gold:1});
     await seed('classData','dailyAccessOverride',{dateKey:today,all:false,studentIds:[]});
     await seed('classData','activeWritingSession',{sessionId:'scribe-gate-1',status:'active',title:'Emulator Quickwrite',mode:'Quickwrite',writingType:'Narrative',targetSkill:'Sensory Details',prompt:'Describe the hidden gate using three sensory details.',hints:['Use a strong verb'],timeMinutes:5,minWords:5});
+    const liveSchedule=Object.fromEntries(['Monday','Tuesday','Wednesday','Thursday','Friday'].map(day=>[day,[{id:'math',time:'8:25',title:'Live Emulator Math',detail:'Student World schedule'}]]));
+    await seed('classData','classSchedule',{days:liveSchedule});
+    await seed('classData','classJobs',{jobs:[{id:'floor-captain',name:'Floor Captain',icon:'🧹',description:'Check the reading corner before dismissal.',pay:50}],assignments:{[accounts.grade5.uid]:{id:'floor-captain',name:'Floor Captain',icon:'🧹',description:'Check the reading corner before dismissal.',pay:50}}});
+    await seed('classCalendarEvents','science-showcase',{title:'Science Showcase',icon:'🧪',dateKey:'2099-08-29',time:'1:30 PM'});
+    await seed('scores','grade5-math',{studentId:accounts.grade5.uid,displayName:'Fifth',avatarEmoji:'🧙',assignmentId:'math-1',gameName:'Decimal Deception',subject:'Math',dateKey:today,score:92});
+    await seed('scores','grade4-math',{studentId:accounts.grade4.uid,displayName:'Fourth',avatarEmoji:'🛡️',assignmentId:'math-1',gameName:'Decimal Deception',subject:'Math',dateKey:today,score:80});
+    await seed('leaderboardRewards',`${today}_${accounts.grade5.uid}`,{studentId:accounts.grade5.uid,studentName:'Fifth',dateKey:today,weekKey:today,rank:1,goldAward:5,status:'issued'});
+    await seed('dailyQuestProgress',`${accounts.grade5.uid}_${today}_exit_seed`,{studentId:accounts.grade5.uid,dateKey:today,day:14,session:'exit',status:'complete',score:100,correct:1,attempts:1});
     await seed('writingSessions','scribe-gate-1',{status:'active',title:'Emulator Quickwrite',prompt:'Describe the hidden gate using three sensory details.',minWords:5});
     await seed('curriculumAttempts','attempt-grade4-1',{studentId:accounts.grade4.uid,itemId:'I-D14-MATH',attemptNumber:1,questionsCorrect:8,questionsSeen:10,accuracy:80});
     record('Demo Firestore seeded without production access',true,PROJECT);
@@ -200,6 +208,22 @@ async function attemptAuthenticatedWrite(account){
     const badReward=await writeDoc('gameResults',`bad-${accounts.grade4.uid}`,{studentId:accounts.grade4.uid,gameId:'decimal-deception',subject:'Math',status:'complete',score:100,xpAward:99,goldAward:99},accounts.grade4.token);
     assert.equal(badReward.res.status,403,`Expected 403 reward cap, got ${badReward.res.status}: ${badReward.text}`);
     record('Academic game result and reward caps',true,'valid result saved; oversized reward denied');
+
+    const lootId=`${accounts.grade5.uid}_${today}`;
+    const validLoot=await writeDoc('bossLoot',lootId,{studentId:accounts.grade5.uid,dateKey:today,status:'complete',goldAward:3,xpAward:12,itemId:'crafting-materials'},accounts.grade5.token);
+    assert.equal(validLoot.res.ok,true,JSON.stringify(validLoot.body));
+    const oversizedLoot=await writeDoc('bossLoot',`${accounts.grade4.uid}_${today}`,{studentId:accounts.grade4.uid,dateKey:today,status:'complete',goldAward:30,xpAward:120,itemId:'forbidden'},accounts.grade4.token);
+    assert.equal(oversizedLoot.res.status,403,`Expected 403 boss cap, got ${oversizedLoot.res.status}: ${oversizedLoot.text}`);
+    const crossLoot=await getDoc('bossLoot',lootId,accounts.grade4.token);
+    assert.equal(crossLoot.res.status,403,`Expected 403 cross-loot read, got ${crossLoot.res.status}: ${crossLoot.text}`);
+    record('Daily Boss chest caps and isolation',true,'one owner chest accepted; oversized/cross-student access denied');
+
+    const scoreRows=await listDocs('scores',accounts.grade5.token);
+    assert.equal(scoreRows.res.ok,true,JSON.stringify(scoreRows.body));
+    assert.equal((scoreRows.body.documents||[]).length,2);
+    const rewardRows=await listDocs('leaderboardRewards',accounts.grade5.token);
+    assert.equal(rewardRows.res.ok,true,JSON.stringify(rewardRows.body));
+    record('Student leaderboard read path',true,'weekly scores + issued rewards visible');
 
     const crossCurriculum=await getDoc('curriculumProgress',curriculumId,accounts.grade4.token);
     assert.equal(crossCurriculum.res.status,403,`Expected 403, got ${crossCurriculum.res.status}: ${crossCurriculum.text}`);

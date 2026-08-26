@@ -2,13 +2,14 @@
   'use strict';
   const Core=window.DWV33Core;
   const Academic=window.DWV33Academic;
-  if(!Core||!Academic)throw new Error('DWV33Core and DWV33Academic must load before integration runtime.');
+  const World=window.DWV33World;
+  if(!Core||!Academic||!World)throw new Error('DWV33Core, DWV33Academic, and DWV33World must load before integration runtime.');
 
   const PRODUCTION_FIREBASE_CONFIG=Object.freeze({apiKey:'AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE',authDomain:'dragonswood-9289e.firebaseapp.com',projectId:'dragonswood-9289e',storageBucket:'dragonswood-9289e.firebasestorage.app',messagingSenderId:'1064477064695',appId:'1:1064477064695:web:283e1016ee2303d39042f2',measurementId:'G-LPRLDGVBD2'});
   const EMULATOR_FIREBASE_CONFIG=Object.freeze({apiKey:'demo-key',authDomain:'demo-dragonswood-v33.localhost',projectId:'demo-dragonswood-v33',storageBucket:'demo-dragonswood-v33.appspot.com',messagingSenderId:'000000000000',appId:'1:000000000000:web:demo-v33'});
   const DOMAIN=Core.STUDENT_DOMAIN;
   const TEACHER=Core.TEACHER_EMAIL;
-  const VERSION='v33-academic-systems-1';
+  const VERSION='v33-student-world-1';
   const params=new URLSearchParams(location.search);
   const requestedEnv=params.get('dw-env')||'emulator';
   const prodReadOnly=requestedEnv==='production-readonly'&&params.get('dw-readonly')==='I_UNDERSTAND';
@@ -55,20 +56,21 @@
     let F;
     try{F=await createFirebase('student')}catch(err){emit(onUpdate,{status:'error',message:`Firebase could not load: ${err?.message||err}`});return {environment,signIn:async()=>{},signOut:async()=>{},dispose(){}}}
     const {S,auth,db}=F;
-    let profileUnsub=null,dailyUnsub=null,overrideUnsub=null,scribeUnsub=null,responsesUnsub=null,gamesUnsub=null;
-    let lastProfile=null,lastDaily=[],lastOverride={},lastScribe={},lastResponses=[],lastGames=[],currentUser=null,testerAuthorized=false;
-    let profileReady=false,dailyReady=false,overrideReady=false,scribeReady=false,responsesReady=false,gamesReady=false;
+    let profileUnsub=null,dailyUnsub=null,overrideUnsub=null,scribeUnsub=null,responsesUnsub=null,gamesUnsub=null,scheduleUnsub=null,jobsUnsub=null,eventsUnsub=null,jobWeekUnsub=null,scoresUnsub=null,rewardsUnsub=null,lootUnsub=null,prizesUnsub=null;
+    let lastProfile=null,lastDaily=[],lastOverride={},lastScribe={},lastResponses=[],lastGames=[],lastSchedule={},lastJobs={},lastEvents=[],lastJobWeek=null,lastScores=[],lastRewards=[],lastLoot=[],lastPrizes=[],currentUser=null,testerAuthorized=false;
+    const ready={profile:false,daily:false,override:false,scribe:false,responses:false,games:false,schedule:false,jobs:false,events:false,jobWeek:false,scores:false,rewards:false,loot:false,prizes:false};
     const clear=()=>{
-      for(const fn of [profileUnsub,dailyUnsub,overrideUnsub,scribeUnsub,responsesUnsub,gamesUnsub])try{fn?.()}catch{}
-      profileUnsub=dailyUnsub=overrideUnsub=scribeUnsub=responsesUnsub=gamesUnsub=null;
-      lastProfile=null;lastDaily=[];lastOverride={};lastScribe={};lastResponses=[];lastGames=[];
-      profileReady=dailyReady=overrideReady=scribeReady=responsesReady=gamesReady=false;testerAuthorized=false;
+      for(const fn of [profileUnsub,dailyUnsub,overrideUnsub,scribeUnsub,responsesUnsub,gamesUnsub,scheduleUnsub,jobsUnsub,eventsUnsub,jobWeekUnsub,scoresUnsub,rewardsUnsub,lootUnsub,prizesUnsub])try{fn?.()}catch{}
+      profileUnsub=dailyUnsub=overrideUnsub=scribeUnsub=responsesUnsub=gamesUnsub=scheduleUnsub=jobsUnsub=eventsUnsub=jobWeekUnsub=scoresUnsub=rewardsUnsub=lootUnsub=prizesUnsub=null;
+      lastProfile=null;lastDaily=[];lastOverride={};lastScribe={};lastResponses=[];lastGames=[];lastSchedule={};lastJobs={};lastEvents=[];lastJobWeek=null;lastScores=[];lastRewards=[];lastLoot=[];lastPrizes=[];
+      for(const key of Object.keys(ready))ready[key]=false;testerAuthorized=false;
     };
     const push=()=>{
-      if(!currentUser||![profileReady,dailyReady,overrideReady,scribeReady,responsesReady,gamesReady].every(Boolean))return;
+      if(!currentUser||!Object.values(ready).every(Boolean))return;
       emit(onUpdate,{status:'authorized',user:currentUser,
         student:Core.normalizeStudent(currentUser,lastProfile,lastDaily,lastOverride,testerAuthorized),
-        academic:Academic.studentAcademic(lastScribe,lastResponses,lastGames)});
+        academic:Academic.studentAcademic(lastScribe,lastResponses,lastGames),
+        world:World.studentWorld(currentUser.uid,lastProfile,lastSchedule,lastJobs,lastEvents,lastJobWeek,lastScores,lastRewards,lastLoot,lastPrizes)});
     };
     const authUnsub=S.auth.onAuthStateChanged(auth,async user=>{
       clear();currentUser=user||null;
@@ -83,12 +85,23 @@
         emit(onUpdate,{status:'unauthorized',user,message:'This account is not authorized for Dragonswood.'});return;
       }
       testerAuthorized=tester;
-      profileUnsub=S.firestore.onSnapshot(S.firestore.doc(db,'students',user.uid),snap=>{lastProfile=snap.exists()?{id:snap.id,...snap.data()}:null;profileReady=true;push()},err=>emit(onUpdate,{status:'error',user,message:`Student profile read failed: ${err?.code||err?.message||err}`}));
-      dailyUnsub=S.firestore.onSnapshot(S.firestore.query(S.firestore.collection(db,'dailyQuestProgress'),S.firestore.where('studentId','==',user.uid)),snap=>{lastDaily=snap.docs.map(d=>({id:d.id,...d.data()}));dailyReady=true;push()},err=>emit(onUpdate,{status:'error',user,message:`Daily progress read failed: ${err?.code||err?.message||err}`}));
-      overrideUnsub=S.firestore.onSnapshot(S.firestore.doc(db,'classData','dailyAccessOverride'),snap=>{lastOverride=snap.exists()?snap.data():{};overrideReady=true;push()},err=>{console.warn('[V3.3 daily access override]',err);lastOverride={};overrideReady=true;push()});
-      scribeUnsub=S.firestore.onSnapshot(S.firestore.doc(db,'classData','activeWritingSession'),snap=>{lastScribe=snap.exists()?{id:snap.id,...snap.data()}:{};scribeReady=true;push()},err=>emit(onUpdate,{status:'error',user,message:`Writing mission read failed: ${err?.code||err?.message||err}`}));
-      responsesUnsub=S.firestore.onSnapshot(S.firestore.query(S.firestore.collection(db,'writingResponses'),S.firestore.where('studentId','==',user.uid)),snap=>{lastResponses=snap.docs.map(d=>({id:d.id,...d.data()}));responsesReady=true;push()},err=>emit(onUpdate,{status:'error',user,message:`Writing portfolio read failed: ${err?.code||err?.message||err}`}));
-      gamesUnsub=S.firestore.onSnapshot(S.firestore.query(S.firestore.collection(db,'gameResults'),S.firestore.where('studentId','==',user.uid)),snap=>{lastGames=snap.docs.map(d=>({id:d.id,...d.data()}));gamesReady=true;push()},err=>emit(onUpdate,{status:'error',user,message:`Academic game history read failed: ${err?.code||err?.message||err}`}));
+      const watchDoc=(path,key,setter,label)=>S.firestore.onSnapshot(S.firestore.doc(db,...path),snap=>{setter(snap.exists()?{id:snap.id,...snap.data()}:{});ready[key]=true;push()},err=>emit(onUpdate,{status:'error',user,message:`${label} read failed: ${err?.code||err?.message||err}`}));
+      const watchQuery=(query,key,setter,label)=>S.firestore.onSnapshot(query,snap=>{setter(snap.docs.map(d=>({id:d.id,...d.data()})));ready[key]=true;push()},err=>emit(onUpdate,{status:'error',user,message:`${label} read failed: ${err?.code||err?.message||err}`}));
+      profileUnsub=watchDoc(['students',user.uid],'profile',value=>{lastProfile=value},'Student profile');
+      dailyUnsub=watchQuery(S.firestore.query(S.firestore.collection(db,'dailyQuestProgress'),S.firestore.where('studentId','==',user.uid)),'daily',value=>{lastDaily=value},'Daily progress');
+      overrideUnsub=watchDoc(['classData','dailyAccessOverride'],'override',value=>{lastOverride=value},'Daily access override');
+      scribeUnsub=watchDoc(['classData','activeWritingSession'],'scribe',value=>{lastScribe=value},'Writing mission');
+      responsesUnsub=watchQuery(S.firestore.query(S.firestore.collection(db,'writingResponses'),S.firestore.where('studentId','==',user.uid)),'responses',value=>{lastResponses=value},'Writing portfolio');
+      gamesUnsub=watchQuery(S.firestore.query(S.firestore.collection(db,'gameResults'),S.firestore.where('studentId','==',user.uid)),'games',value=>{lastGames=value},'Academic game history');
+      scheduleUnsub=watchDoc(['classData','classSchedule'],'schedule',value=>{lastSchedule=value},'Class schedule');
+      jobsUnsub=watchDoc(['classData','classJobs'],'jobs',value=>{lastJobs=value},'Class jobs');
+      eventsUnsub=watchQuery(S.firestore.collection(db,'classCalendarEvents'),'events',value=>{lastEvents=value},'Class calendar');
+      const wk=World.weekKey();
+      jobWeekUnsub=watchDoc(['studentJobWeeks',`${user.uid}_${wk}`],'jobWeek',value=>{lastJobWeek=Object.keys(value).length?value:null},'Guild job week');
+      scoresUnsub=watchQuery(S.firestore.collection(db,'scores'),'scores',value=>{lastScores=value},'Leaderboard scores');
+      rewardsUnsub=watchQuery(S.firestore.collection(db,'leaderboardRewards'),'rewards',value=>{lastRewards=value},'Leaderboard rewards');
+      lootUnsub=watchQuery(S.firestore.query(S.firestore.collection(db,'bossLoot'),S.firestore.where('studentId','==',user.uid)),'loot',value=>{lastLoot=value},'Boss loot');
+      prizesUnsub=watchQuery(S.firestore.query(S.firestore.collection(db,'physicalPrizeDrops'),S.firestore.where('studentId','==',user.uid)),'prizes',value=>{lastPrizes=value},'Prize drops');
     });
     const requireEmulator=()=>{if(environment!=='emulator')throw new Error('Academic writes are locked outside the fictional Firebase emulator.');if(!currentUser)throw new Error('Sign in before saving academic work.')};
     const writingPayload=(session,responseText,status)=>{const metrics=Academic.writingMetrics(responseText);return {studentId:currentUser.uid,studentName:lastProfile?.firstName||currentUser.displayName||currentUser.email||'Scholar',sessionId:session.id,status,...metrics,sessionTitle:session.title,writingType:session.writingType,targetSkill:session.targetSkill,prompt:session.prompt,updatedAt:S.firestore.serverTimestamp(),...(status==='submitted'?{submittedAt:S.firestore.serverTimestamp()}:{})}};
@@ -96,6 +109,7 @@
       async signIn(){const provider=new S.auth.GoogleAuthProvider();return S.auth.signInWithPopup(auth,provider)},async signOut(){return S.auth.signOut(auth)},
       async saveWriting(responseText){requireEmulator();const session=Academic.normalizeSession(lastScribe);if(!session)throw new Error('No active writing mission.');const id=Academic.sessionResponseId(session.id,currentUser.uid);await S.firestore.setDoc(S.firestore.doc(db,'writingResponses',id),writingPayload(session,responseText,'draft'),{merge:true});return id},
       async submitWriting(responseText){requireEmulator();const session=Academic.normalizeSession(lastScribe);if(!session)throw new Error('No active writing mission.');const metrics=Academic.writingMetrics(responseText);if(metrics.wordCount<session.minWords)throw new Error(`Write at least ${session.minWords} words before submitting.`);const id=Academic.sessionResponseId(session.id,currentUser.uid);const existing=lastResponses.find(row=>row.id===id);if(existing?.status==='submitted')throw new Error('This writing mission was already submitted.');await S.firestore.setDoc(S.firestore.doc(db,'writingResponses',id),writingPayload(session,responseText,'submitted'),{merge:true});return id},
+      async checkOffJob(dayIndex){requireEmulator();const day=Math.max(0,Math.min(4,Number(dayIndex)));const wk=World.weekKey(),id=`${currentUser.uid}_${wk}`,job=World.assignedJob(currentUser.uid,lastJobs,lastJobWeek);if(!job)throw new Error('No class job is assigned this week.');await S.firestore.runTransaction(db,async tx=>{const ref=S.firestore.doc(db,'studentJobWeeks',id),snap=await tx.get(ref),data=snap.exists()?snap.data():{},checked=[...new Set([...(Array.isArray(data.checkedDays)?data.checkedDays:[]),day])].sort((a,b)=>a-b),payload={studentId:currentUser.uid,studentName:lastProfile?.firstName||'Scholar',weekKey:wk,jobId:job.id,jobName:job.name,jobIcon:job.icon,pay:job.pay,checkedDays:checked,completedCount:checked.length,paid:data.paid===true,updatedAt:S.firestore.serverTimestamp()};snap.exists()?tx.update(ref,{checkedDays:checked,completedCount:checked.length,updatedAt:S.firestore.serverTimestamp()}):tx.set(ref,payload)});return id},
       dispose(){clear();try{authUnsub()}catch{}}
     };
     controllers.push(controller);return controller;
@@ -133,5 +147,5 @@
   }
 
   window.addEventListener('pagehide',()=>controllers.splice(0).forEach(c=>{try{c.dispose()}catch{}}),{once:true});
-  window.DWV33Integration=Object.freeze({version:VERSION,environment,startStudent,startTeacher,core:Core,academic:Academic});
+  window.DWV33Integration=Object.freeze({version:VERSION,environment,startStudent,startTeacher,core:Core,academic:Academic,world:World});
 })();

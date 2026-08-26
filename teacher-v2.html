@@ -2718,7 +2718,7 @@ const qEsc=(x="")=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":
 let cqReq=[];
 function renderCQOverrides(){
  const box=document.getElementById("overrideQueueList"),count=document.getElementById("overrideQueueCount");if(!box||!count)return;
- const pending=cqReq.filter(x=>x.status==="pending").sort((a,b)=>(a.requestedAt?.seconds||0)-(b.requestedAt?.seconds||0));
+ const pending=cqReq.filter(x=>x.status==="pending"&&String(x.subject||"").trim().toUpperCase()!=="MATH").sort((a,b)=>(a.requestedAt?.seconds||0)-(b.requestedAt?.seconds||0));
  count.textContent=`${pending.length} waiting`;
  if(!pending.length){box.innerHTML='<div class="muted">No curriculum overrides are waiting. Miraculously peaceful.</div>';return}
  box.innerHTML=pending.map(r=>`<div class="card" style="margin:9px 0;border-color:#6e4b91">

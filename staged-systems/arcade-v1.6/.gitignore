@@ -1,0 +1,8 @@
+.firebase/
+node_modules/
+functions/node_modules/
+.env
+.env.*
+!.env.example
+.DS_Store
+wrangler.toml

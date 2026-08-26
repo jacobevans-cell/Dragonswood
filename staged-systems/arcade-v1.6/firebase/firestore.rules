@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isTeacher() { return signedIn() && (request.auth.token.teacher == true || request.auth.token.admin == true); }
+    function scoreId(data) { return request.auth.uid + '__' + data.periodType + '__' + data.periodKey + '__' + data.boardId; }
+    function validScore(data) {
+      return data.keys().hasOnly(['uid','studentKey','displayName','gameId','boardId','periodType','periodKey','score','metric','details','schemaVersion','updatedAt'])
+        && data.uid == request.auth.uid
+        && data.studentKey is string && data.studentKey.size() <= 100
+        && data.displayName is string && data.displayName.size() > 0 && data.displayName.size() <= 32
+        && data.gameId is string && data.gameId in ['dragon-dash','void-runner']
+        && data.boardId is string && data.boardId in ['dragon-dash','void-runner-explore','void-runner-infinite']
+        && data.periodType is string && data.periodType in ['daily','weekly','allTime']
+        && data.periodKey is string && data.periodKey.size() <= 20
+        && data.score is int && data.score >= 0 && data.score <= 1000000000000
+        && data.metric is string && data.metric.size() <= 100
+        && data.details is map
+        && data.schemaVersion == 2;
+    }
+
+    match /arcadeScores/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && id == scoreId(request.resource.data) && validScore(request.resource.data);
+      allow update: if signedIn() && id == scoreId(request.resource.data) && validScore(request.resource.data)
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.boardId == resource.data.boardId
+        && request.resource.data.periodType == resource.data.periodType
+        && request.resource.data.periodKey == resource.data.periodKey
+        && request.resource.data.score >= resource.data.score;
+      allow delete: if false;
+    }
+
+    match /arcadeRewardEligibility/{id} {
+      allow read: if isTeacher() || (signedIn() && resource.data.uid == request.auth.uid);
+      allow create, delete: if isTeacher();
+      allow update: if isTeacher();
+    }
+
+    match /arcadeLeaderboardArchives/{id} {
+      allow read: if signedIn();
+      allow write: if isTeacher();
+    }
+
+    // Void Runner cloud progress. Owner-only and deliberately isolated from all reward collections.
+    match /voidRunnerPlayers/{uid} {
+      allow read: if isTeacher() || (signedIn() && request.auth.uid == uid);
+      allow create, update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly([
+          'cells', 'unlocked', 'completed', 'runner', 'achievements',
+          'challenges', 'storySeen', 'schemaVersion', 'updatedAt'
+        ])
+        && request.resource.data.cells is int
+        && request.resource.data.cells >= 0
+        && request.resource.data.unlocked is int
+        && request.resource.data.completed is list
+        && request.resource.data.runner is string
+        && request.resource.data.achievements is list
+        && request.resource.data.challenges is map
+        && request.resource.data.storySeen is list;
+      allow delete: if isTeacher();
+    }
+
+    // Game progress is deliberately separate from leaderboard/reward eligibility.
+    // The arcade package does not permit clients to write classPoints or reward totals.
+  }
+}

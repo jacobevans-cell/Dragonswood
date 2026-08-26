@@ -1,0 +1,1 @@
+window.VOID_RUNNER_CONFIG = {firebase:{enabled:false,authMode:'anonymous',apiKey:'',authDomain:'',projectId:'',appId:''},r2:{publicBaseUrl:''}};

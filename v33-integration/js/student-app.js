@@ -13,6 +13,8 @@ const passAlertBuckets=new Map();
 const moduleHost=window.DWV33Modules;
 const arcadePortal=window.DWV33ArcadePortal;
 const kingdomPortal=window.DWV33KingdomPortal;
+const REQUIRED_WORK_PAGES=new Set(['games','scribe','boss','kingdom','arcade']);
+let pendingRequiredWorkNotice='';
 
 const navItems = [
   ['adventure','🛡️','My Adventure','Home base'],
@@ -96,6 +98,13 @@ function openDialog(title, body, actions=''){
 }
 function closeDialog(){dialogRoot.innerHTML=''}
 
+function requiredWorkLocked(page){return REQUIRED_WORK_PAGES.has(String(page||''))&&state.dailyAccessUnlocked!==true}
+function requestedModuleId(){return moduleHost?.routeId(location.hash)||''}
+function showRequiredWorkDialog(target='activity'){
+  const label=target==='arcade'?'Arcade Time':target==='kingdom'?'Kingdom Wars':target==='boss'||target==='boss-battle'?'Boss Battle':target==='scribe'?'Scribe Arena':'this activity';
+  openDialog('Finish Required Work First',`<p><b>${escapeHtml(label)}</b> is still locked.</p><p>Finish today’s Morning Work first. Complete any assigned Recovery Missions shown under Daily Missions too. A teacher override can unlock today’s optional activities when needed.</p>`,`<button class="btn btn-primary" data-close-dialog>Go to Daily Missions</button>`);
+}
+
 function activePassRows(){
   const active=Object.values(state.passes?.rows||{}).filter(row=>row?.active===true);
   const activeTypes=new Set(active.map(row=>row.type));
@@ -149,12 +158,20 @@ function currentPage(){
   if(blockingPass())return 'adventure';
   const hash = location.hash.replace('#','');
   const moduleId=moduleHost?.routeId(hash);
-  if(moduleId)return moduleHost.definition(moduleId).returnPage;
+  if(moduleId){
+    const gate=moduleHost.allowed(moduleId,{dailyAccessUnlocked:state.dailyAccessUnlocked});
+    if(!gate.ok){pendingRequiredWorkNotice=moduleId;return 'missions'}
+    return moduleHost.definition(moduleId).returnPage;
+  }
   const page=studentNavItems().some(n=>n[0]===hash) ? hash : 'adventure';
-  return (page==='games'||page==='scribe'||page==='kingdom')&&!state.dailyAccessUnlocked?'missions':page;
+  if(requiredWorkLocked(page)){pendingRequiredWorkNotice=page;return 'missions'}
+  return page;
 }
 
-function currentModuleId(){return moduleHost?.routeId(location.hash)||''}
+function currentModuleId(){
+  const id=requestedModuleId();
+  return id&&moduleHost?.allowed(id,{dailyAccessUnlocked:state.dailyAccessUnlocked})?.ok?id:'';
+}
 
 function navMarkup(){
   const kingdomExtras=kingdomPortal?[kingdomNav]:[],freeExtras=arcadePortal?[arcadeNav]:[];
@@ -396,6 +413,11 @@ function render(){
   bind();
   const moduleId=currentModuleId();
   document.title=`${IS_PRODUCTION?'':'[TESTER] '}Dragonswood | ${moduleId?moduleHost.definition(moduleId).title:studentNavItems().find(n=>n[0]===state.page)[2]}`;
+  if(pendingRequiredWorkNotice){
+    const target=pendingRequiredWorkNotice;pendingRequiredWorkNotice='';
+    globalThis.history?.replaceState?.(null,'','#missions');
+    showRequiredWorkDialog(target);
+  }
 }
 function bindAuthGate(){
   app.querySelector('[data-signin]')?.addEventListener('click',async()=>{try{await integrationController?.signIn()}catch(err){showToast(`Sign-in failed: ${err?.code||err?.message||err}`)}});
@@ -437,13 +459,13 @@ async function refreshArcadePortal(){
 
 function openPage(page){
   if(blockingPass()){showToast('Return your active pass before continuing Dragonswood.');location.hash='adventure';return}
-  if((page==='games'||page==='scribe'||page==='kingdom')&&!state.dailyAccessUnlocked){showToast('Finish Morning Work or ask for today’s teacher override first.');location.hash='missions';return}
+  if(requiredWorkLocked(page)){location.hash='missions';showRequiredWorkDialog(page);return}
   location.hash=page;
 }
 function openModule(id){
   if(blockingPass()){showToast('Return your active pass before opening another activity.');location.hash='adventure';return}
   const gate=moduleHost?.allowed(id,{dailyAccessUnlocked:state.dailyAccessUnlocked});
-  if(!gate?.ok){if(gate?.reason==='morning-work'){showToast('Academic Games unlock after Morning Work or today’s teacher override.');location.hash='missions'}return}
+  if(!gate?.ok){if(gate?.reason==='morning-work'){location.hash='missions';showRequiredWorkDialog(id)}return}
   location.hash=`module/${encodeURIComponent(id)}`;
 }
 function closeModule(){

@@ -153,7 +153,7 @@ const $=x=>document.querySelector(x), $$=x=>[...document.querySelectorAll(x)];
 const esc=(x="")=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 let isTeacher=false,currentStudent=null,activeVideoId=null,watchedRanges=[],lastVideoTime=0;
 let studentCurriculumAccess=false,accessMessage="Checking today's school-day assignment…";
-let currentQuestOpen=false;
+let currentQuestOpen=false,curriculumStateReady=false;
 const WATCH_REQUIRED_FRACTION=.90;
 function save(){localStorage.setItem(K,JSON.stringify(S));if(window.queueCurriculumProgress)window.queueCurriculumProgress(S)}
 function st(id){return S.items[id]||{watched:false,practiced:false,verified:false,videoReflection:"",practiceEvidence:""}}
@@ -588,7 +588,7 @@ function recoveryGrouped(a){
  }).join("");
 }
 function postCurriculumMissionState(){
- if(DW_V33_PARAMS.get("dwEmbed")!=="1"||window.parent===window||isTeacher)return;
+ if(new URLSearchParams(location.search).get("dwEmbed")!=="1"||window.parent===window||isTeacher||!curriculumStateReady)return;
  const current=rows().filter(x=>Number(x.day)===Number(S.day)&&!mediaPending(x));
  const complete=current.filter(missionComplete).length;
  const recovery=rows().filter(x=>Number(x.day)<Number(S.day)&&!missionComplete(x)&&!mediaPending(x)),groupedRecovery={};
@@ -766,6 +766,7 @@ function watchMyOverrides(uid){
 
 onAuthStateChanged(auth,async u=>{
   currentStudent=u||null;
+  curriculumStateReady=false;
   isTeacher=!!u && String(u.email||"").toLowerCase()===TEACHER.toLowerCase();
   const authStatus=document.getElementById("authStatus");
   authStatus.textContent=u?"✓ Signed in":"Not signed in";
@@ -844,6 +845,7 @@ onAuthStateChanged(auth,async u=>{
     document.getElementById("studentIdentity").textContent="Open from your signed-in Dragonswood portal";
     document.getElementById("grade").disabled=false;
   }
+  curriculumStateReady=!!u;
   render();
 });
 </script><script src="narration-manifest.js?v=56.19.6"></script><script src="dragonswood-narrator.js?v=56.19.6"></script><script type="module" src="dragonswood-student-tools.js?v=57.0"></script><script src="dragonswood-grayson-mode.js?v=58.0"></script>

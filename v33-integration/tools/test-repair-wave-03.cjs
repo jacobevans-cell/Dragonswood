@@ -24,6 +24,11 @@ for(const route of ['games','hall','boss','leaderboards','kingdom','arcade'])ass
 assert.match(student,/function unfinishedRequiredWork/);assert.match(student,/Recovery Day \$\{day[.]day\}/);assert.match(student,/ensureRecoveryProbe/);assert.match(student,/data-required-route/);
 assert.match(student,/teacher-direction-overlay/);assert.match(student,/acknowledgeAttention/);assert.match(student,/TEACHER UNLOCK REQUIRED/);
 
+const curriculumProbe=read('curriculum-quest.html');
+assert.match(curriculumProbe,/curriculumStateReady=false/,'recovery reporting must wait for authenticated curriculum state');
+assert.match(curriculumProbe,/new URLSearchParams\(location[.]search\)[.]get\("dwEmbed"\)/,'embedded recovery reporting must read its own page URL');
+assert.match(curriculumProbe,/isTeacher\|\|!curriculumStateReady/,'teacher and pre-ready recovery reports must be suppressed');
+
 const teacher=read('v33-integration/js/teacher-app.js');
 assert.match(teacher,/Alerts permanently on/);assert.match(teacher,/Live lesson progress/);assert.match(teacher,/Full-screen student direction/);assert.match(teacher,/Event log/);assert.match(teacher,/Collapse panel/);
 assert.match(teacher,/state[.]pendingCommand\?`<div class="review-dock"/,'Selected Command dock must render only while a command is active');

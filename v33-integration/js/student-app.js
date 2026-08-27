@@ -1,5 +1,6 @@
 const app = document.querySelector('#app');
-const TESTER_KEY = 'dw-v33-tester';
+const IS_PRODUCTION = window.DWV33Integration?.environment === 'production';
+const TESTER_KEY = IS_PRODUCTION ? 'dw-v33' : 'dw-v33-tester';
 function storageGet(key, fallback=''){try{return localStorage.getItem(`${TESTER_KEY}:${key}`) ?? fallback}catch{return fallback}}
 function storageSet(key, value){try{localStorage.setItem(`${TESTER_KEY}:${key}`, value)}catch{}}
 const toast = document.querySelector('#toast');
@@ -61,7 +62,8 @@ const state = {
   dailyAccessUnlocked: false,
   arcadeStatus: 'idle',
   arcadeAccess: null,
-  arcadeOpen: false
+  arcadeOpen: false,
+  passes: null
 };
 
 const references = {
@@ -125,14 +127,14 @@ function navButton(item){
 }
 
 function shell(){
-  return `<div class="portal student-shell student-page-${state.page}" data-tester-build="v3.3">
+  return `<div class="portal student-shell student-page-${state.page}" data-${IS_PRODUCTION?'release':'tester-build'}="v3.3">
     <header class="student-topbar"><div class="student-brand">
       <div class="brand-lockup"><img class="student-crest" src="assets/art/dragonswood-crest-v33.jpg" alt=""><div><div class="brand-name">DRAGONSWOOD</div><div class="brand-sub">STUDENT ADVENTURE PORTAL</div></div></div>
       <div class="student-utility"><button class="btn btn-secondary btn-sm" type="button" data-passes>🎟️ <span>Passes</span></button><button class="btn btn-secondary btn-sm" type="button" data-read>🔊 <span>Read aloud</span></button><div class="profile-pill"><div class="profile-orb">${escapeHtml(state.initial)}</div><span><b>${escapeHtml(state.firstName)}</b><small>Level ${state.level}</small></span></div></div>
     </div></header>
     <aside class="student-sidebar">${navMarkup()}</aside>
     <main class="student-main" id="page-content"><div class="student-content">${pageMarkup()}</div></main>
-    ${referenceButton()}<div class="tester-ribbon">V3.3 TESTER • LOCAL ONLY</div>
+    ${referenceButton()}${IS_PRODUCTION?'':'<div class="tester-ribbon">V3.3 TESTER • LOCAL ONLY</div>'}
   </div>`;
 }
 
@@ -284,12 +286,12 @@ function arcadePage(){
 }
 
 function kingdomPage(){
-  return `<section class="v33-module-shell"><div class="v33-module-toolbar"><div class="v33-module-heading"><span>🏰</span><div><small>UNLOCKED AFTER MORNING WORK</small><h2>Kingdom Wars</h2></div></div><button class="btn btn-secondary btn-sm" type="button" data-page="adventure">Back</button></div><div class="v33-module-stage"><iframe class="v33-module-frame" title="Kingdom Wars tester realm" src="${escapeHtml(kingdomPortal.href())}"></iframe></div></section>`;
+  return `<section class="v33-module-shell"><div class="v33-module-toolbar"><div class="v33-module-heading"><span>🏰</span><div><small>UNLOCKED AFTER MORNING WORK</small><h2>Kingdom Wars</h2></div></div><button class="btn btn-secondary btn-sm" type="button" data-page="adventure">Back</button></div><div class="v33-module-stage"><iframe class="v33-module-frame" title="Kingdom Wars${IS_PRODUCTION?' student beta':' tester realm'}" src="${escapeHtml(kingdomPortal.href())}"></iframe></div></section>`;
 }
 
 function escapeHtml(value){return String(value??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 
-function applyStudentModel(model,academic,world){
+function applyStudentModel(model,academic,world,passes){
   if(!model)return;
   state.firstName=model.firstName;state.displayName=model.displayName;state.initial=model.initial;state.grade=model.grade;
   state.level=model.level;state.hp=model.hp;state.gold=model.gold;state.streak=model.streak;state.xp=model.xp;state.xpFloor=model.xpFloor;state.xpMax=model.xpNext;state.xpPct=model.xpPct;
@@ -307,6 +309,7 @@ function applyStudentModel(model,academic,world){
     if(state.scribeResponse)state.writing=state.scribeResponse.responseText||'';
   }
   if(world){state.worldConnected=true;state.world=world;}
+  if(passes)state.passes=passes;
 }
 function setMissionStatus(id,status){
   if(status==='complete')state.completedMissions.add(id);
@@ -329,17 +332,17 @@ function handleModuleState(event){
 function authGate(){
   const status=integrationSession.status||'loading',message=integrationSession.message||'Checking Dragonswood access…';
   const canSignIn=status==='signed-out'||status==='unauthorized'||status==='error';
-  return `<div class="portal student-shell" data-tester-build="v3.3"><main class="student-main" id="page-content"><div class="student-content"><section class="panel next-step"><div class="eyebrow">SECURE INTEGRATION CANDIDATE</div><div class="next-icon">🛡️</div><h2>${status==='unauthorized'?'Account not authorized':'Dragonswood Sign In'}</h2><p>${escapeHtml(message)}</p>${canSignIn?'<button class="btn btn-primary w-full" type="button" data-signin>Sign in with Google</button>':''}<p class="center muted mt-12 text-11">${escapeHtml(window.DWV33Integration?.environment||'loading')} • no production writes enabled</p></section></div></main><div class="tester-ribbon">V3.3 INTEGRATION • SAFE MODE</div></div>`;
+  return `<div class="portal student-shell" data-${IS_PRODUCTION?'release':'tester-build'}="v3.3"><main class="student-main" id="page-content"><div class="student-content"><section class="panel next-step"><div class="eyebrow">${IS_PRODUCTION?'SECURE STUDENT PORTAL':'SECURE INTEGRATION CANDIDATE'}</div><div class="next-icon">🛡️</div><h2>${status==='unauthorized'?'Account not authorized':'Dragonswood Sign In'}</h2><p>${escapeHtml(message)}</p>${canSignIn?'<button class="btn btn-primary w-full" type="button" data-signin>Sign in with Google</button>':''}<p class="center muted mt-12 text-11">${IS_PRODUCTION?'Explore Academy • live student data':`${escapeHtml(window.DWV33Integration?.environment||'loading')} • no production writes enabled`}</p></section></div></main>${IS_PRODUCTION?'':'<div class="tester-ribbon">V3.3 INTEGRATION • SAFE MODE</div>'}</div>`;
 }
 function render(){
   state.page=currentPage();
   if(integrationSession.status!=='authorized'){
-    app.innerHTML=authGate();bindAuthGate();document.title='[INTEGRATION] Dragonswood | Sign In';return;
+    app.innerHTML=authGate();bindAuthGate();document.title=IS_PRODUCTION?'Dragonswood | Sign In':'[INTEGRATION] Dragonswood | Sign In';return;
   }
   app.innerHTML=shell();
   bind();
   const moduleId=currentModuleId();
-  document.title=`[TESTER] Dragonswood | ${moduleId?moduleHost.definition(moduleId).title:studentNavItems().find(n=>n[0]===state.page)[2]}`;
+  document.title=`${IS_PRODUCTION?'':'[TESTER] '}Dragonswood | ${moduleId?moduleHost.definition(moduleId).title:studentNavItems().find(n=>n[0]===state.page)[2]}`;
 }
 function bindAuthGate(){
   app.querySelector('[data-signin]')?.addEventListener('click',async()=>{try{await integrationController?.signIn()}catch(err){showToast(`Sign-in failed: ${err?.code||err?.message||err}`)}});
@@ -389,7 +392,7 @@ function openModule(id){
 function closeModule(){
   const mod=moduleHost?.definition(currentModuleId());location.hash=mod?.returnPage||'adventure';
 }
-function mountModule(id){if(id)moduleHost?.mount(app,id,location.href)}
+function mountModule(id){if(id)moduleHost?.mount(app,id,document.baseURI)}
 
 async function readPage(){
   const title=studentNavItems().find(n=>n[0]===state.page)?.[2]||'Dragonswood';
@@ -398,7 +401,13 @@ async function readPage(){
   }
   if('speechSynthesis' in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(`Dragonswood. ${title}. ${document.querySelector('#page-content h1')?.textContent||''}`);u.rate=.9;speechSynthesis.speak(u);showToast('Read-aloud started.');}else showToast('Read-aloud is not available in this browser.');
 }
-function passesDialog(){openDialog('Passes',`<p class="muted">Pass controls live in their own protected area so they never cover the Dragonswood title.</p><div class="grid-2 mt-12"><button class="btn btn-primary" data-close-dialog>🚻 Request Bathroom Pass</button><button class="btn btn-secondary" data-close-dialog>💧 Request Water Pass</button></div>`)}
+function passesDialog(){
+  const rows=state.passes?.rows||{};
+  const actionLabel=row=>row?.action==='return'?'✅ I am back':row?.action==='start'?`${row.icon} Use ${row.label} pass`:row?.action==='request'?`🙋 Request extra ${row.label} pass`:row?.action==='pending'?'⏳ Request sent':'🔒 Unavailable';
+  const cards=['bathroom','snack','outOfSeat','office'].map(type=>{const row=rows[type]||{type,label:window.DWV33Passes?.definition(type)?.label||type,icon:window.DWV33Passes?.definition(type)?.icon||'🎟️',message:'Loading pass status…',action:'blocked'};return `<div class="pass-card"><div class="pass-row"><div class="pass-student"><span class="roster-avatar">${row.icon}</span><div><b>${escapeHtml(row.label)}</b><p>${escapeHtml(row.message)}</p></div></div><button class="btn ${row.action==='return'?'btn-primary':'btn-secondary'} btn-sm" data-use-student-pass="${escapeHtml(type)}" ${['blocked','pending'].includes(row.action)?'disabled':''}>${escapeHtml(actionLabel(row))}</button></div></div>`}).join('');
+  openDialog('Passes',`<p class="muted">Only one extra-pass request can wait at a time. Active passes must be checked back in here.</p><div class="stack mt-12">${cards}</div>`,'<button class="btn btn-secondary" data-close-dialog>Close</button>');
+  dialogRoot.querySelectorAll('[data-use-student-pass]').forEach(button=>button.addEventListener('click',async()=>{button.disabled=true;try{await integrationController?.usePass(button.dataset.useStudentPass);closeDialog();showToast('Pass status updated.')}catch(err){button.disabled=false;showToast(err?.message||'Pass could not update.')}}));
+}
 function showReference(){
   const path=references[state.page];
   if(!path){openDialog('New approved route',`<p>This approved addition uses the V3.3 shell without modifying the protected original routes.</p>`);return}
@@ -418,7 +427,7 @@ window.addEventListener('message',handleModuleState);
   if(!window.DWV33Integration){integrationSession={status:'error',message:'Integration runtime did not load.'};render();return}
   integrationController=await window.DWV33Integration.startStudent(session=>{
     integrationSession=session;
-    if(session.status==='authorized')applyStudentModel(session.student,session.academic,session.world);
+    if(session.status==='authorized')applyStudentModel(session.student,session.academic,session.world,session.passes);
     if(!currentModuleId()||!app.querySelector('[data-module-frame]'))render();
   });
 })();

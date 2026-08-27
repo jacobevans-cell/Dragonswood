@@ -1,5 +1,31 @@
 # Integration Status
 
+## Consolidated student-beta release candidate
+
+- Final V3.3 student and teacher preview was manually approved.
+- Root `index.html` and `teacher.html` now load the approved V3.3 shell in an
+  HTML-declared production mode; query strings cannot turn tester pages into
+  production writers.
+- The prior production portals are preserved byte-for-byte as
+  `student-v2.html` and `teacher-v2.html` for compatibility and rapid rollback.
+- Student Bathroom, Snack, Out-of-Seat, and Emergency Office passes are now
+  wired into the V3.3 portal with transaction-backed start/return behavior,
+  teacher-reviewed extras, one-pending-request policy, blackout enforcement,
+  and atomic bathroom slot claims.
+- Academic, Student World, Teacher Operations, Cedar, Arcade, and embedded
+  module routes recognize the production release without changing the
+  approved emulator/preview appearance.
+- Kingdom Wars is exposed as an Explore Academy student beta after Morning
+  Work. Its page explicitly states that Kingdom progress is local to the
+  browser and cannot change academic or RPG records.
+- The release gate runs all inherited browser gates plus the new pass flow
+  against the exact deployable `firestore.rules`, then repeats all static,
+  parser, safety, and 17-route zero-pixel checks.
+- The guarded launcher deploys additive Firebase backends/rules before the
+  root cutover, tags the frozen production checkpoint, promotes through one
+  merge commit, verifies GitHub Pages, and automatically reverts that merge if
+  the live V3 marker does not appear.
+
 ## Completed
 
 - Gate 0 original read-only production inventory/dependency map.
@@ -30,7 +56,7 @@
   browser/static/parser gate, and all 17 zero-pixel routes. It was committed
   and backed up at `a3777b2e8c2addd0970865e0e4f071fa1f24e573`.
 
-## Teacher Operations + Cedar candidate — Codespace gate pending
+## Teacher Operations + Cedar — approved integration checkpoint
 
 - The authoritative production `daily-quest.html` and
   `curriculum-quest.html` remain the lesson, pacing, recovery, grading, and
@@ -82,15 +108,16 @@
   closed when the surviving request is reviewed.
 - Pass approval/denial, active return, recognition XP, class points, universal
   goal transfers, job assignment, payroll, schedule saves, and leaderboard
-  rewards fail closed outside the fictional emulator.
+  rewards fail closed in read-only/tester modes and write only in the explicit
+  production release or fictional emulator.
 - Payroll, recognition, and leaderboard awards use deterministic records so a
   repeated click cannot issue the same reward twice.
 - Cedar is a lazy bridge to the current production narration manifest and
   narrator. It loads only after Read Aloud is selected and excludes controls,
   navigation, answer choices, and teacher-only content.
-- The actual Firebase emulator process and 17-route pixel suite must pass in
-  the Codespace before this final functional candidate may be accepted or
-  committed.
+- The Teacher Operations checkpoint passed 30 fictional Firebase checks,
+  every inherited browser/static/parser gate, and all 17 zero-pixel routes at
+  `feae8785b16cf5800bd5e6f8b2b22177fa3695b2`.
 
 ## Required while later stages proceed
 
@@ -116,18 +143,18 @@ Daily Missions / curriculum / pacing / video integrate from the current producti
 
 The current production contract includes no-video scope locking, no-cold-guess interaction design, purpose-specific attempt limits, completed-work grandfathering, duplicate-safe review workflow, and the recovered final 14 Q1 videos.
 
-## Still intentionally pending after this wave
+## Remaining launch gate
 
-Final production-rules reconciliation, a last complete manual acceptance,
-production promotion, and deployment remain pending. No production action is
-authorized by this candidate.
+Only the consolidated Codespace installer remains. It must pass exact
+production rules, all functional browser paths, all inherited static checks,
+and the unchanged 17-route visual suite before it can deploy or promote.
 
 ## Safety
 
-- Default runtime mode is emulator-only using `demo-dragonswood-v33`.
-- Production mode is explicitly read-only and opt-in.
-- Academic writes fail closed unless the runtime is connected to the fictional
-  `demo-dragonswood-v33` emulator.
+- Tester pages default to emulator-only using `demo-dragonswood-v33`.
+- Production writes require the immutable root-page production declaration;
+  a query string alone cannot enable them.
+- Read-only inspection mode remains write-locked.
 - Production `main`, its live entry points, live Firestore rules, and live data
   remain untouched. Stage 4 edits exist only in the isolated candidate.
 - The isolated recovery branch is backed up on GitHub; no fallback write to

@@ -79,7 +79,7 @@ def main():
         assert 'Friday Payroll Approved' in (payroll_done.text_content() or '')
 
         route(teacher,'schedule','Schedule & Calendar');teacher.locator('.timeline-teacher-row b').get_by_text('Live Emulator Math',exact=True).wait_for()
-        teacher.locator('[data-save-schedule]').click();teacher.locator('#toast').get_by_text('schedule saved to the fictional emulator.',exact=False).wait_for(timeout=10000)
+        teacher.locator('[data-save-schedule]').click();teacher.locator('#toast').get_by_text('schedule saved to the fictional Firebase emulator.',exact=False).wait_for(timeout=10000)
 
         route(teacher,'leaderboards','Leaderboard Command');teacher.locator('[data-reward-leaders]').click();teacher.locator('#confirm-leader-rewards').click()
         teacher.locator('#toast').get_by_text('new weekly leaderboard reward',exact=False).wait_for(timeout=10000)

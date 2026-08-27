@@ -40,11 +40,11 @@
   }
   function href(id,baseHref,requestedEnvironment){
     const mod=definition(id);if(!mod)return '';
-    const url=new URL(`../${mod.path}`,baseHref);
+    const url=new URL(`../${mod.path}`,baseHref||globalThis.document?.baseURI||globalThis.location?.href);
     if(mod.query)new URLSearchParams(mod.query).forEach((value,key)=>url.searchParams.set(key,value));
     url.searchParams.set('dwEmbed','1');
     const environment=requestedEnvironment||globalThis.DWV33Integration?.environment||'';
-    if(environment==='emulator'||environment==='production-readonly')url.searchParams.set('dw-env',environment);
+    if(environment==='emulator'||environment==='production-readonly'||environment==='production')url.searchParams.set('dw-env',environment);
     return url.href;
   }
   function markup(id){

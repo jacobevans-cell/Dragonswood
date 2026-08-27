@@ -1,12 +1,13 @@
 (function(){
   'use strict';
   const params=new URLSearchParams(location.search);
-  const enabled=window.DWV33Integration?.environment==='emulator'
-    && params.get('dw-arcade-writes')==='EMULATOR_ONLY';
+  const environment=window.DWV33Integration?.environment||'emulator';
+  const enabled=environment==='production'
+    || (environment==='emulator'&&params.get('dw-arcade-writes')==='EMULATOR_ONLY');
   let contextPromise=null;
 
   async function context(){
-    if(!enabled)throw new Error('Arcade teacher writes require the fictional emulator and the exact EMULATOR_ONLY opt-in.');
+    if(!enabled)throw new Error('Arcade teacher controls are unavailable in this read-only environment.');
     if(contextPromise)return contextPromise;
     contextPromise=Promise.all([
       import('https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js'),
@@ -17,7 +18,7 @@
       const auth=authMod.getAuth(app);
       if(!auth.currentUser)throw new Error('Sign in as the authorized teacher before using Arcade controls.');
       const functions=fnMod.getFunctions(app,'us-central1');
-      try{fnMod.connectFunctionsEmulator(functions,'127.0.0.1',5001)}catch{}
+      if(environment==='emulator')try{fnMod.connectFunctionsEmulator(functions,'127.0.0.1',5001)}catch{}
       return {auth,functions,fnMod};
     });
     return contextPromise;

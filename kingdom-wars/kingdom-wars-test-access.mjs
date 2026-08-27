@@ -64,6 +64,7 @@ async function morningWorkAccess(db,fsMod,uid){
 export function authorizeKingdomTester({email='',student=null,testerAccountExists=false}={}){
   const normalizedEmail=String(email||'').trim().toLowerCase();
   if(ADMIN_EMAILS.has(normalizedEmail))return {allowed:true,reason:'admin'};
+  if(environment==='production'&&normalizedEmail.endsWith('@explore.academy'))return {allowed:true,reason:'student-beta'};
   if(testerAccountExists)return {allowed:true,reason:'tester-account'};
   if(roleFromStudent(student||{}))return {allowed:true,reason:'student-role'};
   return {allowed:false,reason:'not-authorized'};
@@ -112,9 +113,9 @@ export async function requireKingdomTester(){
     <main style="min-height:100vh;display:grid;place-items:center;background:#050518;color:white;font-family:Arial;padding:24px">
       <section style="max-width:520px;padding:28px;border:1px solid #8d6cc7;border-radius:18px;background:#100d31;text-align:center">
         <div style="font-size:52px">🔒</div>
-        <h1 style="font-family:Georgia;color:#ffe08a">Tester Realm Locked</h1>
-        <p>${session.reason==='auth-timeout'?'Your sign-in is still loading. Check your connection, then try again.':session.reason==='morning-work'?'Finish Morning Work before entering Kingdom Wars. Your teacher can also grant today’s access override.':session.reason==='morning-work-check-failed'?'Morning Work access could not be verified, so Kingdom Wars stayed safely locked.':'This Kingdom Wars build is currently available only to Dragonswood tester and admin accounts.'}</p>
-        <a href="v33-integration/student-test.html" style="display:inline-block;margin-top:12px;padding:11px 16px;border-radius:10px;background:#7130c7;color:#fff;text-decoration:none;font-weight:800">← Return to Dragonswood</a>
+        <h1 style="font-family:Georgia;color:#ffe08a">${environment==='production'?'Kingdom Wars Locked':'Tester Realm Locked'}</h1>
+        <p>${session.reason==='auth-timeout'?'Your sign-in is still loading. Check your connection, then try again.':session.reason==='morning-work'?'Finish Morning Work before entering Kingdom Wars. Your teacher can also grant today’s access override.':session.reason==='morning-work-check-failed'?'Morning Work access could not be verified, so Kingdom Wars stayed safely locked.':environment==='production'?'Sign in with your Explore Academy student account to enter Kingdom Wars.':'This Kingdom Wars build is currently available only to Dragonswood tester and admin accounts.'}</p>
+        <a href="${environment==='production'?'index.html':'v33-integration/student-test.html'}" style="display:inline-block;margin-top:12px;padding:11px 16px;border-radius:10px;background:#7130c7;color:#fff;text-decoration:none;font-weight:800">← Return to Dragonswood</a>
       </section>
     </main>`;
   throw new Error(`Kingdom Wars tester access denied: ${session.reason}`);

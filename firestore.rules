@@ -743,17 +743,19 @@ service cloud.firestore {
                     && request.resource.data.completedCount <= 5
                     && request.resource.data.paid == false;
 
-      // Student check-off: only these two fields may change.
+      // Student check-off: only completion evidence and its server timestamp
+      // may change. V3 writes updatedAt together with every check-off.
       // UID-prefixed document IDs keep this limited to the signed-in student,
       // including weekly records created by older Dragonswood builds.
       allow update: if isExploreStudent()
                     && weekId.matches('^' + request.auth.uid + '_.*$')
                     && request.resource.data.diff(resource.data).affectedKeys()
-                         .hasOnly(['checkedDays','completedCount'])
+                         .hasOnly(['checkedDays','completedCount','updatedAt'])
                     && request.resource.data.checkedDays is list
                     && request.resource.data.completedCount is number
                     && request.resource.data.completedCount >= 0
-                    && request.resource.data.completedCount <= 5;
+                    && request.resource.data.completedCount <= 5
+                    && request.resource.data.updatedAt == request.time;
 
       allow create, update, delete: if isTeacher();
     }
@@ -789,6 +791,7 @@ service cloud.firestore {
 
     match /passStatus/{passId} {
       allow read: if isTeacher()
+                  || (isSignedIn() && passId.matches('^' + request.auth.uid + '_.*$'))
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid

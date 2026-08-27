@@ -44,7 +44,7 @@ pass("Curriculum imports Firebase Functions",curr.includes("firebase-functions.j
 pass("Curriculum checker async",curr.includes("async function checkActivity(id)"));
 pass("Curriculum reasoning rescue",curr.includes("async function curriculumAiRescue"));
 pass("Curriculum exposes safe item-state saving",curr.includes("function saveCurriculumItemState(id,itemState)"));
-pass("Curriculum cache-busts enhancement loader",curr.includes("q1-curriculum-enhancements.js?v=57.1.2"));
+pass("Curriculum cache-busts enhancement loader",curr.includes("q1-curriculum-enhancements.js?v=57.1.3"));
 
 const mathAuto=fs.readFileSync("dragonswood-math-autograding.js","utf8");
 pass(
@@ -59,7 +59,7 @@ pass(
 const curriculumEnhancements=fs.readFileSync("q1-curriculum-enhancements.js","utf8");
 pass(
   "Repaired Math runtime is cache-busted",
-  curriculumEnhancements.includes("dragonswood-math-autograding.js?v=57.1.2")
+  curriculumEnhancements.includes("dragonswood-math-autograding.js?v=57.1.3")
 );
 
 for(const f of ["teacher-v2.html"]){

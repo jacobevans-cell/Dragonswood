@@ -368,7 +368,7 @@
   let tries=0;
   function install(){
     const required=["render","vid","friendlyTitle","miniLessonFor","renderMiniLesson","activityFor","kidIntro","card","grouped","autoQuestionsFor","renderAutoPractice","activitySpec","validateActivity","supportMetadataRow"];
-    if(required.some(k=>typeof window[k]!=="function")){
+    if(required.some(k=>typeof window[k]!=="function")||!window.DWCurriculumRenderCoordinator){
       if(++tries<80)setTimeout(install,25);
       return;
     }
@@ -591,7 +591,7 @@
       return O.grouped(title,desc,a,byDay);
     };
 
-    window.render();
+    window.DWCurriculumRenderCoordinator.request("no-video-installed");
   }
   setTimeout(install,0);
 })();

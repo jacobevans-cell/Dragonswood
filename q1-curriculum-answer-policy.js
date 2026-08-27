@@ -372,7 +372,7 @@
   let installTries=0;
   function install(){
     const required=["render","st","save","autoQuestionsFor","renderAutoPractice","autoPassed","findItem","vid"];
-    if(required.some(k=>typeof window[k]!=="function")){if(++installTries<160)setTimeout(install,25);return}
+    if(required.some(k=>typeof window[k]!=="function")||!window.DWCurriculumRenderCoordinator){if(++installTries<160)setTimeout(install,25);return}
     if(!window.__DW_CURRICULUM_INTERACTION_ENGINE_V5624__){if(++installTries<160)setTimeout(install,25);return}
     if(window.__DW_CURRICULUM_ANSWER_INTEGRITY_V56253__)return;
     window.__DW_CURRICULUM_ANSWER_INTEGRITY_V56253__=true;
@@ -416,7 +416,7 @@
       if(correct&&s.autoOverrideStatus)delete s.autoOverrideStatus[index];
       s[POLICY_KEY]=p;S.items[itemId]=s;
       if(settings.kind==="progress"&&roundResolved(x,p,q))recordRound(x,p,q,"progress-check");
-      save();render();
+      save();window.DWCurriculumRenderCoordinator.request("answer-submitted");
     };
 
     window.dwCurriculumAssessmentSubmit=function(itemId){
@@ -424,7 +424,7 @@
       const p=stateFor(x,true),q=window.autoQuestionsFor(x),settings=policySettings(x);
       if(settings.kind!=="assessment"||!roundResolved(x,p,q))return;
       p.revealed=true;recordRound(x,p,q,"assessment-submit");
-      S.items[itemId][POLICY_KEY]=p;save();render();
+      S.items[itemId][POLICY_KEY]=p;save();window.DWCurriculumRenderCoordinator.request("assessment-submitted");
     };
 
     window.dwCurriculumFreshRound=function(itemId){
@@ -435,7 +435,7 @@
       recordRound(x,p,q,"fresh-round");
       p.round=Number(p.round||0)+1;p.attempts={};p.locked={};p.submitted={};p.drafts={};p.results={};p.revealed=false;
       const s=st(itemId);s.autoAnswers={};s.autoOverrideStatus={};s.autoOverrideNotes={};s[POLICY_KEY]=p;S.items[itemId]=s;
-      save();render();
+      save();window.DWCurriculumRenderCoordinator.request("fresh-answer-round");
     };
 
     window.checkAutoQuestion=function(id,index,value){window.dwCurriculumAnswerSelect(id,index,value)};
@@ -457,7 +457,7 @@
     window.__DW_CURRICULUM_ANSWER_POLICY_TEST__={
       policyKind,policySettings,submissionOutcome,freshQuestionBank,pickRoundQuestions,hintFor
     };
-    try{render()}catch(e){console.error("Curriculum answer-integrity render",e)}
+    window.DWCurriculumRenderCoordinator.request("answer-policy-installed");
   }
 
   window.__DW_CURRICULUM_ANSWER_POLICY_TEST_PREINSTALL__={

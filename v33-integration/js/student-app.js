@@ -491,6 +491,13 @@ function render(){
     app.innerHTML=authGate();bindAuthGate();document.title=IS_PRODUCTION?'Dragonswood | Sign In':'[INTEGRATION] Dragonswood | Sign In';return;
   }
   ensureRecoveryProbe();
+  const requestedModule=currentModuleId(),mountedModule=app.querySelector('[data-v33-module-shell]')?.dataset.v33ModuleShell||'';
+  if(!blockingPass()&&requestedModule&&requestedModule===mountedModule&&app.querySelector('[data-module-frame]')){
+    state.page=currentPage();
+    document.title=`${IS_PRODUCTION?'':'[TESTER] '}Dragonswood | ${moduleHost.definition(requestedModule).title}`;
+    syncPassSafety();
+    return;
+  }
   state.page=currentPage();
   app.innerHTML=shell();
   bind();

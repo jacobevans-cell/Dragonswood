@@ -90,7 +90,7 @@
   if(window.__DW_NO_VIDEO_ENGINE_LOADER__)return;
   window.__DW_NO_VIDEO_ENGINE_LOADER__=true;
   const s=document.createElement("script");
-  s.src="q1-no-video-lessons.js?v=56.25.3";
+  s.src="q1-no-video-lessons.js?v=56.25.4";
   s.async=false;
   document.head.appendChild(s);
 })();
@@ -102,7 +102,7 @@
   if(window.__DW_CURRICULUM_INTERACTION_LOADER__)return;
   window.__DW_CURRICULUM_INTERACTION_LOADER__=true;
   const s=document.createElement("script");
-  s.src="q1-curriculum-interactions.js?v=56.24.2";
+  s.src="q1-curriculum-interactions.js?v=56.24.3";
   s.async=false;
   document.head.appendChild(s);
 })();
@@ -114,7 +114,7 @@
   if(window.__DW_CURRICULUM_ANSWER_POLICY_LOADER__)return;
   window.__DW_CURRICULUM_ANSWER_POLICY_LOADER__=true;
   const s=document.createElement("script");
-  s.src="q1-curriculum-answer-policy.js?v=56.25.3";
+  s.src="q1-curriculum-answer-policy.js?v=56.25.4";
   s.async=false;
   document.head.appendChild(s);
 })();
@@ -126,7 +126,7 @@
   if(window.__DW_MATH_AUTO_GRADING_LOADER__)return;
   window.__DW_MATH_AUTO_GRADING_LOADER__=true;
   const s=document.createElement("script");
-  s.src="dragonswood-math-autograding.js?v=57.1.2";
+  s.src="dragonswood-math-autograding.js?v=57.1.3";
   s.async=false;
   document.head.appendChild(s);
 })();

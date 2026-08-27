@@ -20,6 +20,20 @@ service cloud.firestore {
     function gateSeed() {
       return request.auth == null && request.resource.data.__gateSeed == true;
     }
+    function hasNoOtherPendingExtraPass(uid, dateKey, exceptType) {
+      return (exceptType == 'bathroom'
+              || !exists(/databases/$(database)/documents/bathroomRequests/$(uid + '_' + dateKey))
+              || get(/databases/$(database)/documents/bathroomRequests/$(uid + '_' + dateKey)).data.status != 'pending')
+          && (exceptType == 'snack'
+              || !exists(/databases/$(database)/documents/snackRequests/$(uid + '_' + dateKey))
+              || get(/databases/$(database)/documents/snackRequests/$(uid + '_' + dateKey)).data.status != 'pending')
+          && (exceptType == 'outOfSeat'
+              || !exists(/databases/$(database)/documents/passRequests/$(uid + '_outOfSeat_' + dateKey))
+              || get(/databases/$(database)/documents/passRequests/$(uid + '_outOfSeat_' + dateKey)).data.status != 'pending')
+          && (exceptType == 'office'
+              || !exists(/databases/$(database)/documents/passRequests/$(uid + '_office_' + dateKey))
+              || get(/databases/$(database)/documents/passRequests/$(uid + '_office_' + dateKey)).data.status != 'pending');
+    }
 
     match /students/{studentId} {
       allow read: if isTeacher() || isOwner(studentId);
@@ -49,6 +63,7 @@ service cloud.firestore {
           && request.resource.data.gold <= resource.data.gold + 3
           && request.resource.data.bossWins <= resource.data.bossWins + 1)
       );
+      allow update: if isTeacher();
       allow delete: if false;
     }
 
@@ -97,6 +112,7 @@ service cloud.firestore {
 
     match /classData/{documentId} {
       allow read: if signedIn();
+      allow create, update: if isTeacher();
       allow create: if gateSeed()
                     || (isTeacher()
                         && documentId == 'activeWritingSession'
@@ -113,6 +129,7 @@ service cloud.firestore {
     match /classCalendarEvents/{eventId} {
       allow read: if signedIn();
       allow create: if gateSeed();
+      allow create, update, delete: if isTeacher();
       allow update, delete: if false;
     }
 
@@ -133,6 +150,7 @@ service cloud.firestore {
                     && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['checkedDays','completedCount','updatedAt'])
                     && request.resource.data.completedCount >= 0
                     && request.resource.data.completedCount <= 5;
+      allow create, update: if isTeacher();
       allow delete: if false;
     }
 
@@ -144,7 +162,89 @@ service cloud.firestore {
 
     match /leaderboardRewards/{rewardId} {
       allow read: if signedIn();
+      allow create: if gateSeed() || isTeacher();
+      allow update, delete: if false;
+    }
+
+    match /bathroomRequests/{requestId} {
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.status == 'pending'
+                        && requestId == request.auth.uid + '_' + request.resource.data.dateKey
+                        && hasNoOtherPendingExtraPass(request.auth.uid, request.resource.data.dateKey, 'bathroom'));
+      allow update: if isTeacher();
+      allow delete: if false;
+    }
+
+    match /snackRequests/{requestId} {
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.status == 'pending'
+                        && requestId == request.auth.uid + '_' + request.resource.data.dateKey
+                        && hasNoOtherPendingExtraPass(request.auth.uid, request.resource.data.dateKey, 'snack'));
+      allow update: if isTeacher();
+      allow delete: if false;
+    }
+
+    match /passRequests/{requestId} {
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.status == 'pending'
+                        && request.resource.data.type in ['outOfSeat','office']
+                        && requestId == request.auth.uid + '_' + request.resource.data.type + '_' + request.resource.data.dateKey
+                        && hasNoOtherPendingExtraPass(request.auth.uid, request.resource.data.dateKey, request.resource.data.type));
+      allow update: if isTeacher();
+      allow delete: if false;
+    }
+
+    match /pointRequests/{requestId} {
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.status == 'pending'
+                        && request.resource.data.reason is string
+                        && request.resource.data.reason.size() <= 500);
+      allow update: if isTeacher();
+      allow delete: if false;
+    }
+
+    match /bathroomStatus/{statusId} {
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
       allow create: if gateSeed();
+      allow create, update: if isTeacher();
+      allow delete: if false;
+    }
+
+    match /snackStatus/{statusId} {
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed();
+      allow create, update: if isTeacher();
+      allow delete: if false;
+    }
+
+    match /passStatus/{statusId} {
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed();
+      allow create, update: if isTeacher();
+      allow delete: if false;
+    }
+
+    match /passHistory/{historyId} {
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed() || isTeacher();
+      allow update: if isTeacher();
+      allow delete: if false;
+    }
+
+    match /studentTransactions/{transactionId} {
+      allow read, create: if isTeacher();
       allow update, delete: if false;
     }
 

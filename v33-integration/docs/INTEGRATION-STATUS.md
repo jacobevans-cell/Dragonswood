@@ -26,8 +26,11 @@
   and teacher browser gates, all 96 parser checks, and all 17 zero-pixel visual
   routes. It was committed and backed up at
   `2c0fd7457470d1abb709879473c46e02df38276f`.
+- The Student World wave passed 27 fictional Firebase checks, every inherited
+  browser/static/parser gate, and all 17 zero-pixel routes. It was committed
+  and backed up at `a3777b2e8c2addd0970865e0e4f071fa1f24e573`.
 
-## Student World Wave candidate — Codespace gate pending
+## Teacher Operations + Cedar candidate — Codespace gate pending
 
 - The authoritative production `daily-quest.html` and
   `curriculum-quest.html` remain the lesson, pacing, recovery, grading, and
@@ -71,8 +74,23 @@
   emulator persistence when embedded from V3.3.
 - The V3.3 leaderboard uses the production best-score-per-assignment algorithm,
   weekly Phoenix reset, daily reward markers, and live signed-in score reads.
+- Teacher Command now reads the authoritative pass, recognition, class-goal,
+  job, schedule, calendar, and leaderboard collections through one normalized
+  operations model.
+- Bathroom, Snack, Out-of-Seat, and Office requests retain the production
+  one-pending-extra-pass rule; legacy duplicates are collapsed in the view and
+  closed when the surviving request is reviewed.
+- Pass approval/denial, active return, recognition XP, class points, universal
+  goal transfers, job assignment, payroll, schedule saves, and leaderboard
+  rewards fail closed outside the fictional emulator.
+- Payroll, recognition, and leaderboard awards use deterministic records so a
+  repeated click cannot issue the same reward twice.
+- Cedar is a lazy bridge to the current production narration manifest and
+  narrator. It loads only after Read Aloud is selected and excludes controls,
+  navigation, answer choices, and teacher-only content.
 - The actual Firebase emulator process and 17-route pixel suite must pass in
-  the Codespace before this combined candidate may be accepted or committed.
+  the Codespace before this final functional candidate may be accepted or
+  committed.
 
 ## Required while later stages proceed
 
@@ -100,9 +118,9 @@ The current production contract includes no-video scope locking, no-cold-guess i
 
 ## Still intentionally pending after this wave
 
-Passes/rewards, remaining teacher command writes, narration wiring, final
-production-rules reconciliation, launch acceptance, and production promotion
-remain pending.
+Final production-rules reconciliation, a last complete manual acceptance,
+production promotion, and deployment remain pending. No production action is
+authorized by this candidate.
 
 ## Safety
 

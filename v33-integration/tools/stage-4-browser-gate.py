@@ -42,6 +42,54 @@ def sign_in(page):
     )
 
 
+def sign_in_embedded_frame(frame, label):
+    """Make emulator fixture authentication deterministic inside module iframes."""
+    frame.wait_for_function(
+        """async () => {
+          const appModule=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js');
+          const authModule=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js');
+          if(!appModule.getApps().length)return false;
+          const auth=authModule.getAuth(appModule.getApp());
+          return Boolean(auth.emulatorConfig);
+        }""",
+        timeout=30000,
+    )
+    frame.evaluate(
+        """async ({email,password}) => {
+          const appModule=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js');
+          const authModule=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js');
+          const auth=authModule.getAuth(appModule.getApp());
+          if(!auth.emulatorConfig)throw new Error('Embedded Firebase Auth is not connected to the emulator.');
+          if(!auth.currentUser||auth.currentUser.email!==email){
+            await authModule.signInWithEmailAndPassword(auth,email,password);
+          }
+        }""",
+        {'email': EMAIL, 'password': PASSWORD},
+    )
+    if 'dw-env=emulator' not in frame.url:
+        raise AssertionError(f'{label} did not retain the fictional emulator environment: {frame.url}')
+
+
+def wait_for_daily_ready(frame):
+    status = frame.locator('#status')
+    status.wait_for(timeout=30000)
+    deadline = time.monotonic() + 30
+    last = ''
+    while time.monotonic() < deadline:
+        last = (status.text_content() or '').strip()
+        if "Today's quest is unlocked." in last:
+            return
+        if any(marker in last for marker in (
+            'sealed or unavailable:',
+            'Dragonswood profile error:',
+            'requires an Explore Academy',
+        )):
+            raise AssertionError(f'Daily Quest rejected the fictional emulator fixture: {last}')
+        frame.wait_for_timeout(100)
+    body = ' '.join((frame.locator('body').inner_text() or '').split())[:1200]
+    raise AssertionError(f'Daily Quest did not reach its unlocked state. status={last!r}; body={body!r}')
+
+
 def wait_for_authorized_portal(page):
     deadline = time.monotonic() + 30
     last = {'status': 'unknown', 'message': ''}
@@ -73,7 +121,13 @@ def main():
             if Path('/usr/bin/chromium').exists():
                 launch['executable_path'] = '/usr/bin/chromium'
             browser = pw.chromium.launch(**launch)
-            context = browser.new_context(viewport={'width': 1440, 'height': 1000})
+            # Daily Quest uses the scholar's local school date. The Codespace
+            # runs in UTC, so pin this fixture to Dragonswood's Arizona clock
+            # to match the Phoenix date used by the emulator seed.
+            context = browser.new_context(
+                viewport={'width': 1440, 'height': 1000},
+                timezone_id='America/Phoenix',
+            )
             context.on(
                 'request',
                 lambda request: forbidden.append(request.url)
@@ -92,7 +146,10 @@ def main():
             daily_frame = page.locator('iframe[title="Today\'s Daily Quest"]')
             daily_frame.wait_for()
             assert 'dw-env=emulator' in (daily_frame.get_attribute('src') or '')
-            page.frame_locator('iframe[title="Today\'s Daily Quest"]').get_by_text("Today's quest is unlocked.", exact=False).wait_for(timeout=30000)
+            daily = daily_frame.element_handle().content_frame()
+            assert daily is not None
+            sign_in_embedded_frame(daily, 'Daily Quest')
+            wait_for_daily_ready(daily)
 
             page.evaluate("location.hash='#missions'")
             page.get_by_role('heading', name='Your quest path').wait_for()
@@ -100,7 +157,9 @@ def main():
             curriculum_frame = page.locator('iframe[title="Curriculum & Recovery Quest"]')
             curriculum_frame.wait_for()
             assert 'dw-env=emulator' in (curriculum_frame.get_attribute('src') or '')
-            curriculum = page.frame_locator('iframe[title="Curriculum & Recovery Quest"]')
+            curriculum = curriculum_frame.element_handle().content_frame()
+            assert curriculum is not None
+            sign_in_embedded_frame(curriculum, 'Curriculum Quest')
             curriculum.get_by_role('heading', name='5th Grade • Semester 1 • Day 14').wait_for(timeout=30000)
             assert curriculum.locator('#authStatus').text_content() == '✓ Signed in'
 

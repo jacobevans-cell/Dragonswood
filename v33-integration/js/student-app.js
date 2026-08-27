@@ -52,6 +52,7 @@ const state = {
   day: 'Today',
   characterClass: 'Unchosen',
   pet: 'No active pet',
+  narrationVoice: '',
   equipment: {},
   inventory: [],
   bossHp: 72,
@@ -293,6 +294,7 @@ function applyStudentModel(model,academic,world){
   state.firstName=model.firstName;state.displayName=model.displayName;state.initial=model.initial;state.grade=model.grade;
   state.level=model.level;state.hp=model.hp;state.gold=model.gold;state.streak=model.streak;state.xp=model.xp;state.xpFloor=model.xpFloor;state.xpMax=model.xpNext;state.xpPct=model.xpPct;
   state.characterClass=model.classLabel;state.pet=model.petName;state.equipment=model.equipped||{};state.inventory=model.inventory||[];
+  state.narrationVoice=model.narrationVoice||'';
   state.dailyAccessUnlocked=model.dailyAccessUnlocked===true;
   if(model.dailyMissions){
     if(state.missionDate&&state.missionDate!==model.dailyMissions.dateKey)state.completedMissions.delete('curriculum');
@@ -389,8 +391,11 @@ function closeModule(){
 }
 function mountModule(id){if(id)moduleHost?.mount(app,id,location.href)}
 
-function readPage(){
+async function readPage(){
   const title=studentNavItems().find(n=>n[0]===state.page)?.[2]||'Dragonswood';
+  if(window.DWV33Narration){
+    try{await window.DWV33Narration.readPage({id:`v33/student/${state.page}`,root:'#page-content',voiceId:state.narrationVoice,contentType:state.page==='scribe'?'ela':'general'});showToast('Cedar read-aloud started.');return}catch(err){showToast(err?.message||'Read-aloud could not start.');return}
+  }
   if('speechSynthesis' in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(`Dragonswood. ${title}. ${document.querySelector('#page-content h1')?.textContent||''}`);u.rate=.9;speechSynthesis.speak(u);showToast('Read-aloud started.');}else showToast('Read-aloud is not available in this browser.');
 }
 function passesDialog(){openDialog('Passes',`<p class="muted">Pass controls live in their own protected area so they never cover the Dragonswood title.</p><div class="grid-2 mt-12"><button class="btn btn-primary" data-close-dialog>🚻 Request Bathroom Pass</button><button class="btn btn-secondary" data-close-dialog>💧 Request Water Pass</button></div>`)}

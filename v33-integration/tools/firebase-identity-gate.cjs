@@ -11,6 +11,7 @@ const FIRESTORE='http://127.0.0.1:8080';
 const DB=`${FIRESTORE}/v1/projects/${PROJECT}/databases/(default)`;
 const PASSWORD='V33-Gate-Only-2026!';
 const results=[];
+function weekKey(dateKey){const cursor=new Date(`${dateKey}T12:00:00-07:00`),day=(cursor.getDay()+6)%7;cursor.setDate(cursor.getDate()-day);return Core.phoenixDateKey(cursor)}
 
 function record(name,ok,detail=''){
   results.push({name,ok,detail});
@@ -113,6 +114,11 @@ async function attemptAuthenticatedWrite(account){
     const liveSchedule=Object.fromEntries(['Monday','Tuesday','Wednesday','Thursday','Friday'].map(day=>[day,[{id:'math',time:'8:25',title:'Live Emulator Math',detail:'Student World schedule'}]]));
     await seed('classData','classSchedule',{days:liveSchedule});
     await seed('classData','classJobs',{jobs:[{id:'floor-captain',name:'Floor Captain',icon:'🧹',description:'Check the reading corner before dismissal.',pay:50}],assignments:{[accounts.grade5.uid]:{id:'floor-captain',name:'Floor Captain',icon:'🧹',description:'Check the reading corner before dismissal.',pay:50}}});
+    await seed('classData','main',{points:64,history:[]});
+    await seed('classData','secondRecess',{points:8,goal:10,dateKey:today});
+    await seed('classData','classPet',{points:172,goal:250});
+    await seed('classData','fieldTrip',{points:418,goal:750});
+    await seed('classData','universalPoints',{points:24});
     await seed('classCalendarEvents','science-showcase',{title:'Science Showcase',icon:'🧪',dateKey:'2099-08-29',time:'1:30 PM'});
     await seed('scores','grade5-math',{studentId:accounts.grade5.uid,displayName:'Fifth',avatarEmoji:'🧙',assignmentId:'math-1',gameName:'Decimal Deception',subject:'Math',dateKey:today,score:92});
     await seed('scores','grade4-math',{studentId:accounts.grade4.uid,displayName:'Fourth',avatarEmoji:'🛡️',assignmentId:'math-1',gameName:'Decimal Deception',subject:'Math',dateKey:today,score:80});
@@ -120,6 +126,13 @@ async function attemptAuthenticatedWrite(account){
     await seed('dailyQuestProgress',`${accounts.grade5.uid}_${today}_exit_seed`,{studentId:accounts.grade5.uid,dateKey:today,day:14,session:'exit',status:'complete',score:100,correct:1,attempts:1});
     await seed('writingSessions','scribe-gate-1',{status:'active',title:'Emulator Quickwrite',prompt:'Describe the hidden gate using three sensory details.',minWords:5});
     await seed('curriculumAttempts','attempt-grade4-1',{studentId:accounts.grade4.uid,itemId:'I-D14-MATH',attemptNumber:1,questionsCorrect:8,questionsSeen:10,accuracy:80});
+    await seed('curriculumOverrideRequests','override-grade4',{studentId:accounts.grade4.uid,studentName:'Fourth',lessonId:'I-D14-MATH',studentAnswer:'I used place value evidence.',status:'pending'});
+    await seed('bathroomRequests',`${accounts.grade4.uid}_${today}`,{studentId:accounts.grade4.uid,studentName:'Fourth',dateKey:today,status:'pending',createdAt:new Date().toISOString()});
+    await seed('bathroomRequests',`${accounts.noClass.uid}_${today}`,{studentId:accounts.noClass.uid,studentName:'NoClass',dateKey:today,status:'pending',createdAt:new Date().toISOString()});
+    await seed('pointRequests',`recognition_${accounts.grade5.uid}_${today}`,{studentId:accounts.grade5.uid,studentName:'Fifth',dateKey:today,status:'pending',reason:'Helped another scholar',createdAt:new Date().toISOString()});
+    await seed('bathroomStatus',accounts.grade5.uid,{studentId:accounts.grade5.uid,studentName:'Fifth',dateKey:today,passesUsed:1,approvalCredits:0,active:true,activeVisitId:'visit-grade5-live',leftMs:Date.now()-60000,leftAtText:'1 min ago',visits:[{id:'visit-grade5-live',studentId:accounts.grade5.uid,studentName:'Fifth',dateKey:today,status:'out',leftMs:Date.now()-60000,leftAtText:'1 min ago'}]});
+    await seed('passHistory','visit-returned',{studentId:accounts.grade4.uid,studentName:'Fourth',dateKey:today,status:'returned',type:'bathroom'});
+    await seed('studentJobWeeks',`${accounts.grade5.uid}_${weekKey(today)}`,{studentId:accounts.grade5.uid,studentName:'Fifth',weekKey:weekKey(today),jobId:'floor-captain',jobName:'Floor Captain',pay:50,checkedDays:[0,1,2,3],completedCount:4,paid:false});
     record('Demo Firestore seeded without production access',true,PROJECT);
 
     assert.equal(Core.isStudentEligibleEmail(accounts.grade4.email,false),true);
@@ -172,6 +185,10 @@ async function attemptAuthenticatedWrite(account){
     const ownDaily=(dailyRows.body||[]).filter(x=>x.document).map(x=>({id:x.document.name.split('/').pop(),...decodeFields(x.document.fields)}));
     assert.equal(Core.dailyMissionState(ownDaily,new Date(`${today}T18:00:00Z`)).morning,'complete');
     record('Daily Quest progress persistence',true,'in-progress → complete → V3.3 mission state');
+
+    const crossPass=await writeDoc('snackRequests',`${accounts.noClass.uid}_${today}`,{studentId:accounts.noClass.uid,studentName:'NoClass',dateKey:today,status:'pending',createdAt:new Date().toISOString()},accounts.noClass.token);
+    assert.equal(crossPass.res.status,403,`Expected one-pending-pass denial, got ${crossPass.res.status}: ${crossPass.text}`);
+    record('One pending extra pass across all types',true,'Bathroom pending blocks Snack request for the same scholar');
 
     const curriculumId=`${accounts.grade5.uid}_K-D14-MATH`;
     const curriculumBase={studentId:accounts.grade5.uid,itemId:'K-D14-MATH',grade:'K',day:14,subject:'Math',strand:'Core Math',standardCode:'5.NBT',watched:false,videoCoverage:0,videoReflection:'',practiced:false,practiceEvidence:'',questionsCorrect:0,questionsSeen:0,autoAnswers:{},autoAttempts:0,lastActivityAttempt:'',activityAttempts:0,overrideStatus:'',verified:false};
@@ -260,6 +277,14 @@ async function attemptAuthenticatedWrite(account){
     assert.equal(roster.length,5);
     assert.equal(new Set(roster.map(x=>x.id)).size,5);
     record('Authorized teacher roster read',true,'stable Firestore document IDs preserved');
+
+    const teacherPasses=await listDocs('bathroomRequests',accounts.teacher.token),teacherRecognition=await listDocs('pointRequests',accounts.teacher.token),teacherActive=await listDocs('bathroomStatus',accounts.teacher.token);
+    assert.equal(teacherPasses.res.ok,true,JSON.stringify(teacherPasses.body));assert.equal(teacherRecognition.res.ok,true,JSON.stringify(teacherRecognition.body));assert.equal(teacherActive.res.ok,true,JSON.stringify(teacherActive.body));
+    record('Teacher Operations queue reads',true,'pending passes + recognition + active movement visible');
+
+    const classPointWrite=await writeDoc('classData','main',{points:65,history:[{amount:1,reason:'Gate check'}]},accounts.teacher.token,['points','history']);
+    assert.equal(classPointWrite.res.ok,true,JSON.stringify(classPointWrite.body));
+    record('Teacher class reward write',true,'shared points updated only by authorized teacher');
 
     const teacherDaily=await listDocs('dailyQuestProgress',accounts.teacher.token),teacherAttempts=await listDocs('curriculumAttempts',accounts.teacher.token),teacherGames=await listDocs('gameResults',accounts.teacher.token);
     const decodeList=result=>(result.body.documents||[]).map(d=>({id:d.name.split('/').pop(),...decodeFields(d.fields)}));

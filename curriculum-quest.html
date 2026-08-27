@@ -140,15 +140,16 @@ body>*{position:relative;z-index:1}
   </div>
 </div>
 <script src="q1-curriculum-data.js"></script>
-<script src="q1-curriculum-enhancements.js?v=57.1.2"></script>
+<script src="q1-curriculum-enhancements.js?v=57.1.3"></script>
 <script src="q1-video-map.js"></script>
 <script src="curriculum-question-engine.js"></script>
 <script>
 const D=window.DRAGONSWOOD_DATA, VM=window.DRAGONSWOOD_VIDEO_MAP||{}, BASE_K="dragonswood_q1_integrated_progress_v4";
 const Q1_SCHOOL_DAYS={"2026-08-03":1,"2026-08-04":2,"2026-08-05":3,"2026-08-06":4,"2026-08-07":5,"2026-08-10":6,"2026-08-11":7,"2026-08-12":8,"2026-08-13":9,"2026-08-14":10,"2026-08-17":11,"2026-08-18":12,"2026-08-19":13,"2026-08-20":14,"2026-08-21":15,"2026-08-24":16,"2026-08-25":17,"2026-08-26":18,"2026-08-27":19,"2026-08-28":20,"2026-08-31":21,"2026-09-01":22,"2026-09-02":23,"2026-09-03":24,"2026-09-04":25,"2026-09-08":26,"2026-09-09":27,"2026-09-10":28,"2026-09-11":29,"2026-09-14":30,"2026-09-15":31,"2026-09-16":32,"2026-09-17":33,"2026-09-18":34,"2026-09-21":35,"2026-09-22":36,"2026-09-23":37,"2026-09-24":38,"2026-09-25":39,"2026-09-28":40};
 function q1CalendarCursor(){const today=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Phoenix",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date()),dates=Object.keys(Q1_SCHOOL_DAYS).sort(),todayDay=Q1_SCHOOL_DAYS[today];if(todayDay)return todayDay;const next=dates.find(d=>d>today);if(next)return Q1_SCHOOL_DAYS[next];return 40}
-let K=BASE_K+"_pending",S={grade:"I",day:q1CalendarCursor(),items:{}};
-function loadScopedState(scope){K=BASE_K+"_"+String(scope||"anonymous").replace(/[^a-zA-Z0-9_-]/g,"_");try{S=JSON.parse(localStorage.getItem(K)||"{}")}catch(e){S={}}S.grade=S.grade||"I";S.day=q1CalendarCursor();S.items=S.items||{}}
+let K=BASE_K+"_pending",S={grade:"I",day:q1CalendarCursor(),items:{}},curriculumDraftScope="anonymous";
+function curriculumScope(scope){return String(scope||"anonymous").replace(/[^a-zA-Z0-9_-]/g,"_")}
+function loadScopedState(scope){curriculumDraftScope=curriculumScope(scope);K=BASE_K+"_"+curriculumDraftScope;try{S=JSON.parse(localStorage.getItem(K)||"{}")}catch(e){S={}}S.grade=S.grade||"I";S.day=q1CalendarCursor();S.items=S.items||{}}
 const $=x=>document.querySelector(x), $$=x=>[...document.querySelectorAll(x)];
 const esc=(x="")=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 let isTeacher=false,currentStudent=null,activeVideoId=null,watchedRanges=[],lastVideoTime=0;
@@ -158,6 +159,132 @@ const WATCH_REQUIRED_FRACTION=.90;
 function save(){localStorage.setItem(K,JSON.stringify(S));if(window.queueCurriculumProgress)window.queueCurriculumProgress(S)}
 function saveCurriculumItemState(id,itemState){S.items[id]=itemState;save()}
 function st(id){return S.items[id]||{watched:false,practiced:false,verified:false,videoReflection:"",practiceEvidence:""}}
+
+const DW_CURRICULUM_DRAFTS="dragonswood_q1_curriculum_drafts_v1";
+let curriculumRenderTimer=0,curriculumRenderInProgress=false,curriculumRenderCount=0,curriculumInstallRefreshStartedAt=0;
+const curriculumRenderReasons=new Set();
+const curriculumInstallRefreshReasons=new Set([
+  "no-video-installed","interactions-installed","answer-policy-installed","math-autograding-installed"
+]);
+
+function curriculumDraftStorageKey(){return `${DW_CURRICULUM_DRAFTS}_${curriculumDraftScope}`}
+function readCurriculumDrafts(){try{return JSON.parse(localStorage.getItem(curriculumDraftStorageKey())||"{}")}catch(e){return {}}}
+function writeCurriculumDrafts(value){try{localStorage.setItem(curriculumDraftStorageKey(),JSON.stringify(value||{}))}catch(e){}}
+function curriculumControlKey(control){
+  if(!control)return "";
+  if(control.id)return `id:${control.id}`;
+  const name=control.getAttribute?.("name")||"";
+  if(name)return `name:${name}|value:${String(control.value||"")}`;
+  const mission=control.closest?.("[data-mission-id]"),controls=mission?[...mission.querySelectorAll("input,textarea,select")]:[];
+  return mission?`index:${controls.indexOf(control)}:${control.tagName}:${control.type||""}`:"";
+}
+function curriculumSnapshotKey(control){
+  const mission=control?.closest?.("[data-mission-id]");
+  return mission?`${mission.dataset.missionId}::${curriculumControlKey(control)}`:"";
+}
+function curriculumDraftControl(control){
+  return !!control?.matches?.('textarea,input:not([type]),input[type="text"],input[type="number"],input[type="search"],input[type="email"],input[type="url"],input[type="tel"]');
+}
+function saveCurriculumDraftControl(control){
+  if(!curriculumDraftControl(control))return;
+  const mission=control.closest("[data-mission-id]"),missionId=mission?.dataset.missionId,key=curriculumControlKey(control);
+  if(!missionId||!key)return;
+  const drafts=readCurriculumDrafts();drafts[missionId]=drafts[missionId]||{};
+  drafts[missionId][key]={value:String(control.value||""),updatedAt:Date.now()};writeCurriculumDrafts(drafts);
+}
+function clearCurriculumDraft(id){
+  const drafts=readCurriculumDrafts();if(!Object.prototype.hasOwnProperty.call(drafts,id))return;
+  delete drafts[id];writeCurriculumDrafts(drafts);
+}
+function applyCurriculumControl(control,row){
+  if(!control||!row)return;
+  if(control.type==="checkbox"||control.type==="radio")control.checked=!!row.checked;
+  else control.value=String(row.value??"");
+}
+function restoreStoredCurriculumDrafts(){
+  const drafts=readCurriculumDrafts();
+  document.querySelectorAll("[data-mission-id]").forEach(mission=>{
+    const id=mission.dataset.missionId,saved=drafts[id];if(!saved||st(id).practiced)return;
+    mission.querySelectorAll("input,textarea,select").forEach(control=>{const row=saved[curriculumControlKey(control)];if(row)applyCurriculumControl(control,row)});
+  });
+}
+function captureCurriculumView(){
+  const controls={};
+  document.querySelectorAll("#current [data-mission-id] input,#current [data-mission-id] textarea,#current [data-mission-id] select,#recovery [data-mission-id] input,#recovery [data-mission-id] textarea,#recovery [data-mission-id] select").forEach(control=>{
+    const key=curriculumSnapshotKey(control);if(key)controls[key]={value:String(control.value??""),checked:!!control.checked};
+  });
+  const active=document.activeElement,focusKey=curriculumSnapshotKey(active);
+  const focus=focusKey?{key:focusKey,start:Number.isInteger(active.selectionStart)?active.selectionStart:null,end:Number.isInteger(active.selectionEnd)?active.selectionEnd:null,direction:active.selectionDirection||"none"}:null;
+  return {
+    activeTab:document.querySelector("#curriculumTabs [data-tab].active")?.dataset.tab||"current",
+    missions:[...document.querySelectorAll("[data-mission-id][open]")].map(node=>node.dataset.missionId),
+    recoveryDays:[...document.querySelectorAll("[data-recovery-day][open]")].map(node=>node.dataset.recoveryDay),
+    scrollX:window.scrollX,scrollY:window.scrollY,controls,focus,
+    hadMissionDom:!!document.querySelector("[data-mission-id]")
+  };
+}
+function restoreCurriculumTab(tabId){
+  let button=document.querySelector(`#curriculumTabs [data-tab="${String(tabId||"").replace(/"/g,"\\\"")}"]`);
+  if(!button||button.classList.contains("hidden"))button=document.querySelector('#curriculumTabs [data-tab="current"]');
+  $$("#curriculumTabs [data-tab]").forEach(node=>node.classList.toggle("active",node===button));
+  $$(".panel").forEach(node=>node.classList.toggle("active",node.id===button?.dataset.tab));
+}
+function restoreCurriculumView(snapshot){
+  if(!snapshot)return;
+  restoreCurriculumTab(snapshot.activeTab);
+  if(snapshot.hadMissionDom){
+    const missionIds=new Set(snapshot.missions||[]),dayIds=new Set((snapshot.recoveryDays||[]).map(String));
+    openMissionIds.clear();missionIds.forEach(id=>openMissionIds.add(id));
+    document.querySelectorAll("[data-mission-id]").forEach(node=>{node.open=missionIds.has(node.dataset.missionId)});
+    document.querySelectorAll("[data-recovery-day]").forEach(node=>{node.open=dayIds.has(String(node.dataset.recoveryDay))});
+  }
+  restoreStoredCurriculumDrafts();
+  const controls=new Map();
+  document.querySelectorAll("[data-mission-id] input,[data-mission-id] textarea,[data-mission-id] select").forEach(control=>{const key=curriculumSnapshotKey(control);if(key)controls.set(key,control)});
+  Object.entries(snapshot.controls||{}).forEach(([key,row])=>applyCurriculumControl(controls.get(key),row));
+  const settle=()=>{
+    window.scrollTo(snapshot.scrollX||0,snapshot.scrollY||0);
+    const control=snapshot.focus?controls.get(snapshot.focus.key):null;
+    if(control&&!control.disabled){
+      try{control.focus({preventScroll:true})}catch(e){control.focus()}
+      if(snapshot.focus.start!==null&&typeof control.setSelectionRange==="function"){
+        try{control.setSelectionRange(snapshot.focus.start,snapshot.focus.end,snapshot.focus.direction)}catch(e){}
+      }
+    }
+  };
+  settle();(window.requestAnimationFrame||function(fn){setTimeout(fn,0)})(settle);
+}
+function render(reason="direct"){
+  if(curriculumRenderInProgress){requestCurriculumRefresh(reason);return}
+  const snapshot=captureCurriculumView();curriculumRenderInProgress=true;
+  try{renderCurriculumDom();curriculumRenderCount++}finally{curriculumRenderInProgress=false}
+  restoreCurriculumView(snapshot);
+}
+function flushCurriculumRefresh(){
+  curriculumRenderTimer=0;curriculumInstallRefreshStartedAt=0;
+  const reasons=[...curriculumRenderReasons];curriculumRenderReasons.clear();
+  render(`queued:${reasons.join(",")}`);
+}
+function scheduleCurriculumRefresh(delay){
+  clearTimeout(curriculumRenderTimer);curriculumRenderTimer=setTimeout(flushCurriculumRefresh,delay);
+}
+function requestCurriculumRefresh(reason="update"){
+  const key=String(reason||"update");curriculumRenderReasons.add(key);
+  if(curriculumInstallRefreshReasons.has(key)){
+    if(!curriculumInstallRefreshStartedAt)curriculumInstallRefreshStartedAt=Date.now();
+    const ready=[...curriculumInstallRefreshReasons].every(item=>curriculumRenderReasons.has(item));
+    const remaining=Math.max(90,1500-(Date.now()-curriculumInstallRefreshStartedAt));
+    scheduleCurriculumRefresh(ready?90:remaining);return;
+  }
+  scheduleCurriculumRefresh(90);
+}
+window.DWCurriculumRenderCoordinator=Object.freeze({
+  request:requestCurriculumRefresh,refresh:render,capture:captureCurriculumView,
+  diagnostics:()=>({renderCount:curriculumRenderCount,pending:curriculumRenderTimer!==0,reasons:[...curriculumRenderReasons]})
+});
+window.clearCurriculumDraft=clearCurriculumDraft;
+document.addEventListener("input",event=>saveCurriculumDraftControl(event.target),true);
+
 function googleFileId(url=""){const m=String(url).match(/\/d\/([^/?]+)/);return m?m[1]:""}
 function mediaFor(x){const id=googleFileId(x.resourceUrl||"");return id&&VM[id]?VM[id]:null}
 function vid(x){return !!mediaFor(x)||!!(x.resourceUrl&&(x.resourceUrl.includes("google.com/videos")||/video/i.test(x.resourceName||"")))}
@@ -502,14 +629,14 @@ async function checkActivity(id){
   window.recordCurriculumAttempt?.(x,s,result.ok);
   f.className="activity-feedback show "+(result.ok?"good":"bad");
   if(result.ok){
-    s.practiced=true;s.practiceEvidence=answer;s.overrideStatus="";S.items[id]=s;save();
+    s.practiced=true;s.practiceEvidence=answer;s.overrideStatus="";S.items[id]=s;save();clearCurriculumDraft(id);
     f.textContent=aiResult?.decision==="approve"?"✓ Quest complete. Your wording was accepted by the semantic rescue check.":"✓ Quest complete. Your answer passed the lesson check.";
     render();
   }else{
     const reviewButton=document.getElementById("overrideBtn-"+id);
     reviewButton?.classList.remove("approved");
     if(result.reviewable===false){
-      const field=document.getElementById("actText-"+id);if(field){field.value="";field.oninput=()=>{if(reviewButton)reviewButton.hidden=false}};
+      const field=document.getElementById("actText-"+id);if(field){field.value="";field.oninput=()=>{if(reviewButton)reviewButton.hidden=false}};clearCurriculumDraft(id);
       s.lastActivityAttempt="";if(systemAuthoredResponse(x,s.practiceEvidence)){s.practiceEvidence="";s.practiced=false}s.overrideStatus="";S.items[id]=s;save();
       if(reviewButton)reviewButton.hidden=true;
       f.textContent="Not yet: "+result.msg+" Dragonswood cleared the copied text. Write your own response, then check it again.";
@@ -577,7 +704,7 @@ function card(x){
   const finalText=pendingVideo?(s.practiced?"Activity saved. Final completion waits for the restored video.":"Complete the activity while video access is restored."):complete?"✅ Curriculum mission complete. Your work passed the lesson checks automatically.":needsTeacher?(workReady?"Your work is ready for teacher verification.":"Finish the video, standard check, and written application first."):"Pass the standard check and written application to complete this mission.";
   const verifyButton=isTeacher&&needsTeacher&&!pendingVideo?`<div class="actions"><button class="stage verify ${workReady?"":"locked"}" ${workReady?"":"disabled"} onclick="teacherVerify('${x.id}')">${s.verified?"UNVERIFY":"TEACHER VERIFY"}</button></div>`:"";
   const timing=missionMinutes(x),open=openMissionIds.has(x.id)?" open":"";
-  return `<details class="frame quest ${subjectQuestClass(x)} ${x.resourceUrl?"link":""} ${complete?"done":""}"${open} ontoggle="rememberMissionOpen('${x.id}',this.open)"><summary class="mission-summary"><div><div class="meta"><span class="tag subject-tag">${esc(subjectLabel(x))}</span>${hasVideo?'<span class="tag video">REQUIRED VIDEO</span>':""}${pendingVideo?'<span class="tag" style="background:#5a3b12;color:#ffe8a0">SOURCE PENDING</span>':""}${complete?'<span class="tag complete">MISSION COMPLETE</span>':""}</div><h4>${esc(friendlyTitle(x))}</h4></div><div class="mission-time">${esc(timing.total)}<span>${timing.video?esc(timing.video)+" • ":""}${timing.work.check[0]}–${timing.work.check[1]} min check • ${timing.work.application[0]}–${timing.work.application[1]} min application</span></div></summary><div class="mission-body"><p class="kid-task">${esc(kidIntro(x))}</p><div class="step"><strong>1. ${hasVideo?"Watch the lesson":"Learn It in Dragonswood"}</strong><br>${pendingVideo?"⏳ This video is temporarily waiting on school access. You are not behind.":hasVideo?(s.watched?"✅ Video check complete.":"Watch the lesson here. Skipping ahead does not count as viewing."):"Everything needed for this lesson is here."}${!hasVideo||s.watched&&morphFor(x)?renderMiniLesson(x):""}<div class="actions">${readyVideo?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">${s.watched?"REWATCH VIDEO":"WATCH REQUIRED VIDEO"} ▶</button>`:""}${pendingVideo?'<button class="stage locked" disabled>VIDEO ACCESS PENDING</button>':""}${hasVideo&&!pendingVideo?`<button class="stage ${s.watched?"on":"locked"}" disabled>${s.watched?"✓ WATCHED":"WATCH"}</button>`:""}</div></div><div class="step"><strong>2. Standard Check + Application</strong>${canPractice?renderActivity(x):'<p class="kid-task">Finish the required video first to unlock this activity.</p>'}</div><div class="step"><strong>3. ${needsTeacher?"Teacher Verification":"Completion Check"}</strong><br>${finalText}${verifyButton}</div>${isTeacher?`<details class="source-details"><summary>Teacher/source details</summary><p>${esc(x.requirement)}</p><p>${x.resourceName?esc(x.resourceName):""}</p><p>Human verification: ${needsTeacher?"required":"not required"}</p>${m?`<p>Media status: ${esc(m.status)}</p>`:""}</details>`:""}</div></details>`;
+  return `<details class="frame quest ${subjectQuestClass(x)} ${x.resourceUrl?"link":""} ${complete?"done":""}" data-mission-id="${esc(x.id)}"${open} ontoggle="rememberMissionOpen('${x.id}',this.open)"><summary class="mission-summary"><div><div class="meta"><span class="tag subject-tag">${esc(subjectLabel(x))}</span>${hasVideo?'<span class="tag video">REQUIRED VIDEO</span>':""}${pendingVideo?'<span class="tag" style="background:#5a3b12;color:#ffe8a0">SOURCE PENDING</span>':""}${complete?'<span class="tag complete">MISSION COMPLETE</span>':""}</div><h4>${esc(friendlyTitle(x))}</h4></div><div class="mission-time">${esc(timing.total)}<span>${timing.video?esc(timing.video)+" • ":""}${timing.work.check[0]}–${timing.work.check[1]} min check • ${timing.work.application[0]}–${timing.work.application[1]} min application</span></div></summary><div class="mission-body"><p class="kid-task">${esc(kidIntro(x))}</p><div class="step"><strong>1. ${hasVideo?"Watch the lesson":"Learn It in Dragonswood"}</strong><br>${pendingVideo?"⏳ This video is temporarily waiting on school access. You are not behind.":hasVideo?(s.watched?"✅ Video check complete.":"Watch the lesson here. Skipping ahead does not count as viewing."):"Everything needed for this lesson is here."}${!hasVideo||s.watched&&morphFor(x)?renderMiniLesson(x):""}<div class="actions">${readyVideo?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">${s.watched?"REWATCH VIDEO":"WATCH REQUIRED VIDEO"} ▶</button>`:""}${pendingVideo?'<button class="stage locked" disabled>VIDEO ACCESS PENDING</button>':""}${hasVideo&&!pendingVideo?`<button class="stage ${s.watched?"on":"locked"}" disabled>${s.watched?"✓ WATCHED":"WATCH"}</button>`:""}</div></div><div class="step"><strong>2. Standard Check + Application</strong>${canPractice?renderActivity(x):'<p class="kid-task">Finish the required video first to unlock this activity.</p>'}</div><div class="step"><strong>3. ${needsTeacher?"Teacher Verification":"Completion Check"}</strong><br>${finalText}${verifyButton}</div>${isTeacher?`<details class="source-details"><summary>Teacher/source details</summary><p>${esc(x.requirement)}</p><p>${x.resourceName?esc(x.resourceName):""}</p><p>Human verification: ${needsTeacher?"required":"not required"}</p>${m?`<p>Media status: ${esc(m.status)}</p>`:""}</details>`:""}</div></details>`;
 }
 function grouped(title,desc,a,byDay=false){if(!a.length)return `<div class="frame empty">Nothing waiting here.</div>`;let g={};a.forEach(x=>(g[byDay?x.day:x.subject]??=[]).push(x));return `<div class="title"><div><h2>${title}</h2><p>${desc}</p></div></div>`+Object.entries(g).map(([n,l])=>`<div class="group"><div class="grouphead"><h3>${byDay?"Recovery Day "+n:n}</h3><small>${l.length} missions</small></div><div class="grid">${l.map(card).join("")}</div></div>`).join("")}
 function recoveryGrouped(a){
@@ -585,7 +712,7 @@ function recoveryGrouped(a){
  const groups={};a.forEach(x=>(groups[x.day]??=[]).push(x));const days=Object.keys(groups).map(Number).sort((a,b)=>a-b),first=days[0];
   return `<div class="title"><div><h2>Recovery Quest</h2><p>Complete one school day at a time. Finishing the open day unlocks the next unfinished day.</p></div></div>`+days.map((day,i)=>{
   const list=groups[day],unlocked=isTeacher||day===first;
-  return `<details class="frame recovery-day ${unlocked?"":"locked-day"}" ${unlocked&&i===0?"open":""}><summary><span class="day-heading">${unlocked?"🗝️":"🔒"} Recovery Day ${day}</span><span class="day-stats"><span class="day-count">${list.length} MISSION${list.length===1?"":"S"}</span><strong class="day-total">⏱ ${dayEstimate(list)}</strong><span class="day-state">${unlocked?"OPEN":"LOCKED"}</span></span></summary>${unlocked?`<div class="recovery-body"><div class="grid">${list.map(card).join("")}</div></div>`:`<div class="recovery-lock">Complete Recovery Day ${first} to unlock this recovery day.</div>`}</details>`;
+  return `<details class="frame recovery-day ${unlocked?"":"locked-day"}" data-recovery-day="${day}" ${unlocked&&i===0?"open":""}><summary><span class="day-heading">${unlocked?"🗝️":"🔒"} Recovery Day ${day}</span><span class="day-stats"><span class="day-count">${list.length} MISSION${list.length===1?"":"S"}</span><strong class="day-total">⏱ ${dayEstimate(list)}</strong><span class="day-state">${unlocked?"OPEN":"LOCKED"}</span></span></summary>${unlocked?`<div class="recovery-body"><div class="grid">${list.map(card).join("")}</div></div>`:`<div class="recovery-lock">Complete Recovery Day ${first} to unlock this recovery day.</div>`}</details>`;
  }).join("");
 }
 function postCurriculumMissionState(){
@@ -597,7 +724,7 @@ function postCurriculumMissionState(){
  const recoveryDays=Object.entries(groupedRecovery).map(([day,count])=>({day:Number(day),count})).sort((a,b)=>a.day-b.day);
  window.parent.postMessage({channel:"dw-v33-module",type:"curriculum-mission-state",day:Number(S.day||0),available:studentCurriculumAccess===true,currentOpen:currentQuestOpen===true,total:current.length,complete,currentComplete:currentQuestOpen===true&&current.length>0&&complete===current.length,recoveryCount:recovery.length,recoveryDays},location.origin);
 }
-function render(){
+function renderCurriculumDom(){
 setTimeout(postCurriculumMissionState,0);
 const videoTab=document.querySelector('[data-tab="videos"]'),tabs=document.getElementById("curriculumTabs");if(videoTab)videoTab.classList.toggle("hidden",!isTeacher);if(tabs)tabs.classList.toggle("teacher-tabs",isTeacher);if(!isTeacher&&videoTab?.classList.contains("active")){videoTab.classList.remove("active");document.querySelector('[data-tab="current"]')?.classList.add("active");$("#videos").classList.remove("active");$("#current").classList.add("active")}
 if(!isTeacher&&!studentCurriculumAccess){
@@ -605,9 +732,9 @@ if(!isTeacher&&!studentCurriculumAccess){
   const locked=`<div class="frame empty"><h2>🔒 No curriculum quest is open</h2><p>${esc(accessMessage)}</p></div>`;
   ["current","recovery","videos","standards","morph","audit"].forEach(id=>$("#"+id).innerHTML=locked);return;
 }
-let r=rows(),dayIsOpen=isTeacher||currentQuestOpen,due=r.filter(x=>x.day<S.day||(dayIsOpen&&x.day===S.day)),pendingSources=due.filter(mediaPending),eligibleDue=due.filter(x=>!mediaPending(x)),eligibleDone=eligibleDue.filter(missionComplete).length,p=eligibleDue.length?Math.round(eligibleDone/eligibleDue.length*100):0,back=r.filter(x=>x.day<S.day&&!missionComplete(x)&&!mediaPending(x)),recoveryDays=[...new Set(back.map(x=>Number(x.day)))].sort((a,b)=>a-b),mv=due.filter(x=>vid(x)&&!mediaPending(x)&&!st(x.id).watched),todayRows=dayIsOpen?r.filter(x=>x.day===S.day):[];$("#grade").value=S.grade;$("#day").value=S.day;$("#hero").textContent=dayIsOpen?`${D.meta.gradeLabels[S.grade]} • Day ${S.day}`:`Recovery Open • Current Day ${S.day} Locked`;$("#pct").textContent=p+"%";$("#ring").style.background=`conic-gradient(var(--green) ${p*3.6}deg,#241936 0)`;$("#kpis").innerHTML=[[todayRows.length,dayIsOpen?"TODAY'S MISSIONS":"CURRENT MISSIONS OPEN"],[recoveryDays.length,"RECOVERY DAYS"],[mv.length,"PAST VIDEOS STILL NEEDED"],[pendingSources.length,"SOURCE VIDEOS PENDING"]].map(x=>`<div class="frame kpi"><b>${x[0]}</b><small>${x[1]}</small></div>`).join("");$("#current").innerHTML=dayIsOpen?grouped(`Day ${S.day} Current Quest`,`Watch the lesson, pass the standard check, then apply what you learned. ${dayEstimate(todayRows)}.`,todayRows):`<div class="frame empty"><h2>🔒 Current Quest is closed</h2><p>New curriculum opens on the next assigned school day. Recovery remains available.</p></div>`;$("#recovery").innerHTML=recoveryGrouped(back.sort((a,b)=>a.day-b.day));
+let r=rows(),dayIsOpen=isTeacher||currentQuestOpen,due=r.filter(x=>x.day<S.day||(dayIsOpen&&x.day===S.day)),pendingSources=due.filter(mediaPending),eligibleDue=due.filter(x=>!mediaPending(x)),eligibleDone=eligibleDue.filter(missionComplete).length,p=eligibleDue.length?Math.round(eligibleDone/eligibleDue.length*100):0,back=r.filter(x=>x.day<S.day&&!missionComplete(x)&&!mediaPending(x));for(const item of r)if(Number(item.day)<Number(S.day)&&openMissionIds.has(item.id)&&missionComplete(item)&&!mediaPending(item)&&!back.includes(item))back.push(item);back.sort((a,b)=>a.day-b.day);let recoveryDays=[...new Set(back.map(x=>Number(x.day)))].sort((a,b)=>a-b),mv=due.filter(x=>vid(x)&&!mediaPending(x)&&!st(x.id).watched),todayRows=dayIsOpen?r.filter(x=>x.day===S.day):[];$("#grade").value=S.grade;$("#day").value=S.day;$("#hero").textContent=dayIsOpen?`${D.meta.gradeLabels[S.grade]} • Day ${S.day}`:`Recovery Open • Current Day ${S.day} Locked`;$("#pct").textContent=p+"%";$("#ring").style.background=`conic-gradient(var(--green) ${p*3.6}deg,#241936 0)`;$("#kpis").innerHTML=[[todayRows.length,dayIsOpen?"TODAY'S MISSIONS":"CURRENT MISSIONS OPEN"],[recoveryDays.length,"RECOVERY DAYS"],[mv.length,"PAST VIDEOS STILL NEEDED"],[pendingSources.length,"SOURCE VIDEOS PENDING"]].map(x=>`<div class="frame kpi"><b>${x[0]}</b><small>${x[1]}</small></div>`).join("");$("#current").innerHTML=dayIsOpen?grouped(`Day ${S.day} Current Quest`,`Watch the lesson, pass the standard check, then apply what you learned. ${dayEstimate(todayRows)}.`,todayRows):`<div class="frame empty"><h2>🔒 Current Quest is closed</h2><p>New curriculum opens on the next assigned school day. Recovery remains available.</p></div>`;$("#recovery").innerHTML=recoveryGrouped(back.sort((a,b)=>a.day-b.day));
 let vr=(isTeacher?r:due).filter(vid).sort((a,b)=>a.day-b.day);$("#videos").innerHTML=`<div class="title"><div><h2>🔮 Required Video Vault</h2><p>Students see only videos from today and earlier school days. Source-pending videos are held until school access returns.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Day</th><th>Subject</th><th>Mission</th><th>Media</th><th>Status</th><th>Watch</th></tr></thead><tbody>${vr.map(x=>{const m=mediaFor(x),pending=mediaPending(x),ready=mediaReady(x);return `<tr><td>${x.day}</td><td>${esc(x.subject)}</td><td>${esc(friendlyTitle(x))}</td><td>${pending?"⏳ SOURCE PENDING":ready?"R2 READY":"SOURCE LINK"}</td><td>${pending?"ON HOLD":st(x.id).watched?"✅ WATCHED":"NOT YET"}</td><td>${ready?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">WATCH ▶</button>`:pending?"Awaiting access":"—"}</td></tr>`}).join("")}</tbody></table></div>`;
-let sr=D.standards.filter(x=>x.grade===S.grade);$("#standards").innerHTML=standardsMasteryReport()+`<div class="title"><div><h2>📚 Standards Codex</h2><p>Teacher-facing source map.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Subject</th><th>Code</th><th>Standard</th><th>Evidence of Proficiency</th><th>Assessment</th></tr></thead><tbody>${sr.map(x=>`<tr><td>${esc(x.subject)}</td><td>${esc(standardCode(x))}</td><td>${esc(x.standard)}</td><td>${esc(x.proficiency)}</td><td>${esc(x.assessment)}</td></tr>`).join("")}</tbody></table></div>`;
+let sr=D.standards.filter(x=>x.grade===S.grade);$("#standards").innerHTML=(window.DWCurriculumStandardsMasteryReport?.()||"")+`<div class="title"><div><h2>📚 Standards Codex</h2><p>Teacher-facing source map.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Subject</th><th>Code</th><th>Standard</th><th>Evidence of Proficiency</th><th>Assessment</th></tr></thead><tbody>${sr.map(x=>`<tr><td>${esc(x.subject)}</td><td>${esc(window.DWCurriculumStandardCode?.(x)||"")}</td><td>${esc(x.standard)}</td><td>${esc(x.proficiency)}</td><td>${esc(x.assessment)}</td></tr>`).join("")}</tbody></table></div>`;
 let mr=D.morphology.filter(x=>x.grade===S.grade&&(isTeacher||Number(x.week||0)<=Math.ceil(S.day/5))),wg={};mr.forEach(x=>(wg[x.week]??=[]).push(x));$("#morph").innerHTML=`<div class="title"><div><h2>⚒️ Wordsmith Tower</h2><p>Word roots and target words available through the current school day.</p></div></div>`+Object.entries(wg).map(([w,l])=>`<div class="group"><div class="grouphead"><h3>Week ${w} • ${esc(l[0].root)}</h3></div><div class="wordgrid">${l.map(x=>`<div class="frame word"><small>ROOT: ${esc(x.root)}</small><b>${esc(x.word)}</b><p>${esc(x.morphological||x.orthographic||"Learn how this word is built and what its parts mean.")}</p><p><strong>Your task:</strong> ${esc(x.application||"Use the word correctly in a complete sentence.")}</p></div>`).join("")}</div></div>`).join("");
 let miss=due.filter(x=>!missionComplete(x)&&!mediaPending(x));$("#audit").innerHTML=`<div class="title"><div><h2>🛡️ Curriculum Compliance Shield</h2><p>Completion requires the lesson, standard check, and application. Teacher verification is reserved for human-judgment work.</p></div></div><div class="frame audit ${miss.length?"bad":"good"}"><h3>${miss.length} curriculum missions incomplete</h3><p>${miss.length?"Recovery Quest shows the unfinished available curriculum.":"Everything currently available and due is complete."}</p></div><div class="frame audit ${mv.length?"bad":"good"}"><h3>${mv.length} available required videos still need a completed video check</h3></div><div class="frame audit ${pendingSources.length?"bad":"good"}"><h3>${pendingSources.length} curriculum video sources awaiting school access</h3><p>${pendingSources.length?"These are held separately and do not count as student recovery failures. Activities can continue now.":"No curriculum source videos are pending access."}</p></div>`}
 $("#grade").onchange=e=>{if(currentStudent&&!isTeacher){e.target.value=S.grade;return}S.grade=e.target.value;save();render()};$("#day").onchange=e=>{if(!isTeacher){e.target.value=S.day;return}S.day=Math.max(1,Math.min(40,+e.target.value||1));save();render()};$$(".tabs button").forEach(b=>b.onclick=()=>{$$(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");$$(".panel").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.tab).classList.add("active")});render();
@@ -675,6 +802,8 @@ function standardsMasteryReport(){
   const standards=D.standards.filter(x=>x.grade===S.grade);
   return `<div class="title"><div><h2>🛡️ Standards Mastery Report</h2><p>Question evidence, written work, and video completion by scholar.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Standard</th>${ids.map(id=>`<th>${esc(teacherStudentNames[id]||id.slice(0,6))}</th>`).join("")}</tr></thead><tbody>${standards.map(std=>{const code=standardCode(std);return `<tr><td><b>${esc(code)}</b><br><small>${esc(std.proficiency||"")}</small></td>${ids.map(id=>{const rows=teacherAllProgress.filter(r=>r.studentId===id&&String(r.standardCode||"").split(",").includes(code));const seen=rows.reduce((n,r)=>n+Number(r.questionsSeen||0),0),correct=rows.reduce((n,r)=>n+Number(r.questionsCorrect||0),0),written=rows.filter(r=>r.practiced).length,verified=rows.filter(r=>r.verified).length,videos=rows.filter(r=>r.watched).length;return `<td>${correct}/${seen} questions<br>${written} written • ${verified} verified<br>${videos} videos</td>`}).join("")}</tr>`}).join("")}</tbody></table></div>`;
 }
+window.DWCurriculumStandardCode=standardCode;
+window.DWCurriculumStandardsMasteryReport=standardsMasteryReport;
 async function migrateLegacyProgress(uid,legacy){
   const remote=await getDocs(query(collection(db,"curriculumProgress"),where("studentId","==",uid)));
   const existing=new Set(remote.docs.map(d=>d.data().itemId));
@@ -761,7 +890,7 @@ function watchMyOverrides(uid){
       else if(r.status==="pending"&&s.overrideStatus!=="approved"&&s.overrideStatus!=="pending"){s.overrideStatus="pending";S.items[r.lessonId]=s;changed=true}
       else if(r.status==="returned"&&s.overrideStatus==="pending"){s.overrideStatus="returned";S.items[r.lessonId]=s;changed=true}
     });
-    if(changed){save();render()}
+    if(changed){save();requestCurriculumRefresh("teacher-override-snapshot")}
   },e=>console.warn("override listener",e));
 }
 

@@ -94,7 +94,7 @@
     const start=()=>{
       const required=["renderActivity","renderAutoPractice","checkActivity","requestOverride","requestAutoQuestionOverride",
         "activitySpec","validateActivity","activityAnswerText","findItem","st","save","saveCurriculumItemState","render","autoQuestionsFor"];
-      if(required.some(k=>typeof window[k]!=="function")){if(++tries<180)setTimeout(start,25);return}
+      if(required.some(k=>typeof window[k]!=="function")||!window.DWCurriculumRenderCoordinator){if(++tries<180)setTimeout(start,25);return}
       if(document.querySelector?.('script[src*="q1-curriculum-answer-policy.js"]')&&!window.dwCurriculumAnswerSubmit){
         if(++tries<180)setTimeout(start,25);return;
       }
@@ -197,7 +197,7 @@
             :spec.kind==="explain"&&result.autoFallback
               ?"✓ Math complete. Your equation, reasoning, and checked result passed the automatic fallback."
               :"✓ Math complete. The deterministic grader accepted the answer.";
-          window.render();
+          window.clearCurriculumDraft?.(id);window.DWCurriculumRenderCoordinator.request("math-reasoning-accepted");
         }else{
           s.overrideStatus="";window.saveCurriculumItemState(id,s);
           f.textContent="Not yet: "+(result.msg||"Check the mathematics and try again.")+" Revise and check it again. Math never waits for teacher approval.";
@@ -205,7 +205,7 @@
       };
 
       window.__DW_MATH_AUTO_TEST__={isMathItem,strongMathFallback,mathAiJudge,stripMathReviewUi};
-      try{window.render()}catch(e){console.warn("Math auto-grade render",e)}
+      window.DWCurriculumRenderCoordinator.request("math-autograding-installed");
     };
     start();
   }

@@ -337,7 +337,7 @@
     if(!correctPlacement(spec,placement)){fb.className="dw-i-feedback show bad";fb.textContent="Not quite. Recheck the lesson idea and move the pieces that do not fit yet.";return}
     const s=st(itemId);s.dwInteraction={version:V,specId:spec.id,passed:true,completedAt:Date.now()};S.items[itemId]=s;save();
     fb.className="dw-i-feedback show good";fb.textContent="✓ Interactive check complete.";root.classList.add("passed");
-    setTimeout(()=>{try{render()}catch(e){}},120);
+    setTimeout(()=>window.DWCurriculumRenderCoordinator.request("interaction-complete"),120);
   };
   window.dwCurriculumInteractionReset=function(itemId){const root=document.querySelector(`.dw-interactive[data-item-id="${CSS.escape(itemId)}"]`),spec=specForId(itemId);if(root&&spec)resetInteraction(root,spec)};
 
@@ -381,7 +381,7 @@
   let installTries=0;
   function install(){
     const required=["render","st","save","autoQuestionsFor","renderAutoPractice","autoPassed","vid"];
-    if(required.some(k=>typeof window[k]!=="function")){if(++installTries<120)setTimeout(install,25);return}
+    if(required.some(k=>typeof window[k]!=="function")||!window.DWCurriculumRenderCoordinator){if(++installTries<120)setTimeout(install,25);return}
     const nvScript=document.querySelector?.('script[src*="q1-no-video-lessons.js"]');
     if(nvScript&&!window.__DW_NO_VIDEO_LESSON_ENGINE_V1__&&installTries++<120){setTimeout(install,25);return}
     if(window.__DW_CURRICULUM_INTERACTION_ENGINE_V5624__)return;window.__DW_CURRICULUM_INTERACTION_ENGINE_V5624__=true;
@@ -412,7 +412,7 @@
     };
     window.autoPassed=function(x){return O.autoPassed(x)&&interactionPassed(x)};
     window.__DW_CURRICULUM_INTERACTION_TEST__={interactionSpec,itemKind,morphForItem,taughtFamily,distractorWords,wordParts,correctPlacement,desiredQuestionCount,legacyMissionPassed};
-    try{render()}catch(e){console.error("Curriculum interaction render",e)}
+    window.DWCurriculumRenderCoordinator.request("interactions-installed");
   }
   window.__DW_CURRICULUM_INTERACTION_TEST_PREINSTALL__={interactionSpec,itemKind,morphForItem,taughtFamily,distractorWords,wordParts,correctPlacement,desiredQuestionCount};
   setTimeout(install,0);

@@ -33,6 +33,7 @@ async function smoke(file,routes,kind){
   const {ctx,app,location}=makeContext(routes[0]);
   vm.runInContext(fs.readFileSync(file,'utf8'),ctx,{filename:file});
   await new Promise(resolve=>setImmediate(resolve));
+  if(kind==='student')vm.runInContext("state.recoverySummary={dateKey:state.missionDate,checked:true,count:0,days:[]};state.kingdomAccessUnlocked=true",ctx);
   const failures=[];
   for(const route of routes){
     location.hash='#'+route;

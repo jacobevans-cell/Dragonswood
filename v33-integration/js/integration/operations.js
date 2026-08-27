@@ -104,13 +104,29 @@
     const active=activePoll?.active===true&&text(activePoll.id),choices=Array.isArray(activePoll?.choices)?activePoll.choices.map(choice=>text(choice)).filter(Boolean).slice(0,6):[],matching=(Array.isArray(votes)?votes:[]).filter(row=>text(row.pollId)===text(activePoll.id)),counts=choices.map((_,index)=>matching.filter(row=>number(row.choiceIndex)===index).length),total=counts.reduce((sum,value)=>sum+value,0);
     return Object.freeze({id:text(activePoll.id),active:!!active,question:text(activePoll.question),choices:Object.freeze(choices),counts:Object.freeze(counts),total});
   }
+  function datedFeatureAccess(config={},date=new Date()){
+    const dateKey=Core.phoenixDateKey(date),studentIds=Array.isArray(config?.studentIds)?config.studentIds.map(text).filter(Boolean):[];
+    return Object.freeze({dateKey,active:text(config?.dateKey)===dateKey,all:text(config?.dateKey)===dateKey&&config?.all===true,studentIds:Object.freeze(studentIds)});
+  }
+  function attentionModel(activeAttention={},events=[],students=[],date=new Date()){
+    const dateKey=Core.phoenixDateKey(date),id=text(activeAttention?.id),active=activeAttention?.active===true&&text(activeAttention?.dateKey)===dateKey&&!!id;
+    const rows=(Array.isArray(events)?events:[]).filter(row=>!row.dateKey||text(row.dateKey)===dateKey).slice().sort((a,b)=>timestamp(b.createdAt||b.updatedAt)-timestamp(a.createdAt||a.updatedAt)).slice(0,100);
+    const acknowledged=new Set(rows.filter(row=>text(row.attentionId)===id&&text(row.type)==='acknowledged').map(row=>text(row.studentId)));
+    return Object.freeze({
+      id,active,title:text(activeAttention?.title,'Teacher Direction'),message:text(activeAttention?.message),destination:text(activeAttention?.destination,'missions'),
+      requireAcknowledgment:activeAttention?.requireAcknowledgment!==false,createdAtMs:number(activeAttention?.createdAtMs),
+      acknowledged:acknowledged.size,total:Array.isArray(students)?students.length:0,
+      waiting:Object.freeze((students||[]).filter(row=>!acknowledged.has(text(row.id))).map(row=>Object.freeze({id:text(row.id),name:text(row.name,'Scholar')}))),
+      events:Object.freeze(rows.map(row=>Object.freeze({...row})))
+    });
+  }
   function teacherOperations(input={},date=new Date()){
     const pending=pendingPasses(input.requests,date),active=activePasses(input.statuses,date),recognition=recognitionRequests(input.pointRequests,date),overrides=(input.curriculumOverrides||[]).filter(row=>row.status==='pending');
     const students=Array.isArray(input.students)?input.students:[];
     const history=Object.freeze((Array.isArray(input.passHistory)?input.passHistory:[]).slice().sort((a,b)=>timestamp(b.returnedAt||b.updatedAt||b.createdAt)-timestamp(a.returnedAt||a.updatedAt||a.createdAt)).slice(0,100).map(row=>Object.freeze({...row})));
     const slots=Object.freeze((Array.isArray(input.bathroomSlots)?input.bathroomSlots:[]).map(row=>Object.freeze({...row})));
     const needsAttention=active.filter(row=>row.startedMs&&date.getTime()-row.startedMs>5*60*1000).length+slots.filter(row=>row.occupied===true&&!active.some(pass=>pass.type==='bathroom'&&pass.studentId===text(row.studentId))).length;
-    return Object.freeze({dateKey:Core.phoenixDateKey(date),pending,active,returned:returnedToday(input.passHistory,date),passHistory:history,bathroomSlots:slots,passBlackout:Object.freeze({...input.passBlackout}),needsAttention,recognition,curriculumOverrides:Object.freeze(overrides.map(row=>Object.freeze({...row}))),dailyUnlocked:input.dailyOverride?.all===true,classHp:students.reduce((sum,row)=>sum+Math.max(0,number(row.hp)),0),dailyXp:students.reduce((sum,row)=>sum+Math.max(0,number(row.dailyXpEarned)),0),goals:goals(input.classData),jobs:jobsModel(students,input.classJobs,input.jobWeeks,date),schedule:scheduleModel(input.classSchedule,input.calendarEvents,date),leaderboard:teacherLeaderboard(input.scores,input.leaderboardRewards,date),poll:pollModel(input.activePoll,input.pollVotes)});
+    return Object.freeze({dateKey:Core.phoenixDateKey(date),pending,active,returned:returnedToday(input.passHistory,date),passHistory:history,bathroomSlots:slots,passBlackout:Object.freeze({...input.passBlackout}),needsAttention,recognition,curriculumOverrides:Object.freeze(overrides.map(row=>Object.freeze({...row}))),dailyUnlocked:input.dailyOverride?.all===true,classHp:students.reduce((sum,row)=>sum+Math.max(0,number(row.hp)),0),dailyXp:students.reduce((sum,row)=>sum+Math.max(0,number(row.dailyXpEarned)),0),goals:goals(input.classData),jobs:jobsModel(students,input.classJobs,input.jobWeeks,date),schedule:scheduleModel(input.classSchedule,input.calendarEvents,date),leaderboard:teacherLeaderboard(input.scores,input.leaderboardRewards,date),poll:pollModel(input.activePoll,input.pollVotes),kingdomAccess:datedFeatureAccess(input.kingdomAccess,date),attention:attentionModel(input.activeAttention,input.attentionEvents,students,date)});
   }
-  window.DWV33Operations=Object.freeze({version:'teacher-operations-1',REQUEST_TYPES,STATUS_TYPES,pendingPasses,activePasses,recognitionRequests,goals,jobsModel,scheduleModel,teacherLeaderboard,pollModel,teacherOperations});
+  window.DWV33Operations=Object.freeze({version:'teacher-operations-2',REQUEST_TYPES,STATUS_TYPES,pendingPasses,activePasses,recognitionRequests,goals,jobsModel,scheduleModel,teacherLeaderboard,pollModel,datedFeatureAccess,attentionModel,teacherOperations});
 })();

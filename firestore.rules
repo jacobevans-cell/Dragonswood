@@ -132,6 +132,24 @@ service cloud.firestore {
       allow write: if isTeacher();
     }
 
+    // Teacher Attention is teacher-authored. A student can only acknowledge
+    // the current message in their own deterministic event document.
+    match /teacherAttentionEvents/{eventId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+      allow create, update: if isExploreStudent()
+                            && request.resource.data.studentId == request.auth.uid
+                            && request.resource.data.type == 'acknowledged'
+                            && request.resource.data.attentionId is string
+                            && eventId == request.resource.data.attentionId + '_' + request.auth.uid
+                            && request.resource.data.keys().hasOnly([
+                              'attentionId','type','studentId','studentName','dateKey',
+                              'destination','createdAt','updatedAt'
+                            ]);
+      allow create, update: if isTeacher();
+      allow delete: if false;
+    }
+
     match /rewards/{rewardId} {
       allow read: if true;
       allow write: if isTeacher();
@@ -265,18 +283,41 @@ service cloud.firestore {
                             .hasAny([request.resource.data.get('activePet','')])
                        );
 
-      // Hatch an egg. Costs exactly one egg and yields exactly one new pet.
+      // Hatch an egg. Costs exactly one egg. A new companion is added once;
+      // a repeated companion preserves the bestiary and grants one Pet Token.
       allow update: if isOwner(studentId)
                     && isExploreStudent()
                     && request.resource.data.diff(resource.data).affectedKeys()
-                       .hasOnly(['eggInventory','ownedPets','lastHatchedPet','activePet','updatedAt'])
+                       .hasOnly(['eggInventory','ownedPets','petTokens','lastHatchedPet','activePet','updatedAt'])
                     && request.resource.data.eggInventory is number
                     && request.resource.data.eggInventory >= 0
                     && request.resource.data.eggInventory == resource.data.get('eggInventory',0) - 1
                     && request.resource.data.ownedPets is list
-                    && request.resource.data.ownedPets.size()
-                       == resource.data.get('ownedPets',[]).size() + 1
-                    && request.resource.data.ownedPets.hasAll(resource.data.get('ownedPets',[]));
+                    && request.resource.data.ownedPets.hasAll(resource.data.get('ownedPets',[]))
+                    && request.resource.data.lastHatchedPet is string
+                    && request.resource.data.ownedPets.hasAny([request.resource.data.lastHatchedPet])
+                    && request.resource.data.petTokens is number
+                    && request.resource.data.petTokens >= 0
+                    && (
+                         (
+                           request.resource.data.ownedPets.size() == resource.data.get('ownedPets',[]).size() + 1
+                           && !resource.data.get('ownedPets',[]).hasAny([request.resource.data.lastHatchedPet])
+                           && request.resource.data.petTokens == resource.data.get('petTokens',0)
+                         )
+                         ||
+                         (
+                           request.resource.data.ownedPets.size() == resource.data.get('ownedPets',[]).size()
+                           && resource.data.get('ownedPets',[]).hasAny([request.resource.data.lastHatchedPet])
+                           && request.resource.data.petTokens == resource.data.get('petTokens',0) + 1
+                         )
+                       )
+                    && (
+                         request.resource.data.get('activePet','') == resource.data.get('activePet','')
+                         || (
+                           resource.data.get('activePet','') == ''
+                           && request.resource.data.get('activePet','') == request.resource.data.lastHatchedPet
+                         )
+                       );
 
       // Midnight fresh start. Clears all eligibility bans, as requested.
       allow update: if isOwner(studentId)

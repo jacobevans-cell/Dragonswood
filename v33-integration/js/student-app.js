@@ -3,9 +3,10 @@ const IS_PRODUCTION = window.DWV33Integration?.environment === 'production';
 const TESTER_KEY = IS_PRODUCTION ? 'dw-v33' : 'dw-v33-tester';
 function storageGet(key, fallback=''){try{return localStorage.getItem(`${TESTER_KEY}:${key}`) ?? fallback}catch{return fallback}}
 function storageSet(key, value){try{localStorage.setItem(`${TESTER_KEY}:${key}`, value)}catch{}}
+function storedRecoverySummary(){try{const value=JSON.parse(storageGet('recovery-summary','{}'));return value&&typeof value==='object'?value:{}}catch{return {}}}
 const toast = document.querySelector('#toast');
 const dialogRoot = document.querySelector('#dialog-root');
-let integrationController=null;
+let integrationController=null,recoveryProbe=null;
 let integrationSession={status:'loading',message:'Loading Dragonswood identity…'};
 let passSafetyInterval=null;
 const passFallbackStarts=new Map();
@@ -13,8 +14,9 @@ const passAlertBuckets=new Map();
 const moduleHost=window.DWV33Modules;
 const arcadePortal=window.DWV33ArcadePortal;
 const kingdomPortal=window.DWV33KingdomPortal;
-const REQUIRED_WORK_PAGES=new Set(['games','scribe','boss','kingdom','arcade']);
+const REQUIRED_WORK_PAGES=new Set(['games','scribe','hall','boss','leaderboards','kingdom','arcade']);
 let pendingRequiredWorkNotice='';
+let lastAttentionChime='';
 
 const navItems = [
   ['adventure','🛡️','My Adventure','Home base'],
@@ -28,7 +30,7 @@ const navItems = [
   ['poll','📝','Class Poll','Teacher question']
 ];
 const arcadeNav=['arcade','🕹️','Arcade Time','3 Tokens • 30 min'];
-const kingdomNav=['kingdom','🏰','Kingdom Wars','After Morning Work'];
+const kingdomNav=['kingdom','🏰','Kingdom Wars','Teacher unlock required'];
 function studentNavItems(){return [...navItems,...(kingdomPortal?[kingdomNav]:[]),...(arcadePortal?[arcadeNav]:[])]}
 
 const state = {
@@ -66,6 +68,11 @@ const state = {
   bossMax: 100,
   bossMessage: '',
   dailyAccessUnlocked: false,
+  morningWorkComplete: false,
+  dailyAccessOverride: false,
+  recoverySummary: storedRecoverySummary(),
+  kingdomAccessUnlocked: false,
+  attention: null,
   arcadeStatus: 'idle',
   arcadeAccess: null,
   arcadeOpen: false,
@@ -99,13 +106,37 @@ function openDialog(title, body, actions=''){
   dialogRoot.querySelector('button')?.focus();
 }
 function closeDialog(){dialogRoot.innerHTML='';delete dialogRoot.dataset.dialogKind}
+function ensureTeacherDirectionStyles(){
+  if(document.querySelector('#v33-teacher-direction-styles'))return;
+  const style=document.createElement('style');style.id='v33-teacher-direction-styles';style.textContent=`
+  .teacher-direction-overlay{display:none;position:fixed;inset:0;z-index:100000;place-items:center;padding:24px;background:rgba(20,0,8,.96);backdrop-filter:blur(12px)}.teacher-direction-overlay.active{display:grid}
+  .teacher-direction-card{width:min(720px,94vw);padding:38px;text-align:center;border:4px solid #ff405f;border-radius:24px;background:radial-gradient(circle at 50% 0%,rgba(255,66,91,.32),transparent 55%),linear-gradient(160deg,#3d0714,#12040b 72%);box-shadow:0 0 90px rgba(255,42,76,.58);color:#fff}.teacher-direction-bell{font-size:78px;line-height:1;filter:drop-shadow(0 0 18px #ffda66)}
+  .teacher-direction-card h2{margin:12px 0;color:#fff2a2;font:1000 clamp(34px,6vw,68px) var(--display-font);line-height:1.05}.teacher-direction-card p{font-size:clamp(20px,3vw,30px);line-height:1.38}.teacher-direction-target{margin:18px 0;padding:12px;border:1px solid #ff879a;border-radius:12px;background:#26050d;font-size:18px;font-weight:1000}.teacher-direction-card .btn{min-height:58px;font-size:18px}.teacher-direction-card small{display:block;margin-top:10px;color:#ffd9df}
+  @media(max-width:820px){.teacher-direction-card{padding:25px 18px}}
+  `;document.head?.appendChild(style);
+}
 
-function requiredWorkLocked(page){return REQUIRED_WORK_PAGES.has(String(page||''))&&state.dailyAccessUnlocked!==true}
+function recoverySummaryCurrent(){return state.recoverySummary?.checked===true&&state.recoverySummary?.dateKey===state.missionDate}
+function ensureRecoveryProbe(){
+  if(recoverySummaryCurrent()||recoveryProbe||requestedModuleId()==='curriculum-quest'||!moduleHost?.href)return;
+  const frame=document.createElement('iframe');frame.id='v33-recovery-progress-probe';frame.title='Recovery progress check';frame.tabIndex=-1;frame.setAttribute('aria-hidden','true');frame.setAttribute('style','position:fixed;width:1px;height:1px;left:-10000px;top:-10000px;border:0;opacity:0;pointer-events:none');frame.src=moduleHost.href('curriculum-quest',document.baseURI,window.DWV33Integration?.environment);document.body?.appendChild(frame);recoveryProbe=frame;
+}
+function unfinishedRequiredWork(target='activity'){
+  const rows=[];
+  if(state.dailyAccessUnlocked!==true)rows.push({id:'morning',icon:'🌅',title:'Morning Work',detail:state.morningWorkComplete?'Teacher check-in or access hold remains.':'Not complete today.',route:'module/daily-quest'});
+  if(!recoverySummaryCurrent())rows.push({id:'recovery',icon:'🐉',title:'Recovery Missions',detail:'Open Recovery Quest for a live check.',route:'module/curriculum-quest'});
+  else for(const day of state.recoverySummary.days||[])rows.push({id:`recovery-${day.day}`,icon:'🐉',title:`Recovery Day ${day.day}`,detail:`${day.count} unfinished mission${day.count===1?'':'s'}.`,route:'module/curriculum-quest'});
+  if(String(target)==='kingdom'&&state.kingdomAccessUnlocked!==true)rows.push({id:'kingdom-access',icon:'🔒',title:'Kingdom Wars teacher unlock',detail:'Your teacher has not opened Kingdom Wars today.',route:'missions'});
+  return rows;
+}
+function requiredWorkLocked(page){return REQUIRED_WORK_PAGES.has(String(page||''))&&unfinishedRequiredWork(page).length>0}
 function requestedModuleId(){return moduleHost?.routeId(location.hash)||''}
 function showRequiredWorkDialog(target='activity'){
   const label=target==='arcade'?'Arcade Time':target==='kingdom'?'Kingdom Wars':target==='boss'||target==='boss-battle'?'Boss Battle':target==='scribe'?'Scribe Arena':'this activity';
-  openDialog('Finish Required Work First',`<p><b>${escapeHtml(label)}</b> is still locked.</p><p>Finish today’s Morning Work first. Complete any assigned Recovery Missions shown under Daily Missions too. A teacher override can unlock today’s optional activities when needed.</p>`,`<button class="btn btn-primary" data-close-dialog>Go to Daily Missions</button>`);
+  const rows=unfinishedRequiredWork(target);
+  openDialog('Finish Required Work First',`<p><b>${escapeHtml(label)}</b> is still locked. Here is exactly what Dragonswood can see unfinished right now:</p><div class="stack mt-12">${rows.map(row=>`<article class="pass-card"><div class="pass-row"><div class="pass-student"><span class="roster-avatar">${row.icon}</span><div><b>${escapeHtml(row.title)}</b><p>${escapeHtml(row.detail)}</p></div></div>${row.id==='kingdom-access'?'':`<button class="btn btn-primary btn-sm" type="button" data-required-route="${escapeHtml(row.route)}">Go there</button>`}</div></article>`).join('')}</div><p class="muted">This check runs again every time you try to enter a game or recreational area.</p>`,`<button class="btn btn-secondary" data-close-dialog>Stay in Daily Missions</button>`);
   dialogRoot.dataset.dialogKind='required-work';
+  dialogRoot.querySelectorAll('[data-required-route]').forEach(button=>button.addEventListener('click',()=>{closeDialog();location.hash=button.dataset.requiredRoute}));
 }
 
 function activePassRows(){
@@ -157,13 +188,29 @@ function syncPassSafety(){
 function startPassSafetyEngine(){clearInterval(passSafetyInterval);passSafetyInterval=null;syncPassSafety();if(activePassRows().length)passSafetyInterval=setInterval(syncPassSafety,1000)}
 async function returnActivePass(button){const type=button?.dataset?.returnActivePass;if(!type)return;button.disabled=true;button.textContent='Checking you back in…';try{await integrationController?.usePass(type);showToast('Pass returned. Welcome back.')}catch(err){button.disabled=false;button.textContent='✅ I AM BACK — RETURN PASS';showToast(err?.message||'Pass could not return.')}}
 
+function teacherAttentionMarkup(){
+  ensureTeacherDirectionStyles();
+  const attention=state.attention,show=attention?.active===true&&attention?.acknowledgedByMe!==true;
+  return `<div class="teacher-direction-overlay ${show?'active':''}" data-teacher-direction role="alertdialog" aria-modal="true" aria-labelledby="teacher-direction-title" aria-hidden="${show?'false':'true'}"><section class="teacher-direction-card"><div class="teacher-direction-bell">🔔</div><div class="eyebrow">TEACHER ATTENTION</div><h2 id="teacher-direction-title">${escapeHtml(attention?.title||'Teacher Direction')}</h2><p>${escapeHtml(attention?.message||'Please follow your teacher’s direction.')}</p><div class="teacher-direction-target">Next: ${escapeHtml(attentionDestinationLabel(attention?.destination))}</div><button class="btn btn-primary w-full" type="button" data-acknowledge-attention="${escapeHtml(attention?.id||'')}">I UNDERSTAND — GO NOW</button><small>Your acknowledgment is recorded so your teacher can see that you received the direction.</small></section></div>`;
+}
+function attentionDestinationLabel(destination){return ({'missions':'Daily Missions','module/daily-quest':'Morning Work','module/curriculum-quest':'Recovery Quest','day':'My Day','adventure':'My Adventure'})[destination]||'Daily Missions'}
+function attentionDestinationHash(destination){return ['missions','module/daily-quest','module/curriculum-quest','day','adventure'].includes(String(destination))?String(destination):'missions'}
+function playTeacherAttentionChime(id){
+  if(!id||lastAttentionChime===id)return;lastAttentionChime=id;
+  try{const Context=window.AudioContext||window.webkitAudioContext;if(!Context)return;const context=new Context(),notes=[659.25,987.77,1318.51];notes.forEach((frequency,index)=>{const osc=context.createOscillator(),gain=context.createGain();osc.type='triangle';osc.frequency.value=frequency;gain.gain.setValueAtTime(.28,context.currentTime+index*.16);gain.gain.exponentialRampToValueAtTime(.001,context.currentTime+index*.16+.42);osc.connect(gain);gain.connect(context.destination);osc.start(context.currentTime+index*.16);osc.stop(context.currentTime+index*.16+.44)});setTimeout(()=>context.close(),1200)}catch{}
+}
+async function acknowledgeTeacherAttention(button){
+  const id=button?.dataset?.acknowledgeAttention;if(!id)return;button.disabled=true;button.textContent='Recording acknowledgment…';
+  try{await integrationController?.acknowledgeAttention(id);location.hash=attentionDestinationHash(state.attention?.destination);showToast('Teacher direction acknowledged.')}catch(err){button.disabled=false;button.textContent='I UNDERSTAND — GO NOW';showToast(err?.message||'Acknowledgment could not save.')}
+}
+
 function currentPage(){
   if(blockingPass())return 'adventure';
   const hash = location.hash.replace('#','');
   const moduleId=moduleHost?.routeId(hash);
   if(moduleId){
     const gate=moduleHost.allowed(moduleId,{dailyAccessUnlocked:state.dailyAccessUnlocked});
-    if(!gate.ok){pendingRequiredWorkNotice=moduleId;return 'missions'}
+    if(!gate.ok||moduleHost.definition(moduleId)?.morningGate&&unfinishedRequiredWork(moduleId).length){pendingRequiredWorkNotice=moduleId;return 'missions'}
     return moduleHost.definition(moduleId).returnPage;
   }
   const page=studentNavItems().some(n=>n[0]===hash) ? hash : 'adventure';
@@ -173,7 +220,7 @@ function currentPage(){
 
 function currentModuleId(){
   const id=requestedModuleId();
-  return id&&moduleHost?.allowed(id,{dailyAccessUnlocked:state.dailyAccessUnlocked})?.ok?id:'';
+  return id&&moduleHost?.allowed(id,{dailyAccessUnlocked:state.dailyAccessUnlocked})?.ok&&(!moduleHost.definition(id)?.morningGate||unfinishedRequiredWork(id).length===0)?id:'';
 }
 
 function navMarkup(){
@@ -207,7 +254,7 @@ function shell(){
     </div></header>
     <aside class="student-sidebar">${navMarkup()}</aside>
     <main class="student-main" id="page-content"><div class="student-content">${pageMarkup()}</div></main>
-    ${passSafetyMarkup()}${referenceButton()}${IS_PRODUCTION?'':'<div class="tester-ribbon">V3.3 TESTER • LOCAL ONLY</div>'}
+    ${passSafetyMarkup()}${teacherAttentionMarkup()}${referenceButton()}${IS_PRODUCTION?'':'<div class="tester-ribbon">V3.3 TESTER • LOCAL ONLY</div>'}
   </div>`;
 }
 
@@ -371,22 +418,27 @@ function arcadePage(){
 }
 
 function kingdomPage(){
-  return `<section class="v33-module-shell"><div class="v33-module-toolbar"><div class="v33-module-heading"><span>🏰</span><div><small>UNLOCKED AFTER MORNING WORK</small><h2>Kingdom Wars</h2></div></div><button class="btn btn-secondary btn-sm" type="button" data-page="adventure">Back</button></div><div class="v33-module-stage"><iframe class="v33-module-frame" title="Kingdom Wars${IS_PRODUCTION?' student beta':' tester realm'}" src="${escapeHtml(kingdomPortal.href())}"></iframe></div></section>`;
+  return `<section class="v33-module-shell"><div class="v33-module-toolbar"><div class="v33-module-heading"><span>🏰</span><div><small>TEACHER UNLOCK REQUIRED</small><h2>Kingdom Wars</h2></div></div><button class="btn btn-secondary btn-sm" type="button" data-page="adventure">Back</button></div><div class="v33-module-stage"><iframe class="v33-module-frame" title="Kingdom Wars${IS_PRODUCTION?' student beta':' tester realm'}" src="${escapeHtml(kingdomPortal.href())}"></iframe></div></section>`;
 }
 
 function escapeHtml(value){return String(value??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 
-function applyStudentModel(model,academic,world,passes,poll){
+function applyStudentModel(model,academic,world,passes,poll,attention,kingdomAccess){
   if(!model)return;
   const accessWasUnlocked=state.dailyAccessUnlocked===true;
+  const priorAttentionId=state.attention?.id;
   state.firstName=model.firstName;state.displayName=model.displayName;state.initial=model.initial;state.grade=model.grade;
   state.level=model.level;state.hp=model.hp;state.gold=model.gold;state.streak=model.streak;state.xp=model.xp;state.xpFloor=model.xpFloor;state.xpMax=model.xpNext;state.xpPct=model.xpPct;
   state.characterClass=model.classLabel;state.pet=model.petName;state.equipment=model.equipped||{};state.inventory=model.inventory||[];
   state.narrationVoice=model.narrationVoice||'';
   state.dailyAccessUnlocked=model.dailyAccessUnlocked===true;
+  state.morningWorkComplete=model.morningWorkComplete===true;
+  state.dailyAccessOverride=model.dailyAccessOverride===true;
+  state.kingdomAccessUnlocked=kingdomAccess?.unlocked===true;
+  state.attention=attention||null;
   if(!accessWasUnlocked&&state.dailyAccessUnlocked&&dialogRoot?.dataset.dialogKind==='required-work')closeDialog();
   if(model.dailyMissions){
-    if(state.missionDate&&state.missionDate!==model.dailyMissions.dateKey)state.completedMissions.delete('curriculum');
+    if(state.missionDate&&state.missionDate!==model.dailyMissions.dateKey){state.completedMissions.delete('curriculum');state.recoverySummary={dateKey:'',checked:false,count:0,days:[]}}
     state.missionDate=model.dailyMissions.dateKey||'';
     setMissionStatus('morning',model.dailyMissions.morning);
     setMissionStatus('exit',model.dailyMissions.exit);
@@ -398,6 +450,7 @@ function applyStudentModel(model,academic,world,passes,poll){
   if(world){state.worldConnected=true;state.world=world;}
   if(passes)state.passes=passes;
   if(poll)state.poll=poll;
+  if(state.attention?.active&&!state.attention.acknowledgedByMe&&state.attention.id!==priorAttentionId){location.hash=attentionDestinationHash(state.attention.destination);setTimeout(()=>playTeacherAttentionChime(state.attention.id),0)}
 }
 function setMissionStatus(id,status){
   if(status==='complete')state.completedMissions.add(id);
@@ -406,7 +459,8 @@ function setMissionStatus(id,status){
 function handleModuleState(event){
   if(event.origin!==location.origin||event.data?.channel!=='dw-v33-module')return;
   const frame=app.querySelector('[data-module-frame]');
-  if(!frame||event.source!==frame.contentWindow)return;
+  const fromVisibleModule=!!frame&&event.source===frame.contentWindow,fromRecoveryProbe=!!recoveryProbe&&event.source===recoveryProbe.contentWindow;
+  if(!fromVisibleModule&&!fromRecoveryProbe)return;
   const message=event.data;
   if(message.type==='daily-mission-state'){
     if(message.dateKey!==window.DWV33Core?.phoenixDateKey())return;
@@ -414,6 +468,9 @@ function handleModuleState(event){
     setMissionStatus('exit',message.exit);
   }else if(message.type==='curriculum-mission-state'){
     setMissionStatus('curriculum',message.currentComplete?'complete':'not_started');
+    state.recoverySummary={dateKey:window.DWV33Core?.phoenixDateKey()||state.missionDate,checked:true,count:Number(message.recoveryCount)||0,days:Array.isArray(message.recoveryDays)?message.recoveryDays.map(row=>({day:Number(row.day)||0,count:Number(row.count)||0})).filter(row=>row.day>0&&row.count>0):[]};
+    storageSet('recovery-summary',JSON.stringify(state.recoverySummary));
+    if(fromRecoveryProbe){recoveryProbe.remove();recoveryProbe=null}
   }else return;
   if(!currentModuleId())render();
 }
@@ -426,6 +483,7 @@ function render(){
   if(integrationSession.status!=='authorized'){
     app.innerHTML=authGate();bindAuthGate();document.title=IS_PRODUCTION?'Dragonswood | Sign In':'[INTEGRATION] Dragonswood | Sign In';return;
   }
+  ensureRecoveryProbe();
   state.page=currentPage();
   app.innerHTML=shell();
   bind();
@@ -454,6 +512,7 @@ function bind(){
   app.querySelectorAll('[data-read]').forEach(el=>el.addEventListener('click',readPage));
   app.querySelector('[data-passes]')?.addEventListener('click',passesDialog);
   app.querySelectorAll('[data-return-active-pass]').forEach(el=>el.addEventListener('click',()=>returnActivePass(el)));
+  app.querySelector('[data-acknowledge-attention]')?.addEventListener('click',e=>acknowledgeTeacherAttention(e.currentTarget));
   app.querySelector('[data-reference]')?.addEventListener('click',showReference);
   app.querySelectorAll('[data-game-filter]').forEach(el=>el.addEventListener('click',()=>{state.gameFilter=el.dataset.gameFilter;render()}));
   app.querySelectorAll('[data-poll-choice]').forEach(el=>el.addEventListener('click',async()=>{try{await integrationController?.votePoll(Number(el.dataset.pollChoice));showToast('Your poll vote was saved.')}catch(err){showToast(err?.message||'Poll vote could not save.')}}));
@@ -485,7 +544,7 @@ function openPage(page){
 function openModule(id){
   if(blockingPass()){showToast('Return your active pass before opening another activity.');location.hash='adventure';return}
   const gate=moduleHost?.allowed(id,{dailyAccessUnlocked:state.dailyAccessUnlocked});
-  if(!gate?.ok){if(gate?.reason==='morning-work'){location.hash='missions';showRequiredWorkDialog(id)}return}
+  if(!gate?.ok||moduleHost?.definition(id)?.morningGate&&unfinishedRequiredWork(id).length){location.hash='missions';showRequiredWorkDialog(id);return}
   location.hash=`module/${encodeURIComponent(id)}`;
 }
 function closeModule(){
@@ -533,7 +592,7 @@ window.addEventListener('message',handleModuleState);
   integrationController=await window.DWV33Integration.startStudent(session=>{
     integrationSession=session;
     const previousPassSignature=passModelSignature();
-    if(session.status==='authorized')applyStudentModel(session.student,session.academic,session.world,session.passes,session.poll);
+    if(session.status==='authorized')applyStudentModel(session.student,session.academic,session.world,session.passes,session.poll,session.attention,session.kingdomAccess);
     const passChanged=previousPassSignature!==passModelSignature();
     if(passChanged||!currentModuleId()||!app.querySelector('[data-module-frame]'))render();else syncPassSafety();
   });

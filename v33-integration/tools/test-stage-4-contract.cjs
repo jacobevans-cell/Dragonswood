@@ -23,7 +23,8 @@ for(const [name,source] of [['Daily Quest',daily],['Curriculum Quest',curriculum
 assert.match(modules,/environment==='emulator'\|\|environment==='production-readonly'/,'module URLs propagate only recognized safety environments');
 assert.match(modules,/environment==='manual-preview'\|\|environment==='production-readonly'/,'production-readonly modules execute no scripts or forms');
 assert.match(student,/event\.origin!==location\.origin/,'parent validates the module message origin');
-assert.match(student,/event\.source!==frame\.contentWindow/,'parent validates the exact hosted frame');
+assert.match(student,/event\.source===frame\.contentWindow/,'parent validates the exact visible module frame');
+assert.match(student,/event\.source===recoveryProbe\.contentWindow/,'parent validates the exact hidden Recovery progress frame');
 assert.match(student,/message\.dateKey!==window\.DWV33Core\?\.phoenixDateKey\(\)/,'parent rejects stale Daily Quest state');
 assert.match(student,/if\(passChanged\|\|!currentModuleId\(\)\|\|!app\.querySelector\('\[data-module-frame\]'\)\)render\(\)/,'progress snapshots cannot reload an active lesson frame unless a pass-state change must interrupt it');
 

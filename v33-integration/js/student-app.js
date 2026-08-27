@@ -14,7 +14,7 @@ const passAlertBuckets=new Map();
 const moduleHost=window.DWV33Modules;
 const arcadePortal=window.DWV33ArcadePortal;
 const kingdomPortal=window.DWV33KingdomPortal;
-const REQUIRED_WORK_PAGES=new Set(['games','scribe','hall','boss','leaderboards','kingdom','arcade']);
+const REQUIRED_WORK_PAGES=new Set(['games','hall','boss','leaderboards','kingdom','arcade']);
 let pendingRequiredWorkNotice='';
 let lastAttentionChime='';
 

@@ -22,7 +22,7 @@ assert.match(M.href('daily-quest','https://example.test/v33-integration/student-
 assert.match(M.href('curriculum-quest','https://example.test/v33-integration/student-test.html','production-readonly'),/curriculum-quest\.html\?dwEmbed=1&dw-env=production-readonly$/);
 assert.match(M.markup('boss-battle'),/data-module-frame/);
 const studentApp=fs.readFileSync(path.join(__dirname,'../js/student-app.js'),'utf8');
-for(const route of ['games','scribe','boss','leaderboards','kingdom','arcade'])assert.match(studentApp,new RegExp(`REQUIRED_WORK_PAGES[^\\n]+['\"]${route}['\"]`),`${route} must share the required-work gate`);
+for(const route of ['games','boss','leaderboards','kingdom','arcade'])assert.match(studentApp,new RegExp(`REQUIRED_WORK_PAGES[^\\n]+['\"]${route}['\"]`),`${route} must share the required-work gate`);
 assert.match(studentApp,/pendingRequiredWorkNotice=moduleId/,'direct module hashes are redirected through the required-work gate');
 assert.match(studentApp,/Finish Required Work First/,'locked optional routes show the restored student popup');
 assert.match(studentApp,/data-module="\$\{g\[0\]\}"/,'visible game cards launch contained production modules');

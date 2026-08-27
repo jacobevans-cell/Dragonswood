@@ -20,7 +20,7 @@ const attention=Ops.attentionModel({id:'a1',active:true,dateKey:'2026-08-27',tit
 assert.equal(attention.active,true);assert.equal(attention.acknowledged,1);assert.equal(attention.waiting.length,1);assert.equal(attention.waiting[0].id,'u2');
 
 const student=read('v33-integration/js/student-app.js');
-for(const route of ['games','scribe','hall','boss','leaderboards','kingdom','arcade'])assert.match(student,new RegExp(`REQUIRED_WORK_PAGES[^\\n]+['\"]${route}['\"]`),`${route} must be rechecked on every entry`);
+for(const route of ['games','hall','boss','leaderboards','kingdom','arcade'])assert.match(student,new RegExp(`REQUIRED_WORK_PAGES[^\\n]+['\"]${route}['\"]`),`${route} must be rechecked on every entry`);
 assert.match(student,/function unfinishedRequiredWork/);assert.match(student,/Recovery Day \$\{day[.]day\}/);assert.match(student,/ensureRecoveryProbe/);assert.match(student,/data-required-route/);
 assert.match(student,/teacher-direction-overlay/);assert.match(student,/acknowledgeAttention/);assert.match(student,/TEACHER UNLOCK REQUIRED/);
 

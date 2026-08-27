@@ -7,6 +7,9 @@ const toast = document.querySelector('#toast');
 const dialogRoot = document.querySelector('#dialog-root');
 let integrationController=null;
 let integrationSession={status:'loading',message:'Loading Dragonswood identity…'};
+let passSafetyInterval=null;
+const passFallbackStarts=new Map();
+const passAlertBuckets=new Map();
 const moduleHost=window.DWV33Modules;
 const arcadePortal=window.DWV33ArcadePortal;
 const kingdomPortal=window.DWV33KingdomPortal;
@@ -93,7 +96,57 @@ function openDialog(title, body, actions=''){
 }
 function closeDialog(){dialogRoot.innerHTML=''}
 
+function activePassRows(){
+  const active=Object.values(state.passes?.rows||{}).filter(row=>row?.active===true);
+  const activeTypes=new Set(active.map(row=>row.type));
+  for(const type of passFallbackStarts.keys())if(!activeTypes.has(type))passFallbackStarts.delete(type);
+  return active.map(row=>{if(row.startedMs)passFallbackStarts.set(row.type,row.startedMs);else if(!passFallbackStarts.has(row.type))passFallbackStarts.set(row.type,Date.now());return {...row,startedMs:passFallbackStarts.get(row.type)}});
+}
+function passModelSignature(model=state.passes){return Object.values(model?.rows||{}).map(row=>`${row.type}:${row.action}:${row.active?'1':'0'}:${row.startedMs||0}`).join('|')}
+function blockingPass(){return activePassRows().find(row=>row.blocking===true)||null}
+function passTiming(row,now=Date.now()){return window.DWV33Passes?.passTiming(row?.startedMs,now)||{remainingMs:0,overdueMs:0,overdue:false,alertBucket:-1}}
+function formatPassDuration(ms){const seconds=Math.max(0,Math.ceil(Number(ms||0)/1000)),minutes=Math.floor(seconds/60);return `${minutes}:${String(seconds%60).padStart(2,'0')}`}
+function ensurePassSafetyStyles(){
+  if(document.querySelector('#v33-pass-safety-styles'))return;
+  const style=document.createElement('style');style.id='v33-pass-safety-styles';style.textContent=`
+  .pass-safety-overlay{display:none;position:fixed;inset:0;z-index:99990;align-items:center;justify-content:center;padding:18px;background:rgba(1,2,13,.93);backdrop-filter:blur(11px)}
+  .pass-safety-overlay.active{display:flex}.pass-safety-card{width:min(620px,94vw);padding:28px 24px;text-align:center;border:2px solid #f4c95d;border-radius:20px;background:radial-gradient(circle at 18% 0%,rgba(145,78,255,.25),transparent 24rem),linear-gradient(155deg,#160a39,#071a36 70%,#08152b);box-shadow:0 0 55px rgba(101,45,193,.5),inset 0 0 35px rgba(2,204,254,.08)}
+  .pass-safety-icon{font-size:64px;line-height:1;margin-bottom:8px}.pass-safety-card h2{margin:5px 0 10px;color:#fff0a4;font:900 34px var(--display-font)}.pass-safety-card p{max-width:520px;margin:0 auto 10px;color:#eef5ff;font-size:18px;line-height:1.45}.pass-safety-card small{display:block;color:#cbbfe0;line-height:1.4}.pass-safety-timer{margin:12px 0;color:#8feaff;font-size:26px;font-weight:1000}.pass-safety-timer.overdue{color:#ff859d;animation:v33PassOverduePulse 1s infinite alternate}.pass-safety-card .btn{margin:8px 0 11px;padding:15px;font-size:17px}
+  .pass-overdue-banner{display:none;position:fixed;left:12px;right:12px;top:12px;z-index:99980;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px 14px;border:2px solid #ff5f7d;border-radius:12px;background:rgba(60,11,27,.96);color:#fff;box-shadow:0 0 24px rgba(255,74,112,.45)}.pass-overdue-banner.active{display:grid}.pass-overdue-banner b{color:#ffd3dc;font-size:15px}.pass-overdue-banner span{font-weight:800}.pass-overdue-banner button{padding:9px 13px;border:1px solid #ffd3dc;border-radius:8px;background:#7d1830;color:#fff;font-weight:1000;cursor:pointer}@keyframes v33PassOverduePulse{from{transform:scale(1)}to{transform:scale(1.035)}}
+  @media(max-width:620px){.pass-safety-card{padding:22px 16px}.pass-safety-card h2{font-size:27px}.pass-safety-card p{font-size:16px}.pass-overdue-banner{grid-template-columns:1fr}.pass-overdue-banner button{width:100%}}
+  @media(prefers-reduced-motion:reduce){.pass-safety-timer.overdue{animation:none}}
+  `;document.head?.appendChild(style);
+}
+function passSafetyMarkup(){
+  ensurePassSafetyStyles();
+  const active=activePassRows(),blocking=active.find(row=>row.blocking===true),overdue=active.find(row=>passTiming(row).overdue),timing=blocking?passTiming(blocking):null;
+  return `<div class="pass-safety-overlay ${blocking?'active':''}" data-active-pass-overlay role="alertdialog" aria-modal="true" aria-labelledby="active-pass-title" aria-hidden="${blocking?'false':'true'}"><section class="pass-safety-card"><div class="pass-safety-icon" data-active-pass-icon>${escapeHtml(blocking?.icon||'🎟️')}</div><div class="eyebrow">CHECK BACK IN REQUIRED</div><h2 id="active-pass-title" data-active-pass-title>${escapeHtml(blocking?`${blocking.label.toUpperCase()} PASS ACTIVE`:'PASS ACTIVE')}</h2><p data-active-pass-copy>${escapeHtml(blocking?`You are currently using your ${blocking.label} pass. Check back in before returning to Dragonswood work.`:'Return your active pass before continuing Dragonswood.')}</p><div class="pass-safety-timer ${timing?.overdue?'overdue':''}" data-active-pass-timer>${timing?(timing.overdue?`⏰ OVERDUE by ${formatPassDuration(timing.overdueMs)}`:`⏱️ ${formatPassDuration(timing.remainingMs)} remaining`):''}</div><button class="btn btn-primary w-full" type="button" data-return-active-pass="${escapeHtml(blocking?.type||'')}">✅ I AM BACK — RETURN PASS</button><small>Games, Scribe Arena, Daily Missions, and other Dragonswood activities stay locked until this pass is returned.</small></section></div><div class="pass-overdue-banner ${overdue&&!blocking?'active':''}" data-pass-overdue-banner role="alert" aria-live="assertive"><b data-pass-overdue-title>⏰ ${escapeHtml(overdue?.label?.toUpperCase()||'PASS')} OVERDUE</b><span data-pass-overdue-copy>${overdue?`You are ${formatPassDuration(passTiming(overdue).overdueMs)} overdue. Please return your pass now.`:'Please return your pass.'}</span><button type="button" data-return-active-pass="${escapeHtml(overdue?.type||'')}">RETURN PASS</button></div>`;
+}
+function passReminder(text){
+  try{const AudioContext=window.AudioContext||window.webkitAudioContext;if(AudioContext){const context=new AudioContext(),osc=context.createOscillator(),gain=context.createGain();osc.frequency.value=880;gain.gain.setValueAtTime(.12,context.currentTime);gain.gain.exponentialRampToValueAtTime(.001,context.currentTime+.35);osc.connect(gain);gain.connect(context.destination);osc.start();osc.stop(context.currentTime+.36);osc.addEventListener('ended',()=>context.close())}}catch{}
+  try{if('speechSynthesis' in window){speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(text);utterance.rate=.92;utterance.volume=1;speechSynthesis.speak(utterance)}}catch{}
+}
+function syncPassSafety(){
+  const active=activePassRows(),blocking=active.find(row=>row.blocking===true),overlay=document.querySelector('[data-active-pass-overlay]'),banner=document.querySelector('[data-pass-overdue-banner]');
+  if(overlay){overlay.classList.toggle('active',!!blocking);overlay.setAttribute('aria-hidden',blocking?'false':'true')}
+  if(blocking){
+    const timing=passTiming(blocking),timer=overlay?.querySelector('[data-active-pass-timer]');
+    if(overlay?.querySelector('[data-active-pass-icon]'))overlay.querySelector('[data-active-pass-icon]').textContent=blocking.icon;
+    if(overlay?.querySelector('[data-active-pass-title]'))overlay.querySelector('[data-active-pass-title]').textContent=`${blocking.label.toUpperCase()} PASS ACTIVE`;
+    if(overlay?.querySelector('[data-active-pass-copy]'))overlay.querySelector('[data-active-pass-copy]').textContent=`You are currently using your ${blocking.label} pass. Check back in before returning to Dragonswood work.`;
+    if(timer){timer.textContent=timing.overdue?`⏰ OVERDUE by ${formatPassDuration(timing.overdueMs)}`:`⏱️ ${formatPassDuration(timing.remainingMs)} remaining`;timer.classList.toggle('overdue',timing.overdue)}
+    const button=overlay?.querySelector('[data-return-active-pass]');if(button)button.dataset.returnActivePass=blocking.type;
+    if(location.hash!=='#adventure')location.hash='adventure';
+  }
+  const overdue=active.find(row=>passTiming(row).overdue);
+  if(banner){banner.classList.toggle('active',!!overdue&&!blocking);if(overdue&&!blocking){const timing=passTiming(overdue);banner.querySelector('[data-pass-overdue-title]').textContent=`⏰ ${overdue.label.toUpperCase()} PASS OVERDUE`;banner.querySelector('[data-pass-overdue-copy]').textContent=`You are ${formatPassDuration(timing.overdueMs)} overdue. Please return your pass now.`;banner.querySelector('[data-return-active-pass]').dataset.returnActivePass=overdue.type}}
+  for(const row of active){const timing=passTiming(row);if(!timing.overdue)continue;const key=`${row.type}:${row.startedMs}`;if(passAlertBuckets.get(key)===timing.alertBucket)continue;passAlertBuckets.set(key,timing.alertBucket);passReminder(`Your ${row.label} pass is overdue. Please return your pass and check back in now.`)}
+}
+function startPassSafetyEngine(){clearInterval(passSafetyInterval);passSafetyInterval=null;syncPassSafety();if(activePassRows().length)passSafetyInterval=setInterval(syncPassSafety,1000)}
+async function returnActivePass(button){const type=button?.dataset?.returnActivePass;if(!type)return;button.disabled=true;button.textContent='Checking you back in…';try{await integrationController?.usePass(type);showToast('Pass returned. Welcome back.')}catch(err){button.disabled=false;button.textContent='✅ I AM BACK — RETURN PASS';showToast(err?.message||'Pass could not return.')}}
+
 function currentPage(){
+  if(blockingPass())return 'adventure';
   const hash = location.hash.replace('#','');
   const moduleId=moduleHost?.routeId(hash);
   if(moduleId)return moduleHost.definition(moduleId).returnPage;
@@ -134,7 +187,7 @@ function shell(){
     </div></header>
     <aside class="student-sidebar">${navMarkup()}</aside>
     <main class="student-main" id="page-content"><div class="student-content">${pageMarkup()}</div></main>
-    ${referenceButton()}${IS_PRODUCTION?'':'<div class="tester-ribbon">V3.3 TESTER • LOCAL ONLY</div>'}
+    ${passSafetyMarkup()}${referenceButton()}${IS_PRODUCTION?'':'<div class="tester-ribbon">V3.3 TESTER • LOCAL ONLY</div>'}
   </div>`;
 }
 
@@ -360,6 +413,7 @@ function bind(){
   app.querySelector('[data-signout]')?.addEventListener('click',async()=>{try{await integrationController?.signOut()}catch(err){showToast(`Sign-out failed: ${err?.message||err}`)}});
   app.querySelectorAll('[data-read]').forEach(el=>el.addEventListener('click',readPage));
   app.querySelector('[data-passes]')?.addEventListener('click',passesDialog);
+  app.querySelectorAll('[data-return-active-pass]').forEach(el=>el.addEventListener('click',()=>returnActivePass(el)));
   app.querySelector('[data-reference]')?.addEventListener('click',showReference);
   app.querySelectorAll('[data-game-filter]').forEach(el=>el.addEventListener('click',()=>{state.gameFilter=el.dataset.gameFilter;render()}));
   app.querySelector('#scribe-text')?.addEventListener('input',e=>{state.writing=e.target.value;storageSet('writing',state.writing);const count=wordCount(state.writing),spans=e.target.nextElementSibling?.querySelectorAll('span');if(spans?.[1])spans[1].textContent=`${count} words`;const submit=app.querySelector('[data-submit-writing]');if(submit&&state.scribeResponse?.status!=='submitted')submit.disabled=count<(state.scribeSession?.minWords||5);clearTimeout(state.writingSaveTimer);if(state.scribeSession&&integrationController?.saveWriting)state.writingSaveTimer=setTimeout(()=>integrationController.saveWriting(state.writing).catch(err=>showToast(err?.message||'Draft could not save.')),500)});
@@ -372,6 +426,7 @@ function bind(){
   app.querySelectorAll('[data-move]').forEach(el=>el.addEventListener('click',()=>openModule('boss-battle')));
   if(currentModuleId())mountModule(currentModuleId());
   if(state.page==='arcade'&&state.arcadeStatus==='idle')refreshArcadePortal();
+  startPassSafetyEngine();
 }
 
 async function refreshArcadePortal(){
@@ -381,10 +436,12 @@ async function refreshArcadePortal(){
 }
 
 function openPage(page){
+  if(blockingPass()){showToast('Return your active pass before continuing Dragonswood.');location.hash='adventure';return}
   if((page==='games'||page==='scribe'||page==='kingdom')&&!state.dailyAccessUnlocked){showToast('Finish Morning Work or ask for today’s teacher override first.');location.hash='missions';return}
   location.hash=page;
 }
 function openModule(id){
+  if(blockingPass()){showToast('Return your active pass before opening another activity.');location.hash='adventure';return}
   const gate=moduleHost?.allowed(id,{dailyAccessUnlocked:state.dailyAccessUnlocked});
   if(!gate?.ok){if(gate?.reason==='morning-work'){showToast('Academic Games unlock after Morning Work or today’s teacher override.');location.hash='missions'}return}
   location.hash=`module/${encodeURIComponent(id)}`;
@@ -427,7 +484,9 @@ window.addEventListener('message',handleModuleState);
   if(!window.DWV33Integration){integrationSession={status:'error',message:'Integration runtime did not load.'};render();return}
   integrationController=await window.DWV33Integration.startStudent(session=>{
     integrationSession=session;
+    const previousPassSignature=passModelSignature();
     if(session.status==='authorized')applyStudentModel(session.student,session.academic,session.world,session.passes);
-    if(!currentModuleId()||!app.querySelector('[data-module-frame]'))render();
+    const passChanged=previousPassSignature!==passModelSignature();
+    if(passChanged||!currentModuleId()||!app.querySelector('[data-module-frame]'))render();else syncPassSafety();
   });
 })();

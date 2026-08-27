@@ -243,6 +243,10 @@ async function attemptAuthenticatedWrite(account){
     assert.equal(crossLoot.res.status,403,`Expected 403 cross-loot read, got ${crossLoot.res.status}: ${crossLoot.text}`);
     record('Daily Boss chest caps and isolation',true,'one owner chest accepted; oversized/cross-student access denied');
 
+    const noPetBeforeHatch=await getDoc('students',accounts.noPet.uid,accounts.noPet.token);
+    const noPetBeforeHatchModel=Core.normalizeStudent(accounts.noPet,decodeFields(noPetBeforeHatch.body.fields),[]);
+    assert.equal(noPetBeforeHatchModel.petName,'No active pet');
+
     const hatchFields=['eggInventory','ownedPets','petTokens','activePet','lastHatchedPet','updatedAt'];
     const newHatch=await writeDoc('students',accounts.noPet.uid,{eggInventory:1,ownedPets:['pet-emberbean','pet-nyx'],petTokens:0,activePet:'pet-nyx',lastHatchedPet:'pet-nyx',updatedAt:new Date()},accounts.noPet.token,hatchFields);
     assert.equal(newHatch.res.ok,true,`New companion hatch failed: ${newHatch.text}`);
@@ -280,9 +284,6 @@ async function attemptAuthenticatedWrite(account){
     const noClass=await getDoc('students',accounts.noClass.uid,accounts.noClass.token);
     const noClassModel=Core.normalizeStudent(accounts.noClass,decodeFields(noClass.body.fields),[]);
     assert.equal(noClassModel.classLabel,'Unchosen');
-    const noPet=await getDoc('students',accounts.noPet.uid,accounts.noPet.token);
-    const noPetModel=Core.normalizeStudent(accounts.noPet,decodeFields(noPet.body.fields),[]);
-    assert.equal(noPetModel.petName,'No active pet');
     record('Class/pet edge cases',true,'unchosen class + no active pet map safely');
 
     const teacherList=await listDocs('students',accounts.teacher.token);

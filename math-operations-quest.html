@@ -6,7 +6,7 @@
 <meta name="color-scheme" content="dark">
 <title>Math Operations Quest • Dragonswood</title>
 <link rel="icon" type="image/png" href="dragonswood-volleyball-crest-v1.png">
-<link rel="stylesheet" href="css/math-operations-quest.css?v=56.25.0">
+<link rel="stylesheet" href="css/math-operations-quest.css?v=56.27.0">
 </head>
 <body class="round-1">
 <a class="skip-link" href="#mainContent">Skip to math quest</a>
@@ -73,7 +73,7 @@
   </section>
 
   <section class="mission-dashboard" aria-label="Round progress">
-    <div class="mission-card xp-card"><div class="label">🐉 PLAYER XP THIS RUN</div><div class="value"><span id="xpValue">+0 XP</span></div><div class="xp-track" role="progressbar" aria-label="Round Player XP progress" aria-valuemin="0" aria-valuemax="8" aria-valuenow="0"><div class="xp-fill" id="xpFill"></div></div><div class="mission-copy">Potential Dragonswood level XP for this round.</div></div>
+    <div class="mission-card xp-card"><div class="label">🐉 PLAYER XP THIS RUN</div><div class="value"><span id="xpValue">+0 XP</span></div><div class="xp-track" role="progressbar" aria-label="Round Player XP progress" aria-valuemin="0" aria-valuemax="8" aria-valuenow="0"><div class="xp-fill" id="xpFill"></div></div><div class="mission-copy" id="xpCopy">Potential Dragonswood level XP for this round.</div></div>
     <div class="mission-card"><div class="label">🏆 QUEST SCORE</div><div class="value"><span id="questScoreValue">0</span><span id="questScoreSuffix"> / 800</span></div><div class="mission-copy" id="questScoreCopy">Normal difficulty earns standard Quest Points.</div></div>
     <div class="mission-card"><div class="label">Problems</div><div class="value"><span id="problemCount">0</span> / 10</div></div>
     <div class="mission-card round-card"><div class="label">ROUND</div><div class="value"><span id="roundValue">1</span> / 3</div><div class="round-sub" id="roundName">Peasant Training</div></div>
@@ -101,17 +101,17 @@
     <aside class="right" aria-label="Math Coach and controls">
       <section class="coach"><span class="tag">MATH COACH</span><h2 id="stepTitle">READY?</h2><p id="stepText">Press Start Steps and we will solve the problem together.</p></section>
       <section class="panel"><div class="panel-title">Controls</div><div class="controls"><button class="primary" id="next" type="button">START STEPS</button><button class="secondary" id="new" type="button">NEW RANDOM PROBLEM</button><div class="progress" id="progress">STEP 0</div></div></section>
-      <section class="memory" id="memory"><b>CORE HABIT</b><div class="cycle"><span>LINE UP</span> → THINK → WRITE → CHECK</div><strong id="memoryStrong">Place value first. One step at a time.</strong><div class="note" id="memoryNote">The highlighted box is the only thing you need to solve right now.</div></section>
+      <section class="memory" id="memory"><b>CORE HABIT</b><div class="cycle" id="memoryCycle"><span>LINE UP</span> → THINK → WRITE → CHECK</div><strong id="memoryStrong">Place value first. One step at a time.</strong><div class="note" id="memoryNote">The highlighted box is the only thing you need to solve right now.</div></section>
     </aside>
   </section>
 </main>
 
-<script src="js/math-operations-dragonswood-host.js?v=56.25.0"></script>
-<script src="js/math-operations-quest.js?v=56.25.0" defer></script>
-<script src="js/math-operations-rewards.js?v=56.25.0" defer></script>
-<script src="js/math-operations-audio.js?v=56.25.0" defer></script>
+<script src="js/math-operations-dragonswood-host.js?v=56.27.0"></script>
+<script src="js/math-operations-quest.js?v=56.27.0" defer></script>
+<script src="js/math-operations-rewards.js?v=56.27.0" defer></script>
+<script src="js/math-operations-audio.js?v=56.27.0" defer></script>
 <script src="narration-manifest.js?v=56.19.6"></script>
 <script src="dragonswood-narrator.js?v=56.19.6" defer></script>
-<script src="dragonswood-grayson-mode.js?v=57.0"></script>
+<script src="dragonswood-grayson-mode.js?v=58.0"></script>
 </body>
 </html>

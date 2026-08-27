@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#05091b">
+  <title>Dragonswood V3.3 | Isolated Manual Preview</title>
+  <link rel="stylesheet" href="css/tester-launcher.css">
+</head>
+<body>
+  <main class="launcher-shell">
+    <section class="launcher-card">
+      <img class="launcher-crest" src="assets/art/dragonswood-crest-v33.jpg" alt="Dragonswood crest">
+      <p class="kicker">ISOLATED ACCEPTANCE PREVIEW</p>
+      <h1>Dragonswood V3.3</h1>
+      <p class="lead">Review the approved V3.3 home and navigation with the staged features attached. Everything on this launcher uses browser-only preview state. It cannot sign in to or write to production Firebase.</p>
+
+      <div class="safety-row" role="list" aria-label="Preview safeguards">
+        <div role="listitem"><b>✓ Production blocked</b><span>No production identity or database runtime</span></div>
+        <div role="listitem"><b>✓ Shared local controls</b><span>Teacher and student tabs share this browser only</span></div>
+        <div role="listitem"><b>✓ Main untouched</b><span>Runs from the isolated recovery branch</span></div>
+      </div>
+
+      <div class="portal-grid">
+        <article>
+          <div class="portal-icon">🐉</div>
+          <p class="kicker">STUDENT PREVIEW</p>
+          <h2>Adventure Portal</h2>
+          <p>Review the V3.3 home, every original route, current production module links, Kingdom Wars, and the Arcade wallet/session flow.</p>
+          <div class="actions">
+            <a class="button primary" href="student-manual-preview.html#adventure">Open full student portal</a>
+            <a class="button secondary" href="student-manual-preview.html#arcade">Open Arcade Tokens</a>
+            <a class="button secondary" href="student-manual-preview.html#kingdom">Open Kingdom Wars</a>
+          </div>
+        </article>
+        <article>
+          <div class="portal-icon">⚔️</div>
+          <p class="kicker">TEACHER PREVIEW</p>
+          <h2>Command Portal</h2>
+          <p>Review all teacher routes and locally exercise token awards, the three-token cap, class lock, individual lock, and technical refunds.</p>
+          <div class="actions">
+            <a class="button primary" href="teacher-manual-preview.html#student-command">Open full teacher portal</a>
+            <a class="button secondary" href="teacher-manual-preview.html#arcade">Open Arcade controls</a>
+            <button class="button secondary" type="button" data-reset-preview>Reset local preview</button>
+          </div>
+        </article>
+      </div>
+
+      <aside class="upload-note">
+        <b>Recommended test order</b>
+        <code>Teacher Arcade → Student Arcade → Start timer → Teacher Lock</code>
+        <span>Open teacher and student in two tabs. Use “Jacob Preview” in Teacher Command. Existing production module pages are displayed read-only here; their scripts and forms are deliberately blocked in this manual safety preview.</span>
+      </aside>
+      <p class="lead" id="preview-message" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+  <script src="../arcade/js/manual-preview-store.js"></script>
+  <script src="tools/manual-preview-launcher.js"></script>
+</body>
+</html>

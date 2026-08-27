@@ -1,0 +1,71 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const ROOT=path.resolve(__dirname,'../..');
+const read=file=>fs.readFileSync(path.join(ROOT,file),'utf8');
+
+const student=read('index.html');
+const teacher=read('teacher.html');
+for(const [name,html] of [['student',student],['teacher',teacher]]){
+  assert.match(html,/data-dw-environment="production"/i,`${name} root must force production mode`);
+  assert.match(html,/data-dw-release="v3\.3-student-beta"/i,`${name} root must expose the release marker`);
+  assert.match(html,/<base href="v33-integration\/">/i,`${name} root must resolve V3 assets from the integration directory`);
+  assert.match(html,/js\/integration\/passes\.js/i,`${name} root must load the pass contract before runtime`);
+  assert.doesNotMatch(html,/Student Tester|Teacher Tester/i,`${name} root must not retain tester titles`);
+}
+const APPROVED_HEAD='feae8785b16cf5800bd5e6f8b2b22177fa3695b2';
+assert.equal(read('student-v2.html'),require('node:child_process').execFileSync('git',['show',`${APPROVED_HEAD}:index.html`],{cwd:ROOT,encoding:'utf8'}),'student-v2.html must preserve the pre-launch root portal exactly');
+assert.equal(read('teacher-v2.html'),require('node:child_process').execFileSync('git',['show',`${APPROVED_HEAD}:teacher.html`],{cwd:ROOT,encoding:'utf8'}),'teacher-v2.html must preserve the pre-launch teacher portal exactly');
+
+const runtime=read('v33-integration/js/integration/runtime.js');
+assert.match(runtime,/declaredEnvironment==='production'/,'production must be declared by the root document, not a query string alone');
+assert.match(runtime,/environment!=='emulator'&&environment!=='production'/,'read-only environments must reject writes');
+assert.match(runtime,/async usePass\(type\)/,'student pass actions must be wired into the controller');
+
+const modules=read('v33-integration/js/integration/modules.js');
+assert.match(modules,/environment==='production'/,'embedded modules must inherit live production mode');
+const arcade=read('v33-integration/js/integration/arcade-portal.js');
+assert.match(arcade,/dw-arcade-live/,'Arcade production routing must retain the explicit live opt-in');
+const kingdom=read('v33-integration/js/integration/kingdom-portal.js');
+assert.match(kingdom,/kingdom\.html/,'the production portal must route to the student beta entry');
+assert.match(kingdom,/dw-kingdom-live/,'Kingdom production routing must retain the explicit live opt-in');
+
+const kingdomPage=read('kingdom.html');
+assert.match(kingdomPage,/STUDENT BETA/,'Kingdom Wars must disclose beta status');
+assert.match(kingdomPage,/stored only in this browser/,'Kingdom Wars must disclose local-only progress');
+
+const release=JSON.parse(read('firebase.v33-release.json'));
+assert.deepEqual(release.functions.map(row=>row.codebase),['academic-ai','arcade-access']);
+assert.equal(release.firestore.rules,'firestore.rules');
+assert.equal(release.firestore.indexes,'arcade/firestore.indexes.json');
+const productionGate=JSON.parse(read('firebase.v33-production-gate.json'));
+assert.equal(productionGate.firestore.rules,'firestore.rules');
+assert.equal(productionGate.firestore.indexes,'arcade/firestore.indexes.json');
+
+const rules=read('firestore.rules');
+assert.match(rules,/match \/passStatus\/\{passId\}[\s\S]*passId\.matches\('\^' \+ request\.auth\.uid \+ '_\.\*\$'\)/,'students must be able to read their not-yet-created pass status documents');
+assert.doesNotMatch(release.firestore.rules,/gate/i,'release must never deploy emulator gate rules');
+
+const identityGate=read('v33-integration/tools/firebase-identity-gate.cjs');
+assert.match(identityGate,/v instanceof Date[^\n]+timestampValue/,'the REST fixture encoder must preserve Firestore timestamps');
+assert.match(identityGate,/seed\('dailyQuests'[\s\S]*unlockAt:dailyUnlockAt,lockAt:dailyLockAt/,'the exact-rules fixture must include the live Daily Quest access window');
+assert.match(identityGate,/validLoot[\s\S]*goalPoints:0,rareGoal:'none'/,'the exact-rules fixture must include every required Boss loot reward field');
+
+const academicBrowserGate=read('v33-integration/tools/academic-systems-browser-gate.py');
+assert.match(academicBrowserGate,/wait_for_saved_review/,'the Academic Systems browser gate must verify the persisted teacher review');
+assert.match(academicBrowserGate,/getDoc[\s\S]*writingResponses/,'the review gate must read the authoritative fictional Firestore record');
+assert.doesNotMatch(academicBrowserGate,/get_by_text\('Teacher review saved/,'the review gate must not depend on a transient toast being visible');
+
+const teacherOperationsBrowserGate=read('v33-integration/tools/teacher-operations-browser-gate.py');
+assert.match(teacherOperationsBrowserGate,/schedule saved to the fictional Firebase emulator\./,'the downstream schedule gate must match the release portal label');
+
+const studentBetaBrowserGate=read('v33-integration/tools/student-beta-browser-gate.py');
+assert.match(studentBetaBrowserGate,/pass_action\(page,'bathroom','start','🚻 Use Bathroom pass'\)[\s\S]*pass_action\(page,'bathroom','return','✅ I am back'\)[\s\S]*pass_action\(page,'bathroom','start','🚻 Use Bathroom pass'\)/,'the final pass gate must follow the actual post-Teacher-Operations state');
+assert.match(studentBetaBrowserGate,/arg=\{'type': pass_type, 'action': expected_action\}/,'the pass-state wait must use the installed Playwright keyword-only argument API');
+assert.match(studentBetaBrowserGate,/state\.passes\?\.rows\?\.\[type\]\?\.action === action/,'pass transitions must wait for the live student state before opening the next dialog');
+
+const bossBattle=read('boss-battle.html');
+assert.match(bossBattle,/rareGoal,goalPoints:0/,'the live Boss Battle must write the required goal fields');
+
+console.log('V3.3 consolidated student-beta release contracts: PASS');

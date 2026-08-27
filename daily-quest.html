@@ -134,11 +134,19 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
 <script src="dragonswood-narrator.js?v=56.19.6"></script>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import {getFirestore,doc,getDoc,getDocs,setDoc,writeBatch,collection,serverTimestamp,query,where,onSnapshot} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-import {getFunctions,httpsCallable} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-functions.js";
-const firebaseConfig={"apiKey":"AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE","authDomain":"dragonswood-9289e.firebaseapp.com","projectId":"dragonswood-9289e","storageBucket":"dragonswood-9289e.firebasestorage.app","messagingSenderId":"1064477064695","appId":"1:1064477064695:web:283e1016ee2303d39042f2","measurementId":"G-LPRLDGVBD2"};
+import {getAuth,onAuthStateChanged,connectAuthEmulator} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {getFirestore,doc,getDoc,getDocs,setDoc,writeBatch,collection,serverTimestamp,query,where,onSnapshot,connectFirestoreEmulator} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {getFunctions,httpsCallable,connectFunctionsEmulator} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-functions.js";
+const DW_V33_PARAMS=new URLSearchParams(location.search),DW_V33_ENV=DW_V33_PARAMS.get("dw-env")||"production",DW_V33_EMULATOR=DW_V33_ENV==="emulator";
+const firebaseConfig=DW_V33_EMULATOR
+  ? {apiKey:"demo-key",authDomain:"demo-dragonswood-v33.localhost",projectId:"demo-dragonswood-v33",storageBucket:"demo-dragonswood-v33.appspot.com",messagingSenderId:"000000000000",appId:"1:000000000000:web:demo-v33"}
+  : {"apiKey":"AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE","authDomain":"dragonswood-9289e.firebaseapp.com","projectId":"dragonswood-9289e","storageBucket":"dragonswood-9289e.firebasestorage.app","messagingSenderId":"1064477064695","appId":"1:1064477064695:web:283e1016ee2303d39042f2","measurementId":"G-LPRLDGVBD2"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),academicFunctions=getFunctions(app,"us-central1");
+if(DW_V33_EMULATOR){
+  try{connectAuthEmulator(auth,"http://127.0.0.1:9099",{disableWarnings:true})}catch(e){}
+  try{connectFirestoreEmulator(db,"127.0.0.1",8080)}catch(e){}
+  try{connectFunctionsEmulator(academicFunctions,"127.0.0.1",5001)}catch(e){}
+}
 window.DWAcademicAI?.configure(async payload=>{
   const call=httpsCallable(academicFunctions,"gradeAcademicAnswer");
   const result=await call(payload);
@@ -6039,6 +6047,13 @@ async function refreshSessionCards(){
   };
   decorate($("morningCard"),$("morningBtn"),morningProgress,"MORNING QUEST");
   decorate($("exitCard"),$("exitBtn"),exitProgress,"EXIT QUEST");
+  postDailyMissionState();
+}
+
+function postDailyMissionState(available=true){
+ if(DW_V33_PARAMS.get("dwEmbed")!=="1"||window.parent===window)return;
+ const stateOf=p=>p?.status==="complete"?"complete":p?.status==="in_progress"?"in_progress":"not_started";
+ window.parent.postMessage({channel:"dw-v33-module",type:"daily-mission-state",available,dateKey:lesson?.date||dateKey(),morning:stateOf(morningProgress),exit:stateOf(exitProgress)},location.origin);
 }
 
 
@@ -6065,16 +6080,16 @@ function watchDailyQuestProgress(){
  if(dqProgressUnsub){try{dqProgressUnsub()}catch(e){}}
  dqProgressUnsub=onSnapshot(
    query(collection(db,"dailyQuestProgress"),where("studentId","==",user.uid)),
-   snap=>{dqProgressRows=snap.docs.map(d=>({id:d.id,...d.data()}));updateDailyQuestProgressSummary()},
+   snap=>{dqProgressRows=snap.docs.map(d=>({id:d.id,...d.data()}));updateDailyQuestProgressSummary();if(lesson)refreshSessionCards()},
    err=>console.warn("daily quest history",err)
  );
 }
-async function loadToday(){let key=dateKey();const isTeacher=String(user?.email||"").toLowerCase()===TEACHER;const q=new URLSearchParams(location.search).get("date");if(isTeacher&&q)key=q;try{try{const history=await getDocs(query(collection(db,"dailyQuestProgress"),where("studentId","==",user.uid)));dqProgressRows=history.docs.map(d=>({id:d.id,...d.data()}))}catch(e){console.warn("reteach history",e)}const snap=await getDoc(doc(db,"dailyQuests",key));if(!snap.exists()){status("No student quest is scheduled for today. Enjoy the suspicious silence.","warn");$("morningCard").classList.add("locked");$("exitCard").classList.add("locked");$("morningBtn").disabled=$("exitBtn").disabled=true;return}lesson=makeTrackLesson(snap.data());renderLesson();$("trackLabel").textContent=(isLevelUpMode()?"LEVEL-UP: ":"TRACK: ")+lesson.trackName;
+async function loadToday(){let key=dateKey();const isTeacher=String(user?.email||"").toLowerCase()===TEACHER;const q=new URLSearchParams(location.search).get("date");if(isTeacher&&q)key=q;try{try{const history=await getDocs(query(collection(db,"dailyQuestProgress"),where("studentId","==",user.uid)));dqProgressRows=history.docs.map(d=>({id:d.id,...d.data()}))}catch(e){console.warn("reteach history",e)}const snap=await getDoc(doc(db,"dailyQuests",key));if(!snap.exists()){status("No student quest is scheduled for today. Enjoy the suspicious silence.","warn");$("morningCard").classList.add("locked");$("exitCard").classList.add("locked");$("morningBtn").disabled=$("exitBtn").disabled=true;postDailyMissionState(false);return}lesson=makeTrackLesson(snap.data());renderLesson();$("trackLabel").textContent=(isLevelUpMode()?"LEVEL-UP: ":"TRACK: ")+lesson.trackName;
 const lub=$("levelUpBanner");if(lub)lub.style.display=isLevelUpMode()?"block":"none";
 const td=$("trackDesc");if(td)td.textContent=isLevelUpMode()
   ? (lesson.track==="challenge"?"Optional enrichment • Early–Mid 6th Grade":lesson.track==="foundation"?"Optional fourth-grade level-up work":"Optional fifth-grade challenge work")
   : (lesson.track==="challenge"?"Advanced enrichment • Early–Mid 6th Grade":lesson.track==="5"?"Fifth-grade spiral practice":lesson.track==="foundation"?"Foundation spiral practice • Grade 3 prerequisite skills":"Fourth-grade spiral practice");
-const mini=$("trackLabelMini");if(mini)mini.textContent=`TRACK: ${lesson.trackName}`;await refreshSessionCards();status(Number(profile.hp||0)<=0?"💀 You may complete today's academics, but knocked-out players earn no Player XP or Gold until revival.":"Today's quest is unlocked. Future quests remain sealed by Dragonswood server time.","good");}catch(err){console.error(err);status(`Today's quest is sealed or unavailable: ${err.code||err.message||"permission denied"}`,"bad");$("morningBtn").disabled=$("exitBtn").disabled=true}}
+const mini=$("trackLabelMini");if(mini)mini.textContent=`TRACK: ${lesson.trackName}`;await refreshSessionCards();status(Number(profile.hp||0)<=0?"💀 You may complete today's academics, but knocked-out players earn no Player XP or Gold until revival.":"Today's quest is unlocked. Future quests remain sealed by Dragonswood server time.","good");}catch(err){console.error(err);status(`Today's quest is sealed or unavailable: ${err.code||err.message||"permission denied"}`,"bad");$("morningBtn").disabled=$("exitBtn").disabled=true;postDailyMissionState(false)}}
 onAuthStateChanged(auth,async u=>{user=u;if(!u){status("Open Daily Quest from your signed-in Dragonswood portal.","warn");return}let tester=false;try{tester=(await getDoc(doc(db,"testerAccounts",u.uid))).exists()}catch(e){}if(!String(u.email||"").toLowerCase().endsWith("@"+DOMAIN)&&String(u.email||"").toLowerCase()!==TEACHER&&!tester){status("Daily Quest requires an Explore Academy or approved tester account.","bad");return}try{const s=await getDoc(doc(db,"students",u.uid));if(s.exists())profile=s.data();else if(tester)profile={firstName:u.displayName||"Tester",grade:"4",hp:10,gold:0,xp:0};window.DWVoicePreferences?.set?.(profile?.narrationVoice||"automatic");renderAccount();renderSchoolCountdowns();watchDailyQuestProgress();await loadToday()}catch(e){status("Dragonswood profile error: "+(e.code||e.message),"bad")}});
 $("morningBtn").onclick=()=>startSession("morning");$("exitBtn").onclick=()=>startSession("exit");$("closePlay").onclick=async()=>{if(sessionName&&taskIndex<tasks.length)await saveProgress();$("playModal").classList.remove("show")};
 async function startSession(name){
@@ -6570,4 +6585,5 @@ async function finishSession(){
 })();
 </script>
 <script type="module" src="dragonswood-student-tools.js?v=57.0"></script>
-<script src="dragonswood-math-autograding.js?v=57.1.1"></script></body></html>
+<script src="dragonswood-math-autograding.js?v=57.1.1"></script><script src="dragonswood-grayson-mode.js?v=58.0"></script>
+</body></html>

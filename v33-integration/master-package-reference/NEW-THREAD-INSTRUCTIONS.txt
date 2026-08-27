@@ -1,0 +1,48 @@
+DRAGONSWOOD V3.3 — NEW THREAD MASTER INSTRUCTION
+
+Read START-HERE.md FIRST and treat it as controlling instructions for this phase.
+Then read the full handoff document and inspect the bundled V3.3 approved visual model.
+Then inspect the newest current main branch of GitHub repository jacobevans-cell/Dragonswood.
+
+DO NOT EDIT ANYTHING YET.
+
+First produce a complete read-only integration map of the newest production system against V3.3.
+
+PRIMARY GOAL:
+Students and the teacher are already using Dragonswood. Do not break production. The migration must be staged and seamless. Production must remain usable throughout integration.
+
+VISUAL GOAL:
+V3.3 is visually frozen. Integrate the real production assets, rules, data contracts, Firebase behavior, curriculum, grading, recovery, pets, progression, games, boss systems, passes, rewards, jobs, schedule, narration, teacher tools, security rules, and all other working functionality INTO the V3.3 model WITHOUT changing its approved appearance.
+
+ROLLBACK GOAL:
+Before production promotion, create/verify an immutable pre-release safety point and prepare a normal git-revert rollback path. The promotion should be structured so a bad release can be reverted and pushed within minutes. Never make emergency force-reset the default rollback plan.
+
+WORK IN THIS ORDER:
+1. Current production inventory and dependency map.
+2. Safety branch / rollback baseline / visual-freeze baseline.
+3. Authentication and student identity.
+4. Student stats/profile/progression.
+5. Daily Missions + curriculum + pacing + videos.
+6. Grading + teacher verification + recovery.
+7. Scribe Arena.
+8. Academic Games.
+9. My Day + schedule/calendar.
+10. Adventurer Hall + classes + equipment.
+11. Full pet system + assets + animations.
+12. Boss Battle.
+13. Leaderboards.
+14. Passes + rewards + jobs.
+15. Full teacher portal.
+16. Narration + media.
+17. Firestore/security rules.
+18. Full functional regression.
+19. Full visual regression.
+20. Controlled production promotion.
+21. Immediate post-release smoke test.
+22. Revert immediately if a release-blocking regression is found.
+
+After EACH subsystem, verify both:
+A. production behavior is preserved; and
+B. V3.3 visuals have not changed.
+
+Do not simplify or remove production functionality merely because V3.3 does not currently expose it. If a production feature has no obvious V3.3 home, document it and design the integration mapping WITHOUT redesigning the approved visual model unless the user explicitly authorizes a visual change.

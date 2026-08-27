@@ -34,6 +34,56 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid == uid;
     }
 
+    function arcadeScoreId(data) {
+      return request.auth.uid + '__' + data.periodType + '__' + data.periodKey + '__' + data.boardId;
+    }
+
+    function arcadeEnabled(uid) {
+      return exists(/databases/$(database)/documents/arcadeAccess/$(uid))
+        && (get(/databases/$(database)/documents/arcadeAccess/$(uid)).data.keys().hasAny(['individualEnabled'])
+          ? get(/databases/$(database)/documents/arcadeAccess/$(uid)).data.individualEnabled == true
+          : exists(/databases/$(database)/documents/arcadeSettings/classAccess)
+            && get(/databases/$(database)/documents/arcadeSettings/classAccess).data.enabled == true);
+    }
+
+    function hasLiveArcadeSession(uid, sessionId) {
+      return sessionId is string
+        && exists(/databases/$(database)/documents/arcadeSessions/$(sessionId))
+        && get(/databases/$(database)/documents/arcadeSessions/$(sessionId)).data.uid == uid
+        && get(/databases/$(database)/documents/arcadeSessions/$(sessionId)).data.status == 'active'
+        && get(/databases/$(database)/documents/arcadeSessions/$(sessionId)).data.endAt > request.time
+        && get(/databases/$(database)/documents/arcadeAccess/$(uid)).data.currentSessionId == sessionId
+        && arcadeEnabled(uid);
+    }
+
+    function validArcadeScore(data) {
+      return data.keys().hasOnly([
+          'uid','studentKey','displayName','gameId','boardId','periodType',
+          'periodKey','score','metric','details','schemaVersion','sessionId','updatedAt'
+        ])
+        && data.uid == request.auth.uid
+        && data.studentKey is string
+        && data.studentKey.size() <= 100
+        && data.displayName is string
+        && data.displayName.size() > 0
+        && data.displayName.size() <= 32
+        && data.gameId in ['dragon-dash','void-runner']
+        && data.boardId in ['dragon-dash','void-runner-explore','void-runner-infinite']
+        && data.periodType in ['daily','weekly','allTime']
+        && data.periodKey is string
+        && data.periodKey.size() <= 20
+        && data.score is int
+        && data.score >= 0
+        && data.score <= 1000000000000
+        && data.metric is string
+        && data.metric.size() <= 100
+        && data.details is map
+        && data.details.keys().size() <= 30
+        && data.schemaVersion == 2
+        && data.updatedAt == request.time
+        && hasLiveArcadeSession(request.auth.uid, data.sessionId);
+    }
+
     // A student may have only one pending extra-pass request across every
     // pass type. The exceptType record is the one being created or refreshed.
     function hasNoOtherPendingExtraPass(uid, dateKey, exceptType) {
@@ -693,17 +743,19 @@ service cloud.firestore {
                     && request.resource.data.completedCount <= 5
                     && request.resource.data.paid == false;
 
-      // Student check-off: only these two fields may change.
+      // Student check-off: only completion evidence and its server timestamp
+      // may change. V3 writes updatedAt together with every check-off.
       // UID-prefixed document IDs keep this limited to the signed-in student,
       // including weekly records created by older Dragonswood builds.
       allow update: if isExploreStudent()
                     && weekId.matches('^' + request.auth.uid + '_.*$')
                     && request.resource.data.diff(resource.data).affectedKeys()
-                         .hasOnly(['checkedDays','completedCount'])
+                         .hasOnly(['checkedDays','completedCount','updatedAt'])
                     && request.resource.data.checkedDays is list
                     && request.resource.data.completedCount is number
                     && request.resource.data.completedCount >= 0
-                    && request.resource.data.completedCount <= 5;
+                    && request.resource.data.completedCount <= 5
+                    && request.resource.data.updatedAt == request.time;
 
       allow create, update, delete: if isTeacher();
     }
@@ -739,6 +791,7 @@ service cloud.firestore {
 
     match /passStatus/{passId} {
       allow read: if isTeacher()
+                  || (isSignedIn() && passId.matches('^' + request.auth.uid + '_.*$'))
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid
@@ -960,6 +1013,84 @@ service cloud.firestore {
 
     match /academicAnswerAiCache/{docId} {
       allow read, write: if false;
+    }
+
+    // Arcade Tokens and the 30-minute clock are server-authoritative. Clients
+    // can display only their own records; callable Functions own every award,
+    // debit, lock, end, and refund write.
+    match /arcadeAccess/{uid} {
+      allow read: if isTeacher() || isOwner(uid);
+      allow write: if false;
+    }
+
+    match /arcadeSettings/{docId} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+
+    match /arcadeTokenPeriods/{periodId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow write: if false;
+    }
+
+    match /arcadeSessions/{sessionId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow write: if false;
+    }
+
+    match /arcadeAudit/{auditId} {
+      allow read: if isTeacher();
+      allow write: if false;
+    }
+
+    // Arcade performance is record-only. Every client score write must name a
+    // live, unexpired, teacher-authorized session for the authenticated uid.
+    match /arcadeScores/{scoreId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn()
+                    && scoreId == arcadeScoreId(request.resource.data)
+                    && validArcadeScore(request.resource.data);
+      allow update: if isSignedIn()
+                    && resource.data.uid == request.auth.uid
+                    && scoreId == arcadeScoreId(request.resource.data)
+                    && request.resource.data.boardId == resource.data.boardId
+                    && request.resource.data.gameId == resource.data.gameId
+                    && request.resource.data.periodType == resource.data.periodType
+                    && request.resource.data.periodKey == resource.data.periodKey
+                    && request.resource.data.score >= resource.data.score
+                    && validArcadeScore(request.resource.data);
+      allow delete: if false;
+    }
+
+    match /voidRunnerPlayers/{uid} {
+      allow read: if isTeacher() || isOwner(uid);
+      allow create, update: if isOwner(uid)
+        && request.resource.data.keys().hasOnly([
+          'cells','unlocked','completed','runner','achievements','challenges',
+          'storySeen','schemaVersion','arcadeSessionId','updatedAt'
+        ])
+        && request.resource.data.cells is int
+        && request.resource.data.cells >= 0
+        && request.resource.data.cells <= 1000000000
+        && request.resource.data.unlocked is int
+        && request.resource.data.unlocked >= 0
+        && request.resource.data.unlocked <= 10000
+        && request.resource.data.completed is list
+        && request.resource.data.completed.size() <= 200
+        && request.resource.data.runner is string
+        && request.resource.data.runner.size() <= 80
+        && request.resource.data.achievements is list
+        && request.resource.data.achievements.size() <= 200
+        && request.resource.data.challenges is map
+        && request.resource.data.challenges.keys().size() <= 200
+        && request.resource.data.storySeen is list
+        && request.resource.data.storySeen.size() <= 200
+        && request.resource.data.schemaVersion == 2
+        && request.resource.data.updatedAt == request.time
+        && hasLiveArcadeSession(uid, request.resource.data.arcadeSessionId);
+      allow delete: if false;
     }
 
     // Documentation-only default deny. Firestore ORs matching allow rules, so

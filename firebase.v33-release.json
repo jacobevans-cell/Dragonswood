@@ -1,0 +1,16 @@
+{
+  "functions": [
+    {
+      "source": "functions-academic-ai",
+      "codebase": "academic-ai"
+    },
+    {
+      "source": "functions-arcade-access",
+      "codebase": "arcade-access"
+    }
+  ],
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "arcade/firestore.indexes.json"
+  }
+}

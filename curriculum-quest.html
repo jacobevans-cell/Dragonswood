@@ -587,7 +587,14 @@ function recoveryGrouped(a){
   return `<details class="frame recovery-day ${unlocked?"":"locked-day"}" ${unlocked&&i===0?"open":""}><summary><span class="day-heading">${unlocked?"🗝️":"🔒"} Original Day ${day}</span><span class="day-stats"><span class="day-count">${list.length} MISSION${list.length===1?"":"S"}</span><strong class="day-total">⏱ ${dayEstimate(list)}</strong><span class="day-state">${unlocked?"OPEN":"LOCKED"}</span></span></summary>${unlocked?`<div class="recovery-body"><div class="grid">${list.map(card).join("")}</div></div>`:`<div class="recovery-lock">Complete Original Day ${first} to unlock this recovery day.</div>`}</details>`;
  }).join("");
 }
+function postCurriculumMissionState(){
+ if(DW_V33_PARAMS.get("dwEmbed")!=="1"||window.parent===window||isTeacher)return;
+ const current=rows().filter(x=>Number(x.day)===Number(S.day)&&!mediaPending(x));
+ const complete=current.filter(missionComplete).length;
+ window.parent.postMessage({channel:"dw-v33-module",type:"curriculum-mission-state",day:Number(S.day||0),available:studentCurriculumAccess===true,currentOpen:currentQuestOpen===true,total:current.length,complete,currentComplete:currentQuestOpen===true&&current.length>0&&complete===current.length},location.origin);
+}
 function render(){
+setTimeout(postCurriculumMissionState,0);
 const videoTab=document.querySelector('[data-tab="videos"]'),tabs=document.getElementById("curriculumTabs");if(videoTab)videoTab.classList.toggle("hidden",!isTeacher);if(tabs)tabs.classList.toggle("teacher-tabs",isTeacher);if(!isTeacher&&videoTab?.classList.contains("active")){videoTab.classList.remove("active");document.querySelector('[data-tab="current"]')?.classList.add("active");$("#videos").classList.remove("active");$("#current").classList.add("active")}
 if(!isTeacher&&!studentCurriculumAccess){
   $("#hero").textContent="Curriculum Quest Locked";$("#pct").textContent="🔒";$("#ring").style.background="#241936";$("#kpis").innerHTML="";
@@ -605,13 +612,21 @@ $("#grade").onchange=e=>{if(currentStudent&&!isTeacher){e.target.value=S.grade;r
 <script src="dragonswood-academic-ai-client.js?v=56.21.0"></script>
 <script type="module">
 import {initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import {getFirestore,doc,getDoc,getDocs,setDoc,updateDoc,addDoc,collection,serverTimestamp,onSnapshot,query,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-import {getFunctions,httpsCallable} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-functions.js";
-const firebaseConfig={"apiKey":"AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE","authDomain":"dragonswood-9289e.firebaseapp.com","projectId":"dragonswood-9289e","storageBucket":"dragonswood-9289e.firebasestorage.app","messagingSenderId":"1064477064695","appId":"1:1064477064695:web:283e1016ee2303d39042f2","measurementId":"G-LPRLDGVBD2"};
+import {getAuth,onAuthStateChanged,connectAuthEmulator} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {getFirestore,doc,getDoc,getDocs,setDoc,updateDoc,addDoc,collection,serverTimestamp,onSnapshot,query,where,connectFirestoreEmulator} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {getFunctions,httpsCallable,connectFunctionsEmulator} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-functions.js";
+const DW_V33_PARAMS=new URLSearchParams(location.search),DW_V33_ENV=DW_V33_PARAMS.get("dw-env")||"production",DW_V33_EMULATOR=DW_V33_ENV==="emulator";
+const firebaseConfig=DW_V33_EMULATOR
+  ? {apiKey:"demo-key",authDomain:"demo-dragonswood-v33.localhost",projectId:"demo-dragonswood-v33",storageBucket:"demo-dragonswood-v33.appspot.com",messagingSenderId:"000000000000",appId:"1:000000000000:web:demo-v33"}
+  : {"apiKey":"AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE","authDomain":"dragonswood-9289e.firebaseapp.com","projectId":"dragonswood-9289e","storageBucket":"dragonswood-9289e.firebasestorage.app","messagingSenderId":"1064477064695","appId":"1:1064477064695:web:283e1016ee2303d39042f2","measurementId":"G-LPRLDGVBD2"};
 const TEACHER="jacobicusjax@gmail.com";
 const app=getApps().length?getApp():initializeApp(firebaseConfig);
 const auth=getAuth(app),db=getFirestore(app),academicFunctions=getFunctions(app,"us-central1");
+if(DW_V33_EMULATOR){
+  try{connectAuthEmulator(auth,"http://127.0.0.1:9099",{disableWarnings:true})}catch(e){}
+  try{connectFirestoreEmulator(db,"127.0.0.1",8080)}catch(e){}
+  try{connectFunctionsEmulator(academicFunctions,"127.0.0.1",5001)}catch(e){}
+}
 window.DWAcademicAI?.configure(async payload=>{
   const call=httpsCallable(academicFunctions,"gradeAcademicAnswer");
   const result=await call(payload);
@@ -828,4 +843,5 @@ onAuthStateChanged(auth,async u=>{
   }
   render();
 });
-</script><script src="narration-manifest.js?v=56.19.6"></script><script src="dragonswood-narrator.js?v=56.19.6"></script><script type="module" src="dragonswood-student-tools.js?v=57.0"></script></body></html>
+</script><script src="narration-manifest.js?v=56.19.6"></script><script src="dragonswood-narrator.js?v=56.19.6"></script><script type="module" src="dragonswood-student-tools.js?v=57.0"></script><script src="dragonswood-grayson-mode.js?v=58.0"></script>
+</body></html>

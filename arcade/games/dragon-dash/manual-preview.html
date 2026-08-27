@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Dragon Dash • Local Manual Preview</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="dragonswood-theme.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">DRAGON DASH <small style="display:block;font-size:9px;letter-spacing:.2em;color:#ffe89a">RUNESTONE TRIALS</small></div>
+      <div class="top-actions">
+        <button id="practiceToggle" class="chip" aria-pressed="false">Practice: OFF</button>
+        <button id="muteToggle" class="chip" aria-pressed="false">Sound: ON</button>
+      </div>
+    </header>
+
+    <main>
+      <section id="menuScreen" class="screen active">
+        <div class="hero-card">
+          <div class="hero-icon" aria-hidden="true">
+            <img src="assets/cube-dragon.svg" alt="" />
+          </div>
+          <h1>DRAGON DASH</h1>
+          <p class="subtitle">RUNESTONE TRIALS • A DRAGONSWOOD ARCADE CHALLENGE</p>
+          <div class="menu-grid">
+            <button class="big-button primary" id="playButton">PLAY</button>
+            <button class="big-button" id="editorButton">LEVEL EDITOR</button>
+            <button class="big-button" id="howButton">HOW TO PLAY</button>
+            <button class="big-button" id="settingsButton">SETTINGS</button>
+          </div>
+          <p class="legal-note">Gameplay is inspired by auto-running rhythm platformers. No Geometry Dash art, music, levels, logos, or branding are included.</p>
+        </div>
+      </section>
+
+      <section id="levelScreen" class="screen">
+        <div class="panel wide">
+          <div class="panel-title-row">
+            <button class="icon-button back" data-back="menuScreen">←</button>
+            <h2>Choose a Level</h2>
+            <div></div>
+          </div>
+          <div id="levelCards" class="level-cards"></div>
+        </div>
+      </section>
+
+      <section id="gameScreen" class="screen game-screen">
+        <div class="hud">
+          <div class="hud-left">
+            <button id="pauseButton" class="icon-button">Ⅱ</button>
+            <span id="attemptText">Attempt 1</span>
+          </div>
+          <div class="progress-wrap" aria-label="Level progress">
+            <div id="progressBar" class="progress-bar"></div>
+            <span id="progressText">0%</span>
+          </div>
+          <div class="hud-right">
+            <span id="modeText">CUBE</span>
+            <span id="practiceBadge" class="practice-badge hidden">PRACTICE</span>
+          </div>
+        </div>
+        <canvas id="gameCanvas" width="1280" height="720" aria-label="Dragon Dash game canvas"></canvas>
+        <div id="gameOverlay" class="game-overlay hidden">
+          <div class="overlay-card">
+            <h2 id="overlayTitle">Paused</h2>
+            <p id="overlayBody"></p>
+            <div class="overlay-actions">
+              <button id="resumeButton" class="big-button primary">RESUME</button>
+              <button id="restartButton" class="big-button">RESTART</button>
+              <button id="quitButton" class="big-button danger">LEVEL SELECT</button>
+            </div>
+          </div>
+        </div>
+        <div class="mobile-control" id="mobileControl">TAP / HOLD</div>
+      </section>
+
+      <section id="editorScreen" class="screen">
+        <div class="editor-shell">
+          <div class="editor-toolbar">
+            <button class="icon-button back" data-back="menuScreen">←</button>
+            <button id="editorPlay" class="chip strong">▶ TEST</button>
+            <button id="editorSave" class="chip">SAVE</button>
+            <button id="editorLoad" class="chip">LOAD</button>
+            <button id="editorClear" class="chip danger">CLEAR</button>
+            <button id="editorSelect" class="chip">SELECT</button>
+            <button id="editorDuplicate" class="chip">DUPLICATE</button>
+            <button id="editorDelete" class="chip danger">DELETE</button>
+            <span id="editorStatus">Grid: 40 px</span>
+          </div>
+          <div id="palette" class="palette"></div>
+          <div class="editor-properties">
+            <label>Group <input id="editorGroup" value="1" size="4"></label>
+            <label>Layer <input id="editorLayer" type="number" value="0" min="-9" max="9"></label>
+            <label>Move X <input id="editorMoveX" type="number" value="120" step="40"></label>
+            <label>Move Y <input id="editorMoveY" type="number" value="0" step="40"></label>
+            <label>Duration <input id="editorDuration" type="number" value="1" min="0.1" max="10" step="0.1"></label>
+            <label>Rotation <input id="editorRotation" type="number" value="90" step="15"></label>
+            <label>Teleport Link <input id="editorLink" value="A" size="3"></label>
+            <label>Camera Zoom <input id="editorZoom" type="number" value="1.15" min="0.55" max="1.8" step="0.05"></label>
+            <label>Camera X <input id="editorCameraX" type="number" value="0" step="40"></label>
+            <label>Camera Y <input id="editorCameraY" type="number" value="0" step="20"></label>
+            <button id="editorApplyProps" class="chip">APPLY GROUP/LAYER</button>
+          </div>
+          <details class="editor-meta">
+            <summary>LEVEL METADATA + CUSTOM MUSIC</summary>
+            <div class="editor-properties">
+              <label>Name <input id="editorLevelName" value="My Custom Level"></label>
+              <label>Creator <input id="editorCreator" value="Dragonswood Adventurer"></label>
+              <label>Difficulty <select id="editorDifficulty"><option>Easy</option><option selected>Normal</option><option>Hard</option><option>Insane</option></select></label>
+              <label>Description <input id="editorDescription" value="Built in the Dragon Dash editor."></label>
+              <label>Music URL <input id="editorMusicUrl" placeholder="HTTPS • owned/licensed audio only"></label>
+              <label>Music offset <input id="editorMusicOffset" type="number" value="0" min="0" step="0.1"></label>
+            </div>
+          </details>
+          <canvas id="editorCanvas" width="1280" height="640" aria-label="Level editor canvas"></canvas>
+          <div class="editor-help">PLACE: click to add • Right-click erase • SELECT: click/Shift-click, drag to move • Arrow keys nudge • Duplicate/Delete act on selection • Mouse wheel or A/D pans.</div>
+        </div>
+      </section>
+
+      <section id="infoScreen" class="screen">
+        <div class="panel">
+          <div class="panel-title-row">
+            <button class="icon-button back" data-back="menuScreen">←</button>
+            <h2>How to Play</h2>
+            <div></div>
+          </div>
+          <div class="info-copy">
+            <p><strong>Jump / action:</strong> Space, ↑, W, mouse click, or touch.</p>
+            <p><strong>Cube:</strong> press to jump. <strong>Ship:</strong> hold to rise. <strong>Ball:</strong> press to flip gravity. <strong>UFO:</strong> each press flaps. <strong>Wave:</strong> hold to climb diagonally. <strong>Robot:</strong> hold for a taller jump. <strong>Spider:</strong> press to snap to the opposite surface. <strong>Swing:</strong> press to alternate gravity and arc through the passage.</p>
+            <p><strong>New v1.4 mechanics:</strong> Mini portals shrink the dragon, linked portals teleport, reverse runes change travel direction, slopes and moving/rotating platforms change the terrain, and dash/spider/teleport orbs create advanced routes.</p>
+            <p><strong>Practice:</strong> checkpoints are created automatically as you advance. Press C to drop one manually and Backspace to remove the newest checkpoint.</p>
+            <p><strong>Restart:</strong> R. <strong>Pause:</strong> Escape or P.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="settingsScreen" class="screen">
+        <div class="panel">
+          <div class="panel-title-row">
+            <button class="icon-button back" data-back="menuScreen">←</button>
+            <h2>Settings</h2>
+            <div></div>
+          </div>
+          <div class="settings-list">
+            <label>Music / SFX volume <input id="volumeSlider" type="range" min="0" max="1" step="0.05" value="0.45"></label>
+            <label>Screen shake <input id="shakeToggle" type="checkbox" checked></label>
+            <label>Comfort mode <input id="comfortToggle" type="checkbox"></label>
+            <label>Particles <input id="particlesToggle" type="checkbox" checked></label>
+            <label>Show hitboxes <input id="hitboxToggle" type="checkbox"></label>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <link rel="stylesheet" href="../../access.css">
+  <script src="../../js/arcade-config.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

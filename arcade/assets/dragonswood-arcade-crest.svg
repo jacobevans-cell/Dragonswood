@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 250">
+<defs><linearGradient id="shield" x1="0" x2="1" y2="1"><stop stop-color="#173e35"/><stop offset="1" stop-color="#081d19"/></linearGradient><linearGradient id="gold" x1="0" x2="1"><stop stop-color="#fff1a8"/><stop offset=".45" stop-color="#d8ad4c"/><stop offset="1" stop-color="#8b5b1e"/></linearGradient></defs>
+<path d="M110 8 201 39v73c0 61-35 102-91 130C54 214 19 173 19 112V39Z" fill="url(#shield)" stroke="url(#gold)" stroke-width="9"/>
+<path d="M68 82c21-37 66-41 87-12-25-2-41 8-48 25 22-6 39 2 50 23-18-4-31-1-40 9 2 21-8 38-31 53 5-20 2-35-10-45-10 4-22 4-36-1 14-10 24-21 30-34-10-2-20-8-29-19 10 1 19 1 27 1Z" fill="url(#gold)"/>
+<path d="m92 62-10-24 24 14m24 7 15-21 1 28" fill="none" stroke="#f5d979" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="88" cy="95" r="5" fill="#071b17"/><circle cx="126" cy="92" r="5" fill="#071b17"/>
+<path d="M93 118c12 8 25 7 36-2" fill="none" stroke="#071b17" stroke-width="6" stroke-linecap="round"/>
+<path d="M110 166 91 190h38Z" fill="#75d5bd" opacity=".75"/>
+</svg>

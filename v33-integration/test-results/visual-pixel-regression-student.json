@@ -1,0 +1,82 @@
+{
+  "baselineCommit": "f8f9acd",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "routes": {
+    "student:adventure": {
+      "equal": true,
+      "size": [
+        1440,
+        1000
+      ],
+      "bbox": null,
+      "diffPixels": 0
+    },
+    "student:missions": {
+      "equal": true,
+      "size": [
+        1440,
+        1000
+      ],
+      "bbox": null,
+      "diffPixels": 0
+    },
+    "student:games": {
+      "equal": true,
+      "size": [
+        1440,
+        1000
+      ],
+      "bbox": null,
+      "diffPixels": 0
+    },
+    "student:scribe": {
+      "equal": true,
+      "size": [
+        1440,
+        1000
+      ],
+      "bbox": null,
+      "diffPixels": 0
+    },
+    "student:day": {
+      "equal": true,
+      "size": [
+        1440,
+        1000
+      ],
+      "bbox": null,
+      "diffPixels": 0
+    },
+    "student:hall": {
+      "equal": true,
+      "size": [
+        1440,
+        1000
+      ],
+      "bbox": null,
+      "diffPixels": 0
+    },
+    "student:boss": {
+      "equal": true,
+      "size": [
+        1440,
+        1000
+      ],
+      "bbox": null,
+      "diffPixels": 0
+    },
+    "student:leaderboards": {
+      "equal": true,
+      "size": [
+        1440,
+        1000
+      ],
+      "bbox": null,
+      "diffPixels": 0
+    }
+  },
+  "passed": true
+}

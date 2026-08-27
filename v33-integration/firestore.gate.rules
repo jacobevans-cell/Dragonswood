@@ -1,0 +1,438 @@
+rules_version = '2';
+
+// ISOLATED V3.3 IDENTITY GATE ONLY.
+// This file is intentionally NOT the production ruleset. It exists to prove
+// authentication, ownership, roster access, tester eligibility and read-only
+// behavior against Firebase emulators without creating any live write path.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isTeacher() {
+      return signedIn() && request.auth.token.email == 'jacobicusjax@gmail.com';
+    }
+    function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+    function isStudent() {
+      return signedIn() && (
+        request.auth.token.email.matches('.*@explore[.]academy$')
+        || exists(/databases/$(database)/documents/testerAccounts/$(request.auth.uid))
+      );
+    }
+    function gateSeed() {
+      return request.auth == null && request.resource.data.__gateSeed == true;
+    }
+    function hasNoOtherPendingExtraPass(uid, dateKey, exceptType) {
+      return (exceptType == 'bathroom'
+              || !exists(/databases/$(database)/documents/bathroomRequests/$(uid + '_' + dateKey))
+              || get(/databases/$(database)/documents/bathroomRequests/$(uid + '_' + dateKey)).data.status != 'pending')
+          && (exceptType == 'snack'
+              || !exists(/databases/$(database)/documents/snackRequests/$(uid + '_' + dateKey))
+              || get(/databases/$(database)/documents/snackRequests/$(uid + '_' + dateKey)).data.status != 'pending')
+          && (exceptType == 'outOfSeat'
+              || !exists(/databases/$(database)/documents/passRequests/$(uid + '_outOfSeat_' + dateKey))
+              || get(/databases/$(database)/documents/passRequests/$(uid + '_outOfSeat_' + dateKey)).data.status != 'pending')
+          && (exceptType == 'office'
+              || !exists(/databases/$(database)/documents/passRequests/$(uid + '_office_' + dateKey))
+              || get(/databases/$(database)/documents/passRequests/$(uid + '_office_' + dateKey)).data.status != 'pending');
+    }
+
+    match /students/{studentId} {
+      allow read: if isTeacher() || isOwner(studentId);
+      allow create: if gateSeed();
+      // Candidate Student World writes run only in the fictional emulator.
+      // Class selection is one-time, pet activation must reference ownership,
+      // and inventory transactions can never increase Gold.
+      allow update: if isOwner(studentId) && isStudent() && (
+        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['classId','classChosenAt','updatedAt'])
+          && (!('classId' in resource.data) || resource.data.classId == '')
+          && request.resource.data.classId in ['warrior','ranger','mage','healer'])
+        || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['activePet','updatedAt'])
+          && request.resource.data.activePet in request.resource.data.ownedPets)
+        || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['rpgEquipped','updatedAt'])
+        || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['favoritePets','updatedAt'])
+        || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['gold','rpgInventory','eggInventory','lastRpgPurchaseId','updatedAt'])
+          && request.resource.data.gold is number
+          && request.resource.data.gold >= 0
+          && request.resource.data.gold <= resource.data.gold)
+        || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['eggInventory','ownedPets','petTokens','activePet','lastHatchedPet','updatedAt'])
+          && request.resource.data.eggInventory == resource.data.eggInventory - 1
+          && request.resource.data.eggInventory >= 0)
+        || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['xp','gold','dailyXpDate','dailyXpEarned','lastGameClaimId','bossWins','lastBossWinDate','rpgInventory','eggInventory','updatedAt'])
+          && request.resource.data.xp >= resource.data.xp
+          && request.resource.data.xp <= resource.data.xp + 12
+          && request.resource.data.gold >= resource.data.gold
+          && request.resource.data.gold <= resource.data.gold + 3
+          && request.resource.data.bossWins <= resource.data.bossWins + 1)
+      );
+      allow update: if isTeacher();
+      allow delete: if false;
+    }
+
+    match /testerAccounts/{testerId} {
+      allow read: if isTeacher() || isOwner(testerId);
+      allow create: if gateSeed();
+      allow update, delete: if false;
+    }
+
+    match /dailyQuestProgress/{progressId} {
+      allow read: if isTeacher()
+                  || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.session in ['morning','exit']
+                        && request.resource.data.status in ['in_progress','complete']
+                        && request.resource.data.score is number
+                        && request.resource.data.correct is number
+                        && request.resource.data.attempts is number
+                        && request.resource.data.attempts >= 0
+                        && request.resource.data.attempts <= 60
+                        && request.resource.data.correct >= 0
+                        && request.resource.data.correct <= request.resource.data.attempts);
+      allow update: if isStudent()
+                    && resource.data.studentId == request.auth.uid
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.session == resource.data.session
+                    && request.resource.data.dateKey == resource.data.dateKey
+                    && request.resource.data.status in ['in_progress','complete']
+                    && request.resource.data.score is number
+                    && request.resource.data.correct is number
+                    && request.resource.data.attempts is number
+                    && request.resource.data.attempts >= 0
+                    && request.resource.data.attempts <= 60
+                    && request.resource.data.correct >= 0
+                    && request.resource.data.correct <= request.resource.data.attempts;
+      allow delete: if false;
+    }
+
+    match /dailyQuests/{dateKey} {
+      allow read: if isTeacher() || isStudent();
+      allow create: if gateSeed();
+      allow update, delete: if false;
+    }
+
+    match /classData/{documentId} {
+      allow read: if signedIn();
+      allow create, update: if isTeacher();
+      allow create: if gateSeed()
+                    || (isTeacher()
+                        && documentId == 'activeWritingSession'
+                        && request.resource.data.status in ['active','closed']);
+      allow update: if isTeacher()
+                    && documentId == 'activeWritingSession'
+                    && request.resource.data.status in ['active','closed']
+                    && (request.resource.data.status == 'closed'
+                        || (request.resource.data.prompt is string
+                            && request.resource.data.prompt.size() <= 2000));
+      allow delete: if false;
+    }
+
+    match /classCalendarEvents/{eventId} {
+      allow read: if signedIn();
+      allow create: if gateSeed();
+      allow create, update, delete: if isTeacher();
+      allow update, delete: if false;
+    }
+
+    match /studentJobWeeks/{weekId} {
+      allow read: if isTeacher()
+                  || (signedIn() && weekId.matches('^' + request.auth.uid + '_.*$'))
+                  || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && weekId.matches('^' + request.auth.uid + '_.*$')
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.checkedDays is list
+                        && request.resource.data.completedCount >= 0
+                        && request.resource.data.completedCount <= 5
+                        && request.resource.data.paid == false);
+      allow update: if isStudent()
+                    && weekId.matches('^' + request.auth.uid + '_.*$')
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['checkedDays','completedCount','updatedAt'])
+                    && request.resource.data.completedCount >= 0
+                    && request.resource.data.completedCount <= 5;
+      allow create, update: if isTeacher();
+      allow delete: if false;
+    }
+
+    match /scores/{scoreId} {
+      allow read: if signedIn();
+      allow create: if gateSeed();
+      allow update, delete: if false;
+    }
+
+    match /leaderboardRewards/{rewardId} {
+      allow read: if signedIn();
+      allow create: if gateSeed() || isTeacher();
+      allow update, delete: if false;
+    }
+
+    match /bathroomRequests/{requestId} {
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.status == 'pending'
+                        && requestId == request.auth.uid + '_' + request.resource.data.dateKey
+                        && hasNoOtherPendingExtraPass(request.auth.uid, request.resource.data.dateKey, 'bathroom'));
+      allow update: if isTeacher();
+      allow delete: if false;
+    }
+
+    match /snackRequests/{requestId} {
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.status == 'pending'
+                        && requestId == request.auth.uid + '_' + request.resource.data.dateKey
+                        && hasNoOtherPendingExtraPass(request.auth.uid, request.resource.data.dateKey, 'snack'));
+      allow update: if isTeacher();
+      allow delete: if false;
+    }
+
+    match /passRequests/{requestId} {
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.status == 'pending'
+                        && request.resource.data.type in ['outOfSeat','office']
+                        && requestId == request.auth.uid + '_' + request.resource.data.type + '_' + request.resource.data.dateKey
+                        && hasNoOtherPendingExtraPass(request.auth.uid, request.resource.data.dateKey, request.resource.data.type));
+      allow update: if isTeacher();
+      allow delete: if false;
+    }
+
+    match /pointRequests/{requestId} {
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.status == 'pending'
+                        && request.resource.data.reason is string
+                        && request.resource.data.reason.size() <= 500);
+      allow update: if isTeacher();
+      allow delete: if false;
+    }
+
+    match /bathroomStatus/{statusId} {
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed();
+      allow create, update: if isTeacher();
+      allow delete: if false;
+    }
+
+    match /snackStatus/{statusId} {
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed();
+      allow create, update: if isTeacher();
+      allow delete: if false;
+    }
+
+    match /passStatus/{statusId} {
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed();
+      allow create, update: if isTeacher();
+      allow delete: if false;
+    }
+
+    match /passHistory/{historyId} {
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed() || isTeacher();
+      allow update: if isTeacher();
+      allow delete: if false;
+    }
+
+    match /studentTransactions/{transactionId} {
+      allow read, create: if isTeacher();
+      allow update, delete: if false;
+    }
+
+    match /bossLoot/{lootId} {
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && lootId == request.auth.uid + '_' + request.resource.data.dateKey
+                        && request.resource.data.status == 'complete'
+                        && request.resource.data.goldAward >= 0
+                        && request.resource.data.goldAward <= 3
+                        && request.resource.data.xpAward >= 0
+                        && request.resource.data.xpAward <= 12);
+      allow update, delete: if false;
+    }
+
+    match /rpgPurchases/{purchaseId} {
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.cost >= 0
+                        && request.resource.data.cost <= 5000);
+      allow update, delete: if false;
+    }
+
+    match /physicalPrizeDrops/{dropId} {
+      allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.status == 'earned'
+                        && request.resource.data.prizeType in ['recess','snack','lunch','icecream']);
+      allow update: if isStudent()
+                    && resource.data.studentId == request.auth.uid
+                    && resource.data.status == 'earned'
+                    && request.resource.data.status == 'requested'
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','requestedAt']);
+      allow delete: if false;
+    }
+
+    match /curriculumQuestProgress/{studentId} {
+      allow read: if isTeacher() || isOwner(studentId);
+      allow create: if gateSeed();
+      allow update, delete: if false;
+    }
+
+    match /curriculumProgress/{progressId} {
+      allow read: if isTeacher()
+                  || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.itemId is string
+                        && progressId == request.auth.uid + '_' + request.resource.data.itemId
+                        && request.resource.data.grade in ['I','K']
+                        && request.resource.data.day is number
+                        && request.resource.data.day >= 1
+                        && request.resource.data.day <= 40
+                        && request.resource.data.subject in ['Math','Science','HUM']
+                        && request.resource.data.verified == false
+                        && request.resource.data.questionsCorrect is number
+                        && request.resource.data.questionsSeen is number
+                        && request.resource.data.questionsCorrect >= 0
+                        && request.resource.data.questionsCorrect <= request.resource.data.questionsSeen
+                        && request.resource.data.questionsSeen <= 20);
+      allow update: if isStudent()
+                    && resource.data.studentId == request.auth.uid
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.itemId == resource.data.itemId
+                    && request.resource.data.verified == resource.data.verified
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+                      'watched','videoCoverage','videoReflection','practiced',
+                      'practiceEvidence','questionsCorrect','questionsSeen',
+                      'autoAnswers','autoAttempts','lastActivityAttempt',
+                      'activityAttempts','overrideStatus','updatedAt'
+                    ])
+                    && request.resource.data.questionsCorrect is number
+                    && request.resource.data.questionsSeen is number
+                    && request.resource.data.questionsCorrect >= 0
+                    && request.resource.data.questionsCorrect <= request.resource.data.questionsSeen
+                    && request.resource.data.questionsSeen <= 20;
+      allow delete: if false;
+    }
+
+    match /curriculumAttempts/{attemptId} {
+      allow read: if isTeacher()
+                  || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.itemId is string
+                        && request.resource.data.attemptNumber is number
+                        && request.resource.data.attemptNumber >= 1
+                        && request.resource.data.questionsCorrect is number
+                        && request.resource.data.questionsSeen is number
+                        && request.resource.data.questionsSeen >= 1
+                        && request.resource.data.questionsSeen <= 100
+                        && request.resource.data.questionsCorrect >= 0
+                        && request.resource.data.questionsCorrect <= request.resource.data.questionsSeen
+                        && request.resource.data.accuracy is number
+                        && request.resource.data.accuracy >= 0
+                        && request.resource.data.accuracy <= 100);
+      allow update, delete: if false;
+    }
+
+    match /curriculumOverrideRequests/{requestId} {
+      allow read: if isTeacher()
+                  || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.status == 'pending'
+                        && request.resource.data.lessonId is string
+                        && request.resource.data.studentAnswer is string
+                        && request.resource.data.studentAnswer.size() <= 5000);
+      allow update, delete: if false;
+    }
+
+    match /writingSessions/{sessionId} {
+      allow read: if signedIn();
+      allow create: if gateSeed()
+                    || (isTeacher()
+                        && request.resource.data.status == 'active'
+                        && request.resource.data.prompt is string
+                        && request.resource.data.prompt.size() <= 2000
+                        && request.resource.data.minWords is number
+                        && request.resource.data.minWords >= 1
+                        && request.resource.data.minWords <= 2000);
+      allow update: if isTeacher()
+                    && request.resource.data.status in ['active','closed'];
+      allow delete: if false;
+    }
+
+    match /writingResponses/{responseId} {
+      allow read: if isTeacher()
+                  || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && responseId == request.resource.data.sessionId + '_' + request.auth.uid
+                        && request.resource.data.status in ['draft','submitted']
+                        && request.resource.data.responseText is string
+                        && request.resource.data.responseText.size() <= 12000);
+      allow update: if isTeacher()
+                    || (isStudent()
+                        && resource.data.studentId == request.auth.uid
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.sessionId == resource.data.sessionId
+                        && request.resource.data.status in ['draft','submitted']
+                        && request.resource.data.responseText is string
+                        && request.resource.data.responseText.size() <= 12000
+                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+                          'responseText','wordCount','sentenceCount','paragraphCount',
+                          'capitalizedSentenceStarts','hasEndingPunctuation','status',
+                          'sessionTitle','writingType','targetSkill','prompt','submittedAt','updatedAt'
+                        ]));
+      allow delete: if false;
+    }
+
+    match /gameResults/{resultId} {
+      allow read: if isTeacher()
+                  || (signedIn() && resource.data.studentId == request.auth.uid);
+      allow create: if gateSeed()
+                    || (isStudent()
+                        && request.resource.data.studentId == request.auth.uid
+                        && request.resource.data.gameId in [
+                          'decimal-deception','math-operations','fraction-forge',
+                          'long-division','long-division-custom','spelling-practice',
+                          'witches-test','elemental-laboratory','cosmic-architect',
+                          'arcane-forge','class-reader','daily_boss'
+                        ]
+                        && request.resource.data.status == 'complete'
+                        && request.resource.data.score is number
+                        && request.resource.data.score >= 0
+                        && request.resource.data.score <= 100
+                        && request.resource.data.xpAward is number
+                        && request.resource.data.xpAward >= 0
+                        && request.resource.data.xpAward <= 12
+                        && request.resource.data.goldAward is number
+                        && request.resource.data.goldAward >= 0
+                        && request.resource.data.goldAward <= 3);
+      allow update, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

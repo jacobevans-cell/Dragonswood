@@ -119,7 +119,7 @@ function bind(){
  app.querySelector('[data-pass-blackout]')?.addEventListener('click',managePassBlackout);
  app.querySelector('[data-manage-daily-access]')?.addEventListener('click',manageDailyAccess);
  app.querySelector('[data-review-curriculum]')?.addEventListener('click',reviewCurriculumOverrides);
- app.querySelector('[data-payroll]')?.addEventListener('click',payrollReview);app.querySelectorAll('[data-job-id]').forEach(el=>el.addEventListener('change',()=>assignJob(el.dataset.jobId,el.value)));app.querySelectorAll('[data-schedule-day]').forEach(el=>el.addEventListener('click',()=>{state.scheduleDay=el.dataset.scheduleDay;render()}));app.querySelector('[data-save-schedule]')?.addEventListener('click',saveCurrentSchedule);
+ app.querySelectorAll('[data-payroll]').forEach(el=>el.addEventListener('click',payrollReview));app.querySelectorAll('[data-job-id]').forEach(el=>el.addEventListener('change',()=>assignJob(el.dataset.jobId,el.value)));app.querySelectorAll('[data-schedule-day]').forEach(el=>el.addEventListener('click',()=>{state.scheduleDay=el.dataset.scheduleDay;render()}));app.querySelector('[data-save-schedule]')?.addEventListener('click',saveCurrentSchedule);
  app.querySelector('[data-reward-leaders]')?.addEventListener('click',rewardLeadersReview);
  app.querySelectorAll('[data-tool]').forEach(el=>el.addEventListener('click',()=>launchClassroomTool(el.dataset.tool)));
  app.querySelector('#arcade-period')?.addEventListener('input',e=>{state.arcadePeriodId=e.target.value});

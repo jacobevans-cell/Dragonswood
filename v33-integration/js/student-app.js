@@ -423,10 +423,10 @@ function authGate(){
   return `<div class="portal student-shell" data-${IS_PRODUCTION?'release':'tester-build'}="v3.3"><main class="student-main" id="page-content"><div class="student-content"><section class="panel next-step"><div class="eyebrow">${IS_PRODUCTION?'SECURE STUDENT PORTAL':'SECURE INTEGRATION CANDIDATE'}</div><div class="next-icon">🛡️</div><h2>${status==='unauthorized'?'Account not authorized':'Dragonswood Sign In'}</h2><p>${escapeHtml(message)}</p>${canSignIn?'<button class="btn btn-primary w-full" type="button" data-signin>Sign in with Google</button>':''}<p class="center muted mt-12 text-11">${IS_PRODUCTION?'Explore Academy • live student data':`${escapeHtml(window.DWV33Integration?.environment||'loading')} • no production writes enabled`}</p></section></div></main>${IS_PRODUCTION?'':'<div class="tester-ribbon">V3.3 INTEGRATION • SAFE MODE</div>'}</div>`;
 }
 function render(){
-  state.page=currentPage();
   if(integrationSession.status!=='authorized'){
     app.innerHTML=authGate();bindAuthGate();document.title=IS_PRODUCTION?'Dragonswood | Sign In':'[INTEGRATION] Dragonswood | Sign In';return;
   }
+  state.page=currentPage();
   app.innerHTML=shell();
   bind();
   const moduleId=currentModuleId();

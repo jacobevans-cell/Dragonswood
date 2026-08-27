@@ -126,7 +126,7 @@
   if(window.__DW_MATH_AUTO_GRADING_LOADER__)return;
   window.__DW_MATH_AUTO_GRADING_LOADER__=true;
   const s=document.createElement("script");
-  s.src="dragonswood-math-autograding.js?v=57.1.1";
+  s.src="dragonswood-math-autograding.js?v=57.1.2";
   s.async=false;
   document.head.appendChild(s);
 })();

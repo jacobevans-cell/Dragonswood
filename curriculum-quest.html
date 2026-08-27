@@ -140,7 +140,7 @@ body>*{position:relative;z-index:1}
   </div>
 </div>
 <script src="q1-curriculum-data.js"></script>
-<script src="q1-curriculum-enhancements.js"></script>
+<script src="q1-curriculum-enhancements.js?v=57.1.2"></script>
 <script src="q1-video-map.js"></script>
 <script src="curriculum-question-engine.js"></script>
 <script>
@@ -156,6 +156,7 @@ let studentCurriculumAccess=false,accessMessage="Checking today's school-day ass
 let currentQuestOpen=false,curriculumStateReady=false;
 const WATCH_REQUIRED_FRACTION=.90;
 function save(){localStorage.setItem(K,JSON.stringify(S));if(window.queueCurriculumProgress)window.queueCurriculumProgress(S)}
+function saveCurriculumItemState(id,itemState){S.items[id]=itemState;save()}
 function st(id){return S.items[id]||{watched:false,practiced:false,verified:false,videoReflection:"",practiceEvidence:""}}
 function googleFileId(url=""){const m=String(url).match(/\/d\/([^/?]+)/);return m?m[1]:""}
 function mediaFor(x){const id=googleFileId(x.resourceUrl||"");return id&&VM[id]?VM[id]:null}

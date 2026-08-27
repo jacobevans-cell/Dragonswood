@@ -22,6 +22,8 @@ pass("perfect identification has one-word shortcut",G.minimalAcceptedAnswer(past
 pass("whole/fraction equivalence",G.answersEquivalent("1","2/2"));
 pass("fraction/decimal equivalence",G.answersEquivalent("1/2","0.5"));
 pass("percent/decimal equivalence",G.answersEquivalent("50%","0.5"));
+pass("decimal pattern 2.7 accepted",G.answersEquivalent("2.7","2.7"));
+pass("decimal pattern 3.2 accepted",G.answersEquivalent("3.2","3.2"));
 pass("wrong known choice does not use AI",!G.shouldUseAiRescue({prompt:"Pick one",answer:"past",choices:["past","future"]},"future"));
 pass("numeric answer does not use AI",!G.shouldUseAiRescue({prompt:"Solve",answer:"1"},"2/2",{mode:"number"}));
 pass("capitalization task stays deterministic",!G.shouldUseAiRescue({prompt:"Which sentence is capitalized correctly?",answer:"Arizona"},"arizona"));
@@ -41,8 +43,26 @@ pass("Curriculum loads AI client",curr.includes("dragonswood-academic-ai-client.
 pass("Curriculum imports Firebase Functions",curr.includes("firebase-functions.js"));
 pass("Curriculum checker async",curr.includes("async function checkActivity(id)"));
 pass("Curriculum reasoning rescue",curr.includes("async function curriculumAiRescue"));
+pass("Curriculum exposes safe item-state saving",curr.includes("function saveCurriculumItemState(id,itemState)"));
+pass("Curriculum cache-busts enhancement loader",curr.includes("q1-curriculum-enhancements.js?v=57.1.2"));
 
-for(const f of ["teacher.html"]){
+const mathAuto=fs.readFileSync("dragonswood-math-autograding.js","utf8");
+pass(
+  "Exact Math delegates to original deterministic grader",
+  mathAuto.includes('if(spec.kind!=="explain")return O.checkActivity(id);')
+);
+pass(
+  "Math wrapper no longer accesses lexical state through window.S",
+  !mathAuto.includes("window.S.items")
+);
+
+const curriculumEnhancements=fs.readFileSync("q1-curriculum-enhancements.js","utf8");
+pass(
+  "Repaired Math runtime is cache-busted",
+  curriculumEnhancements.includes("dragonswood-math-autograding.js?v=57.1.2")
+);
+
+for(const f of ["teacher-v2.html"]){
   const t=fs.readFileSync(f,"utf8");
   pass(`${f} loads AI controls`,t.includes("dragonswood-academic-ai-teacher.js?v=56.21.0"));
 }

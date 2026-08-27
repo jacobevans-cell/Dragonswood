@@ -1,5 +1,5 @@
 /* ==========================================================================
-   DRAGONSWOOD MATH AUTO-GRADING POLICY v57.1.1
+   DRAGONSWOOD MATH AUTO-GRADING POLICY v57.1.2
 
    System rule:
    - Math never requires teacher approval.
@@ -12,7 +12,7 @@
      answer-lock policy, or non-Math teacher-review behavior.
    ========================================================================== */
 (function(){
-  const VERSION="57.1.1";
+  const VERSION="57.1.2";
   const page=(location.pathname.split("/").pop()||"").toLowerCase();
 
   const norm=v=>String(v||"").trim().toLowerCase().replace(/,/g,"").replace(/\s+/g," ");
@@ -93,7 +93,7 @@
     let tries=0;
     const start=()=>{
       const required=["renderActivity","renderAutoPractice","checkActivity","requestOverride","requestAutoQuestionOverride",
-        "activitySpec","validateActivity","activityAnswerText","findItem","st","save","render","autoQuestionsFor"];
+        "activitySpec","validateActivity","activityAnswerText","findItem","st","save","saveCurriculumItemState","render","autoQuestionsFor"];
       if(required.some(k=>typeof window[k]!=="function")){if(++tries<180)setTimeout(start,25);return}
       if(document.querySelector?.('script[src*="q1-curriculum-answer-policy.js"]')&&!window.dwCurriculumAnswerSubmit){
         if(++tries<180)setTimeout(start,25);return;
@@ -153,14 +153,19 @@
 
         const f=document.getElementById("actFeedback-"+id),spec=window.activitySpec(x),answer=window.activityAnswerText(x),s=window.st(id);
         if(!f)return;
+
+        // Exact-answer Math already has a proven deterministic grader.
+        // This wrapper is needed only for open mathematical reasoning.
+        if(spec.kind!=="explain")return O.checkActivity(id);
+
         let result=window.validateActivity(x),aiResult=null;
-        s.lastActivityAttempt=answer;s.activityAttempts=(s.activityAttempts||0)+1;window.S.items[id]=s;window.save();
+        s.lastActivityAttempt=answer;s.activityAttempts=(s.activityAttempts||0)+1;window.saveCurriculumItemState(id,s);
 
         if(result.reviewable===false){
           const field=document.getElementById("actText-"+id);if(field)field.value="";
           s.lastActivityAttempt="";
           if(typeof window.systemAuthoredResponse==="function"&&window.systemAuthoredResponse(x,s.practiceEvidence)){s.practiceEvidence="";s.practiced=false}
-          s.overrideStatus="";window.S.items[id]=s;window.save();
+          s.overrideStatus="";window.saveCurriculumItemState(id,s);
           f.className="activity-feedback show bad";
           f.textContent="Not yet: "+result.msg+" Dragonswood cleared the copied text. Write your own math response, then check it again.";
           return;
@@ -186,7 +191,7 @@
         window.recordCurriculumAttempt?.(x,s,!!result.ok);
         f.className="activity-feedback show "+(result.ok?"good":"bad");
         if(result.ok){
-          s.practiced=true;s.practiceEvidence=answer;s.overrideStatus="";window.S.items[id]=s;window.save();
+          s.practiced=true;s.practiceEvidence=answer;s.overrideStatus="";window.saveCurriculumItemState(id,s);
           f.textContent=aiResult?.decision==="approve"
             ?"✓ Math complete. Dragonswood AI verified the reasoning."
             :spec.kind==="explain"&&result.autoFallback
@@ -194,7 +199,7 @@
               :"✓ Math complete. The deterministic grader accepted the answer.";
           window.render();
         }else{
-          s.overrideStatus="";window.S.items[id]=s;window.save();
+          s.overrideStatus="";window.saveCurriculumItemState(id,s);
           f.textContent="Not yet: "+(result.msg||"Check the mathematics and try again.")+" Revise and check it again. Math never waits for teacher approval.";
         }
       };

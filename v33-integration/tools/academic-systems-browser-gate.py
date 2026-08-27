@@ -121,7 +121,15 @@ def main():
             student.get_by_role('button', name='Submit quickwrite').click()
             student.get_by_role('heading', name='Checkpoint submitted').wait_for(timeout=10000)
             student.get_by_role('button', name='Done').click()
+            # Scribe is academic and remains accessible, but Games must still
+            # redirect this incomplete-work fixture to Daily Missions.
             student.evaluate("location.hash='#games'")
+            student.get_by_role('heading', name='Your quest path').wait_for()
+            assert student.locator('.game-card').count() == 0
+
+            # Open access only inside this browser fixture so the academic game
+            # catalog integration can be checked independently of the lock.
+            student.evaluate("state.dailyAccessUnlocked=true;render()")
             student.get_by_role('heading', name='Choose your adventure').wait_for()
             assert student.locator('.game-card').count() == 11
             assert student.evaluate("""() => DWV33Academic.GAME_CATALOG.every(game => {

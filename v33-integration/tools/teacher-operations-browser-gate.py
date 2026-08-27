@@ -61,8 +61,7 @@ def main():
         no_class_request=teacher.locator('.pass-card').filter(has_text='NoClass')
         no_class_request.get_by_role('button',name='Deny',exact=True).click()
         teacher.get_by_text('No students waiting.',exact=True).wait_for(timeout=10000)
-        fifth_active=teacher.locator('.active-pass').filter(has_text='Fifth')
-        fifth_active.get_by_role('button',name='Mark Returned',exact=True).click()
+        # Stage 4 already returned the seeded visit through the student UI.
         teacher.get_by_text('No active passes.',exact=True).wait_for(timeout=10000)
         released_slot=teacher.evaluate("""async ()=>{
           const apps=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js');

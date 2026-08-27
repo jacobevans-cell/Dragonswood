@@ -123,7 +123,7 @@ def main():
             student.get_by_role('button', name='Done').click()
             student.evaluate("location.hash='#games'")
             student.get_by_role('heading', name='Choose your adventure').wait_for()
-            assert student.locator('.game-card').count() == 6
+            assert student.locator('.game-card').count() == 11
             assert student.evaluate("""() => DWV33Academic.GAME_CATALOG.every(game => {
               const mod=DWV33Modules.definition(game.id);
               return mod && DWV33Modules.href(game.id,location.href,'emulator').includes('dw-env=emulator');

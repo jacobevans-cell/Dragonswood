@@ -58,8 +58,51 @@ async function lockedStudentRouteSmoke(){
   }
   console.log('student PASS: 7 recreational page/module routes cannot bypass required work');
 }
+async function teacherOverrideGateSmoke(){
+  const {ctx}=makeContext('adventure');
+  vm.runInContext(fs.readFileSync('js/student-app.js','utf8'),ctx,{filename:'js/student-app.js'});
+  await new Promise(resolve=>setImmediate(resolve));
+
+  const optionalCount=vm.runInContext(`
+    state.dailyAccessUnlocked=true;
+    state.dailyAccessOverride=true;
+    state.recoverySummary={
+      dateKey:state.missionDate,
+      checked:true,
+      count:5,
+      days:[{day:3,count:5}]
+    };
+    unfinishedRequiredWork('games').length
+  `,ctx);
+
+  if(optionalCount!==0)throw new Error(
+    'Teacher Daily Access override did not bypass unfinished Recovery work'
+  );
+
+  const kingdomIds=vm.runInContext(`
+    state.kingdomAccessUnlocked=false;
+    unfinishedRequiredWork('kingdom').map(row=>row.id).join(',')
+  `,ctx);
+
+  if(kingdomIds!=='kingdom-access')throw new Error(
+    'Kingdom-specific teacher lock was not preserved'
+  );
+
+  const unlockedKingdomCount=vm.runInContext(`
+    state.kingdomAccessUnlocked=true;
+    unfinishedRequiredWork('kingdom').length
+  `,ctx);
+
+  if(unlockedKingdomCount!==0)throw new Error(
+    'Kingdom remained locked after both teacher overrides'
+  );
+
+  console.log('student PASS: teacher Daily Access override bypasses Recovery while Kingdom retains its own lock');
+}
+
 (async()=>{
   await smoke('js/student-app.js',['adventure','missions','games','scribe','day','hall','boss','leaderboards'],'student');
   await lockedStudentRouteSmoke();
+  await teacherOverrideGateSmoke();
   await smoke('js/teacher-app.js',['student-command','gradebook','scribe','rewards','passes','jobs','schedule','tools','leaderboards'],'teacher');
 })().catch(err=>{console.error(err.stack||err);process.exit(1)});

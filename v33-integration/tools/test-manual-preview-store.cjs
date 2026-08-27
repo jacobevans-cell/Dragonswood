@@ -16,7 +16,16 @@ vm.runInContext(fs.readFileSync(path.join(REPO_ROOT,'arcade/js/manual-preview-st
 const store=context.DWArcadeManualStore;
 
 store.reset();
-assert.deepEqual({...store.getAccess()}, {...store.getAccess()});
+const firstAccess=store.getAccess(),secondAccess=store.getAccess();
+assert.deepEqual(
+  {...firstAccess,serverNowMillis:0},
+  {...secondAccess,serverNowMillis:0},
+  'repeated preview access reads must preserve stable state'
+);
+assert.ok(
+  secondAccess.serverNowMillis>=firstAccess.serverNowMillis,
+  'preview server clock must not move backward'
+);
 assert.equal(store.getAccess().tokens,3,'preview student starts ready for immediate acceptance testing');
 assert.equal(store.getAccess().teacherEnabled,true);
 

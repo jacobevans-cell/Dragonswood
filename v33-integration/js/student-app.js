@@ -98,13 +98,14 @@ function openDialog(title, body, actions=''){
   dialogRoot.querySelector('[data-dialog-backdrop]')?.addEventListener('click',e=>{if(e.target===e.currentTarget)closeDialog()});
   dialogRoot.querySelector('button')?.focus();
 }
-function closeDialog(){dialogRoot.innerHTML=''}
+function closeDialog(){dialogRoot.innerHTML='';delete dialogRoot.dataset.dialogKind}
 
 function requiredWorkLocked(page){return REQUIRED_WORK_PAGES.has(String(page||''))&&state.dailyAccessUnlocked!==true}
 function requestedModuleId(){return moduleHost?.routeId(location.hash)||''}
 function showRequiredWorkDialog(target='activity'){
   const label=target==='arcade'?'Arcade Time':target==='kingdom'?'Kingdom Wars':target==='boss'||target==='boss-battle'?'Boss Battle':target==='scribe'?'Scribe Arena':'this activity';
   openDialog('Finish Required Work First',`<p><b>${escapeHtml(label)}</b> is still locked.</p><p>Finish today’s Morning Work first. Complete any assigned Recovery Missions shown under Daily Missions too. A teacher override can unlock today’s optional activities when needed.</p>`,`<button class="btn btn-primary" data-close-dialog>Go to Daily Missions</button>`);
+  dialogRoot.dataset.dialogKind='required-work';
 }
 
 function activePassRows(){
@@ -377,11 +378,13 @@ function escapeHtml(value){return String(value??'').replace(/[&<>"]/g,c=>({'&':'
 
 function applyStudentModel(model,academic,world,passes,poll){
   if(!model)return;
+  const accessWasUnlocked=state.dailyAccessUnlocked===true;
   state.firstName=model.firstName;state.displayName=model.displayName;state.initial=model.initial;state.grade=model.grade;
   state.level=model.level;state.hp=model.hp;state.gold=model.gold;state.streak=model.streak;state.xp=model.xp;state.xpFloor=model.xpFloor;state.xpMax=model.xpNext;state.xpPct=model.xpPct;
   state.characterClass=model.classLabel;state.pet=model.petName;state.equipment=model.equipped||{};state.inventory=model.inventory||[];
   state.narrationVoice=model.narrationVoice||'';
   state.dailyAccessUnlocked=model.dailyAccessUnlocked===true;
+  if(!accessWasUnlocked&&state.dailyAccessUnlocked&&dialogRoot?.dataset.dialogKind==='required-work')closeDialog();
   if(model.dailyMissions){
     if(state.missionDate&&state.missionDate!==model.dailyMissions.dateKey)state.completedMissions.delete('curriculum');
     state.missionDate=model.dailyMissions.dateKey||'';

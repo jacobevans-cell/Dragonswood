@@ -48,8 +48,9 @@ def sign_in_embedded_frame(frame, label):
         """async () => {
           const appModule=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js');
           const authModule=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js');
-          if(!appModule.getApps().length)return false;
-          const auth=authModule.getAuth(appModule.getApp());
+          const apps=appModule.getApps();
+          if(!apps.length)return false;
+          const auth=authModule.getAuth(apps[0]);
           return Boolean(auth.emulatorConfig);
         }""",
         timeout=30000,
@@ -58,8 +59,16 @@ def sign_in_embedded_frame(frame, label):
         """async ({email,password}) => {
           const appModule=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js');
           const authModule=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js');
-          const auth=authModule.getAuth(appModule.getApp());
-          if(!auth.emulatorConfig)throw new Error('Embedded Firebase Auth is not connected to the emulator.');
+          let auth=null;
+          for(let attempt=0;attempt<200;attempt++){
+            const apps=appModule.getApps();
+            if(apps.length){
+              const candidate=authModule.getAuth(apps[0]);
+              if(candidate.emulatorConfig){auth=candidate;break}
+            }
+            await new Promise(resolve=>setTimeout(resolve,50));
+          }
+          if(!auth)throw new Error('Embedded Firebase Auth did not become ready on the emulator.');
           if(!auth.currentUser||auth.currentUser.email!==email){
             await authModule.signInWithEmailAndPassword(auth,email,password);
           }

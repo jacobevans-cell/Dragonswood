@@ -24,7 +24,8 @@ const navItems = [
   ['day','🗓️','My Day','Schedule'],
   ['hall','⚔️','Adventurer Hall','Gear & pets'],
   ['boss','👹','Boss Battle','Daily challenge'],
-  ['leaderboards','🏆','Leaderboards','Class champions']
+  ['leaderboards','🏆','Leaderboards','Class champions'],
+  ['poll','📝','Class Poll','Teacher question']
 ];
 const arcadeNav=['arcade','🕹️','Arcade Time','3 Tokens • 30 min'];
 const kingdomNav=['kingdom','🏰','Kingdom Wars','After Morning Work'];
@@ -68,7 +69,8 @@ const state = {
   arcadeStatus: 'idle',
   arcadeAccess: null,
   arcadeOpen: false,
-  passes: null
+  passes: null,
+  poll: null
 };
 
 const references = {
@@ -200,7 +202,7 @@ function shell(){
   return `<div class="portal student-shell student-page-${state.page}" data-${IS_PRODUCTION?'release':'tester-build'}="v3.3">
     <header class="student-topbar"><div class="student-brand">
       <div class="brand-lockup"><img class="student-crest" src="assets/art/dragonswood-crest-v33.jpg" alt=""><div><div class="brand-name">DRAGONSWOOD</div><div class="brand-sub">STUDENT ADVENTURE PORTAL</div></div></div>
-      <div class="student-utility"><button class="btn btn-secondary btn-sm" type="button" data-passes>🎟️ <span>Passes</span></button><button class="btn btn-secondary btn-sm" type="button" data-read>🔊 <span>Read aloud</span></button><div class="profile-pill"><div class="profile-orb">${escapeHtml(state.initial)}</div><span><b>${escapeHtml(state.firstName)}</b><small>Level ${state.level}</small></span></div></div>
+      <div class="student-utility"><button class="btn btn-secondary btn-sm" type="button" data-passes>🎟️ <span>Passes</span></button><button class="btn btn-secondary btn-sm" type="button" data-read>🔊 <span>Read aloud</span></button><div class="profile-pill" role="button" tabindex="0" data-module="adventurer-hall" aria-label="Open profile and Adventurer Hall"><div class="profile-orb">${escapeHtml(state.initial)}</div><span><b>${escapeHtml(state.firstName)}</b><small>Level ${state.level}</small></span></div></div>
     </div></header>
     <aside class="student-sidebar">${navMarkup()}</aside>
     <main class="student-main" id="page-content"><div class="student-content">${pageMarkup()}</div></main>
@@ -227,6 +229,7 @@ function pageMarkup(){
     case 'hall': return hallPage();
     case 'boss': return bossPage();
     case 'leaderboards': return leaderboardPage();
+    case 'poll': return pollPage();
     case 'kingdom': return kingdomPage();
     case 'arcade': return arcadePage();
     default: return adventurePage();
@@ -264,8 +267,9 @@ const missions = [
 ];
 function missionsPage(){
   const completeCount=state.completedMissions.size;
+  const optionalOpen=state.dailyAccessUnlocked===true;
   return `${studentTitle('📜','Daily Missions','Your quest path','Finish the glowing mission first. Then choose a bonus adventure.')}
-    <div class="panel path-summary"><div class="path-count"><strong>${completeCount}</strong><small>of 3</small></div><div class="path-copy"><div class="eyebrow">TODAY’S PROGRESS</div><b>One mission at a time.</b><div>Games and Scribe Arena unlock after Morning Math.</div></div><div class="path-lock">🔒 Games locked</div></div>
+    <div class="panel path-summary"><div class="path-count"><strong>${completeCount}</strong><small>of 3</small></div><div class="path-copy"><div class="eyebrow">TODAY’S PROGRESS</div><b>One mission at a time.</b><div>${optionalOpen?'Morning Work is complete. Games, Scribe Arena, Boss Battle, Kingdom Wars, and Arcade are available.':'Games and optional adventures unlock after Morning Work.'}</div></div><div class="path-lock">${optionalOpen?'🔓 Adventures open':'🔒 Adventures locked'}</div></div>
     <div class="mission-list">${missions.map((m,i)=>missionRow(m,i)).join('')}</div>
     <div class="mission-extra"><article class="panel extra-card"><div class="extra-icon">📖</div><div><div class="extra-kicker">CLASS READING</div><h3>The Witches</h3><p>Continue from page 46. Page memory and read-aloud are ready.</p></div><button class="btn btn-secondary btn-sm" data-module="class-reader">Open reader</button></article><article class="panel extra-card"><div class="extra-icon">⭐</div><div><div class="extra-kicker">BONUS CHALLENGE</div><h3>Level-Up Mission</h3><p>Ready for more? Try a mission one level above.</p></div><button class="btn btn-secondary btn-sm" data-module="level-up-challenge">Try the challenge</button></article></div>`;
 }
@@ -279,16 +283,21 @@ function missionRow(m,i){
 
 const games=[
   ['decimal-deception','Math','assets/art/game-visual-1.jpg','Decimal Deception','Restore the crystal grid with decimal clues.'],
-  ['math-operations','Math','assets/art/game-visual-2.jpg','Long Division Quest','Solve each family step as a mini battle.'],
+  ['math-operations','Math','assets/art/game-visual-2.jpg','Math Operations Quest','Practice the four operations through a guided adventure.'],
   ['fraction-forge','Math','assets/art/game-visual-3.jpg','Fraction Forge','Forge fractions and power up your battle skills.'],
+  ['long-division','Math','assets/art/game-visual-2.jpg','Long Division Quest','Solve each division step as a mini battle.'],
+  ['long-division-custom','Math','assets/art/game-visual-3.jpg','Custom Long Division','Practice teacher-selected long-division problems.'],
   ['spelling-practice','ELA','assets/art/game-visual-4.jpg','Spelling Practice','Hear, practice, and master this week’s words.'],
+  ['witches-test','ELA','assets/art/game-visual-5.jpg','The Witches Reading Test','Show your understanding of the current class reading.'],
   ['class-reader','ELA','assets/art/game-visual-5.jpg','The Witches Reader','Continue the class novel with read-aloud.'],
-  ['elemental-laboratory','Science','assets/art/game-visual-6.jpg','Elemental Laboratory','Build atoms and investigate matter.']
+  ['elemental-laboratory','Science','assets/art/game-visual-6.jpg','Elemental Laboratory','Build atoms and investigate matter.'],
+  ['cosmic-architect','Science','assets/art/game-visual-6.jpg','Cosmic Architect','Build and investigate a model of the cosmos.'],
+  ['arcane-forge','Science','assets/art/game-visual-6.jpg','Arcane Forge','Use science evidence to power the forge.']
 ];
 function gamesPage(){
   const visible=state.gameFilter==='All'?games:games.filter(g=>g[1]===state.gameFilter);
   return `${studentTitle('🎮','Academic Games','Choose your adventure','Every game practices a real school skill. Pick a subject and jump in.')}
-  <div class="filter-tabs game-filters">${['All','Math','ELA','Science','History'].map(f=>`<button class="filter-tab ${state.gameFilter===f?'active':''}" data-game-filter="${f}">${f==='All'?'✦ ':''}${f}</button>`).join('')}</div>
+  <div class="filter-tabs game-filters">${['All','Math','ELA','Science'].map(f=>`<button class="filter-tab ${state.gameFilter===f?'active':''}" data-game-filter="${f}">${f==='All'?'✦ ':''}${f}</button>`).join('')}</div>
   <section class="game-grid">${visible.map(g=>`<article class="panel game-card"><div class="game-visual"><img src="${g[2]}" alt=""></div><div class="game-copy"><div class="subject">${g[1]} ADVENTURE</div><h3>${g[3]}</h3><p>${g[4]}</p><div class="game-badges"><span>✨ Earn XP</span><span>🔊 Read-aloud</span></div><button class="btn btn-primary" type="button" data-module="${g[0]}">Play quest →</button></div></article>`).join('')}</section>`;
 }
 
@@ -301,9 +310,10 @@ function scribePage(){
   const hints=session?.hints?.length?session.hints:['Show, don’t tell','Add one sensory detail','Use complete sentences'];
   const portfolio=state.scribePortfolio||{count:12,average:16.8,growth:3};
   const submitted=state.scribeResponse?.status==='submitted';
+  const feedback=state.scribeResponse?.teacherFeedback||state.scribeResponse?.aiFeedback?.feedback||state.scribeResponse?.aiFeedback?.nextStep||'';
   return `${studentTitle('✍️','Scribe Arena','Turn your ideas into magic','Write freely. Your work saves as you type, and feedback helps you grow.')}
-  <section class="scribe-layout"><div><article class="panel scribe-main-card"><div class="mission-prompt"><span class="rarity-chip">${session||!connected?'🔥 ACTIVE WRITING MISSION':'○ WAITING FOR TEACHER'}</span><h3>${escapeHtml(title)}</h3><div class="prompt-box">${escapeHtml(prompt)}</div><div class="prompt-tags">${hints.slice(0,3).map((hint,index)=>`<span>${['💡','👀','▣'][index]||'✦'} ${escapeHtml(hint)}</span>`).join('')}</div></div><div class="writing-area"><textarea id="scribe-text" aria-label="Your writing" placeholder="Start your story here…" ${connected&&!session?'disabled':''}>${escapeHtml(state.writing)}</textarea><div class="writing-meta"><span>☁ ${submitted?'Submitted':'Saved just now'}</span><span>${wc} words</span><span>⏱ ${session?session.timeMinutes+':00':'12:48'}</span></div><div class="row"><button class="btn btn-primary" data-submit-writing ${submitted||!session&&connected||wc<(session?.minWords||5)?'disabled':''}>${submitted?'✓ Submitted':'📜 Submit quickwrite'}</button><button class="btn btn-secondary" data-writing-hint>✨ Get a writing hint</button></div></div></article></div><aside class="panel coach-card"><div class="coach-avatar">🐉</div><div class="eyebrow center">DRAGONSWOOD WRITING COACH</div><h3>Your ideas belong here.</h3><p>Write at least ${session?.minWords||5} words and submit when you’re ready. Your coach will celebrate a strength and give you one clear next step.</p><button class="btn btn-secondary w-full" data-writing-hint>✨ Feedback appears here</button></aside></section>
-  <div class="panel portfolio-strip"><div class="portfolio-title"><span>📚</span><div><div class="eyebrow">MY WRITING PORTFOLIO</div><b>Your writing is growing</b></div></div><div class="portfolio-stats"><div class="portfolio-stat"><strong>${portfolio.count}</strong><small>Quickwrites</small></div><div class="portfolio-stat"><strong>${portfolio.average??'—'}</strong><small>Average score</small></div><div class="portfolio-stat"><strong>${Number(portfolio.growth)>=0?'+':''}${portfolio.growth??0}</strong><small>Points grown</small></div></div><button class="btn btn-secondary btn-sm" data-toast="Portfolio opened in tester mode.">Open portfolio →</button></div>`;
+  <section class="scribe-layout"><div><article class="panel scribe-main-card"><div class="mission-prompt"><span class="rarity-chip">${session||!connected?'🔥 ACTIVE WRITING MISSION':'○ WAITING FOR TEACHER'}</span><h3>${escapeHtml(title)}</h3><div class="prompt-box">${escapeHtml(prompt)}</div><div class="prompt-tags">${hints.slice(0,3).map((hint,index)=>`<span>${['💡','👀','▣'][index]||'✦'} ${escapeHtml(hint)}</span>`).join('')}</div></div><div class="writing-area"><textarea id="scribe-text" aria-label="Your writing" placeholder="Start your story here…" ${connected&&!session?'disabled':''}>${escapeHtml(state.writing)}</textarea><div class="writing-meta"><span>☁ ${submitted?'Submitted':'Saved just now'}</span><span>${wc} words</span><span>⏱ ${session?session.timeMinutes+':00':'—'}</span></div><div class="row"><button class="btn btn-primary" data-submit-writing ${submitted||!session&&connected||wc<(session?.minWords||5)?'disabled':''}>${submitted?'✓ Submitted':'📜 Submit quickwrite'}</button><button class="btn btn-secondary" data-writing-hint>✨ Get a writing hint</button></div></div></article></div><aside class="panel coach-card"><div class="coach-avatar">🐉</div><div class="eyebrow center">DRAGONSWOOD WRITING COACH</div><h3>${feedback?'Your feedback is ready.':'Your ideas belong here.'}</h3><p>${escapeHtml(feedback||`Write at least ${session?.minWords||5} words and submit when you’re ready. Your teacher feedback will appear here after review.`)}</p><button class="btn btn-secondary w-full" ${feedback?'data-open-portfolio':'data-writing-hint'}>${feedback?'📚 Open reviewed writing':'✨ Get a writing hint'}</button></aside></section>
+  <div class="panel portfolio-strip"><div class="portfolio-title"><span>📚</span><div><div class="eyebrow">MY WRITING PORTFOLIO</div><b>Your writing is growing</b></div></div><div class="portfolio-stats"><div class="portfolio-stat"><strong>${portfolio.count}</strong><small>Quickwrites</small></div><div class="portfolio-stat"><strong>${portfolio.average??'—'}</strong><small>Average score</small></div><div class="portfolio-stat"><strong>${Number(portfolio.growth)>=0?'+':''}${portfolio.growth??0}</strong><small>Points grown</small></div></div><button class="btn btn-secondary btn-sm" data-open-portfolio>Open portfolio →</button></div>`;
 }
 
 function dayPage(){
@@ -326,16 +336,15 @@ function dayPage(){
 function hallPage(){
   const classes=[['Warrior','🛡️','Strong & brave'],['Ranger','🏹','Quick & clever'],['Mage','🔮','Powerful magic'],['Healer','🌿','Help your team']];
   const pets=[['Nyx','assets/art/pet-nyx.jpg'],['Ember','assets/art/pet-ember.jpg'],['Blink','assets/art/pet-blink.jpg'],['Mochi','assets/art/pet-mochi.jpg']];
-  const hall=state.world?.hall,itemCount=hall?.inventory?.length??14;
+  const hall=state.world?.hall,itemCount=hall?.inventory?.length??0,equipped=Object.entries(hall?.equipped||state.equipment||{}).filter(([,id])=>id);
   return `${studentTitle('⚔️','Adventurer Hall','Build your legend','Choose your class, equip powerful gear, and adventure with a pet companion.')}
-  <section class="hall-grid"><article class="panel hall-character"><img src="assets/art/hall-character-v33.jpg" alt="${escapeHtml(state.displayName)} and active pet ${escapeHtml(state.pet)}"></article><div class="hall-controls"><article class="panel choice-panel class-panel"><div class="eyebrow">CHOOSE YOUR CLASS</div><h2>How do you want to adventure?</h2><div class="class-choices">${classes.map(c=>`<button class="choice-btn ${state.characterClass===c[0]?'active':''}" data-class="${c[0]}"><span>${c[1]}</span><b>${c[0]}</b><small>${c[2]}</small></button>`).join('')}</div></article><article class="panel choice-panel pet-panel"><div class="eyebrow">ACTIVE PET</div><h2>Pick your companion</h2><div class="pet-choices">${pets.map(p=>`<button class="pet-btn ${state.pet===p[0]?'active':''}" data-pet="${p[0]}"><div class="pet-art"><img src="${p[1]}" alt=""></div><b>${p[0]}</b></button>`).join('')}</div></article><article class="panel equipment-panel"><div class="equip-card"><span>⚔️</span><div><b>Moonsteel Sword</b><small>+8 ATK • Epic</small></div></div><div class="equip-card"><span>🛡️</span><div><b>Dragonward Shield</b><small>+6 DEF • Rare</small></div></div><div class="equip-card"><span>🎒</span><div><b>${itemCount} items</b><small>Open inventory</small></div></div></article></div></section>`;
+  <section class="hall-grid"><article class="panel hall-character"><img src="assets/art/hall-character-v33.jpg" alt="${escapeHtml(state.displayName)} and active pet ${escapeHtml(state.pet)}"></article><div class="hall-controls"><article class="panel choice-panel class-panel"><div class="eyebrow">CHOOSE YOUR CLASS</div><h2>How do you want to adventure?</h2><div class="class-choices">${classes.map(c=>`<button class="choice-btn ${state.characterClass===c[0]?'active':''}" data-class="${c[0]}"><span>${c[1]}</span><b>${c[0]}</b><small>${c[2]}</small></button>`).join('')}</div></article><article class="panel choice-panel pet-panel"><div class="eyebrow">ACTIVE PET</div><h2>Pick your companion</h2><div class="pet-choices">${pets.map(p=>`<button class="pet-btn ${state.pet===p[0]?'active':''}" data-pet="${p[0]}"><div class="pet-art"><img src="${p[1]}" alt=""></div><b>${p[0]}</b></button>`).join('')}</div></article><article class="panel equipment-panel">${equipped.length?equipped.slice(0,2).map(([slot,id])=>`<div class="equip-card"><span>${slot==='weapon'?'⚔️':slot==='armor'?'🛡️':'✨'}</span><div><b>${escapeHtml(String(id).replace(/[_-]+/g,' '))}</b><small>${escapeHtml(slot)} • equipped</small></div></div>`).join(''):'<div class="equip-card"><span>○</span><div><b>No gear equipped</b><small>Open the Hall to choose gear</small></div></div>'}<div class="equip-card"><span>🎒</span><div><b>${itemCount} items</b><small>Authoritative inventory</small></div></div><button class="btn btn-secondary w-full" type="button" data-module="adventurer-hall">Open full Hall & inventory →</button></article></div></section>`;
 }
 
 function bossPage(){
-  const pct=Math.max(0,Math.round(state.bossHp/state.bossMax*100));
   const loot=state.world?.boss?.lastLoot,bossNote=loot&&loot.dateKey===state.world?.dateKey?`Today’s chest: ${Number(loot.goldAward||0)} Gold + ${Number(loot.xpAward||0)} XP`:'Use what you learned today to help your class defeat the boss.';
   return `${studentTitle('👹','Boss Battle','The Gloomfang awakens!',bossNote)}
-  <article class="panel boss-card"><div class="boss-head"><div class="boss-heading-row"><div class="boss-name"><span class="boss-mini">👹</span><div><div class="eyebrow">CLASS BOSS • DAY 3</div><h2>Gloomfang</h2></div></div><span class="boss-reward">🏆 Reward: 60 XP + Mystery Chest</span></div><div class="boss-hp"><div class="row between"><b>GLOOMFANG HP</b><strong>${state.bossHp} / ${state.bossMax}</strong></div><progress class="dw-progress dw-progress-boss" max="100" value="${pct}" aria-label="Gloomfang hit points">${pct}%</progress></div></div><div class="boss-arena"><img src="assets/art/boss-arena-v33.jpg" alt="Gloomfang boss facing ${escapeHtml(state.firstName)} and ${escapeHtml(state.pet)}"><div class="boss-feedback ${state.bossMessage?'show':''}">${state.bossMessage}</div></div><div class="move-label">✨ Choose your move!</div><div class="move-grid"><button class="move-btn" data-move="Decimal Strike"><span>➗</span><b>Decimal Strike</b><small>Answer a math question</small></button><button class="move-btn" data-move="Story Shield"><span>📚</span><b>Story Shield</b><small>Use reading evidence</small></button><button class="move-btn" data-move="Pet Power"><span>🐾</span><b>Pet Power</b><small>Fight beside ${state.pet}</small></button></div></article>`;
+  <article class="panel boss-card"><div class="boss-arena"><img src="assets/art/boss-arena-v33.jpg" alt="Daily boss arena for ${escapeHtml(state.firstName)} and ${escapeHtml(state.pet)}"></div><div class="boss-head"><div class="boss-heading-row"><div class="boss-name"><span class="boss-mini">👹</span><div><div class="eyebrow">AUTHORITATIVE DAILY BATTLE</div><h2>Your boss challenge is ready inside the arena.</h2></div></div></div><p>${escapeHtml(bossNote)}</p><button class="btn btn-primary w-full" type="button" data-module="boss-battle">Enter today’s Boss Battle →</button></div></article>`;
 }
 
 function leaderboardPage(){
@@ -344,6 +353,11 @@ function leaderboardPage(){
   const you=live?.you,youIndex=you?Math.min(rows.indexOf(you),4):4;
   return `${studentTitle('🏆','Leaderboards','Celebrate class champions','See effort, growth, and teamwork—not just who finished first.')}
   <div class="leader-topline"><div class="filter-tabs"><button class="filter-tab active">📅 This Week</button><button class="filter-tab">🏰 All Time</button></div><span class="leader-reward-note">⭐ Top 5 earn one reward each school day</span></div><section class="leader-layout"><article class="panel rank-list"><div class="rank-heading"><span class="sparkle-big">✨</span><div><div class="eyebrow">OVERALL XP</div><h2>This Week’s Adventurers</h2></div></div>${ranks.map((r,i)=>`<div class="rank-row ${i===youIndex?'you':''}"><div class="rank-medal">${escapeHtml(r[0])}</div><div class="rank-avatar">${escapeHtml(r[1])}</div><div><b>${escapeHtml(r[2])}</b><div class="muted text-9">${escapeHtml(r[3])}</div></div><div class="rank-score">${escapeHtml(r[4])}<small> XP</small></div></div>`).join('')}</article><aside class="rank-side"><article class="panel rank-card"><div class="rank-dragon">🐉</div><div class="eyebrow">YOUR RANK</div><h2>#${you?.rank||5}</h2><p>${you?'Your real weekly activity scores are live.':'You moved up <b>2 places</b> this week!'}</p><div class="xp-labels"><span>${you?`${you.score.toLocaleString()} points this week`:'120 XP to #4'}</span><span>${you?'LIVE':'82%'}</span></div><progress class="dw-progress" max="100" value="${you?Math.min(100,you.score):82}">${you?Math.min(100,you.score):82}%</progress></article><article class="panel shine-card"><div class="eyebrow">MORE WAYS TO SHINE</div><h3>🌟 Class shout-outs</h3>${[['💛','Kindness','Alaina helped a classmate'],['🔥','Biggest Growth','Alejandro gained +4 points'],['📚','Reading Streak','Joshua reached 10 days']].map(s=>`<div class="shine-row"><span>${s[0]}</span><div><b>${s[1]}</b><small>${s[2]}</small></div></div>`).join('')}</article></aside></section>`;
+}
+function pollPage(){
+  const poll=state.poll||{},choices=poll.choices||[],total=Number(poll.total)||0;
+  if(!poll.active)return `${studentTitle('📝','Class Poll','No active poll','Your teacher can launch a quick class question at any time.')}<article class="panel next-step"><div class="next-icon">✓</div><h2>No poll is open right now.</h2><p>When your teacher starts one, it will appear here automatically.</p></article>`;
+  return `${studentTitle('📝','Class Poll','Share one answer','Choose once. Results update live for the class.')}<article class="panel teacher-form"><div class="eyebrow">LIVE QUESTION</div><h2>${escapeHtml(poll.question||'Class Poll')}</h2><div class="stack mt-12">${choices.map((choice,index)=>{const count=Number(poll.counts?.[index])||0,pct=total?Math.round(count/total*100):0,voted=poll.myChoice===index;return `<div class="pass-card"><button class="btn ${voted?'btn-primary':'btn-secondary'} w-full" type="button" data-poll-choice="${index}" ${poll.myChoice!==null?'disabled':''}>${voted?'✓ ':''}${escapeHtml(choice)}</button><div class="xp-labels"><span>${count} vote${count===1?'':'s'}</span><span>${pct}%</span></div><progress class="dw-progress" max="100" value="${pct}">${pct}%</progress></div>`}).join('')}</div><p class="center muted mt-12">${poll.myChoice===null?'Choose one answer.':`Your vote is saved. ${total} total vote${total===1?'':'s'}.`}</p></article>`;
 }
 
 function arcadePage(){
@@ -361,7 +375,7 @@ function kingdomPage(){
 
 function escapeHtml(value){return String(value??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 
-function applyStudentModel(model,academic,world,passes){
+function applyStudentModel(model,academic,world,passes,poll){
   if(!model)return;
   state.firstName=model.firstName;state.displayName=model.displayName;state.initial=model.initial;state.grade=model.grade;
   state.level=model.level;state.hp=model.hp;state.gold=model.gold;state.streak=model.streak;state.xp=model.xp;state.xpFloor=model.xpFloor;state.xpMax=model.xpNext;state.xpPct=model.xpPct;
@@ -380,6 +394,7 @@ function applyStudentModel(model,academic,world,passes){
   }
   if(world){state.worldConnected=true;state.world=world;}
   if(passes)state.passes=passes;
+  if(poll)state.poll=poll;
 }
 function setMissionStatus(id,status){
   if(status==='complete')state.completedMissions.add(id);
@@ -438,8 +453,10 @@ function bind(){
   app.querySelectorAll('[data-return-active-pass]').forEach(el=>el.addEventListener('click',()=>returnActivePass(el)));
   app.querySelector('[data-reference]')?.addEventListener('click',showReference);
   app.querySelectorAll('[data-game-filter]').forEach(el=>el.addEventListener('click',()=>{state.gameFilter=el.dataset.gameFilter;render()}));
+  app.querySelectorAll('[data-poll-choice]').forEach(el=>el.addEventListener('click',async()=>{try{await integrationController?.votePoll(Number(el.dataset.pollChoice));showToast('Your poll vote was saved.')}catch(err){showToast(err?.message||'Poll vote could not save.')}}));
   app.querySelector('#scribe-text')?.addEventListener('input',e=>{state.writing=e.target.value;storageSet('writing',state.writing);const count=wordCount(state.writing),spans=e.target.nextElementSibling?.querySelectorAll('span');if(spans?.[1])spans[1].textContent=`${count} words`;const submit=app.querySelector('[data-submit-writing]');if(submit&&state.scribeResponse?.status!=='submitted')submit.disabled=count<(state.scribeSession?.minWords||5);clearTimeout(state.writingSaveTimer);if(state.scribeSession&&integrationController?.saveWriting)state.writingSaveTimer=setTimeout(()=>integrationController.saveWriting(state.writing).catch(err=>showToast(err?.message||'Draft could not save.')),500)});
   app.querySelectorAll('[data-writing-hint]').forEach(el=>el.addEventListener('click',writingHint));
+  app.querySelectorAll('[data-open-portfolio]').forEach(el=>el.addEventListener('click',openWritingPortfolio));
   app.querySelector('[data-submit-writing]')?.addEventListener('click',submitWriting);
   app.querySelectorAll('[data-day]').forEach(el=>el.addEventListener('click',()=>{state.day=el.dataset.day;render()}));
   app.querySelector('[data-job-checkoff]')?.addEventListener('click',async()=>{try{await integrationController?.checkOffJob(state.world?.dayIndex);showToast('Today’s guild job is checked off.')}catch(err){showToast(err?.message||'Job check-off could not save.')}});
@@ -495,6 +512,12 @@ function showReference(){
 function writingHint(){
   const wc=wordCount(state.writing);const hint=wc<10?'Start by naming what the character can see, hear, or feel.':wc<40?'Choose one moment and slow it down with a sensory detail.':'Reread your last two sentences. Which one could use a stronger verb?';openDialog('Writing Coach Hint',`<p>${hint}</p><p class="muted">The coach gives a nudge, not the answer.</p>`)
 }
+function openWritingPortfolio(){
+  const responses=state.scribePortfolio?.responses||[];
+  const submitted=responses.filter(row=>row.status==='submitted');
+  const rows=submitted.length?submitted.map(row=>`<article class="pass-card"><b>${escapeHtml(row.sessionTitle||row.writingType||'Writing response')}</b><p>${row.teacherScore===null||row.teacherScore===undefined?'Awaiting score':`${Number(row.teacherScore)}/20`} • ${Number(row.wordCount)||0} words</p>${row.teacherFeedback?`<p><b>Teacher feedback:</b> ${escapeHtml(row.teacherFeedback)}</p>`:''}<details><summary>Read my response</summary><p>${escapeHtml(row.responseText||'')}</p></details></article>`).join(''):'<div class="pass-card"><p>No submitted writing is available yet.</p></div>';
+  openDialog('My Writing Portfolio',`<div class="stack mt-12">${rows}</div>`,`<button class="btn btn-primary" data-close-dialog>Close portfolio</button>`);
+}
 async function submitWriting(){
   const minimum=state.scribeSession?.minWords||5,wc=wordCount(state.writing);if(wc<minimum){openDialog('Checkpoint not ready',`<p>You have <b>${wc} words</b>. Add a little more detail before submitting so your teacher has enough writing to review.</p>`);return}
   if(state.scribeSession&&integrationController?.submitWriting){try{await integrationController.submitWriting(state.writing);openDialog('Checkpoint submitted',`<p>Your <b>${wc}-word</b> response is saved. Your teacher can review it, and the writing coach will add feedback when the grading service is available.</p>`)}catch(err){openDialog('Submission needs attention',`<p>${escapeHtml(err?.message||'Writing could not be submitted.')}</p>`)}return}
@@ -507,7 +530,7 @@ window.addEventListener('message',handleModuleState);
   integrationController=await window.DWV33Integration.startStudent(session=>{
     integrationSession=session;
     const previousPassSignature=passModelSignature();
-    if(session.status==='authorized')applyStudentModel(session.student,session.academic,session.world,session.passes);
+    if(session.status==='authorized')applyStudentModel(session.student,session.academic,session.world,session.passes,session.poll);
     const passChanged=previousPassSignature!==passModelSignature();
     if(passChanged||!currentModuleId()||!app.querySelector('[data-module-frame]'))render();else syncPassSafety();
   });

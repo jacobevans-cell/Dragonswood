@@ -100,10 +100,17 @@
     const rows=board.rows.map(row=>{const match=source.find(score=>text(score.studentId||score.uid||score.studentEmail).toLowerCase()===row.studentId);return Object.freeze({...row,studentId:text(match?.studentId||match?.uid||row.studentId)})});
     return Object.freeze({...board,rows:Object.freeze(rows)});
   }
+  function pollModel(activePoll={},votes=[]){
+    const active=activePoll?.active===true&&text(activePoll.id),choices=Array.isArray(activePoll?.choices)?activePoll.choices.map(choice=>text(choice)).filter(Boolean).slice(0,6):[],matching=(Array.isArray(votes)?votes:[]).filter(row=>text(row.pollId)===text(activePoll.id)),counts=choices.map((_,index)=>matching.filter(row=>number(row.choiceIndex)===index).length),total=counts.reduce((sum,value)=>sum+value,0);
+    return Object.freeze({id:text(activePoll.id),active:!!active,question:text(activePoll.question),choices:Object.freeze(choices),counts:Object.freeze(counts),total});
+  }
   function teacherOperations(input={},date=new Date()){
     const pending=pendingPasses(input.requests,date),active=activePasses(input.statuses,date),recognition=recognitionRequests(input.pointRequests,date),overrides=(input.curriculumOverrides||[]).filter(row=>row.status==='pending');
     const students=Array.isArray(input.students)?input.students:[];
-    return Object.freeze({dateKey:Core.phoenixDateKey(date),pending,active,returned:returnedToday(input.passHistory,date),recognition,curriculumOverrides:Object.freeze(overrides.map(row=>Object.freeze({...row}))),dailyUnlocked:input.dailyOverride?.all===true,classHp:students.reduce((sum,row)=>sum+Math.max(0,number(row.hp)),0),dailyXp:students.reduce((sum,row)=>sum+Math.max(0,number(row.dailyXpEarned)),0),goals:goals(input.classData),jobs:jobsModel(students,input.classJobs,input.jobWeeks,date),schedule:scheduleModel(input.classSchedule,input.calendarEvents,date),leaderboard:teacherLeaderboard(input.scores,input.leaderboardRewards,date)});
+    const history=Object.freeze((Array.isArray(input.passHistory)?input.passHistory:[]).slice().sort((a,b)=>timestamp(b.returnedAt||b.updatedAt||b.createdAt)-timestamp(a.returnedAt||a.updatedAt||a.createdAt)).slice(0,100).map(row=>Object.freeze({...row})));
+    const slots=Object.freeze((Array.isArray(input.bathroomSlots)?input.bathroomSlots:[]).map(row=>Object.freeze({...row})));
+    const needsAttention=active.filter(row=>row.startedMs&&date.getTime()-row.startedMs>5*60*1000).length+slots.filter(row=>row.occupied===true&&!active.some(pass=>pass.type==='bathroom'&&pass.studentId===text(row.studentId))).length;
+    return Object.freeze({dateKey:Core.phoenixDateKey(date),pending,active,returned:returnedToday(input.passHistory,date),passHistory:history,bathroomSlots:slots,passBlackout:Object.freeze({...input.passBlackout}),needsAttention,recognition,curriculumOverrides:Object.freeze(overrides.map(row=>Object.freeze({...row}))),dailyUnlocked:input.dailyOverride?.all===true,classHp:students.reduce((sum,row)=>sum+Math.max(0,number(row.hp)),0),dailyXp:students.reduce((sum,row)=>sum+Math.max(0,number(row.dailyXpEarned)),0),goals:goals(input.classData),jobs:jobsModel(students,input.classJobs,input.jobWeeks,date),schedule:scheduleModel(input.classSchedule,input.calendarEvents,date),leaderboard:teacherLeaderboard(input.scores,input.leaderboardRewards,date),poll:pollModel(input.activePoll,input.pollVotes)});
   }
-  window.DWV33Operations=Object.freeze({version:'teacher-operations-1',REQUEST_TYPES,STATUS_TYPES,pendingPasses,activePasses,recognitionRequests,goals,jobsModel,scheduleModel,teacherLeaderboard,teacherOperations});
+  window.DWV33Operations=Object.freeze({version:'teacher-operations-1',REQUEST_TYPES,STATUS_TYPES,pendingPasses,activePasses,recognitionRequests,goals,jobsModel,scheduleModel,teacherLeaderboard,pollModel,teacherOperations});
 })();

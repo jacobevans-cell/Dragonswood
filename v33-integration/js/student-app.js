@@ -123,9 +123,16 @@ function ensureRecoveryProbe(){
 }
 function unfinishedRequiredWork(target='activity'){
   const rows=[];
-  if(state.dailyAccessUnlocked!==true)rows.push({id:'morning',icon:'🌅',title:'Morning Work',detail:state.morningWorkComplete?'Teacher check-in or access hold remains.':'Not complete today.',route:'module/daily-quest'});
-  if(!recoverySummaryCurrent())rows.push({id:'recovery',icon:'🐉',title:'Recovery Missions',detail:'Open Recovery Quest for a live check.',route:'module/curriculum-quest'});
-  else for(const day of state.recoverySummary.days||[])rows.push({id:`recovery-${day.day}`,icon:'🐉',title:`Recovery Day ${day.day}`,detail:`${day.count} unfinished mission${day.count===1?'':'s'}.`,route:'module/curriculum-quest'});
+
+  // A dated teacher override intentionally opens optional destinations for
+  // this scholar without falsely marking Morning or Recovery work complete.
+  if(state.dailyAccessOverride!==true){
+    if(state.dailyAccessUnlocked!==true)rows.push({id:'morning',icon:'🌅',title:'Morning Work',detail:state.morningWorkComplete?'Teacher check-in or access hold remains.':'Not complete today.',route:'module/daily-quest'});
+    if(!recoverySummaryCurrent())rows.push({id:'recovery',icon:'🐉',title:'Recovery Missions',detail:'Open Recovery Quest for a live check.',route:'module/curriculum-quest'});
+    else for(const day of state.recoverySummary.days||[])rows.push({id:`recovery-${day.day}`,icon:'🐉',title:`Recovery Day ${day.day}`,detail:`${day.count} unfinished mission${day.count===1?'':'s'}.`,route:'module/curriculum-quest'});
+  }
+
+  // Kingdom Wars retains its own intentional teacher-controlled lock.
   if(String(target)==='kingdom'&&state.kingdomAccessUnlocked!==true)rows.push({id:'kingdom-access',icon:'🔒',title:'Kingdom Wars teacher unlock',detail:'Your teacher has not opened Kingdom Wars today.',route:'missions'});
   return rows;
 }

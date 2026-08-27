@@ -3,7 +3,11 @@ import {getApps} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {getFirestore,doc,getDoc,collection,addDoc,serverTimestamp,query,where,onSnapshot} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-const app=getApps().find(a=>a.options?.projectId==="dragonswood-9289e")||getApps()[0];
+let app=getApps().find(a=>a.options?.projectId==="dragonswood-9289e")||getApps()[0];
+for(let attempt=0;!app&&attempt<100;attempt++){
+  await new Promise(resolve=>setTimeout(resolve,50));
+  app=getApps().find(a=>a.options?.projectId==="dragonswood-9289e")||getApps()[0];
+}
 if(!app) throw new Error("Dragonswood Firebase must initialize before student tools.");
 const auth=getAuth(app),db=getFirestore(app),path=location.pathname.split("/").pop()||"index.html";
 let user=null,exempt=false,lastHiddenAt=0,lastSuggestionAt=0;
@@ -11,7 +15,7 @@ const adminEmails=new Set(["jacobicusjax@gmail.com"]);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 function toast(message){let el=document.getElementById("dwStudentToolsToast");if(!el){el=document.createElement("div");el.id="dwStudentToolsToast";el.style.cssText="position:fixed;left:50%;bottom:22px;translate:-50% 0;z-index:2147483647;max-width:min(540px,90vw);padding:12px 16px;border:1px solid #ffd766;border-radius:11px;background:#080923;color:#fff;font:800 13px/1.35 Arial;box-shadow:0 12px 35px #000b";document.body.append(el)}el.textContent=message;el.hidden=false;clearTimeout(el._timer);el._timer=setTimeout(()=>el.hidden=true,3200)}
-function protectedTarget(target){if(exempt||!(target instanceof Element))return false;if(path==="daily-quest.html"||path==="curriculum-quest.html")return !!target.closest("input,textarea,[contenteditable='true']");return !!target.closest("#scribeResponse")}
+function protectedTarget(target){if(exempt||!(target instanceof Element))return false;if(path==="daily-quest.html"||path==="curriculum-quest.html")return !!target.closest("input,textarea,[contenteditable='true']");return !!target.closest("#scribeResponse,#scribe-text")}
 for(const type of ["copy","cut","paste","drop"]){document.addEventListener(type,e=>{if(!protectedTarget(e.target))return;e.preventDefault();toast("Dragonswood answers must be completed here without copying or pasting.")},true)}
 
 function renamePassLanguage(root=document){const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);for(const n of nodes){if(n.parentElement?.closest("script,style"))continue;n.nodeValue=n.nodeValue.replace(/Bathroom Pass/g,"Water & Bathroom Pass").replace(/bathroom pass/g,"water & bathroom pass")}}

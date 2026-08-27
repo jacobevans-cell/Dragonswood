@@ -24,6 +24,8 @@ function makeContext(firstRoute){
   const window={addEventListener(){},removeEventListener(){}};
   const ctx={console,document,localStorage,location,window,URLSearchParams,setTimeout,clearTimeout,setInterval,clearInterval,queueMicrotask,Promise,speechSynthesis:{},SpeechSynthesisUtterance:function(){}};
   vm.createContext(ctx);
+  vm.runInContext(fs.readFileSync('js/integration/modules.js','utf8'),ctx,{filename:'js/integration/modules.js'});
+  vm.runInContext("window.DWV33Modules=DWV33Modules;window.DWV33ArcadePortal={getAccess:async()=>({tokens:0,teacherEnabled:false}),href:()=>'/arcade/'};window.DWV33KingdomPortal={href:()=>'/kingdom.html'}",ctx);
   vm.runInContext(fs.readFileSync('tools/visual-fixture-runtime.js','utf8'),ctx,{filename:'visual-fixture-runtime.js'});
   return {ctx,app,location};
 }
@@ -41,7 +43,22 @@ async function smoke(file,routes,kind){
   if(failures.length){throw new Error(`${kind} FAIL\n${failures.join('\n')}`)}
   console.log(`${kind} PASS: ${routes.length} authenticated fixture routes rendered without exceptions`);
 }
+async function lockedStudentRouteSmoke(){
+  const {ctx,app,location}=makeContext('adventure');
+  vm.runInContext(fs.readFileSync('js/student-app.js','utf8'),ctx,{filename:'js/student-app.js'});
+  await new Promise(resolve=>setImmediate(resolve));
+  vm.runInContext('state.dailyAccessUnlocked=false',ctx);
+  for(const route of ['boss','arcade','kingdom','games','scribe','module/boss-battle','module/math-operations']){
+    location.hash='#'+route;
+    ctx.render();
+    if(!app.innerHTML.includes('student-page-missions'))throw new Error(`${route}: locked direct route did not return to Daily Missions`);
+    if(app.innerHTML.includes('data-v33-module-shell'))throw new Error(`${route}: locked direct route mounted an optional module`);
+    if(!ctx.document.querySelector('#dialog-root').innerHTML.includes('Finish Required Work First'))throw new Error(`${route}: required-work popup did not open`);
+  }
+  console.log('student PASS: 7 locked page/module routes cannot bypass required work');
+}
 (async()=>{
   await smoke('js/student-app.js',['adventure','missions','games','scribe','day','hall','boss','leaderboards'],'student');
+  await lockedStudentRouteSmoke();
   await smoke('js/teacher-app.js',['student-command','gradebook','scribe','rewards','passes','jobs','schedule','tools','leaderboards'],'teacher');
 })().catch(err=>{console.error(err.stack||err);process.exit(1)});

@@ -25,6 +25,6 @@ assert.match(modules,/environment==='manual-preview'\|\|environment==='productio
 assert.match(student,/event\.origin!==location\.origin/,'parent validates the module message origin');
 assert.match(student,/event\.source!==frame\.contentWindow/,'parent validates the exact hosted frame');
 assert.match(student,/message\.dateKey!==window\.DWV33Core\?\.phoenixDateKey\(\)/,'parent rejects stale Daily Quest state');
-assert.match(student,/if\(!currentModuleId\(\)\|\|!app\.querySelector\('\[data-module-frame\]'\)\)render\(\)/,'progress snapshots cannot reload an active lesson frame');
+assert.match(student,/if\(passChanged\|\|!currentModuleId\(\)\|\|!app\.querySelector\('\[data-module-frame\]'\)\)render\(\)/,'progress snapshots cannot reload an active lesson frame unless a pass-state change must interrupt it');
 
 console.log('V3.3 Stage 4 environment + mission bridge contract: PASS');

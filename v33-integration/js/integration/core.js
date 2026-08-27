@@ -138,7 +138,9 @@
       activePet,petName:humanizeId(activePet),
       inventory:Array.isArray(p.rpgInventory)?[...p.rpgInventory]:[],equipped:p.rpgEquipped&&typeof p.rpgEquipped==='object'?{...p.rpgEquipped}:{},
       title:text(p.title),narrationVoice:text(p.narrationVoice),profileMissing:!profile,
-      morningWorkComplete:access.morningComplete,dailyAccessOverride:access.overrideToday,dailyAccessUnlocked:access.unlocked,
+      morningWorkComplete:access.morningComplete,dailyAccessOverride:access.overrideToday,
+      dailyAccessUnlocked:access.unlocked&&p.optionalAccessPaused!==true&&p.teacherCheckInRequired!==true&&p.reflectionRequired!==true,
+      optionalAccessPaused:p.optionalAccessPaused===true,teacherCheckInRequired:p.teacherCheckInRequired===true,reflectionRequired:p.reflectionRequired===true,
       dailyMissions
     };
   }

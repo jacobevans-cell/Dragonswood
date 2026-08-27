@@ -61,9 +61,18 @@ def main():
         no_class_request=teacher.locator('.pass-card').filter(has_text='NoClass')
         no_class_request.get_by_role('button',name='Deny',exact=True).click()
         teacher.get_by_text('No students waiting.',exact=True).wait_for(timeout=10000)
-        fifth_active=teacher.locator('.active-pass').filter(has_text='Fifth')
-        fifth_active.get_by_role('button',name='Mark Returned',exact=True).click()
+        # Stage 4 already returned the seeded visit through the student UI.
         teacher.get_by_text('No active passes.',exact=True).wait_for(timeout=10000)
+        released_slot=teacher.evaluate("""async ()=>{
+          const apps=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js');
+          const store=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');
+          const app=apps.getApp('DragonswoodV33TeacherIntegration');
+          const snap=await store.getDoc(store.doc(store.getFirestore(app),'bathroomSlots','boy'));
+          return snap.exists()?snap.data():{};
+        }""")
+        assert released_slot.get('occupied') is False
+        assert released_slot.get('studentId')==''
+        assert released_slot.get('activeVisitId')==''
 
         route(teacher,'rewards','Class Rewards & Goals')
         teacher.locator('#class-points-reason').fill('Browser gate reward');teacher.locator('[data-points="5"]').click()

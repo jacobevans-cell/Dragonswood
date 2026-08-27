@@ -66,6 +66,25 @@ def pass_action(page, pass_type, expected_action, expected_label):
     page.locator('[role="dialog"]').wait_for(state='detached', timeout=10000)
 
 
+def return_blocking_pass(page, pass_type):
+    page.wait_for_function(
+        "({type}) => state.passes?.rows?.[type]?.action === 'return'",
+        arg={'type': pass_type},
+        timeout=10000,
+    )
+    overlay=page.locator('[data-active-pass-overlay].active')
+    overlay.wait_for(timeout=10000)
+    assert 'PASS ACTIVE' in overlay.locator('[data-active-pass-title]').inner_text()
+    assert page.evaluate("() => location.hash")=='#adventure'
+    overlay.locator(f'[data-return-active-pass="{pass_type}"]').click()
+    page.wait_for_function(
+        "({type}) => state.passes?.rows?.[type]?.action !== 'return'",
+        arg={'type': pass_type},
+        timeout=10000,
+    )
+    overlay.wait_for(state='hidden', timeout=10000)
+
+
 def main():
     server=ThreadingHTTPServer(('127.0.0.1',0),partial(QuietHandler,directory=str(ROOT)))
     Thread(target=server.serve_forever,daemon=True).start()
@@ -85,21 +104,21 @@ def main():
             # Teacher Operations runs first and correctly returns the seeded
             # active visit. Exercise a complete fresh cycle from that state.
             pass_action(page,'bathroom','start','🚻 Use Bathroom pass')
-            pass_action(page,'bathroom','return','✅ I am back')
+            return_blocking_pass(page,'bathroom')
             pass_action(page,'bathroom','start','🚻 Use Bathroom pass')
             page.wait_for_function(
                 "() => state.passes?.rows?.bathroom?.action === 'return'",
                 timeout=10000,
             )
-            page.get_by_role('button', name='Passes').click()
-            page.locator('[data-use-student-pass="bathroom"]').get_attribute('disabled')
-            assert page.locator('[data-use-student-pass="bathroom"]').inner_text().strip()=='✅ I am back'
+            overlay=page.locator('[data-active-pass-overlay].active')
+            overlay.wait_for(timeout=10000)
+            assert overlay.locator('[data-return-active-pass="bathroom"]').inner_text().strip()=='✅ I AM BACK — RETURN PASS'
             browser.close()
     finally:
         server.shutdown();server.server_close()
     if forbidden:
         raise AssertionError(f'Student beta gate attempted production Firebase: {forbidden}')
-    print('V3.3 student beta browser gate: PASS (live pass return + start transaction)')
+    print('V3.3 student beta browser gate: PASS (blocking overlay + live return/start transaction)')
     return 0
 
 

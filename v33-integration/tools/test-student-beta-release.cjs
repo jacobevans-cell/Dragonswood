@@ -25,6 +25,10 @@ assert.match(runtime,/async usePass\(type\)/,'student pass actions must be wired
 
 const modules=read('v33-integration/js/integration/modules.js');
 assert.match(modules,/environment==='production'/,'embedded modules must inherit live production mode');
+assert.match(modules,/id:'boss-battle'[^\n]+morningGate:true/,'Boss Battle must inherit the Morning Work gate');
+const studentApp=read('v33-integration/js/student-app.js');
+assert.match(studentApp,/REQUIRED_WORK_PAGES=new Set\(\['games','scribe','boss','kingdom','arcade'\]\)/,'all optional student routes must use one required-work gate');
+assert.match(studentApp,/globalThis\.history\?\.replaceState\?\.\(null,'','#missions'\)/,'direct locked hashes must be replaced with the Daily Missions route');
 const arcade=read('v33-integration/js/integration/arcade-portal.js');
 assert.match(arcade,/dw-arcade-live/,'Arcade production routing must retain the explicit live opt-in');
 const kingdom=read('v33-integration/js/integration/kingdom-portal.js');
@@ -61,9 +65,11 @@ const teacherOperationsBrowserGate=read('v33-integration/tools/teacher-operation
 assert.match(teacherOperationsBrowserGate,/schedule saved to the fictional Firebase emulator\./,'the downstream schedule gate must match the release portal label');
 
 const studentBetaBrowserGate=read('v33-integration/tools/student-beta-browser-gate.py');
-assert.match(studentBetaBrowserGate,/pass_action\(page,'bathroom','start','🚻 Use Bathroom pass'\)[\s\S]*pass_action\(page,'bathroom','return','✅ I am back'\)[\s\S]*pass_action\(page,'bathroom','start','🚻 Use Bathroom pass'\)/,'the final pass gate must follow the actual post-Teacher-Operations state');
+assert.match(studentBetaBrowserGate,/pass_action\(page,'bathroom','start','🚻 Use Bathroom pass'\)[\s\S]*return_blocking_pass\(page,'bathroom'\)[\s\S]*pass_action\(page,'bathroom','start','🚻 Use Bathroom pass'\)/,'the final pass gate must follow the actual post-Teacher-Operations state through the restored blocking return flow');
 assert.match(studentBetaBrowserGate,/arg=\{'type': pass_type, 'action': expected_action\}/,'the pass-state wait must use the installed Playwright keyword-only argument API');
 assert.match(studentBetaBrowserGate,/state\.passes\?\.rows\?\.\[type\]\?\.action === action/,'pass transitions must wait for the live student state before opening the next dialog');
+assert.match(studentBetaBrowserGate,/data-active-pass-overlay/,'the pass browser gate must verify the restored full-screen safety layer');
+assert.match(studentBetaBrowserGate,/location\.hash/,'the pass browser gate must verify forced navigation back to the student home route');
 
 const bossBattle=read('boss-battle.html');
 assert.match(bossBattle,/rareGoal,goalPoints:0/,'the live Boss Battle must write the required goal fields');

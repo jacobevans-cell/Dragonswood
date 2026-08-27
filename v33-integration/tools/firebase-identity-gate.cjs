@@ -137,6 +137,7 @@ async function attemptAuthenticatedWrite(account){
     await seed('bathroomRequests',`${accounts.noClass.uid}_${today}`,{studentId:accounts.noClass.uid,studentName:'NoClass',dateKey:today,status:'pending',createdAt:new Date().toISOString()});
     await seed('pointRequests',`recognition_${accounts.grade5.uid}_${today}`,{studentId:accounts.grade5.uid,studentName:'Fifth',dateKey:today,status:'pending',reason:'Helped another scholar',createdAt:new Date().toISOString()});
     await seed('bathroomStatus',accounts.grade5.uid,{studentId:accounts.grade5.uid,studentName:'Fifth',dateKey:today,passesUsed:1,approvalCredits:0,active:true,activeVisitId:'visit-grade5-live',leftMs:Date.now()-60000,leftAtText:'1 min ago',visits:[{id:'visit-grade5-live',studentId:accounts.grade5.uid,studentName:'Fifth',dateKey:today,status:'out',leftMs:Date.now()-60000,leftAtText:'1 min ago'}]});
+    await seed('bathroomSlots','boy',{group:'boy',dateKey:today,occupied:true,studentId:accounts.grade5.uid,studentName:'Fifth',activeVisitId:'visit-grade5-live',claimedAt:new Date().toISOString()});
     await seed('passHistory','visit-returned',{studentId:accounts.grade4.uid,studentName:'Fourth',dateKey:today,status:'returned',type:'bathroom'});
     await seed('studentJobWeeks',`${accounts.grade5.uid}_${weekKey(today)}`,{studentId:accounts.grade5.uid,studentName:'Fifth',weekKey:weekKey(today),jobId:'floor-captain',jobName:'Floor Captain',pay:50,checkedDays:[0,1,2,3],completedCount:4,paid:false});
     record('Demo Firestore seeded without production access',true,PROJECT);

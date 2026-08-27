@@ -100,6 +100,15 @@ def wait_for_authorized_portal(page):
               : ({status:integrationSession.status||'',message:integrationSession.message||''})"""
         )
         if last['status'] == 'authorized':
+            # The fixture intentionally seeds an active Bathroom pass. The
+            # restored safety layer requires check-in before Daily Missions.
+            active_pass = page.locator('[data-active-pass-overlay].active')
+            if active_pass.count():
+                active_pass.wait_for(timeout=10000)
+                active_pass.get_by_role(
+                    'button', name='✅ I AM BACK — RETURN PASS'
+                ).click()
+                active_pass.wait_for(state='hidden', timeout=30000)
             page.evaluate("location.hash='#missions'")
             page.get_by_role('heading', name='Your quest path').wait_for(timeout=10000)
             return

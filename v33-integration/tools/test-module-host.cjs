@@ -16,6 +16,8 @@ assert.equal(M.allowed('math-operations',{dailyAccessUnlocked:false}).reason,'mo
 assert.equal(M.allowed('math-operations',{dailyAccessUnlocked:true}).ok,true);
 assert.equal(M.allowed('boss-battle',{dailyAccessUnlocked:false}).reason,'morning-work','Boss Battle cannot bypass required work');
 assert.equal(M.allowed('boss-battle',{dailyAccessUnlocked:true}).ok,true);
+assert.equal(M.allowed('adventurer-hall',{dailyAccessUnlocked:false}).reason,'morning-work','Adventurer Hall cannot bypass required work');
+assert.equal(M.allowed('adventurer-hall',{dailyAccessUnlocked:true}).ok,true);
 assert.equal(M.allowed('daily-quest',{dailyAccessUnlocked:false}).ok,true);
 assert.match(M.href('level-up-challenge','https://example.test/v33-integration/student-test.html'),/daily-quest\.html\?levelup=1&dwEmbed=1$/);
 assert.match(M.href('daily-quest','https://example.test/v33-integration/student-test.html','emulator'),/daily-quest\.html\?dwEmbed=1&dw-env=emulator$/);

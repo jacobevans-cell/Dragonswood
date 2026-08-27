@@ -30,6 +30,20 @@ def route(page, name, heading):
     page.evaluate("name => { location.hash='#'+name }", name)
     page.get_by_role('heading', name=heading).wait_for(timeout=30000)
 
+def mark_required_work_complete(page):
+    page.evaluate("""() => {
+      state.dailyAccessUnlocked = true;
+      state.recoverySummary = {
+        dateKey: state.missionDate,
+        checked: true,
+        count: 0,
+        days: []
+      };
+    }""")
+    assert page.evaluate(
+        "() => unfinishedRequiredWork('student-world-gate').length === 0"
+    )
+
 def main():
     server=ThreadingHTTPServer(('127.0.0.1',0),partial(QuietHandler,directory=str(ROOT)))
     Thread(target=server.serve_forever,daemon=True).start()
@@ -58,6 +72,10 @@ def main():
         job=page.get_by_role('button',name="Check off today’s job")
         if job.count(): job.click()
         page.get_by_role('button',name='Today is complete').wait_for(timeout=10000)
+
+        # Optional Student World features are tested only after this fictional
+        # browser fixture represents completed Morning and Recovery work.
+        mark_required_work_complete(page)
         route(page,'leaderboards','Celebrate class champions')
         page.get_by_text('Fifth (You!)',exact=True).wait_for()
         assert page.locator('.rank-row').first.get_by_text('92',exact=False).count()
@@ -71,6 +89,10 @@ def main():
         hall_frame.get_by_role('button',name='CONTINUE',exact=True).wait_for(timeout=30000)
         hall_frame.get_by_role('button',name='CONTINUE',exact=True).click()
         hall_frame.locator('#status').filter(has_text='🥚').wait_for(timeout=30000)
+
+        # Hatching can refresh the live student snapshot, so restore this
+        # fixture's completed-work condition before testing the Boss module.
+        mark_required_work_complete(page)
         page.evaluate("location.hash='#module/boss-battle'")
         boss=page.locator('iframe[title="Daily Boss Battle"]')
         boss.wait_for(); assert 'dw-env=emulator' in (boss.get_attribute('src') or '')

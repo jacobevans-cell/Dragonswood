@@ -26,6 +26,7 @@ assert.match(runtime,/async usePass\(type\)/,'student pass actions must be wired
 const modules=read('v33-integration/js/integration/modules.js');
 assert.match(modules,/environment==='production'/,'embedded modules must inherit live production mode');
 assert.match(modules,/id:'boss-battle'[^\n]+morningGate:true/,'Boss Battle must inherit the Morning Work gate');
+assert.match(modules,/id:'adventurer-hall'[^\n]+morningGate:true/,'Adventurer Hall must inherit the required-work gate');
 const studentApp=read('v33-integration/js/student-app.js');
 for(const route of ['games','boss','leaderboards','kingdom','arcade'])assert.match(studentApp,new RegExp(`REQUIRED_WORK_PAGES[^\\n]+['\"]${route}['\"]`),`${route} must use the required-work gate`);
 assert.match(studentApp,/globalThis\.history\?\.replaceState\?\.\(null,'','#missions'\)/,'direct locked hashes must be replaced with the Daily Missions route');

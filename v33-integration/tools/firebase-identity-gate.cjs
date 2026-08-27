@@ -109,13 +109,14 @@ async function attemptAuthenticatedWrite(account){
     await seed('students',accounts.grade4.uid,{firstName:'Fourth',grade:4,genderGroup:'girls',hp:10,gold:15,xp:450,classId:'warrior',activePet:'pet-emberbean',rpgInventory:['gear_training_sword'],rpgEquipped:{weapon:'gear_training_sword'}});
     await seed('students',accounts.grade5.uid,{firstName:'Fifth',grade:5,genderGroup:'boys',hp:9,gold:22,xp:1520,classId:'mage',activePet:'pet-nyx',ownedPets:['pet-nyx'],rpgInventory:['gear_mage_wand'],rpgEquipped:{weapon:'gear_mage_wand'},eggInventory:1,petTokens:0,bossWins:0});
     await seed('students',accounts.noClass.uid,{firstName:'NoClass',grade:4,genderGroup:'boys',hp:10,gold:0,xp:0,classId:'',activePet:'',rpgInventory:[],rpgEquipped:{}});
-    await seed('students',accounts.noPet.uid,{firstName:'NoPet',grade:5,genderGroup:'girls',hp:10,gold:4,xp:750,classId:'ranger',activePet:'',rpgInventory:[],rpgEquipped:{}});
+    await seed('students',accounts.noPet.uid,{firstName:'NoPet',grade:5,genderGroup:'girls',hp:10,gold:4,xp:750,classId:'ranger',activePet:'',ownedPets:['pet-emberbean'],eggInventory:2,petTokens:0,rpgInventory:[],rpgEquipped:{}});
     await seed('students',accounts.tester.uid,{firstName:'Tester',grade:5,genderGroup:'girls',hp:10,gold:3,xp:200,classId:'healer',activePet:'',rpgInventory:[],rpgEquipped:{}});
     await seed('testerAccounts',accounts.tester.uid,{enabled:true,label:'V3 gate tester'});
     await seed('dailyQuestProgress',`${accounts.grade4.uid}_2026-08-25_v48`,{studentId:accounts.grade4.uid,dateKey:'2026-08-25',session:'morning',status:'complete',score:100});
     await seed('dailyQuestProgress',`${accounts.grade4.uid}_2026-08-24_v48`,{studentId:accounts.grade4.uid,dateKey:'2026-08-24',session:'morning',status:'complete',score:100});
     await seed('dailyQuests',today,{date:today,day:14,chapter:'The Crystal Crossing',chapterIcon:'💎',morningXp:4,exitXp:2,gold:1,unlockAt:dailyUnlockAt,lockAt:dailyLockAt});
     await seed('classData','dailyAccessOverride',{dateKey:today,all:false,studentIds:[]});
+    await seed('classData','kingdomAccess',{dateKey:today,all:true,studentIds:[]});
     await seed('classData','activeWritingSession',{sessionId:'scribe-gate-1',status:'active',title:'Emulator Quickwrite',mode:'Quickwrite',writingType:'Narrative',targetSkill:'Sensory Details',prompt:'Describe the hidden gate using three sensory details.',hints:['Use a strong verb'],timeMinutes:5,minWords:5});
     const liveSchedule=Object.fromEntries(['Monday','Tuesday','Wednesday','Thursday','Friday'].map(day=>[day,[{id:'math',time:'8:25',title:'Live Emulator Math',detail:'Student World schedule'}]]));
     await seed('classData','classSchedule',{days:liveSchedule});
@@ -242,6 +243,17 @@ async function attemptAuthenticatedWrite(account){
     assert.equal(crossLoot.res.status,403,`Expected 403 cross-loot read, got ${crossLoot.res.status}: ${crossLoot.text}`);
     record('Daily Boss chest caps and isolation',true,'one owner chest accepted; oversized/cross-student access denied');
 
+    const noPetBeforeHatch=await getDoc('students',accounts.noPet.uid,accounts.noPet.token);
+    const noPetBeforeHatchModel=Core.normalizeStudent(accounts.noPet,decodeFields(noPetBeforeHatch.body.fields),[]);
+    assert.equal(noPetBeforeHatchModel.petName,'No active pet');
+
+    const hatchFields=['eggInventory','ownedPets','petTokens','activePet','lastHatchedPet','updatedAt'];
+    const newHatch=await writeDoc('students',accounts.noPet.uid,{eggInventory:1,ownedPets:['pet-emberbean','pet-nyx'],petTokens:0,activePet:'pet-nyx',lastHatchedPet:'pet-nyx',updatedAt:new Date()},accounts.noPet.token,hatchFields);
+    assert.equal(newHatch.res.ok,true,`New companion hatch failed: ${newHatch.text}`);
+    const duplicateHatch=await writeDoc('students',accounts.noPet.uid,{eggInventory:0,ownedPets:['pet-emberbean','pet-nyx'],petTokens:1,activePet:'pet-nyx',lastHatchedPet:'pet-emberbean',updatedAt:new Date()},accounts.noPet.token,hatchFields);
+    assert.equal(duplicateHatch.res.ok,true,`Duplicate companion hatch failed: ${duplicateHatch.text}`);
+    record('Egg hatch transaction rules',true,'new companion + duplicate Pet Token paths both accepted');
+
     const scoreRows=await listDocs('scores',accounts.grade5.token);
     assert.equal(scoreRows.res.ok,true,JSON.stringify(scoreRows.body));
     assert.equal((scoreRows.body.documents||[]).length,2);
@@ -272,9 +284,6 @@ async function attemptAuthenticatedWrite(account){
     const noClass=await getDoc('students',accounts.noClass.uid,accounts.noClass.token);
     const noClassModel=Core.normalizeStudent(accounts.noClass,decodeFields(noClass.body.fields),[]);
     assert.equal(noClassModel.classLabel,'Unchosen');
-    const noPet=await getDoc('students',accounts.noPet.uid,accounts.noPet.token);
-    const noPetModel=Core.normalizeStudent(accounts.noPet,decodeFields(noPet.body.fields),[]);
-    assert.equal(noPetModel.petName,'No active pet');
     record('Class/pet edge cases',true,'unchosen class + no active pet map safely');
 
     const teacherList=await listDocs('students',accounts.teacher.token);
@@ -305,6 +314,20 @@ async function attemptAuthenticatedWrite(account){
     const sessionRead=await getDoc('classData','activeWritingSession',accounts.grade4.token);
     assert.equal(decodeFields(sessionRead.body.fields).sessionId,'scribe-gate-2');
     record('Teacher launch → student Scribe visibility',true,'active session updated in emulator');
+
+    const attentionId='attention-gate-1';
+    const attentionWrite=await writeDoc('classData','activeTeacherAttention',{id:attentionId,active:true,dateKey:today,title:'Return to Morning Work',message:'Pause and return now.',destination:'module/daily-quest',requireAcknowledgment:true,createdAtMs:Date.now(),createdBy:accounts.teacher.uid,createdAt:new Date(),updatedAt:new Date()},accounts.teacher.token);
+    assert.equal(attentionWrite.res.ok,true,JSON.stringify(attentionWrite.body));
+    const sentEvent=await writeDoc('teacherAttentionEvents',`${attentionId}_sent`,{attentionId,type:'sent',studentId:'',studentName:'Whole class',dateKey:today,title:'Return to Morning Work',message:'Pause and return now.',destination:'module/daily-quest',createdBy:accounts.teacher.uid,createdAt:new Date(),updatedAt:new Date()},accounts.teacher.token);
+    assert.equal(sentEvent.res.ok,true,JSON.stringify(sentEvent.body));
+    const ackId=`${attentionId}_${accounts.grade5.uid}`;
+    const ack=await writeDoc('teacherAttentionEvents',ackId,{attentionId,type:'acknowledged',studentId:accounts.grade5.uid,studentName:'Fifth',dateKey:today,destination:'module/daily-quest',createdAt:new Date(),updatedAt:new Date()},accounts.grade5.token);
+    assert.equal(ack.res.ok,true,JSON.stringify(ack.body));
+    const ownAck=await getDoc('teacherAttentionEvents',ackId,accounts.grade5.token),crossAck=await getDoc('teacherAttentionEvents',ackId,accounts.grade4.token);
+    assert.equal(ownAck.res.ok,true,JSON.stringify(ownAck.body));assert.equal(crossAck.res.status,403,`Expected cross-student attention denial, got ${crossAck.res.status}`);
+    const attentionClose=await writeDoc('classData','activeTeacherAttention',{active:false,closedBy:accounts.teacher.uid,closedAt:new Date(),updatedAt:new Date()},accounts.teacher.token,['active','closedBy','closedAt','updatedAt']);
+    assert.equal(attentionClose.res.ok,true,JSON.stringify(attentionClose.body));
+    record('Teacher Attention acknowledgment and isolation',true,'teacher send + student acknowledgment + cross-student denial');
 
     const teacherCurriculum=await listDocs('curriculumProgress',accounts.teacher.token);
     assert.equal(teacherCurriculum.res.ok,true,JSON.stringify(teacherCurriculum.body));

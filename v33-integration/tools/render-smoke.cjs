@@ -33,6 +33,7 @@ async function smoke(file,routes,kind){
   const {ctx,app,location}=makeContext(routes[0]);
   vm.runInContext(fs.readFileSync(file,'utf8'),ctx,{filename:file});
   await new Promise(resolve=>setImmediate(resolve));
+  if(kind==='student')vm.runInContext("state.recoverySummary={dateKey:state.missionDate,checked:true,count:0,days:[]};state.kingdomAccessUnlocked=true",ctx);
   const failures=[];
   for(const route of routes){
     location.hash='#'+route;
@@ -48,14 +49,14 @@ async function lockedStudentRouteSmoke(){
   vm.runInContext(fs.readFileSync('js/student-app.js','utf8'),ctx,{filename:'js/student-app.js'});
   await new Promise(resolve=>setImmediate(resolve));
   vm.runInContext('state.dailyAccessUnlocked=false',ctx);
-  for(const route of ['boss','arcade','kingdom','games','scribe','module/boss-battle','module/math-operations']){
+  for(const route of ['boss','arcade','kingdom','games','module/adventurer-hall','module/boss-battle','module/math-operations']){
     location.hash='#'+route;
     ctx.render();
     if(!app.innerHTML.includes('student-page-missions'))throw new Error(`${route}: locked direct route did not return to Daily Missions`);
     if(app.innerHTML.includes('data-v33-module-shell'))throw new Error(`${route}: locked direct route mounted an optional module`);
     if(!ctx.document.querySelector('#dialog-root').innerHTML.includes('Finish Required Work First'))throw new Error(`${route}: required-work popup did not open`);
   }
-  console.log('student PASS: 7 locked page/module routes cannot bypass required work');
+  console.log('student PASS: 7 recreational page/module routes cannot bypass required work');
 }
 (async()=>{
   await smoke('js/student-app.js',['adventure','missions','games','scribe','day','hall','boss','leaderboards'],'student');

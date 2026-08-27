@@ -16,13 +16,15 @@ assert.equal(M.allowed('math-operations',{dailyAccessUnlocked:false}).reason,'mo
 assert.equal(M.allowed('math-operations',{dailyAccessUnlocked:true}).ok,true);
 assert.equal(M.allowed('boss-battle',{dailyAccessUnlocked:false}).reason,'morning-work','Boss Battle cannot bypass required work');
 assert.equal(M.allowed('boss-battle',{dailyAccessUnlocked:true}).ok,true);
+assert.equal(M.allowed('adventurer-hall',{dailyAccessUnlocked:false}).reason,'morning-work','Adventurer Hall cannot bypass required work');
+assert.equal(M.allowed('adventurer-hall',{dailyAccessUnlocked:true}).ok,true);
 assert.equal(M.allowed('daily-quest',{dailyAccessUnlocked:false}).ok,true);
 assert.match(M.href('level-up-challenge','https://example.test/v33-integration/student-test.html'),/daily-quest\.html\?levelup=1&dwEmbed=1$/);
 assert.match(M.href('daily-quest','https://example.test/v33-integration/student-test.html','emulator'),/daily-quest\.html\?dwEmbed=1&dw-env=emulator$/);
 assert.match(M.href('curriculum-quest','https://example.test/v33-integration/student-test.html','production-readonly'),/curriculum-quest\.html\?dwEmbed=1&dw-env=production-readonly$/);
 assert.match(M.markup('boss-battle'),/data-module-frame/);
 const studentApp=fs.readFileSync(path.join(__dirname,'../js/student-app.js'),'utf8');
-assert.match(studentApp,/REQUIRED_WORK_PAGES=new Set\(\['games','scribe','boss','kingdom','arcade'\]\)/,'all optional portal routes share one required-work gate');
+for(const route of ['games','boss','leaderboards','kingdom','arcade'])assert.match(studentApp,new RegExp(`REQUIRED_WORK_PAGES[^\\n]+['\"]${route}['\"]`),`${route} must share the required-work gate`);
 assert.match(studentApp,/pendingRequiredWorkNotice=moduleId/,'direct module hashes are redirected through the required-work gate');
 assert.match(studentApp,/Finish Required Work First/,'locked optional routes show the restored student popup');
 assert.match(studentApp,/data-module="\$\{g\[0\]\}"/,'visible game cards launch contained production modules');

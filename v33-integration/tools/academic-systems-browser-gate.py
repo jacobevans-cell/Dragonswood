@@ -121,9 +121,21 @@ def main():
             student.get_by_role('button', name='Submit quickwrite').click()
             student.get_by_role('heading', name='Checkpoint submitted').wait_for(timeout=10000)
             student.get_by_role('button', name='Done').click()
+            # Scribe is academic and remains accessible, but Games must still
+            # redirect this incomplete-work fixture to Daily Missions.
             student.evaluate("location.hash='#games'")
-            student.get_by_role('heading', name='Choose your adventure').wait_for()
-            assert student.locator('.game-card').count() == 11
+            student.get_by_role('heading', name='Your quest path').wait_for()
+            assert student.locator('.game-card').count() == 0
+
+            # Catalog coverage is separate from permission to bypass required
+            # work. Inspect its rendered markup in a detached test node while
+            # the live student portal correctly remains on Daily Missions.
+            catalog_cards = student.evaluate("""() => {
+              const host = document.createElement('div');
+              host.innerHTML = gamesPage();
+              return host.querySelectorAll('.game-card').length;
+            }""")
+            assert catalog_cards == 11
             assert student.evaluate("""() => DWV33Academic.GAME_CATALOG.every(game => {
               const mod=DWV33Modules.definition(game.id);
               return mod && DWV33Modules.href(game.id,location.href,'emulator').includes('dw-env=emulator');

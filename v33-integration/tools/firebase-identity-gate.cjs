@@ -107,7 +107,7 @@ async function attemptAuthenticatedWrite(account){
     const dailyLockAt=new Date(gateNow.getTime()+86400000);
 
     await seed('students',accounts.grade4.uid,{firstName:'Fourth',grade:4,genderGroup:'girls',hp:10,gold:15,xp:450,classId:'warrior',activePet:'pet-emberbean',rpgInventory:['gear_training_sword'],rpgEquipped:{weapon:'gear_training_sword'}});
-    await seed('students',accounts.grade5.uid,{firstName:'Fifth',grade:5,genderGroup:'boys',hp:9,gold:22,xp:1520,classId:'mage',activePet:'pet-nyx',ownedPets:['pet-nyx'],rpgInventory:['gear_mage_wand'],rpgEquipped:{weapon:'gear_mage_wand'},eggInventory:1,petTokens:0,bossWins:0});
+    await seed('students',accounts.grade5.uid,{firstName:'Fifth',grade:5,genderGroup:'boys',hp:9,gold:22,xp:1520,classId:'mage',activePet:'dragon',ownedPets:['dragon'],rpgInventory:['gear_mage_wand'],rpgEquipped:{weapon:'gear_mage_wand'},eggInventory:1,petTokens:0,bossWins:0});
     await seed('students',accounts.noClass.uid,{firstName:'NoClass',grade:4,genderGroup:'boys',hp:10,gold:0,xp:0,classId:'',activePet:'',rpgInventory:[],rpgEquipped:{}});
     await seed('students',accounts.noPet.uid,{firstName:'NoPet',grade:5,genderGroup:'girls',hp:10,gold:4,xp:750,classId:'ranger',activePet:'',ownedPets:['pet-emberbean'],eggInventory:2,petTokens:0,rpgInventory:[],rpgEquipped:{}});
     await seed('students',accounts.tester.uid,{firstName:'Tester',grade:5,genderGroup:'girls',hp:10,gold:3,xp:200,classId:'healer',activePet:'',rpgInventory:[],rpgEquipped:{}});

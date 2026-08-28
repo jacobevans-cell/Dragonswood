@@ -1,12 +1,35 @@
 #!/usr/bin/env python3
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+import json
 from pathlib import Path
 from threading import Thread
+from urllib.parse import quote
+from urllib.request import Request, urlopen
 from playwright.sync_api import sync_playwright
 
 ROOT=Path(__file__).resolve().parents[2]
 PASSWORD='V33-Gate-Only-2026!'
+FIRESTORE_REST='http://127.0.0.1:8080/v1/projects/demo-dragonswood-v33/databases/(default)/documents'
+
+def firestore_value(value):
+    if value is None: return {'nullValue':None}
+    if isinstance(value,bool): return {'booleanValue':value}
+    if isinstance(value,int): return {'integerValue':str(value)}
+    if isinstance(value,float): return {'doubleValue':value}
+    if isinstance(value,str): return {'stringValue':value}
+    if isinstance(value,list): return {'arrayValue':{'values':[firestore_value(item) for item in value]}}
+    if isinstance(value,dict): return {'mapValue':{'fields':firestore_fields(value)}}
+    raise TypeError(f'Unsupported Firestore fixture value: {type(value).__name__}')
+
+def firestore_fields(data):
+    return {key:firestore_value(value) for key,value in data.items()}
+
+def seed_emulator_document(collection,document_id,data):
+    url=f'{FIRESTORE_REST}/{quote(collection,safe="")}/{quote(document_id,safe="")}'
+    request=Request(url,data=json.dumps({'fields':firestore_fields(data)}).encode(),method='PATCH',headers={'Authorization':'Bearer owner','Content-Type':'application/json'})
+    with urlopen(request,timeout=15) as response:
+        if response.status not in (200,201): raise AssertionError(f'Fixture seed failed: {collection}/{document_id} ({response.status})')
 
 class QuietHandler(SimpleHTTPRequestHandler):
     def end_headers(self): self.send_header('Cache-Control','no-store');super().end_headers()
@@ -44,7 +67,10 @@ def main():
         attention.locator('[data-close-attention]').click()
 
         date_key=page.evaluate("new Intl.DateTimeFormat('en-CA',{timeZone:'America/Phoenix'}).format(new Date())")
-        page.evaluate("""async ({student,dateKey})=>{const apps=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js');const fs=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');const db=fs.getFirestore(apps.getApp('DragonswoodV33TeacherIntegration'));await fs.setDoc(fs.doc(db,'classData','gradebookSettings'),{daily:40,curriculum:40,reading:20,readingTargetMinutes:20,readingAssignedDateKeys:[dateKey],updatedAt:fs.serverTimestamp()},{merge:true});await fs.setDoc(fs.doc(db,'readingSessions',`${student.id}_${dateKey}_witches`),{studentId:student.id,studentName:student.name,bookId:'witches',bookTitle:'The Witches',dateKey,activeSeconds:1080,targetMinutes:20,firstPage:24,lastPage:31,pages:[24,31],status:'in-progress',updatedAt:fs.serverTimestamp()},{merge:true});await fs.setDoc(fs.doc(db,'snackRequests',`${student.id}_${dateKey}`),{studentId:student.id,studentName:student.name,dateKey,status:'pending',createdAt:fs.serverTimestamp(),updatedAt:fs.serverTimestamp()},{merge:true})}""",{'student':fixture[0],'dateKey':date_key})
+        student=fixture[0]
+        seed_emulator_document('classData','gradebookSettings',{'daily':40,'curriculum':40,'reading':20,'readingTargetMinutes':20,'readingAssignedDateKeys':[date_key]})
+        seed_emulator_document('readingSessions',f"{student['id']}_{date_key}_witches",{'studentId':student['id'],'studentName':student['name'],'bookId':'witches','bookTitle':'The Witches','dateKey':date_key,'activeSeconds':1080,'targetMinutes':20,'firstPage':24,'lastPage':31,'pages':[24,31],'status':'in-progress'})
+        seed_emulator_document('snackRequests',f"{student['id']}_{date_key}",{'studentId':student['id'],'studentName':student['name'],'dateKey':date_key,'status':'pending'})
         page.locator('[data-page="passes"]').click();page.get_by_role('heading',name='Pass Control').wait_for();page.locator('.pass-list').get_by_text(fixture[0]['name'],exact=True).first.wait_for(timeout=10000)
         page.evaluate("location.hash='#gradebook'");page.get_by_role('heading',name='Dragonswood Gradebook').wait_for();page.get_by_text('Witches Time',exact=True).wait_for();page.locator('#gradebook-search').fill(fixture[0]['name']);row=page.locator('[data-grade-student]').filter(has_text=fixture[0]['name']);row.get_by_text('18 verified min',exact=False).wait_for(timeout=10000);row.click();page.get_by_text('18/20 verified min',exact=False).wait_for(timeout=10000)
         page.locator('[data-reading-settings]').click();dialog=page.get_by_role('dialog');dialog.get_by_role('heading',name='Assign The Witches Reading').wait_for();dialog.get_by_text('Time counts only while',exact=False).wait_for();dialog.get_by_role('button',name='Cancel').click()

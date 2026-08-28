@@ -10,7 +10,8 @@ const operations=read('v33-integration/js/integration/operations.js');
 const academic=read('v33-integration/js/integration/academic.js');
 const host=read('teacher.html');
 
-assert.match(teacher,/data-open-passes>Passes/,'top header exposes the Passes command center');
+assert.match(teacher,/data-open-passes[^>]*>Pass Control/,'top header exposes the Pass Control command center');
+assert.match(teacher,/pending-pass-badge/,'top Pass Control exposes the live pending count');
 assert.match(teacher,/teacher-pass-chip/,'active pass names, types, and times are visible in the header');
 assert.match(teacher,/data-attention-audience="selected"/,'Teacher Attention exposes selected-student delivery');
 assert.match(teacher,/data-attention-audience="class"/,'whole-class attention remains an explicit choice');
@@ -27,8 +28,9 @@ assert.doesNotMatch(teacher,/Assignment list opened in tester mode|CSV export re
 assert.doesNotMatch(teacher,/Open in V2/i);
 assert.match(teacher,/\.teacher-content,\.teacher-header-inner\{width:100%;max-width:none/,'teacher content no longer wastes the center gutter');
 assert.match(teacher,/font-size:12px/,'production readability floor is installed');
-for(const file of ['academic','operations','runtime'])assert.match(host,new RegExp(`js/integration/${file}\\.js\\?v=57\\.1\\.5`));
-assert.match(host,/js\/teacher-app\.js\?v=57\.1\.5/);
+assert.match(host,/js\/integration\/academic\.js\?v=57\.1\.5/);
+for(const file of ['world','operations','runtime'])assert.match(host,new RegExp(`js/integration/${file}\\.js\\?v=57\\.1\\.6`));
+assert.match(host,/js\/teacher-app\.js\?v=57\.1\.6/);
 
 const book=require('../js/integration/academic.js').gradebook(
  [{id:'s1',name:'Scholar',grade:'5',genderGroup:'girl'}],

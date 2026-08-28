@@ -11,6 +11,7 @@ node tools/test-curriculum-stability.cjs
 node tools/test-stability-hall-profile-math.cjs
 node tools/test-teacher-portal-repair.cjs
 node tools/test-teacher-portal-live-evidence.cjs
+node tools/test-teacher-daily-use-repair.cjs
 ./tools/check-teacher-operations.sh
 node ../functions-arcade-access/core-selftest.cjs
 echo 'V3.3 consolidated student-beta static and inherited gates: PASS'

@@ -60,8 +60,8 @@ def main():
           await fs.setDoc(fs.doc(db,'snackStatus',row.id),{studentId:row.id,studentName:'Fourth',type:'snack',dateKey,active:true,startedMs:now,updatedAt:fs.serverTimestamp()},{merge:true});
           return {id:row.id};
         }""")
-        teacher.get_by_text('Fourth • Snack',exact=False).wait_for(timeout=10000)
-        passes=teacher.get_by_role('button',name='Passes',exact=False);passes.click();teacher.get_by_role('heading',name='Pass Control').wait_for()
+        pass_chip=teacher.locator('.teacher-pass-chip.overdue').filter(has_text='Fourth').filter(has_text='Snack');pass_chip.wait_for(timeout=10000);assert 'OVERDUE' in pass_chip.inner_text()
+        teacher.locator('[data-open-passes]').click();teacher.get_by_role('heading',name='Pass Control').wait_for()
         assert teacher.get_by_text('Fourth',exact=True).count()>0
 
         teacher.get_by_role('button',name='Open Teacher Attention').click() if teacher.get_by_role('button',name='Open Teacher Attention').count() else None

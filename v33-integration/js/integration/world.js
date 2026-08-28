@@ -34,16 +34,27 @@
     const checked=[...new Set((Array.isArray(jobWeek?.checkedDays)?jobWeek.checkedDays:[]).map(Number).filter(day=>day>=0&&day<=4))].sort((a,b)=>a-b);
     return Object.freeze({id:text(row.id||row.jobId),name:text(row.name||row.jobName,'Class Job'),icon:text(row.icon||row.jobIcon,'🧹'),description:text(row.description||row.instructions,'Help your class guild today.'),pay:number(row.pay),checkedDays:Object.freeze(checked),completedCount:checked.length,paid:jobWeek?.paid===true});
   }
+  function normalizeCalendarEvent(row={}){
+    const startDate=text(row.startDate||row.dateKey||row.date),endDate=text(row.endDate||startDate);
+    return Object.freeze({
+      id:text(row.id),title:text(row.title||row.name,'Class event'),icon:text(row.icon,'📅'),category:text(row.category,'school'),
+      startDate,endDate:endDate||startDate,startTime:text(row.startTime||row.time),endTime:text(row.endTime),
+      dateKey:startDate,time:text(row.startTime||row.time),detail:text(row.detail||row.description)
+    });
+  }
+  function calendarEvents(rows){
+    return Object.freeze((Array.isArray(rows)?rows:[]).map(normalizeCalendarEvent).filter(row=>row.startDate).sort((a,b)=>`${a.startDate} ${a.startTime} ${a.title}`.localeCompare(`${b.startDate} ${b.startTime} ${b.title}`)));
+  }
   function upcomingEvents(rows,date=new Date()){
     const today=Core.phoenixDateKey(date);
-    return Object.freeze((Array.isArray(rows)?rows:[]).map(row=>({id:text(row.id),title:text(row.title||row.name,'Class event'),icon:text(row.icon,'📅'),dateKey:text(row.dateKey||row.date),time:text(row.time||row.startTime),detail:text(row.detail||row.description)})).filter(row=>!row.dateKey||row.dateKey>=today).sort((a,b)=>`${a.dateKey} ${a.time}`.localeCompare(`${b.dateKey} ${b.time}`)).slice(0,3).map(Object.freeze));
+    return Object.freeze(calendarEvents(rows).filter(row=>(row.endDate||row.startDate)>=today).slice(0,3));
   }
   function scoreDate(row){if(row?.dateKey)return text(row.dateKey);if(row?.createdAt?.seconds)return Core.phoenixDateKey(new Date(row.createdAt.seconds*1000));return ''}
   function scoreName(row){return text(row?.displayName||row?.playerName||row?.firstName||row?.studentName||(row?.studentEmail||'').split('@')[0].replace(/[._-]+/g,' '),'Player')}
-  function leaderboard(scores,rewards,uid,date=new Date()){
-    const monday=weekKey(date),players=new Map();
+  function leaderboard(scores,rewards,uid,date=new Date(),period='weekly'){
+    const range=period==='all-time'?'all-time':'weekly',monday=weekKey(date),players=new Map();
     for(const score of Array.isArray(scores)?scores:[]){
-      if(scoreDate(score)<monday)continue;
+      if(range==='weekly'&&scoreDate(score)<monday)continue;
       const studentId=text(score.uid||score.studentId||score.studentEmail||scoreName(score)).toLowerCase();
       const assignment=text(score.assignmentId||`${score.gameName||score.game||'Game'}:${score.day||''}:${score.session||score.activityName||''}`);
       const current=players.get(studentId)||{studentId,record:score,best:new Map()};
@@ -52,7 +63,7 @@
     const today=Core.phoenixDateKey(date);
     const rows=[...players.values()].map(player=>({studentId:player.studentId,name:scoreName(player.record),avatar:text(player.record.avatarEmoji,'🐉'),score:[...player.best.values()].reduce((sum,row)=>sum+number(row.score),0),activities:player.best.size,rewarded:(Array.isArray(rewards)?rewards:[]).some(reward=>text(reward.studentId).toLowerCase()===player.studentId&&reward.dateKey===today)})).sort((a,b)=>b.score-a.score||b.activities-a.activities||a.name.localeCompare(b.name)).slice(0,10).map((row,index)=>Object.freeze({...row,rank:index+1,isYou:row.studentId===text(uid).toLowerCase()}));
     const you=rows.find(row=>row.isYou)||null;
-    return Object.freeze({period:'weekly',weekKey:monday,rows:Object.freeze(rows),you});
+    return Object.freeze({period:range,weekKey:monday,rows:Object.freeze(rows),you});
   }
   function studentWorld(uid,profile,schedule,jobs,events,jobWeek,scores,rewards,bossLoot,prizes,date=new Date()){
     const parts=phoenixParts(date),dayIndex=['Monday','Tuesday','Wednesday','Thursday','Friday'].indexOf(parts.weekday);
@@ -65,5 +76,5 @@
       leaderboard:leaderboard(scores,rewards,uid,date)
     });
   }
-  window.DWV33World=Object.freeze({version:'student-world-1',weekKey,scheduleRows,assignedJob,upcomingEvents,leaderboard,studentWorld});
+  window.DWV33World=Object.freeze({version:'student-world-2',weekKey,scheduleRows,assignedJob,normalizeCalendarEvent,calendarEvents,upcomingEvents,leaderboard,studentWorld});
 })();

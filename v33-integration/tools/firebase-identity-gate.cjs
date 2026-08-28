@@ -234,6 +234,17 @@ async function attemptAuthenticatedWrite(account){
     assert.equal(badReward.res.status,403,`Expected 403 reward cap, got ${badReward.res.status}: ${badReward.text}`);
     record('Academic game result and reward caps',true,'valid result saved; oversized reward denied');
 
+    const readingId=`${accounts.grade5.uid}_${today}_witches`;
+    const readingCreate=await writeDoc('readingSessions',readingId,{studentId:accounts.grade5.uid,studentName:'Fifth',bookId:'witches',bookTitle:'The Witches',dateKey:today,activeSeconds:15,targetMinutes:20,firstPage:24,lastPage:24,pages:[24],status:'in-progress',lastHeartbeatMs:Date.now()},accounts.grade5.token);
+    assert.equal(readingCreate.res.ok,true,JSON.stringify(readingCreate.body));
+    const readingUpdate=await writeDoc('readingSessions',readingId,{activeSeconds:30,targetMinutes:20,firstPage:24,lastPage:25,pages:[24,25],status:'in-progress',lastHeartbeatMs:Date.now()+15000},accounts.grade5.token,['activeSeconds','targetMinutes','firstPage','lastPage','pages','status','lastHeartbeatMs']);
+    assert.equal(readingUpdate.res.ok,true,JSON.stringify(readingUpdate.body));
+    const readingJump=await writeDoc('readingSessions',readingId,{activeSeconds:90,targetMinutes:20,firstPage:24,lastPage:25,pages:[24,25],status:'in-progress',lastHeartbeatMs:Date.now()+30000},accounts.grade5.token,['activeSeconds','targetMinutes','firstPage','lastPage','pages','status','lastHeartbeatMs']);
+    assert.equal(readingJump.res.status,403,`Expected 403 oversized heartbeat, got ${readingJump.res.status}: ${readingJump.text}`);
+    const crossReading=await getDoc('readingSessions',readingId,accounts.grade4.token);
+    assert.equal(crossReading.res.status,403,`Expected 403 cross-reading read, got ${crossReading.res.status}: ${crossReading.text}`);
+    record('Witches verified reading time',true,'focused heartbeat accepted; oversized increment and cross-student read denied');
+
     const lootId=`${accounts.grade5.uid}_${today}`;
     const validLoot=await writeDoc('bossLoot',lootId,{studentId:accounts.grade5.uid,dateKey:today,status:'complete',goldAward:3,xpAward:12,goalPoints:0,rareGoal:'none',itemId:'crafting-materials'},accounts.grade5.token);
     assert.equal(validLoot.res.ok,true,JSON.stringify(validLoot.body));
@@ -302,11 +313,11 @@ async function attemptAuthenticatedWrite(account){
     assert.equal(classPointWrite.res.ok,true,JSON.stringify(classPointWrite.body));
     record('Teacher class reward write',true,'shared points updated only by authorized teacher');
 
-    const teacherDaily=await listDocs('dailyQuestProgress',accounts.teacher.token),teacherAttempts=await listDocs('curriculumAttempts',accounts.teacher.token),teacherGames=await listDocs('gameResults',accounts.teacher.token);
+    const teacherDaily=await listDocs('dailyQuestProgress',accounts.teacher.token),teacherAttempts=await listDocs('curriculumAttempts',accounts.teacher.token),teacherReading=await listDocs('readingSessions',accounts.teacher.token);
     const decodeList=result=>(result.body.documents||[]).map(d=>({id:d.name.split('/').pop(),...decodeFields(d.fields)}));
-    const book=Academic.gradebook(roster,decodeList(teacherDaily),decodeList(teacherAttempts),decodeList(teacherGames));
+    const book=Academic.gradebook(roster,decodeList(teacherDaily),decodeList(teacherAttempts),decodeList(teacherReading));
     assert.equal(book.rows.length,roster.length);assert.ok(book.rows.some(row=>row.total>0));
-    record('Teacher gradebook aggregation',true,'Daily + Curriculum + Reading/Game categories');
+    record('Teacher gradebook aggregation',true,'Daily + Curriculum + verified Witches time');
 
     const replacement={sessionId:'scribe-gate-2',status:'active',title:'Teacher Mission',mode:'Quickwrite',writingType:'Opinion',targetSkill:'Strong Evidence',prompt:'Explain which realm rule is fairest.',timeMinutes:8,minWords:20};
     const teacherSession=await writeDoc('classData','activeWritingSession',replacement,accounts.teacher.token);

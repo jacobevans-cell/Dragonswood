@@ -34,4 +34,8 @@ assert.equal(operations.passHistory.length,1);assert.equal(operations.passBlacko
 assert.equal(operations.poll.active,true);assert.deepEqual([...operations.poll.counts],[1,1]);assert.equal(operations.poll.total,2);
 assert.equal(operations.goals.shared,64);assert.equal(operations.goals.universal,24);assert.equal(operations.goals.rows[0].pct,80);
 assert.equal(operations.jobs.payrollTotal,5);assert.equal(operations.jobs.payroll.length,1);assert.equal(operations.schedule.today[0].title,'Live Math');assert.equal(operations.leaderboard.rows[0].score,92);
+const selectedAttention=Ops.attentionModel({id:'a1',active:true,dateKey:today,all:false,studentIds:['u1'],message:'Selected only'},[],[{id:'u1',name:'Fifth'},{id:'u2',name:'Fourth'}],now);
+assert.equal(selectedAttention.active,true);assert.equal(selectedAttention.total,1);assert.deepEqual([...selectedAttention.waiting].map(row=>row.id),['u1']);
+const nonTarget=Ops.attentionModel({id:'a1',active:true,dateKey:today,all:false,studentIds:['u1'],message:'Selected only'},[],[{id:'u2',name:'Fourth'}],now);
+assert.equal(nonTarget.active,false,'selected attention must remain invisible to non-targeted students');
 console.log('V3.3 Teacher Operations contracts: PASS (pass dedupe + recognition + rewards + jobs + schedule + leaderboard)');

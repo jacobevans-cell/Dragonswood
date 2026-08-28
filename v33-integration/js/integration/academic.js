@@ -17,6 +17,15 @@
   const clamp=(value,min,max)=>Math.max(min,Math.min(max,number(value)));
   const mean=values=>values.length?values.reduce((sum,value)=>sum+number(value),0)/values.length:null;
   const round=value=>value===null?null:Math.round(value);
+  const studentId=row=>text(row?.studentId||row?.uid||row?.studentUid);
+  function normalizeWeights(value={}){
+    const daily=clamp(value.daily??value.dailyQuest??40,0,100);
+    const curriculum=clamp(value.curriculum??value.curriculumQuest??40,0,100);
+    const reading=clamp(value.reading??value.readingTests??20,0,100);
+    return daily+curriculum+reading===100
+      ?Object.freeze({daily,curriculum,reading})
+      :Object.freeze({daily:40,curriculum:40,reading:20});
+  }
 
   function writingMetrics(value){
     const responseText=String(value??'').slice(0,12000);
@@ -87,31 +96,40 @@
     return Object.freeze({scribe:Object.freeze({session,current,portfolio}),games:normalizeGameResults(gameResults)});
   }
 
-  function gradebook(roster=[],dailyRows=[],curriculumRows=[],gameRows=[]){
+  function gradebook(roster=[],dailyRows=[],curriculumRows=[],gameRows=[],weightSettings={}){
+    const weights=normalizeWeights(weightSettings);
     const games=normalizeGameResults(gameRows);
     const rows=roster.map(student=>{
-      const ownDaily=dailyRows.filter(row=>text(row.studentId)===student.id&&text(row.status)==='complete').map(row=>clamp(row.score,0,100));
-      const ownCurriculum=curriculumRows.filter(row=>text(row.studentId)===student.id).map(row=>row.accuracy??(number(row.questionsSeen)>0?number(row.questionsCorrect)/number(row.questionsSeen)*100:null)).filter(value=>value!==null);
+      const dailyRecords=dailyRows.filter(row=>studentId(row)===student.id);
+      const curriculumRecords=curriculumRows.filter(row=>studentId(row)===student.id);
+      const ownDaily=dailyRecords.filter(row=>text(row.status)==='complete').map(row=>clamp(row.score,0,100));
+      const ownCurriculum=curriculumRecords.map(row=>row.accuracy??(number(row.questionsSeen)>0?number(row.questionsCorrect)/number(row.questionsSeen)*100:null)).filter(value=>value!==null);
       const ownReading=games.filter(row=>row.studentId===student.id&&row.subject==='ELA').map(row=>row.score);
       const daily=round(mean(ownDaily)),curriculum=round(mean(ownCurriculum)),reading=round(mean(ownReading));
       const categories=[daily,curriculum,reading],missing=categories.filter(value=>value===null).length;
-      const available=[[daily,.4],[curriculum,.4],[reading,.2]].filter(([value])=>value!==null);
+      const available=[[daily,weights.daily],[curriculum,weights.curriculum],[reading,weights.reading]].filter(([value])=>value!==null);
       const total=available.length?Math.round(available.reduce((sum,[value,weight])=>sum+value*weight,0)/available.reduce((sum,[,weight])=>sum+weight,0)):0;
-      return Object.freeze({id:student.id,name:student.name,grade:student.grade,genderGroup:student.genderGroup,initial:(student.name[0]||'?').toUpperCase(),total,daily:daily??0,curriculum:curriculum??0,reading:reading??0,missing});
+      const assignments=[
+        ...dailyRecords.map(row=>({id:text(row.id||row.dateKey),category:'Daily Quest',title:text(row.title||row.missionTitle||row.dateKey,'Daily Quest'),score:text(row.status)==='complete'?clamp(row.score,0,100):null,status:text(row.status,'in-progress')})),
+        ...curriculumRecords.map(row=>({id:text(row.id||row.lessonId),category:'Curriculum Quest',title:text(row.lessonTitle||row.title||row.lessonId,'Curriculum Quest'),score:row.accuracy===undefined&&number(row.questionsSeen)===0?null:clamp(row.accuracy??number(row.questionsCorrect)/Math.max(1,number(row.questionsSeen))*100,0,100),status:text(row.status,'recorded')})),
+        ...games.filter(row=>row.studentId===student.id&&row.subject==='ELA').map(row=>({id:row.id,category:'Reading Tests',title:text(row.gameId,'Reading activity'),score:row.score,status:'complete'}))
+      ];
+      return Object.freeze({id:student.id,name:student.name,grade:student.grade,genderGroup:student.genderGroup,initial:(student.name[0]||'?').toUpperCase(),total,daily:daily??0,curriculum:curriculum??0,reading:reading??0,missing,assignments:Object.freeze(assignments.map(Object.freeze))});
     });
     const totals=rows.filter(row=>row.total>0).map(row=>row.total);
-    return Object.freeze({rows,classAverage:round(mean(totals))??0,missing:rows.reduce((sum,row)=>sum+row.missing,0),studentsWithMissing:rows.filter(row=>row.missing>0).length});
+    const assignedWork=new Set([...dailyRows.map(row=>`daily:${text(row.id||row.dateKey)}`),...curriculumRows.map(row=>`curriculum:${text(row.id||row.lessonId)}`),...games.map(row=>`reading:${row.id}`)]).size;
+    return Object.freeze({rows,classAverage:round(mean(totals))??0,missing:rows.reduce((sum,row)=>sum+row.missing,0),studentsWithMissing:rows.filter(row=>row.missing>0).length,assignedWork,weights});
   }
 
-  function teacherAcademic(roster,activeSession,writingRows,dailyRows,curriculumRows,gameRows){
+  function teacherAcademic(roster,activeSession,writingRows,dailyRows,curriculumRows,gameRows,weightSettings={}){
     const session=normalizeSession(activeSession||{});
     const responses=writingRows.map(normalizeResponse).filter(row=>!session||row.sessionId===session.id);
     const submitted=responses.filter(row=>row.status==='submitted').length;
     const drafting=responses.filter(row=>row.status==='draft').length;
     const aiScored=responses.filter(row=>row.aiStatus==='complete'||row.aiFeedback).length;
     const avgWords=round(mean(responses.map(row=>row.wordCount)))??0;
-    return Object.freeze({gradebook:gradebook(roster,dailyRows,curriculumRows,gameRows),scribe:Object.freeze({session,responses,submitted,drafting,aiScored,avgWords})});
+    return Object.freeze({gradebook:gradebook(roster,dailyRows,curriculumRows,gameRows,weightSettings),scribe:Object.freeze({session,responses,submitted,drafting,aiScored,avgWords})});
   }
 
-  return Object.freeze({GAME_CATALOG,writingMetrics,sessionResponseId,normalizeSession,normalizeResponse,writingPortfolio,normalizeGameResults,studentAcademic,gradebook,teacherAcademic});
+  return Object.freeze({GAME_CATALOG,writingMetrics,sessionResponseId,normalizeSession,normalizeResponse,writingPortfolio,normalizeGameResults,normalizeWeights,studentAcademic,gradebook,teacherAcademic});
 });

@@ -27,15 +27,15 @@ assert.doesNotMatch(teacher,/Assignment list opened in tester mode|CSV export re
 assert.doesNotMatch(teacher,/Open in V2/i);
 assert.match(teacher,/\.teacher-content,\.teacher-header-inner\{width:100%;max-width:none/,'teacher content no longer wastes the center gutter');
 assert.match(teacher,/font-size:12px/,'production readability floor is installed');
-for(const file of ['academic','operations','runtime'])assert.match(host,new RegExp(`js/integration/${file}\\.js\\?v=57\\.1\\.4`));
-assert.match(host,/js\/teacher-app\.js\?v=57\.1\.4/);
+for(const file of ['academic','operations','runtime'])assert.match(host,new RegExp(`js/integration/${file}\\.js\\?v=57\\.1\\.5`));
+assert.match(host,/js\/teacher-app\.js\?v=57\.1\.5/);
 
 const book=require('../js/integration/academic.js').gradebook(
  [{id:'s1',name:'Scholar',grade:'5',genderGroup:'girl'}],
  [{id:'d1',studentId:'s1',dateKey:'2026-08-28',status:'complete',score:80}],
  [{id:'c1',studentId:'s1',lessonTitle:'Decimals',accuracy:90}],
- [{id:'r1',studentId:'s1',gameId:'witches-test',subject:'ELA',status:'complete',score:100,xpAward:0,goldAward:0}],
- {daily:30,curriculum:50,reading:20}
+ [{id:'r1',studentId:'s1',bookId:'witches',dateKey:'2026-08-28',activeSeconds:1200,targetMinutes:20,firstPage:1,lastPage:8}],
+ {daily:30,curriculum:50,reading:20,readingTargetMinutes:20,readingAssignedDateKeys:['2026-08-28']}
 );
 assert.equal(book.rows[0].total,89);
 assert.equal(book.rows[0].assignments.length,3);

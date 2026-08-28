@@ -1,0 +1,172 @@
+{
+  "project": "demo-dragonswood-v33",
+  "passed": true,
+  "generatedAt": "2026-08-28T10:13:10.022Z",
+  "results": [
+    {
+      "name": "Auth emulator issued fictional identities",
+      "ok": true,
+      "detail": "9 accounts"
+    },
+    {
+      "name": "Demo Firestore seeded without production access",
+      "ok": true,
+      "detail": "demo-dragonswood-v33"
+    },
+    {
+      "name": "Application eligibility policy",
+      "ok": true,
+      "detail": "Explore + tester allowed; outsider/wrong teacher rejected"
+    },
+    {
+      "name": "Grade 4 own-profile read + mapping",
+      "ok": true,
+      "detail": "Fourth L3"
+    },
+    {
+      "name": "Grade 5 own-profile read + mapping",
+      "ok": true,
+      "detail": "L6 Mage"
+    },
+    {
+      "name": "Student cross-profile isolation",
+      "ok": true,
+      "detail": "other student denied"
+    },
+    {
+      "name": "Student daily progress query isolation",
+      "ok": true,
+      "detail": "2 own rows"
+    },
+    {
+      "name": "Current Daily Quest assignment read",
+      "ok": true,
+      "detail": "2026-08-28 • day 14"
+    },
+    {
+      "name": "Daily Quest progress persistence",
+      "ok": true,
+      "detail": "in-progress → complete → V3.3 mission state"
+    },
+    {
+      "name": "One pending extra pass across all types",
+      "ok": true,
+      "detail": "Bathroom pending blocks Snack request for the same scholar"
+    },
+    {
+      "name": "Curriculum canonical progress persistence",
+      "ok": true,
+      "detail": "owner create + constrained evidence update"
+    },
+    {
+      "name": "Scribe draft and one-time submission persistence",
+      "ok": true,
+      "detail": "deterministic owner record"
+    },
+    {
+      "name": "Scribe cross-student isolation",
+      "ok": true,
+      "detail": "other student denied"
+    },
+    {
+      "name": "Teacher Scribe review write",
+      "ok": true,
+      "detail": "score + feedback constrained to emulator"
+    },
+    {
+      "name": "Academic game result and reward caps",
+      "ok": true,
+      "detail": "valid result saved; oversized reward denied"
+    },
+    {
+      "name": "Witches verified reading time",
+      "ok": true,
+      "detail": "focused heartbeat accepted; oversized increment and cross-student read denied"
+    },
+    {
+      "name": "Daily Boss chest caps and isolation",
+      "ok": true,
+      "detail": "one owner chest accepted; oversized/cross-student access denied"
+    },
+    {
+      "name": "Egg hatch transaction rules",
+      "ok": true,
+      "detail": "new companion + duplicate Pet Token paths both accepted"
+    },
+    {
+      "name": "Student leaderboard read path",
+      "ok": true,
+      "detail": "weekly scores + issued rewards visible"
+    },
+    {
+      "name": "Curriculum cross-student isolation",
+      "ok": true,
+      "detail": "other student denied"
+    },
+    {
+      "name": "Unauthorized curriculum write denied",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Tester account eligibility read path",
+      "ok": true,
+      "detail": "own marker + profile readable"
+    },
+    {
+      "name": "Missing-profile neutral state",
+      "ok": true,
+      "detail": "authorized identity does not auto-create profile"
+    },
+    {
+      "name": "Class/pet edge cases",
+      "ok": true,
+      "detail": "unchosen class + no active pet map safely"
+    },
+    {
+      "name": "Authorized teacher roster read",
+      "ok": true,
+      "detail": "stable Firestore document IDs preserved"
+    },
+    {
+      "name": "Teacher Operations queue reads",
+      "ok": true,
+      "detail": "pending passes + recognition + active movement visible"
+    },
+    {
+      "name": "Teacher class reward write",
+      "ok": true,
+      "detail": "shared points updated only by authorized teacher"
+    },
+    {
+      "name": "Teacher gradebook aggregation",
+      "ok": true,
+      "detail": "Daily + Curriculum + verified Witches time"
+    },
+    {
+      "name": "Teacher launch → student Scribe visibility",
+      "ok": true,
+      "detail": "active session updated in emulator"
+    },
+    {
+      "name": "Teacher Attention acknowledgment and isolation",
+      "ok": true,
+      "detail": "teacher send + student acknowledgment + cross-student denial"
+    },
+    {
+      "name": "Authorized teacher curriculum evidence read",
+      "ok": true,
+      "detail": "canonical records visible"
+    },
+    {
+      "name": "Wrong teacher roster denied",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Unauthorized student profile write denied",
+      "ok": true,
+      "detail": "academic writes do not unlock profile mutation"
+    }
+  ]
+}

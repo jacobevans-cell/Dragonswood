@@ -51,7 +51,7 @@ def main():
         teacher=context.new_page();teacher.goto(f'{base}/v33-integration/teacher-test.html?dw-env=emulator#student-command',wait_until='domcontentloaded')
         sign_in(teacher,'jacobicusjax@gmail.com','DragonswoodV33TeacherIntegration');wait_authorized(teacher)
         teacher.get_by_role('heading',name='Choose Students').wait_for()
-        teacher.locator('[data-review-recognition]').click();teacher.get_by_role('heading',name='Recognition Requests').wait_for()
+        teacher.locator('.attention-strip .attention-item').filter(has_text='Recognition requests').click();teacher.get_by_role('heading',name='Recognition Requests').wait_for()
         teacher.locator('#dialog-root').get_by_role('button',name='Approve +1 XP',exact=True).click();teacher.locator('#toast').get_by_text('Recognition approved',exact=False).wait_for(timeout=10000)
 
         route(teacher,'passes','Pass Control')

@@ -129,6 +129,7 @@ async function attemptAuthenticatedWrite(account){
     await seed('classCalendarEvents','science-showcase',{title:'Science Showcase',icon:'🧪',dateKey:'2099-08-29',time:'1:30 PM'});
     await seed('scores','grade5-math',{studentId:accounts.grade5.uid,displayName:'Fifth',avatarEmoji:'🧙',assignmentId:'math-1',gameName:'Decimal Deception',subject:'Math',dateKey:today,score:92});
     await seed('scores','grade4-math',{studentId:accounts.grade4.uid,displayName:'Fourth',avatarEmoji:'🛡️',assignmentId:'math-1',gameName:'Decimal Deception',subject:'Math',dateKey:today,score:80});
+    await seed('scores','historic-browser-score',{studentId:'historic-browser',displayName:'Historic Scholar',assignmentId:'old-game',gameName:'Legacy Game',subject:'Math',dateKey:'2020-01-01',score:999});
     await seed('leaderboardRewards',`${today}_${accounts.grade5.uid}`,{studentId:accounts.grade5.uid,studentName:'Fifth',dateKey:today,weekKey:today,rank:1,goldAward:5,status:'issued'});
     await seed('dailyQuestProgress',`${accounts.grade5.uid}_${today}_exit_seed`,{studentId:accounts.grade5.uid,dateKey:today,day:14,session:'exit',status:'complete',score:100,correct:1,attempts:1});
     await seed('writingSessions','scribe-gate-1',{status:'active',title:'Emulator Quickwrite',prompt:'Describe the hidden gate using three sensory details.',minWords:5});

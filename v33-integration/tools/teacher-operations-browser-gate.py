@@ -57,7 +57,6 @@ def main():
           const fs=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');
           const db=fs.getFirestore(apps.getApp('DragonswoodV33TeacherIntegration'));
           await fs.setDoc(fs.doc(db,'classCalendarEvents','legacy-browser-event'),{title:'Legacy Browser Event',icon:'📅',category:'school',startDate:today,endDate:today,startTime:'09:15',endTime:'09:45'});
-          await fs.setDoc(fs.doc(db,'scores','historic-browser-score'),{studentId:'historic-browser',displayName:'Historic Scholar',assignmentId:'old-game',dateKey:'2020-01-01',score:999});
           await fs.setDoc(fs.doc(db,'classData','secondRecess'),{history:[{amount:1,reason:'Legacy class reward',at:'2026-08-01'}]},{merge:true});
         }""",{'today':today})
         teacher.locator('[data-open-passes]').get_by_text('2',exact=True).wait_for(timeout=10000)

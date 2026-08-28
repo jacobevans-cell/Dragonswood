@@ -1,126 +1,84 @@
-# START HERE NEXT — Dragonswood V3.3 Integration Candidate
+# START HERE NEXT — Dragonswood V57.1.7 Grade/Evidence Hardening
 
-This is the active continuation point for the master V3.3 integration thread.
+This is the active continuation point for the live V3.3 portal repair. Older `2258a321...` and Codespaces-only instructions are historical; do not branch from them or reinstall an old package over the current portal.
 
 ## Functional authority
 
 - Repository: `jacobevans-cell/Dragonswood`
-- Branch audited: `main`
-- **Current production commit:** `2258a321077a39ca71e36409d9bc6a1fb5bb3ecc`
-- Current commit message: `Retire disconnected V2 portal runtime`
-- Original V3.3 audit checkpoint: `beb1f5968268bf168c3d43b82bd79c69bc71ca0c`
-- Production advanced 23 commits after the original audit. The latest four commits integrate large modules into the current portal shell and retire disconnected V2 runtime files.
-- Read both production-delta ledgers before later-stage integration.
-- Production root and live Firestore data/rules have not been changed by this candidate.
+- Live branch: `main`
+- Live base for this repair: `9127f1a3f9efc01893c7ddb0629d3fcf6e282e7d`
+- Live release before this repair: `v57.1.6`
+- Repair branch: `codex/v33-grade-evidence-hardening`
+- Pre-repair rollback branch: `rollback/pre-v57.1.7-grade-evidence-hardening-20260828`
+- Candidate release: `v57.1.7`
 
-## Candidate branch
+The V57.1.6 Teacher Command daily-use repair is already merged and deployed. Preserve it. This branch is a focused grade-integrity, reading-evidence security, CSV, and acceptance-test repair; it is not a portal rebuild.
 
-Local Git branch: `v33-integration-safe`
+## V57.1.7 candidate behavior
 
-Original candidate commits retained in history:
+- Witches targets are stored in `readingTargetsByDate`, keyed by assignment date.
+- Legacy `readingAssignedDateKeys` records are normalized to a stable target snapshot without deleting data.
+- An unassigned Witches session is historical evidence only: `Recorded`, no numeric Witches score, and no total impact.
+- Every assigned date contributes one score. A missing date contributes `0`.
+- One complete day plus one missing day at equal targets produces Witches `50%`, `Incomplete`, `missing=1`, and `Provisional`.
+- Removing the last assignment removes Witches from active weighting while retaining the `readingSessions` evidence.
+- `Incomplete` can never be paired with `Complete evidence`; the total status comes from the same missing/evidence calculation.
+- ELA games and the old Witches comprehension game remain excluded from Witches Time.
+- CSV headers and evidence columns are corrected. Percentage export fails closed unless the hardened grade-integrity model is active and assigned evidence IDs pass integrity checks.
+- Student reading writes no longer carry a student-controlled target or heartbeat timestamp.
+- Firestore requires deterministic student/date document IDs, an assigned date, exact fields, immutable identity/book/date/create metadata, bounded pages, server timestamps, a minimum real-time interval, and increments of at most 20 seconds.
+- A real browser gate now proves reader heartbeat → Firestore rules → teacher gradebook and proves a hidden reader stops adding time.
 
-1. `f8f9acd` — freeze approved V3.3 integration baseline at production `beb1f596`
-2. `f43d7ea` — integrate read-only V3.3 identity and progression shell
-3. `ad97307` — record Stage 2–3 verification and next gate
-4. `b924ae1` — bundle controlling migration references for handoff continuity
-5. `33e4fee` — reconcile V3.3 gate with current production, harden emulator isolation, add executable Firebase gate and fresh pixel regression
+## Grade/report-card rules
 
+The Witches category is named `Witches Time`. Reading status is one of `Complete`, `Incomplete`, `Recorded`, or `Not assigned`. Every numeric total has one total status: `Complete evidence`, `Provisional`, or `Evidence review required`.
 
-A matching remote branch was retried from current `main` and still failed because the connected GitHub integration returns HTTP 403 on branch creation. Do **not** compensate by committing this work directly to `main`.
+Do not use or export this candidate's Witches/overall percentages as final report-card grades until the exact pull-request full gate passes. After promotion, a row marked `Provisional` or `Evidence review required` must still be reviewed before final-grade use.
 
-## What is integrated now
+## Verification
 
-- student Google Auth plumbing
-- production student/tester eligibility logic centralized in integration core
-- exact `students/{uid}` profile resolution
-- grade/group identity
-- production XP/level thresholds
-- HP / Gold / XP
-- class state
-- active-pet state
-- RPG inventory/equipment state
-- read-only school-day streak derived from authoritative Morning Quest completion dates
-- teacher Google Auth plumbing with a separately named Firebase app
-- exact teacher-email authorization
-- teacher roster reads keyed by Firestore document ID, never first name
-
-## Safety hardening now in place
-
-- Emulator mode initializes fictional project `demo-dragonswood-v33`, never the live project.
-- Live `dragonswood-9289e` config is selected only by the explicit production-readonly gate.
-- Stage 2–3 integration runtime contains no Firestore write primitives.
-- Test identities live only in `tools/visual-fixture-runtime.js`, which is not loaded by the real entry pages.
-- No production-loaded code contains a visual-test identity/bypass hook.
-- `firestore.gate.rules` is an emulator-only, read-only identity test ruleset.
-
-## Current verification
-
-Run static/local checks:
+Run the fast local gate:
 
 ```bash
-./tools/check-stage-2-3.sh
+bash v33-integration/tools/check-student-beta-release.sh
 ```
 
-Current local result:
-
-- integration-core tests PASS
-- 8 student authenticated route smoke renders PASS
-- 9 teacher authenticated route smoke renders PASS
-- 31-file V3.3 visual freeze PASS
-- emulator project isolation PASS
-- Stage 2–3 static safety checks PASS
-- 8/8 student pixel routes: 0 changed pixels
-- 9/9 teacher pixel routes: 0 changed pixels
-
-## Firebase baseline gate
-
-The real emulator suite was subsequently executed successfully in the
-Dragonswood Codespace at checkpoint `87822e5`. The durable result is recorded
-in `docs/CODESPACE-ACCEPTANCE-GATE-2026-08-26.md`.
-
-Re-run the gate after every material identity/rules/read-model change:
+Run the complete production-equivalent gate:
 
 ```bash
-./tools/run-firebase-gate.sh
+bash v33-integration/tools/run-student-beta-gate.sh
 ```
 
-It creates only fictional Auth users/data in `demo-dragonswood-v33` and verifies:
+The complete gate must use the exact root `firestore.rules` and must pass:
 
-1. normal Explore student
-2. tester account
-3. unauthorized account
-4. authorized teacher
-5. wrong teacher account
-6. missing student profile
-7. grade 4 profile
-8. grade 5 profile
-9. class chosen / class not chosen
-10. active pet / no active pet
-11. own-profile isolation / cross-profile denial
-12. scoped Daily Quest progress
-13. stable teacher roster IDs
-14. authenticated write denial
-15. all static checks
-16. all 17 visual pixel checks
+- all grade edge-case unit tests;
+- deterministic-ID, allowlist, assignment, server-time, rate, immutable-field, page-bound, spoofing, target-injection, and cross-student denial checks;
+- the real reader-heartbeat browser path and hidden-reader pause;
+- corrected CSV content and assignment-removal/history behavior;
+- all inherited authenticated student and teacher browser gates;
+- 31 protected CSS/art files unchanged;
+- eight student and nine teacher visual routes at zero changed pixels;
+- no production Firebase request from emulator tests.
 
-The original Stage 2–3 process gate is no longer pending. New subsystem gates
-remain required as feature wiring expands.
+## Promotion and rollback
 
-`CODESPACE-ONE-COMMAND.md` and `tools/install-into-dragonswood-repo.sh` remain
-the guarded bridge for reproducing the branch and gate. They never deploy or
-push `main`.
+Do not edit `main` directly. Promotion order:
 
-## After the Firebase gate passes
+1. Confirm remote `main` is still the recorded live base or reconcile every newer commit.
+2. Run the exact pull-request full gate.
+3. Show the changed-file list and gate result for explicit approval.
+4. Merge through the reviewed pull request.
+5. Verify GitHub Pages serves the `v57.1.7` academic/runtime/teacher cache keys.
+6. Publish the exact tested `firestore.rules` separately to Firebase project `dragonswood-9289e`.
+7. Run controlled signed-in student/teacher production acceptance before final-grade use.
 
-Re-query `main`. If it is still current or any new delta has been reconciled, proceed to Stage 4 using the **current** curriculum stack named in `docs/PRODUCTION-DELTA-2026-08-25.md`, not the package-era files.
+Code rollback and rules rollback are separate. Revert the promotion commit through normal Git history and restore the immediately prior Firebase rules version. Do not force-reset shared `main`, delete reading evidence, or convert historical records.
 
-## Read before continuing
+## Remaining work at this checkpoint
 
-- `docs/PRODUCTION-DELTA-2026-08-25.md`
-- `docs/PRODUCTION-DELTA-2026-08-26.md`
-- `docs/PRODUCTION-MAP.md`
-- `docs/ROLLBACK-PLAN.md`
-- `docs/STAGE-2-3-REPORT.md`
-- `docs/INTEGRATION-STATUS.md`
+- Push the candidate as one reviewable commit.
+- Open the pull request and obtain a green permanent V3.3 repair gate.
+- Obtain explicit merge approval.
+- After merge: verify Pages, publish the exact tested rules, and run controlled production acceptance.
 
-The original master-package `START-HERE.md` remains the controlling authority for the overall migration.
+Until those steps are complete, `main` remains the V57.1.6 live authority.

@@ -26,7 +26,7 @@ check(reader.includes("type:'dw-witches-reading-heartbeat'")&&reader.includes("d
 check(rules.includes('match /readingSessions/{sessionId}')&&rules.includes('request.resource.data.activeSeconds <= resource.data.activeSeconds + 20'),'reading security increment cap missing');
 
 const roster=[{id:'a',name:'A',grade:'4',genderGroup:'girl'},{id:'b',name:'B',grade:'5',genderGroup:'boy'}];
-const settings={daily:40,curriculum:40,reading:20,readingTargetMinutes:20,readingAssignedDateKeys:['2026-08-28']};
+const settings={daily:40,curriculum:40,reading:20,readingTargetMinutes:20,readingAssignedDateKeys:['2026-08-28'],readingTargetsByDate:{'2026-08-28':20}};
 const daily=[{id:'d1',studentId:'a',status:'complete',score:80},{id:'d2',studentId:'b',status:'complete',score:100}];
 const curriculum=[{id:'c1',studentId:'a',questionsSeen:10,questionsCorrect:9,accuracy:90},{id:'c2',studentId:'b',questionsSeen:10,questionsCorrect:10,accuracy:100}];
 const games=[{id:'ela-perfect',studentId:'a',gameId:'witches-test',subject:'ELA',status:'complete',score:100}];
@@ -37,5 +37,6 @@ check(a.reading===90,'teacher-assigned 20-minute target must override any studen
 check(a.total===86,'weighted total must use 80/90/90 without ELA game rescue');
 check(a.assignments.some(row=>String(row.evidence||'').includes('18/20 verified min')),'reading evidence is not teacher-readable');
 check(b.reading===0&&b.provisional===true&&b.missing>=1,'missing assigned reading must stay incomplete/provisional');
+check(b.totalStatus==='Provisional','missing assigned reading must never say Complete evidence');
 check(!a.assignments.some(row=>row.id==='ela-perfect'),'ELA game leaked into Witches reading grade');
 console.log('V3.3 teacher live evidence contracts: PASS (attention + multi-select + passes + points + goals + jobs + verified Witches grade)');

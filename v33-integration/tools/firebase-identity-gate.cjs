@@ -268,10 +268,10 @@ async function attemptAuthenticatedWrite(account){
 
     const scoreRows=await listDocs('scores',accounts.grade5.token);
     assert.equal(scoreRows.res.ok,true,JSON.stringify(scoreRows.body));
-    assert.equal((scoreRows.body.documents||[]).length,2);
+    assert.equal((scoreRows.body.documents||[]).length,3);
     const rewardRows=await listDocs('leaderboardRewards',accounts.grade5.token);
     assert.equal(rewardRows.res.ok,true,JSON.stringify(rewardRows.body));
-    record('Student leaderboard read path',true,'weekly scores + issued rewards visible');
+    record('Student leaderboard read path',true,'weekly + historic scores and issued rewards visible');
 
     const crossCurriculum=await getDoc('curriculumProgress',curriculumId,accounts.grade4.token);
     assert.equal(crossCurriculum.res.status,403,`Expected 403, got ${crossCurriculum.res.status}: ${crossCurriculum.text}`);

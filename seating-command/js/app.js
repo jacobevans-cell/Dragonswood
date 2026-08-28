@@ -1,16 +1,22 @@
 import { seatGeometry, evaluatePlan, generateCandidates, quickShuffle } from './optimizer.js';
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js';
-import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js';
-import { getFirestore, collection, doc, getDocs, getDoc, setDoc, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js';
+import { getAuth, onAuthStateChanged, connectAuthEmulator } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js';
+import { getFirestore, collection, doc, getDocs, getDoc, setDoc, addDoc, serverTimestamp, connectFirestoreEmulator } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js';
 
-const firebaseConfig = { apiKey: 'AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE', authDomain: 'dragonswood-9289e.firebaseapp.com', projectId: 'dragonswood-9289e', storageBucket: 'dragonswood-9289e.firebasestorage.app', messagingSenderId: '1064477064695', appId: '1:1064477064695:web:283e1016ee2303d39042f2' };
+const productionFirebaseConfig = { apiKey: 'AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE', authDomain: 'dragonswood-9289e.firebaseapp.com', projectId: 'dragonswood-9289e', storageBucket: 'dragonswood-9289e.firebasestorage.app', messagingSenderId: '1064477064695', appId: '1:1064477064695:web:283e1016ee2303d39042f2' };
+const emulatorFirebaseConfig = {apiKey:'demo-key',authDomain:'demo-dragonswood-v33.localhost',projectId:'demo-dragonswood-v33',storageBucket:'demo-dragonswood-v33.appspot.com',messagingSenderId:'000000000000',appId:'1:000000000000:web:demo-v33'};
 const TEACHER_EMAIL = 'jacobicusjax@gmail.com';
 const CLASSROOM_ID = 'evans-4-5';
 // Match Teacher Command's named app so its session-auth persistence is reused
 // inside the embedded seating workspace.
-const app = initializeApp(firebaseConfig, 'DragonswoodTeacherPortal');
+const useEmulator = new URLSearchParams(location.search).get('dw-env') === 'emulator';
+const app = initializeApp(useEmulator ? emulatorFirebaseConfig : productionFirebaseConfig, 'DragonswoodV33TeacherIntegration');
 const auth = getAuth(app);
 const db = getFirestore(app);
+if (useEmulator) {
+  try { connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true }); } catch {}
+  try { connectFirestoreEmulator(db, '127.0.0.1', 8080); } catch {}
+}
 const clone = value => JSON.parse(JSON.stringify(value));
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];

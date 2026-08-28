@@ -98,7 +98,7 @@ function showToast(message){
   toast.textContent = message;
   toast.classList.add('show');
   clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(()=>toast.classList.remove('show'),2400);
+  showToast.timer = setTimeout(()=>toast.classList.remove('show'),4200);
 }
 
 function openDialog(title, body, actions=''){

@@ -94,8 +94,8 @@ def main():
         first_goal.click(position={'x':20,'y':20});legacy_dialog=teacher.get_by_role('dialog');legacy_dialog.get_by_text('+1 • Legacy adjustment',exact=True).wait_for();assert '0 + 1 = 0' not in legacy_dialog.inner_text();legacy_dialog.get_by_role('button',name='Close evidence').click()
 
         route(teacher,'arcade','Arcade Time Command')
-        assert teacher.locator('#arcade-period').evaluate("el=>el.tagName")=='SELECT'
-        teacher.locator('#arcade-period').get_by_text('Live Emulator Math',exact=False).wait_for()
+        arcade_period=teacher.locator('#arcade-period');assert arcade_period.evaluate("el=>el.tagName")=='SELECT'
+        assert 'Live Emulator Math' in arcade_period.evaluate("el=>el.selectedOptions[0]?.textContent||''")
         assert teacher.get_by_text('One-time session refund',exact=True).count()==0
         arcade_checks=teacher.locator('[data-arcade-student]');assert arcade_checks.count()>=2
         arcade_checks.nth(0).check();arcade_checks.nth(1).check();teacher.get_by_role('heading',name='2 selected',exact=True).first.wait_for()

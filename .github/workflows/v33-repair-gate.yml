@@ -1,0 +1,44 @@
+name: V3.3 repair gate
+
+on:
+  push:
+    branches:
+      - codex/v33-teacher-evidence-witches-gate
+
+permissions:
+  contents: read
+
+jobs:
+  full-release-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repair
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Install test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ripgrep
+          python -m pip install --upgrade pip
+          python -m pip install pillow playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Run exact V3.3 production gate
+        run: bash v33-integration/tools/run-student-beta-gate.sh

@@ -55,6 +55,8 @@ const state = {
   scribeSession: null,
   scribeResponse: null,
   scribePortfolio: null,
+  reading: null,
+  classGoals: null,
   writingSaveTimer: null,
   worldConnected: false,
   world: null,
@@ -321,7 +323,7 @@ function adventurePage(){
     </article>
   </section>
   <div class="section-heading"><div><div class="eyebrow">🏰 Teamwork</div><h2>Our class quests</h2></div><span class="muted text-11">Every point helps the whole guild.</span></div>
-  <section class="quest-cards">${questCard('🌤️','Today','Second Recess','8 / 10',80,'Almost there! Just 2 more points to unlock it.')}${questCard('🐾','Class Quest','New Class Pet','72 / 100',72,'Keep making kind, ready choices.')}${questCard('🚌','Big Adventure','Field Trip','164 / 250',66,'Our adventure fund keeps growing.')}</section>`;
+  <section class="quest-cards">${(state.classGoals?.rows||[{icon:'🌤️',title:'Second Recess',points:8,goal:10,pct:80},{icon:'🐾',title:'Class Pet',points:72,goal:100,pct:72},{icon:'🚌',title:'Field Trip',points:164,goal:250,pct:66}]).map(goal=>questCard(goal.icon,'Live class goal',goal.title,`${goal.points} / ${goal.goal}`,goal.pct,`${Math.max(0,goal.goal-goal.points)} points remaining • synced live`)).join('')}</section>`;
 }
 
 const missions = [
@@ -332,10 +334,11 @@ const missions = [
 function missionsPage(){
   const completeCount=state.completedMissions.size;
   const optionalOpen=state.dailyAccessUnlocked===true;
+  const readingRows=state.reading?.rows||[],today=window.DWV33Core?.phoenixDateKey?.()||'',readingRow=readingRows.find(row=>row.dateKey===today)||readingRows.slice().sort((a,b)=>String(b.dateKey).localeCompare(String(a.dateKey)))[0],readingMinutes=readingRow?Math.round(readingRow.activeSeconds/6)/10:0,readingTarget=state.reading?.targetMinutes||20,readingAssigned=(state.reading?.assignedDateKeys||[]).includes(today);
   return `${studentTitle('📜','Daily Missions','Your quest path','Finish the glowing mission first. Then choose a bonus adventure.')}
     <div class="panel path-summary"><div class="path-count"><strong>${completeCount}</strong><small>of 3</small></div><div class="path-copy"><div class="eyebrow">TODAY’S PROGRESS</div><b>One mission at a time.</b><div>${optionalOpen?'Morning Work is complete. Games, Scribe Arena, Boss Battle, Kingdom Wars, and Arcade are available.':'Games and optional adventures unlock after Morning Work.'}</div></div><div class="path-lock">${optionalOpen?'🔓 Adventures open':'🔒 Adventures locked'}</div></div>
     <div class="mission-list">${missions.map((m,i)=>missionRow(m,i)).join('')}</div>
-    <div class="mission-extra"><article class="panel extra-card"><div class="extra-icon">📖</div><div><div class="extra-kicker">CLASS READING</div><h3>The Witches</h3><p>Continue from page 46. Page memory and read-aloud are ready.</p></div><button class="btn btn-secondary btn-sm" data-module="class-reader">Open reader</button></article><article class="panel extra-card"><div class="extra-icon">⭐</div><div><div class="extra-kicker">BONUS CHALLENGE</div><h3>Level-Up Mission</h3><p>Ready for more? Try a mission one level above.</p></div><button class="btn btn-secondary btn-sm" data-module="level-up-challenge">Try the challenge</button></article></div>`;
+    <div class="mission-extra"><article class="panel extra-card"><div class="extra-icon">📖</div><div><div class="extra-kicker">${readingAssigned?'ASSIGNED CLASS READING':'CLASS READING'}</div><h3>The Witches</h3><p>${readingMinutes}/${readingTarget} verified active minutes${readingRow?.lastPage?` • last page ${readingRow.lastPage}`:''}. Time pauses when the reader is hidden or idle.</p></div><button class="btn btn-secondary btn-sm" data-module="class-reader">${readingAssigned&&readingMinutes<readingTarget?'Continue reading':'Open reader'}</button></article><article class="panel extra-card"><div class="extra-icon">⭐</div><div><div class="extra-kicker">BONUS CHALLENGE</div><h3>Level-Up Mission</h3><p>Ready for more? Try a mission one level above.</p></div><button class="btn btn-secondary btn-sm" data-module="level-up-challenge">Try the challenge</button></article></div>`;
 }
 function missionRow(m,i){
   const done=state.completedMissions.has(m.id);
@@ -439,7 +442,7 @@ function kingdomPage(){
 
 function escapeHtml(value){return String(value??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 
-function applyStudentModel(model,academic,world,passes,poll,attention,kingdomAccess){
+function applyStudentModel(model,academic,world,passes,poll,attention,kingdomAccess,classGoals){
   if(!model)return;
   const accessWasUnlocked=state.dailyAccessUnlocked===true;
   const priorAttentionId=state.attention?.id;
@@ -463,9 +466,11 @@ function applyStudentModel(model,academic,world,passes,poll,attention,kingdomAcc
     state.academicConnected=true;state.scribeSession=academic.scribe.session||null;state.scribeResponse=academic.scribe.current||null;state.scribePortfolio=academic.scribe.portfolio||null;
     if(state.scribeResponse)state.writing=state.scribeResponse.responseText||'';
   }
+  if(academic?.reading)state.reading=academic.reading;
   if(world){state.worldConnected=true;state.world=world;}
   if(passes)state.passes=passes;
   if(poll)state.poll=poll;
+  if(classGoals)state.classGoals=classGoals;
   if(state.attention?.active&&!state.attention.acknowledgedByMe&&state.attention.id!==priorAttentionId){location.hash=attentionDestinationHash(state.attention.destination);setTimeout(()=>playTeacherAttentionChime(state.attention.id),0)}
 }
 function setMissionStatus(id,status){
@@ -473,6 +478,11 @@ function setMissionStatus(id,status){
   else state.completedMissions.delete(id);
 }
 function handleModuleState(event){
+  if(event.origin===location.origin&&event.data?.type==='dw-witches-reading-heartbeat'){
+    const frame=app.querySelector('[data-module-frame]');
+    if(frame&&event.source===frame.contentWindow)integrationController?.recordReadingActivity?.(event.data).catch(err=>console.warn('[Witches reading time]',err));
+    return;
+  }
   if(event.origin!==location.origin||event.data?.channel!=='dw-v33-module')return;
   const frame=app.querySelector('[data-module-frame]');
   const fromVisibleModule=!!frame&&event.source===frame.contentWindow,fromRecoveryProbe=!!recoveryProbe&&event.source===recoveryProbe.contentWindow;
@@ -615,7 +625,7 @@ window.addEventListener('message',handleModuleState);
   integrationController=await window.DWV33Integration.startStudent(session=>{
     integrationSession=session;
     const previousPassSignature=passModelSignature();
-    if(session.status==='authorized')applyStudentModel(session.student,session.academic,session.world,session.passes,session.poll,session.attention,session.kingdomAccess);
+    if(session.status==='authorized')applyStudentModel(session.student,session.academic,session.world,session.passes,session.poll,session.attention,session.kingdomAccess,session.classGoals);
     const passChanged=previousPassSignature!==passModelSignature();
     if(passChanged||!currentModuleId()||!app.querySelector('[data-module-frame]'))render();else syncPassSafety();
   });

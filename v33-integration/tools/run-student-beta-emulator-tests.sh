@@ -10,3 +10,4 @@ python -u tools/teacher-operations-browser-gate.py
 python -u tools/student-beta-browser-gate.py
 python -u tools/curriculum-stability-browser-gate.py
 python -u tools/hall-profile-math-browser-gate.py
+python -u tools/teacher-portal-repair-browser-gate.py

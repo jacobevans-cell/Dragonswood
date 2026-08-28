@@ -57,7 +57,8 @@
       for(const row of Array.isArray(items)?items:[]){
         if(row?.active!==true||text(row.dateKey)!==today)continue;
         const type=text(row.type,base.type),kind=type==='office'?'Office':type==='outOfSeat'?'Out of Seat':base.kind;
-        rows.push(Object.freeze({id:text(row.id),collection,studentId:text(row.studentId||row.id),name:text(row.studentName||row.displayName,'Student'),kind,type,time:text(row.startedAtText||row.leftAtText,'just now'),startedMs:number(row.startedMs||row.leftMs)}));
+        const startedMs=number(row.startedMs||row.leftMs||timestamp(row.startedAt||row.leftAt));
+        rows.push(Object.freeze({id:text(row.id),collection,studentId:text(row.studentId||row.id),name:text(row.studentName||row.displayName,'Student'),kind,type,time:text(row.startedAtText||row.leftAtText)||elapsed({createdAt:startedMs?new Date(startedMs).toISOString():null},date),startedMs}));
       }
     }
     return Object.freeze(rows.sort((a,b)=>a.startedMs-b.startedMs||a.name.localeCompare(b.name)));
@@ -112,11 +113,13 @@
     const dateKey=Core.phoenixDateKey(date),id=text(activeAttention?.id),active=activeAttention?.active===true&&text(activeAttention?.dateKey)===dateKey&&!!id;
     const rows=(Array.isArray(events)?events:[]).filter(row=>!row.dateKey||text(row.dateKey)===dateKey).slice().sort((a,b)=>timestamp(b.createdAt||b.updatedAt)-timestamp(a.createdAt||a.updatedAt)).slice(0,100);
     const acknowledged=new Set(rows.filter(row=>text(row.attentionId)===id&&text(row.type)==='acknowledged').map(row=>text(row.studentId)));
+    const all=activeAttention?.all!==false,allowedIds=new Set(Array.isArray(activeAttention?.studentIds)?activeAttention.studentIds.map(text).filter(Boolean):[]),audience=all?(students||[]):(students||[]).filter(row=>allowedIds.has(text(row.id))),audienceActive=active&&(all||audience.length>0);
     return Object.freeze({
-      id,active,title:text(activeAttention?.title,'Teacher Direction'),message:text(activeAttention?.message),destination:text(activeAttention?.destination,'missions'),
+      id,active:audienceActive,title:text(activeAttention?.title,'Teacher Direction'),message:text(activeAttention?.message),destination:text(activeAttention?.destination,'missions'),
+      all,studentIds:Object.freeze([...allowedIds]),
       requireAcknowledgment:activeAttention?.requireAcknowledgment!==false,createdAtMs:number(activeAttention?.createdAtMs),
-      acknowledged:acknowledged.size,total:Array.isArray(students)?students.length:0,
-      waiting:Object.freeze((students||[]).filter(row=>!acknowledged.has(text(row.id))).map(row=>Object.freeze({id:text(row.id),name:text(row.name,'Scholar')}))),
+      acknowledged:audience.filter(row=>acknowledged.has(text(row.id))).length,total:audience.length,
+      waiting:Object.freeze(audience.filter(row=>!acknowledged.has(text(row.id))).map(row=>Object.freeze({id:text(row.id),name:text(row.name,'Scholar')}))),
       events:Object.freeze(rows.map(row=>Object.freeze({...row})))
     });
   }

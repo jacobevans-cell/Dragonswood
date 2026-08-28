@@ -124,7 +124,7 @@ def main():
         teacher.locator('[data-save-schedule]').click();teacher.locator('#toast').get_by_text('schedule saved to the fictional Firebase emulator.',exact=False).wait_for(timeout=10000)
 
         route(teacher,'leaderboards','Leaderboard Command');assert teacher.get_by_text('Historic Scholar',exact=True).count()==0
-        teacher.get_by_role('button',name='All Time').click();teacher.get_by_role('heading',name='All-Time XP Standings').wait_for();teacher.get_by_text('Historic Scholar',exact=True).wait_for(timeout=10000);assert teacher.locator('[data-reward-leaders]').count()==0
+        teacher.get_by_role('button',name='All Time').click();teacher.get_by_role('heading',name='All-Time XP Standings').wait_for();historic=teacher.get_by_text('Historic Scholar',exact=True);historic.first.wait_for(timeout=10000);assert historic.count()>=2 and teacher.locator('[data-reward-leaders]').count()==0
         teacher.get_by_role('button',name='This Week').click();teacher.get_by_role('heading',name='Weekly XP Standings').wait_for();teacher.locator('[data-reward-leaders]').click();teacher.locator('#confirm-leader-rewards').click()
         teacher.locator('#toast').get_by_text('new weekly leaderboard reward',exact=False).wait_for(timeout=10000)
 

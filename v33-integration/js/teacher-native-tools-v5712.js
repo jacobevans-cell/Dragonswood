@@ -81,9 +81,6 @@ setArcadeClass=function(enabled){
     closeDialog();
     await runArcade(async()=>{
       await arcadeTeacher.setAvailability(enabled);
-      // Compatibility bridge: mirror the class switch to current roster records.
-      // The V57.1.12 backend also enforces the class switch as the master gate.
-      await Promise.all(students.map(student=>arcadeTeacher.setAvailability(enabled,student.id)));
       const ids=[...state.selected];
       if(ids.length){const pairs=await Promise.all(ids.map(async uid=>[uid,await arcadeTeacher.getState(uid,DAILY_ARCADE_PERIOD)]));for(const [id,value] of pairs)state.arcadeRows[id]=value}
     },`Class Arcade Time ${enabled?'opened':'locked'}.`);
@@ -125,4 +122,5 @@ bind=function(){
     if(frame.contentDocument?.readyState==='complete')prepare();
   }
 };
+queueMicrotask(()=>{if(integrationSession?.status==='authorized')render()});
 })();

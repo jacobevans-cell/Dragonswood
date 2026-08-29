@@ -79,8 +79,15 @@ def main():
         set_emulator_document('classData','gradebookSettings',{'daily':40,'curriculum':40,'reading':20,'readingTargetMinutes':20,'readingAssignedDateKeys':[date_key],'readingTargetsByDate':{date_key:1},'gradeIntegrityVersion':2})
 
         student=student_context.new_page();student.goto(f'{base}/v33-integration/student-test.html?dw-env=emulator#module/class-reader',wait_until='domcontentloaded');sign_in(student,'grade4@explore.academy','[DEFAULT]');wait_authorized(student)
-        frame=student.frame_locator('iframe[title="The Witches Class Reader"]');frame.locator('body').wait_for(timeout=30000);student.bring_to_front();frame.locator('body').click(position={'x':120,'y':120});
-        student.wait_for_function("() => state.reading?.rows?.some(row => row.dateKey === DWV33Core.phoenixDateKey() && row.activeSeconds >= 15)",timeout=30000)
+        iframe=student.locator('iframe[title="The Witches Class Reader"]');iframe.wait_for(timeout=30000)
+        deadline=time.monotonic()+30;reader=None
+        while time.monotonic()<deadline and reader is None:
+            reader=next((candidate for candidate in student.frames if 'witches-reader.html' in candidate.url),None)
+            if reader is None: student.wait_for_timeout(100)
+        if reader is None: raise AssertionError('The real Witches reader iframe did not load')
+        reader.wait_for_function("() => typeof markDragonswoodReadingActive==='function' && typeof DRAGONSWOOD_READING_HEARTBEAT_MS==='number'",timeout=30000)
+        student.bring_to_front();reader.locator('body').click(position={'x':120,'y':120});reader.wait_for_function("() => dragonswoodLastReadingActivity > 0 && document.hasFocus()",timeout=10000)
+        student.wait_for_function("() => state.reading?.rows?.some(row => row.dateKey === DWV33Core.phoenixDateKey() && row.activeSeconds >= 15)",timeout=35000)
         stored=student.evaluate("() => state.reading.rows.find(row => row.dateKey === DWV33Core.phoenixDateKey())")
         assert stored['activeSeconds']==15,stored
 

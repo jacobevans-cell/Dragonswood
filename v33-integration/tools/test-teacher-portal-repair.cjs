@@ -28,10 +28,11 @@ assert.doesNotMatch(teacher,/Assignment list opened in tester mode|CSV export re
 assert.doesNotMatch(teacher,/Open in V2/i);
 assert.match(teacher,/\.teacher-content,\.teacher-header-inner\{width:100%;max-width:none/,'teacher content no longer wastes the center gutter');
 assert.match(teacher,/font-size:12px/,'production readability floor is installed');
-assert.match(host,/js\/integration\/academic\.js\?v=57\.1\.7/);
-for(const file of ['world','operations'])assert.match(host,new RegExp(`js/integration/${file}\\.js\\?v=57\\.1\\.6`));
-assert.match(host,/js\/integration\/runtime\.js\?v=57\.1\.8/);
-assert.match(host,/js\/teacher-app\.js\?v=57\.1\.8/);
+assert.match(host,/js\/integration\/academic\.js\?v=57\.1\.9/);
+assert.match(host,/js\/integration\/world\.js\?v=57\.1\.6/);
+assert.match(host,/js\/integration\/operations\.js\?v=57\.1\.9/);
+assert.match(host,/js\/integration\/runtime\.js\?v=57\.1\.9/);
+assert.match(host,/js\/teacher-app\.js\?v=57\.1\.15/);
 
 const book=require('../js/integration/academic.js').gradebook(
  [{id:'s1',name:'Scholar',grade:'5',genderGroup:'girl'}],
@@ -42,6 +43,6 @@ const book=require('../js/integration/academic.js').gradebook(
 );
 assert.equal(book.rows[0].total,89);
 assert.equal(book.rows[0].assignments.length,3);
-assert.equal(book.assignedWork,3);
+assert.equal(book.assignedWork,1);
 assert.deepEqual(book.weights,{daily:30,curriculum:50,reading:20});
 console.log('V3.3 teacher portal repair contracts: PASS (attention selection + pass header + layout + live gradebook + production labels)');

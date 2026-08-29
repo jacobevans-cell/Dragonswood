@@ -1,6 +1,6 @@
-import {GAMES,BOARDS} from './game-registry.js?v=57.1.14';
-import {initLeaderboard,submitBestScore,getTop} from './leaderboard-service.js?v=57.1.14';
-import {getFirebaseContext} from './access-client.js?v=57.1.14';
+import {GAMES,BOARDS} from './game-registry.js?v=57.1.15';
+import {initLeaderboard,submitBestScore,getTop} from './leaderboard-service.js?v=57.1.15';
+import {getFirebaseContext} from './access-client.js?v=57.1.15';
 const $=selector=>document.querySelector(selector);
 const screens=[...document.querySelectorAll('.screen')];
 const CONFIG=window.DRAGONSWOOD_ARCADE_CONFIG||{};
@@ -87,4 +87,4 @@ async function startArcadeShell(){
   await initLeaderboard(text=>{$('#cloudBadge').textContent=text});
 }
 startArcadeShell().catch(console.warn);
-if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js?v=57.1.14').catch(()=>{});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js?v=57.1.15').catch(()=>{});

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="arcade-auth-pending">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
@@ -7,8 +7,9 @@
   <title>Dragonswood Arcade</title>
   <link rel="icon" href="assets/dragonswood-arcade-crest.svg" type="image/svg+xml" />
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="style.css?v=57.1.14" />
-  <link rel="stylesheet" href="access.css?v=57.1.14" />
+  <link rel="stylesheet" href="style.css?v=57.1.15" />
+  <link rel="stylesheet" href="access.css?v=57.1.15" />
+  <style>.arcade-auth-pending #app{visibility:hidden}.arcade-return-link{display:inline-flex;align-items:center;text-decoration:none}</style>
 </head>
 <body>
   <div class="ambient" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -19,6 +20,7 @@
         <span><strong>DRAGONSWOOD</strong><small>ARCADE</small></span>
       </button>
       <div class="header-actions">
+        <a class="header-chip arcade-return-link" href="../index.html#adventure">← <span>Dragonswood</span></a>
         <button id="leaderboardBtn" class="header-chip">🏆 <span>Leaderboard</span></button>
         <button id="profileBtn" class="profile-chip"><span class="avatar-dot">🐉</span><span><small>ADVENTURER</small><strong id="profileName">Adventurer</strong></span></button>
       </div>
@@ -85,7 +87,7 @@
       </form>
     </dialog>
   </div>
-  <script src="js/arcade-config.js?v=57.1.14"></script>
-  <script type="module" src="js/access-bootstrap.js?v=57.1.14"></script>
+  <script src="js/arcade-config.js?v=57.1.15"></script>
+  <script type="module" src="js/access-bootstrap.js?v=57.1.15"></script>
 </body>
 </html>

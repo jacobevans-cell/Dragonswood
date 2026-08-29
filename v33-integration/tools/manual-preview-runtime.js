@@ -16,7 +16,7 @@
   root.DWV33Integration=Object.freeze({
     version:'manual-preview-v1',environment:'manual-preview',
     async startStudent(onUpdate){
-      queueMicrotask(()=>onUpdate({status:'authorized',environment:'manual-preview',user:{uid:store.STUDENT_UID,email:'preview-student@example.invalid',displayName:'Jacob'},student:{uid:store.STUDENT_UID,email:'preview-student@example.invalid',firstName:'Jacob',initial:'J',displayName:'Jacob the Dragon Keeper',grade:'5',genderGroup:'tester',hp:48,gold:385,xp:1520,level:12,xpFloor:0,xpNext:2000,xpPct:76,streak:7,classId:'warrior',classLabel:'Warrior',activePet:'nyx',petName:'Nyx',inventory:[],equipped:{},title:'dragonkeeper',narrationVoice:'',profileMissing:false,morningWorkComplete:true,dailyAccessOverride:false,dailyAccessUnlocked:true}}));
+      queueMicrotask(()=>onUpdate({status:'authorized',environment:'manual-preview',user:{uid:store.STUDENT_UID,email:'preview-student@example.invalid',displayName:'Jacob'},student:{uid:store.STUDENT_UID,email:'preview-student@example.invalid',firstName:'Jacob',initial:'J',displayName:'Jacob the Dragon Keeper',grade:'5',genderGroup:'tester',hp:48,gold:385,xp:1520,level:12,xpFloor:0,xpNext:2000,xpPct:76,streak:7,classId:'warrior',classLabel:'Warrior',activePet:'nyx',petName:'Nyx',inventory:[],equipped:{},title:'dragonkeeper',narrationVoice:'',profileMissing:false,morningWorkComplete:true,dailyAccessOverride:false,dailyAccessUnlocked:true},kingdomAccess:{unlocked:true}}));
       return {async signIn(){},async signOut(){},dispose(){}};
     },
     async startTeacher(onUpdate){
@@ -27,7 +27,10 @@
 
   root.DWV33ArcadePortal=Object.freeze({
     getAccess:async()=>store.getAccess(store.STUDENT_UID),
-    href:()=>new URL('../arcade/manual-preview.html',location.href).href
+    startSession:async()=>store.startSession(store.STUDENT_UID),
+    preflight:async()=>true,
+    href:()=>new URL('../arcade/manual-preview.html',location.href).href,
+    navigate(){location.assign(this.href())}
   });
   root.DWV33ArcadeTeacher=Object.freeze({
     enabled:true,
@@ -36,7 +39,12 @@
     setAvailability:async(enabled,uid='')=>store.setAvailability(enabled,uid),
     refund:async(uid,sessionId,reason)=>store.refund(uid,sessionId,reason)
   });
-  root.DWV33KingdomPortal=Object.freeze({href:()=>new URL('../kingdom-manual-preview.html',location.href).href});
+  root.DWV33KingdomPortal=Object.freeze({href:()=>{
+    const url=new URL('../kingdom-test.html',location.href);
+    url.searchParams.set('dwEmbed','1');
+    url.searchParams.set('dw-env','emulator');
+    return url.href;
+  }});
   root.addEventListener?.('storage',event=>{if(event.key===store.STORAGE_KEY)root.refreshArcadePortal?.()});
   root.addEventListener?.('message',event=>{if(event.origin===location.origin&&event.data?.channel==='dw-v33-manual-preview'&&event.data?.type==='arcade-state-changed')root.refreshArcadePortal?.()});
 })(typeof globalThis!=='undefined'?globalThis:this);

@@ -11,7 +11,7 @@ const css=read('v33-integration/overrides/teacher-gradebook-cards.css');
 const liveGradebook=app.slice(app.indexOf('function gradebookPage(){'),app.indexOf('function gradeClass('));
 
 assert.match(rootTeacher,/overrides\/teacher-gradebook-cards\.css\?v=57\.1\.8/,'live Teacher Command must load the approved gradebook-card layer');
-assert.match(rootTeacher,/js\/teacher-app\.js\?v=57\.1\.8/,'live Teacher Command must cache-bust the card-layout app');
+assert.match(rootTeacher,/js\/teacher-app\.js\?v=57\.1\.15/,'live Teacher Command must cache-bust the card-layout app');
 assert.match(liveGradebook,/<details class="gradebook-student-card/,'live gradebook must use the preferred full-width expandable scholar cards');
 assert.match(liveGradebook,/gradebook-card-head/,'live gradebook must render the V2-style summary row');
 assert.match(liveGradebook,/gradebook-student-body/,'live cards must retain assignment evidence expansion');

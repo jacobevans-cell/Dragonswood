@@ -33,10 +33,11 @@ const second='second-preview-student';
 assert.equal(store.getTeacherState(second,'p1').tokens,0);
 store.award(second,'ready','p1');
 store.award(second,'ready','p1');
-assert.equal(store.getTeacherState(second,'p1').tokens,1,'same criterion cannot be awarded twice in a period');
+assert.equal(store.getTeacherState(second,'p1').tokens,1,'same criterion cannot be awarded twice in a Phoenix school day');
 store.award(second,'responsible','p1');store.award(second,'complete','p1');
 store.award(second,'ready','p2');
-assert.equal(store.getTeacherState(second,'p2').tokens,3,'wallet remains capped at three');
+assert.equal(store.getTeacherState(second,'p2').tokens,3,'period changes cannot re-award a daily criterion');
+assert.equal(store.getTeacherState(second,'p2').periodId,'daily_tokens');
 
 store.setAvailability(false,second);
 assert.equal(store.getTeacherState(second,'p1').teacherEnabled,false,'individual lock closes Arcade');

@@ -6,7 +6,7 @@ function storageSet(key, value){try{localStorage.setItem(`${TESTER_KEY}:${key}`,
 function storedRecoverySummary(){try{const value=JSON.parse(storageGet('recovery-summary','{}'));return value&&typeof value==='object'?value:{}}catch{return {}}}
 const toast = document.querySelector('#toast');
 const dialogRoot = document.querySelector('#dialog-root');
-let integrationController=null,recoveryProbe=null;
+let integrationController=null,recoveryProbe=null,arcadeEntering=false;
 let integrationSession={status:'loading',message:'Loading Dragonswood identity…'};
 let passSafetyInterval=null;
 const passFallbackStarts=new Map();
@@ -75,9 +75,6 @@ const state = {
   recoverySummary: storedRecoverySummary(),
   kingdomAccessUnlocked: false,
   attention: null,
-  arcadeStatus: 'idle',
-  arcadeAccess: null,
-  arcadeOpen: false,
   passes: null,
   poll: null
 };
@@ -225,6 +222,10 @@ async function acknowledgeTeacherAttention(button){
 function currentPage(){
   if(blockingPass())return 'adventure';
   const hash = location.hash.replace('#','');
+  if(hash==='arcade'){
+    globalThis.history?.replaceState?.(null,'','#adventure');
+    return 'adventure';
+  }
   const moduleId=moduleHost?.routeId(hash);
   if(moduleId){
     const gate=moduleHost.allowed(moduleId,{dailyAccessUnlocked:state.dailyAccessUnlocked});
@@ -297,7 +298,6 @@ function pageMarkup(){
     case 'leaderboards': return leaderboardPage();
     case 'poll': return pollPage();
     case 'kingdom': return kingdomPage();
-    case 'arcade': return arcadePage();
     default: return adventurePage();
   }
 }
@@ -427,15 +427,6 @@ function pollPage(){
   return `${studentTitle('📝','Class Poll','Share one answer','Choose once. Results update live for the class.')}<article class="panel teacher-form"><div class="eyebrow">LIVE QUESTION</div><h2>${escapeHtml(poll.question||'Class Poll')}</h2><div class="stack mt-12">${choices.map((choice,index)=>{const count=Number(poll.counts?.[index])||0,pct=total?Math.round(count/total*100):0,voted=poll.myChoice===index;return `<div class="pass-card"><button class="btn ${voted?'btn-primary':'btn-secondary'} w-full" type="button" data-poll-choice="${index}" ${poll.myChoice!==null?'disabled':''}>${voted?'✓ ':''}${escapeHtml(choice)}</button><div class="xp-labels"><span>${count} vote${count===1?'':'s'}</span><span>${pct}%</span></div><progress class="dw-progress" max="100" value="${pct}">${pct}%</progress></div>`}).join('')}</div><p class="center muted mt-12">${poll.myChoice===null?'Choose one answer.':`Your vote is saved. ${total} total vote${total===1?'':'s'}.`}</p></article>`;
 }
 
-function arcadePage(){
-  if(state.arcadeOpen&&state.arcadeAccess?.teacherEnabled){
-    return `<section class="v33-module-shell"><div class="v33-module-toolbar"><div class="v33-module-heading"><span>🕹️</span><div><small>FREE-TIME ADVENTURE</small><h2>Dragonswood Arcade</h2></div></div><button class="btn btn-secondary btn-sm" type="button" data-arcade-close>Back</button></div><div class="v33-module-stage"><iframe class="v33-module-frame" title="Dragonswood Arcade" src="${escapeHtml(arcadePortal.href())}"></iframe></div></section>`;
-  }
-  const a=state.arcadeAccess||{},count=Math.max(0,Math.min(3,Number(a.tokens)||0));
-  const ready=a.teacherEnabled===true&&(count===3||a.active===true),loading=state.arcadeStatus==='loading';
-  return `${studentTitle('🕹️','Free-time currency','Arcade Time','Earn Ready, Responsible, and Complete Tokens. Three Tokens unlock one teacher-approved 30-minute session.')}<section class="adventure-grid"><article class="panel adventurer-card"><div class="adventurer-info"><span class="rarity-chip">ARCADE TOKEN WALLET</span><h2>${count} / 3 Tokens</h2><p>Your wallet cannot hold more than three.</p><div class="stat-row">${[1,2,3].map(i=>`<div class="stat-box"><strong>${i<=count?'🪙':'○'}</strong><small>${i<=count?'Earned':'Empty'}</small></div>`).join('')}</div><button class="btn btn-secondary w-full" type="button" data-arcade-refresh ${loading?'disabled':''}>${loading?'Checking…':'Refresh access'}</button></div></article><article class="panel next-step"><div class="eyebrow">${a.teacherEnabled?'ARCADE TIME OPEN':'TEACHER LOCK'}</div><div class="next-icon">${a.teacherEnabled?'🕹️':'🔒'}</div><h2>${a.active?'Session in progress':a.teacherEnabled?'Ready when you have 3 Tokens':'Arcade is closed right now'}</h2><p>${a.active?'Your authoritative timer follows you across refreshes, tabs, and devices.':a.teacherEnabled?'Spend all 3 Tokens inside the Arcade to start exactly 30 minutes.':'Like a field trip or second recess, Arcade opens only when your teacher activates it.'}</p><button class="btn btn-primary w-full" type="button" data-arcade-enter ${ready?'':'disabled'}>${a.active?'Return to Arcade':'Open Arcade Time'}</button><p class="center muted mt-12 text-11">Games record scores only • No Gold, XP, or Tokens from gameplay</p></article></section>`;
-}
-
 function kingdomPage(){
   return `<section class="v33-module-shell"><div class="v33-module-toolbar"><div class="v33-module-heading"><span>🏰</span><div><small>TEACHER UNLOCK REQUIRED</small><h2>Kingdom Wars</h2></div></div><button class="btn btn-secondary btn-sm" type="button" data-page="adventure">Back</button></div><div class="v33-module-stage"><iframe class="v33-module-frame" title="Kingdom Wars${IS_PRODUCTION?' student beta':' tester realm'}" src="${escapeHtml(kingdomPortal.href())}"></iframe></div></section>`;
 }
@@ -533,13 +524,10 @@ function bindAuthGate(){
 }
 
 function bind(){
-  app.querySelectorAll('[data-page]').forEach(el=>el.addEventListener('click',()=>openPage(el.dataset.page)));
+  app.querySelectorAll('[data-page]').forEach(el=>el.addEventListener('click',()=>openPage(el.dataset.page,el)));
   app.querySelectorAll('[data-module]').forEach(el=>el.addEventListener('click',()=>openModule(el.dataset.module)));
   app.querySelector('[data-close-module]')?.addEventListener('click',closeModule);
   app.querySelector('[data-retry-module]')?.addEventListener('click',()=>mountModule(currentModuleId()));
-  app.querySelector('[data-arcade-refresh]')?.addEventListener('click',refreshArcadePortal);
-  app.querySelector('[data-arcade-enter]')?.addEventListener('click',()=>{state.arcadeOpen=true;render()});
-  app.querySelector('[data-arcade-close]')?.addEventListener('click',()=>{state.arcadeOpen=false;render()});
   app.querySelectorAll('[data-toast]').forEach(el=>el.addEventListener('click',()=>showToast(el.dataset.toast)));
   app.querySelector('[data-signout]')?.addEventListener('click',async()=>{try{await integrationController?.signOut()}catch(err){showToast(`Sign-out failed: ${err?.message||err}`)}});
   app.querySelectorAll('[data-read]').forEach(el=>el.addEventListener('click',readPage));
@@ -559,19 +547,54 @@ function bind(){
   app.querySelectorAll('[data-pet]').forEach(el=>el.addEventListener('click',()=>openModule('adventurer-hall')));
   app.querySelectorAll('[data-move]').forEach(el=>el.addEventListener('click',()=>openModule('boss-battle')));
   if(currentModuleId())mountModule(currentModuleId());
-  if(state.page==='arcade'&&state.arcadeStatus==='idle')refreshArcadePortal();
   startPassSafetyEngine();
 }
 
-async function refreshArcadePortal(){
-  if(!arcadePortal)return;state.arcadeStatus='loading';if(state.page==='arcade')render();
-  try{state.arcadeAccess=await arcadePortal.getAccess();state.arcadeStatus='ready'}catch(err){state.arcadeStatus='error';state.arcadeAccess={tokens:0,teacherEnabled:false};showToast(err?.message||'Arcade access is unavailable.')}
-  if(state.page==='arcade')render();
+function setArcadeBusy(trigger,busy){
+  if(!trigger)return;
+  if(busy){
+    trigger.dataset.arcadeLabel=trigger.innerHTML;
+    trigger.disabled=true;
+    trigger.setAttribute('aria-busy','true');
+    trigger.innerHTML='<span class="nav-icon">🕹️</span><span><span class="nav-main">Opening Arcade…</span><span class="nav-sub">Checking Tokens</span></span>';
+  }else{
+    trigger.disabled=false;
+    trigger.removeAttribute('aria-busy');
+    if(trigger.dataset.arcadeLabel){trigger.innerHTML=trigger.dataset.arcadeLabel;delete trigger.dataset.arcadeLabel}
+  }
 }
 
-function openPage(page){
+function arcadeBlockedMessage(access){
+  if(access?.teacherEnabled!==true)return 'Arcade Time is still locked by your teacher.';
+  const tokens=Math.max(0,Math.min(3,Number(access?.tokens)||0));
+  if(tokens<3){const missing=3-tokens;return `You need ${missing} more Arcade Token${missing===1?'':'s'} before entering.`}
+  return '';
+}
+async function enterArcade(trigger){
+  if(arcadeEntering)return;
+  if(!arcadePortal){showToast('Arcade Time is unavailable.');return}
+  arcadeEntering=true;setArcadeBusy(trigger,true);showToast('Checking Arcade Tokens…');
+  try{
+    let access=await arcadePortal.getAccess();
+    if(access?.active!==true){const blocked=arcadeBlockedMessage(access);if(blocked)throw new Error(blocked)}
+    showToast(access?.active===true?'Resuming your Arcade Time…':'Preparing Arcade Time…');
+    await arcadePortal.preflight?.();
+    if(access?.active!==true){
+      showToast('Using 3 Tokens and starting 30 minutes…');
+      access=await arcadePortal.startSession();
+    }
+    if(access?.active!==true)throw new Error('Arcade session did not start. Your Tokens were not intentionally spent by this page.');
+    if(typeof arcadePortal.navigate==='function')arcadePortal.navigate();
+    else location.assign(arcadePortal.href());
+  }catch(err){
+    arcadeEntering=false;setArcadeBusy(trigger,false);showToast(err?.message||'Arcade Time could not open.');
+  }
+}
+
+function openPage(page,trigger=null){
   if(blockingPass()){showToast('Return your active pass before continuing Dragonswood.');location.hash='adventure';return}
   if(requiredWorkLocked(page)){location.hash='missions';showRequiredWorkDialog(page);return}
+  if(String(page)==='arcade'){enterArcade(trigger);return}
   location.hash=page;
 }
 function openModule(id){

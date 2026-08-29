@@ -74,6 +74,6 @@ assert.match(studentBetaBrowserGate,/data-active-pass-overlay/,'the pass browser
 assert.match(studentBetaBrowserGate,/location\.hash/,'the pass browser gate must verify forced navigation back to the student home route');
 
 const bossBattle=read('boss-battle.html');
-assert.match(bossBattle,/rareGoal,goalPoints:0/,'the live Boss Battle must write the required goal fields');
+assert.match(bossBattle,/rareGoal:"none",goalPoints:0/,'the live Boss Battle must write the required goal fields');
 
 console.log('V3.3 consolidated student-beta release contracts: PASS');

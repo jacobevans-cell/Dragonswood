@@ -7,9 +7,10 @@ assert.equal(C.criterion(' RESPONSIBLE '),'responsible');assert.equal(C.criterio
 assert.equal(C.periodId('Math / P2'),'Math___P2');assert.equal(C.periodId(''),'');
 assert.equal(C.isTeacherEmail(' JACOBICUSJAX@GMAIL.COM '),true);
 assert.equal(C.effectiveEnabled({},{}),false);assert.equal(C.effectiveEnabled({}, {enabled:true}),true);
-assert.equal(C.effectiveEnabled({individualEnabled:false},{enabled:true}),false);assert.equal(C.effectiveEnabled({individualEnabled:true},{enabled:false}),true);
+assert.equal(C.effectiveEnabled({individualEnabled:false},{enabled:true}),false);assert.equal(C.effectiveEnabled({individualEnabled:true},{enabled:false}),false);
+assert.equal(C.DAILY_PERIOD_ID,'daily_tokens');
 const future={id:'s1',status:'active',endAt:{toMillis:()=>2000}};
 assert.equal(C.activeSession(future,1000),true);assert.equal(C.activeSession(future,2000),false);
-const view=C.publicAccess({tokens:7,individualEnabled:true},{enabled:false},future,1000);
+const view=C.publicAccess({tokens:7,individualEnabled:true},{enabled:true},future,1000);
 assert.equal(view.tokens,3);assert.equal(view.active,true);assert.equal(view.remainingMs,1000);assert.equal(view.sessionCost,3);
 console.log('Arcade access core tests: PASS');

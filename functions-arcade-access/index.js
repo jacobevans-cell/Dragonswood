@@ -42,15 +42,14 @@ async function readPublic(uid){
 exports.getArcadeAccess=onCall(OPTIONS,async request=>{await requireStudent(request);return readPublic(targetUid(request));});
 
 exports.getArcadeTeacherState=onCall(OPTIONS,async request=>{
-  requireTeacher(request);const uid=targetUid(request,true),dateKey=C.phoenixDateKey(),period=C.periodId(request.data?.periodId||'');
-  const result=await readPublic(uid);let criteria={};
-  if(period){const p=await db.doc(`arcadeTokenPeriods/${dateKey}_${period}_${uid}`).get();criteria=p.exists?(p.data().criteria||{}):{}}
-  return {...result,uid,dateKey,periodId:period,criteria};
+  requireTeacher(request);const uid=targetUid(request,true),dateKey=C.phoenixDateKey(),period=C.DAILY_PERIOD_ID;
+  const result=await readPublic(uid),p=await db.doc(`arcadeTokenPeriods/${dateKey}_${period}_${uid}`).get();
+  return {...result,uid,dateKey,periodId:period,awardSet:'phoenix-school-day',criteria:p.exists?(p.data().criteria||{}):{}};
 });
 
 exports.awardArcadeCriterion=onCall(OPTIONS,async request=>{
-  const teacher=requireTeacher(request),uid=targetUid(request,true),which=C.criterion(request.data?.criterion),period=C.periodId(request.data?.periodId);
-  if(!which||!period)throw new HttpsError('invalid-argument','Use Ready, Responsible, or Complete with a valid period id.');
+  const teacher=requireTeacher(request),uid=targetUid(request,true),which=C.criterion(request.data?.criterion),period=C.DAILY_PERIOD_ID;
+  if(!which)throw new HttpsError('invalid-argument','Use Ready, Responsible, or Complete.');
   const dateKey=C.phoenixDateKey(),aRef=accessRef(uid),pRef=db.doc(`arcadeTokenPeriods/${dateKey}_${period}_${uid}`);
   const result=await db.runTransaction(async tx=>{
     const [aSnap,pSnap]=await Promise.all([tx.get(aRef),tx.get(pRef)]),access=aSnap.exists?aSnap.data():{},p=pSnap.exists?pSnap.data():{};
@@ -59,7 +58,7 @@ exports.awardArcadeCriterion=onCall(OPTIONS,async request=>{
     if(tokens>=C.TOKEN_CAP)return {awarded:false,reason:'wallet-full',tokens,criteria};
     criteria[which]=true;
     tx.set(aRef,{uid,tokens:tokens+1,updatedAt:FieldValue.serverTimestamp()},{merge:true});
-    tx.set(pRef,{uid,dateKey,periodId:period,criteria,totalAwarded:Object.values(criteria).filter(Boolean).length,teacherUid:teacher.uid,updatedAt:FieldValue.serverTimestamp()},{merge:true});
+    tx.set(pRef,{uid,dateKey,periodId:period,awardSet:'phoenix-school-day',criteria,totalAwarded:Object.values(criteria).filter(Boolean).length,teacherUid:teacher.uid,updatedAt:FieldValue.serverTimestamp()},{merge:true});
     return {awarded:true,reason:'awarded',tokens:tokens+1,criteria};
   });
   await audit('criterion-award',teacher.uid,uid,{dateKey,periodId:period,criterion:which,awarded:result.awarded});
@@ -116,6 +115,9 @@ exports.setArcadeAvailability=onCall(OPTIONS,async request=>{
     });
   }else{
     await settingsRef().set({enabled,updatedAt:FieldValue.serverTimestamp(),teacherUid:teacher.uid},{merge:true});
+    const accessSnap=await db.collection('arcadeAccess').limit(400).get(),accessBatch=db.batch();
+    accessSnap.docs.forEach(doc=>accessBatch.set(doc.ref,{individualEnabled:FieldValue.delete(),updatedAt:FieldValue.serverTimestamp()},{merge:true}));
+    if(!accessSnap.empty)await accessBatch.commit();
     if(!enabled){
       const snap=await db.collection('arcadeSessions').where('status','==','active').limit(400).get(),batch=db.batch();
       snap.docs.forEach(doc=>batch.set(doc.ref,{status:'locked',endReason:'class-lock',endedAt:FieldValue.serverTimestamp()},{merge:true}));

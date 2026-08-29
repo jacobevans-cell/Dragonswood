@@ -4,6 +4,7 @@ const CRITERIA=Object.freeze(['ready','responsible','complete']);
 const TOKEN_CAP=3;
 const SESSION_COST=3;
 const SESSION_MS=30*60*1000;
+const DAILY_PERIOD_ID='daily_tokens';
 const TEACHER_EMAIL='jacobicusjax@gmail.com';
 
 function text(value){return String(value??'').trim()}
@@ -21,8 +22,7 @@ function toMillis(value){
   const n=Number(value);return Number.isFinite(n)?n:0;
 }
 function effectiveEnabled(access={},settings={}){
-  if(typeof access.individualEnabled==='boolean')return access.individualEnabled;
-  return settings.enabled===true;
+  return settings.enabled===true&&access.individualEnabled!==false;
 }
 function activeSession(session={},now=Date.now()){
   return session.status==='active'&&toMillis(session.endAt)>now;
@@ -39,4 +39,4 @@ function publicAccess(access={},settings={},session=null,now=Date.now()){
   };
 }
 
-module.exports=Object.freeze({CRITERIA,TOKEN_CAP,SESSION_COST,SESSION_MS,TEACHER_EMAIL,text,clampTokens,criterion,periodId,normalizedEmail,isTeacherEmail,phoenixDateKey,toMillis,effectiveEnabled,activeSession,publicAccess});
+module.exports=Object.freeze({CRITERIA,TOKEN_CAP,SESSION_COST,SESSION_MS,DAILY_PERIOD_ID,TEACHER_EMAIL,text,clampTokens,criterion,periodId,normalizedEmail,isTeacherEmail,phoenixDateKey,toMillis,effectiveEnabled,activeSession,publicAccess});

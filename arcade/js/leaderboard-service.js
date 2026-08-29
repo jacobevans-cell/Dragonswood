@@ -1,4 +1,4 @@
-import {getFirebaseContext,getCurrentAccess} from './access-client.js?v=57.1.14';
+import {getFirebaseContext,getCurrentAccess} from './access-client.js?v=57.1.15';
 const CFG=window.DRAGONSWOOD_ARCADE_CONFIG||{};
 const TIMEZONE=CFG.leaderboard?.timezone||'America/Phoenix';
 const LOCAL_DAILY_DAYS=Math.max(7,Number(CFG.leaderboard?.localDailyRetentionDays)||60);

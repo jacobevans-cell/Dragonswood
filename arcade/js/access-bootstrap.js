@@ -1,17 +1,19 @@
-import {environment,getArcadeAccess,startArcadeSession,setCurrentAccess,remainingMs} from './access-client.js?v=57.1.14';
+import {environment,getArcadeAccess,startArcadeSession,setCurrentAccess,remainingMs} from './access-client.js?v=57.1.15';
 let loaded=false;
 let refreshing=false;
 let access=null;
 let refreshTimer=null;
 let clockTimer=null;
+let leaving=false;
 const params=new URLSearchParams(location.search);
 const direct=params.get('dwDirect')==='1';
+const portalOwned=direct||environment==='production';
 
 const gate=document.createElement('section');
 gate.className='arcade-access-gate';
 gate.setAttribute('role','dialog');
 gate.setAttribute('aria-modal','true');
-gate.hidden=direct;
+gate.hidden=portalOwned;
 document.body.append(gate);
 const badge=document.createElement('div');
 badge.className='arcade-time-badge';
@@ -20,13 +22,26 @@ document.body.append(badge);
 
 function esc(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function tokens(count){return `<div class="arcade-token-row" aria-label="${count} of 3 Arcade Tokens">${[1,2,3].map(i=>`<span class="arcade-token ${i<=count?'':'empty'}">A</span>`).join('')}</div>`}
+function portalHref(){
+  const url=new URL(environment==='production'?'../index.html':'../v33-integration/student-test.html',location.href);
+  url.hash='adventure';
+  return url.href;
+}
+function returnToPortal(message=''){
+  if(leaving)return;
+  leaving=true;
+  if(message)try{sessionStorage.setItem('dw-arcade-return-message',String(message).slice(0,220))}catch{}
+  location.replace(portalHref());
+}
 function renderLocked(message='Checking your Arcade Time…'){
+  if(portalOwned){returnToPortal(message);return}
   const count=Math.max(0,Math.min(3,Number(access?.tokens)||0));
   const enabled=access?.teacherEnabled===true;
   const ready=count===3&&enabled;
+  document.documentElement.classList.remove('arcade-auth-pending');
   gate.hidden=false;
   badge.hidden=true;
-  gate.innerHTML=`<div class="arcade-access-card"><img src="assets/dragonswood-arcade-crest.svg" alt=""><h1>Arcade Time</h1>${tokens(count)}<p>${esc(message)}</p><p class="arcade-access-note">3 Tokens = one 30-minute session. Tokens are earned for Ready, Responsible, and Complete choices. Wallet maximum: 3.</p><div class="arcade-access-actions"><button type="button" data-start-arcade ${ready?'':'disabled'}>Use 3 Tokens — Start 30 Minutes</button><a href="${environment==='production'?'../index.html':'../v33-integration/student-test.html'}">Return to Dragonswood</a></div><p class="arcade-access-note">${enabled?'Teacher Arcade Time is open.':'Teacher Arcade Time is currently locked.'} • ${environment}</p></div>`;
+  gate.innerHTML=`<div class="arcade-access-card"><img src="assets/dragonswood-arcade-crest.svg" alt=""><h1>Arcade Time</h1>${tokens(count)}<p>${esc(message)}</p><p class="arcade-access-note">3 Tokens = one 30-minute session. Tokens are earned for Ready, Responsible, and Complete choices. Wallet maximum: 3.</p><div class="arcade-access-actions"><button type="button" data-start-arcade ${ready?'':'disabled'}>Use 3 Tokens — Start 30 Minutes</button><a href="${portalHref()}">Return to Dragonswood</a></div><p class="arcade-access-note">${enabled?'Teacher Arcade Time is open.':'Teacher Arcade Time is currently locked.'} • ${environment}</p></div>`;
   gate.querySelector('[data-start-arcade]')?.addEventListener('click',begin);
 }
 function updateClock(){
@@ -40,7 +55,8 @@ function updateClock(){
 }
 async function unlock(next){
   access=setCurrentAccess(next);
-  if(!loaded){await import('./arcade.js?v=57.1.14');loaded=true}
+  if(!loaded){await import('./arcade.js?v=57.1.15');loaded=true}
+  document.documentElement.classList.remove('arcade-auth-pending');
   gate.hidden=true;
   badge.hidden=false;
   updateClock();
@@ -51,13 +67,13 @@ function lockNow(message){
   renderLocked(message);
 }
 async function refresh(){
-  if(refreshing)return;
+  if(refreshing||leaving)return;
   refreshing=true;
   try{
     const next=await getArcadeAccess();
     access=next;
     if(next.active&&remainingMs(next)>0)await unlock(next);
-    else renderLocked(next.teacherEnabled?'You need all 3 Arcade Tokens to begin.':'Arcade is locked until your teacher opens Arcade Time.');
+    else renderLocked(next.teacherEnabled?'Return to Dragonswood and earn all 3 Arcade Tokens first.':'Arcade is locked until your teacher opens Arcade Time.');
   }catch(err){
     console.error('[Arcade access]',err);
     renderLocked(navigator.onLine?`Arcade could not finish loading: ${err?.message||err}`:'Arcade is locked while this device is offline.');
@@ -75,5 +91,5 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()}
 refreshTimer=setInterval(refresh,15000);
 clockTimer=setInterval(updateClock,1000);
 window.addEventListener('pagehide',()=>{clearInterval(refreshTimer);clearInterval(clockTimer)},{once:true});
-if(!direct)renderLocked();
+if(!portalOwned)renderLocked();
 refresh();

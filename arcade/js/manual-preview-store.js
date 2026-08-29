@@ -44,13 +44,13 @@
     return {tokens:Math.max(0,Math.min(MAX_TOKENS,Number(student.tokens)||0)),teacherEnabled,individualEnabled:student.individualEnabled!==false,active:teacherEnabled&&student.active===true,sessionId:student.sessionId||'',lastSessionId:student.lastSessionId||student.sessionId||'',endAtMillis:Number(student.endAtMillis)||0,serverNowMillis:now(),preview:true};
   }
   function getAccess(uid=STUDENT_UID){return accessFor(read(),uid)}
-  function getTeacherState(uid,periodId='period-1'){
+  function getTeacherState(uid){
     const state=read(),student=ensureStudent(state,uid),access=accessFor(state,uid);
-    return {...access,criteria:{...(student.criteriaByPeriod[String(periodId)]||{})}};
+    return {...access,periodId:'daily_tokens',awardSet:'phoenix-school-day',criteria:{...(student.criteriaByPeriod.daily_tokens||{})}};
   }
-  function award(uid,criterion,periodId='period-1'){
+  function award(uid,criterion){
     const id=String(criterion||'').toLowerCase();if(!CRITERIA.has(id))throw new Error('Unknown Arcade Token criterion.');
-    const state=read(),student=ensureStudent(state,uid),period=String(periodId||'period-1');
+    const state=read(),student=ensureStudent(state,uid),period='daily_tokens';
     student.criteriaByPeriod[period]||={};
     if(student.criteriaByPeriod[period][id])return getTeacherState(uid,period);
     student.criteriaByPeriod[period][id]=true;
@@ -66,6 +66,7 @@
       audit(state,open?'open-student':'lock-student',{uid:String(uid)});
     }else{
       state.classEnabled=open;
+      for(const student of Object.values(state.students))student.individualEnabled=true;
       if(!open)for(const student of Object.values(state.students)){student.active=false;student.sessionId='';student.endAtMillis=0}
       audit(state,open?'open-class':'lock-class');
     }

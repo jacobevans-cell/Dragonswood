@@ -19,11 +19,12 @@ for(const file of ['arcade/js/manual-preview-store.js','v33-integration/tools/ma
   await new Promise(resolve=>queueMicrotask(resolve));
   assert.equal(studentSession.status,'authorized');
   assert.equal(studentSession.student.dailyAccessUnlocked,true);
+  assert.equal(studentSession.kingdomAccess.unlocked,true);
   assert.equal(teacherSession.status,'authorized');
   assert.ok(teacherSession.students.some(row=>row.id===context.DWArcadeManualStore.STUDENT_UID&&row.name==='Jacob Preview'));
   assert.equal((await context.DWV33ArcadePortal.getAccess()).tokens,3);
   assert.match(context.DWV33ArcadePortal.href(),/arcade\/manual-preview\.html$/);
-  assert.match(context.DWV33KingdomPortal.href(),/kingdom-manual-preview\.html$/);
+  assert.match(context.DWV33KingdomPortal.href(),/kingdom-test\.html\?dwEmbed=1&dw-env=emulator$/);
   assert.equal(context.DWV33ArcadeTeacher.enabled,true);
   await context.DWV33ArcadeTeacher.setAvailability(false);
   assert.equal((await context.DWV33ArcadePortal.getAccess()).teacherEnabled,false);

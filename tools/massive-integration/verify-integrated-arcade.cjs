@@ -26,13 +26,16 @@ assert.match(core,/\['ready','responsible','complete'\]/);
 const functions=read('functions-arcade-access/index.js');
 for(const name of ['getArcadeAccess','getArcadeTeacherState','awardArcadeCriterion','startArcadeSession','endArcadeSession','setArcadeAvailability','refundArcadeSession'])assert.match(functions,new RegExp(`exports\\.${name}=`),`missing callable ${name}`);
 assert.match(functions,/runTransaction/);assert.match(functions,/wallet-full/);assert.match(functions,/already-awarded/);assert.match(functions,/reused:true/);assert.match(functions,/already received its one technical refund/);
+assert.match(functions,/C\.DAILY_PERIOD_ID/,'Arcade criteria must use one fixed Phoenix school-day award set');
+assert.doesNotMatch(functions,/request\.data\?\.periodId/,'client-selected periods must not affect token eligibility');
 assert.match(functions,/require\('firebase-admin\/firestore'\)/,'Arcade Functions must use the supported modular Firestore Admin API');
 assert.doesNotMatch(functions,/admin\.firestore\.(?:FieldValue|Timestamp)/,'legacy Firestore Admin timestamp API is incompatible with firebase-admin v13');
 
 const access=read('arcade/js/access-client.js'),bootstrap=read('arcade/js/access-bootstrap.js');
 assert.match(access,/dw-arcade-live/);assert.match(access,/I_UNDERSTAND/);assert.match(access,/connectFunctionsEmulator/);
+assert.match(access,/trustedProductionHost/,'the deployed Arcade path must resolve as production even without portal query parameters');
 assert.match(bootstrap,/setInterval\(refresh,15000\)/);assert.match(bootstrap,/setInterval\(updateClock,1000\)/);
-assert.match(bootstrap,/Arcade is locked while this device is offline/);assert.match(bootstrap,/await import\('\.\/arcade\.js'\)/);
+assert.match(bootstrap,/Arcade is locked while this device is offline/);assert.match(bootstrap,/await import\('\.\/arcade\.js\?v=57\.1\.15'\)/);
 
 const dashHtml=read('arcade/games/dragon-dash/index.html'),voidHtml=read('arcade/games/void-runner/index.html');
 assert.match(dashHtml,/src="access-loader\.js"/);assert.doesNotMatch(dashHtml,/src="game\.js"/);
@@ -44,10 +47,10 @@ for(const rel of ['arcade/games/dragon-dash/access-loader.js','arcade/games/void
 assert.match(read('arcade/js/leaderboard-service.js'),/sessionId/);
 assert.match(read('arcade/games/void-runner/js/cloud-sync.js'),/arcadeSessionId/);
 assert.doesNotMatch(read('arcade/js/arcade.js'),/function refreshProfile\(\)\{profile=getProfile\(\)/);
-assert.match(read('arcade/js/arcade.js'),/doc\(C\.db,'students',C\.user\.uid\)/);
+assert.match(read('arcade/js/arcade.js'),/doc\(context\.db,'students',context\.user\.uid\)/);
 assert.match(read('arcade/js/arcade-config.js'),/directGameRewardsEnabled:\s*false/);
 assert.doesNotMatch(read('arcade/admin.html'),/admin\.js/);assert.match(read('arcade/admin.html'),/Records only/);
-assert.match(read('arcade/sw.js'),/dragonswood-arcade-v9-authoritative-access/);
+assert.match(read('arcade/sw.js'),/dragonswood-arcade-v15-native-entry/);
 
 const rules=read('firestore.rules');
 for(const collection of ['arcadeAccess','arcadeSettings','arcadeTokenPeriods','arcadeSessions','arcadeAudit']){
@@ -57,11 +60,15 @@ assert.match(rules,/function hasLiveArcadeSession/);assert.match(rules,/function
 assert.match(rules,/allow write: if false/);assert.match(rules,/request\.resource\.data\.updatedAt == request\.time/);
 
 const student=read('v33-integration/js/student-app.js'),teacher=read('v33-integration/js/teacher-app.js'),teacherBridge=read('v33-integration/js/integration/arcade-teacher.js');
-assert.match(student,/3 Tokens • 30 min/);assert.match(student,/function arcadePage/);assert.match(student,/arcadePortal\?/);
+assert.match(student,/3 Tokens • 30 min/);assert.match(student,/async function enterArcade/);assert.match(student,/await arcadePortal\.preflight/);
+assert.doesNotMatch(student,/function arcadePage|ARCADE TOKEN WALLET|data-arcade-enter/,'the student router must not expose an intermediate Arcade wallet route');
 assert.match(teacher,/function arcadePage/);assert.match(teacher,/Ready/);assert.match(teacher,/Responsible/);assert.match(teacher,/Complete/);
+assert.doesNotMatch(teacher,/arcade-period|arcadePeriodOptions|phoenixClockMinutes/,'teacher token awards must not depend on schedule or clock time');
+assert.match(teacher,/once per Phoenix school day/);
 assert.match(teacherBridge,/dw-arcade-writes/);assert.match(teacherBridge,/EMULATOR_ONLY/);assert.match(teacherBridge,/environment==='emulator'/);
 assert.match(teacherBridge,/const enabled=environment==='production'/,'live teacher controls must inherit only the V3 production environment');
 assert.match(teacherBridge,/environment==='emulator'&&params\.get\('dw-arcade-writes'\)==='EMULATOR_ONLY'/,'emulator writes must require the explicit fictional-write flag');
 assert.doesNotMatch(teacherBridge,/params\.get\(['"]dw-arcade-live/,'a query string must never enable live teacher writes');
+assert.doesNotMatch(teacherBridge,/MutationObserver|data-native-seating|setWholeClassAvailability/,'the teacher bridge must remain an API rather than patching the DOM');
 
 console.log('Integrated Arcade static safety gate: PASS');

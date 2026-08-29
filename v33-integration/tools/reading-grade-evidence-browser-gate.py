@@ -99,13 +99,19 @@ def main():
         if stored is None: raise AssertionError(f'Real reader heartbeat did not create Firestore evidence: assignment={assignment!r}; console={student_logs!r}')
         assert stored['activeSeconds']==15,stored
 
-        teacher.bring_to_front();teacher.wait_for_timeout(17000)
+        # A page in another BrowserContext can remain focused independently in
+        # headless Chromium. Hide the reader with a sibling tab in the same
+        # student context, then prove the page is hidden before waiting through
+        # another full heartbeat interval.
+        student_cover=student_context.new_page();student_cover.goto('about:blank');student_cover.bring_to_front()
+        student.wait_for_function("() => document.hidden === true",timeout=10000)
+        student_cover.wait_for_timeout(17000)
         unchanged=teacher.evaluate("""async id=>{const apps=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js');const fs=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');const snap=await fs.getDoc(fs.doc(fs.getFirestore(apps.getApp('DragonswoodV33TeacherIntegration')),'readingSessions',id));return snap.exists()?snap.data():null}""",reading_id)
         assert unchanged and unchanged['activeSeconds']==15,unchanged
         assert 'targetMinutes' not in unchanged and 'lastHeartbeatMs' not in unchanged
         assert unchanged.get('bookTitle')=='The Witches' and unchanged.get('studentName')=='Fourth'
 
-        teacher.evaluate("location.hash='#gradebook'");teacher.get_by_role('heading',name='Dragonswood Gradebook').wait_for();teacher.locator('#gradebook-search').fill('Fourth');row=teacher.locator('[data-grade-student]').filter(has_text='Fourth');row.get_by_text('0.3 verified min',exact=False).wait_for(timeout=10000);row.get_by_text('Incomplete',exact=True).wait_for();row.get_by_text('Provisional',exact=True).wait_for();assert row.get_by_text('Complete evidence',exact=True).count()==0
+        teacher.bring_to_front();teacher.evaluate("location.hash='#gradebook'");teacher.get_by_role('heading',name='Dragonswood Gradebook').wait_for();teacher.locator('#gradebook-search').fill('Fourth');row=teacher.locator('[data-grade-student]').filter(has_text='Fourth');row.get_by_text('0.3 verified min',exact=False).wait_for(timeout=10000);row.get_by_text('Incomplete',exact=True).wait_for();row.get_by_text('Provisional',exact=True).wait_for();assert row.get_by_text('Complete evidence',exact=True).count()==0
         browser.close()
     finally:
       server.shutdown();server.server_close()

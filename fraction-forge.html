@@ -623,6 +623,7 @@ function renderCurrentStep(){
   if(!$("planReady"))$("inputRow").insertAdjacentHTML("beforeend",`<button class="action-btn" id="checkBtn">CHECK STEP</button>`);
   if($("checkBtn"))$("checkBtn").onclick=checkStep;
 }
+let fractionStepPending=false,roundReported=false,fractionRewardRunId=(crypto.randomUUID?.()||`${Date.now()}-${Math.random()}`).replace(/[^a-zA-Z0-9_-]/g,'').slice(0,48);
 function rawResult(p){
   if(p.op==="add")return rawFrac(p.a.n*(p.lcd/p.a.d)+p.b.n*(p.lcd/p.b.d),p.lcd);
   if(p.op==="subtract")return rawFrac(p.a.n*(p.lcd/p.a.d)-p.b.n*(p.lcd/p.b.d),p.lcd);
@@ -631,6 +632,7 @@ function rawResult(p){
 }
 function val(id){const el=$(id);return el?Number(el.value):NaN}
 function checkStep(){
+  if(fractionStepPending)return;
   totalAttempts++;problemAttempts++;
   const key=stepsFor(current)[currentStep].key,p=current;
   let ok=false;
@@ -656,7 +658,7 @@ function checkStep(){
       ok=eqF(improper,p.result)&&gcd(Math.abs(n),d)===1&&(difficulty!=="hard"||Math.abs(p.result.n)<p.result.d||Math.abs(w)>=1);
     }
   }
-  if(ok){correctAttempts++;showFeedback(true,"✓ Correct. Nice work.");setTimeout(advanceCorrect,280)}
+  if(ok){fractionStepPending=true;correctAttempts++;showFeedback(true,"✓ Correct. Nice work.");setTimeout(()=>{fractionStepPending=false;advanceCorrect()},280)}
   else showFeedback(false,"Not yet. Check the Math Coach, or use a hint and try again.");
   updateStats();
 }
@@ -679,6 +681,7 @@ function finishProblem(){
   setTimeout(newProblem,450);
 }
 function finishRound(){
+  if(roundReported)return;roundReported=true;
   const xp=runXp(),roundScore=score-roundScoreStart;
   $("roundComplete").classList.add("show");
   $("completeTitle").textContent=`${roundThemeInfo().icon} ROUND ${currentRound} COMPLETE!`;
@@ -686,13 +689,13 @@ function finishRound(){
   $("nextRoundBtn").textContent=currentRound<TOTAL_ROUNDS?"START NEXT ROUND":"START NEW 3-ROUND QUEST";
   window.dispatchEvent(new CustomEvent("dragonswood-fraction-round-complete",{detail:{
     round:currentRound,playerXpEarned:xp,roundScore,accuracy:totalAttempts?correctAttempts/totalAttempts:1,
-    hintsUsed,operation:selectedOp,difficulty
+    hintsUsed,operation:selectedOp,difficulty,runId:fractionRewardRunId
   }}));
 }
 $("nextRoundBtn").onclick=()=>{
   $("roundComplete").classList.remove("show");
-  if(currentRound<TOTAL_ROUNDS){currentRound++;roundSolved=0;roundScoreStart=score;totalAttempts=0;correctAttempts=0;hintsUsed=0}
-  else{currentRound=1;roundSolved=0;score=0;roundScoreStart=0;totalAttempts=0;correctAttempts=0;hintsUsed=0}
+  if(currentRound<TOTAL_ROUNDS){currentRound++;roundSolved=0;roundScoreStart=score;totalAttempts=0;correctAttempts=0;hintsUsed=0;roundReported=false}
+  else{currentRound=1;roundSolved=0;score=0;roundScoreStart=0;totalAttempts=0;correctAttempts=0;hintsUsed=0;roundReported=false;fractionRewardRunId=(crypto.randomUUID?.()||`${Date.now()}-${Math.random()}`).replace(/[^a-zA-Z0-9_-]/g,'').slice(0,48)}
   applyRoundTheme();newProblem();
 }
 $("hintBtn").onclick=()=>{
@@ -722,7 +725,7 @@ $("hintBtn").onclick=()=>{
     final:"Use simplest form. Convert an improper fraction to a mixed number."
   };
   $("feedback").className="feedback good";
-  $("feedback").textContent="💡 "+(difficulty==="hard"?hardHints[key]:easyHints[key]);
+  $("feedback").textContent="💡 "+(difficulty==="hard"?hardHints[key]:easyHints[key])+" Using a hint removes the no-hint bonus XP/Gold.";
   updateStats();
 }
 $("readCoachBtn").onclick=()=>{
@@ -790,25 +793,27 @@ window.addEventListener("dragonswood-fraction-round-complete",async e=>{
   const before=dailyXp(currentProfile),grantXp=Math.min(requestedXp,Math.max(0,DAILY_CAP-before));
   const acc=Math.max(0,Math.min(1,Number(d.accuracy||0)));
   const gold=acc>=.9&&Number(d.hintsUsed||0)===0?2:1;
-  const claimId=`${currentUser.uid}_fraction_forge_${dateKey()}_${Date.now()}_${Math.random().toString(36).slice(2,7)}`;
+  const runId=String(d.runId||'legacy').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,48)||'legacy';
+  const claimId=`${currentUser.uid}_fraction_forge_${dateKey()}_${runId}_r${Math.max(1,Number(d.round||1))}`;
   try{
     const latest=await getDoc(doc(db,"students",currentUser.uid));if(!latest.exists())throw new Error("Student profile missing");
-    const p=latest.data(),oldXp=Number(p.xp||0),oldGold=Number(p.gold||0),actualBefore=dailyXp(p),actualGrant=Math.min(requestedXp,Math.max(0,DAILY_CAP-actualBefore));
+    const p=latest.data(),oldXp=Number(p.xp||0),oldGold=Number(p.gold||0),actualBefore=dailyXp(p),actualGrant=Math.min(requestedXp,Math.max(0,DAILY_CAP-actualBefore)),gw=(()=>{const raw=p.dailyGoldWindowStartedAt,start=raw?.toMillis?.()||Number(raw?.seconds||0)*1000||0,reset=!start||Date.now()-start>=86400000;return{earned:reset?0:Math.max(0,Math.min(30,Number(p.dailyGoldEarned||0))),reset}})(),actualGold=Math.min(gold,Math.max(0,30-gw.earned));
+    const claimRef=doc(db,"gameResults",claimId);if((await getDoc(claimRef)).exists()){loot.textContent="🐉 This round reward was already saved.";return}
     const batch=writeBatch(db);
-    batch.set(doc(db,"gameResults",claimId),{
+    batch.set(claimRef,{
       studentId:currentUser.uid,studentEmail:currentUser.email||"",gameId:"fraction_forge",gameName:"Fraction Forge",
       status:"complete",dateKey:dateKey(),round:Number(d.round||1),operation:String(d.operation||"mixed"),
       difficulty:String(d.difficulty||"easy"),roundScore:Number(d.roundScore||0),accuracy:Math.round(acc*100),
-      hintsUsed:Number(d.hintsUsed||0),xpAward:actualGrant,goldAward:gold,createdAt:serverTimestamp()
+      hintsUsed:Number(d.hintsUsed||0),runId,xpAward:actualGrant,goldAward:actualGold,createdAt:serverTimestamp()
     });
     batch.update(doc(db,"students",currentUser.uid),{
-      xp:oldXp+actualGrant,gold:oldGold+gold,dailyXpDate:dateKey(),dailyXpEarned:actualBefore+actualGrant,
+      xp:oldXp+actualGrant,gold:oldGold+actualGold,dailyXpDate:dateKey(),dailyXpEarned:actualBefore+actualGrant,dailyGoldEarned:gw.earned+actualGold,dailyGoldWindowStartedAt:gw.reset?serverTimestamp():p.dailyGoldWindowStartedAt,
       lastGameClaimId:claimId,updatedAt:serverTimestamp()
     });
     await batch.commit();
-    currentProfile={...p,xp:oldXp+actualGrant,gold:oldGold+gold,dailyXpDate:dateKey(),dailyXpEarned:actualBefore+actualGrant,lastGameClaimId:claimId};
+    currentProfile={...p,xp:oldXp+actualGrant,gold:oldGold+actualGold,dailyXpDate:dateKey(),dailyXpEarned:actualBefore+actualGrant,dailyGoldEarned:gw.earned+actualGold,lastGameClaimId:claimId};
     renderAccount();
-    loot.textContent=actualGrant>0?`🐉 DRAGONSWOOD REWARD: +${actualGrant} Player XP • +${gold} Gold`:`⭐ DAILY XP CAP REACHED • +${gold} Gold`;
+    loot.textContent=actualGrant>0?`🐉 DRAGONSWOOD REWARD: +${actualGrant} Player XP • +${actualGold} Gold`:`⭐ DAILY XP CAP REACHED • +${actualGold} Gold`;
     setStatus(actualGrant>0?`Saved! Daily XP is now ${actualBefore+actualGrant}/${DAILY_CAP}.`:`Saved! You reached the ${DAILY_CAP} XP daily cap; Gold still awarded.`,"good");
   }catch(err){
     console.error(err);loot.textContent="Round complete • Reward save failed.";

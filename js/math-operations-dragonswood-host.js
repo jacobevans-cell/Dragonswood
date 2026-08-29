@@ -29,7 +29,9 @@
     return Math.min(20, level);
   }
 
-  function dailyXpForProfile(profile){
+  const DRAGONSWOOD_DAILY_GOLD_CAP=30;
+function mathOpsGoldWindow(profile){const raw=profile?.dailyGoldWindowStartedAt,start=raw?.toMillis?.()||Number(raw?.seconds||0)*1000||0,reset=!start||Date.now()-start>=86400000;return{earned:reset?0:Math.max(0,Math.min(DRAGONSWOOD_DAILY_GOLD_CAP,Number(profile?.dailyGoldEarned||0))),reset}}
+function dailyXpForProfile(profile){
     if(String(profile?.dailyXpDate || '') !== localDateKey()) return 0;
     return Math.max(0, Math.min(DAILY_XP_CAP, Number(profile?.dailyXpEarned || 0)));
   }
@@ -121,7 +123,8 @@
 
           const accuracy = Math.max(0, Math.min(1, Number(result.accuracy || 0)));
           const requestedXp = Math.max(5, Math.min(12, Number(result.playerXpEarned || 5)));
-          const rewardGold = Math.max(1, Math.min(2, 1 + (accuracy >= 0.90 && Number(result.hintsUsed || 0) === 0 ? 1 : 0)));
+          const rawRewardGold = Math.max(1, Math.min(2, 1 + (accuracy >= 0.90 && Number(result.hintsUsed || 0) === 0 ? 1 : 0)));
+          const goldWindow=mathOpsGoldWindow(profile),rewardGold=Math.min(rawRewardGold,Math.max(0,DRAGONSWOOD_DAILY_GOLD_CAP-goldWindow.earned));
           const dailyBefore = dailyXpForProfile(profile);
           const dailyRemaining = Math.max(0, DAILY_XP_CAP - dailyBefore);
           const xpAward = Math.min(requestedXp, dailyRemaining);
@@ -165,6 +168,8 @@
             gold: oldGold + rewardGold,
             dailyXpDate: dateKey,
             dailyXpEarned: dailyBefore + xpAward,
+            dailyGoldEarned: goldWindow.earned + rewardGold,
+            dailyGoldWindowStartedAt: goldWindow.reset ? firestoreMod.serverTimestamp() : profile.dailyGoldWindowStartedAt,
             lastGameClaimId: claimId,
             updatedAt: firestoreMod.serverTimestamp()
           });
@@ -176,6 +181,8 @@
             gold: oldGold + rewardGold,
             dailyXpDate: dateKey,
             dailyXpEarned: dailyBefore + xpAward,
+            dailyGoldEarned: goldWindow.earned + rewardGold,
+            dailyGoldWindowStartedAt: profile.dailyGoldWindowStartedAt,
             lastGameClaimId: claimId
           };
 

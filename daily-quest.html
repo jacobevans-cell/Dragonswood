@@ -131,7 +131,7 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
 </style>
 
 <script src="narration-manifest.js?v=56.19.6"></script>
-<script src="dragonswood-narrator.js?v=56.19.6"></script>
+<script src="dragonswood-narrator.js?v=57.1.9"></script>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,onAuthStateChanged,connectAuthEmulator} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
@@ -162,6 +162,9 @@ window.addEventListener("dw:narration-voice-change",async e=>{const voiceId=e.de
 let activeSeconds=0,idleEvents=0,perQuestionSeconds=[],questionStartedAt=0,lastInteractionAt=0,idleAnnounced=false,activeTimer=null,skillStats={},needsReteach=new Set(),retryKeys=new Set();
 let sessionProgress=null,morningProgress=null,exitProgress=null,dqProgressRows=[],dqProgressUnsub=null,dqCompletedDates=new Set();
 function dateKey(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
+
+const DW_DAILY_GOLD_CAP=30;
+function dwGoldWindow(profile){const raw=profile?.dailyGoldWindowStartedAt,start=raw?.toMillis?.()||Number(raw?.seconds||0)*1000||0,reset=!start||Date.now()-start>=86400000;return{earned:reset?0:Math.max(0,Math.min(DW_DAILY_GOLD_CAP,Number(profile?.dailyGoldEarned||0))),reset}}
 function dailyXp(p){return String(p?.dailyXpDate||"")===dateKey()?Math.min(CAP,Math.max(0,Number(p?.dailyXpEarned||0))):0}
 function level(x){let l=1;for(let i=0;i<XP.length;i++)if(x>=XP[i])l=i+1;return Math.min(20,l)}
 function status(t,c=""){$("status").textContent=t;$("status").className=`glass status ${c}`.trim()}
@@ -5944,7 +5947,10 @@ function dwBuildPacingLesson(base){
  return {...base,track,trackName,pacingGrade:gradeCode,pacingLocked:true,title:`${base.chapterIcon||"📜"} Day ${day}: ${dwPacingLabel(math?.item||ela?.item)}`,mathSkill:math?dwPacingLabel(math.item):"Pacing Guide",elaSkill:ela?dwPacingLabel(ela.item):"Pacing Guide",morning,exit};
 }
 function dwValidatePacingLesson(L){const all=[...(L?.morning||[]),...(L?.exit||[])];if(!L?.pacingLocked||!all.length)throw new Error("Daily work has no verified pacing contract.");for(const t of all){if(!t.pacingItemId||!t.skillId||!DW_SKILLS[t.skillId])throw new Error(`Unmapped pacing task: ${t.pacingItemId||t.skill||"unknown"}`);const q=makeQ(t,0);if(!q||q.source!=="registry"||!dwValidQuestion(q))throw new Error(`Ungradable pacing task: ${t.pacingItemId}`)}return L}
-function makeTrackLesson(base){return dwValidatePacingLesson(dwBuildPacingLesson(base))}
+function makeTrackLesson(base){
+ if(isLevelUpMode()){const track=resolvedTrack();if(track==='4')return dwValidatePacingLesson(dwBuildPacingLesson(base));const elevated=dwTrackLesson(track,Math.max(1,Number(base.day||1)),base,DW_PACING_ENGINES);if(!elevated)throw new Error(`No level-up lesson is available for ${track}, day ${base.day}.`);return elevated}
+ return dwValidatePacingLesson(dwBuildPacingLesson(base))
+}
 function translateWord(w,lang){if(lang==="es")return WORD_ES[String(w).toLowerCase()]||"Use context + word parts";return String(w)}
 function speakText(text,lang="en-US"){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=({es:"es-US",fr:"fr-FR",ar:"ar-SA",zh:"zh-CN",vi:"vi-VN",en:"en-US"})[lang]||"en-US";speechSynthesis.speak(u)}catch(e){}}
 
@@ -5977,7 +5983,7 @@ function renderMap(){
  const now=lesson?.day||1;let s="";
  const completedDays=new Set(
    dqProgressRows
-     .filter(x=>String(x.id||"").endsWith("_v48")&&x.status==="complete"&&x.session==="morning")
+     .filter(x=>String(x.id||"").endsWith("_v48")&&x.mode!=="levelup"&&!String(x.id||"").includes("_levelup_")&&x.status==="complete"&&x.session==="morning")
      .map(x=>Number(x.day||0))
  );
  for(let i=1;i<=180;i++){
@@ -5993,9 +5999,10 @@ function renderMap(){
 
 const DAILY_QUEST_BUILD="v48";
 const DW_LEGACY_COMPLETED_DAYS=12;
-function progressId(session){return `${user.uid}_${lesson.date}_${lesson?.track||"4"}_${session}_${DAILY_QUEST_BUILD}`}
+function progressModeKey(){return isLevelUpMode()?"levelup":"assigned"}
+function progressId(session){return `${user.uid}_${lesson.date}_${lesson?.track||"4"}_${progressModeKey()}_${session}_${DAILY_QUEST_BUILD}`}
 function progressRef(session){return doc(db,"dailyQuestProgress",progressId(session))}
-function localProgressKey(session){return `dragonswood_dailyquest_${DAILY_QUEST_BUILD}_${user?.uid||"anon"}_${lesson?.date||"date"}_${lesson?.track||"4"}_${session}`}
+function localProgressKey(session){return `dragonswood_dailyquest_${DAILY_QUEST_BUILD}_${user?.uid||"anon"}_${lesson?.date||"date"}_${lesson?.track||"4"}_${progressModeKey()}_${session}`}
 function saveLocalProgress(session,data){try{localStorage.setItem(localProgressKey(session),JSON.stringify(data))}catch(e){}}
 function readLocalProgress(session){try{const x=localStorage.getItem(localProgressKey(session));return x?JSON.parse(x):null}catch(e){return null}}
 function markActive(){lastInteractionAt=Date.now();if(idleAnnounced){idleAnnounced=false;feedback("Welcome back—your work timer resumed.","good")}}
@@ -6025,7 +6032,7 @@ async function saveProgress(extra={}){
   if(!user||!lesson||!sessionName)return;
   const payload={
     studentId:user.uid,studentEmail:user.email||"",dateKey:lesson.date,day:Number(lesson.day||0),
-    session:sessionName,status:"in_progress",taskIndex:Number(taskIndex||0),qIndex:Number(qIndex||0),
+    session:sessionName,mode:progressModeKey(),status:"in_progress",taskIndex:Number(taskIndex||0),qIndex:Number(qIndex||0),
     score:Number(score||0),correct:Number(correct||0),attempts:Math.min(60,Number(attempts||0)),
     mathSkill:String(lesson.mathSkill||""),elaSkill:String(lesson.elaSkill||""),
     skills:skillStats,needsReteach:[...needsReteach],activeSeconds:Number(activeSeconds||0),idleEvents:Number(idleEvents||0),perQuestionSeconds:perQuestionSeconds.slice(0,60),
@@ -6356,13 +6363,13 @@ async function finishSession(){
   const requested=sessionName==="morning"?Number(lesson.morningXp||4):Number(lesson.exitXp||2);
   const claimId=`${user.uid}_${isLevelUpMode()?"levelup":"dailyquest"}_${lesson.date}_${lesson.track||"4"}_${sessionName}`;
   $("prog").style.width="100%";
-  $("arena").innerHTML=`<div class="complete"><h2>QUEST COMPLETE!</h2><div id="questPetCelebration" style="height:190px;max-width:260px;margin:auto"></div><p id="questPetMessage"></p><p>High Score: <b>${score.toLocaleString()}</b> • Accuracy: <b>${Math.round(acc*100)}%</b></p><div class="loot" id="loot">Saving Dragonswood results…</div><p>Your academic completion is saved even if your RPG character is knocked out.</p></div>`;
+  $("arena").innerHTML=`<div class="complete"><h2>QUEST COMPLETE!</h2><div id="questPetCelebration" style="height:190px;max-width:260px;margin:auto"></div><p id="questPetMessage"></p><p>Run Score: <b>${score.toLocaleString()}</b> • Accuracy: <b>${Math.round(acc*100)}%</b></p><div class="loot" id="loot">Saving Dragonswood results…</div><p>Your academic completion is saved even if your RPG character is knocked out.</p></div>`;
   const questPet=[...(window.DWRPG?.pets||[]),...(window.DWRPG?.prestigePets||[])].find(x=>x.id===profile?.activePet);
   if(questPet&&window.DWPetMotion){new DWPetMotion.PetActor($("questPetCelebration"),questPet,{caption:true}).play("celebrate",2600);$("questPetMessage").textContent=`${questPet.name} celebrates your completed quest!`}
 
   const completionProgress={
     studentId:user.uid,studentEmail:user.email||"",dateKey:lesson.date,day:Number(lesson.day||0),track:lesson.track||"4",trackName:lesson.trackName||"4TH GRADE",session:sessionName,
-    status:"complete",taskIndex:tasks.length,qIndex:0,score:Number(score||0),correct:Number(correct||0),attempts:Math.min(60,Number(attempts||0)),
+    mode:progressModeKey(),status:"complete",taskIndex:tasks.length,qIndex:0,score:Number(score||0),correct:Number(correct||0),attempts:Math.min(60,Number(attempts||0)),
     accuracy:Math.round(acc*100),seconds:elapsed,mathSkill:String(lesson.mathSkill||""),elaSkill:String(lesson.elaSkill||""),
     skills:skillStats,needsReteach:[...needsReteach],activeSeconds:Number(activeSeconds||0),idleEvents:Number(idleEvents||0),perQuestionSeconds:perQuestionSeconds.slice(0,60),
     completedAt:serverTimestamp(),updatedAt:serverTimestamp()
@@ -6400,8 +6407,8 @@ async function finishSession(){
 
   const latest=await getDoc(doc(db,"students",user.uid));
   if(!latest.exists()){$("loot").textContent="✓ Academic completion saved • Student RPG profile unavailable.";await refreshSessionCards();return}
-  const p=latest.data(),knockedOut=Number(p.hp||0)<=0,actualBefore=dailyXp(p);
-  const actualGrant=knockedOut?0:Math.min(requested,Math.max(0,CAP-actualBefore)),goldAward=knockedOut?0:Number(lesson.gold||1);
+  const p=latest.data(),knockedOut=Number(p.hp||0)<=0,actualBefore=dailyXp(p),goldWindow=dwGoldWindow(p);
+  const actualGrant=knockedOut?0:Math.min(requested,Math.max(0,CAP-actualBefore)),requestedGold=knockedOut?0:Number(lesson.gold||1),goldAward=Math.min(requestedGold,Math.max(0,DW_DAILY_GOLD_CAP-goldWindow.earned));
   try{
     const batch=writeBatch(db);
     batch.set(doc(db,"gameResults",claimId),{
@@ -6411,10 +6418,10 @@ async function finishSession(){
       summary:`Day ${lesson.day} • ${sessionName==="morning"?"Morning":"Exit"} • ${lesson.mathSkill} + ${lesson.elaSkill} • ${elapsed}s`,
       xpAward:actualGrant,goldAward,knockedOut,createdAt:serverTimestamp()
     });
-    if(!knockedOut)batch.update(doc(db,"students",user.uid),{xp:Number(p.xp||0)+actualGrant,gold:Number(p.gold||0)+goldAward,dailyXpDate:dateKey(),dailyXpEarned:actualBefore+actualGrant,lastGameClaimId:claimId,updatedAt:serverTimestamp()});
+    if(!knockedOut)batch.update(doc(db,"students",user.uid),{xp:Number(p.xp||0)+actualGrant,gold:Number(p.gold||0)+goldAward,dailyXpDate:dateKey(),dailyXpEarned:actualBefore+actualGrant,dailyGoldEarned:goldWindow.earned+goldAward,dailyGoldWindowStartedAt:goldWindow.reset?serverTimestamp():p.dailyGoldWindowStartedAt,lastGameClaimId:claimId,updatedAt:serverTimestamp()});
     await batch.commit();
     if(knockedOut){profile=p;$("loot").textContent="💀 ACADEMIC COMPLETION SAVED • Knocked out: +0 XP • +0 Gold"}
-    else{profile={...p,xp:Number(p.xp||0)+actualGrant,gold:Number(p.gold||0)+goldAward,dailyXpDate:dateKey(),dailyXpEarned:actualBefore+actualGrant,lastGameClaimId:claimId};renderAccount();$("loot").textContent=`🐉 SAVED • +${actualGrant} PLAYER XP • +${goldAward} GOLD`}
+    else{profile={...p,xp:Number(p.xp||0)+actualGrant,gold:Number(p.gold||0)+goldAward,dailyXpDate:dateKey(),dailyXpEarned:actualBefore+actualGrant,dailyGoldEarned:goldWindow.earned+goldAward,dailyGoldWindowStartedAt:goldWindow.reset?new Date():p.dailyGoldWindowStartedAt,lastGameClaimId:claimId};renderAccount();$("loot").textContent=`🐉 SAVED • +${actualGrant} PLAYER XP • +${goldAward} GOLD`}
   }catch(e){console.warn(e);$("loot").textContent=`✓ Academic completion saved • RPG result save unavailable (${e.code||"unknown"}).`}
   await refreshSessionCards();
 }

@@ -1213,10 +1213,11 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
   }
 
   function validateCell(input,task){
+    if(input.dataset.dwResolved==='1'||input.dataset.dwValidating==='1')return;input.dataset.dwValidating='1';
     totalAttempts++;
 
     if(input.value===task.digit){
-      correctAttempts++;
+      correctAttempts++;input.dataset.dwResolved='1';input.disabled=true;
       const earned = taskHadMistake ? 2 : 5;
       xp += earned;
 
@@ -1252,6 +1253,7 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
       cellFeedback.style.color='#ff6b6b';
       stepText.textContent=task.hint;
       input.value='';
+      input.dataset.dwValidating='0';
       input.focus();
       updateMissionUI();
     }
@@ -1262,7 +1264,7 @@ body.round-3 .top,body.round-3 .mission-card,body.round-3 .panel,body.round-3 .c
     if(!task || task.type==='done') return;
 
     hintPanel.classList.remove('hidden');
-    hintBtn.textContent='HINT SHOWN';
+    hintBtn.textContent='HINT SHOWN • NO-HINT BONUS USED';
     groupVisual.innerHTML='';
 
     // Track support use separately from accuracy. Reopening the same step's
@@ -1594,6 +1596,7 @@ onAuthStateChanged(auth,async user=>{
   }
 });
 
+let dwLongDivisionRunId=(crypto.randomUUID?.()||`${Date.now()}-${Math.random()}`).replace(/[^a-zA-Z0-9_-]/g,'').slice(0,48),dwLastLongDivisionRound=0;
 window.addEventListener("dragonswood-long-division-complete",async event=>{
   const d=event.detail||{};
   if(currentProfile && Number(currentProfile.hp||0)<=0){
@@ -1614,14 +1617,17 @@ window.addEventListener("dragonswood-long-division-complete",async event=>{
     loot.textContent="Mission complete • Sign in through Dragonswood to save account rewards.";
     return;
   }
-  const claimId=`${currentUser.uid}_long_division_${localDateKey()}_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
+  const rewardRound=Math.max(1,Number(d.round||1));if(rewardRound===1&&dwLastLongDivisionRound>=3)dwLongDivisionRunId=(crypto.randomUUID?.()||`${Date.now()}-${Math.random()}`).replace(/[^a-zA-Z0-9_-]/g,'').slice(0,48);dwLastLongDivisionRound=rewardRound;
+  const runId=String(d.runId||dwLongDivisionRunId||'legacy').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,48)||'legacy';
+  const claimId=`${currentUser.uid}_long_division_${localDateKey()}_custom_${runId}_r${rewardRound}`;
   try{
     const latest=await getDoc(doc(db,"students",currentUser.uid));
     if(!latest.exists())throw new Error("Student profile not found");
-    const p=latest.data(),oldXp=Number(p.xp||0),oldGold=Number(p.gold||0);
+    const p=latest.data(),oldXp=Number(p.xp||0),oldGold=Number(p.gold||0),gw=(()=>{const raw=p.dailyGoldWindowStartedAt,start=raw?.toMillis?.()||Number(raw?.seconds||0)*1000||0,reset=!start||Date.now()-start>=86400000;return{earned:reset?0:Math.max(0,Math.min(30,Number(p.dailyGoldEarned||0))),reset}})(),actualGold=Math.min(rewardGold,Math.max(0,30-gw.earned));
+    const claimRef=doc(db,"gameResults",claimId);if((await getDoc(claimRef)).exists()){loot.textContent="🐉 This quest reward was already saved.";return}
     const batch=writeBatch(db);
 
-    batch.set(doc(db,"gameResults",claimId),{
+    batch.set(claimRef,{
       studentId:currentUser.uid,
       studentEmail:currentUser.email||"",
       gameId:"long_division_quest",
@@ -1636,16 +1642,18 @@ window.addEventListener("dragonswood-long-division-complete",async event=>{
       hintsUsed:Number(d.hintsUsed||0),
       totalAttempts:Number(d.totalAttempts||0),
       correctAttempts:Number(d.correctAttempts||0),
+      runId,
       xpAward:cappedRewardXp,
-      goldAward:rewardGold,
+      goldAward:actualGold,
       createdAt:serverTimestamp()
     });
 
     batch.update(doc(db,"students",currentUser.uid),{
       xp:oldXp+cappedRewardXp,
-      gold:oldGold+rewardGold,
+      gold:oldGold+actualGold,
       dailyXpDate:localDateKey(),
       dailyXpEarned:dailyBefore+cappedRewardXp,
+      dailyGoldEarned:gw.earned+actualGold,dailyGoldWindowStartedAt:gw.reset?serverTimestamp():p.dailyGoldWindowStartedAt,
       lastGameClaimId:claimId,
       updatedAt:serverTimestamp()
     });
@@ -1653,10 +1661,10 @@ window.addEventListener("dragonswood-long-division-complete",async event=>{
     await batch.commit();
     currentProfile={...p,xp:oldXp+cappedRewardXp,gold:oldGold+rewardGold,dailyXpDate:localDateKey(),dailyXpEarned:dailyBefore+cappedRewardXp,lastGameClaimId:claimId};
     renderAccount();
-    loot.textContent=cappedRewardXp>0?`🐉 DRAGONSWOOD REWARD: +${cappedRewardXp} XP • +${rewardGold} Gold`:`🐉 DAILY XP CAP REACHED • +${rewardGold} Gold`;
+    loot.textContent=cappedRewardXp>0?`🐉 DRAGONSWOOD REWARD: +${cappedRewardXp} XP • +${actualGold} Gold`:`🐉 DAILY XP CAP REACHED • +${actualGold} Gold`;
     setStatus(cappedRewardXp>0
-      ?`Saved! This quest awarded +${cappedRewardXp} Player XP and +${rewardGold} Gold. Daily XP: ${dailyBefore+cappedRewardXp}/150. You may complete another quest and keep earning until the cap.`
-      :`Saved! You are already at the 150 Player XP daily cap. This quest still awarded +${rewardGold} Gold.`,"good");
+      ?`Saved! This quest awarded +${cappedRewardXp} Player XP and +${actualGold} Gold. Daily XP: ${dailyBefore+cappedRewardXp}/150. You may complete another quest and keep earning until the cap.`
+      :`Saved! You are already at the 150 Player XP daily cap. This quest still awarded +${actualGold} Gold.`,"good");
   }catch(err){
     console.error(err);
     if(String(err.code||"").includes("permission-denied")){

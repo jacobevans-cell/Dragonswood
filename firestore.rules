@@ -253,7 +253,7 @@ service cloud.firestore {
                     && isExploreStudent()
                     && resource.data.hp > 0
                     && request.resource.data.diff(resource.data).affectedKeys()
-                       .hasOnly(['xp','gold','dailyXpDate','dailyXpEarned','lastGameClaimId',
+                       .hasOnly(['xp','gold','dailyXpDate','dailyXpEarned','dailyGoldEarned','dailyGoldWindowStartedAt','lastGameClaimId',
                                 'bossWins','lastBossWinDate','rpgInventory','eggInventory','updatedAt'])
                     // Daily Boss adds win bookkeeping and may drop one item or one egg.
                     && request.resource.data.get('bossWins',0) is number
@@ -269,6 +269,36 @@ service cloud.firestore {
                     && request.resource.data.dailyXpEarned is number
                     && request.resource.data.dailyXpEarned >= 0
                     && request.resource.data.dailyXpEarned <= 150
+                    // DW AUDIT FIX V57.1.9: Gold uses a server-time rolling 24-hour counter. A client-supplied dateKey cannot reset it.
+                    && request.resource.data.dailyGoldEarned is number
+                    && request.resource.data.dailyGoldEarned >= 0
+                    && request.resource.data.dailyGoldEarned <= 30
+                    && request.resource.data.dailyGoldWindowStartedAt is timestamp
+                    && (
+                         (
+                           ('dailyGoldWindowStartedAt' in resource.data)
+                           && resource.data.dailyGoldWindowStartedAt is timestamp
+                           && request.time < resource.data.dailyGoldWindowStartedAt + duration.value(24, 'h')
+                           && request.resource.data.dailyGoldWindowStartedAt == resource.data.dailyGoldWindowStartedAt
+                           && request.resource.data.dailyGoldEarned
+                              == resource.data.get('dailyGoldEarned',0)
+                                 + getAfter(/databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)).data.goldAward
+                         )
+                         || (
+                           !('dailyGoldWindowStartedAt' in resource.data)
+                           && request.resource.data.dailyGoldWindowStartedAt == request.time
+                           && request.resource.data.dailyGoldEarned
+                              == getAfter(/databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)).data.goldAward
+                         )
+                         || (
+                           ('dailyGoldWindowStartedAt' in resource.data)
+                           && resource.data.dailyGoldWindowStartedAt is timestamp
+                           && request.time >= resource.data.dailyGoldWindowStartedAt + duration.value(24, 'h')
+                           && request.resource.data.dailyGoldWindowStartedAt == request.time
+                           && request.resource.data.dailyGoldEarned
+                              == getAfter(/databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)).data.goldAward
+                         )
+                       )
                     && getAfter(/databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)).data.studentId == request.auth.uid
                     && getAfter(/databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)).data.status == "complete"
                     && getAfter(/databases/$(database)/documents/gameResults/$(request.resource.data.lastGameClaimId)).data.xpAward is number
@@ -308,7 +338,7 @@ service cloud.firestore {
       allow update: if isOwner(studentId)
                     && isExploreStudent()
                     && request.resource.data.diff(resource.data).affectedKeys()
-                       .hasOnly(['gold','rpgInventory','eggInventory','updatedAt'])
+                       .hasOnly(['gold','rpgInventory','eggInventory','lastRpgPurchaseId','updatedAt'])
                     && request.resource.data.gold is number
                     && request.resource.data.gold >= 0
                     && request.resource.data.gold < resource.data.gold
@@ -320,7 +350,11 @@ service cloud.firestore {
                     && request.resource.data.get('eggInventory',0) is number
                     && request.resource.data.get('eggInventory',0) >= 0
                     && request.resource.data.get('eggInventory',0)
-                       <= resource.data.get('eggInventory',0) + 1;
+                       <= resource.data.get('eggInventory',0) + 1
+                    && request.resource.data.lastRpgPurchaseId is string
+                    && getAfter(/databases/$(database)/documents/rpgPurchases/$(request.resource.data.lastRpgPurchaseId)).data.studentId == request.auth.uid
+                    && getAfter(/databases/$(database)/documents/rpgPurchases/$(request.resource.data.lastRpgPurchaseId)).data.cost
+                       == resource.data.gold - request.resource.data.gold;
 
       // Equip gear and pick the one active companion.
       // The active pet must be one the student already owns.
@@ -419,7 +453,8 @@ service cloud.firestore {
 
     match /scores/{scoreId} {
       allow read: if true;
-      allow create: if isSignedIn()
+      // DW AUDIT FIX V57.1.9: leaderboard writes require an authorized Explore/tester student and self ownership.
+      allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.score is number
                     && request.resource.data.score >= 0
@@ -428,28 +463,39 @@ service cloud.firestore {
     }
 
     match /gameResults/{resultId} {
+      // DW AUDIT FIX V57.1.9: only live games, owner-prefixed claim IDs, bounded rewards and known fields.
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid
+                    && resultId.matches('^' + request.auth.uid + '_.*$')
+                    && request.resource.data.gameId in [
+                      'daily_quest','daily_boss','fraction_forge',
+                      'long_division_quest','math_operations_quest'
+                    ]
+                    && request.resource.data.keys().hasOnly([
+                      'studentId','studentEmail','displayName','gameId','gameName','status','dateKey',
+                      'day','track','trackName','session','score','accuracy','seconds','mathSkill','elaSkill','summary',
+                      'problemsSolved','roundSolved','round','roundScore','hintsUsed','totalAttempts','correctAttempts',
+                      'practiceMode','difficulty','questPointMultiplier','selectedOperation','operationCounts','operation',
+                      'missionXp','runId','knockedOut','xpAward','goldAward','createdAt'
+                    ])
                     && request.resource.data.status == "complete"
+                    && request.resource.data.dateKey is string
                     && request.resource.data.xpAward is number
                     && request.resource.data.xpAward >= 0
                     && request.resource.data.xpAward <= 12
                     && request.resource.data.goldAward is number
                     && request.resource.data.goldAward >= 0
                     && request.resource.data.goldAward <= 3
+                    && request.resource.data.createdAt == request.time
                     && (
                       get(/databases/$(database)/documents/students/$(request.auth.uid)).data.hp > 0
-                      ||
-                      (
-                        request.resource.data.gameId == "daily_quest"
-                        && request.resource.data.xpAward == 0
-                        && request.resource.data.goldAward == 0
-                      )
+                      || (request.resource.data.gameId == "daily_quest"
+                          && request.resource.data.xpAward == 0
+                          && request.resource.data.goldAward == 0)
                     );
 
       allow read: if isTeacher()
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
-
       allow update, delete: if isTeacher();
     }
 
@@ -588,31 +634,29 @@ service cloud.firestore {
     // {uid}_{dateKey}, and there is no update path — so a second chest on the
     // same day is impossible rather than merely discouraged.
     match /bossLoot/{lootId} {
-      allow read: if isTeacher()
-                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
-
+      allow read: if isTeacher() || (isSignedIn() && resource.data.studentId == request.auth.uid);
+      // DW AUDIT FIX V57.1.9: boss rows may record in-game loot, but never self-issue real-world passes or class-goal rewards.
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid
                     && lootId == request.auth.uid + '_' + request.resource.data.dateKey
+                    && request.resource.data.keys().hasOnly([
+                      'studentId','studentName','dateKey','status','enemyId','goldAward','xpAward',
+                      'rareGoal','goalPoints','rareGoalStatus','itemId','eggAward','bossWinNumber',
+                      'eggOpportunity','eggAwarded','rarePrizeType','createdAt'
+                    ])
+                    && request.resource.data.status == 'complete'
                     && request.resource.data.dateKey is string
-                    && request.resource.data.status == "complete"
-                    && request.resource.data.goldAward is number
-                    && request.resource.data.goldAward >= 0
-                    && request.resource.data.goldAward <= 3
-                    && request.resource.data.xpAward is number
-                    && request.resource.data.xpAward >= 0
-                    && request.resource.data.xpAward <= 12
-                    && request.resource.data.goalPoints is number
-                    && request.resource.data.goalPoints >= 0
-                    && request.resource.data.goalPoints <= 25
-                    && request.resource.data.rareGoal in ['none','classPet','fieldTrip']
-                    && request.resource.data.itemId is string;
-
+                    && request.resource.data.goldAward is number && request.resource.data.goldAward >= 0 && request.resource.data.goldAward <= 3
+                    && request.resource.data.xpAward is number && request.resource.data.xpAward >= 0 && request.resource.data.xpAward <= 12
+                    && request.resource.data.goalPoints == 0
+                    && request.resource.data.rareGoal == 'none'
+                    && request.resource.data.rareGoalStatus == 'none'
+                    && request.resource.data.rarePrizeType == 'none'
+                    && request.resource.data.itemId is string
+                    && request.resource.data.createdAt == request.time;
       allow update, delete: if isTeacher();
     }
 
-    // Purchase ledger. Create-only for students; the gold check that matters
-    // lives on the students document, which cannot go up on this path.
     match /rpgPurchases/{purchaseId} {
       allow read: if isTeacher()
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
@@ -1116,15 +1160,7 @@ service cloud.firestore {
       allow read: if isTeacher()
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
 
-      allow create: if isExploreStudent()
-                    && request.resource.data.studentId == request.auth.uid
-                    && request.resource.data.status == 'earned'
-                    && request.resource.data.prizeType in ['recess','snack','lunch','icecream']
-                    && request.resource.data.bossLootId == dropId
-                    && getAfter(/databases/$(database)/documents/bossLoot/$(dropId)).data.studentId
-                       == request.auth.uid
-                    && getAfter(/databases/$(database)/documents/bossLoot/$(dropId)).data.rarePrizeType
-                       == request.resource.data.prizeType;
+      allow create: if isTeacher();
 
       allow update: if isExploreStudent()
                     && resource.data.studentId == request.auth.uid

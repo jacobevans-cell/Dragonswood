@@ -147,9 +147,12 @@
     async function requestPass(type){
       requireWrite();const def=Passes.definition(type);if(!def)throw new Error('Unknown pass type.');
       const model=currentPasses();if(model.pendingType)throw new Error(`Your ${Passes.definition(model.pendingType)?.label||'extra pass'} request is still waiting for teacher review.`);
-      const dateKey=Core.phoenixDateKey(),id=Passes.requestId(type,currentUser.uid,dateKey),payload={studentId:currentUser.uid,studentName:studentName(),dateKey,status:'pending',createdAt:S.firestore.serverTimestamp(),updatedAt:S.firestore.serverTimestamp()};
-      if(type==='bathroom')payload.genderGroup=model.group;
-      if(type==='outOfSeat'||type==='office'){payload.type=type;payload.label=def.label}
+      const dateKey=Core.phoenixDateKey(),id=Passes.requestId(type,currentUser.uid,dateKey);
+      // DW AUDIT FIX V57.1.9: same-day resubmissions may only touch fields allowed by the Firestore update rule.
+      const existing=lastPassRequests[type],isResubmit=existing&&existing.dateKey===dateKey&&existing.studentId===currentUser.uid;
+      const payload=isResubmit
+        ? {status:'pending',createdAt:S.firestore.serverTimestamp(),updatedAt:S.firestore.serverTimestamp()}
+        : (()=>{const row={studentId:currentUser.uid,studentName:studentName(),dateKey,status:'pending',createdAt:S.firestore.serverTimestamp(),updatedAt:S.firestore.serverTimestamp()};if(type==='bathroom')row.genderGroup=model.group;if(type==='outOfSeat'||type==='office'){row.type=type;row.label=def.label}return row})();
       await S.firestore.setDoc(S.firestore.doc(db,def.requestCollection,id),payload,{merge:true});return id;
     }
     async function startPass(type){
@@ -232,7 +235,9 @@
       const email=Core.normalizedEmail(user.email);
       if(!Core.isTeacherEmail(email)){emit(onUpdate,{status:'unauthorized',user,message:'This account does not have Teacher Command access.'});return}
       emit(onUpdate,{status:'checking',user,message:'Loading Teacher Command operations…'});
-      const watchCollection=(collection,key=collection)=>unsubs.push(S.firestore.onSnapshot(S.firestore.collection(db,collection),snap=>{data[key]=snap.docs.map(d=>({id:d.id,...d.data()}));ready[key]=true;push()},err=>emit(onUpdate,{status:'error',user,message:`${collection} read failed: ${err?.code||err?.message||err}`})));
+      const schoolYearStart=()=>`${new Date().getMonth()>=6?new Date().getFullYear():new Date().getFullYear()-1}-07-01`;
+      const dateWindowed=new Set(['dailyQuestProgress','gameResults','readingSessions','bathroomRequests','snackRequests','passRequests','passHistory','teacherAttentionEvents','scores']);
+      const watchCollection=(collection,key=collection)=>{const ref=S.firestore.collection(db,collection),source=dateWindowed.has(collection)?S.firestore.query(ref,S.firestore.where('dateKey','>=',schoolYearStart())):ref;unsubs.push(S.firestore.onSnapshot(source,snap=>{data[key]=snap.docs.map(d=>({id:d.id,...d.data()}));ready[key]=true;push()},err=>emit(onUpdate,{status:'error',user,message:`${collection} read failed: ${err?.code||err?.message||err}`})))};
       const watchDoc=(id,key)=>unsubs.push(S.firestore.onSnapshot(S.firestore.doc(db,'classData',id),snap=>{data[key]=snap.exists()?{id:snap.id,...snap.data()}:{};ready[key]=true;push()},err=>emit(onUpdate,{status:'error',user,message:`classData/${id} read failed: ${err?.code||err?.message||err}`})));
       [['students','roster'],['dailyQuestProgress','daily'],['curriculumAttempts','curriculum'],['writingResponses','responses'],['gameResults','games'],['readingSessions','readingSessions'],['studentTransactions','studentTransactions'],['bathroomRequests','bathroomRequests'],['snackRequests','snackRequests'],['passRequests','passRequests'],['pointRequests','pointRequests'],['bathroomStatus','bathroomStatus'],['snackStatus','snackStatus'],['passStatus','passStatus'],['passHistory','passHistory'],['bathroomSlots','bathroomSlots'],['curriculumOverrideRequests','curriculumOverrides'],['classPollVotes','pollVotes'],['teacherAttentionEvents','attentionEvents'],['studentSuggestions','studentSuggestions'],['studentSuggestionNotes','suggestionNotes'],['academicAiUsage','academicAiUsage'],['studentJobWeeks','jobWeeks'],['classCalendarEvents','calendarEvents'],['scores','scores'],['leaderboardRewards','leaderboardRewards']].forEach(([collection,key])=>watchCollection(collection,key));
       [['activeWritingSession','scribe'],['activePoll','activePoll'],['activeTeacherAttention','activeAttention'],['kingdomAccess','kingdomAccess'],['dailyAccessOverride','dailyOverride'],['gradebookSettings','gradeSettings'],['academicAiConfig','academicAiConfig'],['passBlackout','passBlackout'],['main','classMain'],['secondRecess','secondRecess'],['classPet','classPet'],['fieldTrip','fieldTrip'],['universalPoints','universalPoints'],['classJobs','classJobs'],['classSchedule','classSchedule']].forEach(([id,key])=>watchDoc(id,key));
@@ -250,7 +255,7 @@
     }
     async function closePassDuplicates(keep){
       const duplicateWrites=[];
-      for(const collection of Object.keys(Operations.REQUEST_TYPES))for(const row of requestRows(collection))if(row.id!==keep.id&&row.status==='pending'&&row.studentId===keep.studentId&&row.dateKey===keep.dateKey)duplicateWrites.push(S.firestore.setDoc(S.firestore.doc(db,collection,row.id),{status:'duplicate',duplicateOf:keep.id,reviewedAt:S.firestore.serverTimestamp()},{merge:true}));
+      for(const collection of Object.keys(Operations.REQUEST_TYPES))for(const row of requestRows(collection))if(row.id!==keep.id&&row.status==='pending'&&row.studentId===keep.studentId&&row.dateKey===keep.dateKey&&String(row.type||Operations.REQUEST_TYPES[collection]?.type||'')===String(keep.type||Operations.REQUEST_TYPES[keep.collection]?.type||''))duplicateWrites.push(S.firestore.setDoc(S.firestore.doc(db,collection,row.id),{status:'duplicate',duplicateOf:keep.id,reviewedAt:S.firestore.serverTimestamp()},{merge:true}));
       await Promise.all(duplicateWrites);
     }
     const teacherCommands=Object.freeze({

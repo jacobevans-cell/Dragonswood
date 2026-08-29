@@ -60,7 +60,7 @@ footer{text-align:center;color:#98adbf;padding:18px;font-size:11px}
     </div>
     <div class="actions">
       <a class="btn" target="_blank" rel="noopener" href="https://phet.colorado.edu/sims/html/my-solar-system/latest/my-solar-system_all.html">↗ FULL SCREEN</a>
-      <button onclick="document.getElementById('phetFrame').src=document.getElementById('phetFrame').src">↺ RELOAD SIM</button>
+      <button onclick="reloadPhet()">↺ RELOAD SIM</button>
     </div>
    </aside>
   </div>
@@ -69,7 +69,7 @@ footer{text-align:center;color:#98adbf;padding:18px;font-size:11px}
  <section id="missions" class="panel">
   <div class="card">
    <h2>🏆 Dragonswood Mission Board</h2>
-   <p>These missions are built around things the simulator actually lets students manipulate. No fake buttons that congratulate themselves for existing.</p>
+   <p>These missions are built around things the simulator actually lets students manipulate. Because PhET runs in a separate simulation frame, completion is a student check-off after doing the listed investigation. The mission card tells you exactly what evidence to produce.</p>
    <div id="missionBoard"></div>
   </div>
  </section>
@@ -92,6 +92,7 @@ PhET My Solar System © University of Colorado Boulder, GPL-3.0/open educational
 </footer>
 
 <script>
+function reloadPhet(){const f=document.getElementById('phetFrame'),u=new URL(f.src,location.href);u.searchParams.set('dwreload',Date.now());f.src=u.toString()}
 const MISSIONS=[
  {name:'First Orbit',xp:50,text:'Use the Intro or Lab screen. Create a body that completes at least one clear orbit without colliding.'},
  {name:'Too Slow!',xp:50,text:'Reduce a planet’s sideways velocity until its path falls inward. Explain why gravity wins.'},

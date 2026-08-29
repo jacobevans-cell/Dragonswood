@@ -45,8 +45,9 @@
         const studentId=text(row.studentId||row.uid);
         if(!studentId)continue;
         const item={id:text(row.id),collection,studentId,name:text(row.studentName||row.displayName,'Student'),kind:requestKind(collection,row),type:text(row.type,REQUEST_TYPES[collection].type),time:elapsed(row,date),createdMs:timestamp(row.createdAt||row.requestedAt||row.updatedAt)};
-        const prior=byStudent.get(studentId);
-        if(!prior||item.createdMs>=prior.createdMs)byStudent.set(studentId,item);
+        const requestKey=`${studentId}|${item.type}`;
+        const prior=byStudent.get(requestKey);
+        if(!prior||item.createdMs>=prior.createdMs)byStudent.set(requestKey,item);
       }
     }
     return Object.freeze([...byStudent.values()].sort((a,b)=>a.createdMs-b.createdMs||a.name.localeCompare(b.name)).map(Object.freeze));

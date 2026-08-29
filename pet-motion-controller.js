@@ -22,3 +22,10 @@
   `;document.head.appendChild(s)}
   installStyles();window.DWPetMotion={PetActor,sourceFor,labelFor,reduced};
 })();
+
+(() => {
+  if (document.getElementById('dw-pet-motion-fallback-style')) return;
+  const style=document.createElement('style');style.id='dw-pet-motion-fallback-style';
+  style.textContent=`.dw-pet-play-fallback img{animation:dwPetPlayFallback .72s ease-in-out infinite alternate}.dw-pet-ability-fallback img{animation:dwPetAbilityFallback .82s ease-in-out infinite alternate;filter:drop-shadow(0 0 14px #ffe36d)}@keyframes dwPetPlayFallback{to{transform:translateY(-10px) rotate(-4deg) scale(1.06)}}@keyframes dwPetAbilityFallback{to{transform:translateY(-4px) rotate(5deg) scale(1.12);filter:drop-shadow(0 0 22px #ffe36d)}}`;
+  document.head.appendChild(style);
+})();

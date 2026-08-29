@@ -89,7 +89,7 @@ SC.forEach(q=>{document.getElementById(q[0]).insertAdjacentHTML("beforeend",mcCa
 
 document.getElementById("s3").innerHTML=`
 <div class="card" data-kind="match"><div class="qnum">QUESTIONS ${n}–${n+4} • 5 POINTS</div><div class="prompt">Match each child to what happened. Every choice is used once.</div>
-${CASES.map((c,i)=>`<div class="matchrow"><b>${c[0]}</b><select data-a="${i}"><option value="">Choose the outcome…</option>${CASES.map((x,j)=>`<option value="${j}">${x[1]}</option>`).join("")}</select></div>`).join("")}<div class="feedback"></div></div>`; n+=5;
+${CASES.map((c,i)=>`<div class="matchrow"><b>${c[0]}</b><select data-a="${i}"><option value="">Choose the outcome…</option>${[...CASES.keys()].sort((a,b)=>((a*17+i*31)%11)-((b*17+i*31)%11)).map(j=>`<option value="${j}">${CASES[j][1]}</option>`).join("")}</select></div>`).join("")}<div class="feedback"></div></div>`; n+=5;
 
 document.getElementById("s3").insertAdjacentHTML("beforeend",`
 <div class="card" data-kind="order"><div class="qnum">QUESTION ${n++} • 2 POINTS</div><div class="prompt">Put these story events in chronological order, 1 = earliest.</div>
@@ -99,7 +99,7 @@ ${[
 ["Grandmamma tells the stories of the five children.",2],
 ["Grandmamma explains how to recognise a witch.",3],
 ["The father's will requires the narrator and Grandmamma to return to England.",4]
-].map((x,i)=>`<div class="order-item"><select data-a="${x[1]}"><option value="">#</option>${[1,2,3,4].map(v=>`<option>${v}</option>`).join("")}</select><span>${x[0]}</span></div>`).join("")}</div><div class="feedback"></div></div>`);
+].map((x,i)=>({x,i})).sort((a,b)=>((a.i*13+7)%17)-((b.i*13+7)%17)).map(({x,i})=>`<div class="order-item"><select data-a="${x[1]}"><option value="">#</option>${[1,2,3,4].map(v=>`<option>${v}</option>`).join("")}</select><span>${x[0]}</span></div>`).join("")}</div><div class="feedback"></div></div>`);
 
 document.getElementById("s4").innerHTML=`
 <div class="card" data-kind="multi" data-answer="0,2,4"><div class="qnum">QUESTION ${n++} • 2 POINTS</div><div class="prompt">Select ALL details that are presented as signs of a REAL WITCH in pages 8–12.</div>
@@ -133,7 +133,8 @@ function updateAnswered(){
  document.querySelectorAll('[data-kind="multi"]').forEach(c=>{if(c.querySelectorAll("input:checked").length)a++});
  document.getElementById("answered").textContent=a;
 }
-document.getElementById("grade").addEventListener("click",()=>{
+let witchesGradeLocked=false;
+document.getElementById("grade").addEventListener("click",()=>{if(witchesGradeLocked)return;witchesGradeLocked=true;document.getElementById("grade").disabled=true;
  let score=0,max=0;
  document.querySelectorAll(".card").forEach(c=>{
   let fb=c.querySelector(".feedback"); fb.className="feedback";
@@ -144,7 +145,7 @@ document.getElementById("grade").addEventListener("click",()=>{
   }
   if(c.dataset.kind==="match"){
    let sels=[...c.querySelectorAll("select")],got=0; max+=5;
-   sels.forEach(s=>{if(+s.value===+s.dataset.a)got++});score+=got;fb.textContent=`${got}/5 matches correct.`;fb.classList.add(got===5?"good":"bad");
+   sels.forEach(s=>{if(s.value!==""&&+s.value===+s.dataset.a)got++});score+=got;fb.textContent=`${got}/5 matches correct.`;fb.classList.add(got===5?"good":"bad");
   }
   if(c.dataset.kind==="order"){
    max+=2; let sels=[...c.querySelectorAll("select")],got=sels.filter(s=>+s.value===+s.dataset.a).length;
@@ -164,7 +165,7 @@ document.getElementById("grade").addEventListener("click",()=>{
  document.getElementById("result").classList.add("show"); document.getElementById("result").scrollIntoView({behavior:"smooth"});
  window.dispatchEvent(new CustomEvent("witches-test-graded",{detail:{score,max,accuracy:pct}}));
 });
-document.getElementById("reset").addEventListener("click",()=>{
+document.getElementById("reset").addEventListener("click",()=>{witchesGradeLocked=false;document.getElementById("grade").disabled=false;
  if(!confirm("Reset every answer and score?"))return;
  document.querySelectorAll("button.choice").forEach(x=>x.classList.remove("selected","correct","wrong"));
  document.querySelectorAll("select").forEach(x=>x.value="");document.querySelectorAll("input[type=checkbox]").forEach(x=>x.checked=false);

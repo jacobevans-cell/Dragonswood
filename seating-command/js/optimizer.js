@@ -56,7 +56,7 @@ function assignmentMap(plan) {
 
 function isNear(a, b) {
   if (!a || !b) return false;
-  return a.group === b.group || distance(a, b) < 14;
+  return distance(a, b) < 14;
 }
 
 export function evaluatePlan(plan, students, rules, previousPlan = null) {
@@ -66,6 +66,7 @@ export function evaluatePlan(plan, students, rules, previousPlan = null) {
   let hardConflicts = 0;
   let softMisses = 0;
   const reasons = [];
+  const hasExplicitDoorZone = plan.some(seat => seat.doorZone === true);
 
   for (const rule of rules) {
     const a = byStudent.get(rule.a);
@@ -74,7 +75,7 @@ export function evaluatePlan(plan, students, rules, previousPlan = null) {
     if (rule.type === 'apart') satisfied = !isNear(a, b);
     if (rule.type === 'together') satisfied = isNear(a, b);
     if (rule.type === 'front') satisfied = Boolean(a && (a.frontZone === true || a.y <= 46));
-    if (rule.type === 'door') satisfied = Boolean(a && (a.doorZone === true || a.x >= 64));
+    if (rule.type === 'door') satisfied = Boolean(a && (a.doorZone === true || (!hasExplicitDoorZone && a.x >= 64)));
     if (rule.type === 'lock') satisfied = Boolean(a && a.id === rule.seatId);
 
     if (!satisfied) {
@@ -183,8 +184,8 @@ export function generateCandidates(seats, students, rules, currentPlan, previous
 }
 
 export function quickShuffle(seats, students, rules) {
-  const lockRules = rules.filter(rule => rule.type === 'lock' && rule.seatId).map(rule => ({ studentId: rule.a, seatId: rule.seatId }));
-  return buildCandidate(seats, students, rules, lockRules);
+  const best = generateCandidates(seats, students, rules, null, null, 180);
+  return best[0]?.plan || buildCandidate(seats, students, rules, rules.filter(rule => rule.type === 'lock' && rule.seatId).map(rule => ({ studentId: rule.a, seatId: rule.seatId })));
 }
 
 export function nearbyStudents(plan, seat) {

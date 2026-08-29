@@ -5,13 +5,14 @@ DONOR="$ROOT/staged-systems/unified-math-v56.27-grayson-v58"
 TMP_DIR="$(mktemp -d /tmp/dragonswood-integrated-math.XXXXXX)"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
-mkdir -p "$TMP_DIR/css" "$TMP_DIR/js" "$TMP_DIR/tools"
+mkdir -p "$TMP_DIR/css" "$TMP_DIR/js" "$TMP_DIR/tools" "$TMP_DIR/v33-integration/js/integration"
 cp "$ROOT/math-operations-quest.html" "$TMP_DIR/math-operations-quest.html"
 cp "$ROOT/index.html" "$TMP_DIR/index.html"
 cp "$ROOT/css/math-operations-quest.css" "$TMP_DIR/css/math-operations-quest.css"
 cp "$ROOT/js/math-operations-quest.js" "$TMP_DIR/js/math-operations-quest.js"
 cp "$ROOT/js/math-operations-rewards.js" "$TMP_DIR/js/math-operations-rewards.js"
 cp "$ROOT/js/math-operations-dragonswood-host.js" "$TMP_DIR/js/math-operations-dragonswood-host.js"
+cp "$ROOT/v33-integration/js/integration/modules.js" "$TMP_DIR/v33-integration/js/integration/modules.js"
 
 # v56.27's own gate predates Grayson v58 and names the earlier v57.1 script
 # tag. Normalize only the temporary test copy so all 29 underlying Math gates

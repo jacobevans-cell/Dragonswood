@@ -4,13 +4,20 @@ const path = require("path");
 const root = __dirname;
 const retired = [
   "index-v2.html",
+  "student-v2.html",
   "teacher-v2.html",
+  "Tester1111.html",
+  "index-live-welcome-test.html",
   "dragonswood-v2-core.css",
   "dragonswood-v2-student.css",
   "dragonswood-v2-teacher.css",
   "dragonswood-student-redesign-v2.css",
-  "dragonswood-subpage-shell-v2.js"
+  "dragonswood-subpage-shell-v2.js",
+  "dragonswood-teacher-tools.js",
+  "dragonswood-request-center.js",
+  "dragonswood-academic-ai-teacher.js"
 ];
+const retiredDirectories = ["dragonswood-v33-test"];
 const protectedCurrent = [
   "index.html",
   "teacher.html",
@@ -38,6 +45,9 @@ function check(name, condition, detail = "") {
 for (const file of retired) {
   check(`${file} is retired`, !fs.existsSync(path.join(root, file)));
 }
+for (const dir of retiredDirectories) {
+  check(`${dir}/ is retired`, !fs.existsSync(path.join(root, dir)));
+}
 for (const file of protectedCurrent) {
   check(`${file} is preserved`, fs.existsSync(path.join(root, file)));
 }
@@ -64,12 +74,13 @@ scan(root);
 check("production runtime has no references to retired V2 files", consumers.length === 0, consumers.join(", "));
 
 const index = fs.readFileSync(path.join(root, "index.html"), "utf8");
-const host = fs.readFileSync(path.join(root, "dragonswood-module-host.js"), "utf8");
-check("Adventurer Hall stays in the current portal module shell", /data-module="adventurer-hall"/.test(index) && /path:"adventurer-hall\.html"/.test(host));
-check("Boss Battle stays in the current portal module shell", /data-module="boss-battle"/.test(index) && /path:"boss-battle\.html"/.test(host));
+const modules = fs.readFileSync(path.join(root, "v33-integration/js/integration/modules.js"), "utf8");
+check("current student root loads the V3 module shell", /<base href="v33-integration\/">/.test(index) && /js\/integration\/modules\.js/.test(index));
+check("Adventurer Hall stays in the current V3 module shell", /id:'adventurer-hall'[\s\S]*?path:'adventurer-hall\.html'[\s\S]*?morningGate:true/.test(modules));
+check("Boss Battle stays in the current V3 module shell", /id:'boss-battle'[\s\S]*?path:'boss-battle\.html'[\s\S]*?morningGate:true/.test(modules));
 
 if (failed) {
   console.error(`\n${failed} V2 retirement self-test(s) failed`);
   process.exit(1);
 }
-console.log("\n✅ V2 RUNTIME RETIRED; CURRENT SYSTEMS AND HISTORY PRESERVED");
+console.log("\n✅ LEGACY PORTAL RUNTIME RETIRED; CURRENT V3 SYSTEMS AND HISTORY PRESERVED");

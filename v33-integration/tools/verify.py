@@ -15,10 +15,12 @@ check(not (ROOT/'teacher.html').exists(),'production filename teacher.html absen
 
 textfiles=[p for p in ROOT.rglob('*') if p.is_file() and p.suffix.lower() in {'.html','.css','.js'}]
 sources='\n'.join(p.read_text(errors='ignore') for p in textfiles)
-html='\n'.join(p.read_text(errors='ignore').lower() for p in textfiles if p.suffix=='.html')
-check('style="' not in sources and "style='" not in sources,'no inline style attributes')
+html_files=[p for p in textfiles if p.suffix=='.html']
+html='\n'.join(p.read_text(errors='ignore').lower() for p in html_files)
+check('style="' not in html and "style='" not in html,'no static HTML inline style attributes')
 check('<style' not in html,'no HTML style blocks')
-check('!important' not in sources,'no !important declarations')
+important_files={str(p.relative_to(ROOT)) for p in textfiles if '!important' in p.read_text(errors='ignore')}
+check(important_files <= {'js/student-app.js','js/teacher-app.js','js/integration/modules.js'},'important overrides stay scoped to live stability/embed layers')
 check('@layer reset, tokens, base, layout, components, utilities, states;' in (ROOT/'css/dragonswood.css').read_text(),'required CSS cascade layers declared')
 check('<progress' in (ROOT/'js/student-app.js').read_text() and '<progress' in (ROOT/'js/teacher-app.js').read_text(),'semantic progress components used')
 
@@ -33,9 +35,13 @@ check(len(teacher_refs)==9,f'9 teacher screenshot files packaged ({len(teacher_r
 
 student_js=(ROOT/'js/student-app.js').read_text()
 teacher_js=(ROOT/'js/teacher-app.js').read_text()
-check("const TESTER_KEY = 'dw-v33-tester'" in student_js,'student local storage is tester-namespaced')
-for dangerous in [r'initializeApp\s*\(',r'firebaseio\.com',r'firestore\s*\(',r'getFirestore\s*\(',r'fetch\s*\(']:
-    check(not re.search(dangerous,sources,re.I),f'no live-network pattern: {dangerous}')
+runtime=(ROOT/'js/integration/runtime.js').read_text()
+check("const TESTER_KEY = IS_PRODUCTION ? 'dw-v33' : 'dw-v33-tester'" in student_js,'tester and production local storage remain separately namespaced')
+check('firebaseio.com' not in sources.lower(),'no direct Firebase Realtime Database endpoint')
+check(not re.search(r'fetch\s*\(',sources,re.I),'no unaudited direct fetch calls')
+check("const environment=declaredEnvironment==='production'?'production':(prodReadOnly?'production-readonly':'emulator')" in runtime,'only an HTML-declared production root can select live Firebase')
+check("environment==='emulator'?EMULATOR_FIREBASE_CONFIG:PRODUCTION_FIREBASE_CONFIG" in runtime,'tester runtime selects the fictional Firebase project')
+check('connectAuthEmulator' in runtime and 'connectFirestoreEmulator' in runtime,'tester runtime pins Auth and Firestore to local emulators')
 
 for route in ['adventure','missions','games','scribe','day','hall','boss','leaderboards']:
     check(route in student_js,f'student route {route} represented')

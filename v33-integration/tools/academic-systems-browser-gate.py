@@ -147,7 +147,7 @@ def main():
             teacher.goto(f'{base}/v33-integration/teacher-test.html?dw-env=emulator#gradebook', wait_until='domcontentloaded')
             sign_in(teacher, 'jacobicusjax@gmail.com', 'DragonswoodV33TeacherIntegration')
             wait_authorized(teacher, 'Dragonswood Gradebook', 'gradebook')
-            teacher.locator('.grade-table').get_by_text('Fifth', exact=True).wait_for()
+            teacher.locator('[data-grade-student]').filter(has_text='Fifth').wait_for()
             teacher.evaluate("location.hash='#scribe'")
             teacher.get_by_role('heading', name='Scribe Arena Command').wait_for()
             teacher.get_by_text('Mission active', exact=True).wait_for()

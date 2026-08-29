@@ -112,12 +112,42 @@ def main():
         assert 'targetMinutes' not in unchanged and 'lastHeartbeatMs' not in unchanged
         assert unchanged.get('bookTitle')=='The Witches' and unchanged.get('studentName')=='Fourth'
 
-        teacher.bring_to_front();teacher.evaluate("location.hash='#gradebook'");teacher.get_by_role('heading',name='Dragonswood Gradebook').wait_for();teacher.locator('#gradebook-search').fill('Fourth');row=teacher.locator('[data-grade-student]').filter(has_text='Fourth');row.get_by_text('0.3 verified min',exact=False).wait_for(timeout=10000);row.get_by_text('Incomplete',exact=False).wait_for();row.get_by_text('Provisional',exact=True).wait_for();assert row.get_by_text('Complete evidence',exact=True).count()==0
+        teacher.bring_to_front();teacher.evaluate("location.hash='#gradebook'");teacher.get_by_role('heading',name='Dragonswood Gradebook').wait_for();teacher.locator('#gradebook-search').fill('Fourth');row=teacher.locator('[data-grade-student]').filter(has_text='Fourth');row.get_by_text('0.3 verified min • Incomplete',exact=True).wait_for(timeout=10000);row.get_by_text('Provisional',exact=True).wait_for();assert row.get_by_text('Complete evidence',exact=True).count()==0
+
+        # The preferred V2 presentation is now a visual layer over the hardened
+        # V3 model. Prove that the live gradebook is a wide expandable card,
+        # while retaining the exact evidence/status assertions above.
+        card=teacher.locator('details.gradebook-student-card').filter(has_text='Fourth')
+        card.wait_for();box=card.bounding_box();assert box and box['width']>900,box
+        assert card.locator('.gradebook-card-head').evaluate("el=>getComputedStyle(el).display")=='grid'
+        assert teacher.locator('.grade-table').count()==0,'The retired cramped gradebook table returned'
+
+        # Exercise the three useful controls migrated out of the retired V2
+        # portal. These writes stay inside the fictional emulator and prove the
+        # live UI -> V3 runtime -> Firestore path rather than only matching text.
+        request_id='v5718_cleanup_review_fixture'
+        set_emulator_document('studentSuggestions',request_id,{'studentId':scholar['id'],'studentName':'Fourth','type':'idea','text':'Please keep the useful teacher tools in the current portal.','status':'new'})
+        teacher.evaluate("location.hash='#tools'");teacher.get_by_role('heading',name='Classroom Tools').wait_for();teacher.get_by_role('heading',name='System & Review').wait_for()
+        teacher.wait_for_function("id=>state.operations?.studentSuggestions?.some(row=>row.id===id)",arg=request_id,timeout=10000)
+
+        teacher.get_by_role('button',name='Open Requests').click();request_dialog=teacher.get_by_role('dialog');request_dialog.get_by_text('Please keep the useful teacher tools',exact=False).wait_for();request_dialog.get_by_label('Status',exact=True).select_option('planned');request_dialog.get_by_label('Message shown to student',exact=True).fill('Kept in the current V3 portal.');request_dialog.get_by_label('Private teacher note',exact=True).fill('V57.1.8 migration browser proof.');request_dialog.get_by_role('button',name='Save review',exact=True).click();request_dialog.wait_for(state='detached')
+        request_saved=teacher.evaluate("""async id=>{const apps=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js');const fs=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');const db=fs.getFirestore(apps.getApp('DragonswoodV33TeacherIntegration')),request=await fs.getDoc(fs.doc(db,'studentSuggestions',id)),note=await fs.getDoc(fs.doc(db,'studentSuggestionNotes',id));return {request:request.data(),note:note.data()}}""",request_id)
+        assert request_saved['request']['status']=='planned' and request_saved['request']['teacherResponse']=='Kept in the current V3 portal.',request_saved
+        assert request_saved['note']['note']=='V57.1.8 migration browser proof.',request_saved
+
+        teacher.get_by_role('button',name='Manage AI').click();ai_dialog=teacher.get_by_role('dialog');ai_dialog.get_by_label('Answer Rescue',exact=True).select_option('true');ai_dialog.get_by_label('Calls per student/day',exact=True).fill('13');ai_dialog.get_by_label('Calls for class/day',exact=True).fill('260');ai_dialog.get_by_role('button',name='Save AI settings',exact=True).click();ai_dialog.wait_for(state='detached')
+        ai_saved=teacher.evaluate("""async()=>{const apps=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js');const fs=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');return (await fs.getDoc(fs.doc(fs.getFirestore(apps.getApp('DragonswoodV33TeacherIntegration')),'classData','academicAiConfig'))).data()}""")
+        assert ai_saved['enabled'] is True and ai_saved['perStudentDailyCallCap']==13 and ai_saved['dailyClassCallCap']==260 and ai_saved['model']=='gpt-5-nano',ai_saved
+
+        before_eggs=teacher.evaluate("""async id=>{const apps=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js');const fs=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');return (await fs.getDoc(fs.doc(fs.getFirestore(apps.getApp('DragonswoodV33TeacherIntegration')),'students',id))).data()?.eggInventory||0}""",scholar['id'])
+        teacher.get_by_role('button',name='Choose Scholars').click();teacher.get_by_role('dialog').get_by_label('Fourth',exact=True).check();teacher.get_by_role('button',name='Award one egg each').click();teacher.get_by_role('dialog').wait_for(state='detached')
+        after_eggs=teacher.evaluate("""async id=>{const apps=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js');const fs=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');return (await fs.getDoc(fs.doc(fs.getFirestore(apps.getApp('DragonswoodV33TeacherIntegration')),'students',id))).data()?.eggInventory||0}""",scholar['id'])
+        assert after_eggs==before_eggs+1,{'before':before_eggs,'after':after_eggs}
         browser.close()
     finally:
       server.shutdown();server.server_close()
     if forbidden: raise AssertionError(f'Reading grade gate attempted production Firebase: {forbidden}')
-    print('V3.3 reading grade browser gate: PASS (reader heartbeat → rules → Firestore → teacher gradebook; hidden reader pauses)')
+    print('V57.1.8 browser gate: PASS (reader evidence + wide gradebook cards + migrated requests/AI/egg tools)')
     return 0
 
 if __name__=='__main__': raise SystemExit(main())

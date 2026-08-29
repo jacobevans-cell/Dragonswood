@@ -13,7 +13,7 @@ node v57-improvements-selftest.cjs
 node tools/check-parse.mjs
 node tools/check-firestore-coverage.mjs
 python seating-command/verify.py
-python dragonswood-v33-test/tools/verify.py
+python v33-integration/tools/verify.py
 
 (cd v33-integration && ./tools/check-stage-2-3.sh)
 (cd staged-systems/kingdom-wars-v11.1 && bash tools/verify-deploy-stage.sh)

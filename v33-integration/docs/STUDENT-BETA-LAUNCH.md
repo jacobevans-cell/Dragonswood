@@ -15,7 +15,8 @@ root cutover.
 
 - `index.html` becomes the V3.3 student portal.
 - `teacher.html` becomes the V3.3 teacher portal.
-- `student-v2.html` and `teacher-v2.html` preserve the pre-launch portals.
+- Git history and the named rollback branch preserve the pre-launch portals;
+  duplicate writable HTML snapshots are no longer hosted beside production.
 - Firebase Academic AI and Arcade Access Functions are deployed from their
   named codebases.
 - The exact root `firestore.rules` and Arcade indexes are deployed; emulator
@@ -34,6 +35,6 @@ promotion merge and pushes the rollback automatically.
 
 ## Manual rollback after a successful launch
 
-The launch output records the promotion merge SHA and rollback tag. To restore
-the previous root later, revert that one merge on `main` and push it. Do not
+The launch output records the promotion merge SHA and rollback branch. To
+restore the previous root later, revert the promotion merge on `main`. Do not
 reset or force-push `main`.

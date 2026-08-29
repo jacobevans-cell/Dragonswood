@@ -10,8 +10,9 @@ r=(root/'js/math-operations-rewards.js').read_text(encoding='utf-8')
 c=(root/'css/math-operations-quest.css').read_text(encoding='utf-8')
 m=(root/'math-operations-quest.html').read_text(encoding='utf-8')
 idx=(root/'index.html').read_text(encoding='utf-8') if (root/'index.html').exists() else ''
+modules=(root/'v33-integration/js/integration/modules.js').read_text(encoding='utf-8') if (root/'v33-integration/js/integration/modules.js').exists() else ''
 ck('live back link targets index.html#games','href="index.html#games"' in m)
-ck('Math Operations cache version is 56.27.0','v=56.27.0' in m and 'math-operations-quest.html?v=56.27.0' in idx)
+ck('Math Operations runtime is cache-busted and registered','v=56.27.0' in m and ('math-operations-quest.html?v=56.27.0' in idx or "path:'math-operations-quest.html'" in modules))
 ck('Custom worksheet rounds are ineligible for account rewards',"eligibleForRewards:diff.rewardEligible&&!state.roundHadCustom&&state.mode==='random'" in q)
 ck('Custom practice has explicit no-XP/Gold copy','Worksheet mode does not award Player XP or Gold' in q)
 ck('Custom next problem clears instead of reloading same numbers','prepareCustomEntry()' in q and 'const p={operation:state.problem.operation,a:state.problem.a,b:state.problem.b};loadProblem(p,true)' not in q)

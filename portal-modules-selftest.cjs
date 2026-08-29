@@ -9,25 +9,27 @@ function check(name,condition){
 function read(file){return fs.readFileSync(path.join(__dirname,file),"utf8");}
 
 const index=read("index.html");
-const host=read("dragonswood-module-host.js");
-const css=read("dragonswood-module-host.css");
+const host=read("v33-integration/js/integration/modules.js");
+const studentApp=read("v33-integration/js/student-app.js");
+const teacherApp=read("v33-integration/js/teacher-app.js");
+const css=read("v33-integration/styles/module-host.css");
 
-check("current portal loads the polished module shell stylesheet",/dragonswood-module-host\.css\?v=57\.2/.test(index));
-check("current portal loads the polished module host",/dragonswood-module-host\.js\?v=57\.2/.test(index));
-check("module view is part of the signed-in portal",/id="view-module"[^>]*data-page="module"/.test(index));
-check("module frame is created without loading a feature at startup",/id="dwModuleFrame"[^>]*><\/iframe>/.test(index));
-check("module frame is destroyed on close",/frame\.src="about:blank"/.test(host));
+check("current portal loads the polished module shell stylesheet",/styles\/module-host\.css/.test(index));
+check("current portal loads the polished V3 module host",/js\/integration\/modules\.js/.test(index));
+check("module view is part of the signed-in portal",/if\(moduleId\)return moduleHost\.markup\(moduleId\)/.test(studentApp));
+check("module frame is created without loading a feature at startup",/<iframe class="v33-module-frame" data-module-frame title="\$\{mod\.title\}"><\/iframe>/.test(host));
+check("module frame is destroyed on close",/function closeModule\(\)[\s\S]*location\.hash=mod\?\.returnPage\|\|'adventure'/.test(studentApp));
 check("embedded standalone portal links are hidden",host.includes('a[href^="index.html"]'));
-check("duplicate standalone headers are force-hidden in the portal",/querySelectorAll\("body>header"\)/.test(host)&&/style\.setProperty\("display","none","important"\)/.test(host));
-check("technical module toolbar buttons are removed",!index.includes("OPEN SEPARATELY")&&!index.includes("BACK TO PORTAL")&&!index.includes("data-close-module"));
-check("academic and mission modules keep their parent navigation highlighted",/tab\.dataset\.view===mod\.returnView/.test(host));
-check("browser history and close routing are supported",/history\.pushState/.test(host)&&/history\.back\(\)/.test(host)&&/popstate/.test(index));
-check("daily access gate still protects academic games",/dailyGate&&window\.DWDailyAccessUnlocked!==true/.test(host));
-check("active passes still block feature modules",/window\.DWBlockingPassType/.test(host));
-check("Adventurer Hall uses the module host",/data-module="adventurer-hall"/.test(index)&&!/onclick="location\.href='adventurer-hall\.html'"/.test(index));
-check("Boss Battle uses the module host",/data-module="boss-battle"/.test(index)&&!/onclick="location\.href='boss-battle\.html'"/.test(index));
-check("core student portal remains directly rendered",["view-home","view-quests","view-games","view-scribe","view-planner","view-leaderboard","studentPassHub"].every(id=>index.includes(`id="${id}"`)));
-check("teacher seating module remains integrated",/id="seatingCommandFrame"[^>]+seating-command\/index\.html/.test(read("teacher.html")));
+check("duplicate standalone headers are force-hidden in the portal",/querySelectorAll\('body>header'\)/.test(host)&&/style\.setProperty\('display','none','important'\)/.test(host));
+check("module toolbar has one clear return control",/data-close-module>Back<\/button>/.test(host)&&!host.includes("OPEN SEPARATELY"));
+check("academic and mission modules keep their parent navigation highlighted",/returnPage:'games'/.test(host)&&/returnPage:'missions'/.test(host));
+check("browser hash routing and close routing are supported",/location\.hash=`module\/\$\{encodeURIComponent\(id\)\}`/.test(studentApp)&&/window\.addEventListener\('hashchange'/.test(studentApp));
+check("daily access gate still protects academic games",/function allowed\(id,student=\{\}\)/.test(host)&&/mod\.morningGate&&student\.dailyAccessUnlocked!==true/.test(host));
+check("active passes still block feature modules",/if\(blockingPass\(\)\)/.test(studentApp));
+check("Adventurer Hall uses the V3 module host",/id:'adventurer-hall'[^\n]+path:'adventurer-hall\.html'/.test(host));
+check("Boss Battle uses the V3 module host",/id:'boss-battle'[^\n]+path:'boss-battle\.html'/.test(host));
+check("core student portal remains directly rendered",["adventure","missions","games","scribe","day","leaderboards"].every(route=>studentApp.includes(`['${route}'`)));
+check("teacher seating module remains integrated",/new URL\('\.\.\/seating-command\/index\.html'/.test(teacherApp)&&/Seating Command & Room Builder/.test(teacherApp));
 
 const expected=[
   "adventurer-hall.html","boss-battle.html","daily-quest.html","curriculum-quest.html",
@@ -37,7 +39,7 @@ const expected=[
   "cosmic-architect.html","arcane-forge.html","witches-reader.html"
 ];
 for(const file of expected){
-  check(`${file} remains a protected standalone module`,fs.existsSync(path.join(__dirname,file))&&host.includes(`path:"${file}"`));
+  check(`${file} remains a protected standalone module`,fs.existsSync(path.join(__dirname,file))&&host.includes(`path:'${file}'`));
 }
 check("module host has responsive Chromebook and mobile sizing",/max-width:1050px/.test(css)&&/max-width:620px/.test(css));
 check("module host respects reduced motion",/prefers-reduced-motion:reduce/.test(css));

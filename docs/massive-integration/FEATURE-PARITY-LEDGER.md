@@ -29,7 +29,7 @@ Existing eight student routes remain visually frozen. Arcade and Kingdom Wars ar
 
 | Production capability | Functional sources | V3.3 destination | Status / rule |
 |---|---|---|---|
-| Student selection, rewards, consequences, management | `teacher.html`; `dragonswood-teacher-tools.js`; transactions | Student Command | Preserve review-before-write and serious-action confirmation. |
+| Student selection, rewards, consequences, management | `teacher.html`; V3 `teacher-app.js` / `integration/runtime.js`; transactions | Student Command | Preserve review-before-write and serious-action confirmation. |
 | Gradebook and curriculum review | `teacher.html`; grading/request modules; gradebook collections | Gradebook | Preserve deterministic grading, AI rescue boundaries, inline review, and stable student IDs. |
 | Scribe mission and review | `teacher.html`; writing collections | Scribe Command | Preserve live drafting/submission counts and teacher override. |
 | Class goals/rewards | `teacher.html`; `classData`; rewards | Class Rewards & Goals | Preserve separate goal banks and idempotent updates. |

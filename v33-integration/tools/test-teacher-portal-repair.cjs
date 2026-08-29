@@ -30,8 +30,8 @@ assert.match(teacher,/\.teacher-content,\.teacher-header-inner\{width:100%;max-w
 assert.match(teacher,/font-size:12px/,'production readability floor is installed');
 assert.match(host,/js\/integration\/academic\.js\?v=57\.1\.7/);
 for(const file of ['world','operations'])assert.match(host,new RegExp(`js/integration/${file}\\.js\\?v=57\\.1\\.6`));
-assert.match(host,/js\/integration\/runtime\.js\?v=57\.1\.7/);
-assert.match(host,/js\/teacher-app\.js\?v=57\.1\.7/);
+assert.match(host,/js\/integration\/runtime\.js\?v=57\.1\.8/);
+assert.match(host,/js\/teacher-app\.js\?v=57\.1\.8/);
 
 const book=require('../js/integration/academic.js').gradebook(
  [{id:'s1',name:'Scholar',grade:'5',genderGroup:'girl'}],

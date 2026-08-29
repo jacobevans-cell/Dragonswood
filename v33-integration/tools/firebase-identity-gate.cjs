@@ -9,6 +9,7 @@ const PROJECT='demo-dragonswood-v33';
 const AUTH='http://127.0.0.1:9099';
 const FIRESTORE='http://127.0.0.1:8080';
 const DB=`${FIRESTORE}/v1/projects/${PROJECT}/databases/(default)`;
+const DOC_ROOT=`projects/${PROJECT}/databases/(default)`;
 const PASSWORD='V33-Gate-Only-2026!';
 const results=[];
 function weekKey(dateKey){const cursor=new Date(`${dateKey}T12:00:00-07:00`),day=(cursor.getDay()+6)%7;cursor.setDate(cursor.getDate()-day);return Core.phoenixDateKey(cursor)}
@@ -73,6 +74,18 @@ async function writeDoc(collection,id,data,token,mask=[]){
     method:'PATCH',headers:bearer(token),body:JSON.stringify({fields:fields(data)})
   });
 }
+async function commitDoc(collection,id,data,token,{create=false,mask=[],serverFields=[]}={}){
+  const write={
+    update:{name:`${DOC_ROOT}/documents/${collection}/${id}`,fields:fields(data)},
+    currentDocument:{exists:!create}
+  };
+  if(mask.length)write.updateMask={fieldPaths:mask};
+  if(serverFields.length)write.updateTransforms=serverFields.map(fieldPath=>({fieldPath,setToServerValue:'REQUEST_TIME'}));
+  return jsonFetch(`${DB}/documents:commit`,{method:'POST',headers:bearer(token),body:JSON.stringify({writes:[write]})});
+}
+async function replaceDoc(collection,id,data){
+  return jsonFetch(`${DB}/documents/${collection}/${encodeURIComponent(id)}`,{method:'PATCH',headers:bearer('owner'),body:JSON.stringify({fields:fields(data)})});
+}
 async function listDocs(collection,token){
   return jsonFetch(`${DB}/documents/${collection}?pageSize=100`,{headers:bearer(token)});
 }
@@ -103,6 +116,7 @@ async function attemptAuthenticatedWrite(account){
     record('Auth emulator issued fictional identities',true,`${Object.keys(accounts).length} accounts`);
     const gateNow=new Date();
     const today=Core.phoenixDateKey(gateNow);
+    const previousDay=Core.phoenixDateKey(new Date(gateNow.getTime()-86400000));
     const dailyUnlockAt=new Date(gateNow.getTime()-86400000);
     const dailyLockAt=new Date(gateNow.getTime()+86400000);
 
@@ -126,6 +140,7 @@ async function attemptAuthenticatedWrite(account){
     await seed('classData','classPet',{points:172,goal:250});
     await seed('classData','fieldTrip',{points:418,goal:750});
     await seed('classData','universalPoints',{points:24});
+    await seed('classData','gradebookSettings',{daily:40,curriculum:40,reading:20,readingTargetMinutes:20,readingAssignedDateKeys:[today,previousDay],readingTargetsByDate:{[today]:20,[previousDay]:20},gradeIntegrityVersion:2});
     await seed('classCalendarEvents','science-showcase',{title:'Science Showcase',icon:'🧪',dateKey:'2099-08-29',time:'1:30 PM'});
     await seed('scores','grade5-math',{studentId:accounts.grade5.uid,displayName:'Fifth',avatarEmoji:'🧙',assignmentId:'math-1',gameName:'Decimal Deception',subject:'Math',dateKey:today,score:92});
     await seed('scores','grade4-math',{studentId:accounts.grade4.uid,displayName:'Fourth',avatarEmoji:'🛡️',assignmentId:'math-1',gameName:'Decimal Deception',subject:'Math',dateKey:today,score:80});
@@ -235,16 +250,41 @@ async function attemptAuthenticatedWrite(account){
     assert.equal(badReward.res.status,403,`Expected 403 reward cap, got ${badReward.res.status}: ${badReward.text}`);
     record('Academic game result and reward caps',true,'valid result saved; oversized reward denied');
 
+    const readingBase=(account,name,date=today)=>({studentId:account.uid,studentName:name,bookId:'witches',bookTitle:'The Witches',dateKey:date,activeSeconds:15,firstPage:24,lastPage:24,pages:[24],status:'in-progress'});
     const readingId=`${accounts.grade5.uid}_${today}_witches`;
-    const readingCreate=await writeDoc('readingSessions',readingId,{studentId:accounts.grade5.uid,studentName:'Fifth',bookId:'witches',bookTitle:'The Witches',dateKey:today,activeSeconds:15,targetMinutes:20,firstPage:24,lastPage:24,pages:[24],status:'in-progress',lastHeartbeatMs:Date.now()},accounts.grade5.token);
+    const missingReading=await getDoc('readingSessions',readingId,accounts.grade5.token);
+    assert.equal(missingReading.res.status,404,`Expected authorized missing-document read before first heartbeat, got ${missingReading.res.status}: ${missingReading.text}`);
+    const readingCreate=await commitDoc('readingSessions',readingId,readingBase(accounts.grade5,'Fifth'),accounts.grade5.token,{create:true,serverFields:['createdAt','updatedAt']});
     assert.equal(readingCreate.res.ok,true,JSON.stringify(readingCreate.body));
-    const readingUpdate=await writeDoc('readingSessions',readingId,{activeSeconds:30,targetMinutes:20,firstPage:24,lastPage:25,pages:[24,25],status:'in-progress',lastHeartbeatMs:Date.now()+15000},accounts.grade5.token,['activeSeconds','targetMinutes','firstPage','lastPage','pages','status','lastHeartbeatMs']);
-    assert.equal(readingUpdate.res.ok,true,JSON.stringify(readingUpdate.body));
-    const readingJump=await writeDoc('readingSessions',readingId,{activeSeconds:90,targetMinutes:20,firstPage:24,lastPage:25,pages:[24,25],status:'in-progress',lastHeartbeatMs:Date.now()+30000},accounts.grade5.token,['activeSeconds','targetMinutes','firstPage','lastPage','pages','status','lastHeartbeatMs']);
+
+    const rapidUpdate=await commitDoc('readingSessions',readingId,{activeSeconds:30,firstPage:24,lastPage:25,pages:[24,25],status:'in-progress'},accounts.grade5.token,{mask:['activeSeconds','firstPage','lastPage','pages','status'],serverFields:['updatedAt']});
+    assert.equal(rapidUpdate.res.status,403,`Expected 403 rapid heartbeat, got ${rapidUpdate.res.status}: ${rapidUpdate.text}`);
+    const readingJump=await commitDoc('readingSessions',readingId,{activeSeconds:90,firstPage:24,lastPage:25,pages:[24,25],status:'in-progress'},accounts.grade5.token,{mask:['activeSeconds','firstPage','lastPage','pages','status'],serverFields:['updatedAt']});
     assert.equal(readingJump.res.status,403,`Expected 403 oversized heartbeat, got ${readingJump.res.status}: ${readingJump.text}`);
+
+    const denialBase=readingBase(accounts.grade4,'Fourth');
+    const deniedCreates=[
+      ['duplicate/non-deterministic ID',`duplicate_${accounts.grade4.uid}_${today}_witches`,denialBase,{serverFields:['createdAt','updatedAt']}],
+      ['unassigned date',`${accounts.grade4.uid}_1999-01-01_witches`,{...denialBase,dateKey:'1999-01-01'},{serverFields:['createdAt','updatedAt']}],
+      ['extra field',`${accounts.grade4.uid}_${today}_witches`,{...denialBase,extra:'forged'},{serverFields:['createdAt','updatedAt']}],
+      ['invalid page bounds',`${accounts.grade4.uid}_${today}_witches`,{...denialBase,firstPage:0,pages:[0,24]},{serverFields:['createdAt','updatedAt']}],
+      ['invalid page list',`${accounts.grade4.uid}_${today}_witches`,{...denialBase,pages:[24,25,26]},{serverFields:['createdAt','updatedAt']}],
+      ['spoofed student name',`${accounts.grade4.uid}_${today}_witches`,{...denialBase,studentName:'Not Fourth'},{serverFields:['createdAt','updatedAt']}],
+      ['student-controlled target',`${accounts.grade4.uid}_${today}_witches`,{...denialBase,targetMinutes:1},{serverFields:['createdAt','updatedAt']}],
+      ['client-controlled timestamps',`${accounts.grade4.uid}_${today}_witches`,{...denialBase,createdAt:new Date(0),updatedAt:new Date(0)},{serverFields:[]}]
+    ];
+    for(const [label,id,data,options] of deniedCreates){const attempt=await commitDoc('readingSessions',id,data,accounts.grade4.token,{create:true,...options});assert.equal(attempt.res.status,403,`Expected 403 ${label}, got ${attempt.res.status}: ${attempt.text}`)}
+
+    const oldTime=new Date(Date.now()-15000),updateId=`${accounts.noPet.uid}_${previousDay}_witches`,updateBase={...readingBase(accounts.noPet,'NoPet',previousDay),targetMinutes:20,lastHeartbeatMs:Date.now()-15000,createdAt:oldTime,updatedAt:oldTime};
+    const seededUpdate=await replaceDoc('readingSessions',updateId,updateBase);assert.equal(seededUpdate.res.ok,true,JSON.stringify(seededUpdate.body));
+    const readingUpdate=await commitDoc('readingSessions',updateId,{activeSeconds:30,firstPage:24,lastPage:25,pages:[24,25],status:'in-progress'},accounts.noPet.token,{mask:['activeSeconds','firstPage','lastPage','pages','status','targetMinutes','lastHeartbeatMs'],serverFields:['updatedAt']});
+    assert.equal(readingUpdate.res.ok,true,JSON.stringify(readingUpdate.body));
+    const resetUpdate=await replaceDoc('readingSessions',updateId,updateBase);assert.equal(resetUpdate.res.ok,true,JSON.stringify(resetUpdate.body));
+    const immutableChange=await commitDoc('readingSessions',updateId,{studentName:'Forged',bookTitle:'Another Book',dateKey:today,createdAt:new Date(),activeSeconds:30,firstPage:24,lastPage:25,pages:[24,25],status:'in-progress'},accounts.noPet.token,{mask:['studentName','bookTitle','dateKey','createdAt','activeSeconds','firstPage','lastPage','pages','status'],serverFields:['updatedAt']});
+    assert.equal(immutableChange.res.status,403,`Expected 403 immutable identity/date/book/create fields, got ${immutableChange.res.status}: ${immutableChange.text}`);
     const crossReading=await getDoc('readingSessions',readingId,accounts.grade4.token);
     assert.equal(crossReading.res.status,403,`Expected 403 cross-reading read, got ${crossReading.res.status}: ${crossReading.text}`);
-    record('Witches verified reading time',true,'focused heartbeat accepted; oversized increment and cross-student read denied');
+    record('Witches assignment-bound reading evidence',true,'first transaction read + valid server-time heartbeat accepted; rapid/duplicate/arbitrary/forged writes and cross-student reads denied');
 
     const lootId=`${accounts.grade5.uid}_${today}`;
     const validLoot=await writeDoc('bossLoot',lootId,{studentId:accounts.grade5.uid,dateKey:today,status:'complete',goldAward:3,xpAward:12,goalPoints:0,rareGoal:'none',itemId:'crafting-materials'},accounts.grade5.token);

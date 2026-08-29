@@ -34,6 +34,57 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid == uid;
     }
 
+    function readingSettings() {
+      return get(/databases/$(database)/documents/classData/gradebookSettings).data;
+    }
+
+    function readingTargets() {
+      return readingSettings().get('readingTargetsByDate', {});
+    }
+
+    function hasReadingAssignment(dateKey) {
+      return (
+          readingTargets().keys().hasAny([dateKey])
+          && readingTargets()[dateKey] is number
+          && readingTargets()[dateKey] >= 1
+          && readingTargets()[dateKey] <= 180
+        ) || (
+          readingSettings().get('readingAssignedDateKeys', []).hasAny([dateKey])
+          && readingSettings().get('readingTargetMinutes', 20) is number
+          && readingSettings().get('readingTargetMinutes', 20) >= 1
+          && readingSettings().get('readingTargetMinutes', 20) <= 180
+        );
+    }
+
+    function readingTargetMinutes(dateKey) {
+      return readingTargets().keys().hasAny([dateKey])
+        ? readingTargets()[dateKey]
+        : readingSettings().get('readingTargetMinutes', 20);
+    }
+
+    function validReadingPages(data) {
+      return data.firstPage is int
+        && data.lastPage is int
+        && data.firstPage >= 1
+        && data.lastPage <= 999
+        && data.firstPage <= data.lastPage
+        && data.pages is list
+        && data.pages.size() >= 1
+        && data.pages.size() <= 2
+        && data.pages.hasOnly([data.firstPage, data.lastPage])
+        && data.pages.hasAll([data.firstPage, data.lastPage]);
+    }
+
+    function validReadingStatus(data) {
+      return (
+          data.activeSeconds >= readingTargetMinutes(data.dateKey) * 60
+          && data.status == 'complete'
+        ) || (
+          data.activeSeconds < readingTargetMinutes(data.dateKey) * 60
+          && data.status == 'in-progress'
+        );
+    }
+
     function arcadeScoreId(data) {
       return request.auth.uid + '__' + data.periodType + '__' + data.periodKey + '__' + data.boardId;
     }
@@ -587,40 +638,81 @@ service cloud.firestore {
       allow create, update, delete: if isTeacher();
     }
 
-    // Verified active-time evidence from the embedded The Witches reader.
-    // A student can add at most one 20-second focused heartbeat per write;
-    // the teacher can read the complete class evidence but students see only
-    // their own records.
+    // Assignment-bound active-time evidence from the embedded The Witches
+    // reader. Every record has one deterministic student/date ID, fixed
+    // fields, server time, and a real-time gap between focused heartbeats.
     match /readingSessions/{sessionId} {
-      allow read: if isTeacher()
+      // A Firestore transaction must read a deterministic document before its
+      // first create. Authorize that missing-document probe only for the
+      // signed-in student's own ID shape; existing records still require the
+      // stored owner field, and list queries remain owner-filtered.
+      allow get: if isTeacher()
+                 || (
+                   isSignedIn()
+                   && (
+                     (
+                       sessionId.matches('^' + request.auth.uid + '_[0-9]{4}-[0-9]{2}-[0-9]{2}_witches$')
+                       && !exists(/databases/$(database)/documents/readingSessions/$(sessionId))
+                     )
+                     || resource.data.studentId == request.auth.uid
+                   )
+                 );
+
+      allow list: if isTeacher()
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
 
       allow create: if isExploreStudent()
+                    && sessionId == request.auth.uid + '_' + request.resource.data.dateKey + '_witches'
+                    && request.resource.data.keys().hasOnly([
+                      'studentId','studentName','bookId','bookTitle','dateKey',
+                      'activeSeconds','firstPage','lastPage','pages','status',
+                      'createdAt','updatedAt'
+                    ])
                     && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.studentName == get(/databases/$(database)/documents/students/$(request.auth.uid)).data.get('firstName', '')
                     && request.resource.data.bookId == "witches"
-                    && request.resource.data.activeSeconds is number
+                    && request.resource.data.bookTitle == "The Witches"
+                    && request.resource.data.dateKey is string
+                    && request.resource.data.dateKey.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+                    && hasReadingAssignment(request.resource.data.dateKey)
+                    && request.resource.data.activeSeconds is int
                     && request.resource.data.activeSeconds >= 1
                     && request.resource.data.activeSeconds <= 20
-                    && request.resource.data.targetMinutes is number
-                    && request.resource.data.targetMinutes >= 1
-                    && request.resource.data.targetMinutes <= 180
-                    && request.resource.data.firstPage is number
-                    && request.resource.data.lastPage is number;
+                    && validReadingPages(request.resource.data)
+                    && validReadingStatus(request.resource.data)
+                    && request.resource.data.createdAt == request.time
+                    && request.resource.data.updatedAt == request.time;
 
       allow update: if isExploreStudent()
+                    && sessionId == request.auth.uid + '_' + resource.data.dateKey + '_witches'
+                    && request.resource.data.keys().hasOnly([
+                      'studentId','studentName','bookId','bookTitle','dateKey',
+                      'activeSeconds','firstPage','lastPage','pages','status',
+                      'createdAt','updatedAt'
+                    ])
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+                      'activeSeconds','firstPage','lastPage','pages','status','updatedAt',
+                      'targetMinutes','lastHeartbeatMs'
+                    ])
                     && resource.data.studentId == request.auth.uid
                     && request.resource.data.studentId == resource.data.studentId
+                    && request.resource.data.studentName == resource.data.studentName
                     && request.resource.data.bookId == resource.data.bookId
+                    && request.resource.data.bookTitle == resource.data.bookTitle
                     && request.resource.data.dateKey == resource.data.dateKey
-                    && request.resource.data.targetMinutes is number
-                    && request.resource.data.targetMinutes >= 1
-                    && request.resource.data.targetMinutes <= 180
-                    && request.resource.data.activeSeconds is number
+                    && request.resource.data.createdAt == resource.data.createdAt
+                    && hasReadingAssignment(request.resource.data.dateKey)
+                    && request.resource.data.activeSeconds is int
                     && request.resource.data.activeSeconds > resource.data.activeSeconds
                     && request.resource.data.activeSeconds <= resource.data.activeSeconds + 20
                     && request.resource.data.activeSeconds <= 28800
+                    && validReadingPages(request.resource.data)
                     && request.resource.data.firstPage <= resource.data.firstPage
-                    && request.resource.data.lastPage >= resource.data.lastPage;
+                    && request.resource.data.lastPage >= resource.data.lastPage
+                    && validReadingStatus(request.resource.data)
+                    && request.resource.data.updatedAt == request.time
+                    && resource.data.updatedAt is timestamp
+                    && request.time >= resource.data.updatedAt + duration.value(10, 's');
 
       allow delete: if isTeacher();
     }

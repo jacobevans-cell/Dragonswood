@@ -37,8 +37,8 @@ const roster=[{id:'student',name:'Scholar',grade:'5',genderGroup:'boys'}];
 const book=Academic.gradebook(roster,
   [{studentId:'student',status:'complete',score:80}],
   [{studentId:'student',accuracy:90}],
-  [{studentId:'student',bookId:'witches',dateKey:'2026-08-28',activeSeconds:1200,targetMinutes:20,firstPage:1,lastPage:8}],
-  {readingTargetMinutes:20,readingAssignedDateKeys:['2026-08-28']}
+  [{id:'student_2026-08-28_witches',studentId:'student',bookId:'witches',dateKey:'2026-08-28',activeSeconds:1200,targetMinutes:20,firstPage:1,lastPage:8}],
+  {readingTargetMinutes:20,readingAssignedDateKeys:['2026-08-28'],readingTargetsByDate:{'2026-08-28':20}}
 );
 assert.equal(book.rows[0].total,88);
 assert.equal(book.rows[0].missing,0);

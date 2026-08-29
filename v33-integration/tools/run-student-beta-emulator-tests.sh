@@ -12,4 +12,4 @@ python -u tools/curriculum-stability-browser-gate.py
 python -u tools/hall-profile-math-browser-gate.py
 python -u tools/teacher-portal-repair-browser-gate.py
 python -u tools/teacher-live-evidence-browser-gate.py
-xvfb-run -a env DW_READING_GATE_HEADFUL=1 python -u tools/reading-grade-evidence-browser-gate.py
+python -u tools/reading-grade-evidence-browser-gate.py

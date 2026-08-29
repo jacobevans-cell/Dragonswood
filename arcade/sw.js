@@ -1,4 +1,4 @@
-const CACHE='dragonswood-arcade-v9-authoritative-access';
+const CACHE='dragonswood-arcade-v14-direct-entry';
 const CORE=[
   './','index.html','admin.html','device-check.html','style.css','access.css','manifest.webmanifest',
   'assets/dragonswood-arcade-crest.svg','assets/dragon-cube.svg','assets/dragon-runner.svg','assets/arcade-stars.svg',
@@ -12,6 +12,44 @@ const CORE=[
   'games/void-runner/assets/runner-scout.svg','games/void-runner/assets/runner-skimmer.svg','games/void-runner/assets/runner-hopper.svg','games/void-runner/assets/runner-drifter.svg','games/void-runner/assets/runner-cloudwing.svg','games/void-runner/assets/runner-goldwing.svg','games/void-runner/assets/runner-bumblewing.svg','games/void-runner/assets/runner-frostwing.svg','games/void-runner/assets/runner-lanternwing.svg','games/void-runner/assets/runner-currentwing.svg','games/void-runner/assets/runner-runewing.svg','games/void-runner/assets/runner-skywing.svg'
 ];
 const OPTIONAL=['games/void-runner/vendor/three.module.js','games/void-runner/vendor/three.core.js'];
-self.addEventListener('install',e=>e.waitUntil((async()=>{const c=await caches.open(CACHE);await c.addAll(CORE);await Promise.all(OPTIONAL.map(async p=>{try{await c.add(p)}catch(err){console.warn('Optional offline asset not present yet:',p)}}));await self.skipWaiting()})()));
-self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
-self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.match(e.request).then(hit=>hit||fetch(e.request).then(r=>{if(r.ok&&new URL(e.request.url).origin===location.origin){const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy))}return r}).catch(()=>hit)))})
+
+self.addEventListener('install',event=>event.waitUntil((async()=>{
+  const cache=await caches.open(CACHE);
+  await cache.addAll(CORE);
+  await Promise.all(OPTIONAL.map(async path=>{try{await cache.add(path)}catch(err){console.warn('Optional offline asset not present:',path,err)}}));
+  await self.skipWaiting();
+})()));
+self.addEventListener('activate',event=>event.waitUntil((async()=>{
+  const keys=await caches.keys();
+  await Promise.all(keys.filter(key=>key!==CACHE&&key.startsWith('dragonswood-arcade-')).map(key=>caches.delete(key)));
+  await self.clients.claim();
+})()));
+self.addEventListener('message',event=>{if(event.data==='SKIP_WAITING')self.skipWaiting()});
+
+async function networkFirst(request){
+  const cache=await caches.open(CACHE);
+  try{
+    const response=await fetch(request);
+    if(response.ok)cache.put(request,response.clone());
+    return response;
+  }catch(err){
+    const cached=await cache.match(request);
+    if(cached)return cached;
+    throw err;
+  }
+}
+async function cacheFirst(request){
+  const cache=await caches.open(CACHE);
+  const cached=await cache.match(request);
+  if(cached)return cached;
+  const response=await fetch(request);
+  if(response.ok)cache.put(request,response.clone());
+  return response;
+}
+self.addEventListener('fetch',event=>{
+  if(event.request.method!=='GET')return;
+  const url=new URL(event.request.url);
+  if(url.origin!==self.location.origin)return;
+  const freshCode=event.request.mode==='navigate'||['script','style','worker'].includes(event.request.destination)||/\.(?:js|mjs|css|html)$/.test(url.pathname);
+  event.respondWith(freshCode?networkFirst(event.request):cacheFirst(event.request));
+});

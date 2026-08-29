@@ -62,10 +62,9 @@ pass(
   curriculumEnhancements.includes("dragonswood-math-autograding.js?v=57.1.3")
 );
 
-for(const f of ["teacher-v2.html"]){
-  const t=fs.readFileSync(f,"utf8");
-  pass(`${f} loads AI controls`,t.includes("dragonswood-academic-ai-teacher.js?v=56.21.0"));
-}
+const teacherRoot=fs.readFileSync("teacher.html","utf8"),teacherApp=fs.readFileSync("v33-integration/js/teacher-app.js","utf8");
+pass("current Teacher Command loads the hardened academic contract",teacherRoot.includes("js/integration/academic.js?v=57.1.7"));
+pass("current Teacher Command keeps evidence-gated grade export",teacherApp.includes("gradeIntegrityVersion!==2||gradebook.reportCardPercentageReady!==true"));
 const rules=fs.readFileSync("firestore.rules","utf8");
 pass("AI usage teacher-readable",rules.includes("match /academicAiUsage/{docId}"));
 pass("AI cache client-denied",rules.includes("match /academicAnswerAiCache/{docId}"));

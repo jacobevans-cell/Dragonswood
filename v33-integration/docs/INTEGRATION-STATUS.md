@@ -6,8 +6,15 @@
 - Root `index.html` and `teacher.html` now load the approved V3.3 shell in an
   HTML-declared production mode; query strings cannot turn tester pages into
   production writers.
-- The prior production portals are preserved byte-for-byte as
-  `student-v2.html` and `teacher-v2.html` for compatibility and rapid rollback.
+- The duplicate pre-cutover portal snapshots have been retired. Git history and
+  `rollback/pre-v57.1.8-v3-legacy-cleanup-20260829` preserve the exact prior
+  state without leaving a second writable student or teacher portal online.
+- Root `index.html` and `teacher.html` are the only canonical portal entry
+  routes. The V2-style gradebook card presentation now runs on the hardened V3
+  grade/evidence model rather than the retired V2 write engine.
+- The useful Student Requests, AI Answer Rescue, and Woodland Egg award
+  controls have moved into V3 Classroom Tools. Their duplicate V2-only
+  scripts are retired together with the pre-cutover portal snapshots.
 - Student Bathroom, Snack, Out-of-Seat, and Emergency Office passes are now
   wired into the V3.3 portal with transaction-backed start/return behavior,
   teacher-reviewed extras, one-pending-request policy, blackout enforcement,
@@ -143,11 +150,12 @@ Daily Missions / curriculum / pacing / video integrate from the current producti
 
 The current production contract includes no-video scope locking, no-cold-guess interaction design, purpose-specific attempt limits, completed-work grandfathering, duplicate-safe review workflow, and the recovered final 14 Q1 videos.
 
-## Remaining launch gate
+## Remaining V57.1.8 promotion gate
 
-Only the consolidated Codespace installer remains. It must pass exact
-production rules, all functional browser paths, all inherited static checks,
-and the unchanged 17-route visual suite before it can deploy or promote.
+The cleanup candidate must pass the exact emulator/browser production gate,
+all inherited static checks, the 31-file protected visual freeze, and the new
+V2-style gradebook plus migrated-tool contracts. Promotion remains a separate
+approval step; no Codespaces workflow is required.
 
 ## Safety
 

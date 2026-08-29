@@ -25,7 +25,8 @@ for(const [e,a,w,label] of cases){
 const fileChecks={
  "daily-quest.html":["requestDailyQuestionReview",'overrideType:"daily-question"',"DWGrading.answersEquivalent",'"past perfect"'],
  "curriculum-quest.html":["requestAutoQuestionOverride",'overrideType:"auto-question"',"DWGrading.answersEquivalent"],
- "teacher.html":["GRADER EXPECTED","DAILY WORK QUESTION"]
+ "v33-integration/js/teacher-app.js":["Curriculum Review Queue","Question:","Expected:",'data-curriculum-decision="approved"','data-curriculum-decision="returned"'],
+ "v33-integration/js/integration/runtime.js":["async reviewCurriculumOverride","teacherNote:"]
 };
 for(const [file,needles] of Object.entries(fileChecks)){
  if(!fs.existsSync(file)){failed++;console.error("FAIL missing",file);continue}

@@ -60,6 +60,8 @@ const student=read('v33-integration/js/student-app.js'),teacher=read('v33-integr
 assert.match(student,/3 Tokens • 30 min/);assert.match(student,/function arcadePage/);assert.match(student,/arcadePortal\?/);
 assert.match(teacher,/function arcadePage/);assert.match(teacher,/Ready/);assert.match(teacher,/Responsible/);assert.match(teacher,/Complete/);
 assert.match(teacherBridge,/dw-arcade-writes/);assert.match(teacherBridge,/EMULATOR_ONLY/);assert.match(teacherBridge,/environment==='emulator'/);
-assert.doesNotMatch(teacherBridge,/production/i);
+assert.match(teacherBridge,/const enabled=environment==='production'/,'live teacher controls must inherit only the V3 production environment');
+assert.match(teacherBridge,/environment==='emulator'&&params\.get\('dw-arcade-writes'\)==='EMULATOR_ONLY'/,'emulator writes must require the explicit fictional-write flag');
+assert.doesNotMatch(teacherBridge,/params\.get\(['"]dw-arcade-live/,'a query string must never enable live teacher writes');
 
 console.log('Integrated Arcade static safety gate: PASS');

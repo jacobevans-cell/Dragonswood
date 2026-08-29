@@ -14,9 +14,10 @@ for(const [name,html] of [['student',student],['teacher',teacher]]){
   assert.match(html,/js\/integration\/passes\.js/i,`${name} root must load the pass contract before runtime`);
   assert.doesNotMatch(html,/Student Tester|Teacher Tester/i,`${name} root must not retain tester titles`);
 }
-const APPROVED_HEAD='feae8785b16cf5800bd5e6f8b2b22177fa3695b2';
-assert.equal(read('student-v2.html'),require('node:child_process').execFileSync('git',['show',`${APPROVED_HEAD}:index.html`],{cwd:ROOT,encoding:'utf8'}),'student-v2.html must preserve the pre-launch root portal exactly');
-assert.equal(read('teacher-v2.html'),require('node:child_process').execFileSync('git',['show',`${APPROVED_HEAD}:teacher.html`],{cwd:ROOT,encoding:'utf8'}),'teacher-v2.html must preserve the pre-launch teacher portal exactly');
+for(const legacy of ['student-v2.html','teacher-v2.html','Tester1111.html','index-live-welcome-test.html','dragonswood-teacher-tools.js','dragonswood-request-center.js','dragonswood-academic-ai-teacher.js']){
+  assert.equal(fs.existsSync(path.join(ROOT,legacy)),false,`${legacy} must stay retired; Git history and the rollback branch preserve the pre-cutover portal`);
+}
+assert.equal(fs.existsSync(path.join(ROOT,'dragonswood-v33-test')),false,'the duplicate V3 tester package must stay retired; v33-integration is canonical');
 
 const runtime=read('v33-integration/js/integration/runtime.js');
 assert.match(runtime,/declaredEnvironment==='production'/,'production must be declared by the root document, not a query string alone');

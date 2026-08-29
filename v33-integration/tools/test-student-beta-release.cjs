@@ -31,6 +31,10 @@ assert.match(modules,/environment==='production'/,'embedded modules must inherit
 assert.match(modules,/id:'boss-battle'[^\n]+morningGate:true/,'Boss Battle must inherit the Morning Work gate');
 assert.match(modules,/id:'adventurer-hall'[^\n]+morningGate:true/,'Adventurer Hall must inherit the required-work gate');
 const studentApp=read('v33-integration/js/student-app.js');
+assert.match(studentApp,/data-account-menu aria-label="Open account menu"/,'the top profile control must open the account menu');
+assert.doesNotMatch(studentApp,/profile-pill[^>]+data-module="adventurer-hall"/,'the top profile control must not duplicate the Adventurer Hall route');
+assert.match(studentApp,/data-account-signout>↪ Sign Out<\/button>/,'the account menu must expose a clear sign-out action');
+assert.match(studentApp,/data-account-signout[^\n]+signOutStudent/,'the account-menu sign-out action must use the existing Firebase controller logout');
 for(const route of ['games','boss','leaderboards','kingdom','arcade'])assert.match(studentApp,new RegExp(`REQUIRED_WORK_PAGES[^\\n]+['\"]${route}['\"]`),`${route} must use the required-work gate`);
 assert.match(studentApp,/globalThis\.history\?\.replaceState\?\.\(null,'','#missions'\)/,'direct locked hashes must be replaced with the Daily Missions route');
 const arcade=read('v33-integration/js/integration/arcade-portal.js');

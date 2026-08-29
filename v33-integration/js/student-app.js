@@ -284,7 +284,7 @@ function shell(){
   return `<div class="portal student-shell student-page-${state.page}" data-${IS_PRODUCTION?'release':'tester-build'}="v3.3">
     <header class="student-topbar"><div class="student-brand">
       <div class="brand-lockup"><img class="student-crest" src="assets/art/dragonswood-crest-v33.jpg" alt=""><div><div class="brand-name">DRAGONSWOOD</div><div class="brand-sub">STUDENT ADVENTURE PORTAL</div></div></div>
-      <div class="student-utility">${state.isTester?'<span class="true-tester-badge" data-true-tester-badge>🧪 TRUE TESTER</span><button class="btn btn-secondary btn-sm" type="button" data-tester-controls>🧪 <span>Tester Controls</span></button>':''}<button class="btn btn-secondary btn-sm" type="button" data-passes>🎟️ <span>Passes</span></button><button class="btn btn-secondary btn-sm" type="button" data-read>🔊 <span>Read aloud</span></button><div class="profile-pill" role="button" tabindex="0" data-module="adventurer-hall" aria-label="Open profile and Adventurer Hall"><div class="profile-orb">${escapeHtml(state.initial)}</div><span><b>${escapeHtml(state.firstName)}</b><small>Level ${state.level}</small></span></div></div>
+      <div class="student-utility">${state.isTester?'<span class="true-tester-badge" data-true-tester-badge>🧪 TRUE TESTER</span><button class="btn btn-secondary btn-sm" type="button" data-tester-controls>🧪 <span>Tester Controls</span></button>':''}<button class="btn btn-secondary btn-sm" type="button" data-passes>🎟️ <span>Passes</span></button><button class="btn btn-secondary btn-sm" type="button" data-read>🔊 <span>Read aloud</span></button><div class="profile-pill" role="button" tabindex="0" data-account-menu aria-label="Open account menu"><div class="profile-orb">${escapeHtml(state.initial)}</div><span><b>${escapeHtml(state.firstName)}</b><small>Level ${state.level}</small></span></div></div>
     </div></header>
     <aside class="student-sidebar">${navMarkup()}</aside>
     <main class="student-main" id="page-content"><div class="student-content">${pageMarkup()}</div></main>
@@ -457,6 +457,15 @@ function kingdomPage(){
 
 function escapeHtml(value){return String(value??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 
+async function signOutStudent(button=null){
+  if(button)button.disabled=true;
+  try{await integrationController?.signOut();closeDialog()}catch(err){if(button)button.disabled=false;showToast(`Sign-out failed: ${err?.message||err}`)}
+}
+function accountDialog(){
+  openDialog('Account',`<div class="pass-student"><span class="roster-avatar">${escapeHtml(state.initial)}</span><div><b>${escapeHtml(state.displayName||state.firstName)}</b><p>Level ${state.level} • Grade ${escapeHtml(state.grade)}</p></div></div><p class="muted mt-12">Sign out here when you need to switch Dragonswood accounts.</p>`,`<button class="btn btn-secondary" type="button" data-close-dialog>Close</button><button class="btn btn-danger" type="button" data-account-signout>↪ Sign Out</button>`);
+  dialogRoot.querySelector('[data-account-signout]')?.addEventListener('click',e=>signOutStudent(e.currentTarget));
+}
+
 function testerControlsDialog(){
   if(!state.isTester)return;
   const rows=[['unlockMorning','Morning Work'],['unlockCurriculum','Curriculum Quest'],['unlockArcade','Arcade'],['unlockKingdom','Kingdom Wars']];
@@ -575,7 +584,10 @@ function bind(){
   app.querySelector('[data-close-module]')?.addEventListener('click',closeModule);
   app.querySelector('[data-retry-module]')?.addEventListener('click',()=>mountModule(currentModuleId()));
   app.querySelectorAll('[data-toast]').forEach(el=>el.addEventListener('click',()=>showToast(el.dataset.toast)));
-  app.querySelector('[data-signout]')?.addEventListener('click',async()=>{try{await integrationController?.signOut()}catch(err){showToast(`Sign-out failed: ${err?.message||err}`)}});
+  app.querySelector('[data-signout]')?.addEventListener('click',e=>signOutStudent(e.currentTarget));
+  const accountMenu=app.querySelector('[data-account-menu]');
+  accountMenu?.addEventListener('click',accountDialog);
+  accountMenu?.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();accountDialog()}});
   app.querySelectorAll('[data-read]').forEach(el=>el.addEventListener('click',readPage));
   app.querySelector('[data-passes]')?.addEventListener('click',passesDialog);
   app.querySelector('[data-tester-controls]')?.addEventListener('click',testerControlsDialog);

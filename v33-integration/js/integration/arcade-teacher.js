@@ -38,7 +38,7 @@
   });
   window.DWV33ArcadeTeacher=API;
 
-  // V57.1.12 Teacher UX normalization.
+  // V57.1.13 Teacher UX normalization + mutation-loop crash repair.
   // Token criteria are DAILY classroom choices. They are deliberately not tied
   // to the current schedule, current clock time, or a scheduled class period.
   const DAILY_AWARD_SET='daily_tokens';
@@ -67,7 +67,11 @@
     }
     const panel=select.closest('.panel')||select.closest('section');
     const note=panel?.querySelector('.prototype-note');
-    if(note)note.textContent='Today • Ready, Responsible, and Complete can each be awarded once per Phoenix school day • not tied to a class time • wallet maximum 3.';
+    const noteText='Today • Ready, Responsible, and Complete can each be awarded once per Phoenix school day • not tied to a class time • wallet maximum 3.';
+    // V57.1.13: only mutate the DOM when the copy actually changed.
+    // Unconditionally assigning textContent inside the MutationObserver caused
+    // an endless childList mutation loop when Arcade Time was opened.
+    if(note&&note.textContent!==noteText)note.textContent=noteText;
   }
 
   function seatingUrl(){

@@ -114,6 +114,9 @@ pass(18,'Removing a tester document removes tester power from the resolver');
 
 assert.match(read('v33-integration/js/integration/runtime.js'),/startTeacher/);
 assert.match(rules,/function isTeacher\(\)[\s\S]*jacobicusjax@gmail\.com/);
+const teacherRoot=read('teacher.html');
+assert.ok(teacherRoot.indexOf('../functions-arcade-access/tester-core.js?v=57.1.16')<teacherRoot.indexOf('js/integration/core.js?v=57.1.16'));
+assert.ok(teacherRoot.indexOf('js/integration/core.js?v=57.1.16')<teacherRoot.indexOf('js/integration/runtime.js?v=57.1.16'));
 pass(19,'Existing teacher identity and teacher runtime remain intact');
 
 assert.match(rules,/function isTester\(\)[\s\S]*\.data\.active == true/);

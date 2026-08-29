@@ -1,7 +1,0 @@
-name = "void-runner-assets"
-main = "worker.js"
-compatibility_date = "2026-08-25"
-
-[[r2_buckets]]
-binding = "ASSETS"
-bucket_name = "YOUR_R2_BUCKET_NAME"

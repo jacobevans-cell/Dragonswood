@@ -75,6 +75,21 @@
     }
     return Object.freeze([...byStudent.values()].sort((a,b)=>a.createdMs-b.createdMs).map(Object.freeze));
   }
+  function curriculumOverrideKey(row={}){
+    return [row.studentId||row.studentEmail,row.questionKey||row.lessonId,row.questionPrompt||row.lessonTitle,row.studentAnswer,row.overrideType].map(text).join('|');
+  }
+  function curriculumOverrideRequests(rows=[]){
+    const grouped=new Map();
+    for(const row of Array.isArray(rows)?rows:[]){
+      if(text(row.status)!=='pending')continue;
+      const key=curriculumOverrideKey(row);if(!key)continue;
+      if(!grouped.has(key))grouped.set(key,[]);grouped.get(key).push(row);
+    }
+    return Object.freeze([...grouped.values()].map(group=>{
+      group.sort((a,b)=>timestamp(b.createdAt||b.updatedAt||b.requestedAt)-timestamp(a.createdAt||a.updatedAt||a.requestedAt));
+      const current=group[0];return Object.freeze({...current,id:text(current.id),duplicateIds:Object.freeze(group.slice(1).map(row=>text(row.id)).filter(Boolean))});
+    }).sort((a,b)=>timestamp(a.createdAt||a.updatedAt||a.requestedAt)-timestamp(b.createdAt||b.updatedAt||b.requestedAt)));
+  }
   function returnedToday(rows,date=new Date()){
     const today=Core.phoenixDateKey(date);
     return (Array.isArray(rows)?rows:[]).filter(row=>text(row.dateKey)===today&&['returned','done','closed'].includes(text(row.status).toLowerCase())).length;
@@ -127,13 +142,13 @@
     });
   }
   function teacherOperations(input={},date=new Date()){
-    const pending=pendingPasses(input.requests,date),active=activePasses(input.statuses,date),recognition=recognitionRequests(input.pointRequests,date),overrides=(input.curriculumOverrides||[]).filter(row=>row.status==='pending');
+    const pending=pendingPasses(input.requests,date),active=activePasses(input.statuses,date),recognition=recognitionRequests(input.pointRequests,date),overrides=curriculumOverrideRequests(input.curriculumOverrides);
     const students=Array.isArray(input.students)?input.students:[];
     const history=Object.freeze((Array.isArray(input.passHistory)?input.passHistory:[]).slice().sort((a,b)=>timestamp(b.returnedAt||b.updatedAt||b.createdAt)-timestamp(a.returnedAt||a.updatedAt||a.createdAt)).slice(0,100).map(row=>Object.freeze({...row})));
     const slots=Object.freeze((Array.isArray(input.bathroomSlots)?input.bathroomSlots:[]).map(row=>Object.freeze({...row})));
     const needsAttention=active.filter(row=>row.overdue).length+slots.filter(row=>row.occupied===true&&!active.some(pass=>pass.type==='bathroom'&&pass.studentId===text(row.studentId))).length;
     const transactions=Object.freeze((Array.isArray(input.transactions)?input.transactions:[]).slice().sort((a,b)=>timestamp(b.createdAt)-timestamp(a.createdAt)).slice(0,100).map(row=>Object.freeze({...row})));
-    return Object.freeze({dateKey:Core.phoenixDateKey(date),pending,active,returned:returnedToday(input.passHistory,date),passHistory:history,bathroomSlots:slots,passBlackout:Object.freeze({...input.passBlackout}),needsAttention,recognition,curriculumOverrides:Object.freeze(overrides.map(row=>Object.freeze({...row}))),dailyUnlocked:input.dailyOverride?.all===true,classHp:students.reduce((sum,row)=>sum+Math.max(0,number(row.hp)),0),dailyXp:students.reduce((sum,row)=>sum+Math.max(0,number(row.dailyXpEarned)),0),transactions,goals:goals(input.classData),jobs:jobsModel(students,input.classJobs,input.jobWeeks,date),schedule:scheduleModel(input.classSchedule,input.calendarEvents,date),leaderboard:teacherLeaderboard(input.scores,input.leaderboardRewards,date,'weekly'),leaderboardAllTime:teacherLeaderboard(input.scores,input.leaderboardRewards,date,'all-time'),poll:pollModel(input.activePoll,input.pollVotes),kingdomAccess:datedFeatureAccess(input.kingdomAccess,date),attention:attentionModel(input.activeAttention,input.attentionEvents,students,date)});
+    return Object.freeze({dateKey:Core.phoenixDateKey(date),pending,active,returned:returnedToday(input.passHistory,date),passHistory:history,bathroomSlots:slots,passBlackout:Object.freeze({...input.passBlackout}),needsAttention,recognition,curriculumOverrides:overrides,dailyUnlocked:input.dailyOverride?.all===true,classHp:students.reduce((sum,row)=>sum+Math.max(0,number(row.hp)),0),dailyXp:students.reduce((sum,row)=>sum+Math.max(0,number(row.dailyXpEarned)),0),transactions,goals:goals(input.classData),jobs:jobsModel(students,input.classJobs,input.jobWeeks,date),schedule:scheduleModel(input.classSchedule,input.calendarEvents,date),leaderboard:teacherLeaderboard(input.scores,input.leaderboardRewards,date,'weekly'),leaderboardAllTime:teacherLeaderboard(input.scores,input.leaderboardRewards,date,'all-time'),poll:pollModel(input.activePoll,input.pollVotes),kingdomAccess:datedFeatureAccess(input.kingdomAccess,date),attention:attentionModel(input.activeAttention,input.attentionEvents,students,date)});
   }
-  window.DWV33Operations=Object.freeze({version:'teacher-operations-3',PASS_OVERDUE_MS,REQUEST_TYPES,STATUS_TYPES,pendingPasses,activePasses,recognitionRequests,goals,jobsModel,scheduleModel,teacherLeaderboard,pollModel,datedFeatureAccess,attentionModel,teacherOperations});
+  window.DWV33Operations=Object.freeze({version:'teacher-operations-3',PASS_OVERDUE_MS,REQUEST_TYPES,STATUS_TYPES,pendingPasses,activePasses,recognitionRequests,curriculumOverrideKey,curriculumOverrideRequests,goals,jobsModel,scheduleModel,teacherLeaderboard,pollModel,datedFeatureAccess,attentionModel,teacherOperations});
 })();

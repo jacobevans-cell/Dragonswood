@@ -8,9 +8,6 @@ for raw in manifest.read_text().splitlines():
     if not raw: continue
     digest, rel=raw.split(None,1)
     rel=rel.strip().lstrip('*')
-    # Original package manifest prefixes the model directory. Strip it for candidate root.
-    prefix='v33-approved-visual-model/dragonswood-v33-test/'
-    if rel.startswith(prefix): rel=rel[len(prefix):]
     expected[rel]=digest
 bad=[]
 for rel,digest in expected.items():

@@ -23,6 +23,11 @@ assert.equal(active.length,2);assert.equal(active[1].kind,'Office');
 const beforeThreshold=Ops.activePasses({bathroomStatus:[{id:'before',studentId:'before',studentName:'Before',dateKey:today,active:true,startedMs:now.getTime()-Ops.PASS_OVERDUE_MS+1}]},now)[0];
 const afterThreshold=Ops.activePasses({bathroomStatus:[{id:'after',studentId:'after',studentName:'After',dateKey:today,active:true,startedMs:now.getTime()-Ops.PASS_OVERDUE_MS-1}]},now)[0];
 assert.equal(beforeThreshold.overdue,false,'pass is not overdue immediately before five minutes');assert.equal(afterThreshold.overdue,true,'pass is overdue immediately after five minutes');
+const overrideKey={studentId:'u1',lessonId:'math-1',questionPrompt:'Explain',studentAnswer:'Because',overrideType:'activity'};
+const overrideQueue=Ops.curriculumOverrideRequests([{id:'old',status:'pending',...overrideKey,createdAt:{seconds:10}},{id:'new',status:'pending',...overrideKey,createdAt:{seconds:20}},{id:'resolved',status:'approved',...overrideKey,createdAt:{seconds:30}}]);
+assert.equal(overrideQueue.length,1,'identical pending Curriculum reviews collapse to one queue item');
+assert.equal(overrideQueue[0].id,'new','newest identical Curriculum review remains visible');
+assert.deepEqual([...overrideQueue[0].duplicateIds],['old'],'duplicate review IDs remain available for atomic closure');
 const operations=Ops.teacherOperations({
   students:[{id:'u1',name:'Fifth',hp:9,dailyXpEarned:12},{id:'u2',name:'Fourth',hp:10,dailyXpEarned:8}],
   requests:{bathroomRequests:[{id:'u1_'+today,studentId:'u1',studentName:'Fifth',dateKey:today,status:'pending'}]},statuses:{},

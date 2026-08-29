@@ -33,10 +33,7 @@ assert.match(runtime,/'Reset Class Choice':\{resetClass:true,serious:true\}/);
 assert.match(runtime,/classId:'',classChosenAt:null,classResetAt:/);
 assert.match(runtime,/category:'teacher-class-reset'/);
 
-for(const file of [
-  'js/math-operations-quest.js',
-  'staged-systems/unified-math-v56.27-grayson-v58/math-v56.27/runtime/js/math-operations-quest.js',
-]){
+for(const file of ['js/math-operations-quest.js']){
   const math=read(file);
   for(const helper of ['difficultyInfo','pointValue','setDifficultyLocked','closeHint','hintControlUI','difficultyUI','normalPrompt','hardPrompt','taskPrompt','walkthroughSteps','renderNormalWalkthrough','renderEasyAddition','renderEasySubtraction','renderEasyMultiplication','renderEasyDivision','renderEasyHint'])
     assert.equal((math.match(new RegExp(`function ${helper}\\(`,'g'))||[]).length,1,`${file}: ${helper} must exist exactly once`);

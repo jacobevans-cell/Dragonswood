@@ -30,7 +30,7 @@ else fail("4th-grade Day 16 addition lock",[...new Set(d16.map(q=>q.skillId))]);
 if(d17.length&&d17.every(q=>q.skillId==="math.sub.multi"))pass("4th-grade Day 17 is locked to multi-digit subtraction");
 else fail("4th-grade Day 17 subtraction lock",[...new Set(d17.map(q=>q.skillId))]);
 
-const daily=fs.readFileSync("daily-quest.html","utf8"),teacher=fs.readFileSync("teacher.html","utf8");
+const daily=fs.readFileSync("daily-quest.html","utf8"),teacher=fs.readFileSync("v33-integration/js/teacher-app.js","utf8"),operations=fs.readFileSync("v33-integration/js/integration/operations.js","utf8"),runtime=fs.readFileSync("v33-integration/js/integration/runtime.js","utf8");
 for(const [label,needle] of [
   ["daily pacing contract","function dwBuildPacingLesson"],
   ["fail-closed daily generator","if(task?.pacingLocked) throw new Error"],
@@ -40,7 +40,7 @@ for(const [label,needle] of [
 ])daily.includes(needle)?pass(label):fail(label);
 if(!daily.includes("const grade4Spiral=")&&!daily.includes("const sourcePool=L.track"))pass("unrelated spiral injection removed");
 else fail("unrelated spiral injection still present");
-if(teacher.includes("identical requests combined")&&teacher.includes("RETURN THIS QUESTION"))pass("teacher queue deduplicates and explains returns");
+if(teacher.includes("Curriculum Review Queue")&&teacher.includes("Return question")&&operations.includes("curriculumOverrideKey")&&runtime.includes("ids.forEach(id=>batch.set"))pass("teacher queue deduplicates and explains returns");
 else fail("teacher queue review safeguards");
 
 if(failed){console.error(`\n❌ ${failed} CURRICULUM PACING SELF-TEST(S) FAILED`);process.exit(1)}

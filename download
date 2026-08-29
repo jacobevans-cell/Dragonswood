@@ -1,8 +1,0 @@
-node_modules/
-.cache/
-.kokoro-cache/
-tools/narration/.cache/
-tools/narration/tmp/
-*.onnx
-*.onnx_data
-narration-generation-report.json

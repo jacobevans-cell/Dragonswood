@@ -100,13 +100,19 @@ def main():
         if stored is None: raise AssertionError(f'Real reader heartbeat did not create Firestore evidence: assignment={assignment!r}; console={student_logs!r}')
         assert stored['activeSeconds']==15,stored
 
-        # A page in another BrowserContext can remain focused independently in
-        # headless Chromium. Hide the reader with a sibling tab in the same
-        # student context, then prove the page is hidden before waiting through
-        # another full heartbeat interval.
-        student_cover=student_context.new_page();student_cover.goto('about:blank');student_cover.bring_to_front()
-        student.wait_for_function("() => document.hidden === true",timeout=10000)
-        student_cover.wait_for_timeout(17000)
+        # Playwright-created pages may live in independently active windows.
+        # Exercise Chromium's real window lifecycle instead: minimize the
+        # window, prove the document became hidden, and wait through another
+        # complete heartbeat interval before restoring it.
+        cdp=student_context.new_cdp_session(student);window_id=cdp.send('Browser.getWindowForTarget')['windowId']
+        cdp.send('Browser.setWindowBounds',{'windowId':window_id,'bounds':{'windowState':'minimized'}})
+        deadline=time.monotonic()+10;hidden=False
+        while time.monotonic()<deadline and not hidden:
+            hidden=student.evaluate("() => document.hidden === true")
+            if not hidden: time.sleep(.1)
+        assert hidden,'Minimizing Chromium did not hide the student reader document'
+        time.sleep(17)
+        cdp.send('Browser.setWindowBounds',{'windowId':window_id,'bounds':{'windowState':'normal'}})
         unchanged=teacher.evaluate("""async id=>{const apps=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js');const fs=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');const snap=await fs.getDoc(fs.doc(fs.getFirestore(apps.getApp('DragonswoodV33TeacherIntegration')),'readingSessions',id));return snap.exists()?snap.data():null}""",reading_id)
         assert unchanged and unchanged['activeSeconds']==15,unchanged
         assert 'targetMinutes' not in unchanged and 'lastHeartbeatMs' not in unchanged

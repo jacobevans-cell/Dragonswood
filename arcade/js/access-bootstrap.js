@@ -12,6 +12,11 @@ function renderLocked(message='Checking your Arcade Time…'){
   gate.querySelector('[data-start-arcade]')?.addEventListener('click',begin);
 }
 function updateClock(){
+  // V57.1.11: The 1-second clock must do nothing until a real paid session is active.
+  // Previously remainingMs() returned 0 for the pre-session wallet screen, which
+  // falsely called lockNow(), erased the loaded token/teacher state, and immediately
+  // displayed "Your 30-minute Arcade Time has ended."
+  if(!access?.active){badge.hidden=true;return}
   const ms=remainingMs(access);if(ms<=0){lockNow('Your 30-minute Arcade Time has ended.');return}
   const total=Math.ceil(ms/1000),m=Math.floor(total/60),s=String(total%60).padStart(2,'0');badge.textContent=`ARCADE TIME ${m}:${s}`;
 }

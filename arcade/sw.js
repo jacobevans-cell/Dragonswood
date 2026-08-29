@@ -1,4 +1,4 @@
-const CACHE='dragonswood-arcade-v9-authoritative-access';
+const CACHE='dragonswood-arcade-v12-native-portal';
 const CORE=[
   './','index.html','admin.html','device-check.html','style.css','access.css','manifest.webmanifest',
   'assets/dragonswood-arcade-crest.svg','assets/dragon-cube.svg','assets/dragon-runner.svg','assets/arcade-stars.svg',

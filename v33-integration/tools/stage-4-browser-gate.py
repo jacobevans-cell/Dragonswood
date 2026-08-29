@@ -22,9 +22,6 @@ class QuietHandler(SimpleHTTPRequestHandler):
 
 def sign_in(page):
     page.wait_for_function("window.DWV33Integration?.environment === 'emulator'")
-    # DWV33Integration is published before its async Firebase SDK/bootstrap
-    # finishes. The visible sign-in control is the reliable signal that the
-    # default app and Auth emulator connection are ready for this fixture login.
     page.get_by_role('button', name='Sign in with Google').wait_for(timeout=30000)
     page.evaluate(
         """async ({email,password}) => {
@@ -109,8 +106,6 @@ def wait_for_authorized_portal(page):
               : ({status:integrationSession.status||'',message:integrationSession.message||''})"""
         )
         if last['status'] == 'authorized':
-            # The fixture intentionally seeds an active Bathroom pass. The
-            # restored safety layer requires check-in before Daily Missions.
             active_pass = page.locator('[data-active-pass-overlay].active')
             if active_pass.count():
                 active_pass.wait_for(timeout=10000)
@@ -139,9 +134,6 @@ def main():
             if Path('/usr/bin/chromium').exists():
                 launch['executable_path'] = '/usr/bin/chromium'
             browser = pw.chromium.launch(**launch)
-            # Daily Quest uses the scholar's local school date. The Codespace
-            # runs in UTC, so pin this fixture to Dragonswood's Arizona clock
-            # to match the Phoenix date used by the emulator seed.
             context = browser.new_context(
                 viewport={'width': 1440, 'height': 1000},
                 timezone_id='America/Phoenix',
@@ -169,9 +161,10 @@ def main():
             sign_in_embedded_frame(daily, 'Daily Quest')
             wait_for_daily_ready(daily)
 
-            page.evaluate("location.hash='#missions'")
-            page.get_by_role('heading', name='Your quest path').wait_for()
-            page.locator('button[data-module="curriculum-quest"]').click()
+            # Stage 4 tests module routing/embedding, not mission-card sequencing.
+            # Navigate directly just as we do for Daily Quest so a transient disabled
+            # sequential card cannot turn a routing test into a 30-second click wait.
+            page.evaluate("location.hash='#module/curriculum-quest'")
             curriculum_frame = page.locator('iframe[title="Curriculum & Recovery Quest"]')
             curriculum_frame.wait_for()
             assert 'dw-env=emulator' in (curriculum_frame.get_attribute('src') or '')

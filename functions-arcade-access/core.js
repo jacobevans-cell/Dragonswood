@@ -21,8 +21,9 @@ function toMillis(value){
   const n=Number(value);return Number.isFinite(n)?n:0;
 }
 function effectiveEnabled(access={},settings={}){
-  if(typeof access.individualEnabled==='boolean')return access.individualEnabled;
-  return settings.enabled===true;
+  // V57.1.12: class availability is the master switch. An individual flag may
+  // further lock one scholar, but can never reopen Arcade while the class is locked.
+  return settings.enabled===true&&access.individualEnabled!==false;
 }
 function activeSession(session={},now=Date.now()){
   return session.status==='active'&&toMillis(session.endAt)>now;

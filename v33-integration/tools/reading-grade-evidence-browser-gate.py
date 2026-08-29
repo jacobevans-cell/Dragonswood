@@ -78,7 +78,11 @@ def main():
         assert_emulator_document_missing('readingSessions',reading_id)
         set_emulator_document('classData','gradebookSettings',{'daily':40,'curriculum':40,'reading':20,'readingTargetMinutes':20,'readingAssignedDateKeys':[date_key],'readingTargetsByDate':{date_key:1},'gradeIntegrityVersion':2})
 
-        student=student_context.new_page();student.goto(f'{base}/v33-integration/student-test.html?dw-env=emulator#module/class-reader',wait_until='domcontentloaded');sign_in(student,'grade4@explore.academy','[DEFAULT]');wait_authorized(student)
+        student_logs=[]
+        student=student_context.new_page();student.on('console',lambda message: student_logs.append(f'{message.type}: {message.text}'));student.goto(f'{base}/v33-integration/student-test.html?dw-env=emulator#module/class-reader',wait_until='domcontentloaded');sign_in(student,'grade4@explore.academy','[DEFAULT]');wait_authorized(student)
+        assignment=student.evaluate("() => ({target:state.reading?.targetMinutes,dates:state.reading?.assignedDateKeys||[]})")
+        assert assignment['target']==1 and date_key in assignment['dates'],assignment
+        student.evaluate("""() => { window.__readingGateHeartbeats=0;window.addEventListener('message',event=>{if(event.origin===location.origin&&event.data?.type==='dw-witches-reading-heartbeat')window.__readingGateHeartbeats++}) }""")
         iframe=student.locator('iframe[title="The Witches Class Reader"]');iframe.wait_for(timeout=30000)
         deadline=time.monotonic()+30;reader=None
         while time.monotonic()<deadline and reader is None:
@@ -87,8 +91,12 @@ def main():
         if reader is None: raise AssertionError('The real Witches reader iframe did not load')
         reader.wait_for_function("() => typeof markDragonswoodReadingActive==='function' && typeof DRAGONSWOOD_READING_HEARTBEAT_MS==='number'",timeout=30000)
         student.bring_to_front();reader.locator('body').click(position={'x':120,'y':120});reader.wait_for_function("() => dragonswoodLastReadingActivity > 0 && document.hasFocus()",timeout=10000)
-        student.wait_for_function("() => state.reading?.rows?.some(row => row.dateKey === DWV33Core.phoenixDateKey() && row.activeSeconds >= 15)",timeout=35000)
-        stored=student.evaluate("() => state.reading.rows.find(row => row.dateKey === DWV33Core.phoenixDateKey())")
+        student.wait_for_function("() => window.__readingGateHeartbeats >= 1",timeout=35000)
+        deadline=time.monotonic()+10;stored=None
+        while time.monotonic()<deadline and stored is None:
+            stored=teacher.evaluate("""async id=>{const apps=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js');const fs=await import('https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js');const snap=await fs.getDoc(fs.doc(fs.getFirestore(apps.getApp('DragonswoodV33TeacherIntegration')),'readingSessions',id));return snap.exists()?snap.data():null}""",reading_id)
+            if stored is None: student.wait_for_timeout(100)
+        if stored is None: raise AssertionError(f'Real reader heartbeat did not create Firestore evidence: assignment={assignment!r}; console={student_logs!r}')
         assert stored['activeSeconds']==15,stored
 
         teacher.bring_to_front();teacher.wait_for_timeout(17000)

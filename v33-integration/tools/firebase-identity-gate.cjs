@@ -252,6 +252,8 @@ async function attemptAuthenticatedWrite(account){
 
     const readingBase=(account,name,date=today)=>({studentId:account.uid,studentName:name,bookId:'witches',bookTitle:'The Witches',dateKey:date,activeSeconds:15,firstPage:24,lastPage:24,pages:[24],status:'in-progress'});
     const readingId=`${accounts.grade5.uid}_${today}_witches`;
+    const missingReading=await getDoc('readingSessions',readingId,accounts.grade5.token);
+    assert.equal(missingReading.res.status,404,`Expected authorized missing-document read before first heartbeat, got ${missingReading.res.status}: ${missingReading.text}`);
     const readingCreate=await commitDoc('readingSessions',readingId,readingBase(accounts.grade5,'Fifth'),accounts.grade5.token,{create:true,serverFields:['createdAt','updatedAt']});
     assert.equal(readingCreate.res.ok,true,JSON.stringify(readingCreate.body));
 
@@ -282,7 +284,7 @@ async function attemptAuthenticatedWrite(account){
     assert.equal(immutableChange.res.status,403,`Expected 403 immutable identity/date/book/create fields, got ${immutableChange.res.status}: ${immutableChange.text}`);
     const crossReading=await getDoc('readingSessions',readingId,accounts.grade4.token);
     assert.equal(crossReading.res.status,403,`Expected 403 cross-reading read, got ${crossReading.res.status}: ${crossReading.text}`);
-    record('Witches assignment-bound reading evidence',true,'valid server-time heartbeat accepted; rapid/duplicate/arbitrary/forged writes and cross-student reads denied');
+    record('Witches assignment-bound reading evidence',true,'first transaction read + valid server-time heartbeat accepted; rapid/duplicate/arbitrary/forged writes and cross-student reads denied');
 
     const lootId=`${accounts.grade5.uid}_${today}`;
     const validLoot=await writeDoc('bossLoot',lootId,{studentId:accounts.grade5.uid,dateKey:today,status:'complete',goldAward:3,xpAward:12,goalPoints:0,rareGoal:'none',itemId:'crafting-materials'},accounts.grade5.token);

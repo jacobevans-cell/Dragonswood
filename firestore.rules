@@ -642,7 +642,23 @@ service cloud.firestore {
     // reader. Every record has one deterministic student/date ID, fixed
     // fields, server time, and a real-time gap between focused heartbeats.
     match /readingSessions/{sessionId} {
-      allow read: if isTeacher()
+      // A Firestore transaction must read a deterministic document before its
+      // first create. Authorize that missing-document probe only for the
+      // signed-in student's own ID shape; existing records still require the
+      // stored owner field, and list queries remain owner-filtered.
+      allow get: if isTeacher()
+                 || (
+                   isSignedIn()
+                   && (
+                     (
+                       sessionId.matches('^' + request.auth.uid + '_[0-9]{4}-[0-9]{2}-[0-9]{2}_witches$')
+                       && !exists(/databases/$(database)/documents/readingSessions/$(sessionId))
+                     )
+                     || resource.data.studentId == request.auth.uid
+                   )
+                 );
+
+      allow list: if isTeacher()
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
 
       allow create: if isExploreStudent()

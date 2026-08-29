@@ -58,6 +58,13 @@
     if(!doc)return;
     doc.documentElement.classList.add('dw-v33-embedded');
     doc.body?.classList.add('dw-v33-embedded');
+    if(!doc.querySelector('link[data-dw-v11-visual]')){
+      const link=doc.createElement('link');
+      link.rel='stylesheet';
+      link.href=new URL('css/module-visual-v11.css',document.baseURI).href;
+      link.dataset.dwV11Visual='1';
+      doc.head?.append(link);
+    }
     const style=doc.createElement('style');
     style.dataset.dwV33Embed='1';
     style.textContent='html.dw-v33-embedded{scrollbar-color:#7051a3 #07091f}html.dw-v33-embedded body{background-attachment:scroll!important}html.dw-v33-embedded a[href^="index.html"],html.dw-v33-embedded a[href^="./index.html"]{display:none!important}';

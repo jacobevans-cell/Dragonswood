@@ -1,0 +1,30 @@
+dragonswood_surface,default_asset,event_variants,system_area
+Login and welcome,animation:idle,badge:smile after sign-in,Student
+Home / My Adventurer,badge:neutral or animation:idle,pose:achievement after level-up,Student
+Morning Bell Work,animation:guide-right,support on retry; celebrate on completion,Academic
+Daily Missions,animation:guide-right,animation:reward after required work,Academic
+Exit Quest,animation:guide-right,badge:determined during challenge,Academic
+Curriculum Quest,matching subject pose,reading/support/celebrate by state,Academic
+Recovery Quest,pose:recovery,"sympathetic/support, then celebrate",Academic
+Witches e-reader / Reading,pose:reading or animation:reading,badge:listening with narration,Academic
+Scribe & Journal,pose:scribe,thinking/hint/achievement,Academic
+Spelling,pose:reading or pose:languages,speaking/listening/support,Academic
+Math,pose:math,determined/hint/celebrate,Academic
+Science / Deep Time Lab,pose:science,badge:surprised for discoveries,Academic
+Social Studies,pose:kingdom,pose:calendar for timelines,Academic
+Dragon Tongues,pose:languages,speaking/listening/reading,Academic
+Daily Boss,pose:boss,"determined, then reward",Academic
+Schedule & Calendar,pose:calendar,badge:alert for time-sensitive items,Student
+Polls,badge:thinking,badge:smile after submission,Student
+Jobs,animation:guide-right or pose:achievement,animation:reward after confirmation,Student
+Passes,pose:pass,animation:attention while pending,Operations
+Attention Center,pose/animation:attention,alert/concerned/smile,Teacher
+Adventurer Hall / Leaderboards,pose:achievement,animation:celebrate for milestone,Recreation
+Games,pose:games,animation:reward after valid completion,Recreation
+Arcade,pose:arcade,animation:attention when work gate blocks entry,Recreation
+Kingdom Wars,pose:kingdom,determined/reward,Recreation
+Pet Sanctuary,pose:pet-sanctuary,surprised on hatch; smile on care,Recreation
+Class Shop,pose:shop,animation:reward after purchase,Economy
+Profile / Achievements,badge:neutral,pose:achievement or celebrate,Student
+Loading / Syncing,animation:flying,static first frame under reduced motion,System
+Teacher portal,icon/badge:neutral,attention only for actionable items,Teacher

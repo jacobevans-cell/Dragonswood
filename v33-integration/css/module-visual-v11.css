@@ -1,0 +1,34 @@
+@import url("./dragonswood-fonts.css");
+
+:root {
+  --brand-font: "Basteleur", Georgia, serif;
+  --display-font: "Grenze", Georgia, serif;
+  --reading-font: "Caudex", Georgia, serif;
+  --ui-font: "Grenze", Georgia, serif;
+}
+
+body {
+  font-family: var(--reading-font);
+}
+
+h1,
+h2,
+h3,
+h4,
+button,
+input,
+select,
+textarea,
+label,
+nav,
+.button,
+.btn,
+.badge,
+.tab {
+  font-family: var(--ui-font);
+}
+
+:focus-visible {
+  outline: 3px solid #66ecff;
+  outline-offset: 3px;
+}

@@ -1,0 +1,70 @@
+@font-face {
+  font-family: "Basteleur";
+  src: url("../assets/fonts/basteleur/Basteleur-Moonlight.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Basteleur";
+  src: url("../assets/fonts/basteleur/Basteleur-Bold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Grenze";
+  src: url("../assets/fonts/grenze/Grenze-Variable-Latin.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Grenze";
+  src: url("../assets/fonts/grenze/Grenze-Variable-Latin-Italic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Caudex";
+  src: url("../assets/fonts/caudex/Caudex-Regular-Latin.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Caudex";
+  src: url("../assets/fonts/caudex/Caudex-Italic-Latin.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Caudex";
+  src: url("../assets/fonts/caudex/Caudex-Bold-Latin.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Caudex";
+  src: url("../assets/fonts/caudex/Caudex-BoldItalic-Latin.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  --brand-font: "Basteleur", Georgia, serif;
+  --display-font: "Grenze", Georgia, serif;
+  --reading-font: "Caudex", Georgia, serif;
+  --ui-font: "Grenze", Georgia, serif;
+}

@@ -7,8 +7,10 @@
   <title>Dragonswood Arcade</title>
   <link rel="icon" href="assets/dragonswood-arcade-crest.svg" type="image/svg+xml" />
   <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="../v33-integration/css/dragonswood-fonts.css?v=1.1" />
   <link rel="stylesheet" href="style.css?v=57.1.16" />
   <link rel="stylesheet" href="access.css?v=57.1.16" />
+  <link rel="stylesheet" href="visual-v11.css?v=1.1" />
   <style>.arcade-auth-pending #app{visibility:hidden}.arcade-return-link{display:inline-flex;align-items:center;text-decoration:none}</style>
 </head>
 <body>
@@ -22,7 +24,7 @@
       <div class="header-actions">
         <a class="header-chip arcade-return-link" href="../index.html#adventure">← <span>Dragonswood</span></a>
         <button id="leaderboardBtn" class="header-chip">🏆 <span>Leaderboard</span></button>
-        <button id="profileBtn" class="profile-chip"><span class="avatar-dot">🐉</span><span><small>ADVENTURER</small><strong id="profileName">Adventurer</strong></span></button>
+        <button id="profileBtn" class="profile-chip"><span class="avatar-dot"><img class="arcade-mascot-badge" src="../v33-integration/assets/mascot/badges/neutral.webp" alt="" /></span><span><small>ADVENTURER</small><strong id="profileName">Adventurer</strong></span></button>
       </div>
     </header>
 
@@ -35,7 +37,7 @@
             <p>Two trials are open. More portals can be added without rebuilding the arcade around them.</p>
             <div class="rules-ribbon"><span>🎮 Games track performance</span><span>🏆 Leaderboards determine reward eligibility</span><span>🛡️ Rewards stay under Dragonswood rules</span></div>
           </div>
-          <img class="hero-crest" src="assets/dragonswood-arcade-crest.svg" alt="Dragonswood Arcade crest" />
+          <img class="hero-mascot" src="../v33-integration/assets/mascot/actions/arcade.webp" alt="Dragonswood dragon welcoming adventurers to the Arcade" />
         </div>
 
         <div class="section-heading"><div><small>OPEN PORTALS</small><h2>Arcade Games</h2></div><span id="cloudBadge" class="status-badge">CONNECTING…</span></div>
@@ -78,7 +80,7 @@
 
     <dialog id="profileDialog">
       <form method="dialog" id="profileForm">
-        <div class="dialog-dragon">🐉</div><small>ARCADE PROFILE</small><h2>Adventurer Name</h2>
+        <img class="dialog-mascot" src="../v33-integration/assets/mascot/badges/smile.webp" alt="Dragonswood dragon beside Arcade profile settings" /><small>ARCADE PROFILE</small><h2>Adventurer Name</h2>
         <p>Your name comes from your signed-in Dragonswood profile. Arcade settings cannot change school identity or progression.</p>
         <label>Dragonswood name<input id="profileInput" maxlength="32" autocomplete="off" disabled /></label>
         <label class="comfort-setting"><span><strong>Comfort mode</strong><small>Reduces shake, flashes, parallax, and fast camera/tunnel motion.</small></span><input id="comfortToggle" type="checkbox" /></label>

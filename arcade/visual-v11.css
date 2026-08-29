@@ -1,0 +1,75 @@
+:root,
+body {
+  font-family: var(--reading-font);
+}
+
+button,
+input,
+select,
+label,
+.eyebrow,
+.header-chip,
+.profile-chip,
+.status-badge,
+.mini-status,
+.reward-rule-chip {
+  font-family: var(--ui-font);
+}
+
+.brand-button strong,
+.hero h1,
+.section-heading h2,
+.game-card h3,
+.future-panel h3,
+.panel-head h2,
+.game-toolbar-title strong,
+dialog h2 {
+  font-family: var(--display-font);
+}
+
+.brand-button strong {
+  font-family: var(--brand-font);
+}
+
+.hero-mascot {
+  width: min(310px, 88%);
+  max-height: 310px;
+  justify-self: center;
+  object-fit: contain;
+  filter: drop-shadow(0 25px 34px rgba(0, 0, 0, .45));
+  z-index: 2;
+}
+
+.arcade-mascot-badge {
+  display: block;
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+
+.dialog-mascot {
+  display: block;
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
+  filter: drop-shadow(0 9px 14px rgba(0, 0, 0, .35));
+}
+
+@media (max-width: 900px) {
+  .hero-mascot {
+    position: absolute;
+    right: -34px;
+    bottom: -32px;
+    width: 225px;
+    opacity: .34;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-mascot,
+  .arcade-mascot-badge,
+  .dialog-mascot {
+    animation: none !important;
+    transition: none !important;
+  }
+}

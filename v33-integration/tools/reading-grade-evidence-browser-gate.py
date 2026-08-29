@@ -2,6 +2,7 @@
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 import json
+import os
 from pathlib import Path
 from threading import Thread
 import time
@@ -63,7 +64,7 @@ def main():
     Thread(target=server.serve_forever,daemon=True).start();base=f'http://127.0.0.1:{server.server_port}';forbidden=[]
     try:
       with sync_playwright() as pw:
-        launch={'headless':True,'args':['--no-sandbox','--disable-dev-shm-usage']}
+        launch={'headless':os.environ.get('DW_READING_GATE_HEADFUL')!='1','args':['--no-sandbox','--disable-dev-shm-usage']}
         if Path('/usr/bin/chromium').exists(): launch['executable_path']='/usr/bin/chromium'
         browser=pw.chromium.launch(**launch)
         teacher_context=browser.new_context(viewport={'width':1680,'height':1050},timezone_id='America/Phoenix')

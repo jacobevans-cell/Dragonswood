@@ -2,8 +2,14 @@ const PROD_CONFIG={apiKey:'AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE',authDomain:'
 const DEMO_CONFIG={apiKey:'demo-key',authDomain:'demo-dragonswood-v33.localhost',projectId:'demo-dragonswood-v33',storageBucket:'demo-dragonswood-v33.appspot.com',messagingSenderId:'000000000000',appId:'1:000000000000:web:demo-v33'};
 const cfg=window.DRAGONSWOOD_ARCADE_CONFIG||{};
 const params=new URLSearchParams(location.search);
-const requested=params.get('dw-env')||cfg.environment||'emulator';
-const production=requested==='production'&&params.get('dw-arcade-live')==='I_UNDERSTAND';
+
+// V57.1.10 Arcade wallet live-read repair.
+// The production student shell already declares data-dw-environment="production".
+// Honor that declaration when this module is imported by the student portal instead
+// of silently falling back to the localhost emulator and displaying a fake 0/3 wallet.
+const declaredEnvironment=String(document.documentElement?.dataset?.dwEnvironment||'').toLowerCase();
+const requested=params.get('dw-env')||(declaredEnvironment==='production'?'production':cfg.environment||'emulator');
+const production=declaredEnvironment==='production'||(requested==='production'&&params.get('dw-arcade-live')==='I_UNDERSTAND');
 export const environment=production?'production':'emulator';
 let contextPromise=null,currentAccess=null;
 

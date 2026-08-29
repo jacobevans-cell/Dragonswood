@@ -99,13 +99,13 @@
     return count;
   }
 
-  function dailyAccessState(rows=[],override={},uid='',tester=false,now=new Date()){
+  function dailyAccessState(rows=[],override={},uid='',selfUnlockMorning=false,now=new Date()){
     const dateKey=phoenixDateKey(now);
     const morningComplete=completedMorningDates(rows).has(dateKey);
     const overrideToday=text(override?.dateKey)===dateKey&&(
       override?.all===true||(Array.isArray(override?.studentIds)&&override.studentIds.map(text).includes(text(uid)))
     );
-    return {dateKey,morningComplete,overrideToday,unlocked:morningComplete||overrideToday||tester===true};
+    return {dateKey,morningComplete,overrideToday,testerOverride:selfUnlockMorning===true,unlocked:morningComplete||overrideToday||selfUnlockMorning===true};
   }
 
   function dailyMissionState(rows=[],now=new Date()){
@@ -120,14 +120,14 @@
     return Object.freeze({dateKey,morning:status('morning'),exit:status('exit')});
   }
 
-  function normalizeStudent(user,profile,dailyRows=[],dailyOverride={},tester=false,now=new Date()){
+  function normalizeStudent(user,profile,dailyRows=[],dailyOverride={},selfUnlockMorning=false,now=new Date()){
     const p=profile||{};
     const xp=Math.max(0,finite(p.xp));
     const li=levelInfo(xp);
     const first=text(p.firstName)||firstNameFromUser(user);
     const classId=text(p.classId).toLowerCase();
     const activePet=text(p.activePet);
-    const access=dailyAccessState(dailyRows,dailyOverride,user?.uid,tester,now);
+    const access=dailyAccessState(dailyRows,dailyOverride,user?.uid,selfUnlockMorning,now);
     const dailyMissions=dailyMissionState(dailyRows,now);
     return {
       uid:text(user?.uid),email:text(user?.email),firstName:first,initial:(first[0]||'A').toUpperCase(),displayName:formatDisplayName(p,user),
@@ -139,7 +139,8 @@
       inventory:Array.isArray(p.rpgInventory)?[...p.rpgInventory]:[],equipped:p.rpgEquipped&&typeof p.rpgEquipped==='object'?{...p.rpgEquipped}:{},
       title:text(p.title),narrationVoice:text(p.narrationVoice),profileMissing:!profile,
       morningWorkComplete:access.morningComplete,dailyAccessOverride:access.overrideToday,
-      dailyAccessUnlocked:access.unlocked&&p.optionalAccessPaused!==true&&p.teacherCheckInRequired!==true&&p.reflectionRequired!==true,
+      dailyAccessUnlocked:access.testerOverride||(access.unlocked&&p.optionalAccessPaused!==true&&p.teacherCheckInRequired!==true&&p.reflectionRequired!==true),
+      testerMorningUnlocked:access.testerOverride,
       optionalAccessPaused:p.optionalAccessPaused===true,teacherCheckInRequired:p.teacherCheckInRequired===true,reflectionRequired:p.reflectionRequired===true,
       dailyMissions
     };

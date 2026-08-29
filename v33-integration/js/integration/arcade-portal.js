@@ -1,7 +1,7 @@
 (function(){
   'use strict';
 
-  const RELEASE='57.1.15';
+  const RELEASE='57.1.16';
   let clientPromise=null;
   let preflightPromise=null;
 

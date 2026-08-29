@@ -132,6 +132,7 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
 
 <script src="narration-manifest.js?v=56.19.6"></script>
 <script src="dragonswood-narrator.js?v=57.1.9"></script>
+<script src="functions-arcade-access/tester-core.js?v=57.1.16"></script>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,onAuthStateChanged,connectAuthEmulator} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
@@ -153,9 +154,12 @@ window.DWAcademicAI?.configure(async payload=>{
   return result?.data||{};
 });
 const TEACHER="jacobicusjax@gmail.com",DOMAIN="explore.academy",CAP=150;
+const Tester=globalThis.DWTesterAccess;
 const XP=[0,200,450,750,1100,1500,1950,2450,3000,3600,4250,4950,5700,6500,7350,8250,9200,10200,11100,12000];
 const $=id=>document.getElementById(id);
 let user=null,profile=null,lesson=null,sessionName="",questionPlan=[],tasks=[],taskIndex=0,qIndex=0,score=0,correct=0,attempts=0,sessionStart=0,currentQuestion=null,currentQuestionSeen=false,currentQuestionCorrect=false;
+let testerSession=Tester.normalizeTester('',null),testerControls={},testerMorningOverride=false;
+let testerAccountUnsub=null,testerControlsUnsub=null;
 let dwDailyOverrideUnsub=null,dwDailyOverrideRows=[],dwLastStudentAnswer="";
 const dwRejectedQuestionKeys=new Set(),dwOverrideAppliedKeys=new Set();
 window.addEventListener("dw:narration-voice-change",async e=>{const voiceId=e.detail?.voiceId||"automatic";if(!user||profile?.narrationVoice===voiceId)return;profile={...(profile||{}),narrationVoice:voiceId};try{await setDoc(doc(db,"students",user.uid),{narrationVoice:voiceId,updatedAt:serverTimestamp()},{merge:true})}catch(err){console.warn("Could not sync narration preference",err)}});
@@ -6097,7 +6101,24 @@ const td=$("trackDesc");if(td)td.textContent=isLevelUpMode()
   ? (lesson.track==="challenge"?"Optional enrichment • Early–Mid 6th Grade":lesson.track==="foundation"?"Optional fourth-grade level-up work":"Optional fifth-grade challenge work")
   : (lesson.track==="challenge"?"Advanced enrichment • Early–Mid 6th Grade":lesson.track==="5"?"Fifth-grade spiral practice":lesson.track==="foundation"?"Foundation spiral practice • Grade 3 prerequisite skills":"Fourth-grade spiral practice");
 const mini=$("trackLabelMini");if(mini)mini.textContent=`TRACK: ${lesson.trackName}`;await refreshSessionCards();status(Number(profile.hp||0)<=0?"💀 You may complete today's academics, but knocked-out players earn no Player XP or Gold until revival.":"Today's quest is unlocked. Future quests remain sealed by Dragonswood server time.","good");}catch(err){console.error(err);status(`Today's quest is sealed or unavailable: ${err.code||err.message||"permission denied"}`,"bad");$("morningBtn").disabled=$("exitBtn").disabled=true;postDailyMissionState(false)}}
-onAuthStateChanged(auth,async u=>{user=u;if(!u){status("Open Daily Quest from your signed-in Dragonswood portal.","warn");return}let tester=false;try{tester=(await getDoc(doc(db,"testerAccounts",u.uid))).exists()}catch(e){}if(!String(u.email||"").toLowerCase().endsWith("@"+DOMAIN)&&String(u.email||"").toLowerCase()!==TEACHER&&!tester){status("Daily Quest requires an Explore Academy or approved tester account.","bad");return}try{const s=await getDoc(doc(db,"students",u.uid));if(s.exists())profile=s.data();else if(tester)profile={firstName:u.displayName||"Tester",grade:"4",hp:10,gold:0,xp:0};window.DWVoicePreferences?.set?.(profile?.narrationVoice||"automatic");renderAccount();renderSchoolCountdowns();watchDailyQuestProgress();await loadToday()}catch(e){status("Dragonswood profile error: "+(e.code||e.message),"bad")}});
+onAuthStateChanged(auth,async u=>{
+ testerAccountUnsub?.();testerControlsUnsub?.();testerAccountUnsub=testerControlsUnsub=null;
+ user=u;testerSession=Tester.normalizeTester(u?.uid||'',null);testerControls={};testerMorningOverride=false;
+ if(!u){status("Open Daily Quest from your signed-in Dragonswood portal.","warn");return}
+ try{
+  const [testerSnap,controlsSnap]=await Promise.all([getDoc(doc(db,"testerAccounts",u.uid)),getDoc(doc(db,"testerSelfControls",u.uid))]);
+  testerSession=Tester.normalizeTester(u.uid,testerSnap.exists()?testerSnap.data():null);
+  testerControls=Tester.normalizeControls(testerSession,controlsSnap.exists()?controlsSnap.data():{});
+  testerMorningOverride=Tester.unlockEnabled(testerSession,testerControls,'unlockMorning');
+  let liveAccount=testerSnap.exists()?testerSnap.data():null,liveControls=controlsSnap.exists()?controlsSnap.data():{},previousOverride=testerMorningOverride;
+  const syncTester=()=>{const nextSession=Tester.normalizeTester(u.uid,liveAccount),nextControls=Tester.normalizeControls(nextSession,liveControls),nextOverride=Tester.unlockEnabled(nextSession,nextControls,'unlockMorning');if(previousOverride&&!nextOverride){location.reload();return}testerSession=nextSession;testerControls=nextControls;testerMorningOverride=nextOverride;previousOverride=nextOverride};
+  testerAccountUnsub=onSnapshot(doc(db,"testerAccounts",u.uid),snap=>{liveAccount=snap.exists()?snap.data():null;syncTester()});
+  testerControlsUnsub=onSnapshot(doc(db,"testerSelfControls",u.uid),snap=>{liveControls=snap.exists()?snap.data():{};syncTester()});
+ }catch(e){console.warn("Tester Morning Work access unavailable",e)}
+ const email=String(u.email||"").toLowerCase();
+ if(!email.endsWith("@"+DOMAIN)&&email!==TEACHER&&!testerSession.isTester){status("Daily Quest requires an Explore Academy or approved tester account.","bad");return}
+  try{const s=await getDoc(doc(db,"students",u.uid));if(s.exists())profile=s.data();else if(testerSession.isTester)profile={firstName:u.displayName||"Tester",grade:"4",hp:10,gold:0,xp:0};window.DWVoicePreferences?.set?.(profile?.narrationVoice||"automatic");renderAccount();renderSchoolCountdowns();watchDailyQuestProgress();await loadToday();if(testerMorningOverride&&lesson)status("🧪 Tester Morning Work self-unlock is active. Completion evidence remains unchanged until you do the work.","good")}catch(e){status("Dragonswood profile error: "+(e.code||e.message),"bad")}
+});
 $("morningBtn").onclick=()=>startSession("morning");$("exitBtn").onclick=()=>startSession("exit");$("closePlay").onclick=async()=>{if(sessionName&&taskIndex<tasks.length)await saveProgress();$("playModal").classList.remove("show")};
 async function startSession(name){
   sessionName=name;watchDailyQuestionOverrides(user?.uid);dwInstallDailyReviewUI();

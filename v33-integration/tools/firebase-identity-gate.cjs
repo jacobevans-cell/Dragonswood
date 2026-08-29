@@ -125,7 +125,7 @@ async function attemptAuthenticatedWrite(account){
     await seed('students',accounts.noClass.uid,{firstName:'NoClass',grade:4,genderGroup:'boys',hp:10,gold:0,xp:0,classId:'',activePet:'',rpgInventory:[],rpgEquipped:{}});
     await seed('students',accounts.noPet.uid,{firstName:'NoPet',grade:5,genderGroup:'girls',hp:10,gold:4,xp:750,classId:'ranger',activePet:'',ownedPets:['pet-emberbean'],eggInventory:2,petTokens:0,rpgInventory:[],rpgEquipped:{}});
     await seed('students',accounts.tester.uid,{firstName:'Tester',grade:5,genderGroup:'girls',hp:10,gold:3,xp:200,classId:'healer',activePet:'',rpgInventory:[],rpgEquipped:{}});
-    await seed('testerAccounts',accounts.tester.uid,{enabled:true,label:'V3 gate tester'});
+    await seed('testerAccounts',accounts.tester.uid,{active:true,label:'V3 gate tester',capabilities:{selfUnlockMorning:true,selfUnlockCurriculum:true,selfUnlockArcade:true,selfUnlockKingdom:true,selfAwardPoints:true}});
     await seed('dailyQuestProgress',`${accounts.grade4.uid}_2026-08-25_v48`,{studentId:accounts.grade4.uid,dateKey:'2026-08-25',session:'morning',status:'complete',score:100});
     await seed('dailyQuestProgress',`${accounts.grade4.uid}_2026-08-24_v48`,{studentId:accounts.grade4.uid,dateKey:'2026-08-24',session:'morning',status:'complete',score:100});
     await seed('dailyQuests',today,{date:today,day:14,chapter:'The Crystal Crossing',chapterIcon:'💎',morningXp:4,exitXp:2,gold:1,unlockAt:dailyUnlockAt,lockAt:dailyLockAt});

@@ -12,6 +12,23 @@ service cloud.firestore {
         && request.auth.token.email == "jacobicusjax@gmail.com";
     }
 
+    function isTester() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/testerAccounts/$(request.auth.uid))
+        && get(/databases/$(database)/documents/testerAccounts/$(request.auth.uid)).data.active == true;
+    }
+
+    function testerCapability(name) {
+      return isTester()
+        && get(/databases/$(database)/documents/testerAccounts/$(request.auth.uid)).data.get('capabilities', {}).get(name, false) == true;
+    }
+
+    function testerSelfUnlock(field, capability) {
+      return testerCapability(capability)
+        && exists(/databases/$(database)/documents/testerSelfControls/$(request.auth.uid))
+        && get(/databases/$(database)/documents/testerSelfControls/$(request.auth.uid)).data.get(field, false) == true;
+    }
+
     function isExploreStudent() {
       return request.auth != null
         && (
@@ -21,13 +38,8 @@ service cloud.firestore {
           )
           // Teacher-approved outside accounts must be able to exercise the
           // same guarded student paths during testing.
-          || exists(/databases/$(database)/documents/testerAccounts/$(request.auth.uid))
+          || isTester()
         );
-    }
-
-    function isTester() {
-      return request.auth != null
-        && exists(/databases/$(database)/documents/testerAccounts/$(request.auth.uid));
     }
 
     function isOwner(uid) {
@@ -90,11 +102,17 @@ service cloud.firestore {
     }
 
     function arcadeEnabled(uid) {
-      return exists(/databases/$(database)/documents/arcadeAccess/$(uid))
-        && (get(/databases/$(database)/documents/arcadeAccess/$(uid)).data.keys().hasAny(['individualEnabled'])
-          ? get(/databases/$(database)/documents/arcadeAccess/$(uid)).data.individualEnabled == true
-          : exists(/databases/$(database)/documents/arcadeSettings/classAccess)
-            && get(/databases/$(database)/documents/arcadeSettings/classAccess).data.enabled == true);
+      return (
+          exists(/databases/$(database)/documents/arcadeAccess/$(uid))
+          && (get(/databases/$(database)/documents/arcadeAccess/$(uid)).data.keys().hasAny(['individualEnabled'])
+            ? get(/databases/$(database)/documents/arcadeAccess/$(uid)).data.individualEnabled == true
+            : exists(/databases/$(database)/documents/arcadeSettings/classAccess)
+              && get(/databases/$(database)/documents/arcadeSettings/classAccess).data.enabled == true)
+        ) || (
+          request.auth != null
+          && request.auth.uid == uid
+          && testerSelfUnlock('unlockArcade', 'selfUnlockArcade')
+        );
     }
 
     function hasLiveArcadeSession(uid, sessionId) {
@@ -504,6 +522,7 @@ service cloud.firestore {
     // Students can read ONLY while Firestore server time is inside that day's window.
     match /dailyQuests/{questDate} {
       allow read: if isTeacher()
+                  || testerSelfUnlock('unlockMorning', 'selfUnlockMorning')
                   || (
                     (isExploreStudent() || isTester())
                     && request.time >= resource.data.unlockAt
@@ -672,14 +691,43 @@ service cloud.firestore {
     }
 
     match /testerAccounts/{uid} {
-      allow read: if isTeacher() || (isSignedIn() && request.auth.uid == uid);
+      allow get: if isTeacher() || (isSignedIn() && request.auth.uid == uid);
+      allow list: if isTeacher();
       allow create, update, delete: if isTeacher();
+    }
+
+    match /testerSelfControls/{uid} {
+      allow read: if isTeacher() || (isSignedIn() && request.auth.uid == uid);
+      allow create, update: if isSignedIn()
+                            && request.auth.uid == uid
+                            && isTester()
+                            && request.resource.data.keys().hasOnly([
+                              'uid','unlockMorning','unlockCurriculum',
+                              'unlockArcade','unlockKingdom','updatedAt'
+                            ])
+                            && request.resource.data.uid == request.auth.uid
+                            && request.resource.data.unlockMorning is bool
+                            && request.resource.data.unlockCurriculum is bool
+                            && request.resource.data.unlockArcade is bool
+                            && request.resource.data.unlockKingdom is bool
+                            && request.resource.data.updatedAt == request.time
+                            && (request.resource.data.unlockMorning == false || testerCapability('selfUnlockMorning'))
+                            && (request.resource.data.unlockCurriculum == false || testerCapability('selfUnlockCurriculum'))
+                            && (request.resource.data.unlockArcade == false || testerCapability('selfUnlockArcade'))
+                            && (request.resource.data.unlockKingdom == false || testerCapability('selfUnlockKingdom'));
+      allow delete: if isTeacher();
     }
 
     match /studentTransactions/{transactionId} {
       allow read: if isTeacher()
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
       allow create, update, delete: if isTeacher();
+    }
+
+    match /testerAudit/{auditId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+      allow write: if false;
     }
 
     // Assignment-bound active-time evidence from the embedded The Witches

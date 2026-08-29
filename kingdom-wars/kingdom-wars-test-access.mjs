@@ -1,3 +1,5 @@
+import '../functions-arcade-access/tester-core.js';
+
 const SDK='12.1.0';
 const PROD_CFG={
   apiKey:'AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE',
@@ -13,8 +15,10 @@ const requested=params.get('dw-env')||'emulator';
 const production=requested==='production'&&params.get('dw-kingdom-live')==='I_UNDERSTAND';
 export const environment=production?'production':'emulator';
 
-const ADMIN_EMAILS=new Set(['jacobicusjax@gmail.com']);
+const TEACHER_EMAIL='jacobicusjax@gmail.com';
 const AUTH_TIMEOUT=Symbol('auth-timeout');
+const Tester=globalThis.DWTesterAccess;
+if(!Tester)throw new Error('Canonical Dragonswood tester resolver did not load.');
 
 async function modules(){
   const [appMod,authMod,fsMod]=await Promise.all([
@@ -42,12 +46,6 @@ async function waitForUser(auth,authMod,timeoutMs=12000){
   });
 }
 
-function roleFromStudent(d={}){
-  const role=String(d.role||d.accountRole||d.accountType||'').toLowerCase();
-  return d.tester===true||d.isTester===true||d.admin===true||d.isAdmin===true||
-    ['tester','admin','teacher','developer'].includes(role);
-}
-
 function phoenixDateKey(){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Phoenix',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}
 async function morningWorkAccess(db,fsMod,uid){
   const dateKey=phoenixDateKey();
@@ -66,12 +64,11 @@ async function kingdomTeacherAccess(db,fsMod,uid){
   return {kingdomDateKey:dateKey,kingdomTeacherUnlocked:row.dateKey===dateKey&&(row.all===true||studentIds.includes(String(uid)))};
 }
 
-export function authorizeKingdomTester({email='',student=null,testerAccountExists=false}={}){
+export function authorizeKingdomTester({email='',tester=null}={}){
   const normalizedEmail=String(email||'').trim().toLowerCase();
-  if(ADMIN_EMAILS.has(normalizedEmail))return {allowed:true,reason:'admin'};
+  if(tester?.isTester===true)return {allowed:true,reason:'tester-account'};
+  if(normalizedEmail===TEACHER_EMAIL)return {allowed:true,reason:'teacher-student-portal'};
   if(environment==='production'&&normalizedEmail.endsWith('@explore.academy'))return {allowed:true,reason:'student-beta'};
-  if(testerAccountExists)return {allowed:true,reason:'tester-account'};
-  if(roleFromStudent(student||{}))return {allowed:true,reason:'student-role'};
   return {allowed:false,reason:'not-authorized'};
 }
 
@@ -83,27 +80,25 @@ export async function getKingdomTesterSession({silent=false}={}){
     if(!user)return {allowed:false,reason:'not-signed-in',user:null,student:null};
 
     const email=String(user.email||'').toLowerCase();
-    if(ADMIN_EMAILS.has(email))return {allowed:true,reason:'admin',user,student:null,dailyAccessUnlocked:true,kingdomTeacherUnlocked:true,environment};
-
-    let student=null;
+    let student=null,account=null,controls={};
     try{
-      const s=await fsMod.getDoc(fsMod.doc(db,'students',user.uid));
+      const [s,t,c]=await Promise.all([
+        fsMod.getDoc(fsMod.doc(db,'students',user.uid)),
+        fsMod.getDoc(fsMod.doc(db,'testerAccounts',user.uid)),
+        fsMod.getDoc(fsMod.doc(db,'testerSelfControls',user.uid))
+      ]);
       if(s.exists())student=s.data()||{};
+      if(t.exists())account=t.data()||{};
+      if(c.exists())controls=c.data()||{};
     }catch{}
-
-    let testerAccountExists=false;
-    try{
-      const t=await fsMod.getDoc(fsMod.doc(db,'testerAccounts',user.uid));
-      testerAccountExists=t.exists();
-    }catch{}
-
-    const decision=authorizeKingdomTester({email,student,testerAccountExists});
+    const tester=Tester.normalizeTester(user.uid,account),testerControls=Tester.normalizeControls(tester,controls),testerOverride=Tester.unlockEnabled(tester,testerControls,'unlockKingdom');
+    const decision=authorizeKingdomTester({email,tester});
     if(!decision.allowed)return {...decision,user,student,dailyAccessUnlocked:false,environment};
     let access,kingdom;
     try{[access,kingdom]=await Promise.all([morningWorkAccess(db,fsMod,user.uid),kingdomTeacherAccess(db,fsMod,user.uid)])}catch(error){return {allowed:false,reason:'morning-work-check-failed',user,student,dailyAccessUnlocked:false,environment,error}}
-    if(!access.unlocked)return {allowed:false,reason:'morning-work',user,student,dailyAccessUnlocked:false,environment,...access};
-    if(!kingdom.kingdomTeacherUnlocked)return {allowed:false,reason:'teacher-lock',user,student,dailyAccessUnlocked:true,environment,...access,...kingdom};
-    return {...decision,user,student,dailyAccessUnlocked:true,environment,...access,...kingdom};
+    if(!testerOverride&&!access.unlocked)return {allowed:false,reason:'morning-work',user,student,dailyAccessUnlocked:false,environment,testerOverride,...access};
+    if(!testerOverride&&!kingdom.kingdomTeacherUnlocked)return {allowed:false,reason:'teacher-lock',user,student,dailyAccessUnlocked:true,environment,testerOverride,...access,...kingdom};
+    return {...decision,user,student,isTester:tester.isTester,testerCapabilities:tester.capabilities,testerOverride,dailyAccessUnlocked:true,environment,...access,...kingdom};
   }catch(e){
     if(!silent)console.error('Kingdom tester access check failed',e);
     return {allowed:false,reason:'access-check-failed',user:null,student:null,error:e};
@@ -112,7 +107,15 @@ export async function getKingdomTesterSession({silent=false}={}){
 
 export async function requireKingdomTester(){
   const session=await getKingdomTesterSession();
-  if(session.allowed)return session;
+  if(session.allowed){
+    if(session.testerOverride&&session.user?.uid)modules().then(({db,fsMod})=>{
+      let accountReady=false,controlsReady=false,account=null,controls={};
+      const sync=()=>{if(!accountReady||!controlsReady)return;const tester=Tester.normalizeTester(session.user.uid,account),values=Tester.normalizeControls(tester,controls);if(!Tester.unlockEnabled(tester,values,'unlockKingdom'))location.reload()};
+      fsMod.onSnapshot(fsMod.doc(db,'testerAccounts',session.user.uid),snap=>{accountReady=true;account=snap.exists()?snap.data():null;sync()});
+      fsMod.onSnapshot(fsMod.doc(db,'testerSelfControls',session.user.uid),snap=>{controlsReady=true;controls=snap.exists()?snap.data():{};sync()});
+    }).catch(()=>{});
+    return session;
+  }
 
   document.body.innerHTML=`
     <main style="min-height:100vh;display:grid;place-items:center;background:#050518;color:white;font-family:Arial;padding:24px">

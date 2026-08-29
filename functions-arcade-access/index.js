@@ -3,6 +3,7 @@ const {onCall,HttpsError}=require('firebase-functions/v2/https');
 const admin=require('firebase-admin');
 const {getFirestore,FieldValue,Timestamp}=require('firebase-admin/firestore');
 const C=require('./core.js');
+const T=require('./tester-core.js');
 
 if(!admin.apps.length)admin.initializeApp();
 const db=getFirestore();
@@ -11,13 +12,16 @@ const OPTIONS={region:REGION,timeoutSeconds:30,memory:'256MiB',maxInstances:10};
 const accessRef=uid=>db.doc(`arcadeAccess/${uid}`);
 const settingsRef=()=>db.doc('arcadeSettings/classAccess');
 const sessionRef=id=>db.doc(`arcadeSessions/${id}`);
+const testerRef=uid=>db.doc(`testerAccounts/${uid}`);
+const testerControlsRef=uid=>db.doc(`testerSelfControls/${uid}`);
 
 function requireAuth(request){if(!request.auth)throw new HttpsError('unauthenticated','Sign in to Dragonswood first.');return request.auth}
 function requireTeacher(request){const auth=requireAuth(request);if(!C.isTeacherEmail(auth.token?.email))throw new HttpsError('permission-denied','Teacher access required.');return auth}
 async function requireStudent(request){
   const auth=requireAuth(request),email=C.normalizedEmail(auth.token?.email);
   if(C.isTeacherEmail(email)||email.endsWith('@explore.academy'))return auth;
-  if((await db.doc(`testerAccounts/${auth.uid}`).get()).exists)return auth;
+  const tester=await readTester(auth.uid);
+  if(tester.session.isTester)return auth;
   throw new HttpsError('permission-denied','Authorized Dragonswood students only.');
 }
 function targetUid(request,teacherOnly=false){
@@ -30,16 +34,28 @@ function targetUid(request,teacherOnly=false){
 async function audit(type,actorUid,target,data={}){
   await db.collection('arcadeAudit').add({type,actorUid,targetUid:target,...data,createdAt:FieldValue.serverTimestamp()});
 }
-async function readPublic(uid){
+function testerState(uid,accountSnap,controlsSnap){
+  const session=T.normalizeTester(uid,accountSnap?.exists?accountSnap.data():null);
+  return {session,controls:T.normalizeControls(session,controlsSnap?.exists?controlsSnap.data():{})};
+}
+async function readTester(uid){
+  const [accountSnap,controlsSnap]=await Promise.all([testerRef(uid).get(),testerControlsRef(uid).get()]);
+  return testerState(uid,accountSnap,controlsSnap);
+}
+async function readPublic(uid,tester=undefined){
   const now=Date.now();
   const [aSnap,sSnap]=await Promise.all([accessRef(uid).get(),settingsRef().get()]);
   const access=aSnap.exists?aSnap.data():{},settings=sSnap.exists?sSnap.data():{};
   const id=C.text(access.currentSessionId);let session=null;
   if(id){const snap=await sessionRef(id).get();if(snap.exists)session={id:snap.id,...snap.data()}}
-  return C.publicAccess(access,settings,session,now);
+  const resolved=tester||await readTester(uid),testerOverride=T.unlockEnabled(resolved.session,resolved.controls,'unlockArcade');
+  const effectiveSettings=testerOverride?{...settings,enabled:true}:settings;
+  const effectiveAccess=testerOverride?{...access,individualEnabled:true}:access;
+  const effectiveSession=session?.testerSelfControl===true&&!testerOverride?null:session;
+  return {...C.publicAccess(effectiveAccess,effectiveSettings,effectiveSession,now),testerOverride};
 }
 
-exports.getArcadeAccess=onCall(OPTIONS,async request=>{await requireStudent(request);return readPublic(targetUid(request));});
+exports.getArcadeAccess=onCall(OPTIONS,async request=>{const auth=await requireStudent(request),tester=await readTester(auth.uid);return readPublic(targetUid(request),tester);});
 
 exports.getArcadeTeacherState=onCall(OPTIONS,async request=>{
   requireTeacher(request);const uid=targetUid(request,true),dateKey=C.phoenixDateKey(),period=C.DAILY_PERIOD_ID;
@@ -68,23 +84,29 @@ exports.awardArcadeCriterion=onCall(OPTIONS,async request=>{
 exports.startArcadeSession=onCall(OPTIONS,async request=>{
   const auth=await requireStudent(request),uid=auth.uid,aRef=accessRef(uid),sRef=settingsRef(),newRef=db.collection('arcadeSessions').doc(),now=Date.now();
   const result=await db.runTransaction(async tx=>{
-    const [aSnap,settingsSnap]=await Promise.all([tx.get(aRef),tx.get(sRef)]),access=aSnap.exists?aSnap.data():{},settings=settingsSnap.exists?settingsSnap.data():{};
+    const [aSnap,settingsSnap,accountSnap,controlsSnap]=await Promise.all([tx.get(aRef),tx.get(sRef),tx.get(testerRef(uid)),tx.get(testerControlsRef(uid))]),access=aSnap.exists?aSnap.data():{},settings=settingsSnap.exists?settingsSnap.data():{};
+    const tester=testerState(uid,accountSnap,controlsSnap),email=C.normalizedEmail(auth.token?.email),ordinaryStudent=C.isTeacherEmail(email)||email.endsWith('@explore.academy');
+    if(!ordinaryStudent&&!tester.session.isTester)throw new HttpsError('permission-denied','Authorized Dragonswood students only.');
+    const testerOverride=T.unlockEnabled(tester.session,tester.controls,'unlockArcade'),effectiveSettings=testerOverride?{...settings,enabled:true}:settings,effectiveAccess=testerOverride?{...access,individualEnabled:true}:access;
     let prior=null,priorRef=null;
     if(C.text(access.currentSessionId)){priorRef=sessionRef(access.currentSessionId);const snap=await tx.get(priorRef);if(snap.exists)prior={id:snap.id,...snap.data()}}
-    if(prior&&C.activeSession(prior,now)&&C.effectiveEnabled(access,settings))return {...C.publicAccess(access,settings,prior,now),reused:true};
-    if(!C.effectiveEnabled(access,settings)){
+    const revokedTesterSession=prior?.testerSelfControl===true&&!testerOverride;
+    if(prior&&C.activeSession(prior,now)&&C.effectiveEnabled(effectiveAccess,effectiveSettings)&&!revokedTesterSession)return {...C.publicAccess(effectiveAccess,effectiveSettings,prior,now),testerOverride,reused:true};
+    if(revokedTesterSession){tx.set(priorRef,{status:'revoked',endReason:'tester-authorization-removed',endedAt:FieldValue.serverTimestamp()},{merge:true});tx.set(aRef,{currentSessionId:'',sessionStatus:'revoked',updatedAt:FieldValue.serverTimestamp()},{merge:true});return {revokedTesterSession:true}}
+    if(!C.effectiveEnabled(effectiveAccess,effectiveSettings)){
       if(prior&&prior.status==='active')tx.set(priorRef,{status:'locked',endReason:'teacher-lock',endedAt:FieldValue.serverTimestamp()},{merge:true});
       throw new HttpsError('failed-precondition','Arcade Time is locked by the teacher.');
     }
-    const tokens=C.clampTokens(access.tokens);
-    if(tokens<C.SESSION_COST)throw new HttpsError('failed-precondition','Three Arcade Tokens are required.');
+    const tokens=C.clampTokens(access.tokens),cost=testerOverride?0:C.SESSION_COST;
+    if(tokens<cost)throw new HttpsError('failed-precondition','Three Arcade Tokens are required.');
     if(prior&&prior.status==='active')tx.set(priorRef,{status:'expired',endReason:'expired',endedAt:FieldValue.serverTimestamp()},{merge:true});
-    const session={uid,status:'active',cost:C.SESSION_COST,startAt:Timestamp.fromMillis(now),endAt:Timestamp.fromMillis(now+C.SESSION_MS),createdAt:FieldValue.serverTimestamp(),schemaVersion:1};
+    const session={uid,status:'active',cost,source:testerOverride?'tester-self-control':'arcade-token-wallet',testerSelfControl:testerOverride,startAt:Timestamp.fromMillis(now),endAt:Timestamp.fromMillis(now+C.SESSION_MS),createdAt:FieldValue.serverTimestamp(),schemaVersion:1};
     tx.create(newRef,session);
-    tx.set(aRef,{uid,tokens:tokens-C.SESSION_COST,currentSessionId:newRef.id,sessionStatus:'active',updatedAt:FieldValue.serverTimestamp()},{merge:true});
-    return {...C.publicAccess({...access,tokens:tokens-C.SESSION_COST,currentSessionId:newRef.id},settings,{id:newRef.id,...session},now),reused:false};
+    tx.set(aRef,{uid,tokens:tokens-cost,currentSessionId:newRef.id,sessionStatus:'active',updatedAt:FieldValue.serverTimestamp()},{merge:true});
+    return {...C.publicAccess({...effectiveAccess,tokens:tokens-cost,currentSessionId:newRef.id},effectiveSettings,{id:newRef.id,...session},now),testerOverride,reused:false};
   });
-  await audit('session-start',auth.uid,uid,{sessionId:result.sessionId,reused:result.reused===true});
+  if(result.revokedTesterSession)throw new HttpsError('failed-precondition','Tester Arcade authorization was removed. Start again only if ordinary Arcade access is available.');
+  await audit('session-start',auth.uid,uid,{sessionId:result.sessionId,reused:result.reused===true,source:result.testerOverride?'tester-self-control':'arcade-token-wallet'});
   return result;
 });
 
@@ -142,4 +164,25 @@ exports.refundArcadeSession=onCall(OPTIONS,async request=>{
     return {refunded:true,tokens:tokens+amount,refundTokens:amount};
   });
   await audit('technical-refund',teacher.uid,uid,{sessionId:id,refundTokens:result.refundTokens,reason:C.text(request.data?.reason).slice(0,160)});return result;
+});
+
+exports.adjustTesterSelfPoints=onCall(OPTIONS,async request=>{
+  const auth=requireAuth(request),payload=request.data||{};
+  if(payload.uid!==undefined||payload.studentId!==undefined||payload.targetUid!==undefined)throw new HttpsError('permission-denied','Tester points are self-only; target identifiers are not accepted.');
+  const currency=C.text(payload.currency).toLowerCase(),amount=Number(payload.amount);
+  if(!['xp','gold'].includes(currency))throw new HttpsError('invalid-argument','Currency must be XP or Gold.');
+  if(!Number.isInteger(amount)||amount<1||amount>1000)throw new HttpsError('invalid-argument','Amount must be a whole number from 1 to 1000.');
+  const uid=auth.uid,studentRef=db.doc(`students/${uid}`),transactionRef=db.collection('studentTransactions').doc(),auditRef=db.collection('testerAudit').doc();
+  return db.runTransaction(async tx=>{
+    const [accountSnap,studentSnap]=await Promise.all([tx.get(testerRef(uid)),tx.get(studentRef)]),session=T.normalizeTester(uid,accountSnap.exists?accountSnap.data():null);
+    if(!T.hasCapability(session,'selfAwardPoints'))throw new HttpsError('permission-denied','Active tester self-points capability required.');
+    if(!studentSnap.exists)throw new HttpsError('failed-precondition','Your student profile is missing.');
+    const student=studentSnap.data()||{},before=Math.max(0,Number(student[currency])||0),after=before+amount;
+    if(!Number.isSafeInteger(after)||after>1000000000)throw new HttpsError('failed-precondition','The resulting balance is outside the supported range.');
+    const common={studentId:uid,actorUid:uid,currency,stat:currency,amount,source:'tester-self-control',createdAt:FieldValue.serverTimestamp()};
+    tx.update(studentRef,{[currency]:after,updatedAt:FieldValue.serverTimestamp()});
+    tx.create(transactionRef,{...common,studentName:C.text(student.firstName||student.displayName||auth.token?.name||auth.token?.email||'Tester'),reason:'Authorized tester self-award',category:'tester-self-control',before,after});
+    tx.create(auditRef,{...common,type:'self-points',before,after});
+    return {ok:true,uid,currency,amount,before,after,transactionId:transactionRef.id};
+  });
 });

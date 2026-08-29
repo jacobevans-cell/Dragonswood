@@ -1,4 +1,4 @@
-import {environment,getArcadeAccess,startArcadeSession,setCurrentAccess,remainingMs} from './access-client.js?v=57.1.15';
+import {environment,getArcadeAccess,startArcadeSession,setCurrentAccess,remainingMs} from './access-client.js?v=57.1.16';
 let loaded=false;
 let refreshing=false;
 let access=null;
@@ -37,11 +37,12 @@ function renderLocked(message='Checking your Arcade Time…'){
   if(portalOwned){returnToPortal(message);return}
   const count=Math.max(0,Math.min(3,Number(access?.tokens)||0));
   const enabled=access?.teacherEnabled===true;
-  const ready=count===3&&enabled;
+  const testerOverride=access?.testerOverride===true;
+  const ready=testerOverride||(count===3&&enabled);
   document.documentElement.classList.remove('arcade-auth-pending');
   gate.hidden=false;
   badge.hidden=true;
-  gate.innerHTML=`<div class="arcade-access-card"><img src="assets/dragonswood-arcade-crest.svg" alt=""><h1>Arcade Time</h1>${tokens(count)}<p>${esc(message)}</p><p class="arcade-access-note">3 Tokens = one 30-minute session. Tokens are earned for Ready, Responsible, and Complete choices. Wallet maximum: 3.</p><div class="arcade-access-actions"><button type="button" data-start-arcade ${ready?'':'disabled'}>Use 3 Tokens — Start 30 Minutes</button><a href="${portalHref()}">Return to Dragonswood</a></div><p class="arcade-access-note">${enabled?'Teacher Arcade Time is open.':'Teacher Arcade Time is currently locked.'} • ${environment}</p></div>`;
+  gate.innerHTML=`<div class="arcade-access-card"><img src="assets/dragonswood-arcade-crest.svg" alt=""><h1>Arcade Time</h1>${tokens(count)}<p>${esc(message)}</p><p class="arcade-access-note">${testerOverride?'🧪 TRUE TESTER self-unlock is active. Your normal Token wallet will not be charged.':'3 Tokens = one 30-minute session. Tokens are earned for Ready, Responsible, and Complete choices. Wallet maximum: 3.'}</p><div class="arcade-access-actions"><button type="button" data-start-arcade ${ready?'':'disabled'}>${testerOverride?'Start Tester Session':'Use 3 Tokens — Start 30 Minutes'}</button><a href="${portalHref()}">Return to Dragonswood</a></div><p class="arcade-access-note">${testerOverride?'Tester-only personal access':enabled?'Teacher Arcade Time is open.':'Teacher Arcade Time is currently locked.'} • ${environment}</p></div>`;
   gate.querySelector('[data-start-arcade]')?.addEventListener('click',begin);
 }
 function updateClock(){
@@ -55,7 +56,7 @@ function updateClock(){
 }
 async function unlock(next){
   access=setCurrentAccess(next);
-  if(!loaded){await import('./arcade.js?v=57.1.15');loaded=true}
+  if(!loaded){await import('./arcade.js?v=57.1.16');loaded=true}
   document.documentElement.classList.remove('arcade-auth-pending');
   gate.hidden=true;
   badge.hidden=false;
@@ -73,7 +74,7 @@ async function refresh(){
     const next=await getArcadeAccess();
     access=next;
     if(next.active&&remainingMs(next)>0)await unlock(next);
-    else renderLocked(next.teacherEnabled?'Return to Dragonswood and earn all 3 Arcade Tokens first.':'Arcade is locked until your teacher opens Arcade Time.');
+    else renderLocked(next.testerOverride?'Your tester self-unlock is ready. Start a tester session.':next.teacherEnabled?'Return to Dragonswood and earn all 3 Arcade Tokens first.':'Arcade is locked until your teacher opens Arcade Time.');
   }catch(err){
     console.error('[Arcade access]',err);
     renderLocked(navigator.onLine?`Arcade could not finish loading: ${err?.message||err}`:'Arcade is locked while this device is offline.');

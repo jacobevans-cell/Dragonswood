@@ -711,7 +711,7 @@ function recoveryGrouped(a){
  if(!a.length)return `<div class="frame empty"><h2>✅ Recovery is clear</h2><p>No earlier curriculum days are waiting.</p></div>`;
  const groups={};a.forEach(x=>(groups[x.day]??=[]).push(x));const days=Object.keys(groups).map(Number).sort((a,b)=>a-b),first=days[0];
   return `<div class="title"><div><h2>Recovery Quest</h2><p>Complete one school day at a time. Finishing the open day unlocks the next unfinished day.</p></div></div>`+days.map((day,i)=>{
-  const list=groups[day],unlocked=isTeacher||day===first;
+  const list=groups[day],unlocked=isTeacher||testerCurriculumOverride||day===first;
   return `<details class="frame recovery-day ${unlocked?"":"locked-day"}" data-recovery-day="${day}" ${unlocked&&i===0?"open":""}><summary><span class="day-heading">${unlocked?"🗝️":"🔒"} Recovery Day ${day}</span><span class="day-stats"><span class="day-count">${list.length} MISSION${list.length===1?"":"S"}</span><strong class="day-total">⏱ ${dayEstimate(list)}</strong><span class="day-state">${unlocked?"OPEN":"LOCKED"}</span></span></summary>${unlocked?`<div class="recovery-body"><div class="grid">${list.map(card).join("")}</div></div>`:`<div class="recovery-lock">Complete Recovery Day ${first} to unlock this recovery day.</div>`}</details>`;
  }).join("");
 }
@@ -741,6 +741,7 @@ $("#grade").onchange=e=>{if(currentStudent&&!isTeacher){e.target.value=S.grade;r
 </script>
 <script src="dragonswood-grading-core.js?v=56.21.0"></script>
 <script src="dragonswood-academic-ai-client.js?v=56.21.0"></script>
+<script src="functions-arcade-access/tester-core.js?v=57.1.16"></script>
 <script type="module">
 import {initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,onAuthStateChanged,connectAuthEmulator} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
@@ -764,6 +765,9 @@ window.DWAcademicAI?.configure(async payload=>{
   return result?.data||{};
 });
 let progressTimer=null,progressReady=false,selectedStudentId="",teacherProgressRows=[],teacherAllProgress=[],teacherStudentNames={};
+const Tester=globalThis.DWTesterAccess;
+let testerSession=Tester.normalizeTester('',null),testerControls={},testerCurriculumOverride=false;
+let testerAccountUnsub=null,testerControlsUnsub=null;
 const syncedSignatures=new Map();
 function phoenixDateKey(){return new Intl.DateTimeFormat("en-CA",{timeZone:"America/Phoenix",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date())}
 function progressDocId(uid,itemId){return `${uid}_${itemId}`}
@@ -895,15 +899,30 @@ function watchMyOverrides(uid){
 }
 
 onAuthStateChanged(auth,async u=>{
+  testerAccountUnsub?.();testerControlsUnsub?.();testerAccountUnsub=testerControlsUnsub=null;
   currentStudent=u||null;
   curriculumStateReady=false;
-  isTeacher=!!u && String(u.email||"").toLowerCase()===TEACHER.toLowerCase();
+  const embedded=DW_V33_PARAMS.get("dwEmbed")==="1";
+  isTeacher=!!u && String(u.email||"").toLowerCase()===TEACHER.toLowerCase()&&!embedded;
+  testerSession=Tester.normalizeTester(u?.uid||'',null);testerControls={};testerCurriculumOverride=false;
+  if(u){
+    try{
+      const [testerSnap,controlsSnap]=await Promise.all([getDoc(doc(db,"testerAccounts",u.uid)),getDoc(doc(db,"testerSelfControls",u.uid))]);
+      testerSession=Tester.normalizeTester(u.uid,testerSnap.exists()?testerSnap.data():null);
+      testerControls=Tester.normalizeControls(testerSession,controlsSnap.exists()?controlsSnap.data():{});
+      testerCurriculumOverride=Tester.unlockEnabled(testerSession,testerControls,'unlockCurriculum');
+      let liveAccount=testerSnap.exists()?testerSnap.data():null,liveControls=controlsSnap.exists()?controlsSnap.data():{},previousOverride=testerCurriculumOverride;
+      const syncTester=()=>{const nextSession=Tester.normalizeTester(u.uid,liveAccount),nextControls=Tester.normalizeControls(nextSession,liveControls),nextOverride=Tester.unlockEnabled(nextSession,nextControls,'unlockCurriculum');if(previousOverride&&!nextOverride){location.reload();return}testerSession=nextSession;testerControls=nextControls;testerCurriculumOverride=nextOverride;previousOverride=nextOverride};
+      testerAccountUnsub=onSnapshot(doc(db,"testerAccounts",u.uid),snap=>{liveAccount=snap.exists()?snap.data():null;syncTester()});
+      testerControlsUnsub=onSnapshot(doc(db,"testerSelfControls",u.uid),snap=>{liveControls=snap.exists()?snap.data():{};syncTester()});
+     }catch(e){console.warn("Tester curriculum access unavailable",e)}
+  }
   const authStatus=document.getElementById("authStatus");
   authStatus.textContent=u?"✓ Signed in":"Not signed in";
   authStatus.style.color=u?"#7fffd4":"#ff9daf";
   loadScopedState(isTeacher?"teacher":u?.uid||"anonymous");
-  studentCurriculumAccess=isTeacher;
-  currentQuestOpen=isTeacher;
+  studentCurriculumAccess=isTeacher||testerCurriculumOverride;
+  currentQuestOpen=isTeacher||testerCurriculumOverride;
   accessMessage=u?"Checking today's school-day assignment…":"Open Curriculum Quest from your signed-in Dragonswood portal.";
   document.getElementById("teacherBadge").style.display=isTeacher?"inline-block":"none";
   if(u){
@@ -947,8 +966,8 @@ onAuthStateChanged(auth,async u=>{
       }catch(e){
         S.day=q1CalendarCursor();
         studentCurriculumAccess=true;
-        currentQuestOpen=false;
-        accessMessage="Current curriculum is closed, but unfinished work from earlier school days remains available in Recovery.";
+        currentQuestOpen=testerCurriculumOverride;
+        accessMessage=testerCurriculumOverride?"Tester self-unlock opened the current curriculum without changing completion evidence.":"Current curriculum is closed, but unfinished work from earlier school days remains available in Recovery.";
       }
       document.getElementById("day").disabled=true;
     }else{

@@ -72,6 +72,11 @@ const state = {
   dailyAccessUnlocked: false,
   morningWorkComplete: false,
   dailyAccessOverride: false,
+  isTester: false,
+  testerCapabilities: {},
+  testerUnlocks: {},
+  testerLabel: '',
+  curriculumAccessUnlocked: false,
   recoverySummary: storedRecoverySummary(),
   kingdomAccessUnlocked: false,
   attention: null,
@@ -114,6 +119,13 @@ function ensureHallProfileStyles(){
   @media(max-width:820px){.student-page-hall .hall-character{min-height:0!important;max-width:520px;margin-inline:auto}}
   `;document.head?.appendChild(style);
 }
+function ensureTesterControlsStyles(){
+  if(document.querySelector('#dw-true-tester-styles'))return;
+  const style=document.createElement('style');style.id='dw-true-tester-styles';style.textContent=`
+  .true-tester-badge{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid #7fffd4;border-radius:999px;background:#092b29;color:#9bffe0;font-size:11px;font-weight:1000;letter-spacing:.08em}
+  .tester-controls-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:14px 0}.tester-controls-grid .btn{min-height:48px}.tester-status-list{display:grid;gap:7px;margin:12px 0}.tester-status-row{display:flex;justify-content:space-between;gap:15px;padding:9px 11px;border:1px solid rgba(127,255,212,.22);border-radius:9px;background:rgba(9,43,41,.55)}.tester-status-row strong{color:#9bffe0}.tester-points-row{display:grid;grid-template-columns:120px 1fr;gap:9px}.tester-points-presets{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}@media(max-width:620px){.tester-controls-grid,.tester-points-row{grid-template-columns:1fr}}
+  `;document.head?.appendChild(style);
+}
 function ensureTeacherDirectionStyles(){
   if(document.querySelector('#v33-teacher-direction-styles'))return;
   const style=document.createElement('style');style.id='v33-teacher-direction-styles';style.textContent=`
@@ -136,15 +148,17 @@ function unfinishedRequiredWork(target='activity'){
   // this scholar without falsely marking Morning or Recovery work complete.
   if(state.dailyAccessOverride!==true){
     if(state.dailyAccessUnlocked!==true)rows.push({id:'morning',icon:'🌅',title:'Morning Work',detail:state.morningWorkComplete?'Teacher check-in or access hold remains.':'Not complete today.',route:'module/daily-quest'});
-    if(!recoverySummaryCurrent())rows.push({id:'recovery',icon:'🐉',title:'Recovery Missions',detail:'Open Recovery Quest for a live check.',route:'module/curriculum-quest'});
-    else for(const day of state.recoverySummary.days||[])rows.push({id:`recovery-${day.day}`,icon:'🐉',title:`Recovery Day ${day.day}`,detail:`${day.count} unfinished mission${day.count===1?'':'s'}.`,route:'module/curriculum-quest'});
+    if(state.curriculumAccessUnlocked!==true){
+      if(!recoverySummaryCurrent())rows.push({id:'recovery',icon:'🐉',title:'Recovery Missions',detail:'Open Recovery Quest for a live check.',route:'module/curriculum-quest'});
+      else for(const day of state.recoverySummary.days||[])rows.push({id:`recovery-${day.day}`,icon:'🐉',title:`Recovery Day ${day.day}`,detail:`${day.count} unfinished mission${day.count===1?'':'s'}.`,route:'module/curriculum-quest'});
+    }
   }
 
   // Kingdom Wars retains its own intentional teacher-controlled lock.
   if(String(target)==='kingdom'&&state.kingdomAccessUnlocked!==true)rows.push({id:'kingdom-access',icon:'🔒',title:'Kingdom Wars teacher unlock',detail:'Your teacher has not opened Kingdom Wars today.',route:'missions'});
   return rows;
 }
-function requiredWorkLocked(page){return REQUIRED_WORK_PAGES.has(String(page||''))&&unfinishedRequiredWork(page).length>0}
+function requiredWorkLocked(page){const target=String(page||'');if(target==='arcade'&&state.testerUnlocks.unlockArcade===true)return false;if(target==='kingdom'&&state.testerUnlocks.unlockKingdom===true)return false;return REQUIRED_WORK_PAGES.has(target)&&unfinishedRequiredWork(target).length>0}
 function requestedModuleId(){return moduleHost?.routeId(location.hash)||''}
 function showRequiredWorkDialog(target='activity'){
   const label=target==='arcade'?'Arcade Time':target==='kingdom'?'Kingdom Wars':target==='boss'||target==='boss-battle'?'Boss Battle':target==='scribe'?'Scribe Arena':'this activity';
@@ -266,10 +280,11 @@ function navButton(item){
 }
 
 function shell(){
+  ensureTesterControlsStyles();
   return `<div class="portal student-shell student-page-${state.page}" data-${IS_PRODUCTION?'release':'tester-build'}="v3.3">
     <header class="student-topbar"><div class="student-brand">
       <div class="brand-lockup"><img class="student-crest" src="assets/art/dragonswood-crest-v33.jpg" alt=""><div><div class="brand-name">DRAGONSWOOD</div><div class="brand-sub">STUDENT ADVENTURE PORTAL</div></div></div>
-      <div class="student-utility"><button class="btn btn-secondary btn-sm" type="button" data-passes>🎟️ <span>Passes</span></button><button class="btn btn-secondary btn-sm" type="button" data-read>🔊 <span>Read aloud</span></button><div class="profile-pill" role="button" tabindex="0" data-module="adventurer-hall" aria-label="Open profile and Adventurer Hall"><div class="profile-orb">${escapeHtml(state.initial)}</div><span><b>${escapeHtml(state.firstName)}</b><small>Level ${state.level}</small></span></div></div>
+      <div class="student-utility">${state.isTester?'<span class="true-tester-badge" data-true-tester-badge>🧪 TRUE TESTER</span><button class="btn btn-secondary btn-sm" type="button" data-tester-controls>🧪 <span>Tester Controls</span></button>':''}<button class="btn btn-secondary btn-sm" type="button" data-passes>🎟️ <span>Passes</span></button><button class="btn btn-secondary btn-sm" type="button" data-read>🔊 <span>Read aloud</span></button><div class="profile-pill" role="button" tabindex="0" data-module="adventurer-hall" aria-label="Open profile and Adventurer Hall"><div class="profile-orb">${escapeHtml(state.initial)}</div><span><b>${escapeHtml(state.firstName)}</b><small>Level ${state.level}</small></span></div></div>
     </div></header>
     <aside class="student-sidebar">${navMarkup()}</aside>
     <main class="student-main" id="page-content"><div class="student-content">${pageMarkup()}</div></main>
@@ -334,15 +349,24 @@ const missions = [
 function missionsPage(){
   const completeCount=state.completedMissions.size;
   const optionalOpen=state.dailyAccessUnlocked===true;
+  const accessSummary=state.morningWorkComplete
+    ?'Morning Work is complete. Games, Scribe Arena, Boss Battle, Kingdom Wars, and Arcade are available.'
+    :state.testerUnlocks.unlockMorning===true
+      ?'Tester access override is active. Morning Work remains incomplete until you do the work.'
+      :optionalOpen
+        ?'A teacher access override is active. Morning Work remains incomplete.'
+        :'Games and optional adventures unlock after Morning Work.';
+  const accessLabel=state.testerUnlocks.unlockMorning===true?'🧪 Tester access':optionalOpen?'🔓 Adventures open':'🔒 Adventures locked';
   const readingRows=state.reading?.rows||[],today=window.DWV33Core?.phoenixDateKey?.()||'',readingRow=readingRows.find(row=>row.dateKey===today)||readingRows.slice().sort((a,b)=>String(b.dateKey).localeCompare(String(a.dateKey)))[0],readingMinutes=readingRow?Math.round(readingRow.activeSeconds/6)/10:0,readingTarget=state.reading?.targetMinutes||20,readingAssigned=(state.reading?.assignedDateKeys||[]).includes(today);
   return `${studentTitle('📜','Daily Missions','Your quest path','Finish the glowing mission first. Then choose a bonus adventure.')}
-    <div class="panel path-summary"><div class="path-count"><strong>${completeCount}</strong><small>of 3</small></div><div class="path-copy"><div class="eyebrow">TODAY’S PROGRESS</div><b>One mission at a time.</b><div>${optionalOpen?'Morning Work is complete. Games, Scribe Arena, Boss Battle, Kingdom Wars, and Arcade are available.':'Games and optional adventures unlock after Morning Work.'}</div></div><div class="path-lock">${optionalOpen?'🔓 Adventures open':'🔒 Adventures locked'}</div></div>
+    <div class="panel path-summary"><div class="path-count"><strong>${completeCount}</strong><small>of 3</small></div><div class="path-copy"><div class="eyebrow">TODAY’S PROGRESS</div><b>One mission at a time.</b><div>${accessSummary}</div></div><div class="path-lock">${accessLabel}</div></div>
     <div class="mission-list">${missions.map((m,i)=>missionRow(m,i)).join('')}</div>
     <div class="mission-extra"><article class="panel extra-card"><div class="extra-icon">📖</div><div><div class="extra-kicker">${readingAssigned?'ASSIGNED CLASS READING':'CLASS READING'}</div><h3>The Witches</h3><p>${readingMinutes}/${readingTarget} verified active minutes${readingRow?.lastPage?` • last page ${readingRow.lastPage}`:''}. Time pauses when the reader is hidden or idle.</p></div><button class="btn btn-secondary btn-sm" data-module="class-reader">${readingAssigned&&readingMinutes<readingTarget?'Continue reading':'Open reader'}</button></article><article class="panel extra-card"><div class="extra-icon">⭐</div><div><div class="extra-kicker">BONUS CHALLENGE</div><h3>Level-Up Mission</h3><p>Ready for more? Try a mission one level above.</p></div><button class="btn btn-secondary btn-sm" data-module="level-up-challenge">Try the challenge</button></article></div>`;
 }
 function missionRow(m,i){
   const done=state.completedMissions.has(m.id);
-  const previousDone=i===0||state.completedMissions.has(missions[i-1].id);
+  const testerUnlocked=m.id==='curriculum'&&state.curriculumAccessUnlocked===true;
+  const previousDone=i===0||state.completedMissions.has(missions[i-1].id)||testerUnlocked;
   const current=!done&&previousDone;
   const locked=!done&&!previousDone;
   return `<article class="panel mission-row ${done?'complete':''} ${current?'current':''} ${locked?'locked':''}"><div class="mission-num">${done?'✓':m.n}</div><div class="mission-art">${m.icon}</div><div><div class="eyebrow">${done?'COMPLETE':m.kicker}</div><h3>${m.title}</h3><p>${m.desc}</p><div class="reward-line"><span>🔊 Read aloud</span><span>⏱ ${m.time}</span><span>✨ ${m.reward}</span></div></div><button class="btn ${current?'btn-primary':'btn-secondary'} btn-sm" type="button" data-module="${m.module}" ${locked?'disabled':''}>${done?'Review quest':m.button}</button></article>`;
@@ -433,7 +457,22 @@ function kingdomPage(){
 
 function escapeHtml(value){return String(value??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 
-function applyStudentModel(model,academic,world,passes,poll,attention,kingdomAccess,classGoals){
+function testerControlsDialog(){
+  if(!state.isTester)return;
+  const rows=[['unlockMorning','Morning Work'],['unlockCurriculum','Curriculum Quest'],['unlockArcade','Arcade'],['unlockKingdom','Kingdom Wars']];
+  const statusRows=rows.map(([field,label])=>`<div class="tester-status-row" data-tester-status="${field}"><span>${label}</span><strong>${state.testerUnlocks[field]===true?'UNLOCKED':'LOCKED'}</strong></div>`).join('');
+  const controls=rows.map(([field,label])=>{const capability=window.DWTesterAccess?.UNLOCK_CAPABILITIES?.[field],enabled=state.testerCapabilities[capability]===true;return `<button class="btn btn-secondary" type="button" data-tester-unlock="${field}" ${enabled?'':'disabled'}>Unlock ${label}</button>`}).join('');
+  openDialog('🧪 Tester Controls',`<div class="true-tester-badge" data-dialog-true-tester>🧪 TRUE TESTER</div><p><b>${escapeHtml(state.testerLabel||'Authorized Dragonswood tester')}</b></p><p class="muted">These controls affect only your authenticated UID. Unlocks bypass access gates; they never mark academic work complete or change classwide locks.</p><div class="tester-status-list">${statusRows}</div><div class="tester-controls-grid"><button class="btn btn-primary" type="button" data-tester-unlock-all>Unlock Everything for Me</button><button class="btn btn-secondary" type="button" data-tester-relock-all>Relock Everything for Me</button>${controls}</div><hr><h3>Self-points</h3><p class="muted">Awards use the real student balance and transaction ledger.</p><div class="tester-points-row"><select data-tester-currency aria-label="Tester point currency"><option value="xp">XP</option><option value="gold">Gold</option></select><input data-tester-custom-amount type="number" min="1" max="1000" step="1" value="10" aria-label="Custom tester point amount"></div><div class="tester-points-presets"><button class="btn btn-secondary btn-sm" type="button" data-tester-points="10">+10</button><button class="btn btn-secondary btn-sm" type="button" data-tester-points="50">+50</button><button class="btn btn-secondary btn-sm" type="button" data-tester-points="100">+100</button><button class="btn btn-primary btn-sm" type="button" data-tester-custom-points>Award Custom Amount</button></div>`,`<button class="btn btn-secondary" data-close-dialog>Close Tester Controls</button>`);
+  const apply=async(button,patch,message)=>{button.disabled=true;try{const next=await integrationController?.setTesterUnlocks(patch);state.testerUnlocks={...state.testerUnlocks,...next};showToast(message);testerControlsDialog()}catch(err){button.disabled=false;showToast(err?.message||'Tester controls could not update.')}};
+  dialogRoot.querySelector('[data-tester-unlock-all]')?.addEventListener('click',e=>apply(e.currentTarget,{unlockMorning:true,unlockCurriculum:true,unlockArcade:true,unlockKingdom:true},'All tester self-unlocks are on.'));
+  dialogRoot.querySelector('[data-tester-relock-all]')?.addEventListener('click',e=>apply(e.currentTarget,{unlockMorning:false,unlockCurriculum:false,unlockArcade:false,unlockKingdom:false},'All tester self-unlocks are off.'));
+  dialogRoot.querySelectorAll('[data-tester-unlock]').forEach(button=>button.addEventListener('click',()=>apply(button,{[button.dataset.testerUnlock]:true},`${button.textContent.trim()} is on.`)));
+  const award=async(button,amount)=>{button.disabled=true;try{const currency=dialogRoot.querySelector('[data-tester-currency]')?.value||'xp',result=await integrationController?.adjustTesterSelfPoints(currency,amount);showToast(`Tester self-award saved: +${result.amount} ${String(result.currency||currency).toUpperCase()}.`)}catch(err){showToast(err?.message||'Tester points could not be awarded.')}finally{button.disabled=false}};
+  dialogRoot.querySelectorAll('[data-tester-points]').forEach(button=>button.addEventListener('click',()=>award(button,Number(button.dataset.testerPoints))));
+  dialogRoot.querySelector('[data-tester-custom-points]')?.addEventListener('click',e=>award(e.currentTarget,Number(dialogRoot.querySelector('[data-tester-custom-amount]')?.value)));
+}
+
+function applyStudentModel(model,academic,world,passes,poll,attention,kingdomAccess,classGoals,session={}){
   if(!model)return;
   const accessWasUnlocked=state.dailyAccessUnlocked===true;
   const priorAttentionId=state.attention?.id;
@@ -444,6 +483,11 @@ function applyStudentModel(model,academic,world,passes,poll,attention,kingdomAcc
   state.dailyAccessUnlocked=model.dailyAccessUnlocked===true;
   state.morningWorkComplete=model.morningWorkComplete===true;
   state.dailyAccessOverride=model.dailyAccessOverride===true;
+  state.isTester=session.isTester===true;
+  state.testerCapabilities=session.testerCapabilities||{};
+  state.testerUnlocks=session.testerUnlocks||{};
+  state.testerLabel=session.testerAccount?.label||'';
+  state.curriculumAccessUnlocked=session.curriculumAccess?.unlocked===true;
   state.kingdomAccessUnlocked=kingdomAccess?.unlocked===true;
   state.attention=attention||null;
   if(!accessWasUnlocked&&state.dailyAccessUnlocked&&dialogRoot?.dataset.dialogKind==='required-work')closeDialog();
@@ -494,7 +538,8 @@ function handleModuleState(event){
 function authGate(){
   const status=integrationSession.status||'loading',message=integrationSession.message||'Checking Dragonswood access…';
   const canSignIn=status==='signed-out'||status==='unauthorized'||status==='error';
-  return `<div class="portal student-shell" data-${IS_PRODUCTION?'release':'tester-build'}="v3.3"><main class="student-main" id="page-content"><div class="student-content"><section class="panel next-step"><div class="eyebrow">${IS_PRODUCTION?'SECURE STUDENT PORTAL':'SECURE INTEGRATION CANDIDATE'}</div><div class="next-icon">🛡️</div><h2>${status==='unauthorized'?'Account not authorized':'Dragonswood Sign In'}</h2><p>${escapeHtml(message)}</p>${canSignIn?'<button class="btn btn-primary w-full" type="button" data-signin>Sign in with Google</button>':''}<p class="center muted mt-12 text-11">${IS_PRODUCTION?'Explore Academy • live student data':`${escapeHtml(window.DWV33Integration?.environment||'loading')} • no production writes enabled`}</p></section></div></main>${IS_PRODUCTION?'':'<div class="tester-ribbon">V3.3 INTEGRATION • SAFE MODE</div>'}</div>`;
+  const emulatorForm=!IS_PRODUCTION&&canSignIn?'<div class="stack mt-12" data-emulator-signin><label>Emulator email<input class="w-full" type="email" autocomplete="username" data-emulator-email></label><label>Emulator password<input class="w-full" type="password" autocomplete="current-password" data-emulator-password></label><button class="btn btn-secondary w-full" type="button" data-emulator-submit>Sign in to local emulator</button></div>':'';
+  return `<div class="portal student-shell" data-${IS_PRODUCTION?'release':'tester-build'}="v3.3"><main class="student-main" id="page-content"><div class="student-content"><section class="panel next-step"><div class="eyebrow">${IS_PRODUCTION?'SECURE STUDENT PORTAL':'SECURE INTEGRATION CANDIDATE'}</div><div class="next-icon">🛡️</div><h2>${status==='unauthorized'?'Account not authorized':'Dragonswood Sign In'}</h2><p>${escapeHtml(message)}</p>${canSignIn?'<button class="btn btn-primary w-full" type="button" data-signin>Sign in with Google</button>':''}${emulatorForm}<p class="center muted mt-12 text-11">${IS_PRODUCTION?'Explore Academy • live student data':`${escapeHtml(window.DWV33Integration?.environment||'loading')} • no production writes enabled`}</p></section></div></main>${IS_PRODUCTION?'':'<div class="tester-ribbon">V3.3 INTEGRATION • SAFE MODE</div>'}</div>`;
 }
 function render(){
   if(integrationSession.status!=='authorized'){
@@ -521,6 +566,7 @@ function render(){
 }
 function bindAuthGate(){
   app.querySelector('[data-signin]')?.addEventListener('click',async()=>{try{await integrationController?.signIn()}catch(err){showToast(`Sign-in failed: ${err?.code||err?.message||err}`)}});
+  app.querySelector('[data-emulator-submit]')?.addEventListener('click',async()=>{const email=app.querySelector('[data-emulator-email]')?.value||'',password=app.querySelector('[data-emulator-password]')?.value||'';try{await integrationController?.signInForEmulator(email,password)}catch(err){showToast(`Emulator sign-in failed: ${err?.code||err?.message||err}`)}});
 }
 
 function bind(){
@@ -532,6 +578,7 @@ function bind(){
   app.querySelector('[data-signout]')?.addEventListener('click',async()=>{try{await integrationController?.signOut()}catch(err){showToast(`Sign-out failed: ${err?.message||err}`)}});
   app.querySelectorAll('[data-read]').forEach(el=>el.addEventListener('click',readPage));
   app.querySelector('[data-passes]')?.addEventListener('click',passesDialog);
+  app.querySelector('[data-tester-controls]')?.addEventListener('click',testerControlsDialog);
   app.querySelectorAll('[data-return-active-pass]').forEach(el=>el.addEventListener('click',()=>returnActivePass(el)));
   app.querySelector('[data-acknowledge-attention]')?.addEventListener('click',e=>acknowledgeTeacherAttention(e.currentTarget));
   app.querySelector('[data-reference]')?.addEventListener('click',showReference);
@@ -565,6 +612,7 @@ function setArcadeBusy(trigger,busy){
 }
 
 function arcadeBlockedMessage(access){
+  if(access?.testerOverride===true)return '';
   if(access?.teacherEnabled!==true)return 'Arcade Time is still locked by your teacher.';
   const tokens=Math.max(0,Math.min(3,Number(access?.tokens)||0));
   if(tokens<3){const missing=3-tokens;return `You need ${missing} more Arcade Token${missing===1?'':'s'} before entering.`}
@@ -580,7 +628,7 @@ async function enterArcade(trigger){
     showToast(access?.active===true?'Resuming your Arcade Time…':'Preparing Arcade Time…');
     await arcadePortal.preflight?.();
     if(access?.active!==true){
-      showToast('Using 3 Tokens and starting 30 minutes…');
+      showToast(access?.testerOverride===true?'Starting your tester Arcade session…':'Using 3 Tokens and starting 30 minutes…');
       access=await arcadePortal.startSession();
     }
     if(access?.active!==true)throw new Error('Arcade session did not start. Your Tokens were not intentionally spent by this page.');
@@ -648,8 +696,9 @@ window.addEventListener('message',handleModuleState);
   integrationController=await window.DWV33Integration.startStudent(session=>{
     integrationSession=session;
     const previousPassSignature=passModelSignature();
-    if(session.status==='authorized')applyStudentModel(session.student,session.academic,session.world,session.passes,session.poll,session.attention,session.kingdomAccess,session.classGoals);
-    const passChanged=previousPassSignature!==passModelSignature();
-    if(passChanged||!currentModuleId()||!app.querySelector('[data-module-frame]'))render();else syncPassSafety();
+    const previousTesterSignature=JSON.stringify([state.isTester,state.testerCapabilities,state.testerUnlocks]);
+    if(session.status==='authorized')applyStudentModel(session.student,session.academic,session.world,session.passes,session.poll,session.attention,session.kingdomAccess,session.classGoals,session);
+    const passChanged=previousPassSignature!==passModelSignature(),testerChanged=previousTesterSignature!==JSON.stringify([state.isTester,state.testerCapabilities,state.testerUnlocks]);
+    if(passChanged||testerChanged||!currentModuleId()||!app.querySelector('[data-module-frame]'))render();else syncPassSafety();
   });
 })();

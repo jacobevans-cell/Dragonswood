@@ -24,14 +24,20 @@ assert.match(academic,/assignedWork/,'gradebook is built from live academic reco
 assert.match(teacher,/data-edit-gradebook-weights/);
 assert.match(teacher,/data-export-gradebook/);
 assert.match(teacher,/grade-assignment-list/);
+assert.match(teacher,/class="dw-gradebook-student-summary"/,'V3 uses the approved wide scholar-card layout');
+assert.match(teacher,/data-grade-group/,'V3 keeps the useful V2 group filter');
+for(const key of ['name','total','daily','curriculum','reading','missing'])assert.match(teacher,new RegExp(`sortButton\\('${key}'`),`V3 Gradebook can sort by ${key}`);
+assert.match(teacher,/verified min/,'V3 card rows keep Witches evidence visible');
 assert.doesNotMatch(teacher,/Assignment list opened in tester mode|CSV export remains locked|V3\.3 STUDENT BETA/);
 assert.doesNotMatch(teacher,/Open in V2/i);
 assert.match(teacher,/\.teacher-content,\.teacher-header-inner\{width:100%;max-width:none/,'teacher content no longer wastes the center gutter');
 assert.match(teacher,/font-size:12px/,'production readability floor is installed');
 assert.match(host,/js\/integration\/academic\.js\?v=57\.1\.7/);
-for(const file of ['world','operations'])assert.match(host,new RegExp(`js/integration/${file}\\.js\\?v=57\\.1\\.6`));
-assert.match(host,/js\/integration\/runtime\.js\?v=57\.1\.7/);
-assert.match(host,/js\/teacher-app\.js\?v=57\.1\.7/);
+assert.match(host,/js\/integration\/world\.js\?v=57\.1\.6/);
+assert.match(host,/js\/integration\/operations\.js\?v=57\.1\.8/);
+assert.match(host,/js\/integration\/runtime\.js\?v=57\.1\.8/);
+assert.match(host,/styles\/gradebook-v57\.1\.8\.css\?v=57\.1\.8/);
+assert.match(host,/js\/teacher-app\.js\?v=57\.1\.8/);
 
 const book=require('../js/integration/academic.js').gradebook(
  [{id:'s1',name:'Scholar',grade:'5',genderGroup:'girl'}],

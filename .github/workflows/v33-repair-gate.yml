@@ -11,6 +11,8 @@ on:
       - "seating-command/**"
       - "v33-integration/**"
       - "functions-arcade-access/**"
+      - "tools/massive-integration/**"
+      - "*-selftest.cjs"
       - ".github/workflows/v33-repair-gate.yml"
   workflow_dispatch:
 
@@ -52,4 +54,6 @@ jobs:
           python -m playwright install --with-deps chromium
 
       - name: Run exact V3.3 production gate
-        run: bash v33-integration/tools/run-student-beta-gate.sh
+        run: |
+          bash tools/massive-integration/run-pre-gate-suite.sh
+          bash v33-integration/tools/run-student-beta-gate.sh

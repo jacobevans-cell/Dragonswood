@@ -112,7 +112,7 @@ def main():
         assert 'targetMinutes' not in unchanged and 'lastHeartbeatMs' not in unchanged
         assert unchanged.get('bookTitle')=='The Witches' and unchanged.get('studentName')=='Fourth'
 
-        teacher.bring_to_front();teacher.evaluate("location.hash='#gradebook'");teacher.get_by_role('heading',name='Dragonswood Gradebook').wait_for();teacher.locator('#gradebook-search').fill('Fourth');row=teacher.locator('[data-grade-student]').filter(has_text='Fourth');row.get_by_text('0.3 verified min',exact=False).wait_for(timeout=10000);row.get_by_text('Incomplete',exact=False).wait_for();row.get_by_text('Provisional',exact=True).wait_for();assert row.get_by_text('Complete evidence',exact=True).count()==0
+        teacher.bring_to_front();teacher.evaluate("location.hash='#gradebook'");teacher.get_by_role('heading',name='Dragonswood Gradebook').wait_for();teacher.locator('#gradebook-search').fill('Fourth');row=teacher.locator('[data-grade-student]').filter(has_text='Fourth');row.get_by_text('0.3 verified min • Incomplete',exact=True).wait_for(timeout=10000);row.get_by_text('Provisional',exact=True).wait_for();assert row.get_by_text('Complete evidence',exact=True).count()==0
         browser.close()
     finally:
       server.shutdown();server.server_close()

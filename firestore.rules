@@ -91,10 +91,9 @@ service cloud.firestore {
 
     function arcadeEnabled(uid) {
       return exists(/databases/$(database)/documents/arcadeAccess/$(uid))
-        && (get(/databases/$(database)/documents/arcadeAccess/$(uid)).data.keys().hasAny(['individualEnabled'])
-          ? get(/databases/$(database)/documents/arcadeAccess/$(uid)).data.individualEnabled == true
-          : exists(/databases/$(database)/documents/arcadeSettings/classAccess)
-            && get(/databases/$(database)/documents/arcadeSettings/classAccess).data.enabled == true);
+        && exists(/databases/$(database)/documents/arcadeSettings/classAccess)
+        && get(/databases/$(database)/documents/arcadeSettings/classAccess).data.enabled == true
+        && get(/databases/$(database)/documents/arcadeAccess/$(uid)).data.get('individualEnabled', true) != false;
     }
 
     function hasLiveArcadeSession(uid, sessionId) {
@@ -419,7 +418,6 @@ service cloud.firestore {
       allow update, delete: if isTeacher();
     }
 
-
     // Curriculum activity validator safety valve.
     // Students can request review of their own rejected work; only the teacher can resolve requests.
     match /curriculumOverrideRequests/{requestId} {
@@ -433,9 +431,6 @@ service cloud.firestore {
                     && request.resource.data.studentAnswer is string
                     && request.resource.data.studentAnswer.size() <= 5000;
 
-      // The deterministic document may be reused for that exact question.
-      // Only student-answer/request fields can change; rapid clicks stay in
-      // one record and cannot touch the teacher's decision or notes.
       allow update: if (isExploreStudent() || isTester())
                     && resource.data.studentId == request.auth.uid
                     && request.resource.data.studentId == request.auth.uid
@@ -453,7 +448,6 @@ service cloud.firestore {
 
     match /scores/{scoreId} {
       allow read: if true;
-      // DW AUDIT FIX V57.1.9: leaderboard writes require an authorized Explore/tester student and self ownership.
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.score is number
@@ -463,10 +457,10 @@ service cloud.firestore {
     }
 
     match /gameResults/{resultId} {
-      // DW AUDIT FIX V57.1.9: only live games, owner-prefixed claim IDs, bounded rewards and known fields.
+      // V57.1.12: ownership is bound to studentId. The former dynamically-built
+      // UID regular expression caused valid creates to fail during rule evaluation.
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid
-                    && resultId.matches('^' + request.auth.uid + '_.*$')
                     && request.resource.data.gameId in [
                       'daily_quest','daily_boss','fraction_forge',
                       'long_division_quest','math_operations_quest'
@@ -499,9 +493,6 @@ service cloud.firestore {
       allow update, delete: if isTeacher();
     }
 
-    // 182 Daily Quests:
-    // Teacher can seed/read all.
-    // Students can read ONLY while Firestore server time is inside that day's window.
     match /dailyQuests/{questDate} {
       allow read: if isTeacher()
                   || (
@@ -511,7 +502,6 @@ service cloud.firestore {
                   );
       allow create, update, delete: if isTeacher();
     }
-
 
     match /dailyQuestProgress/{progressId} {
       allow read: if isTeacher()
@@ -561,11 +551,8 @@ service cloud.firestore {
       allow delete: if isTeacher();
     }
 
-    // Curriculum Quest is cached locally for immediate/offline use and mirrored
-    // here so Chromebook or browser-profile resets do not erase academic work.
     match /curriculumQuestProgress/{studentId} {
       allow read: if isTeacher() || isOwner(studentId);
-
       allow create, update: if isExploreStudent()
                             && isOwner(studentId)
                             && request.resource.data.studentId == studentId
@@ -577,16 +564,12 @@ service cloud.firestore {
                             && request.resource.data.keys().hasOnly([
                               'studentId','grade','day','items','updatedAt'
                             ]);
-
       allow delete: if isTeacher();
     }
 
-    // Canonical v55 Curriculum Quest record: one student + one mission.
-    // Student evidence is writable by its owner; verified is teacher-only.
     match /curriculumProgress/{progressId} {
       allow read: if isTeacher()
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
-
       allow create: if (isExploreStudent() || isTester())
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.itemId is string
@@ -602,7 +585,6 @@ service cloud.firestore {
                     && request.resource.data.questionsCorrect >= 0
                     && request.resource.data.questionsCorrect <= request.resource.data.questionsSeen
                     && request.resource.data.questionsSeen <= 20;
-
       allow update: if (isExploreStudent() || isTester())
                     && resource.data.studentId == request.auth.uid
                     && request.resource.data.studentId == request.auth.uid
@@ -619,23 +601,11 @@ service cloud.firestore {
                     && request.resource.data.questionsCorrect >= 0
                     && request.resource.data.questionsCorrect <= request.resource.data.questionsSeen
                     && request.resource.data.questionsSeen <= 20;
-
       allow update, delete: if isTeacher();
     }
 
-    // Teacher-managed UID allowlist for outside testing accounts.
-    // ============================================================
-    // v56 RPG — Daily Boss loot and Class Shop purchase ledger
-    // These two collections were written by the RPG pages but had no rule,
-    // so every write fell through to the catch-all and was denied.
-    // ============================================================
-
-    // One chest per student per school day. The document id is
-    // {uid}_{dateKey}, and there is no update path — so a second chest on the
-    // same day is impossible rather than merely discouraged.
     match /bossLoot/{lootId} {
       allow read: if isTeacher() || (isSignedIn() && resource.data.studentId == request.auth.uid);
-      // DW AUDIT FIX V57.1.9: boss rows may record in-game loot, but never self-issue real-world passes or class-goal rewards.
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid
                     && lootId == request.auth.uid + '_' + request.resource.data.dateKey
@@ -660,14 +630,12 @@ service cloud.firestore {
     match /rpgPurchases/{purchaseId} {
       allow read: if isTeacher()
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
-
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.itemId is string
                     && request.resource.data.cost is number
                     && request.resource.data.cost >= 0
                     && request.resource.data.cost <= 5000;
-
       allow update, delete: if isTeacher();
     }
 
@@ -682,14 +650,7 @@ service cloud.firestore {
       allow create, update, delete: if isTeacher();
     }
 
-    // Assignment-bound active-time evidence from the embedded The Witches
-    // reader. Every record has one deterministic student/date ID, fixed
-    // fields, server time, and a real-time gap between focused heartbeats.
     match /readingSessions/{sessionId} {
-      // A Firestore transaction must read a deterministic document before its
-      // first create. Authorize that missing-document probe only for the
-      // signed-in student's own ID shape; existing records still require the
-      // stored owner field, and list queries remain owner-filtered.
       allow get: if isTeacher()
                  || (
                    isSignedIn()
@@ -701,10 +662,8 @@ service cloud.firestore {
                      || resource.data.studentId == request.auth.uid
                    )
                  );
-
       allow list: if isTeacher()
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
-
       allow create: if isExploreStudent()
                     && sessionId == request.auth.uid + '_' + request.resource.data.dateKey + '_witches'
                     && request.resource.data.keys().hasOnly([
@@ -726,7 +685,6 @@ service cloud.firestore {
                     && validReadingStatus(request.resource.data)
                     && request.resource.data.createdAt == request.time
                     && request.resource.data.updatedAt == request.time;
-
       allow update: if isExploreStudent()
                     && sessionId == request.auth.uid + '_' + resource.data.dateKey + '_witches'
                     && request.resource.data.keys().hasOnly([
@@ -757,7 +715,6 @@ service cloud.firestore {
                     && request.resource.data.updatedAt == request.time
                     && resource.data.updatedAt is timestamp
                     && request.time >= resource.data.updatedAt + duration.value(10, 's');
-
       allow delete: if isTeacher();
     }
 
@@ -769,7 +726,6 @@ service cloud.firestore {
     match /shopItems/{itemId} {
       allow read: if isSignedIn();
       allow create, update, delete: if isTeacher();
-
       allow update: if isExploreStudent()
                     && request.resource.data.diff(resource.data).affectedKeys()
                        .hasOnly(['quantity','updatedAt'])
@@ -782,7 +738,6 @@ service cloud.firestore {
     match /purchases/{purchaseId} {
       allow read: if isTeacher()
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
-
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.itemId is string
@@ -794,26 +749,16 @@ service cloud.firestore {
                     && request.resource.data.cost
                        == get(/databases/$(database)/documents/shopItems/$(request.resource.data.itemId)).data.cost
                     && get(/databases/$(database)/documents/shopItems/$(request.resource.data.itemId)).data.active != false;
-
       allow update, delete: if isTeacher();
     }
 
-
-
-    // One live bathroom slot per student group.
-    // IMPORTANT: slot access is intentionally based on the slot document's
-    // studentId, not on reading /students/{uid}. This avoids Firestore
-    // permission failures when older student profiles do not yet contain
-    // genderGroup.
     match /bathroomSlots/{groupId} {
       allow read: if isTeacher() || isExploreStudent();
-
       allow create: if isExploreStudent()
                     && (groupId == "boy" || groupId == "girl")
                     && request.resource.data.group == groupId
                     && request.resource.data.occupied == true
                     && request.resource.data.studentId == request.auth.uid;
-
       allow update: if isExploreStudent()
                     && (groupId == "boy" || groupId == "girl")
                     && request.resource.data.group == groupId
@@ -833,11 +778,9 @@ service cloud.firestore {
                         && resource.data.studentId == request.auth.uid
                       )
                     );
-
       allow create, update, delete: if isTeacher();
     }
 
-    // Digital bathroom pass state. Students may manage only their own daily status.
     match /bathroomStatus/{studentId} {
       allow read: if isTeacher() || isOwner(studentId);
       allow create: if isOwner(studentId)
@@ -889,8 +832,6 @@ service cloud.firestore {
       allow update, delete: if isTeacher();
     }
 
-
-    // Digital snack passes: 2 automatic uses per day, then teacher-approved extras.
     match /snackStatus/{studentId} {
       allow read: if isTeacher() || isOwner(studentId);
       allow create: if isOwner(studentId)
@@ -942,12 +883,10 @@ service cloud.firestore {
       allow update, delete: if isTeacher();
     }
 
-
     match /studentJobWeeks/{weekId} {
       allow read: if isTeacher()
                   || (isSignedIn() && weekId.matches('^' + request.auth.uid + '_.*$'))
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
-
       allow create: if isExploreStudent()
                     && weekId.matches('^' + request.auth.uid + '_.*$')
                     && request.resource.data.studentId == request.auth.uid
@@ -957,11 +896,6 @@ service cloud.firestore {
                     && request.resource.data.completedCount >= 0
                     && request.resource.data.completedCount <= 5
                     && request.resource.data.paid == false;
-
-      // Student check-off: only completion evidence and its server timestamp
-      // may change. V3 writes updatedAt together with every check-off.
-      // UID-prefixed document IDs keep this limited to the signed-in student,
-      // including weekly records created by older Dragonswood builds.
       allow update: if isExploreStudent()
                     && weekId.matches('^' + request.auth.uid + '_.*$')
                     && request.resource.data.diff(resource.data).affectedKeys()
@@ -971,7 +905,6 @@ service cloud.firestore {
                     && request.resource.data.completedCount >= 0
                     && request.resource.data.completedCount <= 5
                     && request.resource.data.updatedAt == request.time;
-
       allow create, update, delete: if isTeacher();
     }
 
@@ -979,7 +912,6 @@ service cloud.firestore {
       allow read: if isSignedIn();
       allow create, update, delete: if isTeacher();
     }
-
 
     match /classPollVotes/{voteId} {
       allow read: if isTeacher() || isSignedIn();
@@ -990,8 +922,6 @@ service cloud.firestore {
       allow update: if false;
       allow delete: if isTeacher();
     }
-
-
 
     match /passHistory/{visitId} {
       allow read: if isTeacher()
@@ -1018,10 +948,6 @@ service cloud.firestore {
       allow create, update, delete: if isTeacher();
     }
 
-
-
-    // Out of Seat / Emergency Office extra-pass requests.
-    // Each student gets one automatic use per type per day; teacher approval grants extras.
     match /passRequests/{requestId} {
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid
@@ -1058,28 +984,20 @@ service cloud.firestore {
       allow update, delete: if isTeacher();
     }
 
-    // ============================================================
-    // DRAGONSWOOD v50 — SCRIBE ARENA / WRITING PORTFOLIO
-    // ============================================================
     match /writingSessions/{sessionId} {
       allow read: if isSignedIn();
       allow create, update, delete: if isTeacher();
     }
 
     match /writingResponses/{responseId} {
-      // Students can read only their own writing; teacher can read all.
       allow read: if isTeacher()
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
-
-      // Students create only their own draft/response record.
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.sessionId is string
                     && request.resource.data.responseText is string
                     && request.resource.data.responseText.size() <= 12000
                     && request.resource.data.status in ['draft','submitted'];
-
-      // Students may edit/submit their own writing, but cannot write AI or teacher grades.
       allow update: if isExploreStudent()
                     && resource.data.studentId == request.auth.uid
                     && request.resource.data.studentId == request.auth.uid
@@ -1091,7 +1009,6 @@ service cloud.firestore {
                     ])
                     && request.resource.data.responseText is string
                     && request.resource.data.responseText.size() <= 12000;
-
       allow update, delete: if isTeacher();
     }
 
@@ -1102,16 +1019,9 @@ service cloud.firestore {
       allow update, delete: if isTeacher();
     }
 
-    // ============================================================
-    // v56.19.1 — curriculum history, gradebook, leaderboard rewards,
-    // and one-time physical prize drops.
-    // ============================================================
-
-    // Immutable history of a student's Curriculum Quest attempts.
     match /curriculumAttempts/{attemptId} {
       allow read: if isTeacher()
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
-
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.itemId is string
@@ -1127,41 +1037,29 @@ service cloud.firestore {
                     && request.resource.data.accuracy is number
                     && request.resource.data.accuracy >= 0
                     && request.resource.data.accuracy <= 100;
-
       allow update, delete: if isTeacher();
     }
 
-    // Assignment configuration is classroom-wide. Signed-in students need to
-    // read it to calculate their own grade, but only the teacher may change it.
     match /gradebookAssignments/{assignmentId} {
       allow read: if isSignedIn();
       allow create, update, delete: if isTeacher();
     }
 
-    // Teacher-entered grades and notes are private to the individual student.
     match /gradebookGrades/{gradeId} {
       allow read: if isTeacher()
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
       allow create, update, delete: if isTeacher();
     }
 
-    // The weekly leaderboard display needs these issued-reward records.
-    // Rewards can change Gold, so issuance remains teacher-only.
     match /leaderboardRewards/{rewardId} {
       allow read: if isSignedIn();
       allow create, update, delete: if isTeacher();
     }
 
-    // Rare real-world rewards are created only by the same authenticated
-    // student and only when a matching Daily Boss loot record exists in the
-    // same committed batch. Students may make one earned reward into a
-    // redemption request; only the teacher can mark it redeemed or delete it.
     match /physicalPrizeDrops/{dropId} {
       allow read: if isTeacher()
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
-
       allow create: if isTeacher();
-
       allow update: if isExploreStudent()
                     && resource.data.studentId == request.auth.uid
                     && request.resource.data.studentId == resource.data.studentId
@@ -1169,13 +1067,9 @@ service cloud.firestore {
                     && request.resource.data.status == 'requested'
                     && request.resource.data.diff(resource.data).affectedKeys()
                        .hasOnly(['status','requestedAt']);
-
       allow create, update, delete: if isTeacher();
     }
 
-    // Student-submitted Dragonswood ideas and bug reports. Students may
-    // create and read their own entries; only a teacher changes workflow
-    // status or adds the response shown back to the student.
     match /studentSuggestions/{suggestionId} {
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid
@@ -1189,15 +1083,10 @@ service cloud.firestore {
       allow update, delete: if isTeacher();
     }
 
-    // Private workflow notes for the teacher's Student Requests Center.
-    // Students receive teacherResponse on their suggestion document but can
-    // never read the teacher's internal planning notes.
     match /studentSuggestionNotes/{suggestionId} {
       allow read, create, update, delete: if isTeacher();
     }
 
-    // Lightweight classroom-focus history. This never changes grades or
-    // rewards; it records only meaningful (3+ second) tab departures.
     match /focusEvents/{eventId} {
       allow create: if isExploreStudent()
                     && request.resource.data.studentId == request.auth.uid
@@ -1207,53 +1096,40 @@ service cloud.firestore {
       allow read, update, delete: if isTeacher();
     }
 
-    // Academic AI Answer Rescue. Cloud Functions Admin SDK owns writes.
     match /academicAiUsage/{docId} {
       allow read: if isTeacher();
       allow write: if false;
     }
-
     match /academicAnswerAiAudit/{docId} {
       allow read: if isTeacher();
       allow write: if false;
     }
-
     match /academicAnswerAiCache/{docId} {
       allow read, write: if false;
     }
 
-    // Arcade Tokens and the 30-minute clock are server-authoritative. Clients
-    // can display only their own records; callable Functions own every award,
-    // debit, lock, end, and refund write.
     match /arcadeAccess/{uid} {
       allow read: if isTeacher() || isOwner(uid);
       allow write: if false;
     }
-
     match /arcadeSettings/{docId} {
       allow read: if isSignedIn();
       allow write: if false;
     }
-
     match /arcadeTokenPeriods/{periodId} {
       allow read: if isTeacher()
                   || (isSignedIn() && resource.data.uid == request.auth.uid);
       allow write: if false;
     }
-
     match /arcadeSessions/{sessionId} {
       allow read: if isTeacher()
                   || (isSignedIn() && resource.data.uid == request.auth.uid);
       allow write: if false;
     }
-
     match /arcadeAudit/{auditId} {
       allow read: if isTeacher();
       allow write: if false;
     }
-
-    // Arcade performance is record-only. Every client score write must name a
-    // live, unexpired, teacher-authorized session for the authenticated uid.
     match /arcadeScores/{scoreId} {
       allow read: if isSignedIn();
       allow create: if isSignedIn()
@@ -1300,12 +1176,8 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // Documentation-only default deny. Firestore ORs matching allow rules, so
-    // this does not override any explicit block above; unmatched paths remain
-    // denied because no true allow statement exists.
     match /{document=**} {
       allow read, write: if false;
     }
-
   }
 }

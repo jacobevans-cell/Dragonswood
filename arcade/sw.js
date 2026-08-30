@@ -1,7 +1,12 @@
-const CACHE='dragonswood-arcade-v17-mascot-crest';
+const CACHE='dragonswood-arcade-v18-veil-mascot';
 const CORE=[
-  './','index.html','admin.html','device-check.html','style.css','access.css','visual-v11.css','manifest.webmanifest',
+  './','index.html','admin.html','device-check.html','style.css','access.css','visual-v11.css','veil-game-card-tiles.css','manifest.webmanifest',
   '../v33-integration/assets/branding/dragonswood-mascot-crest.png','assets/dragon-cube.svg','assets/dragon-runner.svg','assets/arcade-stars.svg',
+  'assets/veil/hero/veil-arcade-hero-512.webp',
+  'assets/veil/game-card-tiles/veil-card-bg-dragon-dash-1200x660.webp','assets/veil/game-card-tiles/veil-card-bg-void-runner-1200x660.webp',
+  'assets/veil/game-card-tiles/veil-card-bg-runeball-arena-1200x660.webp','assets/veil/game-card-tiles/veil-card-bg-runewheel-rally-1200x660.webp',
+  'assets/veil/game-card-tiles/veil-card-bg-dragons-gambit-hall-1200x660.webp','assets/veil/game-card-tiles/veil-card-bg-starfall-squadron-1200x660.webp',
+  'assets/veil/game-card-tiles/veil-card-bg-defenders-of-dragonswood-1200x660.webp',
   'js/arcade-config.js','js/access-client.js','js/access-bootstrap.js','js/game-registry.js','js/leaderboard-service.js','js/arcade.js',
   'games/dragon-dash/index.html','games/dragon-dash/access-loader.js','games/dragon-dash/styles.css','games/dragon-dash/dragonswood-theme.css','games/dragon-dash/game.js',
   'games/dragon-dash/assets/cube-dragon.svg','games/dragon-dash/assets/orb.svg','games/dragon-dash/assets/pad.svg','games/dragon-dash/assets/portal.svg','games/dragon-dash/assets/saw.svg','games/dragon-dash/assets/spike.svg',

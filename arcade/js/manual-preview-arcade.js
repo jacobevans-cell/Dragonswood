@@ -19,10 +19,14 @@ function submitBestScore(event){
   writeScores(data);return{updated};
 }
 function getTop(boardId,type){const key=periodKey(type);return Object.values(readScores()).filter(row=>row.boardId===boardId&&row.periodType===type&&row.periodKey===key).sort((a,b)=>b.score-a.score).slice(0,5)}
-function previewPath(game){return game.id==='dragon-dash'?'games/dragon-dash/manual-preview.html?arcade=1':'games/void-runner/manual-preview.html?arcade=1&dw-manual-preview=1'}
+function previewPath(game){
+  if(game.id==='dragon-dash')return'games/dragon-dash/manual-preview.html?arcade=1';
+  if(game.id==='void-runner')return'games/void-runner/manual-preview.html?arcade=1&dw-manual-preview=1';
+  return game.path;
+}
 function renderGames(){
   const grid=$('#gameGrid');grid.innerHTML='';
-  for(const game of GAMES){const card=document.createElement('article');card.className=`game-card ${game.className||''}`;card.innerHTML=`<img class="game-card-art" src="${game.art}" alt=""><div class="game-card-content"><div class="game-kicker">${game.kicker}</div><h3>${game.title}</h3><h4>${game.subtitle}</h4><p>${game.description}</p><div class="card-tags">${game.tags.map(tag=>`<span>${tag}</span>`).join('')}</div><button class="play-game">ENTER PORTAL</button></div>`;card.querySelector('button').addEventListener('click',()=>openGame(game));grid.appendChild(card)}
+  for(const game of GAMES){const card=document.createElement('article');card.className=`game-card has-veil-tile ${game.className||''}`;card.innerHTML=`<img class="game-card-art" src="${game.art}" alt="" loading="lazy" decoding="async"><div class="game-card-content"><div class="game-kicker">${game.kicker}</div><h3>${game.title}</h3><h4>${game.subtitle}</h4><p>${game.description}</p><div class="card-tags">${game.tags.map(tag=>`<span>${tag}</span>`).join('')}</div><button class="play-game">ENTER PORTAL</button></div>`;card.querySelector('button').addEventListener('click',()=>openGame(game));grid.appendChild(card)}
 }
 function openGame(game){currentGame=game;$('#gameTitle').textContent=game.title;$('#gameSubtitle').textContent=game.subtitle.toUpperCase();const url=new URL(previewPath(game),location.href);url.searchParams.set('comfort',profile.comfortMode?'1':'0');url.searchParams.set('perf',profile.performanceMode);$('#gameFrame').src=url.href;$('#saveStatus').textContent='PLAYING';show('gameScreen')}
 function exitGame(){const frame=$('#gameFrame');frame.src='about:blank';currentGame=null;show('homeScreen');$('#saveStatus').textContent='READY'}

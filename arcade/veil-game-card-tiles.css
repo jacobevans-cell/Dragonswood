@@ -1,0 +1,145 @@
+/* Arcade-local Veil presentation layer. Access, routing, and rewards remain unchanged. */
+.arcade-character-stage {
+  position: relative;
+  z-index: 2;
+  width: min(440px, 100%);
+  aspect-ratio: 1.22;
+  justify-self: center;
+  isolation: isolate;
+}
+
+.arcade-character-stage::before {
+  content: "";
+  position: absolute;
+  inset: 10% 2% 5% 5%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(85, 242, 180, .16), rgba(116, 65, 232, .08) 48%, transparent 72%);
+  filter: blur(2px);
+}
+
+.arcade-official-dragon,
+.arcade-veil {
+  position: absolute;
+  display: block;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+.arcade-official-dragon {
+  z-index: 3;
+  left: -17%;
+  bottom: -3%;
+  width: 98%;
+  filter: drop-shadow(0 20px 28px rgba(0, 0, 0, .56));
+}
+
+.arcade-veil {
+  z-index: 2;
+  right: -5%;
+  bottom: 1%;
+  width: 74%;
+  filter: drop-shadow(0 22px 32px rgba(0, 0, 0, .58));
+}
+
+.veil-nameplate {
+  position: absolute;
+  z-index: 4;
+  top: 6%;
+  right: 0;
+  display: grid;
+  gap: 2px;
+  padding: 8px 12px;
+  border: 1px solid rgba(85, 242, 180, .38);
+  border-radius: 999px;
+  background: rgba(4, 19, 15, .82);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .3);
+  color: #fff0ad;
+  font-family: var(--ui-font);
+  line-height: 1;
+  text-align: center;
+}
+
+.veil-nameplate strong {
+  font-size: 12px;
+  letter-spacing: .18em;
+}
+
+.veil-nameplate small {
+  color: #78efd0;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .12em;
+}
+
+.game-card.has-veil-tile {
+  isolation: isolate;
+  background: #071b17;
+}
+
+.game-card.has-veil-tile .game-card-art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: cover;
+  object-position: center;
+  transform: none;
+  filter: none;
+  transition: transform 240ms ease, filter 240ms ease;
+}
+
+.game-card.has-veil-tile .game-card-content {
+  position: relative;
+  z-index: 2;
+  width: min(68%, 430px);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, .88);
+}
+
+.game-card.has-veil-tile:hover .game-card-art,
+.game-card.has-veil-tile:focus-within .game-card-art {
+  transform: scale(1.025);
+  filter: brightness(1.05) saturate(1.03);
+}
+
+.game-card.has-veil-tile .play-game:focus-visible {
+  outline: 3px solid #fffdf5;
+  outline-offset: 4px;
+}
+
+@media (max-width: 900px) {
+  .arcade-character-stage {
+    position: absolute;
+    right: -38px;
+    bottom: -42px;
+    width: 290px;
+    opacity: .42;
+  }
+
+  .veil-nameplate {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .game-card.has-veil-tile .game-card-content {
+    width: 76%;
+  }
+
+  .game-card.has-veil-tile .game-card-art {
+    object-position: 58% center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-card.has-veil-tile .game-card-art {
+    transition: none;
+  }
+
+  .game-card.has-veil-tile:hover .game-card-art,
+  .game-card.has-veil-tile:focus-within .game-card-art {
+    transform: none;
+  }
+}

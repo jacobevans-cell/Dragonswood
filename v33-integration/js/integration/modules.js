@@ -44,9 +44,11 @@
     const mod=definition(id);if(!mod)return '';
     const url=new URL(`../${mod.path}`,baseHref||globalThis.document?.baseURI||globalThis.location?.href);
     if(mod.query)new URLSearchParams(mod.query).forEach((value,key)=>url.searchParams.set(key,value));
-    if(mod.id==='daily-quest'||mod.id==='curriculum-quest')url.searchParams.set('v','57.1.16');
+    if(mod.id==='daily-quest'||mod.id==='curriculum-quest')url.searchParams.set('v','58.0.2');
     if(mod.id==='rune-spelling'||mod.id==='dragon-tongues'||mod.id==='deep-time-lab')url.searchParams.set('v','58.0.0');
     if(mod.id==='class-reader')url.searchParams.set('v','57.1.5');
+    const pageUrl=new URL(globalThis.location?.href||baseHref||url.href),previewDate=pageUrl.searchParams.get('previewDate');
+    if(mod.path==='daily-quest.html'&&['localhost','127.0.0.1'].includes(pageUrl.hostname)&&/^\d{4}-\d{2}-\d{2}$/.test(String(previewDate||'')))url.searchParams.set('date',previewDate);
     url.searchParams.set('dwEmbed','1');
     const environment=requestedEnvironment||globalThis.DWV33Integration?.environment||'';
     if(environment==='emulator'||environment==='production-readonly'||environment==='production')url.searchParams.set('dw-env',environment);

@@ -66,6 +66,7 @@
     const m=String(key).match(/^(\d{4})-(\d{2})-(\d{2})$/); if(!m)return -1;
     return new Date(Date.UTC(+m[1],+m[2]-1,+m[3])).getUTCDay();
   }
+  function isWeekendDateKey(key){const day=weekday(key);return day===0||day===5||day===6}
   function previousSchoolDayKey(key){
     let k=shiftDateKey(key,-1);
     while(k&&(weekday(k)===0||weekday(k)===6))k=shiftDateKey(k,-1);
@@ -158,5 +159,5 @@
 
 
 
-  return Object.freeze({XP_THRESHOLDS,CLASS_LABELS,TITLE_RULES,STUDENT_DOMAIN,TEACHER_EMAIL,normalizedEmail,isTeacherEmail,isExploreEmail,isStudentEligibleEmail,levelInfo,formatDisplayName,humanizeId,phoenixDateKey,previousSchoolDayKey,completedMorningDates,schoolDayStreak,dailyAccessState,dailyMissionState,normalizeStudent,normalizeTeacherRoster});
+  return Object.freeze({XP_THRESHOLDS,CLASS_LABELS,TITLE_RULES,STUDENT_DOMAIN,TEACHER_EMAIL,normalizedEmail,isTeacherEmail,isExploreEmail,isStudentEligibleEmail,levelInfo,formatDisplayName,humanizeId,phoenixDateKey,shiftDateKey,weekday,isWeekendDateKey,previousSchoolDayKey,completedMorningDates,schoolDayStreak,dailyAccessState,dailyMissionState,normalizeStudent,normalizeTeacherRoster});
 });

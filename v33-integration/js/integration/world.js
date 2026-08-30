@@ -71,7 +71,7 @@
     return Object.freeze({
       dateKey:Core.phoenixDateKey(date),weekKey:weekKey(date),dayName:parts.weekday||'Today',dayIndex,
       schedule:Object.freeze(scheduleRows(schedule,date)),job:assignedJob(uid,jobs,jobWeek),events:upcomingEvents(events,date),
-      hall:Object.freeze({classId:text(profile?.classId),activePet:text(profile?.activePet),ownedPets,equipped:Object.freeze({...profile?.rpgEquipped}),inventory:Object.freeze(Array.isArray(profile?.rpgInventory)?profile.rpgInventory.map(String):[]),eggs:number(profile?.eggInventory),petTokens:number(profile?.petTokens)}),
+      hall:Object.freeze({classId:text(profile?.classId),activePet:text(profile?.activePet),ownedPets,equipped:Object.freeze({...profile?.rpgEquipped}),appearanceId:text(profile?.rpgEquipped?.appearance),homeBackgroundId:text(profile?.homeBackgroundId,'fairy-purple'),inventory:Object.freeze(Array.isArray(profile?.rpgInventory)?profile.rpgInventory.map(String):[]),eggs:number(profile?.eggInventory),petTokens:number(profile?.petTokens)}),
       boss:Object.freeze({lastLoot:(Array.isArray(bossLoot)?bossLoot:[]).slice().sort((a,b)=>text(b.dateKey).localeCompare(text(a.dateKey)))[0]||null,prizes:Object.freeze(Array.isArray(prizes)?prizes.map(row=>Object.freeze({...row})):[])}),
       leaderboard:leaderboard(scores,rewards,uid,date)
     });

@@ -9,6 +9,7 @@ const CAPABILITIES=Object.freeze({
   selfUnlockCurriculum:true,
   selfUnlockArcade:true,
   selfUnlockKingdom:true,
+  selfUnlockBoss:true,
   selfAwardPoints:true
 });
 const RECORDS=Object.freeze([

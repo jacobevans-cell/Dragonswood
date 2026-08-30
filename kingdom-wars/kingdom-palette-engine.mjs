@@ -23,7 +23,7 @@ export async function paletteSwapMasked(baseUrl,maskUrls,palette){
   context.clearRect(0,0,canvas.width,canvas.height);context.drawImage(image,0,0);
   const data=context.getImageData(0,0,canvas.width,canvas.height),pixels=data.data,targets=[rgb(normalized.primary),rgb(normalized.secondary),rgb(normalized.glow)],masks=[];
   for(const maskImage of maskImages){scratchContext.clearRect(0,0,scratch.width,scratch.height);scratchContext.drawImage(maskImage,0,0,scratch.width,scratch.height);masks.push(scratchContext.getImageData(0,0,scratch.width,scratch.height).data)}
-  for(let i=0;i<pixels.length;i+=4){if(pixels[i+3]<8)continue;const lightness=(pixels[i]+pixels[i+1]+pixels[i+2])/765;for(let channel=0;channel<3;channel++){const strength=(masks[channel][i+3]/255)*.84;if(strength<.01)continue;const color=colorAtLightness(targets[channel],lightness);pixels[i]=pixels[i]*(1-strength)+color[0]*strength;pixels[i+1]=pixels[i+1]*(1-strength)+color[1]*strength;pixels[i+2]=pixels[i+2]*(1-strength)+color[2]*strength}}
+  for(let i=0;i<pixels.length;i+=4){if(pixels[i+3]<8)continue;const lightness=(pixels[i]+pixels[i+1]+pixels[i+2])/765;for(let channel=0;channel<3;channel++){const mask=masks[channel],luminance=(.2126*mask[i]+.7152*mask[i+1]+.0722*mask[i+2])/255,strength=luminance*(mask[i+3]/255)*.84;if(strength<.01)continue;const color=colorAtLightness(targets[channel],lightness);pixels[i]=pixels[i]*(1-strength)+color[0]*strength;pixels[i+1]=pixels[i+1]*(1-strength)+color[1]*strength;pixels[i+2]=pixels[i+2]*(1-strength)+color[2]*strength}}
   context.putImageData(data,0,0);
   return remember(cache,key,canvas.toDataURL('image/webp',.94),MAX_RESULT_CACHE);
 }

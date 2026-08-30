@@ -44,11 +44,13 @@
     const mod=definition(id);if(!mod)return '';
     const url=new URL(`../${mod.path}`,baseHref||globalThis.document?.baseURI||globalThis.location?.href);
     if(mod.query)new URLSearchParams(mod.query).forEach((value,key)=>url.searchParams.set(key,value));
-    if(mod.id==='daily-quest'||mod.id==='curriculum-quest')url.searchParams.set('v','58.0.2');
+    if(mod.id==='daily-quest'||mod.id==='curriculum-quest')url.searchParams.set('v','58.0.6');
     if(mod.id==='rune-spelling'||mod.id==='dragon-tongues'||mod.id==='deep-time-lab')url.searchParams.set('v','58.0.0');
     if(mod.id==='class-reader')url.searchParams.set('v','57.1.5');
-    const pageUrl=new URL(globalThis.location?.href||baseHref||url.href),previewDate=pageUrl.searchParams.get('previewDate');
+    const pageUrl=new URL(globalThis.location?.href||baseHref||url.href),previewDate=pageUrl.searchParams.get('previewDate'),testerDate=globalThis.DWV33TesterDateContext?.();
     if(mod.path==='daily-quest.html'&&['localhost','127.0.0.1'].includes(pageUrl.hostname)&&/^\d{4}-\d{2}-\d{2}$/.test(String(previewDate||'')))url.searchParams.set('date',previewDate);
+    if(testerDate?.simulated===true&&/^\d{4}-\d{2}-\d{2}$/.test(String(testerDate.dateKey||''))){url.searchParams.set('date',testerDate.dateKey);url.searchParams.set('dw-safe-preview','1')}
+    if(mod.id==='boss-battle'&&testerDate?.isTester===true&&testerDate?.testerUnlocks?.unlockBoss===true&&['localhost','127.0.0.1'].includes(pageUrl.hostname))url.searchParams.set('dw-local-boss-preview','1');
     url.searchParams.set('dwEmbed','1');
     const environment=requestedEnvironment||globalThis.DWV33Integration?.environment||'';
     if(environment==='emulator'||environment==='production-readonly'||environment==='production')url.searchParams.set('dw-env',environment);

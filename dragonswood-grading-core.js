@@ -181,6 +181,12 @@
       if(new Set(n).size!==n.length)errors.push("duplicate choices");
       if(!q.choices.some(c=>questionAnswerEquivalent(q,c)))errors.push("answer missing from choices");
       if(q.choices.some(c=>/^(?:nan|undefined|null)$/i.test(String(c).trim())))errors.push("invalid choice");
+      const correct=q.choices.find(c=>questionAnswerEquivalent(q,c)),distractors=q.choices.filter(c=>c!==correct),length=value=>normalizeText(value).replace(/\s+/g," ").length;
+      if(correct!=null&&distractors.length&&distractors.every(choice=>length(correct)>=Math.ceil(length(choice)*1.15)))errors.push("correct choice is at least 15% longer than every distractor");
+      const correctLines=Math.ceil(length(correct)/42),distractorLines=distractors.map(choice=>Math.ceil(length(choice)/42));
+      if(correctLines>1&&distractorLines.length&&distractorLines.every(lines=>lines<correctLines))errors.push("correct choice is the only multi-line answer");
+      const complete=value=>/[.!?][\"']?$/.test(String(value).trim());
+      if(correct!=null&&complete(correct)&&distractors.length&&distractors.every(choice=>!complete(choice)))errors.push("correct choice is the only complete sentence");
     }
     return errors;
   }

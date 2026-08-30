@@ -2770,18 +2770,18 @@ wordrel(r,p,i){
 },
 wordcontext(r,p,i){
   const items=[
-   ["The path was treacherous, so the travelers moved with great care.","treacherous","dangerous","safe",["short","sunny","narrow"]],
-   ["Maya was elated when she found the lost map.","elated","very happy","miserable",["confused","tired","angry"]],
-   ["The ancient bridge was fragile and creaked underfoot.","fragile","easily broken","sturdy",["strong","wide","new"]],
-   ["He spoke in a feeble voice after the long climb.","feeble","weak","powerful",["loud","cheerful","rapid"]],
-   ["The scholars debated the meaning of the inscription.","debated","argued about","agreed on",["ignored","erased","copied"]],
-   ["The cavern was immense, swallowing the torchlight.","immense","very large","tiny",["damp","bright","narrow"]],
-   ["Leo was reluctant to enter the dark tunnel.","reluctant","unwilling","eager",["curious","ready","calm"]],
-   ["The council reached a unanimous decision.","unanimous","agreed by everyone","divided",["delayed","written","quick"]],
-   ["She scrutinized the map for hidden marks.","scrutinized","examined closely","glanced at",["folded","drew","lost"]],
-   ["The guard's tone was hostile.","hostile","unfriendly","welcoming",["quiet","formal","tired"]],
-   ["Their supplies were meager after the storm.","meager","very small in amount","plentiful",["heavy","fresh","wet"]],
-   ["The knight's response was prompt.","prompt","quick and on time","delayed",["polite","loud","written"]]];
+   ["The path was treacherous, so the travelers moved with great care.","treacherous","dangerous","safe",["ordinary","pleasant","crowded"]],
+   ["Maya was elated when she found the lost map.","elated","very happy","miserable",["very confused","quite worried","deeply tired"]],
+   ["The ancient bridge was fragile and creaked underfoot.","fragile","easily broken","sturdy",["firmly attached","painted brightly","recently built"]],
+   ["He spoke in a feeble voice after the long climb.","feeble","weak","powerful",["loud","calm","slow"]],
+   ["The scholars debated the meaning of the inscription.","debated","argued about","agreed on",["talked quietly","wrote it down","read it aloud"]],
+   ["The cavern was immense, swallowing the torchlight.","immense","very large","tiny",["slightly damp","brightly lit","rather narrow"]],
+   ["Leo was reluctant to enter the dark tunnel.","reluctant","unwilling","eager",["very curious","fully prepared","quite relaxed"]],
+   ["The council reached a unanimous decision.","unanimous","agreed by everyone","divided",["postponed until later","recorded in writing","finished very quickly"]],
+   ["She scrutinized the map for hidden marks.","scrutinized","examined closely","glanced at",["folded carefully","copied by hand","put away safely"]],
+   ["The guard's tone was hostile.","hostile","unfriendly","welcoming",["very quiet","quite formal","rather tired"]],
+   ["Their supplies were meager after the storm.","meager","very small in amount","plentiful",["too heavy to carry","completely fresh","slightly wet inside"]],
+   ["The knight's response was prompt.","prompt","quick and on time","delayed",["polite but delayed","loud and repeated","written in advance"]]];
   const [s,w,ans,ant,wrongs]=bp(r,items,i);
   if(p.rel==="antonym")
     return {prompt:`Read the sentence: “${s}”\nWhich word means the OPPOSITE of “${w}”?`,answer:ant,
@@ -3506,28 +3506,28 @@ composition(r,p,i){
   if(k==="support"){
     const q=[["Learning to read a map is a valuable skill for any traveler.",
       "A map helps a traveler find water, shelter, and safe paths.",
-      ["Maps are usually rectangular.","I have a map at home.","Some people dislike hiking."]],
+      ["Some travelers collect old maps because the paper and artwork look interesting.","Maps may be printed in several colors and folded into a traveler's pack.","The oldest map in the museum hangs inside a heavy wooden frame."]],
      ["Keeping a daily journal helps writers improve.",
       "Writing every day builds fluency and makes ideas easier to organize.",
-      ["Journals come in many colors.","My journal has 200 pages.","Some people write in pen."]],
+      ["Journals are sold with plain covers, colored covers, and many different page sizes.","A new journal can be purchased at a store or made by folding paper together.","Some writers prefer a blue pen, while other writers choose a black pencil."]],
      ["Working as a team makes difficult tasks manageable.",
       "When members divide the work, each person can focus on what they do best.",
-      ["Teams usually have a captain.","I have been on three teams.","Teamwork is a word."]],
+      ["A team may choose matching shirts so that every member looks alike at the event.","Some teams meet on Tuesdays, while other teams practice later in the week.","Team names are often printed on signs, schedules, or colorful banners."]],
      ["Winter travel in the mountains requires careful preparation.",
       "Travelers who pack extra fuel and dry layers can survive an unexpected storm.",
-      ["Winter happens every year.","I own a warm coat.","Mountains are made of rock."]],
+      ["Winter begins after autumn and brings shorter days to mountain communities.","Mountains may be covered with snow that looks bright under the morning sun.","Travelers often take photographs of the mountains before beginning the trip."]],
      ["Rivers shaped where early villages were built.",
       "Settlements grew beside rivers because water powered mills and carried goods.",
-      ["Rivers contain water.","I once crossed a river.","Villages have houses."]],
+      ["Rivers may curve across a landscape before reaching a lake or ocean.","Some people visit rivers to take photographs or listen to moving water.","A river can appear blue, green, or brown depending on light and soil."]],
      ["Lanterns were essential tools for medieval travelers.",
       "A shielded flame let a traveler read a map without the wind snuffing it out.",
-      ["Lanterns are older than flashlights.","I saw a lantern in a museum.","Fire produces heat."]],
+      ["Medieval lanterns were often made from metal pieces joined around clear panels.","Travelers carried many objects, including blankets, rope, and cooking pots.","Museum visitors can see old lanterns displayed behind glass today."]],
      ["Handmade maps reveal what their makers valued most.",
       "Mapmakers drew trade routes in careful detail while leaving empty land vague.",
-      ["Maps are drawn on paper.","I have drawn a map before.","Ink can smudge."]],
+      ["Handmade maps can use colored ink, decorated borders, and carefully drawn letters.","A finished map may be rolled into a tube or folded between pages of a book.","Some mapmakers sharpened their tools before drawing the first line."]],
      ["Practicing a skill in short daily sessions beats one long session.",
       "Spacing practice over several days gives the brain time to consolidate what it learned.",
-      ["Practice takes time.","I practice sometimes.","Sessions can be long or short."]]];
+      ["Practice sessions can happen before school, after school, or during free time.","Some students keep practice charts with stickers for each day they remember.","A long session may require a quiet room, a timer, and several short breaks."]]];
     const x=bp(r,q,i);
     return {prompt:`Topic sentence: “${x[0]}”\nWhich sentence best SUPPORTS it?`,answer:x[1],
       choices:shuffle(r,[x[1],...x[2]])}
@@ -5835,7 +5835,7 @@ function dwQuestion(skillId, seed, i, subject, fallbackLabel){
         try{
           const r = hashSeed(Number(seed||1) + i*37 + attempt*7919);
           const q = gen(r, params||{}, i+attempt);
-          if(dwValidQuestion(q))
+          if(dwValidQuestion(q)&&(!window.DWGrading||window.DWGrading.assertQuestion(q,`${skillId} generation attempt ${attempt+1}`)))
             return Object.assign({}, q, {skillId, label, source:"registry", family});
         }catch(err){
           if(typeof console!=="undefined") console.error("Dragonswood generator error", family, skillId, err);
@@ -5855,7 +5855,7 @@ function makeQ(task,i){
  const q=task?.questionParams
    ? dwQuestionWithParams(task.skillId,task.questionParams,task.seed,i)
    : dwQuestion(task&&task.skillId, task&&task.seed, i, task&&task.subject, task&&task.skill);
- if(q&&window.DWGrading)window.DWGrading.assertQuestion(q,`${task?.skillId||task?.skill||"unknown"} #${i+1}`);
+ if(q&&window.DWGrading&&!window.DWGrading.assertQuestion(q,`${task?.skillId||task?.skill||"unknown"} #${i+1}`))throw new Error(`Question release blocked for ${task?.skillId||task?.skill||"unknown"}: unfair answer-choice pattern.`);
  if(q&&q.source==="registry"){
    // carry the Challenge-track Word of the Day through to the support bar
    if(task&&task.wordOfDay&&!q.wordOfDay) q.wordOfDay=task.wordOfDay;
@@ -5938,6 +5938,29 @@ function dwPacingTopicSkills(item){
  return [...new Set((entry?.skills||[]).filter(id=>prefix.test(id)&&DW_SKILLS[id]))];
 }
 function dwPacingLabel(item){return String(item.resourceName||item.requirement||item.strand||"Pacing lesson").replace(/STEM[\s\S]*$/i,"").replace(/Video:[\s\S]*$/i,"").replace(/\s+/g," ").trim()}
+const DW_MORNING_VARIETY_FALLBACKS={
+ Math:["math.add.multi","math.sub.multi","math.wordproblems","math.placevalue","math.compare.whole","math.rounding"],
+ HUM:["ela.homophones","ela.synonyms","ela.antonyms"]
+};
+function dwMorningVarietyPool(anchor,specs,day){
+ const subject=anchor.item.subject,pool=[],seen=new Set();
+ const add=(spec,reason)=>{if(!spec?.skillId||!DW_SKILLS[spec.skillId]||seen.has(spec.skillId))return;seen.add(spec.skillId);pool.push({...spec,substitutionReason:reason,sourceDate:String(spec.item?.date||`Day ${spec.item?.day||day}`)})};
+ add(anchor,"current pacing target");
+ for(const spec of specs)if(spec.item.subject===subject)add(spec,"same-day related target");
+ for(const skillId of DW_MORNING_VARIETY_FALLBACKS[subject]||[]){
+  add({skillId,item:{...anchor.item,id:`${anchor.item.id}:spiral:${skillId}`,resourceName:dwLabelOf(skillId),requirement:`Spiral review: ${dwLabelOf(skillId)}`}},"variety fallback: spaced review");
+ }
+ if(pool.length<3)throw new Error(`Morning variety requires three verified ${subject} skills for day ${day}.`);
+ return pool;
+}
+function dwBuildVariedMorning(specs,day,make){
+ const rows=[];
+ for(let block=0;block<7;block++){
+  const anchor=specs[block%specs.length],pool=dwMorningVarietyPool(anchor,specs,day),pattern=[0,1,2,3,4];
+  pattern.forEach((pick,slot)=>rows.push(make(pool[pick%pool.length],block*5+slot,1)));
+ }
+ return rows;
+}
 function dwPacingSpecs(day,gradeCode){
  const items=DW_CURRIC_ITEMS.filter(x=>x.grade===gradeCode&&Number(x.day)===day&&((x.subject==="Math"&&/Core Math/i.test(x.strand||""))||(x.subject==="HUM"&&/-L\d+$/.test(x.id)&&!dwObservationOnly(x))));
  const specs=[];for(const item of items){const mp=dwMorphParts(item),skills=mp.root?["curric.morph"]:dwPacingTopicSkills(item);for(const skillId of skills.slice(0,2))specs.push({item,skillId,questionParams:mp.root?{root:mp.root,word:mp.word}:null})}return specs;
@@ -5945,8 +5968,8 @@ function dwPacingSpecs(day,gradeCode){
 function dwBuildPacingLesson(base){
  const day=Math.max(1,Number(base.day||1)),gradeCode=String(profile?.grade||"4")==="5"?"K":"I",specs=dwPacingSpecs(day,gradeCode);
  if(!specs.length)throw new Error(`No verified pacing contract exists for grade ${gradeCode==="K"?5:4}, day ${day}.`);
- const make=(spec,i,count)=>({subject:spec.item.subject==="Math"?"MATH":"ELA",skillId:spec.skillId,skill:dwPacingLabel(spec.item)||dwLabelOf(spec.skillId),engine:DW_PACING_ENGINES[(day+i)%DW_PACING_ENGINES.length],count,seed:day*100003+i*7919,questionParams:spec.questionParams,pacingLocked:true,pacingItemId:spec.item.id,pacingRequirement:spec.item.requirement,pacingStrand:spec.item.strand});
- const morning=Array.from({length:7},(_,i)=>make(specs[i%specs.length],i,5)),exit=specs.slice(0,Math.min(4,specs.length)).map((s,i)=>make(s,i+7,4));
+ const make=(spec,i,count)=>({subject:spec.item.subject==="Math"?"MATH":"ELA",skillId:spec.skillId,skill:dwPacingLabel(spec.item)||dwLabelOf(spec.skillId),engine:DW_PACING_ENGINES[(day+i)%DW_PACING_ENGINES.length],count,seed:day*100003+i*7919,questionParams:spec.questionParams,pacingLocked:true,pacingItemId:spec.item.id,pacingRequirement:spec.item.requirement,pacingStrand:spec.item.strand,sourceDate:spec.sourceDate||String(base.date||`Day ${day}`),remediationStatus:"none",substitutionReason:spec.substitutionReason||"current pacing target"});
+ const morning=dwBuildVariedMorning(specs,day,make),exit=specs.slice(0,Math.min(4,specs.length)).map((s,i)=>make(s,i+35,4));
  const math=specs.find(s=>s.item.subject==="Math"),ela=specs.find(s=>s.item.subject==="HUM"),track=resolvedTrack(),trackName=track==="foundation"?"FOUNDATION SUPPORT":track==="challenge"?"⭐ PACING ENRICHMENT":gradeCode==="K"?"5TH GRADE":"4TH GRADE";
  return {...base,track,trackName,pacingGrade:gradeCode,pacingLocked:true,title:`${base.chapterIcon||"📜"} Day ${day}: ${dwPacingLabel(math?.item||ela?.item)}`,mathSkill:math?dwPacingLabel(math.item):"Pacing Guide",elaSkill:ela?dwPacingLabel(ela.item):"Pacing Guide",morning,exit};
 }
@@ -6040,6 +6063,7 @@ async function saveProgress(extra={}){
     score:Number(score||0),correct:Number(correct||0),attempts:Math.min(60,Number(attempts||0)),
     mathSkill:String(lesson.mathSkill||""),elaSkill:String(lesson.elaSkill||""),
     skills:skillStats,needsReteach:[...needsReteach],activeSeconds:Number(activeSeconds||0),idleEvents:Number(idleEvents||0),perQuestionSeconds:perQuestionSeconds.slice(0,60),
+    sequenceAudit:tasks.slice(0,60).map(t=>({subject:String(t.subject||""),skillId:String(t.skillId||""),sourceDate:String(t.sourceDate||lesson.date||""),remediationStatus:String(t._isRetry?"retry":t.remediationStatus||"none"),substitutionReason:String(t._isRetry?"missed item; delayed differently structured retry":t.substitutionReason||"current pacing target"),interaction:String(t.engine||"choice")})),
     updatedAt:serverTimestamp(),...extra
   };
   // Save locally FIRST so refresh cannot erase the student's place while Firestore is writing.
@@ -6097,12 +6121,12 @@ function watchDailyQuestProgress(){
  );
 }
 function localPreviewQuest(key){const start=new Date("2026-08-24T12:00:00-07:00"),target=new Date(`${key}T12:00:00-07:00`);let day=0;for(let cursor=new Date(start);cursor<=target;cursor.setDate(cursor.getDate()+1)){const weekday=cursor.getDay();if(weekday>=1&&weekday<=5)day++}return {date:key,day:Math.max(1,day),chapter:"Local School-Day Preview",chapterIcon:"📜",morningXp:0,exitXp:0,gold:0}}
-async function loadToday(){let key=dateKey();const isTeacher=String(user?.email||"").toLowerCase()===TEACHER,localHost=["localhost","127.0.0.1"].includes(location.hostname);const q=new URLSearchParams(location.search).get("date"),validPreviewDate=/^\d{4}-\d{2}-\d{2}$/.test(String(q||""));localPreviewMode=localHost&&validPreviewDate;if((isTeacher||localPreviewMode)&&validPreviewDate)key=q;try{try{const history=await getDocs(query(collection(db,"dailyQuestProgress"),where("studentId","==",user.uid)));dqProgressRows=history.docs.map(d=>({id:d.id,...d.data()}))}catch(e){console.warn("reteach history",e)}let snap;try{snap=await getDoc(doc(db,"dailyQuests",key))}catch(err){if(!localPreviewMode)throw err;console.warn("Using bundled local school-day preview",err);snap={exists:()=>true,data:()=>localPreviewQuest(key)}}if(!snap.exists()){status("No student quest is scheduled for today. Enjoy the suspicious silence.","warn");$("morningCard").classList.add("locked");$("exitCard").classList.add("locked");$("morningBtn").disabled=$("exitBtn").disabled=true;postDailyMissionState(false);return}lesson=makeTrackLesson(snap.data());renderLesson();$("trackLabel").textContent=(isLevelUpMode()?"LEVEL-UP: ":"TRACK: ")+lesson.trackName;
+async function loadToday(){let key=dateKey();const isTeacher=String(user?.email||"").toLowerCase()===TEACHER,localHost=["localhost","127.0.0.1"].includes(location.hostname),params=new URLSearchParams(location.search);const q=params.get("date"),validPreviewDate=/^\d{4}-\d{2}-\d{2}$/.test(String(q||"")),safeTesterPreview=params.get("dw-safe-preview")==="1"&&testerSession.isTester===true;localPreviewMode=validPreviewDate&&(localHost||safeTesterPreview);if((isTeacher||localPreviewMode)&&validPreviewDate)key=q;try{try{const history=await getDocs(query(collection(db,"dailyQuestProgress"),where("studentId","==",user.uid)));dqProgressRows=history.docs.map(d=>({id:d.id,...d.data()}))}catch(e){console.warn("reteach history",e)}let snap;try{snap=await getDoc(doc(db,"dailyQuests",key))}catch(err){if(!localHost||!localPreviewMode)throw err;console.warn("Using bundled local school-day preview",err);snap={exists:()=>true,data:()=>localPreviewQuest(key)}}if(!snap.exists()){status("No student quest is scheduled for this date.","warn");$("morningCard").classList.add("locked");$("exitCard").classList.add("locked");$("morningBtn").disabled=$("exitBtn").disabled=true;postDailyMissionState(false);return}lesson=makeTrackLesson(snap.data());renderLesson();$("trackLabel").textContent=(isLevelUpMode()?"LEVEL-UP: ":"TRACK: ")+lesson.trackName;
 const lub=$("levelUpBanner");if(lub)lub.style.display=isLevelUpMode()?"block":"none";
 const td=$("trackDesc");if(td)td.textContent=isLevelUpMode()
   ? (lesson.track==="challenge"?"Optional enrichment • Early–Mid 6th Grade":lesson.track==="foundation"?"Optional fourth-grade level-up work":"Optional fifth-grade challenge work")
   : (lesson.track==="challenge"?"Advanced enrichment • Early–Mid 6th Grade":lesson.track==="5"?"Fifth-grade spiral practice":lesson.track==="foundation"?"Foundation spiral practice • Grade 3 prerequisite skills":"Fourth-grade spiral practice");
-const mini=$("trackLabelMini");if(mini)mini.textContent=`TRACK: ${lesson.trackName}`;await refreshSessionCards();status(localPreviewMode?`LOCAL PREVIEW • Showing ${key} • Progress, scores, XP, and Gold will not be written.`:Number(profile.hp||0)<=0?"💀 You may complete today's academics, but knocked-out players earn no Player XP or Gold until revival.":"Today's quest is unlocked. Future quests remain sealed by Dragonswood server time.","good");}catch(err){console.error(err);status(`Today's quest is sealed or unavailable: ${err.code||err.message||"permission denied"}`,"bad");$("morningBtn").disabled=$("exitBtn").disabled=true;postDailyMissionState(false)}}
+const mini=$("trackLabelMini");if(mini)mini.textContent=`TRACK: ${lesson.trackName}`;await refreshSessionCards();status(localPreviewMode?`🧪 SAFE DATE PREVIEW • Showing ${key} • Progress, scores, XP, and Gold will not be written.`:Number(profile.hp||0)<=0?"💀 You may complete today's academics, but knocked-out players earn no Player XP or Gold until revival.":"Today's quest is unlocked. Future quests remain sealed by Dragonswood server time.","good");}catch(err){console.error(err);status(`Today's quest is sealed or unavailable: ${err.code||err.message||"permission denied"}`,"bad");$("morningBtn").disabled=$("exitBtn").disabled=true;postDailyMissionState(false)}}
 onAuthStateChanged(auth,async u=>{
  testerAccountUnsub?.();testerControlsUnsub?.();testerAccountUnsub=testerControlsUnsub=null;
  user=u;testerSession=Tester.normalizeTester(u?.uid||'',null);testerControls={};testerMorningOverride=false;
@@ -6125,6 +6149,7 @@ $("morningBtn").onclick=()=>startSession("morning");$("exitBtn").onclick=()=>sta
 async function startSession(name){
   sessionName=name;watchDailyQuestionOverrides(user?.uid);dwInstallDailyReviewUI();
   tasks=name==="morning"?lesson.morning:lesson.exit;
+  if(name==="morning")dwValidateMorningSequence(tasks);
   questionPlan=buildUniqueQuestionPlan(tasks);
   sessionProgress=await readProgress(name);
   if(sessionProgress?.status==="complete"){taskIndex=0;qIndex=0;score=0;correct=0;attempts=0}
@@ -6229,13 +6254,16 @@ function updateRun(){const done=completedBefore(),tot=totalQuestions();$("prog")
 function engineName(e){return ({choice:"Rune Choice",dragSort:"Drag & Drop",catcher:"Answer Catcher",tower:"Siege the Tower",ranger:"Ranger Shot",potion:"Potion Lab",bridge:"Bridge Builder",dragonGate:"Dragon Gates",rune:"Rune Lock",crystal:"Crystal Match",smash:"Smash the Wall"})[e]||e}
 function currentSkillId(){const t=tasks[taskIndex]||{};return String(currentQuestion?.skillId||t.skillId||(typeof dwSkillIdForLabel==="function"?dwSkillIdForLabel(t.skill):"")||t.skill||"unknown")}
 function queueRetry(skillId){
- const t=tasks[taskIndex],key=skillId+"|"+qSignature(currentQuestion);if(!t||t._isRetry||retryKeys.has(key)||retryKeys.size>=10)return;
+ const t=tasks[taskIndex],key=skillId+"|"+qSignature(currentQuestion);if(!t||t._isRetry||retryKeys.has(key)||retryKeys.size>=2)return;
  retryKeys.add(key);const retry={...t,count:1,seed:Number(t.seed||1)+700001+retryKeys.size*9973,_isRetry:true,skillId,_retryForKey:key};
- tasks.push(retry);let q=null;for(let i=0;i<80;i++){const cand=makeQ({...retry,seed:retry.seed+i*7919},i);if(cand&&qSignature(cand)!==qSignature(currentQuestion)){q=cand;break}}questionPlan.push([q||makeQ(retry,91)]);
+ retry.engine=DW_PACING_ENGINES[(DW_PACING_ENGINES.indexOf(String(t.engine||""))+3+retryKeys.size)%DW_PACING_ENGINES.length];retry.remediationStatus="retry";
+ let q=null;for(let i=0;i<80;i++){const cand=makeQ({...retry,seed:retry.seed+i*7919},i+1);if(cand&&qSignature(cand)!==qSignature(currentQuestion)){q=cand;break}}
+ let insertAt=Math.min(tasks.length,taskIndex+3);while(insertAt<tasks.length&&(tasks[insertAt-1]?._isRetry||tasks[insertAt]?._isRetry))insertAt++;
+ tasks.splice(insertAt,0,retry);questionPlan.splice(insertAt,0,[q||makeQ(retry,91)]);
 }
 function award(ok){
  attempts++;markActive();const skillId=currentSkillId(),row=skillStats[skillId]||{seen:0,correct:0};if(!currentQuestionSeen){row.seen++;currentQuestionSeen=true}
- if(ok){correct++;if(!currentQuestionCorrect){row.correct++;currentQuestionCorrect=true}score+=100+Math.max(0,50-Math.floor((Date.now()-sessionStart)/10000));feedback("Correct! ✨","good")}
+ if(ok){correct++;if(!currentQuestionCorrect){row.correct++;currentQuestionCorrect=true}score+=100+Math.max(0,50-Math.floor((Date.now()-sessionStart)/10000));feedback("Correct! ✨","good");if(tasks[taskIndex]?._isRetry){for(let i=tasks.length-1;i>taskIndex;i--)if(tasks[i]?._isRetry&&String(tasks[i].skillId||"")===skillId){tasks.splice(i,1);questionPlan.splice(i,1)}}}
  else{dwRejectedQuestionKeys.add(dwDailyQuestionKey());score=Math.max(0,score-15);feedback("Not yet. Try again.","bad");const t=tasks[taskIndex];if(t?._isRetry)needsReteach.add(skillId);else queueRetry(skillId)}
  skillStats[skillId]=row;updateRun()
 }
@@ -6294,22 +6322,36 @@ function promptBlock(q,t){
 
 
 function qSignature(q){const c=Array.isArray(q?.choices)?[...q.choices].map(String).sort().join("|"):"";return (String(q?.prompt||"").trim()+"||"+c).toLowerCase()}
+function dwDirectDefinitionPrompt(q){return /^(what (?:does|is)|which (?:word|choice))\b.*\b(?:mean|meaning|definition)|\bmeans\s+[“\"]|\bdefinition of\b/i.test(String(q?.prompt||"").trim())}
+function dwValidateMorningSequence(taskList){
+ for(let start=0;start<taskList.length;start+=5){
+  const set=taskList.slice(start,start+5);if(set.length<5)continue;
+  const counts=new Map();for(const t of set){const key=String(t.skillId||t.pacingItemId||t.skill||"");counts.set(key,(counts.get(key)||0)+1)}
+  if(counts.size<3||Math.max(...counts.values())>2)throw new Error(`Morning variety release blocked in questions ${start+1}-${start+5}.`);
+  if(set.every(t=>String(t.engine||"")===String(set[0].engine||"")))throw new Error(`Morning interaction variety release blocked in questions ${start+1}-${start+5}.`);
+ }
+ return true;
+}
 function buildUniqueQuestionPlan(taskList){
  const used=new Set(),plan=[];
- let forcedRepeats=0;
+ let forcedRepeats=0,flatIndex=0;const groupStats=new Map(),enforceMorning=sessionName==="morning";
  taskList.forEach((t,ti)=>{
    const row=[];
    for(let qi=0;qi<t.count;qi++){
+     const group=Math.floor(flatIndex/5),stats=groupStats.get(group)||{direct:0,answers:new Set()};
      let q=null,sig="",best=null;
      for(let tries=0;tries<120;tries++){
        const cand=makeQ({...t,seed:Number(t.seed||1)+tries*9973},qi+tries*17);
        if(!cand?.prompt||!Array.isArray(cand?.choices))continue;
        best=best||cand;
        const s=qSignature(cand);
+       if(enforceMorning&&dwDirectDefinitionPrompt(cand)&&stats.direct>=1)continue;
+       if(enforceMorning&&stats.answers.has(String(cand.answer||"").trim().toLowerCase()))continue;
        if(!used.has(s)){q=cand;sig=s;break}
      }
+     if(!q&&enforceMorning)throw new Error(`Morning question variety bank exhausted at question ${flatIndex+1}.`);
      if(!q){q=best;sig=qSignature(q);forcedRepeats++;}
-     used.add(sig);row.push(q);
+     used.add(sig);row.push(q);if(enforceMorning){if(dwDirectDefinitionPrompt(q))stats.direct++;stats.answers.add(String(q.answer||"").trim().toLowerCase());groupStats.set(group,stats)}flatIndex++;
    }
    plan.push(row);
  });
@@ -6395,10 +6437,11 @@ async function finishSession(){
     mode:progressModeKey(),status:"complete",taskIndex:tasks.length,qIndex:0,score:Number(score||0),correct:Number(correct||0),attempts:Math.min(60,Number(attempts||0)),
     accuracy:Math.round(acc*100),seconds:elapsed,mathSkill:String(lesson.mathSkill||""),elaSkill:String(lesson.elaSkill||""),
     skills:skillStats,needsReteach:[...needsReteach],activeSeconds:Number(activeSeconds||0),idleEvents:Number(idleEvents||0),perQuestionSeconds:perQuestionSeconds.slice(0,60),
+    sequenceAudit:tasks.slice(0,60).map(t=>({subject:String(t.subject||""),skillId:String(t.skillId||""),sourceDate:String(t.sourceDate||lesson.date||""),remediationStatus:String(t._isRetry?"retry":t.remediationStatus||"none"),substitutionReason:String(t._isRetry?"missed item; delayed differently structured retry":t.substitutionReason||"current pacing target"),interaction:String(t.engine||"choice")})),
     completedAt:serverTimestamp(),updatedAt:serverTimestamp()
   };
   saveLocalProgress(sessionName,{...completionProgress,completedAt:Date.now(),updatedAt:Date.now()});
-  if(localPreviewMode){$("loot").textContent="LOCAL PREVIEW COMPLETE • No production progress, score, XP, or Gold was written.";await refreshSessionCards();return}
+  if(localPreviewMode){$("loot").textContent="SAFE PREVIEW COMPLETE • No progress, score, XP, or Gold was written.";await refreshSessionCards();return}
   try{await setDoc(progressRef(sessionName),completionProgress,{merge:true})}
   catch(e){console.warn("completion progress save",e)}
 

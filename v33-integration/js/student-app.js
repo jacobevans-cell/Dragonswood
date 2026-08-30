@@ -1,8 +1,14 @@
 const app = document.querySelector('#app');
 const IS_PRODUCTION = window.DWV33Integration?.environment === 'production';
 const TESTER_KEY = IS_PRODUCTION ? 'dw-v33' : 'dw-v33-tester';
+const SIMULATED_DATE_KEY='dw-tester-simulated-date';
+const LOCAL_TESTER_UNLOCKS_KEY='dw-local-tester-unlocks';
 function storageGet(key, fallback=''){try{return localStorage.getItem(`${TESTER_KEY}:${key}`) ?? fallback}catch{return fallback}}
 function storageSet(key, value){try{localStorage.setItem(`${TESTER_KEY}:${key}`, value)}catch{}}
+function sessionGet(key,fallback=''){try{return sessionStorage.getItem(key)??fallback}catch{return fallback}}
+function sessionSet(key,value){try{value?sessionStorage.setItem(key,value):sessionStorage.removeItem(key)}catch{}}
+function localTesterUnlocks(){if(!['localhost','127.0.0.1'].includes(location.hostname))return{};try{const value=JSON.parse(sessionGet(LOCAL_TESTER_UNLOCKS_KEY,'{}'));return value&&typeof value==='object'?value:{}}catch{return{}}}
+function setLocalTesterUnlocks(patch){const next={...localTesterUnlocks(),...patch};sessionSet(LOCAL_TESTER_UNLOCKS_KEY,JSON.stringify(next));return next}
 function storedRecoverySummary(){try{const value=JSON.parse(storageGet('recovery-summary','{}'));return value&&typeof value==='object'?value:{}}catch{return {}}}
 const toast = document.querySelector('#toast');
 const dialogRoot = document.querySelector('#dialog-root');
@@ -17,20 +23,21 @@ const kingdomPortal=window.DWV33KingdomPortal;
 const REQUIRED_WORK_PAGES=new Set(['games','hall','boss','leaderboards','kingdom','arcade']);
 let pendingRequiredWorkNotice='';
 let lastAttentionChime='';
+let adventurePetActor=null,adventureMotionTimer=null;
 
 const navItems = [
-  ['adventure','🛡️','My Adventure','Home base'],
-  ['missions','📜','Dragon’s Path','Do this first','1'],
-  ['games','🎮','Academic Games','Learn & play'],
-  ['scribe','✍️','Scribe Arena','Write & grow'],
-  ['day','🗓️','My Day','Schedule'],
-  ['hall','⚔️','Adventurer Hall','Gear & pets'],
-  ['boss','👹','Boss Battle','Daily challenge'],
-  ['leaderboards','🏆','Leaderboards','Class champions'],
-  ['poll','📝','Class Poll','Teacher question']
+  ['adventure','my-adventurer','My Adventurer','Hero, pet & profile'],
+  ['missions','dragons-path','Dragon’s Path','Today’s required quests','1'],
+  ['games','quest-games','Quest Games','Learn through adventure'],
+  ['scribe','scribe-and-journal','Scribe & Journal','Write, create & reflect'],
+  ['day','schedule','Schedule','Classes, jobs & events'],
+  ['hall','adventurer-hall','Adventurer Hall','Gear, pets & inventory'],
+  ['boss','boss-battle','Boss Battle','Daily class challenge'],
+  ['leaderboards','hall-of-champions','Hall of Champions','Rankings, effort & growth'],
+  ['poll','dragon-council','Dragon Council','Class questions & votes']
 ];
-const arcadeNav=['arcade','🕹️','Arcade Time','3 Tokens • 30 min'];
-const kingdomNav=['kingdom','🏰','Kingdom Wars','Teacher unlock required'];
+const arcadeNav=['arcade','dragon-arcade','Dragon Arcade','3 tokens • 30 minutes'];
+const kingdomNav=['kingdom','kingdom-wars','Kingdom Wars','Teacher unlock required'];
 function studentNavItems(){return [...navItems,...(kingdomPortal?[kingdomNav]:[]),...(arcadePortal?[arcadeNav]:[])]}
 
 const state = {
@@ -76,6 +83,8 @@ const state = {
   testerCapabilities: {},
   testerUnlocks: {},
   testerLabel: '',
+  simulatedDate:sessionGet(SIMULATED_DATE_KEY,''),
+  previousPortalPage:'adventure',
   curriculumAccessUnlocked: false,
   spellingComplete: false,
   spellingGrade: 5,
@@ -86,6 +95,10 @@ const state = {
   passes: null,
   poll: null
 };
+
+function effectiveDateKey(){return state.isTester&&/^\d{4}-\d{2}-\d{2}$/.test(state.simulatedDate)?state.simulatedDate:(window.DWV33Core?.phoenixDateKey?.()||new Date().toISOString().slice(0,10))}
+function weekendAcademicOpen(target){return window.DWV33Core?.isWeekendDateKey?.(effectiveDateKey())===true&&['rune-spelling','dragon-tongues','curriculum-quest'].includes(String(target||''))}
+window.DWV33TesterDateContext=()=>Object.freeze({dateKey:effectiveDateKey(),simulated:state.isTester&&Boolean(state.simulatedDate),isTester:state.isTester,testerUnlocks:Object.freeze({...state.testerUnlocks})});
 
 const references = {
   adventure:'assets/reference/student/dragonswood-student-01-my-adventure-final.jpg',
@@ -159,14 +172,18 @@ function ensureRecoveryProbe(){
 function unfinishedRequiredWork(target='activity'){
   const rows=[];
   const destination=String(target||'activity');
+  if(weekendAcademicOpen(destination))return rows;
+  const testerMorningOverride=state.testerUnlocks.unlockMorning===true;
+  if(testerMorningOverride&&['rune-spelling','dragon-tongues'].includes(destination))return rows;
+  if(state.testerUnlocks.unlockCurriculum===true&&destination==='curriculum-quest')return rows;
   const needsSpelling=!['daily-quest','rune-spelling'].includes(destination);
   const needsCurriculum=!['daily-quest','rune-spelling','curriculum-quest'].includes(destination);
 
   // A dated teacher override intentionally opens optional destinations for
   // this scholar without falsely marking Morning or Recovery work complete.
   if(state.dailyAccessOverride!==true){
-    if(state.dailyAccessUnlocked!==true)rows.push({id:'morning',icon:'🌅',title:'Morning Work',detail:state.morningWorkComplete?'Teacher check-in or access hold remains.':'Not complete today.',route:'module/daily-quest'});
-    if(needsSpelling&&state.spellingComplete!==true)rows.push({id:'spelling',icon:'🔤',title:'Rune Spelling',detail:`Today’s Grade ${state.spellingGrade} spelling path is not complete.`,route:'module/rune-spelling'});
+    if(!testerMorningOverride&&state.dailyAccessUnlocked!==true)rows.push({id:'morning',icon:'🌅',title:'Morning Work',detail:state.morningWorkComplete?'Teacher check-in or access hold remains.':'Not complete today.',route:'module/daily-quest'});
+    if(!testerMorningOverride&&needsSpelling&&state.spellingComplete!==true)rows.push({id:'spelling',icon:'🔤',title:'Rune Spelling',detail:`Today’s Grade ${state.spellingGrade} spelling path is not complete.`,route:'module/rune-spelling'});
     if(needsCurriculum&&state.curriculumAccessUnlocked!==true){
       if(!recoverySummaryCurrent())rows.push({id:'recovery',icon:'🐉',title:'Recovery Missions',detail:'Open Recovery Quest for a live check.',route:'module/curriculum-quest'});
       else for(const day of state.recoverySummary.days||[])rows.push({id:`recovery-${day.day}`,icon:'🐉',title:`Recovery Day ${day.day}`,detail:`${day.count} unfinished mission${day.count===1?'':'s'}.`,route:'module/curriculum-quest'});
@@ -177,9 +194,10 @@ function unfinishedRequiredWork(target='activity'){
   if(String(target)==='kingdom'&&state.kingdomAccessUnlocked!==true)rows.push({id:'kingdom-access',icon:'🔒',title:'Kingdom Wars teacher unlock',detail:'Your teacher has not opened Kingdom Wars today.',route:'missions'});
   return rows;
 }
-function requiredWorkLocked(page){const target=String(page||'');if(target==='arcade'&&state.testerUnlocks.unlockArcade===true)return false;if(target==='kingdom'&&state.testerUnlocks.unlockKingdom===true)return false;return REQUIRED_WORK_PAGES.has(target)&&unfinishedRequiredWork(target).length>0}
+function requiredWorkLocked(page){const target=String(page||'');if(target==='arcade'&&state.testerUnlocks.unlockArcade===true)return false;if(target==='kingdom'&&state.testerUnlocks.unlockKingdom===true)return false;if(target==='boss'&&state.testerUnlocks.unlockBoss===true)return false;return REQUIRED_WORK_PAGES.has(target)&&unfinishedRequiredWork(target).length>0}
 function modulePathLocked(id){
   const moduleId=String(id||'');
+  if(moduleId==='boss-battle'&&state.testerUnlocks.unlockBoss===true)return false;
   if(['rune-spelling','curriculum-quest','dragon-tongues'].includes(moduleId))return unfinishedRequiredWork(moduleId).length>0;
   return moduleHost?.definition(moduleId)?.morningGate===true&&unfinishedRequiredWork(moduleId).length>0;
 }
@@ -300,7 +318,7 @@ function navMarkup(){
 }
 function navButton(item){
   const [id,icon,label,sub,badge] = item;
-  return `<button class="nav-link ${state.page===id?'active':''}" type="button" data-page="${id}" ${state.page===id?'aria-current="page"':''}><span class="nav-icon">${icon}</span><span><span class="nav-main">${label}</span><span class="nav-sub">${sub}</span></span>${badge?`<span class="nav-badge">${badge}</span>`:''}</button>`;
+  return `<button class="nav-link ${state.page===id?'active':''}" type="button" data-page="${id}" ${state.page===id?'aria-current="page"':''}><picture class="nav-icon"><source srcset="assets/navigation/sidebar-hq-v1/webp/${icon}.webp" type="image/webp"><img src="assets/navigation/sidebar-hq-v1/png/${icon}.png" alt=""></picture><span><span class="nav-main">${label}</span><span class="nav-sub">${sub}</span></span>${badge?`<span class="nav-badge">${badge}</span>`:''}</button>`;
 }
 
 function shell(){
@@ -308,10 +326,10 @@ function shell(){
   return `<div class="portal student-shell student-page-${state.page}" data-${IS_PRODUCTION?'release':'tester-build'}="v3.3">
     <header class="student-topbar"><div class="student-brand">
       <div class="brand-lockup"><img class="student-crest" src="assets/branding/dragonswood-mascot-crest.png" alt="Dragonswood mascot crest"><div><div class="brand-name">DRAGONSWOOD</div><div class="brand-sub">STUDENT ADVENTURE PORTAL</div></div></div>
-      <div class="student-utility">${state.isTester?'<span class="true-tester-badge" data-true-tester-badge>🧪 TRUE TESTER</span><button class="btn btn-secondary btn-sm" type="button" data-tester-controls>🧪 <span>Tester Controls</span></button>':''}<button class="btn btn-secondary btn-sm" type="button" data-passes>🎟️ <span>Passes</span></button><button class="btn btn-secondary btn-sm" type="button" data-read>🔊 <span>Read aloud</span></button><div class="profile-pill" role="button" tabindex="0" data-account-menu aria-label="Open account menu"><div class="profile-orb">${escapeHtml(state.initial)}</div><span><b>${escapeHtml(state.firstName)}</b><small>Level ${state.level}</small></span></div></div>
-    </div></header>
+      <div class="student-utility">${state.isTester?'<button class="btn btn-secondary btn-sm" type="button" data-tester-controls>🧪 <span>Tester Controls</span></button>':''}<button class="btn btn-secondary btn-sm" type="button" data-passes>🎟️ <span>Passes</span></button><button class="btn btn-secondary btn-sm" type="button" data-read>🔊 <span>Read aloud</span></button><div class="profile-pill" role="button" tabindex="0" data-account-menu aria-label="Open account menu"><div class="profile-orb">${escapeHtml(state.initial)}</div><span><b>${escapeHtml(state.firstName)}</b><small>Level ${state.level}</small></span></div></div>
+      </div></header>
     <aside class="student-sidebar">${navMarkup()}</aside>
-    <main class="student-main" id="page-content"><div class="student-content">${pageMarkup()}</div></main>
+    <main class="student-main" id="page-content">${state.isTester&&state.simulatedDate?`<div class="tester-date-banner" role="status">🧪 SAFE DATE PREVIEW • real date ${escapeHtml(window.DWV33Core?.phoenixDateKey?.()||'today')} • simulated date ${escapeHtml(state.simulatedDate)} • academic and Boss preview writes are disabled <button type="button" data-return-real-date>Return to Today</button></div>`:''}<div class="student-content">${pageMarkup()}</div></main>
     ${passSafetyMarkup()}${teacherAttentionMarkup()}${referenceButton()}${IS_PRODUCTION?'':'<div class="tester-ribbon">V3.3 TESTER • LOCAL ONLY</div>'}
   </div>`;
 }
@@ -320,7 +338,7 @@ function referenceButton(){
   return new URLSearchParams(location.search).get('reference')==='1' ? `<button type="button" class="btn btn-gold btn-sm reference-button" data-reference>Reference</button>` : '';
 }
 
-function welcome(){return `<div class="welcome-strip"><div>✦ &nbsp;<b>Good morning, ${escapeHtml(state.firstName)}!</b> &nbsp;<span>Your next win is ready.</span></div><button class="btn btn-secondary btn-sm" data-read>🔊 Read this page</button></div>`}
+function welcome(){return `<div class="welcome-strip"><div>✦ &nbsp;<b>Good morning, ${escapeHtml(state.firstName)}!</b> &nbsp;<span>Your next win is ready.</span></div></div>`}
 function studentTitle(icon,eyebrow,title,sub){const mascot=titleIcons[state.page];return `<div class="student-page-title"><div class="title-icon">${mascot?`<img src="${mascot.src}" alt="${mascot.alt}">`:icon}</div><div><div class="eyebrow">${eyebrow}</div><h1>${title}</h1><p>${sub}</p></div></div>`}
 function questCard(icon,kicker,title,count,pct,copy){return `<article class="panel quest-card"><div class="quest-top"><span class="text-26">${icon}</span><span class="big-count">${count}</span></div><div class="eyebrow">${kicker}</div><h3>${title}</h3><p>${copy}</p><progress class="dw-progress" max="100" value="${pct}" aria-label="${title} progress">${pct}%</progress></article>`}
 
@@ -342,11 +360,15 @@ function pageMarkup(){
 }
 
 function adventurePage(){
-  const pct=state.xpPct;
+  const pct=state.xpPct,identity=canonicalAdventureIdentity(),badge=adventurerLevelBadge(state.level);
   return `${welcome()}${studentTitle('🛡️','My Adventure','Ready for today’s quest?','Start with your mission, then choose how you want to explore Dragonswood.')}
   <section class="adventure-grid">
     <article class="panel adventurer-card">
-      <div class="adventurer-art"><img src="assets/art/adventurer-art.jpg" alt="${escapeHtml(state.displayName)} with active pet ${escapeHtml(state.pet)}"></div>
+      <div class="adventurer-art live-adventurer-stage" style="--adventure-background:url('${escapeHtml(identity.backgroundArt)}')">
+        <img class="live-adventurer-hero" data-live-adventurer src="${escapeHtml(identity.heroArt)}" data-static-art="${escapeHtml(identity.staticHeroArt)}" alt="${escapeHtml(state.displayName)} wearing ${escapeHtml(identity.appearanceName)}">
+        <div class="live-adventurer-pet" data-live-adventurer-pet aria-live="polite"></div>
+        <div class="live-adventurer-level level-badge-${badge.tier}" aria-label="Level ${state.level}, ${badge.label}"><span class="level-badge-kicker">${badge.kicker}</span><strong>${state.level}</strong><span class="level-badge-rank">${badge.label}</span></div>
+      </div>
       <div class="adventurer-info">
         <span class="rarity-chip">✦ EPIC ADVENTURER</span>
         <h2>${escapeHtml(state.displayName)}</h2><p>Grade ${escapeHtml(state.grade)} • ${escapeHtml(state.characterClass)} Class</p>
@@ -365,6 +387,24 @@ function adventurePage(){
   <section class="quest-cards">${(state.classGoals?.rows||[{icon:'🌤️',title:'Second Recess',points:8,goal:10,pct:80},{icon:'🐾',title:'Class Pet',points:72,goal:100,pct:72},{icon:'🚌',title:'Field Trip',points:164,goal:250,pct:66}]).map(goal=>questCard(goal.icon,'Live class goal',goal.title,`${goal.points} / ${goal.goal}`,goal.pct,`${Math.max(0,goal.goal-goal.points)} points remaining • synced live`)).join('')}</section>`;
 }
 
+function adventurerLevelBadge(level){const value=Math.max(1,Number(level)||1);if(value>=20)return{tier:'max',kicker:'LEVEL',label:'MAX LEVEL'};if(value>=15)return{tier:'legend',kicker:'LEVEL',label:'LEGEND'};if(value>=10)return{tier:'champion',kicker:'LEVEL',label:'CHAMPION'};if(value>=5)return{tier:'adventurer',kicker:'LEVEL',label:'ADVENTURER'};return{tier:'novice',kicker:'LEVEL',label:'NOVICE'}}
+
+function canonicalAdventureIdentity(){
+  const RPG=window.DWRPG,hall=state.world?.hall||{},profile={classId:String(hall.classId||'').toLowerCase(),activePet:hall.activePet,rpgEquipped:hall.equipped||{},homeBackgroundId:hall.homeBackgroundId},portalPath=value=>{const src=String(value||'');if(/^https?:|^data:|^blob:/.test(src))return src;if(src.startsWith('v33-integration/'))return src.slice('v33-integration/'.length);if(src.startsWith('assets/'))return`../${src}`;return src},rawAppearance=RPG?.resolveAppearance?.(profile)||null,appearance=rawAppearance?{...rawAppearance,skinArt:portalPath(rawAppearance.skinArt),idleArt:portalPath(rawAppearance.idleArt),attackArt:portalPath(rawAppearance.attackArt),hurtArt:portalPath(rawAppearance.hurtArt)}:null,cls=RPG?.classes?.[profile.classId]||null,resolvedPet=RPG?.resolvePet?.(profile)||null,pet=resolvedPet?{...resolvedPet,art:portalPath(resolvedPet.art),animatedArt:portalPath(resolvedPet.animatedArt),motion:Object.fromEntries(Object.entries(resolvedPet.motion||{}).map(([key,value])=>[key,portalPath(value)]))}:null,background=RPG?.resolveBackground?.(profile)||null,reduced=matchMedia?.('(prefers-reduced-motion: reduce)')?.matches===true,staticHeroArt=appearance?.skinArt||portalPath(cls?.art)||'../assets/rpg/class-warrior.png',backgroundPath=portalPath(background?.art||'assets/rpg/backgrounds/fairy-purple.webp');
+  return {profile,pet,appearance,appearanceName:appearance?.name||cls?.name||'adventurer appearance',staticHeroArt,heroArt:reduced?staticHeroArt:(appearance?.idleArt||staticHeroArt),backgroundArt:new URL(backgroundPath,document.baseURI).href};
+}
+function disposeAdventureIdentity(){if(adventureMotionTimer){clearInterval(adventureMotionTimer);adventureMotionTimer=null}if(adventurePetActor){adventurePetActor.destroy();adventurePetActor=null}}
+function playAdventureIdentity(stateName='play'){
+  const hero=app.querySelector('[data-live-adventurer]'),identity=canonicalAdventureIdentity();if(!hero)return;
+  const animated=identity.appearance?.[`${stateName}Art`]||identity.appearance?.attackArt||identity.heroArt;hero.src=animated;hero.classList.remove('live-adventurer-action');void hero.offsetWidth;hero.classList.add('live-adventurer-action');adventurePetActor?.play(stateName,stateName==='celebrate'?1400:1000);setTimeout(()=>{if(hero.isConnected){hero.src=identity.heroArt;hero.classList.remove('live-adventurer-action')}},1100);
+}
+function mountAdventureIdentity(){
+  disposeAdventureIdentity();const identity=canonicalAdventureIdentity(),hero=app.querySelector('[data-live-adventurer]'),petHost=app.querySelector('[data-live-adventurer-pet]');if(!hero||!petHost)return;
+  hero.onerror=()=>{if(hero.getAttribute('src')!==identity.staticHeroArt)hero.src=identity.staticHeroArt};
+  if(identity.pet&&window.DWPetMotion)adventurePetActor=new DWPetMotion.PetActor(petHost,identity.pet,{caption:true});else petHost.innerHTML='<span class="live-adventurer-no-pet">No active companion</span>';
+  const states=['play','ability','celebrate'];let index=0;adventureMotionTimer=setInterval(()=>{if(!hero.isConnected){disposeAdventureIdentity();return}playAdventureIdentity(states[index++%states.length])},4800);
+}
+
 const missions = [
   {id:'morning',module:'daily-quest',n:'1',kicker:'DO THIS FIRST',icon:'🌅',title:'Morning Math Quest',desc:'8 decimal problems with step-by-step help.',time:'10–15 min',reward:'+40 XP',button:'Start mission →'},
   {id:'spelling',module:'rune-spelling',n:'2',kicker:'SPELLING PRACTICE',icon:'🔤',title:'Rune Spelling',desc:'Study and practice today’s teacher-assigned spelling words.',time:'10–15 min',reward:'Spelling grade',button:'Open spelling →'},
@@ -380,7 +420,7 @@ function missionsPage(){
       :'Complete Morning Work, Rune Spelling, and Curriculum Quest to open free-choice adventures.';
   const accessLabel=state.dailyAccessOverride===true?'🔓 Teacher override':state.testerUnlocks.unlockMorning===true?'🧪 Tester access':optionalOpen?'🔓 Adventures open':'🔒 Path in progress';
   const readingRows=state.reading?.rows||[],today=window.DWV33Core?.phoenixDateKey?.()||'',readingRow=readingRows.find(row=>row.dateKey===today)||readingRows.slice().sort((a,b)=>String(b.dateKey).localeCompare(String(a.dateKey)))[0],readingMinutes=readingRow?Math.round(readingRow.activeSeconds/6)/10:0,readingTarget=state.reading?.targetMinutes||20,readingAssigned=(state.reading?.assignedDateKeys||[]).includes(today);
-  const languageLocked=!optionalOpen;
+  const languageLocked=!(optionalOpen||weekendAcademicOpen('dragon-tongues')||state.testerUnlocks.unlockMorning===true);
   return `${studentTitle('📜','DRAGON’S PATH','Your quest path','Complete each glowing step. Free-choice adventures unlock when your required path is finished.')}
     <div class="panel path-summary"><div class="path-count"><strong>${completeCount}</strong><small>of 3</small></div><div class="path-copy"><div class="eyebrow">TODAY’S PROGRESS</div><b>One mission at a time.</b><div>${accessSummary}</div></div><div class="path-lock">${accessLabel}</div></div>
     <div class="mission-list">${missions.map((m,i)=>missionRow(m,i)).join('')}</div>
@@ -389,11 +429,12 @@ function missionsPage(){
 }
 function missionRow(m,i){
   const done=state.completedMissions.has(m.id);
-  const testerUnlocked=m.id==='curriculum'&&state.curriculumAccessUnlocked===true;
-  const previousDone=i===0||state.completedMissions.has(missions[i-1].id)||state.dailyAccessOverride===true||testerUnlocked;
+  const testerUnlocked=(m.id==='spelling'&&state.testerUnlocks.unlockMorning===true)||(m.id==='curriculum'&&state.curriculumAccessUnlocked===true);
+  const weekendUnlocked=(m.id==='spelling'||m.id==='curriculum')&&weekendAcademicOpen(m.module);
+  const previousDone=i===0||state.completedMissions.has(missions[i-1].id)||state.dailyAccessOverride===true||testerUnlocked||weekendUnlocked;
   const current=!done&&previousDone;
   const locked=!done&&!previousDone;
-  return `<article class="panel mission-row ${done?'complete':''} ${current?'current':''} ${locked?'locked':''}"><div class="mission-num">${done?'✓':m.n}</div><div class="mission-art">${m.icon}</div><div><div class="eyebrow">${done?'COMPLETE':m.kicker}</div><h3>${m.title}</h3><p>${m.desc}</p><div class="reward-line"><span>🔊 Read aloud</span><span>⏱ ${m.time}</span><span>✨ ${m.reward}</span></div></div><button class="btn ${current?'btn-primary':'btn-secondary'} btn-sm" type="button" data-module="${m.module}" ${locked?'disabled':''}>${done?'Review quest':m.button}</button></article>`;
+  return `<article class="panel mission-row ${done?'complete':''} ${current?'current':''} ${locked?'locked':''}"><div class="mission-num">${done?'✓':m.n}</div><div class="mission-art">${m.icon}</div><div><div class="eyebrow">${done?'COMPLETE':m.kicker}</div><h3>${m.title}</h3><p>${m.desc}</p><div class="reward-line"><span>⏱ ${m.time}</span><span>✨ ${m.reward}</span></div></div><button class="btn ${current?'btn-primary':'btn-secondary'} btn-sm" type="button" data-module="${m.module}" ${locked?'disabled':''}>${done?'Review quest':m.button}</button></article>`;
 }
 
 const games=[
@@ -409,9 +450,9 @@ const games=[
 ];
 function gamesPage(){
   const visible=state.gameFilter==='All'?games:games.filter(g=>g[1]===state.gameFilter);
-  return `${studentTitle('🎮','Academic Games','Choose your adventure','Every game practices a real school skill. Pick a subject and jump in.')}
+  return `${studentTitle('🎮','Quest Games','Choose your adventure','Every game practices a real school skill. Pick a subject and jump in.')}
   <div class="filter-tabs game-filters">${['All','Math','ELA','Science'].map(f=>`<button class="filter-tab ${state.gameFilter===f?'active':''}" data-game-filter="${f}">${f==='All'?'✦ ':''}${f}</button>`).join('')}</div>
-  <section class="game-grid">${visible.map(g=>`<article class="panel game-card"><div class="game-visual"><img src="${g[2]}" alt=""></div><div class="game-copy"><div class="subject">${g[1]} ADVENTURE</div><h3>${g[3]}</h3><p>${g[4]}</p><div class="game-badges"><span>✨ Earn XP</span><span>🔊 Read-aloud</span></div><button class="btn btn-primary" type="button" data-module="${g[0]}">Play quest →</button></div></article>`).join('')}</section>`;
+  <section class="game-grid">${visible.map(g=>`<article class="panel game-card"><div class="game-visual"><img src="${g[2]}" alt=""></div><div class="game-copy"><div class="subject">${g[1]} ADVENTURE</div><h3>${g[3]}</h3><p>${g[4]}</p><div class="game-badges"><span>✨ Earn XP</span></div><button class="btn btn-primary" type="button" data-module="${g[0]}">Play quest →</button></div></article>`).join('')}</section>`;
 }
 
 function wordCount(text){return text.trim()?text.trim().split(/\s+/).length:0}
@@ -447,11 +488,7 @@ function dayPage(){
 }
 
 function hallPage(){
-  const classes=[['Warrior','🛡️','Strong & brave'],['Ranger','🏹','Quick & clever'],['Mage','🔮','Powerful magic'],['Healer','🌿','Help your team']];
-  const pets=[['Nyx','assets/art/pet-nyx.jpg'],['Ember','assets/art/pet-ember.jpg'],['Blink','assets/art/pet-blink.jpg'],['Mochi','assets/art/pet-mochi.jpg']];
-  ensureHallProfileStyles();const hall=state.world?.hall,itemCount=hall?.inventory?.length??0,equipped=Object.entries(hall?.equipped||state.equipment||{}).filter(([,id])=>id),chosenClass=classes.find(c=>c[0]===state.characterClass),visualFreeze=window.DWV33VisualFreeze===true;
-  return `${studentTitle('⚔️','Adventurer Hall','Build your legend','Choose your class, equip powerful gear, and adventure with a pet companion.')}
-  <section class="hall-grid"><article class="panel hall-character"><img src="assets/art/hall-character-v33.jpg" alt="${escapeHtml(state.displayName)} and active pet ${escapeHtml(state.pet)}"></article><div class="hall-controls"><article class="panel choice-panel class-panel">${visualFreeze?`<div class="eyebrow">CHOOSE YOUR CLASS</div><h2>How do you want to adventure?</h2><div class="class-choices">${classes.map(c=>`<button class="choice-btn ${state.characterClass===c[0]?'active':''}" data-class="${c[0]}"><span>${c[1]}</span><b>${c[0]}</b><small>${c[2]}</small></button>`).join('')}</div>`:chosenClass?`<div class="eyebrow">YOUR CLASS • LOCKED</div><h2>${chosenClass[1]} ${chosenClass[0]}</h2><p>Your class is saved to your Dragonswood profile. Only a teacher can reset this choice.</p>`:`<div class="eyebrow">CHOOSE YOUR CLASS</div><h2>How do you want to adventure?</h2><div class="class-choices">${classes.map(c=>`<button class="choice-btn" data-class="${c[0]}"><span>${c[1]}</span><b>${c[0]}</b><small>${c[2]}</small></button>`).join('')}</div>`}</article><article class="panel choice-panel pet-panel"><div class="eyebrow">ACTIVE PET</div><h2>Pick your companion</h2><div class="pet-choices">${pets.map(p=>`<button class="pet-btn ${state.pet===p[0]?'active':''}" data-pet="${p[0]}"><div class="pet-art"><img src="${p[1]}" alt=""></div><b>${p[0]}</b></button>`).join('')}</div></article><article class="panel equipment-panel">${equipped.length?equipped.slice(0,2).map(([slot,id])=>`<div class="equip-card"><span>${slot==='weapon'?'⚔️':slot==='armor'?'🛡️':'✨'}</span><div><b>${escapeHtml(String(id).replace(/[_-]+/g,' '))}</b><small>${escapeHtml(slot)} • equipped</small></div></div>`).join(''):'<div class="equip-card"><span>○</span><div><b>No gear equipped</b><small>Open the Hall to choose gear</small></div></div>'}<div class="equip-card"><span>🎒</span><div><b>${itemCount} items</b><small>Authoritative inventory</small></div></div><button class="btn btn-secondary w-full" type="button" data-module="adventurer-hall">Open full Hall & inventory →</button></article></div></section>`;
+  return moduleHost?.markup('adventurer-hall')||'';
 }
 
 function bossPage(){
@@ -481,7 +518,7 @@ function escapeHtml(value){return String(value??'').replace(/[&<>"]/g,c=>({'&':'
 
 async function signOutStudent(button=null){
   if(button)button.disabled=true;
-  try{await integrationController?.signOut();closeDialog()}catch(err){if(button)button.disabled=false;showToast(`Sign-out failed: ${err?.message||err}`)}
+  try{state.simulatedDate='';sessionSet(SIMULATED_DATE_KEY,'');await integrationController?.signOut();closeDialog()}catch(err){if(button)button.disabled=false;showToast(`Sign-out failed: ${err?.message||err}`)}
 }
 function accountDialog(){
   openDialog('Account',`<div class="pass-student"><span class="roster-avatar">${escapeHtml(state.initial)}</span><div><b>${escapeHtml(state.displayName||state.firstName)}</b><p>Level ${state.level} • Grade ${escapeHtml(state.grade)}</p></div></div><p class="muted mt-12">Sign out here when you need to switch Dragonswood accounts.</p>`,`<button class="btn btn-secondary" type="button" data-suggest-improvement>💡 Suggest an Improvement</button><button class="btn btn-secondary" type="button" data-close-dialog>Close</button><button class="btn btn-danger" type="button" data-account-signout>↪ Sign Out</button>`);
@@ -491,17 +528,30 @@ function accountDialog(){
 
 function testerControlsDialog(){
   if(!state.isTester)return;
-  const rows=[['unlockMorning','Morning Work'],['unlockCurriculum','Curriculum Quest'],['unlockArcade','Arcade'],['unlockKingdom','Kingdom Wars']];
+  const rows=[['unlockMorning','Morning Work + Rune + Dragon Tongues'],['unlockCurriculum','Curriculum Quest'],['unlockArcade','Arcade'],['unlockKingdom','Kingdom Wars'],['unlockBoss','Boss Battle preview']];
   const statusRows=rows.map(([field,label])=>`<div class="tester-status-row" data-tester-status="${field}"><span>${label}</span><strong>${state.testerUnlocks[field]===true?'UNLOCKED':'LOCKED'}</strong></div>`).join('');
   const controls=rows.map(([field,label])=>{const capability=window.DWTesterAccess?.UNLOCK_CAPABILITIES?.[field],enabled=state.testerCapabilities[capability]===true;return `<button class="btn btn-secondary" type="button" data-tester-unlock="${field}" ${enabled?'':'disabled'}>Unlock ${label}</button>`}).join('');
-  openDialog('🧪 Tester Controls',`<div class="true-tester-badge" data-dialog-true-tester>🧪 TRUE TESTER</div><p><b>${escapeHtml(state.testerLabel||'Authorized Dragonswood tester')}</b></p><p class="muted">These controls affect only your authenticated UID. Unlocks bypass access gates; they never mark academic work complete or change classwide locks.</p><div class="tester-status-list">${statusRows}</div><div class="tester-controls-grid"><button class="btn btn-primary" type="button" data-tester-unlock-all>Unlock Everything for Me</button><button class="btn btn-secondary" type="button" data-tester-relock-all>Relock Everything for Me</button>${controls}</div><hr><h3>Self-points</h3><p class="muted">Awards use the real student balance and transaction ledger.</p><div class="tester-points-row"><select data-tester-currency aria-label="Tester point currency"><option value="xp">XP</option><option value="gold">Gold</option></select><input data-tester-custom-amount type="number" min="1" max="1000" step="1" value="10" aria-label="Custom tester point amount"></div><div class="tester-points-presets"><button class="btn btn-secondary btn-sm" type="button" data-tester-points="10">+10</button><button class="btn btn-secondary btn-sm" type="button" data-tester-points="50">+50</button><button class="btn btn-secondary btn-sm" type="button" data-tester-points="100">+100</button><button class="btn btn-primary btn-sm" type="button" data-tester-custom-points>Award Custom Amount</button></div>`,`<button class="btn btn-secondary" data-close-dialog>Close Tester Controls</button>`);
-  const apply=async(button,patch,message)=>{button.disabled=true;try{const next=await integrationController?.setTesterUnlocks(patch);state.testerUnlocks={...state.testerUnlocks,...next};showToast(message);testerControlsDialog()}catch(err){button.disabled=false;showToast(err?.message||'Tester controls could not update.')}};
-  dialogRoot.querySelector('[data-tester-unlock-all]')?.addEventListener('click',e=>apply(e.currentTarget,{unlockMorning:true,unlockCurriculum:true,unlockArcade:true,unlockKingdom:true},'All tester self-unlocks are on.'));
-  dialogRoot.querySelector('[data-tester-relock-all]')?.addEventListener('click',e=>apply(e.currentTarget,{unlockMorning:false,unlockCurriculum:false,unlockArcade:false,unlockKingdom:false},'All tester self-unlocks are off.'));
+  const today=window.DWV33Core?.phoenixDateKey?.()||new Date().toISOString().slice(0,10);
+  openDialog('🧪 Tester Controls',`<p><b>${escapeHtml(state.testerLabel||'Authorized Dragonswood tester')}</b></p><p class="muted">These controls affect only your authenticated UID. Unlocks bypass access gates; they never mark academic work complete or change classwide locks. Override Morning Work bypasses Morning Work, Rune Spelling, and Dragon’s Tongue gates for this tester. Boss and simulated-date runs are safe previews with no rewards or completion writes.</p><div class="tester-status-list">${statusRows}</div><div class="tester-controls-grid"><button class="btn btn-primary" type="button" data-tester-unlock-all>Unlock Everything for Me</button><button class="btn btn-secondary" type="button" data-tester-relock-all>Relock Everything for Me</button><button class="btn btn-secondary" type="button" data-tester-unlock-kingdom-boss>Unlock Kingdom Wars + Boss Battle</button>${controls}</div><hr><h3>Change Day</h3><p class="muted">Shared safe preview date for Morning Work, Exit Quest, Rune Spelling, Dragon Tongues, Curriculum/Recovery, and Boss Battle.</p><div class="tester-points-row"><button class="btn btn-secondary btn-sm" type="button" data-tester-date-shift="-1">Previous Day</button><input data-tester-date type="date" value="${escapeHtml(state.simulatedDate||today)}" aria-label="Simulated tester date"><button class="btn btn-secondary btn-sm" type="button" data-tester-date-shift="1">Next Day</button></div><div class="tester-points-presets"><button class="btn btn-secondary btn-sm" type="button" data-tester-date-today>Today</button><button class="btn btn-primary btn-sm" type="button" data-tester-date-apply>Use Selected Day</button><button class="btn btn-secondary btn-sm" type="button" data-return-real-date>Return to Today</button></div><hr><h3>Self-points</h3><p class="muted">Awards use the real student balance and transaction ledger.</p><div class="tester-points-row"><select data-tester-currency aria-label="Tester point currency"><option value="xp">XP</option><option value="gold">Gold</option></select><input data-tester-custom-amount type="number" min="1" max="1000" step="1" value="10" aria-label="Custom tester point amount"></div><div class="tester-points-presets"><button class="btn btn-secondary btn-sm" type="button" data-tester-points="10">+10</button><button class="btn btn-secondary btn-sm" type="button" data-tester-points="50">+50</button><button class="btn btn-secondary btn-sm" type="button" data-tester-points="100">+100</button><button class="btn btn-primary btn-sm" type="button" data-tester-custom-points>Award Custom Amount</button></div>`,`<button class="btn btn-secondary" data-close-dialog>Close Tester Controls</button>`);
+  dialogRoot.dataset.dialogKind='true-tester';
+  dialogRoot.querySelector('.dialog')?.setAttribute('data-dialog-true-tester','');
+  const apply=async(button,patch,message)=>{
+    button.disabled=true;
+    try{const next=await integrationController?.setTesterUnlocks(patch);state.testerUnlocks={...state.testerUnlocks,...next};showToast(message);testerControlsDialog()}
+    catch(err){const localPreview=['localhost','127.0.0.1'].includes(location.hostname)&&state.isTester&&String(err?.code||err?.message||'').includes('permission');if(!localPreview){button.disabled=false;showToast(err?.message||'Tester controls could not update.');return}state.testerUnlocks={...state.testerUnlocks,...setLocalTesterUnlocks(patch)};showToast(`${message} Local safe-preview only until Firestore rules are deployed.`);testerControlsDialog()}
+  };
+  dialogRoot.querySelector('[data-tester-unlock-all]')?.addEventListener('click',e=>apply(e.currentTarget,{unlockMorning:true,unlockCurriculum:true,unlockArcade:true,unlockKingdom:true,unlockBoss:true},'All tester self-unlocks are on.'));
+  dialogRoot.querySelector('[data-tester-relock-all]')?.addEventListener('click',e=>apply(e.currentTarget,{unlockMorning:false,unlockCurriculum:false,unlockArcade:false,unlockKingdom:false,unlockBoss:false},'All tester self-unlocks are off.'));
+  dialogRoot.querySelector('[data-tester-unlock-kingdom-boss]')?.addEventListener('click',e=>apply(e.currentTarget,{unlockKingdom:true,unlockBoss:true},'Kingdom Wars and Boss Battle tester access are on.'));
   dialogRoot.querySelectorAll('[data-tester-unlock]').forEach(button=>button.addEventListener('click',()=>apply(button,{[button.dataset.testerUnlock]:true},`${button.textContent.trim()} is on.`)));
   const award=async(button,amount)=>{button.disabled=true;try{const currency=dialogRoot.querySelector('[data-tester-currency]')?.value||'xp',result=await integrationController?.adjustTesterSelfPoints(currency,amount);showToast(`Tester self-award saved: +${result.amount} ${String(result.currency||currency).toUpperCase()}.`)}catch(err){showToast(err?.message||'Tester points could not be awarded.')}finally{button.disabled=false}};
   dialogRoot.querySelectorAll('[data-tester-points]').forEach(button=>button.addEventListener('click',()=>award(button,Number(button.dataset.testerPoints))));
   dialogRoot.querySelector('[data-tester-custom-points]')?.addEventListener('click',e=>award(e.currentTarget,Number(dialogRoot.querySelector('[data-tester-custom-amount]')?.value)));
+  const dateInput=dialogRoot.querySelector('[data-tester-date]'),useDate=value=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(String(value||'')))return;state.simulatedDate=value===today?'':value;sessionSet(SIMULATED_DATE_KEY,state.simulatedDate);closeDialog();render();showToast(state.simulatedDate?`Safe tester date changed to ${state.simulatedDate}.`:'Returned to the real date.');};
+  dialogRoot.querySelectorAll('[data-tester-date-shift]').forEach(button=>button.addEventListener('click',()=>{dateInput.value=window.DWV33Core?.shiftDateKey?.(dateInput.value,Number(button.dataset.testerDateShift))||dateInput.value}));
+  dialogRoot.querySelector('[data-tester-date-today]')?.addEventListener('click',()=>{dateInput.value=today});
+  dialogRoot.querySelector('[data-tester-date-apply]')?.addEventListener('click',()=>useDate(dateInput.value));
+  dialogRoot.querySelector('[data-return-real-date]')?.addEventListener('click',()=>useDate(today));
 }
 
 function applyStudentModel(model,academic,world,passes,poll,attention,kingdomAccess,classGoals,session={}){
@@ -517,21 +567,23 @@ function applyStudentModel(model,academic,world,passes,poll,attention,kingdomAcc
   state.dailyAccessOverride=model.dailyAccessOverride===true;
   state.isTester=session.isTester===true;
   state.testerCapabilities=session.testerCapabilities||{};
-  state.testerUnlocks=session.testerUnlocks||{};
+  state.testerUnlocks={...(session.testerUnlocks||{}),...(state.isTester?localTesterUnlocks():{})};
   state.testerLabel=session.testerAccount?.label||'';
   state.curriculumAccessUnlocked=session.curriculumAccess?.unlocked===true;
   state.spellingGrade=Number(session.spelling?.grade||model.spellingGrade||model.grade)||5;
   state.spellingResults=Array.isArray(session.spelling?.results)?session.spelling.results:[];
-  state.spellingComplete=session.spelling?.completeToday===true;
+  state.spellingComplete=state.spellingResults.some(row=>String(row.dateKey||'')===effectiveDateKey()&&String(row.completionStatus||row.status||'').includes('complete'));
   setMissionStatus('spelling',state.spellingComplete?'complete':'not_started');
   state.kingdomAccessUnlocked=kingdomAccess?.unlocked===true;
   state.attention=attention||null;
   if(!accessWasUnlocked&&state.dailyAccessUnlocked&&dialogRoot?.dataset.dialogKind==='required-work')closeDialog();
-  if(model.dailyMissions){
+  if(model.dailyMissions&&!state.simulatedDate){
     if(state.missionDate&&state.missionDate!==model.dailyMissions.dateKey){state.completedMissions.delete('curriculum');state.recoverySummary={dateKey:'',checked:false,count:0,days:[]}}
     state.missionDate=model.dailyMissions.dateKey||'';
     setMissionStatus('morning',model.dailyMissions.morning);
     setMissionStatus('exit',model.dailyMissions.exit);
+  }else if(state.simulatedDate){
+    state.missionDate=effectiveDateKey();setMissionStatus('morning','not_started');setMissionStatus('exit','not_started');setMissionStatus('curriculum','not_started');
   }
   if(academic?.scribe){
     state.academicConnected=true;state.scribeSession=academic.scribe.session||null;state.scribeResponse=academic.scribe.current||null;state.scribePortfolio=academic.scribe.portfolio||null;
@@ -560,12 +612,12 @@ function handleModuleState(event){
   if(!fromVisibleModule&&!fromRecoveryProbe)return;
   const message=event.data;
   if(message.type==='daily-mission-state'){
-    if(message.dateKey!==window.DWV33Core?.phoenixDateKey())return;
+    if(message.dateKey!==effectiveDateKey())return;
     setMissionStatus('morning',message.morning);
     setMissionStatus('exit',message.exit);
   }else if(message.type==='curriculum-mission-state'){
     setMissionStatus('curriculum',message.currentComplete?'complete':'not_started');
-    state.recoverySummary={dateKey:window.DWV33Core?.phoenixDateKey()||state.missionDate,checked:true,count:Number(message.recoveryCount)||0,days:Array.isArray(message.recoveryDays)?message.recoveryDays.map(row=>({day:Number(row.day)||0,count:Number(row.count)||0})).filter(row=>row.day>0&&row.count>0):[]};
+    state.recoverySummary={dateKey:effectiveDateKey()||state.missionDate,checked:true,count:Number(message.recoveryCount)||0,days:Array.isArray(message.recoveryDays)?message.recoveryDays.map(row=>({day:Number(row.day)||0,count:Number(row.count)||0})).filter(row=>row.day>0&&row.count>0):[]};
     storageSet('recovery-summary',JSON.stringify(state.recoverySummary));
     if(fromRecoveryProbe){recoveryProbe.remove();recoveryProbe=null}
   }else return;
@@ -579,7 +631,7 @@ function authGate(){
 }
 function render(){
   if(integrationSession.status!=='authorized'){
-    app.innerHTML=authGate();bindAuthGate();document.title=IS_PRODUCTION?'Dragonswood | Sign In':'[INTEGRATION] Dragonswood | Sign In';return;
+    disposeAdventureIdentity();app.innerHTML=authGate();bindAuthGate();document.title=IS_PRODUCTION?'Dragonswood | Sign In':'[INTEGRATION] Dragonswood | Sign In';return;
   }
   ensureRecoveryProbe();
   const requestedModule=currentModuleId(),mountedModule=app.querySelector('[data-v33-module-shell]')?.dataset.v33ModuleShell||'';
@@ -590,6 +642,7 @@ function render(){
     return;
   }
   state.page=currentPage();
+  disposeAdventureIdentity();
   app.innerHTML=shell();
   bind();
   const moduleId=currentModuleId();
@@ -606,13 +659,13 @@ function bindAuthGate(){
 }
 
 function currentSpellingWeek(){
-  const today=window.DWV33Core?.phoenixDateKey?.()||new Date().toISOString().slice(0,10),start=Date.UTC(2026,7,24),current=Date.parse(`${today}T12:00:00Z`),week=Math.floor((current-start)/(7*86400000))+1;
+  const today=effectiveDateKey(),start=Date.UTC(2026,7,24),current=Date.parse(`${today}T12:00:00Z`),week=Math.floor((current-start)/(7*86400000))+1;
   return Math.max(1,Math.min(30,Number.isFinite(week)?week:1));
 }
 function spellingLevelKey(grade=state.spellingGrade){return ({3:'foundation',4:'grade4',5:'grade5',6:'challenge',8:'master'})[Number(grade)]||'grade5'}
 window.DWV33SpellingContext=()=>({
   studentId:integrationSession.user?.uid||'',studentName:state.displayName||state.firstName||'Adventurer',assignmentId:`weekly-spelling-${currentSpellingWeek()}`,
-  spellingLevel:spellingLevelKey(),spellingWeek:currentSpellingWeek(),gradeCode:String(state.spellingGrade||5),role:state.isTester?'tester':'student',className:'Explore Academy',level:String(state.level||1),petName:state.pet||'Dragon',lessonBank:[],
+  spellingLevel:spellingLevelKey(),spellingWeek:currentSpellingWeek(),spellingDay:['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][window.DWV33Core?.weekday?.(effectiveDateKey())]||'',gradeCode:String(state.spellingGrade||5),role:state.isTester?'tester':'student',className:'Explore Academy',level:String(state.level||1),petName:state.pet||'Dragon',lessonBank:[],
   reportMission:async envelope=>integrationController?.reportSpellingMission?.(envelope)
 });
 
@@ -629,6 +682,7 @@ function bind(){
   app.querySelectorAll('[data-read]').forEach(el=>el.addEventListener('click',readPage));
   app.querySelector('[data-passes]')?.addEventListener('click',passesDialog);
   app.querySelector('[data-tester-controls]')?.addEventListener('click',testerControlsDialog);
+  app.querySelector('[data-return-real-date]')?.addEventListener('click',()=>{state.simulatedDate='';sessionSet(SIMULATED_DATE_KEY,'');render();showToast('Returned to the real date.');});
   app.querySelectorAll('[data-return-active-pass]').forEach(el=>el.addEventListener('click',()=>returnActivePass(el)));
   app.querySelector('[data-acknowledge-attention]')?.addEventListener('click',e=>acknowledgeTeacherAttention(e.currentTarget));
   app.querySelector('[data-reference]')?.addEventListener('click',showReference);
@@ -643,7 +697,8 @@ function bind(){
   app.querySelectorAll('[data-class]').forEach(el=>el.addEventListener('click',()=>openModule('adventurer-hall')));
   app.querySelectorAll('[data-pet]').forEach(el=>el.addEventListener('click',()=>openModule('adventurer-hall')));
   app.querySelectorAll('[data-move]').forEach(el=>el.addEventListener('click',()=>openModule('boss-battle')));
-  if(currentModuleId())mountModule(currentModuleId());
+  if(currentModuleId())mountModule(currentModuleId());else if(state.page==='hall')mountModule('adventurer-hall');
+  if(state.page==='adventure'&&!currentModuleId())mountAdventureIdentity();
   startPassSafetyEngine();
 }
 
@@ -693,6 +748,7 @@ function openPage(page,trigger=null){
   if(blockingPass()){showToast('Return your active pass before continuing Dragonswood.');location.hash='adventure';return}
   if(requiredWorkLocked(page)){location.hash='missions';showRequiredWorkDialog(page);return}
   if(String(page)==='arcade'){enterArcade(trigger);return}
+  if(String(page)==='hall'&&state.page!=='hall')state.previousPortalPage=state.page||'adventure';
   location.hash=page;
 }
 function openModule(id){
@@ -702,6 +758,7 @@ function openModule(id){
   location.hash=`module/${encodeURIComponent(id)}`;
 }
 function closeModule(){
+  if(state.page==='hall'&&!currentModuleId()){location.hash=state.previousPortalPage||'adventure';return}
   const mod=moduleHost?.definition(currentModuleId());location.hash=mod?.returnPage||'adventure';
 }
 function mountModule(id){if(id)moduleHost?.mount(app,id,document.baseURI)}

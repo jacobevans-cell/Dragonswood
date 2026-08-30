@@ -27,7 +27,7 @@ function firstAsset(...values){
   return '';
 }
 function petData(id){
-  if(!id)return null;
+  id=RPG?.canonicalPetId?.(id)||id;if(!id)return null;
   return PET_REGISTRY.find(p=>p?.id===id)
     || [...(RPG?.pets||[]),...(RPG?.prestigePets||[])].find(p=>p?.id===id)
     || null;
@@ -42,9 +42,7 @@ function petCandidates(p){
   return [...new Set(values.map(v=>firstAsset(v)).filter(Boolean))];
 }
 function heroCandidates(student){
-  const cls=student?.classId||'warrior',owned=new Set(student?.rpgInventory||[]);
-  const packs=(RPG?.appearancePacks||[]).filter(x=>x.classId===cls&&owned.has(x.id)).sort((a,b)=>(Number(b.level)||0)-(Number(a.level)||0));
-  const pack=packs[0],c=RPG?.classes?.[cls];
+  const cls=student?.classId||'warrior',pack=RPG?.resolveAppearance?.(student)||null,c=RPG?.classes?.[cls];
   return [...new Set([
     pack?.idleArt,pack?.skinArt,pack?.art,
     c?.art,c?.artGirl,c?.artBoy,`assets/rpg/skin-${cls}-5.png`,`assets/rpg/skin-${cls}-4.png`,`assets/rpg/skin-${cls}.png`,CLASS_ART[cls],CLASS_ART.warrior

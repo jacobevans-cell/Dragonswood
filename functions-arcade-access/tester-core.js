@@ -7,13 +7,14 @@
 
   const CAPABILITIES=Object.freeze([
     'selfUnlockMorning','selfUnlockCurriculum','selfUnlockArcade',
-    'selfUnlockKingdom','selfAwardPoints'
+    'selfUnlockKingdom','selfUnlockBoss','selfAwardPoints'
   ]);
   const UNLOCK_CAPABILITIES=Object.freeze({
     unlockMorning:'selfUnlockMorning',
     unlockCurriculum:'selfUnlockCurriculum',
     unlockArcade:'selfUnlockArcade',
-    unlockKingdom:'selfUnlockKingdom'
+    unlockKingdom:'selfUnlockKingdom',
+    unlockBoss:'selfUnlockBoss'
   });
 
   const text=value=>String(value??'').trim();

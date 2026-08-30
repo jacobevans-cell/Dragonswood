@@ -2399,18 +2399,18 @@ wordrel(r,p,i){
 },
 wordcontext(r,p,i){
   const items=[
-   ["The path was treacherous, so the travelers moved with great care.","treacherous","dangerous","safe",["short","sunny","narrow"]],
-   ["Maya was elated when she found the lost map.","elated","very happy","miserable",["confused","tired","angry"]],
-   ["The ancient bridge was fragile and creaked underfoot.","fragile","easily broken","sturdy",["strong","wide","new"]],
-   ["He spoke in a feeble voice after the long climb.","feeble","weak","powerful",["loud","cheerful","rapid"]],
-   ["The scholars debated the meaning of the inscription.","debated","argued about","agreed on",["ignored","erased","copied"]],
-   ["The cavern was immense, swallowing the torchlight.","immense","very large","tiny",["damp","bright","narrow"]],
-   ["Leo was reluctant to enter the dark tunnel.","reluctant","unwilling","eager",["curious","ready","calm"]],
-   ["The council reached a unanimous decision.","unanimous","agreed by everyone","divided",["delayed","written","quick"]],
-   ["She scrutinized the map for hidden marks.","scrutinized","examined closely","glanced at",["folded","drew","lost"]],
-   ["The guard's tone was hostile.","hostile","unfriendly","welcoming",["quiet","formal","tired"]],
-   ["Their supplies were meager after the storm.","meager","very small in amount","plentiful",["heavy","fresh","wet"]],
-   ["The knight's response was prompt.","prompt","quick and on time","delayed",["polite","loud","written"]]];
+   ["The path was treacherous, so the travelers moved with great care.","treacherous","dangerous","safe",["ordinary","pleasant","crowded"]],
+   ["Maya was elated when she found the lost map.","elated","very happy","miserable",["very confused","quite worried","deeply tired"]],
+   ["The ancient bridge was fragile and creaked underfoot.","fragile","easily broken","sturdy",["firmly attached","painted brightly","recently built"]],
+   ["He spoke in a feeble voice after the long climb.","feeble","weak","powerful",["loud","calm","slow"]],
+   ["The scholars debated the meaning of the inscription.","debated","argued about","agreed on",["talked quietly","wrote it down","read it aloud"]],
+   ["The cavern was immense, swallowing the torchlight.","immense","very large","tiny",["slightly damp","brightly lit","rather narrow"]],
+   ["Leo was reluctant to enter the dark tunnel.","reluctant","unwilling","eager",["very curious","fully prepared","quite relaxed"]],
+   ["The council reached a unanimous decision.","unanimous","agreed by everyone","divided",["postponed until later","recorded in writing","finished very quickly"]],
+   ["She scrutinized the map for hidden marks.","scrutinized","examined closely","glanced at",["folded carefully","copied by hand","put away safely"]],
+   ["The guard's tone was hostile.","hostile","unfriendly","welcoming",["very quiet","quite formal","rather tired"]],
+   ["Their supplies were meager after the storm.","meager","very small in amount","plentiful",["too heavy to carry","completely fresh","slightly wet inside"]],
+   ["The knight's response was prompt.","prompt","quick and on time","delayed",["polite but delayed","loud and repeated","written in advance"]]];
   const [s,w,ans,ant,wrongs]=bp(r,items,i);
   if(p.rel==="antonym")
     return {prompt:`Read the sentence: “${s}”\nWhich word means the OPPOSITE of “${w}”?`,answer:ant,
@@ -3135,28 +3135,28 @@ composition(r,p,i){
   if(k==="support"){
     const q=[["Learning to read a map is a valuable skill for any traveler.",
       "A map helps a traveler find water, shelter, and safe paths.",
-      ["Maps are usually rectangular.","I have a map at home.","Some people dislike hiking."]],
+      ["Some travelers collect old maps because the paper and artwork look interesting.","Maps may be printed in several colors and folded into a traveler's pack.","The oldest map in the museum hangs inside a heavy wooden frame."]],
      ["Keeping a daily journal helps writers improve.",
       "Writing every day builds fluency and makes ideas easier to organize.",
-      ["Journals come in many colors.","My journal has 200 pages.","Some people write in pen."]],
+      ["Journals are sold with plain covers, colored covers, and many different page sizes.","A new journal can be purchased at a store or made by folding paper together.","Some writers prefer a blue pen, while other writers choose a black pencil."]],
      ["Working as a team makes difficult tasks manageable.",
       "When members divide the work, each person can focus on what they do best.",
-      ["Teams usually have a captain.","I have been on three teams.","Teamwork is a word."]],
+      ["A team may choose matching shirts so that every member looks alike at the event.","Some teams meet on Tuesdays, while other teams practice later in the week.","Team names are often printed on signs, schedules, or colorful banners."]],
      ["Winter travel in the mountains requires careful preparation.",
       "Travelers who pack extra fuel and dry layers can survive an unexpected storm.",
-      ["Winter happens every year.","I own a warm coat.","Mountains are made of rock."]],
+      ["Winter begins after autumn and brings shorter days to mountain communities.","Mountains may be covered with snow that looks bright under the morning sun.","Travelers often take photographs of the mountains before beginning the trip."]],
      ["Rivers shaped where early villages were built.",
       "Settlements grew beside rivers because water powered mills and carried goods.",
-      ["Rivers contain water.","I once crossed a river.","Villages have houses."]],
+      ["Rivers may curve across a landscape before reaching a lake or ocean.","Some people visit rivers to take photographs or listen to moving water.","A river can appear blue, green, or brown depending on light and soil."]],
      ["Lanterns were essential tools for medieval travelers.",
       "A shielded flame let a traveler read a map without the wind snuffing it out.",
-      ["Lanterns are older than flashlights.","I saw a lantern in a museum.","Fire produces heat."]],
+      ["Medieval lanterns were often made from metal pieces joined around clear panels.","Travelers carried many objects, including blankets, rope, and cooking pots.","Museum visitors can see old lanterns displayed behind glass today."]],
      ["Handmade maps reveal what their makers valued most.",
       "Mapmakers drew trade routes in careful detail while leaving empty land vague.",
-      ["Maps are drawn on paper.","I have drawn a map before.","Ink can smudge."]],
+      ["Handmade maps can use colored ink, decorated borders, and carefully drawn letters.","A finished map may be rolled into a tube or folded between pages of a book.","Some mapmakers sharpened their tools before drawing the first line."]],
      ["Practicing a skill in short daily sessions beats one long session.",
       "Spacing practice over several days gives the brain time to consolidate what it learned.",
-      ["Practice takes time.","I practice sometimes.","Sessions can be long or short."]]];
+      ["Practice sessions can happen before school, after school, or during free time.","Some students keep practice charts with stickers for each day they remember.","A long session may require a quiet room, a timer, and several short breaks."]]];
     const x=bp(r,q,i);
     return {prompt:`Topic sentence: “${x[0]}”\nWhich sentence best SUPPORTS it?`,answer:x[1],
       choices:shuffle(r,[x[1],...x[2]])}

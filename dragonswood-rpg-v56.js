@@ -6,7 +6,9 @@
     mage:{name:"Mage",icon:"🔮",art:A+"class-mage.png",color:"#b76cff",base:{atk:5,def:0,hp:2,heal:1},trait:"Spellcraft",traitText:"The strongest starting attack, balanced by lighter defense."},
     healer:{name:"Healer",icon:"✨",art:A+"class-healer.png",color:"#65dff1",base:{atk:1,def:1,hp:5,heal:5},trait:"Restoration",traitText:"Correct answers restore a small amount of battle HP."}
   };
-  const petRegistry=Array.isArray(window.DRAGONSWOOD_PET_REGISTRY)?window.DRAGONSWOOD_PET_REGISTRY:[];
+  const registrySource=Array.isArray(window.DRAGONSWOOD_PET_REGISTRY)?window.DRAGONSWOOD_PET_REGISTRY:[];
+  const nyx={id:"pet-nyx",name:"Nyx",art:"v33-integration/assets/art/pet-nyx.jpg",animatedArt:"",rarity:"rare",level:1,description:"The original Dragonswood companion.",habitat:"Dragonswood",nature:"dragon",personality:"loyal",unlockSource:"Legacy Dragonswood companion",bonusSummary:"+1 ATK, +1 DEF",atk:1,def:1,prestige:false,ability:"Dragon Bond",abilityText:"Nyx supports the equipped adventurer without replacing another active pet."};
+  const petRegistry=registrySource.some(p=>p?.id==="pet-nyx")?registrySource:[...registrySource,nyx];
   const pets=petRegistry.filter(p=>!p.prestige);
   const prestigePets=petRegistry.filter(p=>p.prestige);
   const enemies=[
@@ -177,6 +179,12 @@
   function levelForXp(xp){const t=[0,200,450,750,1100,1500,1950,2450,3000,3600,4250,4950,5700,6500,7350,8250,9200,10200,11100,12000];let l=1;t.forEach((v,i)=>{if(Number(xp||0)>=v)l=i+1});return Math.min(20,l)}
   function hash(s){let h=2166136261;for(const c of String(s)){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
   function dailyEnemy(uid,day){return enemies[hash(`${uid}|${dateKey()}|${day}`)%enemies.length]}
+  function canonicalPetId(value){const id=String(value||"").trim();return id.toLowerCase()==="nyx"?"pet-nyx":id}
+  function resolvePet(profile={}){const id=canonicalPetId(profile.activePet);return id?[...pets,...prestigePets].find(p=>p.id===id)||null:null}
+  function resolveAppearance(profile={}){const id=String(profile?.rpgEquipped?.appearance||"").trim();if(!id)return null;return items.find(item=>item.id===id&&item.appearance===true&&item.classId===String(profile.classId||""))||null}
+  function resolveBackground(profile={}){const ids=new Set(["fairy-purple","fairy-bamboo","fairy-mushroom","crystal-cave","jungle","mountain-night","snow-aurora","snow-village"]),id=String(profile.homeBackgroundId||"fairy-purple");return ids.has(id)?{id,art:`assets/rpg/backgrounds/${id}.webp`}:null}
+  function inventory(profile={}){return Array.isArray(profile.rpgInventory)?profile.rpgInventory.map(String):[]}
+  function dailyXp(profile={}){return String(profile.dailyXpDate||"")===dateKey()?Math.max(0,Math.min(150,Number(profile.dailyXpEarned)||0)):0}
 
-  window.DWRPG={classes,pets,prestigePets,petRegistry,enemies,items,appearancePacks,dateKey,levelForXp,hash,dailyEnemy,version:"56.17"};
+  window.DWRPG={classes,pets,prestigePets,petRegistry,enemies,items,appearancePacks,dateKey,levelForXp,hash,dailyEnemy,canonicalPetId,resolvePet,resolveAppearance,resolveBackground,inventory,dailyXp,version:"56.18"};
 })();

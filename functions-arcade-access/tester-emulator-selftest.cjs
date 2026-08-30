@@ -12,7 +12,7 @@ const FUNCTIONS=`http://127.0.0.1:5001/${PROJECT}/us-central1`;
 const DB=`${FIRESTORE}/v1/projects/${PROJECT}/databases/(default)`;
 const DOC_ROOT=`projects/${PROJECT}/databases/(default)`;
 const PASSWORD='True-Tester-Emulator-Only-2026!';
-const CAPABILITIES={selfUnlockMorning:true,selfUnlockCurriculum:true,selfUnlockArcade:true,selfUnlockKingdom:true,selfAwardPoints:true};
+const CAPABILITIES={selfUnlockMorning:true,selfUnlockCurriculum:true,selfUnlockArcade:true,selfUnlockKingdom:true,selfUnlockBoss:true,selfAwardPoints:true};
 const FALSE_CONTROLS={unlockMorning:false,unlockCurriculum:false,unlockArcade:false,unlockKingdom:false};
 const TRUE_CONTROLS={unlockMorning:true,unlockCurriculum:true,unlockArcade:true,unlockKingdom:true};
 

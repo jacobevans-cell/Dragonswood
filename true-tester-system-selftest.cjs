@@ -15,6 +15,7 @@ const expectedCapabilities={
   selfUnlockCurriculum:true,
   selfUnlockArcade:true,
   selfUnlockKingdom:true,
+  selfUnlockBoss:true,
   selfAwardPoints:true
 };
 

@@ -351,6 +351,17 @@ service cloud.firestore {
                     && resource.data.get('classId','') == ''
                     && request.resource.data.classId in ['warrior','ranger','mage','healer'];
 
+      // Active testers may reset only their own class choice for repeated Hall QA.
+      allow update: if isOwner(studentId)
+                    && isTester()
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['classId','classChosenAt','classResetAt','classResetBy','updatedAt'])
+                    && request.resource.data.classId == ''
+                    && request.resource.data.classChosenAt == null
+                    && request.resource.data.classResetBy == request.auth.uid
+                    && request.resource.data.classResetAt == request.time
+                    && request.resource.data.updatedAt == request.time;
+
       // Buy from the Class Shop. Gold must actually go down; inventory grows by
       // at most one entry, and nothing already owned may disappear.
       allow update: if isOwner(studentId)
@@ -711,18 +722,20 @@ service cloud.firestore {
                             && isTester()
                             && request.resource.data.keys().hasOnly([
                               'uid','unlockMorning','unlockCurriculum',
-                              'unlockArcade','unlockKingdom','updatedAt'
+                              'unlockArcade','unlockKingdom','unlockBoss','updatedAt'
                             ])
                             && request.resource.data.uid == request.auth.uid
                             && request.resource.data.unlockMorning is bool
                             && request.resource.data.unlockCurriculum is bool
                             && request.resource.data.unlockArcade is bool
                             && request.resource.data.unlockKingdom is bool
+                            && request.resource.data.unlockBoss is bool
                             && request.resource.data.updatedAt == request.time
                             && (request.resource.data.unlockMorning == false || testerCapability('selfUnlockMorning'))
                             && (request.resource.data.unlockCurriculum == false || testerCapability('selfUnlockCurriculum'))
                             && (request.resource.data.unlockArcade == false || testerCapability('selfUnlockArcade'))
-                            && (request.resource.data.unlockKingdom == false || testerCapability('selfUnlockKingdom'));
+                            && (request.resource.data.unlockKingdom == false || testerCapability('selfUnlockKingdom'))
+                            && (request.resource.data.unlockBoss == false || testerCapability('selfUnlockBoss'));
       allow delete: if isTeacher();
     }
 

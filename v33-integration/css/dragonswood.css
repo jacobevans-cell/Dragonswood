@@ -1935,9 +1935,10 @@
     background:linear-gradient(90deg,rgba(255,255,255,.012),rgba(255,255,255,0));
     color:#dce5f5;
     border-radius:13px;
-    padding:10px 11px;
+    min-height:64px;
+    padding:6px 9px;
     display:grid;
-    grid-template-columns:26px minmax(0,1fr) auto;
+    grid-template-columns:54px minmax(0,1fr) auto;
     align-items:center;
     gap:8px;
     text-align:left;
@@ -1970,10 +1971,16 @@
     border-color:rgba(255,222,118,.50);
   }
   .nav-icon{
-    font-size:18px;
+    width:54px;
+    height:54px;
+    display:grid;
+    place-items:center;
     text-align:center;
     filter:drop-shadow(0 2px 5px rgba(0,0,0,.45));
   }
+  .nav-icon img{width:54px;height:54px;display:block;object-fit:contain}
+  .tester-date-banner{position:sticky;top:0;z-index:45;display:flex;align-items:center;justify-content:center;gap:12px;min-height:42px;padding:8px 14px;border-bottom:2px solid #53e4c2;background:#06392f;color:#effffb;font-weight:900;letter-spacing:.02em;box-shadow:0 6px 20px #0007}
+  .tester-date-banner button{min-height:30px;padding:5px 10px;border:1px solid #d8fff6;border-radius:8px;background:#0c6f5d;color:#fff;font-weight:900;cursor:pointer}
   .nav-badge{
     min-width:20px;
     height:20px;
@@ -2373,6 +2380,22 @@
     background:linear-gradient(180deg,rgba(255,255,255,.03),transparent 22%,rgba(3,7,29,.08) 64%,rgba(3,7,29,.42));
     box-shadow:inset -1px 0 rgba(109,191,230,.14);
   }
+  .live-adventurer-stage{isolation:isolate;background-image:linear-gradient(180deg,rgba(3,7,24,.08),rgba(3,7,24,.35)),var(--adventure-background)!important;background-position:center!important;background-size:cover!important}
+  .live-adventurer-stage::after{z-index:4}
+  .live-adventurer-hero{position:absolute;z-index:2;left:8%;bottom:-2%;width:66%!important;height:62%!important;object-fit:contain!important;object-position:center bottom;transform-origin:50% 92%;filter:drop-shadow(0 14px 10px rgba(0,0,0,.7));animation:dwHeroIdle 2.8s ease-in-out infinite;will-change:transform,filter}
+  .live-adventurer-hero.live-adventurer-action{animation:dwHeroAction .85s ease-in-out}
+  .live-adventurer-pet{position:absolute!important;z-index:3;right:2%;bottom:7%;width:44%;height:39%;min-height:0!important}
+  .live-adventurer-pet .dw-pet-actor-art{max-height:145px}
+  .live-adventurer-pet .dw-pet-actor-caption{bottom:-2px}
+  .live-adventurer-level{position:absolute;z-index:5;left:14px;top:14px;width:76px;height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:8px;text-align:center;color:#fff7d2;font-weight:900;line-height:1;border:3px solid var(--level-accent,#78dcff);border-radius:50%;background:radial-gradient(circle at 35% 25%,rgba(57,72,150,.96),rgba(12,18,58,.98) 64%,rgba(4,8,30,.99));box-shadow:inset 0 0 0 3px rgba(255,255,255,.08),inset 0 -12px 22px rgba(0,0,0,.32),0 0 0 2px rgba(3,8,29,.9),0 7px 18px rgba(0,0,0,.7),0 0 16px color-mix(in srgb,var(--level-accent,#78dcff) 45%,transparent);isolation:isolate}
+  .live-adventurer-level::after{content:"";position:absolute;inset:6px;z-index:-1;border:1px solid color-mix(in srgb,var(--level-accent,#78dcff) 58%,transparent);border-radius:50%;pointer-events:none}
+  .live-adventurer-level strong{display:block;margin:0;font:900 27px/.92 Georgia,serif;letter-spacing:.01em;color:#fff8d5;text-shadow:0 2px 0 rgba(0,0,0,.65)}
+  .level-badge-kicker{font-size:7px;letter-spacing:.14em;white-space:nowrap;color:#f5f8ff}.level-badge-rank{max-width:58px;overflow:hidden;text-overflow:ellipsis;font-size:6px;letter-spacing:.08em;white-space:nowrap;color:var(--level-accent,#78dcff)}
+  .level-badge-novice{--level-accent:#d7965a}.level-badge-adventurer{--level-accent:#65dfff}.level-badge-champion{--level-accent:#ffcf55}.level-badge-legend{--level-accent:#d796ff}.level-badge-max{--level-accent:#ffe477;width:82px;height:82px;left:11px;top:11px;background:radial-gradient(circle at 35% 24%,#5d46b5,#26155f 62%,#0b092d);box-shadow:inset 0 0 0 3px rgba(255,255,255,.1),inset 0 -12px 22px rgba(0,0,0,.3),0 0 0 2px #6e4d08,0 7px 18px rgba(0,0,0,.72),0 0 17px rgba(255,218,90,.46)}.level-badge-max strong{font-size:30px;color:#fff4a8}.level-badge-max .level-badge-rank{color:#ffe477}
+  .live-adventurer-no-pet{padding:8px;border-radius:999px;background:#07112ccc;color:#fff4b0;font-size:10px}
+  @keyframes dwHeroIdle{0%,100%{transform:translate(0,0) rotate(-.45deg) scale(1);filter:drop-shadow(0 14px 10px rgba(0,0,0,.7))}34%{transform:translate(7px,-4px) rotate(.65deg) scale(1.012,.994);filter:drop-shadow(0 16px 11px rgba(0,0,0,.64))}68%{transform:translate(-6px,-1px) rotate(-.55deg) scale(.997,1.009);filter:drop-shadow(0 15px 10px rgba(0,0,0,.67))}}
+  @keyframes dwHeroAction{0%,100%{transform:translateX(0) scale(1)}45%{transform:translateX(13px) scale(1.06)}}
+  @media(prefers-reduced-motion:reduce){.live-adventurer-hero,.live-adventurer-hero.live-adventurer-action,.level-badge-max{animation:none!important}}
   .adventurer-info{
     padding:48px 28px 24px;
     display:flex;
@@ -3012,6 +3035,11 @@
     position:relative;
     backdrop-filter:blur(18px) saturate(138%);
     border-color:rgba(92,176,220,.36);
+  }
+  #dialog-root[data-dialog-kind="true-tester"] .dialog{
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    scrollbar-gutter:stable;
   }
   .toast{
     position:fixed;

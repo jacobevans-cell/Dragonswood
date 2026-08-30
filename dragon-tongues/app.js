@@ -8,8 +8,9 @@
   const APP_VERSION = "1.5.4";
   const BUILD_ID = "v1.5.4-teach-me-2026-08-29";
   const STORAGE_KEY = "dragonswood-dragon-tongues-v1";
+  const previewParams=new URLSearchParams(location.search),safeDatePreview=previewParams.get("dw-safe-preview")==="1"&&/^\d{4}-\d{2}-\d{2}$/.test(String(previewParams.get("date")||""));
   const ASL_READY_LICENSES = new Set(["OWNED", "CC0-1.0", "CC-BY-4.0", "CC-BY-SA-4.0", "CUSTOM-REDISTRIBUTION"]);
-  const todayKey = () => new Date().toISOString().slice(0, 10);
+  const todayKey = () => safeDatePreview?previewParams.get("date"):new Date().toISOString().slice(0, 10);
 
   const defaultState = {
     activeCourse: "spanish",
@@ -58,6 +59,7 @@
   renderView("learn");
   updateChrome();
   registerOfflineSupport();
+  if(safeDatePreview){const banner=document.createElement("div");banner.setAttribute("role","status");banner.style.cssText="position:fixed;z-index:99999;top:0;left:0;right:0;padding:8px;text-align:center;background:#06392f;color:#fff;font:900 13px Arial;border-bottom:2px solid #53e4c2";banner.textContent=`🧪 SAFE DATE PREVIEW • ${todayKey()} • progress is not saved`;document.body.append(banner)}
 
   function loadState() {
     try {
@@ -83,7 +85,7 @@
   }
 
   function saveState() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    if(!safeDatePreview)localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     updateChrome();
   }
 

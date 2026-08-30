@@ -156,7 +156,7 @@ let isTeacher=false,currentStudent=null,activeVideoId=null,watchedRanges=[],last
 let studentCurriculumAccess=false,accessMessage="Checking today's school-day assignment…";
 let currentQuestOpen=false,curriculumStateReady=false;
 const WATCH_REQUIRED_FRACTION=.90;
-function save(){localStorage.setItem(K,JSON.stringify(S));if(window.queueCurriculumProgress)window.queueCurriculumProgress(S)}
+function save(){if(window.DWCurriculumSafePreview===true)return;localStorage.setItem(K,JSON.stringify(S));if(window.queueCurriculumProgress)window.queueCurriculumProgress(S)}
 function saveCurriculumItemState(id,itemState){S.items[id]=itemState;save()}
 function st(id){return S.items[id]||{watched:false,practiced:false,verified:false,videoReflection:"",practiceEvidence:""}}
 
@@ -548,12 +548,12 @@ function renderActivity(x){
 }
 function findItem(id){return D.items.find(x=>x.id===id)}
 function autoQuestionsFor(x){
-  try{const rows=typeof dwCurricPractice==="function"?dwCurricPractice(x,6):[];if(window.DWGrading)rows.forEach((q,i)=>window.DWGrading.assertQuestion(q,`Curriculum ${x.id} #${i+1}`));return rows}
+  try{const rows=typeof dwCurricPractice==="function"?dwCurricPractice(x,6):[];return window.DWGrading?rows.filter((q,i)=>window.DWGrading.assertQuestion(q,`Curriculum ${x.id} #${i+1}`)):rows}
   catch(e){console.error("Curriculum practice",x.id,e);return []}
 }
 function autoPassed(x){
   const q=autoQuestionsFor(x),s=st(x.id),a=s.autoAnswers||{};
-  return !q.length||q.every((item,i)=>(window.DWGrading?window.DWGrading.questionAnswerEquivalent(item,a[i]||""):String(a[i]||"")===String(item.answer))||s.autoOverrideStatus?.[i]==="approved");
+  return q.length>0&&q.every((item,i)=>(window.DWGrading?window.DWGrading.questionAnswerEquivalent(item,a[i]||""):String(a[i]||"")===String(item.answer))||s.autoOverrideStatus?.[i]==="approved");
 }
 // v56.23 — routine passing work auto-completes. Human review is reserved
 // for exception requests when Dragonswood cannot confidently accept an answer.
@@ -747,7 +747,8 @@ import {initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/1
 import {getAuth,onAuthStateChanged,connectAuthEmulator} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {getFirestore,doc,getDoc,getDocs,setDoc,updateDoc,addDoc,collection,serverTimestamp,onSnapshot,query,where,connectFirestoreEmulator} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 import {getFunctions,httpsCallable,connectFunctionsEmulator} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-functions.js";
-const DW_V33_PARAMS=new URLSearchParams(location.search),DW_V33_ENV=DW_V33_PARAMS.get("dw-env")||"production",DW_V33_EMULATOR=DW_V33_ENV==="emulator";
+const DW_V33_PARAMS=new URLSearchParams(location.search),DW_V33_ENV=DW_V33_PARAMS.get("dw-env")||"production",DW_V33_EMULATOR=DW_V33_ENV==="emulator",DW_SAFE_PREVIEW=DW_V33_PARAMS.get("dw-safe-preview")==="1"&&/^\d{4}-\d{2}-\d{2}$/.test(String(DW_V33_PARAMS.get("date")||""));
+window.DWCurriculumSafePreview=DW_SAFE_PREVIEW;
 const firebaseConfig=DW_V33_EMULATOR
   ? {apiKey:"demo-key",authDomain:"demo-dragonswood-v33.localhost",projectId:"demo-dragonswood-v33",storageBucket:"demo-dragonswood-v33.appspot.com",messagingSenderId:"000000000000",appId:"1:000000000000:web:demo-v33"}
   : {"apiKey":"AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE","authDomain":"dragonswood-9289e.firebaseapp.com","projectId":"dragonswood-9289e","storageBucket":"dragonswood-9289e.firebasestorage.app","messagingSenderId":"1064477064695","appId":"1:1064477064695:web:283e1016ee2303d39042f2","measurementId":"G-LPRLDGVBD2"};
@@ -769,7 +770,7 @@ const Tester=globalThis.DWTesterAccess;
 let testerSession=Tester.normalizeTester('',null),testerControls={},testerCurriculumOverride=false;
 let testerAccountUnsub=null,testerControlsUnsub=null;
 const syncedSignatures=new Map();
-function phoenixDateKey(){return new Intl.DateTimeFormat("en-CA",{timeZone:"America/Phoenix",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date())}
+function phoenixDateKey(){return DW_SAFE_PREVIEW?DW_V33_PARAMS.get("date"):new Intl.DateTimeFormat("en-CA",{timeZone:"America/Phoenix",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date())}
 function progressDocId(uid,itemId){return `${uid}_${itemId}`}
 function questionCounts(item,state){
   const qs=autoQuestionsFor(item),answers=state.autoAnswers||{};
@@ -820,7 +821,7 @@ async function migrateLegacyProgress(uid,legacy){
   return remote.docs.map(d=>d.data());
 }
 window.queueCurriculumProgress=state=>{
-  if(!progressReady||!auth.currentUser||isTeacher)return;
+  if(DW_SAFE_PREVIEW||!progressReady||!auth.currentUser||isTeacher)return;
   clearTimeout(progressTimer);
   const snapshot=JSON.parse(JSON.stringify(state));
   progressTimer=setTimeout(async()=>{
@@ -833,7 +834,7 @@ window.queueCurriculumProgress=state=>{
   },500);
 };
 window.recordCurriculumAttempt=async(item,state,writtenPassed)=>{
-  if(!progressReady||!auth.currentUser||isTeacher)return;
+  if(DW_SAFE_PREVIEW||!progressReady||!auth.currentUser||isTeacher)return;
   const counts=questionCounts(item,state),attemptNumber=Math.max(1,Number(state.activityAttempts||1));
   const total=Math.max(1,counts.seen),accuracy=Math.round(counts.correct/total*100);
   try{await addDoc(collection(db,"curriculumAttempts"),{studentId:auth.currentUser.uid,itemId:item.id,grade:item.grade,day:Number(item.day),subject:item.subject,strand:item.strand||"",attemptNumber,questionsCorrect:counts.correct,questionsSeen:total,accuracy,writtenPassed:!!writtenPassed,createdAt:serverTimestamp()})}catch(e){console.warn("Curriculum attempt history",e)}
@@ -844,6 +845,7 @@ window.setCurriculumVerification=async(id,value)=>{
   catch(e){alert("Verification was not saved: "+(e.code||e.message));return false}
 };
 window.submitCurriculumOverride=async (item,answer,attempts,meta={})=>{
+  if(DW_SAFE_PREVIEW)return false;
   if(!auth.currentUser){
     alert("You are not signed in to Dragonswood on this page. Return to the Dragonswood portal, sign in, and open Curriculum Quest again.");
     return false;
@@ -937,10 +939,10 @@ onAuthStateChanged(auth,async u=>{
         const legacy=legacySnap.exists()?legacySnap.data():{};
         const mergedLegacy={grade:S.grade||legacy.grade||"I",day:Math.max(Number(S.day||1),Number(legacy.day||1)),items:{...(legacy.items||{}),...(S.items||{})}};
         Object.values(mergedLegacy.items).forEach(x=>{x.verified=false});
-        await migrateLegacyProgress(u.uid,mergedLegacy);
+        if(!DW_SAFE_PREVIEW)await migrateLegacyProgress(u.uid,mergedLegacy);
         const progressSnap=await getDocs(query(collection(db,"curriculumProgress"),where("studentId","==",u.uid)));
         S=mergeProgressRows(mergedLegacy,progressSnap.docs.map(d=>d.data()));
-        localStorage.setItem(K,JSON.stringify(S));
+        if(!DW_SAFE_PREVIEW)localStorage.setItem(K,JSON.stringify(S));
       }catch(e){console.warn("Curriculum cloud progress unavailable; local progress remains safe",e)}
       progressReady=true;
       window.queueCurriculumProgress(S);
@@ -961,7 +963,7 @@ onAuthStateChanged(auth,async u=>{
         S.day=Math.max(1,Math.min(40,Number(assignment.day||1)));
         studentCurriculumAccess=true;
         currentQuestOpen=true;
-        accessMessage="";
+        accessMessage=DW_SAFE_PREVIEW?`🧪 SAFE DATE PREVIEW • ${phoenixDateKey()} • progress and completion writes are disabled.`:"";
         save();
       }catch(e){
         S.day=q1CalendarCursor();

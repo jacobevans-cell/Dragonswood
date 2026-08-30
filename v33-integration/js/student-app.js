@@ -360,18 +360,19 @@ function pageMarkup(){
 }
 
 function adventurePage(){
-  const pct=state.xpPct,identity=canonicalAdventureIdentity(),badge=adventurerLevelBadge(state.level);
+  const pct=state.xpPct,identity=canonicalAdventureIdentity(),badge=getLevelBadgeAsset(state.level);
   return `${welcome()}${studentTitle('🛡️','My Adventure','Ready for today’s quest?','Start with your mission, then choose how you want to explore Dragonswood.')}
   <section class="adventure-grid">
     <article class="panel adventurer-card">
       <div class="adventurer-art live-adventurer-stage" style="--adventure-background:url('${escapeHtml(identity.backgroundArt)}')">
         <img class="live-adventurer-hero" data-live-adventurer src="${escapeHtml(identity.heroArt)}" data-static-art="${escapeHtml(identity.staticHeroArt)}" alt="${escapeHtml(state.displayName)} wearing ${escapeHtml(identity.appearanceName)}">
         <div class="live-adventurer-pet" data-live-adventurer-pet aria-live="polite"></div>
-        <div class="live-adventurer-level level-badge-${badge.tier}" aria-label="Level ${state.level}, ${badge.label}"><span class="level-badge-kicker">${badge.kicker}</span><strong>${state.level}</strong><span class="level-badge-rank">${badge.label}</span></div>
       </div>
       <div class="adventurer-info">
-        <span class="rarity-chip">✦ EPIC ADVENTURER</span>
-        <h2>${escapeHtml(state.displayName)}</h2><p>Grade ${escapeHtml(state.grade)} • ${escapeHtml(state.characterClass)} Class</p>
+        <div class="adventurer-profile-heading">
+          <div class="adventurer-profile-copy"><span class="rarity-chip">✦ EPIC ADVENTURER</span><h2>${escapeHtml(state.displayName)}</h2><p>Grade ${escapeHtml(state.grade)} • ${escapeHtml(state.characterClass)} Class</p></div>
+          <div class="live-adventurer-level" role="img" aria-label="${badge.alt}"><img src="${badge.src}" width="112" height="112" alt=""><span><small>LEVEL</small><strong>${badge.displayLevel}</strong></span></div>
+        </div>
         <div class="stat-row"><div class="stat-box"><strong>❤️ ${state.hp}</strong><small>HP</small></div><div class="stat-box"><strong>🪙 ${state.gold}</strong><small>Gold</small></div><div class="stat-box"><strong>🔥 ${state.streak}</strong><small>Streak</small></div></div>
         <div class="xp-labels"><span>${state.xp.toLocaleString()} / ${state.xpMax.toLocaleString()} XP</span><span>${pct}%</span></div><progress class="dw-progress" max="100" value="${pct}" aria-label="Experience progress">${pct}%</progress>
         <button class="btn btn-secondary w-full" type="button" data-page="hall">⚔️ Open my character</button>
@@ -387,7 +388,10 @@ function adventurePage(){
   <section class="quest-cards">${(state.classGoals?.rows||[{icon:'🌤️',title:'Second Recess',points:8,goal:10,pct:80},{icon:'🐾',title:'Class Pet',points:72,goal:100,pct:72},{icon:'🚌',title:'Field Trip',points:164,goal:250,pct:66}]).map(goal=>questCard(goal.icon,'Live class goal',goal.title,`${goal.points} / ${goal.goal}`,goal.pct,`${Math.max(0,goal.goal-goal.points)} points remaining • synced live`)).join('')}</section>`;
 }
 
-function adventurerLevelBadge(level){const value=Math.max(1,Number(level)||1);if(value>=20)return{tier:'max',kicker:'LEVEL',label:'MAX LEVEL'};if(value>=15)return{tier:'legend',kicker:'LEVEL',label:'LEGEND'};if(value>=10)return{tier:'champion',kicker:'LEVEL',label:'CHAMPION'};if(value>=5)return{tier:'adventurer',kicker:'LEVEL',label:'ADVENTURER'};return{tier:'novice',kicker:'LEVEL',label:'NOVICE'}}
+function getLevelBadgeAsset(level){
+  const parsed=Number(level),displayLevel=Number.isFinite(parsed)?Math.max(1,Math.min(20,Math.trunc(parsed))):1,id=String(displayLevel).padStart(2,'0');
+  return{displayLevel,src:`assets/level-badges/webp-256/level-badge-${id}.webp`,alt:`Level ${displayLevel}`};
+}
 
 function canonicalAdventureIdentity(){
   const RPG=window.DWRPG,hall=state.world?.hall||{},profile={classId:String(hall.classId||'').toLowerCase(),activePet:hall.activePet,rpgEquipped:hall.equipped||{},homeBackgroundId:hall.homeBackgroundId},portalPath=value=>{const src=String(value||'');if(/^https?:|^data:|^blob:/.test(src))return src;if(src.startsWith('v33-integration/'))return src.slice('v33-integration/'.length);if(src.startsWith('assets/'))return`../${src}`;return src},rawAppearance=RPG?.resolveAppearance?.(profile)||null,appearance=rawAppearance?{...rawAppearance,skinArt:portalPath(rawAppearance.skinArt),idleArt:portalPath(rawAppearance.idleArt),attackArt:portalPath(rawAppearance.attackArt),hurtArt:portalPath(rawAppearance.hurtArt)}:null,cls=RPG?.classes?.[profile.classId]||null,resolvedPet=RPG?.resolvePet?.(profile)||null,pet=resolvedPet?{...resolvedPet,art:portalPath(resolvedPet.art),animatedArt:portalPath(resolvedPet.animatedArt),motion:Object.fromEntries(Object.entries(resolvedPet.motion||{}).map(([key,value])=>[key,portalPath(value)]))}:null,background=RPG?.resolveBackground?.(profile)||null,reduced=matchMedia?.('(prefers-reduced-motion: reduce)')?.matches===true,staticHeroArt=appearance?.skinArt||portalPath(cls?.art)||'../assets/rpg/class-warrior.png',backgroundPath=portalPath(background?.art||'assets/rpg/backgrounds/fairy-purple.webp');
@@ -401,7 +405,7 @@ function playAdventureIdentity(stateName='play'){
 function mountAdventureIdentity(){
   disposeAdventureIdentity();const identity=canonicalAdventureIdentity(),hero=app.querySelector('[data-live-adventurer]'),petHost=app.querySelector('[data-live-adventurer-pet]');if(!hero||!petHost)return;
   hero.onerror=()=>{if(hero.getAttribute('src')!==identity.staticHeroArt)hero.src=identity.staticHeroArt};
-  if(identity.pet&&window.DWPetMotion)adventurePetActor=new DWPetMotion.PetActor(petHost,identity.pet,{caption:true});else petHost.innerHTML='<span class="live-adventurer-no-pet">No active companion</span>';
+  if(identity.pet&&window.DWPetMotion)adventurePetActor=new DWPetMotion.PetActor(petHost,identity.pet,{caption:true});else petHost.hidden=true;
   const states=['play','ability','celebrate'];let index=0;adventureMotionTimer=setInterval(()=>{if(!hero.isConnected){disposeAdventureIdentity();return}playAdventureIdentity(states[index++%states.length])},4800);
 }
 

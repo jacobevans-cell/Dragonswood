@@ -1,4 +1,4 @@
-import {environment,getArcadeAccess,startArcadeSession,setCurrentAccess,remainingMs} from './access-client.js?v=57.1.16';
+import {environment,getArcadeAccess,startArcadeSession,setCurrentAccess,remainingMs} from './access-client.js?v=58.0.1';
 let loaded=false;
 let refreshing=false;
 let access=null;
@@ -56,7 +56,7 @@ function updateClock(){
 }
 async function unlock(next){
   access=setCurrentAccess(next);
-  if(!loaded){await import('./arcade.js?v=57.1.16');loaded=true}
+  if(!loaded){await import('./arcade.js?v=58.0.1');loaded=true}
   document.documentElement.classList.remove('arcade-auth-pending');
   gate.hidden=true;
   badge.hidden=false;

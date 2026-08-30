@@ -110,11 +110,22 @@
       lastTesterAccount=tester.exists?{active:tester.active,email:tester.email,label:tester.label,capabilities:{...tester.capabilities}}:{};
       const watchDoc=(path,key,setter,label)=>S.firestore.onSnapshot(S.firestore.doc(db,...path),snap=>{setter(snap.exists()?{id:snap.id,...snap.data()}:{});ready[key]=true;push()},err=>emit(onUpdate,{status:'error',user,message:`${label} read failed: ${err?.code||err?.message||err}`}));
       const watchQuery=(query,key,setter,label)=>S.firestore.onSnapshot(query,snap=>{setter(snap.docs.map(d=>({id:d.id,...d.data()})));ready[key]=true;push()},err=>emit(onUpdate,{status:'error',user,message:`${label} read failed: ${err?.code||err?.message||err}`}));
+      const watchOptionalQuery=(query,key,setter,label)=>S.firestore.onSnapshot(
+        query,
+        snap=>{setter(snap.docs.map(d=>({id:d.id,...d.data()})));ready[key]=true;push()},
+        err=>{
+          if(err?.code==='permission-denied'){
+            console.warn(`${label} is waiting for its Firestore rule deployment.`);
+            setter([]);ready[key]=true;push();return;
+          }
+          emit(onUpdate,{status:'error',user,message:`${label} read failed: ${err?.code||err?.message||err}`});
+        }
+      );
       testerUnsub=watchDoc(['testerAccounts',user.uid],'tester',value=>{lastTesterAccount=value},'Tester authorization');
       testerControlsUnsub=watchDoc(['testerSelfControls',user.uid],'testerControls',value=>{lastTesterControls=value},'Tester self-controls');
       profileUnsub=watchDoc(['students',user.uid],'profile',value=>{lastProfile=value},'Student profile');
       dailyUnsub=watchQuery(S.firestore.query(S.firestore.collection(db,'dailyQuestProgress'),S.firestore.where('studentId','==',user.uid)),'daily',value=>{lastDaily=value},'Daily progress');
-      spellingUnsub=watchQuery(S.firestore.query(S.firestore.collection(db,'spellingResults'),S.firestore.where('studentId','==',user.uid)),'spelling',value=>{lastSpelling=value},'Spelling results');
+      spellingUnsub=watchOptionalQuery(S.firestore.query(S.firestore.collection(db,'spellingResults'),S.firestore.where('studentId','==',user.uid)),'spelling',value=>{lastSpelling=value},'Spelling results');
       overrideUnsub=watchDoc(['classData','dailyAccessOverride'],'override',value=>{lastOverride=value},'Daily access override');
       scribeUnsub=watchDoc(['classData','activeWritingSession'],'scribe',value=>{lastScribe=value},'Writing mission');
       responsesUnsub=watchQuery(S.firestore.query(S.firestore.collection(db,'writingResponses'),S.firestore.where('studentId','==',user.uid)),'responses',value=>{lastResponses=value},'Writing portfolio');
@@ -254,9 +265,22 @@
       emit(onUpdate,{status:'checking',user,message:'Loading Teacher Command operations…'});
       const schoolYearStart=()=>`${new Date().getMonth()>=6?new Date().getFullYear():new Date().getFullYear()-1}-07-01`;
       const dateWindowed=new Set(['dailyQuestProgress','spellingResults','gameResults','readingSessions','bathroomRequests','snackRequests','passRequests','passHistory','teacherAttentionEvents','scores']);
-      const watchCollection=(collection,key=collection)=>{const ref=S.firestore.collection(db,collection),source=dateWindowed.has(collection)?S.firestore.query(ref,S.firestore.where('dateKey','>=',schoolYearStart())):ref;unsubs.push(S.firestore.onSnapshot(source,snap=>{data[key]=snap.docs.map(d=>({id:d.id,...d.data()}));ready[key]=true;push()},err=>emit(onUpdate,{status:'error',user,message:`${collection} read failed: ${err?.code||err?.message||err}`})))};
+      const watchCollection=(collection,key=collection,optional=false)=>{
+        const ref=S.firestore.collection(db,collection),source=dateWindowed.has(collection)?S.firestore.query(ref,S.firestore.where('dateKey','>=',schoolYearStart())):ref;
+        unsubs.push(S.firestore.onSnapshot(
+          source,
+          snap=>{data[key]=snap.docs.map(d=>({id:d.id,...d.data()}));ready[key]=true;push()},
+          err=>{
+            if(optional&&err?.code==='permission-denied'){
+              console.warn(`${collection} is waiting for its Firestore rule deployment.`);
+              data[key]=[];ready[key]=true;push();return;
+            }
+            emit(onUpdate,{status:'error',user,message:`${collection} read failed: ${err?.code||err?.message||err}`});
+          }
+        ));
+      };
       const watchDoc=(id,key)=>unsubs.push(S.firestore.onSnapshot(S.firestore.doc(db,'classData',id),snap=>{data[key]=snap.exists()?{id:snap.id,...snap.data()}:{};ready[key]=true;push()},err=>emit(onUpdate,{status:'error',user,message:`classData/${id} read failed: ${err?.code||err?.message||err}`})));
-      [['students','roster'],['dailyQuestProgress','daily'],['spellingResults','spellingResults'],['curriculumAttempts','curriculum'],['writingResponses','responses'],['gameResults','games'],['readingSessions','readingSessions'],['studentTransactions','studentTransactions'],['bathroomRequests','bathroomRequests'],['snackRequests','snackRequests'],['passRequests','passRequests'],['pointRequests','pointRequests'],['bathroomStatus','bathroomStatus'],['snackStatus','snackStatus'],['passStatus','passStatus'],['passHistory','passHistory'],['bathroomSlots','bathroomSlots'],['curriculumOverrideRequests','curriculumOverrides'],['classPollVotes','pollVotes'],['teacherAttentionEvents','attentionEvents'],['studentSuggestions','studentSuggestions'],['studentSuggestionNotes','suggestionNotes'],['academicAiUsage','academicAiUsage'],['studentJobWeeks','jobWeeks'],['classCalendarEvents','calendarEvents'],['scores','scores'],['leaderboardRewards','leaderboardRewards']].forEach(([collection,key])=>watchCollection(collection,key));
+      [['students','roster'],['dailyQuestProgress','daily'],['spellingResults','spellingResults',true],['curriculumAttempts','curriculum'],['writingResponses','responses'],['gameResults','games'],['readingSessions','readingSessions'],['studentTransactions','studentTransactions'],['bathroomRequests','bathroomRequests'],['snackRequests','snackRequests'],['passRequests','passRequests'],['pointRequests','pointRequests'],['bathroomStatus','bathroomStatus'],['snackStatus','snackStatus'],['passStatus','passStatus'],['passHistory','passHistory'],['bathroomSlots','bathroomSlots'],['curriculumOverrideRequests','curriculumOverrides'],['classPollVotes','pollVotes'],['teacherAttentionEvents','attentionEvents'],['studentSuggestions','studentSuggestions'],['studentSuggestionNotes','suggestionNotes'],['academicAiUsage','academicAiUsage'],['studentJobWeeks','jobWeeks'],['classCalendarEvents','calendarEvents'],['scores','scores'],['leaderboardRewards','leaderboardRewards']].forEach(([collection,key,optional])=>watchCollection(collection,key,optional));
       [['activeWritingSession','scribe'],['activePoll','activePoll'],['activeTeacherAttention','activeAttention'],['kingdomAccess','kingdomAccess'],['dailyAccessOverride','dailyOverride'],['gradebookSettings','gradeSettings'],['academicAiConfig','academicAiConfig'],['passBlackout','passBlackout'],['main','classMain'],['secondRecess','secondRecess'],['classPet','classPet'],['fieldTrip','fieldTrip'],['universalPoints','universalPoints'],['classJobs','classJobs'],['classSchedule','classSchedule']].forEach(([id,key])=>watchDoc(id,key));
     });
     const requireWrite=()=>{if(environment!=='emulator'&&environment!=='production')throw new Error('Teacher writes are disabled in this read-only environment.');if(!currentUser)throw new Error('Teacher sign-in required.')};

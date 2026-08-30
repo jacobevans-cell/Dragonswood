@@ -472,7 +472,8 @@ async function signOutStudent(button=null){
   try{await integrationController?.signOut();closeDialog()}catch(err){if(button)button.disabled=false;showToast(`Sign-out failed: ${err?.message||err}`)}
 }
 function accountDialog(){
-  openDialog('Account',`<div class="pass-student"><span class="roster-avatar">${escapeHtml(state.initial)}</span><div><b>${escapeHtml(state.displayName||state.firstName)}</b><p>Level ${state.level} • Grade ${escapeHtml(state.grade)}</p></div></div><p class="muted mt-12">Sign out here when you need to switch Dragonswood accounts.</p>`,`<button class="btn btn-secondary" type="button" data-close-dialog>Close</button><button class="btn btn-danger" type="button" data-account-signout>↪ Sign Out</button>`);
+  openDialog('Account',`<div class="pass-student"><span class="roster-avatar">${escapeHtml(state.initial)}</span><div><b>${escapeHtml(state.displayName||state.firstName)}</b><p>Level ${state.level} • Grade ${escapeHtml(state.grade)}</p></div></div><p class="muted mt-12">Sign out here when you need to switch Dragonswood accounts.</p>`,`<button class="btn btn-secondary" type="button" data-suggest-improvement>💡 Suggest an Improvement</button><button class="btn btn-secondary" type="button" data-close-dialog>Close</button><button class="btn btn-danger" type="button" data-account-signout>↪ Sign Out</button>`);
+  dialogRoot.querySelector('[data-suggest-improvement]')?.addEventListener('click',()=>{closeDialog();window.dispatchEvent(new Event('dragonswood:open-suggestion'))});
   dialogRoot.querySelector('[data-account-signout]')?.addEventListener('click',e=>signOutStudent(e.currentTarget));
 }
 

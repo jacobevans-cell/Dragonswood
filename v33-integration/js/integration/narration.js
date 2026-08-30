@@ -14,7 +14,7 @@
   }
   function ready(){
     if(window.DWNarrator)return Promise.resolve(window.DWNarrator);
-    if(!loader)loader=loadScript('../narration-manifest.js').then(()=>loadScript('../dragonswood-narrator.js')).then(()=>{
+    if(!loader)loader=loadScript('../narration-manifest.js').then(()=>loadScript('../dragonswood-narrator.js?v=57.1.10')).then(()=>{
       if(!window.DWNarrator)throw new Error('Dragonswood narrator did not initialize.');
       return window.DWNarrator;
     });

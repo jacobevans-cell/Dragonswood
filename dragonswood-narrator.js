@@ -9,6 +9,7 @@
   const fmt=n=>`${Math.floor((n||0)/60)}:${String(Math.floor((n||0)%60)).padStart(2,"0")}`;
   const root=document.createElement("section");root.className="dw-narrator";root.hidden=true;root.setAttribute("aria-label","Dragonswood narration player");
   const launcher=document.createElement("button");launcher.type="button";launcher.className="dw-narrator-launcher";launcher.setAttribute("aria-label","Open read aloud controls");launcher.textContent="🔊 READ ALOUD";
+  launcher.hidden=true;
   root.innerHTML=`<style>
     .dw-narrator{position:fixed;z-index:100001;left:50%;bottom:16px;transform:translateX(-50%);width:min(760px,calc(100vw - 24px));padding:12px 14px;border:2px solid #f7cf62;border-radius:14px;background:#080923f5;color:#fff;box-shadow:0 14px 40px #000b;font:14px Arial}
     .dw-narrator-launcher{position:fixed;z-index:100000;right:14px;bottom:14px;border:2px solid #f7cf62;border-radius:999px;background:linear-gradient(135deg,#6b2fc7,#087ea4);color:#fff;padding:11px 15px;font:900 13px Arial;box-shadow:0 8px 24px #0009;cursor:pointer}

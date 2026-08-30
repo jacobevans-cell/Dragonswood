@@ -388,8 +388,6 @@ const games=[
   ['decimal-deception','Math','assets/art/game-visual-1.jpg','Decimal Deception','Restore the crystal grid with decimal clues.'],
   ['math-operations','Math','assets/art/game-visual-2.jpg','Math Operations Quest','Practice the four operations through a guided adventure.'],
   ['fraction-forge','Math','assets/art/game-visual-3.jpg','Fraction Forge','Forge fractions and power up your battle skills.'],
-  ['long-division','Math','assets/art/game-visual-2.jpg','Long Division Quest','Solve each division step as a mini battle.'],
-  ['long-division-custom','Math','assets/art/game-visual-3.jpg','Custom Long Division','Practice teacher-selected long-division problems.'],
   ['spelling-practice','ELA','assets/art/game-visual-4.jpg','Spelling Practice','Hear, practice, and master this week’s words.'],
   ['witches-test','ELA','assets/art/game-visual-5.jpg','The Witches Reading Test','Show your understanding of the current class reading.'],
   ['class-reader','ELA','assets/art/game-visual-5.jpg','The Witches Reader','Continue the class novel with read-aloud.'],

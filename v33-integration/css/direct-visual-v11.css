@@ -1,0 +1,81 @@
+@import url("./dragonswood-fonts.css");
+
+:root {
+  --brand-font: "Basteleur", Georgia, serif;
+  --display-font: "Grenze", Georgia, serif;
+  --reading-font: "Caudex", Georgia, serif;
+  --ui-font: "Grenze", Georgia, serif;
+}
+
+html,
+body {
+  font-family: var(--reading-font);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+h1,
+h2,
+h3,
+h4,
+button,
+input,
+select,
+textarea,
+label,
+.brand,
+.badge,
+.kicker,
+.tag,
+.pill {
+  font-family: var(--ui-font);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.12;
+  overflow-wrap: anywhere;
+}
+
+p,
+li,
+label,
+button,
+input,
+select,
+textarea {
+  line-height: 1.45;
+}
+
+small,
+.small,
+.sub,
+.muted {
+  line-height: 1.4;
+}
+
+.brand img,
+.badge img,
+.top img,
+.topbar img,
+header img[src*="dragonswood-mascot-crest"] {
+  object-fit: contain;
+}
+
+[style*="-webkit-text-fill-color:transparent"],
+[style*="-webkit-text-fill-color: transparent"] {
+  color: #ffe599 !important;
+  background: none !important;
+  -webkit-text-fill-color: #ffe599 !important;
+  filter: none !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, .9) !important;
+}
+
+@media (max-width: 700px) {
+  html,
+  body {
+    font-size: 15px;
+  }
+}

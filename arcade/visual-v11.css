@@ -1,6 +1,7 @@
 :root,
 body {
   font-family: var(--reading-font);
+  color: #f8fffc;
 }
 
 button,
@@ -29,6 +30,50 @@ dialog h2 {
 
 .brand-button strong {
   font-family: var(--brand-font);
+  font-size: 19px;
+  line-height: 1;
+  letter-spacing: .06em;
+  color: #ffe79a;
+  text-shadow: 0 3px 6px rgba(0, 0, 0, .85);
+}
+
+.brand-button > img {
+  width: 62px;
+  height: 62px;
+  object-fit: contain;
+  border-radius: 15px;
+}
+
+.eyebrow,
+.panel-head small,
+.section-heading small,
+.future-panel small,
+.game-toolbar-title small {
+  color: #ffe08a;
+  font-size: 12px;
+  line-height: 1.35;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, .82);
+}
+
+.hero p,
+.game-card p,
+.future-panel p,
+.panel-head p,
+.leaderboard-note,
+dialog p {
+  color: #d8e6e1;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.header-chip,
+.profile-chip,
+.play-game,
+.toolbar-button,
+.period-tabs button,
+.dialog-actions button {
+  font-size: 14px;
+  line-height: 1.25;
 }
 
 .hero-mascot {

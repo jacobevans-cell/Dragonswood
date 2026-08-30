@@ -157,7 +157,7 @@ const TEACHER="jacobicusjax@gmail.com",DOMAIN="explore.academy",CAP=150;
 const Tester=globalThis.DWTesterAccess;
 const XP=[0,200,450,750,1100,1500,1950,2450,3000,3600,4250,4950,5700,6500,7350,8250,9200,10200,11100,12000];
 const $=id=>document.getElementById(id);
-let user=null,profile=null,lesson=null,sessionName="",questionPlan=[],tasks=[],taskIndex=0,qIndex=0,score=0,correct=0,attempts=0,sessionStart=0,currentQuestion=null,currentQuestionSeen=false,currentQuestionCorrect=false;
+let user=null,profile=null,lesson=null,sessionName="",questionPlan=[],tasks=[],taskIndex=0,qIndex=0,score=0,correct=0,attempts=0,sessionStart=0,currentQuestion=null,currentQuestionSeen=false,currentQuestionCorrect=false,localPreviewMode=false;
 let testerSession=Tester.normalizeTester('',null),testerControls={},testerMorningOverride=false;
 let testerAccountUnsub=null,testerControlsUnsub=null;
 let dwDailyOverrideUnsub=null,dwDailyOverrideRows=[],dwLastStudentAnswer="";
@@ -6044,6 +6044,7 @@ async function saveProgress(extra={}){
   };
   // Save locally FIRST so refresh cannot erase the student's place while Firestore is writing.
   saveLocalProgress(sessionName,{...payload,updatedAt:Date.now()});
+  if(localPreviewMode)return;
   try{await setDoc(progressRef(sessionName),payload,{merge:true})}
   catch(e){console.warn("progress save",e)}
 }
@@ -6095,12 +6096,13 @@ function watchDailyQuestProgress(){
    err=>console.warn("daily quest history",err)
  );
 }
-async function loadToday(){let key=dateKey();const isTeacher=String(user?.email||"").toLowerCase()===TEACHER,localPreview=["localhost","127.0.0.1"].includes(location.hostname);const q=new URLSearchParams(location.search).get("date");if((isTeacher||localPreview)&&/^\d{4}-\d{2}-\d{2}$/.test(String(q||"")))key=q;try{try{const history=await getDocs(query(collection(db,"dailyQuestProgress"),where("studentId","==",user.uid)));dqProgressRows=history.docs.map(d=>({id:d.id,...d.data()}))}catch(e){console.warn("reteach history",e)}const snap=await getDoc(doc(db,"dailyQuests",key));if(!snap.exists()){status("No student quest is scheduled for today. Enjoy the suspicious silence.","warn");$("morningCard").classList.add("locked");$("exitCard").classList.add("locked");$("morningBtn").disabled=$("exitBtn").disabled=true;postDailyMissionState(false);return}lesson=makeTrackLesson(snap.data());renderLesson();$("trackLabel").textContent=(isLevelUpMode()?"LEVEL-UP: ":"TRACK: ")+lesson.trackName;
+function localPreviewQuest(key){const start=new Date("2026-08-24T12:00:00-07:00"),target=new Date(`${key}T12:00:00-07:00`);let day=0;for(let cursor=new Date(start);cursor<=target;cursor.setDate(cursor.getDate()+1)){const weekday=cursor.getDay();if(weekday>=1&&weekday<=5)day++}return {date:key,day:Math.max(1,day),chapter:"Local School-Day Preview",chapterIcon:"📜",morningXp:0,exitXp:0,gold:0}}
+async function loadToday(){let key=dateKey();const isTeacher=String(user?.email||"").toLowerCase()===TEACHER,localHost=["localhost","127.0.0.1"].includes(location.hostname);const q=new URLSearchParams(location.search).get("date"),validPreviewDate=/^\d{4}-\d{2}-\d{2}$/.test(String(q||""));localPreviewMode=localHost&&validPreviewDate;if((isTeacher||localPreviewMode)&&validPreviewDate)key=q;try{try{const history=await getDocs(query(collection(db,"dailyQuestProgress"),where("studentId","==",user.uid)));dqProgressRows=history.docs.map(d=>({id:d.id,...d.data()}))}catch(e){console.warn("reteach history",e)}let snap;try{snap=await getDoc(doc(db,"dailyQuests",key))}catch(err){if(!localPreviewMode)throw err;console.warn("Using bundled local school-day preview",err);snap={exists:()=>true,data:()=>localPreviewQuest(key)}}if(!snap.exists()){status("No student quest is scheduled for today. Enjoy the suspicious silence.","warn");$("morningCard").classList.add("locked");$("exitCard").classList.add("locked");$("morningBtn").disabled=$("exitBtn").disabled=true;postDailyMissionState(false);return}lesson=makeTrackLesson(snap.data());renderLesson();$("trackLabel").textContent=(isLevelUpMode()?"LEVEL-UP: ":"TRACK: ")+lesson.trackName;
 const lub=$("levelUpBanner");if(lub)lub.style.display=isLevelUpMode()?"block":"none";
 const td=$("trackDesc");if(td)td.textContent=isLevelUpMode()
   ? (lesson.track==="challenge"?"Optional enrichment • Early–Mid 6th Grade":lesson.track==="foundation"?"Optional fourth-grade level-up work":"Optional fifth-grade challenge work")
   : (lesson.track==="challenge"?"Advanced enrichment • Early–Mid 6th Grade":lesson.track==="5"?"Fifth-grade spiral practice":lesson.track==="foundation"?"Foundation spiral practice • Grade 3 prerequisite skills":"Fourth-grade spiral practice");
-const mini=$("trackLabelMini");if(mini)mini.textContent=`TRACK: ${lesson.trackName}`;await refreshSessionCards();status(Number(profile.hp||0)<=0?"💀 You may complete today's academics, but knocked-out players earn no Player XP or Gold until revival.":"Today's quest is unlocked. Future quests remain sealed by Dragonswood server time.","good");}catch(err){console.error(err);status(`Today's quest is sealed or unavailable: ${err.code||err.message||"permission denied"}`,"bad");$("morningBtn").disabled=$("exitBtn").disabled=true;postDailyMissionState(false)}}
+const mini=$("trackLabelMini");if(mini)mini.textContent=`TRACK: ${lesson.trackName}`;await refreshSessionCards();status(localPreviewMode?`LOCAL PREVIEW • Showing ${key} • Progress, scores, XP, and Gold will not be written.`:Number(profile.hp||0)<=0?"💀 You may complete today's academics, but knocked-out players earn no Player XP or Gold until revival.":"Today's quest is unlocked. Future quests remain sealed by Dragonswood server time.","good");}catch(err){console.error(err);status(`Today's quest is sealed or unavailable: ${err.code||err.message||"permission denied"}`,"bad");$("morningBtn").disabled=$("exitBtn").disabled=true;postDailyMissionState(false)}}
 onAuthStateChanged(auth,async u=>{
  testerAccountUnsub?.();testerControlsUnsub?.();testerAccountUnsub=testerControlsUnsub=null;
  user=u;testerSession=Tester.normalizeTester(u?.uid||'',null);testerControls={};testerMorningOverride=false;
@@ -6396,6 +6398,7 @@ async function finishSession(){
     completedAt:serverTimestamp(),updatedAt:serverTimestamp()
   };
   saveLocalProgress(sessionName,{...completionProgress,completedAt:Date.now(),updatedAt:Date.now()});
+  if(localPreviewMode){$("loot").textContent="LOCAL PREVIEW COMPLETE • No production progress, score, XP, or Gold was written.";await refreshSessionCards();return}
   try{await setDoc(progressRef(sessionName),completionProgress,{merge:true})}
   catch(e){console.warn("completion progress save",e)}
 

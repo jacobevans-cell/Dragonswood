@@ -25,7 +25,7 @@ check("module toolbar has one clear return control",/data-close-module>Back<\/bu
 check("academic and mission modules keep their parent navigation highlighted",/returnPage:'games'/.test(host)&&/returnPage:'missions'/.test(host));
 check("browser hash routing and close routing are supported",/location\.hash=`module\/\$\{encodeURIComponent\(id\)\}`/.test(studentApp)&&/window\.addEventListener\('hashchange'/.test(studentApp));
 check("daily access gate still protects academic games",/function allowed\(id,student=\{\}\)/.test(host)&&/mod\.morningGate&&student\.dailyAccessUnlocked!==true/.test(host));
-check("preview-date switching is restricted to localhost",host.includes("['localhost','127.0.0.1'].includes(pageUrl.hostname)")&&/\(isTeacher\|\|localPreview\)/.test(read("daily-quest.html")));
+check("preview-date switching is restricted to localhost and disables production rewards",host.includes("['localhost','127.0.0.1'].includes(pageUrl.hostname)")&&/\(isTeacher\|\|localPreviewMode\)/.test(read("daily-quest.html"))&&/LOCAL PREVIEW COMPLETE/.test(read("daily-quest.html")));
 check("active passes still block feature modules",/if\(blockingPass\(\)\)/.test(studentApp));
 check("Adventurer Hall uses the V3 module host",/id:'adventurer-hall'[^\n]+path:'adventurer-hall\.html'/.test(host));
 check("Boss Battle uses the V3 module host",/id:'boss-battle'[^\n]+path:'boss-battle\.html'/.test(host));

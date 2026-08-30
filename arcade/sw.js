@@ -1,8 +1,8 @@
-const CACHE='dragonswood-arcade-v18-veil-mascot';
+const CACHE='dragonswood-arcade-v19-definitive-header';
 const CORE=[
   './','index.html','admin.html','device-check.html','style.css','access.css','visual-v11.css','veil-game-card-tiles.css','manifest.webmanifest',
   '../v33-integration/assets/branding/dragonswood-mascot-crest.png','assets/dragon-cube.svg','assets/dragon-runner.svg','assets/arcade-stars.svg',
-  'assets/veil/hero/veil-arcade-hero-512.webp',
+  'assets/veil/hero/dragonswood-arcade-header-definitive-v1.webp',
   'assets/veil/game-card-tiles/veil-card-bg-dragon-dash-1200x660.webp','assets/veil/game-card-tiles/veil-card-bg-void-runner-1200x660.webp',
   'assets/veil/game-card-tiles/veil-card-bg-runeball-arena-1200x660.webp','assets/veil/game-card-tiles/veil-card-bg-runewheel-rally-1200x660.webp',
   'assets/veil/game-card-tiles/veil-card-bg-dragons-gambit-hall-1200x660.webp','assets/veil/game-card-tiles/veil-card-bg-starfall-squadron-1200x660.webp',

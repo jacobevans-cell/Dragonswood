@@ -1,75 +1,21 @@
 /* Arcade-local Veil presentation layer. Access, routing, and rewards remain unchanged. */
-.arcade-character-stage {
+.hero.veil-title-card {
+  min-height: 400px;
+  grid-template-columns: minmax(0, 58%) 1fr;
+  background:
+    linear-gradient(90deg, rgba(2, 18, 15, .16) 0%, rgba(2, 18, 15, .08) 48%, rgba(2, 18, 15, 0) 72%),
+    url("assets/veil/hero/dragonswood-arcade-header-definitive-v1.webp") center / cover no-repeat;
+  border-color: rgba(223, 185, 87, .34);
+}
+
+.hero.veil-title-card::after {
+  display: none;
+}
+
+.hero.veil-title-card .hero-copy {
   position: relative;
   z-index: 2;
-  width: min(440px, 100%);
-  aspect-ratio: 1.22;
-  justify-self: center;
-  isolation: isolate;
-}
-
-.arcade-character-stage::before {
-  content: "";
-  position: absolute;
-  inset: 10% 2% 5% 5%;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(85, 242, 180, .16), rgba(116, 65, 232, .08) 48%, transparent 72%);
-  filter: blur(2px);
-}
-
-.arcade-official-dragon,
-.arcade-veil {
-  position: absolute;
-  display: block;
-  object-fit: contain;
-  pointer-events: none;
-  user-select: none;
-}
-
-.arcade-official-dragon {
-  z-index: 3;
-  left: -17%;
-  bottom: -3%;
-  width: 98%;
-  filter: drop-shadow(0 20px 28px rgba(0, 0, 0, .56));
-}
-
-.arcade-veil {
-  z-index: 2;
-  right: -5%;
-  bottom: 1%;
-  width: 74%;
-  filter: drop-shadow(0 22px 32px rgba(0, 0, 0, .58));
-}
-
-.veil-nameplate {
-  position: absolute;
-  z-index: 4;
-  top: 6%;
-  right: 0;
-  display: grid;
-  gap: 2px;
-  padding: 8px 12px;
-  border: 1px solid rgba(85, 242, 180, .38);
-  border-radius: 999px;
-  background: rgba(4, 19, 15, .82);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, .3);
-  color: #fff0ad;
-  font-family: var(--ui-font);
-  line-height: 1;
-  text-align: center;
-}
-
-.veil-nameplate strong {
-  font-size: 12px;
-  letter-spacing: .18em;
-}
-
-.veil-nameplate small {
-  color: #78efd0;
-  font-size: 8px;
-  font-weight: 900;
-  letter-spacing: .12em;
+  max-width: 720px;
 }
 
 .game-card.has-veil-tile {
@@ -110,20 +56,20 @@
 }
 
 @media (max-width: 900px) {
-  .arcade-character-stage {
-    position: absolute;
-    right: -38px;
-    bottom: -42px;
-    width: 290px;
-    opacity: .42;
-  }
-
-  .veil-nameplate {
-    display: none;
+  .hero.veil-title-card {
+    min-height: 370px;
+    background-position: 58% center;
   }
 }
 
 @media (max-width: 600px) {
+  .hero.veil-title-card {
+    min-height: 360px;
+    background:
+      linear-gradient(90deg, rgba(2, 18, 15, .88), rgba(2, 18, 15, .62) 65%, rgba(2, 18, 15, .38)),
+      url("assets/veil/hero/dragonswood-arcade-header-definitive-v1.webp") 58% center / cover no-repeat;
+  }
+
   .game-card.has-veil-tile .game-card-content {
     width: 76%;
   }

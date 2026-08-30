@@ -93,4 +93,4 @@ async function startArcadeShell(){
   await initLeaderboard(text=>{$('#cloudBadge').textContent=text});
 }
 startArcadeShell().catch(console.warn);
-if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js?v=58.0.2').catch(()=>{});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js?v=58.0.3').catch(()=>{});

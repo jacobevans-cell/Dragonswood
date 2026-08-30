@@ -20,7 +20,7 @@ let lastAttentionChime='';
 
 const navItems = [
   ['adventure','🛡️','My Adventure','Home base'],
-  ['missions','📜','Daily Missions','Do this first','1'],
+  ['missions','📜','Dragon’s Path','Do this first','1'],
   ['games','🎮','Academic Games','Learn & play'],
   ['scribe','✍️','Scribe Arena','Write & grow'],
   ['day','🗓️','My Day','Schedule'],
@@ -77,6 +77,9 @@ const state = {
   testerUnlocks: {},
   testerLabel: '',
   curriculumAccessUnlocked: false,
+  spellingComplete: false,
+  spellingGrade: 5,
+  spellingResults: [],
   recoverySummary: storedRecoverySummary(),
   kingdomAccessUnlocked: false,
   attention: null,
@@ -155,12 +158,16 @@ function ensureRecoveryProbe(){
 }
 function unfinishedRequiredWork(target='activity'){
   const rows=[];
+  const destination=String(target||'activity');
+  const needsSpelling=!['daily-quest','rune-spelling'].includes(destination);
+  const needsCurriculum=!['daily-quest','rune-spelling','curriculum-quest'].includes(destination);
 
   // A dated teacher override intentionally opens optional destinations for
   // this scholar without falsely marking Morning or Recovery work complete.
   if(state.dailyAccessOverride!==true){
     if(state.dailyAccessUnlocked!==true)rows.push({id:'morning',icon:'🌅',title:'Morning Work',detail:state.morningWorkComplete?'Teacher check-in or access hold remains.':'Not complete today.',route:'module/daily-quest'});
-    if(state.curriculumAccessUnlocked!==true){
+    if(needsSpelling&&state.spellingComplete!==true)rows.push({id:'spelling',icon:'🔤',title:'Rune Spelling',detail:`Today’s Grade ${state.spellingGrade} spelling path is not complete.`,route:'module/rune-spelling'});
+    if(needsCurriculum&&state.curriculumAccessUnlocked!==true){
       if(!recoverySummaryCurrent())rows.push({id:'recovery',icon:'🐉',title:'Recovery Missions',detail:'Open Recovery Quest for a live check.',route:'module/curriculum-quest'});
       else for(const day of state.recoverySummary.days||[])rows.push({id:`recovery-${day.day}`,icon:'🐉',title:`Recovery Day ${day.day}`,detail:`${day.count} unfinished mission${day.count===1?'':'s'}.`,route:'module/curriculum-quest'});
     }
@@ -171,11 +178,16 @@ function unfinishedRequiredWork(target='activity'){
   return rows;
 }
 function requiredWorkLocked(page){const target=String(page||'');if(target==='arcade'&&state.testerUnlocks.unlockArcade===true)return false;if(target==='kingdom'&&state.testerUnlocks.unlockKingdom===true)return false;return REQUIRED_WORK_PAGES.has(target)&&unfinishedRequiredWork(target).length>0}
+function modulePathLocked(id){
+  const moduleId=String(id||'');
+  if(['rune-spelling','curriculum-quest','dragon-tongues'].includes(moduleId))return unfinishedRequiredWork(moduleId).length>0;
+  return moduleHost?.definition(moduleId)?.morningGate===true&&unfinishedRequiredWork(moduleId).length>0;
+}
 function requestedModuleId(){return moduleHost?.routeId(location.hash)||''}
 function showRequiredWorkDialog(target='activity'){
   const label=target==='arcade'?'Arcade Time':target==='kingdom'?'Kingdom Wars':target==='boss'||target==='boss-battle'?'Boss Battle':target==='scribe'?'Scribe Arena':'this activity';
   const rows=unfinishedRequiredWork(target);
-  openDialog('Finish Required Work First',`<p><b>${escapeHtml(label)}</b> is still locked. Here is exactly what Dragonswood can see unfinished right now:</p><div class="stack mt-12">${rows.map(row=>`<article class="pass-card"><div class="pass-row"><div class="pass-student"><span class="roster-avatar">${row.icon}</span><div><b>${escapeHtml(row.title)}</b><p>${escapeHtml(row.detail)}</p></div></div>${row.id==='kingdom-access'?'':`<button class="btn btn-primary btn-sm" type="button" data-required-route="${escapeHtml(row.route)}">Go there</button>`}</div></article>`).join('')}</div><p class="muted">This check runs again every time you try to enter a game or recreational area.</p>`,`<button class="btn btn-secondary" data-close-dialog>Stay in Daily Missions</button>`);
+  openDialog('Finish Dragon’s Path First',`<p><b>${escapeHtml(label)}</b> is still locked. Here is exactly what Dragonswood can see unfinished right now:</p><div class="stack mt-12">${rows.map(row=>`<article class="pass-card"><div class="pass-row"><div class="pass-student"><span class="roster-avatar">${row.icon}</span><div><b>${escapeHtml(row.title)}</b><p>${escapeHtml(row.detail)}</p></div></div>${row.id==='kingdom-access'?'':`<button class="btn btn-primary btn-sm" type="button" data-required-route="${escapeHtml(row.route)}">Go there</button>`}</div></article>`).join('')}</div><p class="muted">This check runs again every time you try to enter a game or recreational area.</p>`,`<button class="btn btn-secondary" data-close-dialog>Stay on Dragon’s Path</button>`);
   dialogRoot.dataset.dialogKind='required-work';
   dialogRoot.querySelectorAll('[data-required-route]').forEach(button=>button.addEventListener('click',()=>{closeDialog();location.hash=button.dataset.requiredRoute}));
 }
@@ -204,7 +216,7 @@ function ensurePassSafetyStyles(){
 function passSafetyMarkup(){
   ensurePassSafetyStyles();
   const active=activePassRows(),blocking=active.find(row=>row.blocking===true),overdue=active.find(row=>passTiming(row).overdue),timing=blocking?passTiming(blocking):null;
-  return `<div class="pass-safety-overlay ${blocking?'active':''}" data-active-pass-overlay role="alertdialog" aria-modal="true" aria-labelledby="active-pass-title" aria-hidden="${blocking?'false':'true'}"><section class="pass-safety-card"><div class="pass-safety-icon" data-active-pass-icon>${escapeHtml(blocking?.icon||'🎟️')}</div><div class="eyebrow">CHECK BACK IN REQUIRED</div><h2 id="active-pass-title" data-active-pass-title>${escapeHtml(blocking?`${blocking.label.toUpperCase()} PASS ACTIVE`:'PASS ACTIVE')}</h2><p data-active-pass-copy>${escapeHtml(blocking?`You are currently using your ${blocking.label} pass. Check back in before returning to Dragonswood work.`:'Return your active pass before continuing Dragonswood.')}</p><div class="pass-safety-timer ${timing?.overdue?'overdue':''}" data-active-pass-timer>${timing?(timing.overdue?`⏰ OVERDUE by ${formatPassDuration(timing.overdueMs)}`:`⏱️ ${formatPassDuration(timing.remainingMs)} remaining`):''}</div><button class="btn btn-primary w-full" type="button" data-return-active-pass="${escapeHtml(blocking?.type||'')}">✅ I AM BACK — RETURN PASS</button><small>Games, Scribe Arena, Daily Missions, and other Dragonswood activities stay locked until this pass is returned.</small></section></div><div class="pass-overdue-banner ${overdue&&!blocking?'active':''}" data-pass-overdue-banner role="alert" aria-live="assertive"><b data-pass-overdue-title>⏰ ${escapeHtml(overdue?.label?.toUpperCase()||'PASS')} OVERDUE</b><span data-pass-overdue-copy>${overdue?`You are ${formatPassDuration(passTiming(overdue).overdueMs)} overdue. Please return your pass now.`:'Please return your pass.'}</span><button type="button" data-return-active-pass="${escapeHtml(overdue?.type||'')}">RETURN PASS</button></div>`;
+  return `<div class="pass-safety-overlay ${blocking?'active':''}" data-active-pass-overlay role="alertdialog" aria-modal="true" aria-labelledby="active-pass-title" aria-hidden="${blocking?'false':'true'}"><section class="pass-safety-card"><div class="pass-safety-icon" data-active-pass-icon>${escapeHtml(blocking?.icon||'🎟️')}</div><div class="eyebrow">CHECK BACK IN REQUIRED</div><h2 id="active-pass-title" data-active-pass-title>${escapeHtml(blocking?`${blocking.label.toUpperCase()} PASS ACTIVE`:'PASS ACTIVE')}</h2><p data-active-pass-copy>${escapeHtml(blocking?`You are currently using your ${blocking.label} pass. Check back in before returning to Dragonswood work.`:'Return your active pass before continuing Dragonswood.')}</p><div class="pass-safety-timer ${timing?.overdue?'overdue':''}" data-active-pass-timer>${timing?(timing.overdue?`⏰ OVERDUE by ${formatPassDuration(timing.overdueMs)}`:`⏱️ ${formatPassDuration(timing.remainingMs)} remaining`):''}</div><button class="btn btn-primary w-full" type="button" data-return-active-pass="${escapeHtml(blocking?.type||'')}">✅ I AM BACK — RETURN PASS</button><small>Games, Scribe Arena, Dragon’s Path, and other Dragonswood activities stay locked until this pass is returned.</small></section></div><div class="pass-overdue-banner ${overdue&&!blocking?'active':''}" data-pass-overdue-banner role="alert" aria-live="assertive"><b data-pass-overdue-title>⏰ ${escapeHtml(overdue?.label?.toUpperCase()||'PASS')} OVERDUE</b><span data-pass-overdue-copy>${overdue?`You are ${formatPassDuration(passTiming(overdue).overdueMs)} overdue. Please return your pass now.`:'Please return your pass.'}</span><button type="button" data-return-active-pass="${escapeHtml(overdue?.type||'')}">RETURN PASS</button></div>`;
 }
 function passReminder(text){
   try{const AudioContext=window.AudioContext||window.webkitAudioContext;if(AudioContext){const context=new AudioContext(),osc=context.createOscillator(),gain=context.createGain();osc.frequency.value=880;gain.gain.setValueAtTime(.12,context.currentTime);gain.gain.exponentialRampToValueAtTime(.001,context.currentTime+.35);osc.connect(gain);gain.connect(context.destination);osc.start();osc.stop(context.currentTime+.36);osc.addEventListener('ended',()=>context.close())}}catch{}
@@ -234,7 +246,7 @@ function teacherAttentionMarkup(){
   const attention=state.attention,show=attention?.active===true&&attention?.acknowledgedByMe!==true;
   return `<div class="teacher-direction-overlay ${show?'active':''}" data-teacher-direction role="alertdialog" aria-modal="true" aria-labelledby="teacher-direction-title" aria-hidden="${show?'false':'true'}"><section class="teacher-direction-card"><div class="teacher-direction-bell">🔔</div><div class="eyebrow">TEACHER ATTENTION</div><h2 id="teacher-direction-title">${escapeHtml(attention?.title||'Teacher Direction')}</h2><p>${escapeHtml(attention?.message||'Please follow your teacher’s direction.')}</p><div class="teacher-direction-target">Next: ${escapeHtml(attentionDestinationLabel(attention?.destination))}</div><button class="btn btn-primary w-full" type="button" data-acknowledge-attention="${escapeHtml(attention?.id||'')}">I UNDERSTAND — GO NOW</button><small>Your acknowledgment is recorded so your teacher can see that you received the direction.</small></section></div>`;
 }
-function attentionDestinationLabel(destination){return ({'missions':'Daily Missions','module/daily-quest':'Morning Work','module/curriculum-quest':'Recovery Quest','day':'My Day','adventure':'My Adventure'})[destination]||'Daily Missions'}
+function attentionDestinationLabel(destination){return ({'missions':'Dragon’s Path','module/daily-quest':'Morning Work','module/curriculum-quest':'Recovery Quest','day':'My Day','adventure':'My Adventure'})[destination]||'Dragon’s Path'}
 function attentionDestinationHash(destination){return ['missions','module/daily-quest','module/curriculum-quest','day','adventure'].includes(String(destination))?String(destination):'missions'}
 function playTeacherAttentionChime(id){
   if(!id||lastAttentionChime===id)return;lastAttentionChime=id;
@@ -255,7 +267,7 @@ function currentPage(){
   const moduleId=moduleHost?.routeId(hash);
   if(moduleId){
     const gate=moduleHost.allowed(moduleId,{dailyAccessUnlocked:state.dailyAccessUnlocked});
-    if(!gate.ok||moduleHost.definition(moduleId)?.morningGate&&unfinishedRequiredWork(moduleId).length){pendingRequiredWorkNotice=moduleId;return 'missions'}
+    if(!gate.ok||modulePathLocked(moduleId)){pendingRequiredWorkNotice=moduleId;return 'missions'}
     return moduleHost.definition(moduleId).returnPage;
   }
   const page=studentNavItems().some(n=>n[0]===hash) ? hash : 'adventure';
@@ -265,7 +277,7 @@ function currentPage(){
 
 function currentModuleId(){
   const id=requestedModuleId();
-  return id&&moduleHost?.allowed(id,{dailyAccessUnlocked:state.dailyAccessUnlocked})?.ok&&(!moduleHost.definition(id)?.morningGate||unfinishedRequiredWork(id).length===0)?id:'';
+  return id&&moduleHost?.allowed(id,{dailyAccessUnlocked:state.dailyAccessUnlocked})?.ok&&!modulePathLocked(id)?id:'';
 }
 
 function navMarkup(){
@@ -355,30 +367,30 @@ function adventurePage(){
 
 const missions = [
   {id:'morning',module:'daily-quest',n:'1',kicker:'DO THIS FIRST',icon:'🌅',title:'Morning Math Quest',desc:'8 decimal problems with step-by-step help.',time:'10–15 min',reward:'+40 XP',button:'Start mission →'},
-  {id:'curriculum',module:'curriculum-quest',n:'2',kicker:'CLASS MISSION',icon:'🐉',title:'Curriculum Quest',desc:'Watch the short lesson, try it, then ask for teacher verification.',time:'10–15 min',reward:'+50 XP',button:'Open quest →'},
-  {id:'exit',module:'daily-quest',n:'3',kicker:'END OF DAY',icon:'✅',title:'Exit Quest',desc:'Show what you learned in 3 quick questions.',time:'10–15 min',reward:'+25 XP',button:'Open quest →'}
+  {id:'spelling',module:'rune-spelling',n:'2',kicker:'SPELLING PRACTICE',icon:'🔤',title:'Rune Spelling',desc:'Study and practice today’s teacher-assigned spelling words.',time:'10–15 min',reward:'Spelling grade',button:'Open spelling →'},
+  {id:'curriculum',module:'curriculum-quest',n:'3',kicker:'CLASS MISSION',icon:'🐉',title:'Curriculum Quest',desc:'Watch the short lesson, try it, then ask for teacher verification.',time:'10–15 min',reward:'+50 XP',button:'Open quest →'}
 ];
 function missionsPage(){
-  const completeCount=state.completedMissions.size;
-  const optionalOpen=state.dailyAccessUnlocked===true;
-  const accessSummary=state.morningWorkComplete
-    ?'Morning Work is complete. Games, Scribe Arena, Boss Battle, Kingdom Wars, and Arcade are available.'
+  const completeCount=missions.filter(m=>state.completedMissions.has(m.id)).length;
+  const optionalOpen=unfinishedRequiredWork('games').length===0;
+  const accessSummary=optionalOpen
+    ?'Dragon’s Path is complete. Dragon Tongues, games, Scribe Arena, Boss Battle, Kingdom Wars, and Arcade are available.'
     :state.testerUnlocks.unlockMorning===true
-      ?'Tester access override is active. Morning Work remains incomplete until you do the work.'
-      :optionalOpen
-        ?'A teacher access override is active. Morning Work remains incomplete.'
-        :'Games and optional adventures unlock after Morning Work.';
-  const accessLabel=state.testerUnlocks.unlockMorning===true?'🧪 Tester access':optionalOpen?'🔓 Adventures open':'🔒 Adventures locked';
+      ?'Tester access is active. Required work remains incomplete until you do it.'
+      :'Complete Morning Work, Rune Spelling, and Curriculum Quest to open free-choice adventures.';
+  const accessLabel=state.dailyAccessOverride===true?'🔓 Teacher override':state.testerUnlocks.unlockMorning===true?'🧪 Tester access':optionalOpen?'🔓 Adventures open':'🔒 Path in progress';
   const readingRows=state.reading?.rows||[],today=window.DWV33Core?.phoenixDateKey?.()||'',readingRow=readingRows.find(row=>row.dateKey===today)||readingRows.slice().sort((a,b)=>String(b.dateKey).localeCompare(String(a.dateKey)))[0],readingMinutes=readingRow?Math.round(readingRow.activeSeconds/6)/10:0,readingTarget=state.reading?.targetMinutes||20,readingAssigned=(state.reading?.assignedDateKeys||[]).includes(today);
-  return `${studentTitle('📜','Daily Missions','Your quest path','Finish the glowing mission first. Then choose a bonus adventure.')}
+  const languageLocked=!optionalOpen;
+  return `${studentTitle('📜','DRAGON’S PATH','Your quest path','Complete each glowing step. Free-choice adventures unlock when your required path is finished.')}
     <div class="panel path-summary"><div class="path-count"><strong>${completeCount}</strong><small>of 3</small></div><div class="path-copy"><div class="eyebrow">TODAY’S PROGRESS</div><b>One mission at a time.</b><div>${accessSummary}</div></div><div class="path-lock">${accessLabel}</div></div>
     <div class="mission-list">${missions.map((m,i)=>missionRow(m,i)).join('')}</div>
-    <div class="mission-extra"><article class="panel extra-card"><div class="extra-icon">📖</div><div><div class="extra-kicker">${readingAssigned?'ASSIGNED CLASS READING':'CLASS READING'}</div><h3>The Witches</h3><p>${readingMinutes}/${readingTarget} verified active minutes${readingRow?.lastPage?` • last page ${readingRow.lastPage}`:''}. Time pauses when the reader is hidden or idle.</p></div><button class="btn btn-secondary btn-sm" data-module="class-reader">${readingAssigned&&readingMinutes<readingTarget?'Continue reading':'Open reader'}</button></article><article class="panel extra-card"><div class="extra-icon">⭐</div><div><div class="extra-kicker">BONUS CHALLENGE</div><h3>Level-Up Mission</h3><p>Ready for more? Try a mission one level above.</p></div><button class="btn btn-secondary btn-sm" data-module="level-up-challenge">Try the challenge</button></article></div>`;
+    <div class="mission-list mt-12"><article class="panel mission-row ${languageLocked?'locked':'current'}"><div class="mission-num">✦</div><div class="mission-art">🗣️</div><div><div class="eyebrow">OPTIONAL LANGUAGE PATH</div><h3>Dragon Tongues</h3><p>Choose a language and learn freely at your own pace after Curriculum Quest.</p><div class="reward-line"><span>🌍 12 languages</span><span>🐉 Free path</span></div></div><button class="btn ${languageLocked?'btn-secondary':'btn-primary'} btn-sm" type="button" data-module="dragon-tongues" ${languageLocked?'disabled':''}>Explore languages →</button></article></div>
+    <div class="mission-extra"><article class="panel extra-card"><div class="extra-icon">✅</div><div><div class="extra-kicker">END OF DAY</div><h3>Exit Quest</h3><p>Return at the end of the day to show what you learned.</p></div><button class="btn btn-secondary btn-sm" data-module="daily-quest">${state.completedMissions.has('exit')?'Review exit quest':'Open exit quest'}</button></article><article class="panel extra-card"><div class="extra-icon">📖</div><div><div class="extra-kicker">${readingAssigned?'ASSIGNED CLASS READING':'CLASS READING'}</div><h3>The Witches</h3><p>${readingMinutes}/${readingTarget} verified active minutes${readingRow?.lastPage?` • last page ${readingRow.lastPage}`:''}. Time pauses when the reader is hidden or idle.</p></div><button class="btn btn-secondary btn-sm" data-module="class-reader">${readingAssigned&&readingMinutes<readingTarget?'Continue reading':'Open reader'}</button></article><article class="panel extra-card"><div class="extra-icon">⭐</div><div><div class="extra-kicker">BONUS CHALLENGE</div><h3>Level-Up Mission</h3><p>Ready for more? Try a mission one level above.</p></div><button class="btn btn-secondary btn-sm" data-module="level-up-challenge">Try the challenge</button></article></div>`;
 }
 function missionRow(m,i){
   const done=state.completedMissions.has(m.id);
   const testerUnlocked=m.id==='curriculum'&&state.curriculumAccessUnlocked===true;
-  const previousDone=i===0||state.completedMissions.has(missions[i-1].id)||testerUnlocked;
+  const previousDone=i===0||state.completedMissions.has(missions[i-1].id)||state.dailyAccessOverride===true||testerUnlocked;
   const current=!done&&previousDone;
   const locked=!done&&!previousDone;
   return `<article class="panel mission-row ${done?'complete':''} ${current?'current':''} ${locked?'locked':''}"><div class="mission-num">${done?'✓':m.n}</div><div class="mission-art">${m.icon}</div><div><div class="eyebrow">${done?'COMPLETE':m.kicker}</div><h3>${m.title}</h3><p>${m.desc}</p><div class="reward-line"><span>🔊 Read aloud</span><span>⏱ ${m.time}</span><span>✨ ${m.reward}</span></div></div><button class="btn ${current?'btn-primary':'btn-secondary'} btn-sm" type="button" data-module="${m.module}" ${locked?'disabled':''}>${done?'Review quest':m.button}</button></article>`;
@@ -388,12 +400,12 @@ const games=[
   ['decimal-deception','Math','assets/art/game-visual-1.jpg','Decimal Deception','Restore the crystal grid with decimal clues.'],
   ['math-operations','Math','assets/art/game-visual-2.jpg','Math Operations Quest','Practice the four operations through a guided adventure.'],
   ['fraction-forge','Math','assets/art/game-visual-3.jpg','Fraction Forge','Forge fractions and power up your battle skills.'],
-  ['spelling-practice','ELA','assets/art/game-visual-4.jpg','Spelling Practice','Hear, practice, and master this week’s words.'],
   ['witches-test','ELA','assets/art/game-visual-5.jpg','The Witches Reading Test','Show your understanding of the current class reading.'],
   ['class-reader','ELA','assets/art/game-visual-5.jpg','The Witches Reader','Continue the class novel with read-aloud.'],
   ['elemental-laboratory','Science','assets/art/game-visual-6.jpg','Elemental Laboratory','Build atoms and investigate matter.'],
   ['cosmic-architect','Science','assets/art/game-visual-6.jpg','Cosmic Architect','Build and investigate a model of the cosmos.'],
-  ['arcane-forge','Science','assets/art/game-visual-6.jpg','Arcane Forge','Use science evidence to power the forge.']
+  ['arcane-forge','Science','assets/art/game-visual-6.jpg','Arcane Forge','Use science evidence to power the forge.'],
+  ['deep-time-lab','Science','assets/art/game-visual-6.jpg','Deep Time Lab','Investigate fossils, evidence, and all forty Deep Time cases.']
 ];
 function gamesPage(){
   const visible=state.gameFilter==='All'?games:games.filter(g=>g[1]===state.gameFilter);
@@ -508,6 +520,10 @@ function applyStudentModel(model,academic,world,passes,poll,attention,kingdomAcc
   state.testerUnlocks=session.testerUnlocks||{};
   state.testerLabel=session.testerAccount?.label||'';
   state.curriculumAccessUnlocked=session.curriculumAccess?.unlocked===true;
+  state.spellingGrade=Number(session.spelling?.grade||model.spellingGrade||model.grade)||5;
+  state.spellingResults=Array.isArray(session.spelling?.results)?session.spelling.results:[];
+  state.spellingComplete=session.spelling?.completeToday===true;
+  setMissionStatus('spelling',state.spellingComplete?'complete':'not_started');
   state.kingdomAccessUnlocked=kingdomAccess?.unlocked===true;
   state.attention=attention||null;
   if(!accessWasUnlocked&&state.dailyAccessUnlocked&&dialogRoot?.dataset.dialogKind==='required-work')closeDialog();
@@ -588,6 +604,17 @@ function bindAuthGate(){
   app.querySelector('[data-signin]')?.addEventListener('click',async()=>{try{await integrationController?.signIn()}catch(err){showToast(`Sign-in failed: ${err?.code||err?.message||err}`)}});
   app.querySelector('[data-emulator-submit]')?.addEventListener('click',async()=>{const email=app.querySelector('[data-emulator-email]')?.value||'',password=app.querySelector('[data-emulator-password]')?.value||'';try{await integrationController?.signInForEmulator(email,password)}catch(err){showToast(`Emulator sign-in failed: ${err?.code||err?.message||err}`)}});
 }
+
+function currentSpellingWeek(){
+  const today=window.DWV33Core?.phoenixDateKey?.()||new Date().toISOString().slice(0,10),start=Date.UTC(2026,7,24),current=Date.parse(`${today}T12:00:00Z`),week=Math.floor((current-start)/(7*86400000))+1;
+  return Math.max(1,Math.min(30,Number.isFinite(week)?week:1));
+}
+function spellingLevelKey(grade=state.spellingGrade){return ({3:'foundation',4:'grade4',5:'grade5',6:'challenge',8:'master'})[Number(grade)]||'grade5'}
+window.DWV33SpellingContext=()=>({
+  studentId:integrationSession.user?.uid||'',studentName:state.displayName||state.firstName||'Adventurer',assignmentId:`weekly-spelling-${currentSpellingWeek()}`,
+  spellingLevel:spellingLevelKey(),spellingWeek:currentSpellingWeek(),gradeCode:String(state.spellingGrade||5),role:state.isTester?'tester':'student',className:'Explore Academy',level:String(state.level||1),petName:state.pet||'Dragon',lessonBank:[],
+  reportMission:async envelope=>integrationController?.reportSpellingMission?.(envelope)
+});
 
 function bind(){
   app.querySelectorAll('[data-page]').forEach(el=>el.addEventListener('click',()=>openPage(el.dataset.page,el)));
@@ -671,7 +698,7 @@ function openPage(page,trigger=null){
 function openModule(id){
   if(blockingPass()){showToast('Return your active pass before opening another activity.');location.hash='adventure';return}
   const gate=moduleHost?.allowed(id,{dailyAccessUnlocked:state.dailyAccessUnlocked});
-  if(!gate?.ok||moduleHost?.definition(id)?.morningGate&&unfinishedRequiredWork(id).length){location.hash='missions';showRequiredWorkDialog(id);return}
+  if(!gate?.ok||modulePathLocked(id)){location.hash='missions';showRequiredWorkDialog(id);return}
   location.hash=`module/${encodeURIComponent(id)}`;
 }
 function closeModule(){

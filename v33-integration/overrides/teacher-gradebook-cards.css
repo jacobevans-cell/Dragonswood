@@ -17,7 +17,7 @@
 
 .teacher-page-gradebook .gradebook-weight-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(110px, 1fr));
+  grid-template-columns: repeat(4, minmax(105px, 1fr));
   gap: 12px;
 }
 
@@ -64,7 +64,7 @@
 .teacher-page-gradebook .gradebook-card-columns,
 .teacher-page-gradebook .gradebook-card-head {
   display: grid;
-  grid-template-columns: 48px minmax(190px, 1.6fr) 115px 110px 110px 150px 100px 68px;
+  grid-template-columns: 48px minmax(180px, 1.5fr) 105px 100px 100px 110px 135px 90px 62px;
   gap: 12px;
   align-items: center;
 }
@@ -243,7 +243,7 @@
 
   .teacher-page-gradebook .gradebook-card-columns,
   .teacher-page-gradebook .gradebook-card-head {
-    grid-template-columns: 46px minmax(160px, 1.4fr) 100px 96px 96px 130px 88px 62px;
+    grid-template-columns: 46px minmax(150px, 1.35fr) 92px 88px 88px 98px 116px 80px 58px;
     gap: 9px;
   }
 }
@@ -263,18 +263,19 @@
   }
 
   .teacher-page-gradebook .gradebook-card-head {
-    grid-template-columns: 44px minmax(150px, 1fr) 92px repeat(2, 90px) 62px;
+    grid-template-columns: 44px minmax(150px, 1fr) 92px repeat(2, 86px) 62px;
   }
 
-  .teacher-page-gradebook .gradebook-card-head > :nth-child(6) {
+  .teacher-page-gradebook .gradebook-card-head > :nth-child(6),
+  .teacher-page-gradebook .gradebook-card-head > :nth-child(7) {
     display: none;
   }
 
-  .teacher-page-gradebook .gradebook-card-head > :nth-child(7) {
+  .teacher-page-gradebook .gradebook-card-head > :nth-child(8) {
     grid-column: 6;
   }
 
-  .teacher-page-gradebook .gradebook-card-head > :nth-child(8) {
+  .teacher-page-gradebook .gradebook-card-head > :nth-child(9) {
     grid-column: 6;
     grid-row: 2;
   }
@@ -295,7 +296,7 @@
     gap: 9px;
   }
 
-  .teacher-page-gradebook .gradebook-card-head > :nth-child(n+4):nth-child(-n+7) {
+  .teacher-page-gradebook .gradebook-card-head > :nth-child(n+4):nth-child(-n+8) {
     display: none;
   }
 

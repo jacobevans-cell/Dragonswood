@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Dragon Tongues</title>
+  <desc id="desc">Purple and blue shield with the letters D T</desc>
+  <defs>
+    <linearGradient id="shield" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7b4ada"/>
+      <stop offset="1" stop-color="#35157a"/>
+    </linearGradient>
+  </defs>
+  <path d="M256 30 445 94v137c0 119-69 207-189 251C136 438 67 350 67 231V94Z" fill="url(#shield)" stroke="#f3b83f" stroke-width="22"/>
+  <path d="M106 146c46-39 97-58 150-58s104 19 150 58" fill="none" stroke="#23a7e9" stroke-width="18" stroke-linecap="round"/>
+  <text x="256" y="324" text-anchor="middle" fill="#fff4bd" font-family="Georgia,serif" font-size="190" font-weight="700">DT</text>
+</svg>

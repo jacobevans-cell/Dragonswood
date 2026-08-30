@@ -70,7 +70,7 @@ const model=Core.normalizeStudent({uid:RECORDS[0].uid,email:RECORDS[0].email},{f
 assert.equal(model.dailyAccessUnlocked,true);
 assert.equal(model.morningWorkComplete,false);
 assert.equal(model.dailyMissions.morning,'not_started');
-assert.match(studentApp,/Tester access override is active\. Morning Work remains incomplete until you do the work\./);
+assert.match(studentApp,/Tester access is active\. Required work remains incomplete until you do it\./);
 assert.match(studentApp,/m\.id==='curriculum'&&state\.curriculumAccessUnlocked===true/);
 pass(9,'Tester access bypass does not create academic completion evidence');
 

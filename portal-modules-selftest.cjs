@@ -34,7 +34,8 @@ check("teacher seating module remains integrated",/new URL\('\.\.\/seating-comma
 const expected=[
   "adventurer-hall.html","boss-battle.html","daily-quest.html","curriculum-quest.html",
   "decimal-deception.html","math-operations-quest.html","fraction-forge.html",
-  "long-division-quest.html","long-division-custom.html","spelling-practice.html",
+  "long-division-quest.html","long-division-custom.html","rune-spelling.html",
+  "dragon-tongues/index.html","deep-time-lab.html",
   "the_witches_pages_1_15_interactive_test.html","elemental-laboratory.html",
   "cosmic-architect.html","arcane-forge.html","witches-reader.html"
 ];

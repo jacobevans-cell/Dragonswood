@@ -1,0 +1,1030 @@
+<!doctype html>
+<!-- Defenders of Dragonswood V2 standalone playtest · Kingdom Wars Siege Mode candidate -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#120c2d" />
+    <meta name="description" content="Defenders of Dragonswood — a Kingdom Wars siege-mode tower-defense playtest." />
+    <title>Defenders of Dragonswood | Kingdom Wars Siege Mode</title>
+    <style>
+:root { color-scheme: dark; --ink:#f8f5ff; --muted:#b8afcf; --deep:#070510; --panel:rgba(18,12,42,.965); --purple:#7f4ce0; --violet:#ad83ff; --cyan:#56e8ff; --gold:#ffd166; --green:#67e6a1; --danger:#ff6380; --line:rgba(184,154,255,.3); }
+* { box-sizing:border-box; }
+html,body { margin:0; min-height:100%; background:#06040e; color:var(--ink); font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+body { overflow-x:hidden; background:radial-gradient(circle at 50% -20%,#362169 0,#0e0a25 46%,#05030c 100%); }
+button,input { font:inherit; } button { color:inherit; } button:focus-visible,input:focus-visible { outline:3px solid var(--cyan); outline-offset:3px; }
+.hidden { display:none!important; } .sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
+#game-shell { width:min(100%,1240px); min-height:100vh; margin:0 auto; padding:10px clamp(8px,2vw,22px); display:flex; flex-direction:column; }
+.topbar { min-height:68px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.brand-lockup { display:flex;align-items:center;gap:12px; } .crest { display:grid;place-items:center;width:46px;height:46px;border:1px solid #c2aaff;border-radius:13px;background:linear-gradient(145deg,#6f43c9,#1b123d);box-shadow:0 0 26px rgba(127,76,224,.4),inset 0 1px rgba(255,255,255,.25);color:var(--gold);font-size:24px; }
+.eyebrow,.subtitle { margin:0;color:var(--cyan);font-size:9px;font-weight:900;letter-spacing:.22em; } h1 { margin:1px 0;font-family:Georgia,serif;font-size:clamp(21px,3vw,30px);line-height:1; } .subtitle { color:#9387b7;letter-spacing:.16em; }
+.top-actions { display:flex;gap:7px; }.icon-button { width:41px;height:41px;border:1px solid var(--line);border-radius:11px;background:linear-gradient(180deg,rgba(45,29,91,.92),rgba(18,12,42,.92));cursor:pointer;font-weight:900;box-shadow:inset 0 1px rgba(255,255,255,.08); }.icon-button:hover:not(:disabled) { filter:brightness(1.18);transform:translateY(-1px); }.icon-button:disabled { opacity:.38;cursor:not-allowed;filter:saturate(.35); }.speed-button { width:48px;color:var(--gold); }
+.playfield { position:relative;flex:1;min-height:0;overflow:hidden;border:1px solid rgba(184,154,255,.43);border-radius:18px;background:#07100c;box-shadow:0 26px 80px rgba(0,0,0,.5),inset 0 0 80px rgba(92,54,150,.12);aspect-ratio:16/9;max-height:calc(100vh - 120px); }
+#game-canvas { display:block;width:100%;height:100%;touch-action:none; }
+.hud { position:absolute;z-index:4;inset:10px 12px auto;display:grid;grid-template-columns:minmax(155px,245px) auto auto 1fr;align-items:start;gap:9px;pointer-events:none; }
+.gate-meter,.hud-chip,.rune-chip { border:1px solid rgba(184,154,255,.35);border-radius:11px;background:rgba(9,7,25,.78);backdrop-filter:blur(5px);box-shadow:0 5px 18px rgba(0,0,0,.28); }
+.gate-meter { padding:8px 10px; }.gate-meter>div:first-child { display:flex;justify-content:space-between;font-size:9px;font-weight:900;letter-spacing:.12em; }.track { height:8px;margin-top:5px;border:1px solid rgba(255,255,255,.25);border-radius:99px;background:#160712;overflow:hidden; }.track i { display:block;width:100%;height:100%;background:linear-gradient(90deg,#ff4e73,#ffb05c);box-shadow:0 0 12px #ff6a7d; }
+.hud-chip { min-width:74px;padding:7px 10px;text-align:center; }.hud-chip span,.rune-chip small { display:block;color:var(--muted);font-size:8px;font-weight:900;letter-spacing:.14em; }.hud-chip strong { display:block;color:white;font-size:14px; }.rune-chip { justify-self:end;display:flex;align-items:center;gap:8px;min-width:115px;padding:7px 11px; }.rune-chip>span { color:var(--cyan);font-size:22px;text-shadow:0 0 15px #4cecff; }.rune-chip strong { display:block;color:var(--gold);font-size:17px; }
+.boss-bar { position:absolute;z-index:4;top:67px;left:50%;width:min(54%,470px);transform:translateX(-50%); }.boss-bar>div:first-child { display:flex;justify-content:space-between;color:#ffd3db;font-size:10px;font-weight:900;letter-spacing:.14em;text-shadow:0 2px 5px #000; }.boss-track { height:11px;margin-top:4px;border:1px solid #ff8caa;border-radius:99px;background:#260813;overflow:hidden;box-shadow:0 0 18px rgba(255,73,120,.25); }.boss-track i { display:block;width:100%;height:100%;background:linear-gradient(90deg,#ff315e,#b653ff); }
+.announcement { position:absolute;z-index:9;top:26%;left:50%;transform:translate(-50%,-50%);color:#fff;font-family:Georgia,serif;font-size:clamp(25px,5vw,52px);font-weight:800;text-align:center;text-shadow:0 0 22px #7f4ce0,0 3px 0 #281253;pointer-events:none;animation:announce 1.7s ease both; }
+@keyframes announce { 0%{opacity:0;transform:translate(-50%,-40%) scale(.86)}18%,72%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-58%) scale(1.05)} }
+.panel { position:absolute;z-index:12;top:50%;left:50%;width:min(88%,760px);max-height:92%;transform:translate(-50%,-50%);overflow-y:auto;padding:clamp(20px,4vw,42px);border:1px solid rgba(190,163,255,.56);border-radius:19px;background:linear-gradient(145deg,rgba(32,20,71,.98),rgba(9,7,27,.98));box-shadow:0 28px 80px rgba(0,0,0,.68),inset 0 1px rgba(255,255,255,.09);text-align:center; }.panel:before { content:"";position:absolute;inset:8px;z-index:-1;border:1px solid rgba(184,154,255,.14);border-radius:13px;pointer-events:none; }.title-panel { width:min(89%,690px); }
+.panel-kicker { margin:0 0 9px;color:var(--cyan);font-size:9px;font-weight:900;letter-spacing:.23em; }.panel h2 { margin:0;font-family:Georgia,serif;font-size:clamp(31px,5vw,52px);line-height:1; }.intro-copy { max-width:590px;margin:17px auto;color:#cbc4dc;font-size:clamp(12px,2vw,15px);line-height:1.5; }
+.record-grid { display:grid;grid-template-columns:1fr 1fr;gap:1px;width:min(100%,400px);margin:18px auto;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:var(--line); }.record-grid div { padding:9px;background:rgba(12,9,32,.9); }.record-grid span,.result-score span,.result-stats span { display:block;color:var(--muted);font-size:8px;font-weight:900;letter-spacing:.15em; }.record-grid strong { display:block;margin-top:2px;color:var(--gold);font-size:18px; }
+.difficulty-field { margin:0 auto 18px;padding:0;border:0; }.difficulty-field legend { margin:0 auto 7px;color:#aaa0c1;font-size:9px;font-weight:900;letter-spacing:.13em;text-transform:uppercase; }.difficulty-options { display:grid;grid-template-columns:repeat(3,1fr);gap:8px; }.difficulty-options label { cursor:pointer; }.difficulty-options input { position:absolute;opacity:0; }.difficulty-options span { display:block;padding:9px 7px;border:1px solid var(--line);border-radius:10px;background:#120d2c; }.difficulty-options strong,.difficulty-options small { display:block; }.difficulty-options small { margin-top:2px;color:var(--muted);font-size:9px; }.difficulty-options input:checked+span { border-color:var(--cyan);background:linear-gradient(160deg,#35256f,#142b48);box-shadow:0 0 15px rgba(86,232,255,.2); }
+.primary-button,.secondary-button { min-height:44px;padding:0 20px;border-radius:10px;cursor:pointer;font-weight:900;letter-spacing:.07em; }.primary-button { border:1px solid #cbb7ff;background:linear-gradient(180deg,#8c5aee,#5126ad);box-shadow:0 8px 23px rgba(81,38,173,.38),inset 0 1px rgba(255,255,255,.23); }.primary-button:hover:not(:disabled) { filter:brightness(1.12);transform:translateY(-1px); }.primary-button:disabled,.secondary-button:disabled { opacity:.44;cursor:not-allowed; }.primary-button small { margin-left:14px;padding:3px 7px;border:1px solid rgba(255,255,255,.3);border-radius:5px;font-size:8px; }.secondary-button { border:1px solid var(--line);background:#17102f; }.text-button { display:block;margin:11px auto 0;padding:5px;border:0;background:transparent;color:#c8b6f5;text-decoration:underline;text-underline-offset:4px;cursor:pointer; }.panel-actions { display:flex;justify-content:center;gap:11px;margin-top:20px; }
+.training-flow { display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:19px 0;text-align:left; }.training-flow article { display:flex;gap:10px;padding:11px;border:1px solid var(--line);border-radius:11px;background:rgba(8,6,25,.5); }.training-flow b { flex:0 0 27px;height:27px;display:grid;place-items:center;border-radius:50%;background:#6336bc;color:var(--gold); }.training-flow h3 { margin:0;color:#fff;font:700 15px Georgia,serif; }.training-flow p { margin:3px 0 0;color:var(--muted);font-size:11px;line-height:1.35; }.tower-lesson-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:7px; }.tower-lesson-grid div { padding:9px 5px;border:1px solid var(--line);border-radius:9px;background:#100b28; }.tower-lesson-grid span,.tower-lesson-grid strong,.tower-lesson-grid small { display:block; }.tower-lesson-grid span { font-size:23px; }.tower-lesson-grid strong { font-size:11px; }.tower-lesson-grid small { color:var(--muted);font-size:8px; }.tower-lesson-grid .warrior span{color:#ffb25c}.tower-lesson-grid .ranger span{color:#67e6a1}.tower-lesson-grid .mage span{color:#ad83ff}.tower-lesson-grid .healer span{color:#58e8ff}.coach-note { margin:12px 0 0;padding:10px 13px;border-left:3px solid var(--cyan);background:rgba(86,232,255,.07);color:#d9ecff;font-size:11px;text-align:left; }
+.action-panel { position:absolute;z-index:10;right:12px;bottom:12px;width:min(380px,46%);padding:13px;border:1px solid rgba(184,154,255,.46);border-radius:14px;background:rgba(14,9,37,.95);box-shadow:0 15px 45px rgba(0,0,0,.55);backdrop-filter:blur(8px); }.action-heading { display:flex;align-items:start;justify-content:space-between;gap:10px;margin-bottom:10px;text-align:left; }.action-heading small { display:block;color:var(--cyan);font-size:8px;font-weight:900;letter-spacing:.15em; }.action-heading strong { display:block;font:700 19px Georgia,serif; }.action-heading>button { width:30px;height:30px;border:1px solid var(--line);border-radius:8px;background:#211645;cursor:pointer; }
+.tower-buttons { display:grid;grid-template-columns:1fr 1fr;gap:7px; }.tower-choice { display:grid;grid-template-columns:38px 1fr auto;align-items:center;gap:7px;min-height:58px;padding:7px;border:1px solid var(--line);border-radius:10px;background:#120c2d;cursor:pointer;text-align:left; }.tower-choice:hover:not(:disabled) { border-color:var(--cyan);background:#201448; }.tower-choice>span { display:grid;place-items:center;width:36px;height:36px;border-radius:9px;background:#24184d;font-size:22px; }.tower-choice strong,.tower-choice small { display:block; }.tower-choice strong { font-size:11px; }.tower-choice small { color:var(--muted);font-size:8px; }.tower-choice b { color:var(--gold);font-size:11px; }.tower-choice:disabled { opacity:.45;cursor:not-allowed; }
+.tower-stat-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1px;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--line); }.tower-stat-grid div { padding:7px;background:#120c2d;text-align:center; }.tower-stat-grid span { display:block;color:var(--muted);font-size:7px;font-weight:900;letter-spacing:.13em; }.tower-stat-grid strong { display:block;color:white; }.tower-panel>p { margin:9px 0;color:var(--muted);font-size:10px; }.tower-actions { display:flex;gap:7px; }.tower-actions button { flex:1;padding:0 10px;font-size:10px; }
+.wave-panel { position:absolute;z-index:9;left:50%;bottom:12px;transform:translateX(-50%);width:min(520px,80%);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid rgba(184,154,255,.48);border-radius:13px;background:rgba(12,8,32,.94);box-shadow:0 14px 38px rgba(0,0,0,.5); }.wave-panel>div { text-align:left; }.wave-panel small,.wave-panel strong,.wave-panel span { display:block; }.wave-panel small { color:var(--cyan);font-size:8px;font-weight:900;letter-spacing:.15em; }.wave-panel strong { font:700 17px Georgia,serif; }.wave-panel span { color:var(--muted);font-size:9px; }
+.compact-panel { width:min(86%,460px); }.settings-list { display:grid;gap:8px;margin:20px 0; }.settings-list label { display:flex;align-items:center;justify-content:space-between;padding:11px 13px;border:1px solid var(--line);border-radius:9px;background:rgba(6,5,20,.44);text-align:left; }.settings-list input { width:21px;height:21px;accent-color:var(--purple); }.danger { color:#ff9daf;border-color:rgba(255,99,128,.36); }
+.result-score { margin:19px auto; }.result-score strong { display:block;color:var(--gold);font-size:clamp(38px,7vw,62px);line-height:1; }.result-stats { display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin:0 auto 21px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--line); }.result-stats div { padding:10px;background:#130d2d; }.result-stats strong { display:block;margin-top:3px; }
+.game-footer { min-height:32px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:24px;color:#786f91;font-size:8px;letter-spacing:.12em; }.game-footer b { margin-left:4px;color:#aaa0c0; }
+body.high-contrast .playfield { border-color:#fff; } body.high-contrast .gate-meter,body.high-contrast .hud-chip,body.high-contrast .rune-chip,body.high-contrast .action-panel,body.high-contrast .wave-panel { border-color:#fff; } body.high-contrast .tower-choice { border-color:#cfcfcf; }
+@media(max-width:720px),(max-height:650px){#game-shell{padding:5px}.topbar{min-height:51px}.crest{width:36px;height:36px}.subtitle{display:none}.playfield{border-radius:11px;max-height:none}.hud{inset:6px 7px auto;grid-template-columns:minmax(110px,180px) auto auto 1fr;gap:5px}.hud-chip{min-width:52px;padding:5px}.rune-chip{min-width:85px;padding:4px 7px}.panel{width:94%;padding:17px}.panel h2{font-size:clamp(25px,6vw,38px)}.intro-copy{margin:10px auto}.record-grid{margin:10px auto}.action-panel{right:7px;bottom:7px;width:min(430px,65%)}.game-footer{display:none}.training-flow{margin:10px 0}.tower-choice{min-height:50px}.wave-panel{bottom:7px}}
+@media(max-width:520px){.brand-lockup h1{font-size:18px}.eyebrow{display:none}.icon-button{width:35px;height:35px}.hud{grid-template-columns:1fr auto auto}.rune-chip{display:none}.difficulty-options{grid-template-columns:1fr}.training-flow{grid-template-columns:1fr}.tower-lesson-grid{grid-template-columns:1fr 1fr}.action-panel{left:5%;right:5%;width:90%}.tower-buttons{grid-template-columns:1fr 1fr}.wave-panel{width:90%}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+</style>
+  </head>
+  <body>
+    <main id="game-shell" aria-label="Defenders of Dragonswood tower defense">
+      <header class="topbar">
+        <div class="brand-lockup">
+          <span class="crest" aria-hidden="true">♜</span>
+          <div><p class="eyebrow">KINGDOM WARS</p><h1>Defenders of Dragonswood</h1><p class="subtitle">SIEGE MODE PLAYTEST</p></div>
+        </div>
+        <div class="top-actions">
+          <button id="help-button" class="icon-button" type="button" aria-label="Open siege training">?</button>
+          <button id="sound-button" class="icon-button" type="button" aria-label="Turn sound off" aria-pressed="true">♪</button>
+          <button id="speed-button" class="icon-button speed-button" type="button" aria-label="Battle speed is available during a siege" disabled>1×</button>
+          <button id="pause-button" class="icon-button" type="button" aria-label="Pause is available during a siege" disabled>Ⅱ</button>
+        </div>
+      </header>
+
+      <section id="playfield" class="playfield">
+        <canvas id="game-canvas" width="960" height="540" aria-label="Dragonswood siege battlefield"></canvas>
+
+        <div id="hud" class="hud hidden" aria-live="polite">
+          <div class="gate-meter"><div><span>DRAGON GATE</span><strong id="gate-text">20 / 20</strong></div><div class="track"><i id="gate-fill"></i></div></div>
+          <div class="hud-chip"><span>WAVE</span><strong id="wave-text">0 / 10</strong></div>
+          <div class="hud-chip"><span>ENEMIES</span><strong id="enemy-text">0</strong></div>
+          <div class="rune-chip"><span aria-hidden="true">◆</span><div><small>SIEGE RUNES</small><strong id="rune-text">220</strong></div></div>
+        </div>
+
+        <div id="boss-bar" class="boss-bar hidden"><div><span id="boss-name">SIEGE TROLL</span><strong id="boss-percent">100%</strong></div><div class="boss-track"><i id="boss-fill"></i></div></div>
+        <div id="announcement" class="announcement hidden" aria-live="assertive"></div>
+
+        <section id="title-panel" class="panel title-panel">
+          <p class="panel-kicker">THE CORRUPTION HAS REACHED THE EASTERN ROAD</p>
+          <h2>Hold the Dragon Gate.</h2>
+          <p class="intro-copy">Raise Warrior, Ranger, Mage, and Healer defenses. Survive ten waves and defeat the Dreadroot Titan before it reaches Dragonswood.</p>
+          <div class="record-grid"><div><span>BEST WAVE</span><strong id="best-wave">0</strong></div><div><span>VICTORIES</span><strong id="victories">0</strong></div></div>
+          <fieldset class="difficulty-field"><legend>Choose siege difficulty</legend><div id="difficulty-options" class="difficulty-options">
+            <label><input type="radio" name="difficulty" value="squire" /><span><strong>Squire</strong><small>25 Gate · 250 Runes</small></span></label>
+            <label><input type="radio" name="difficulty" value="guardian" checked /><span><strong>Guardian</strong><small>20 Gate · 220 Runes</small></span></label>
+            <label><input type="radio" name="difficulty" value="legend" /><span><strong>Legend</strong><small>15 Gate · 190 Runes</small></span></label>
+          </div></fieldset>
+          <button id="start-button" class="primary-button" type="button"><span>ENTER THE SIEGE</span><small>ENTER</small></button>
+          <button id="training-button" class="text-button" type="button">Open siege training</button>
+        </section>
+
+        <section id="tutorial-panel" class="panel tutorial-panel hidden" aria-labelledby="tutorial-title">
+          <p class="panel-kicker">SIEGE TRAINING</p><h2 id="tutorial-title">Build with purpose.</h2>
+          <div class="training-flow">
+            <article><b>1</b><div><h3>Select a build circle</h3><p>Choose any glowing pad beside the corruption road.</p></div></article>
+            <article><b>2</b><div><h3>Raise a class defense</h3><p>Every tower has an exact cost, range, damage, and role.</p></div></article>
+            <article><b>3</b><div><h3>Start the wave</h3><p>The battle pauses between waves so planning never costs lives.</p></div></article>
+            <article><b>4</b><div><h3>Upgrade or reclaim</h3><p>Tap a tower to upgrade it or recover 70% of all siege runes spent.</p></div></article>
+          </div>
+          <div class="tower-lesson-grid">
+            <div class="warrior"><span>⚔</span><strong>Warrior</strong><small>Heavy close strikes</small></div>
+            <div class="ranger"><span>➶</span><strong>Ranger</strong><small>Fast long shots</small></div>
+            <div class="mage"><span>✦</span><strong>Mage</strong><small>Splash and starfire</small></div>
+            <div class="healer"><span>✚</span><strong>Healer</strong><small>Slow, haste, gate repair</small></div>
+          </div>
+          <p class="coach-note"><strong>Visual Coach:</strong> Select a tower to see its true range. Shield bars are cyan, burning enemies glow orange, and slowed enemies carry a blue ring.</p>
+          <div class="panel-actions"><button id="tutorial-back" class="secondary-button" type="button">BACK</button><button id="tutorial-start" class="primary-button" type="button">BEGIN SIEGE</button></div>
+        </section>
+
+        <aside id="build-panel" class="action-panel build-panel hidden" aria-label="Build a defense">
+          <div class="action-heading"><div><small>BUILD PAD</small><strong>Raise a Defense</strong></div><button id="close-build" type="button" aria-label="Close build menu">×</button></div>
+          <div id="tower-buttons" class="tower-buttons"></div>
+        </aside>
+
+        <aside id="tower-panel" class="action-panel tower-panel hidden" aria-label="Selected tower">
+          <div class="action-heading"><div><small id="tower-level-label">LEVEL 1</small><strong id="tower-name">Ranger Lookout</strong></div><button id="close-tower" type="button" aria-label="Close tower menu">×</button></div>
+          <div class="tower-stat-grid"><div><span>DAMAGE</span><strong id="tower-damage">13</strong></div><div><span>RANGE</span><strong id="tower-range">175</strong></div><div><span>RATE</span><strong id="tower-rate">Fast</strong></div></div>
+          <p id="tower-description"></p>
+          <div class="tower-actions"><button id="upgrade-button" class="primary-button" type="button">UPGRADE · ◆ <span id="upgrade-cost">90</span></button><button id="sell-button" class="secondary-button" type="button">RECLAIM · ◆ <span id="sell-value">45</span></button></div>
+        </aside>
+
+        <section id="wave-panel" class="wave-panel hidden" aria-live="polite">
+          <div><small id="wave-kicker">DEFENSES READY</small><strong id="next-wave-name">Wave 1 · Corrupt Raiders</strong><span id="wave-preview">8 enemies</span></div>
+          <button id="start-wave-button" class="primary-button" type="button">START WAVE</button>
+        </section>
+
+        <section id="pause-panel" class="panel compact-panel hidden" aria-labelledby="pause-title">
+          <p class="panel-kicker">SIEGE SUSPENDED</p><h2 id="pause-title">Paused</h2>
+          <div class="settings-list">
+            <label><span>Sound effects</span><input id="sound-setting" type="checkbox" checked /></label>
+            <label><span>Reduced motion</span><input id="motion-setting" type="checkbox" /></label>
+            <label><span>High contrast</span><input id="contrast-setting" type="checkbox" /></label>
+          </div>
+          <div class="panel-actions"><button id="quit-button" class="secondary-button danger" type="button">END SIEGE</button><button id="resume-button" class="primary-button" type="button">RESUME</button></div>
+        </section>
+
+        <section id="result-panel" class="panel result-panel hidden" aria-labelledby="result-title">
+          <p id="result-kicker" class="panel-kicker">SIEGE COMPLETE</p><h2 id="result-title">The gate still stands.</h2><p id="result-copy" class="intro-copy"></p>
+          <div class="result-score"><span>FINAL SCORE</span><strong id="final-score">0</strong></div>
+          <div class="result-stats"><div><span>WAVE</span><strong id="final-wave">0</strong></div><div><span>DEFEATED</span><strong id="final-kills">0</strong></div><div><span>GATE</span><strong id="final-gate">0</strong></div></div>
+          <button id="replay-button" class="primary-button" type="button">DEFEND AGAIN</button><button id="exit-button" class="text-button" type="button">Return to Kingdom Wars</button>
+        </section>
+      </section>
+
+      <footer class="game-footer"><span>BUILD <b>SELECT A GLOWING PAD</b></span><span>INSPECT <b>SELECT A TOWER</b></span><span>PAUSE <b>ESC</b></span><span>SPEED <b>1× / 2×</b></span></footer>
+    </main>
+    <div id="sr-status" class="sr-only" aria-live="polite"></div>
+    <script>
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === "object" && module.exports) module.exports = api;
+  root.DefendersCore = api;
+})(typeof globalThis !== "undefined" ? globalThis : this, function () {
+  "use strict";
+
+  const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+  const distanceSquared = (a, b) => {
+    const dx = a.x - b.x;
+    const dy = a.y - b.y;
+    return dx * dx + dy * dy;
+  };
+
+  class RNG {
+    constructor(seed) { this.state = (seed >>> 0) || 0x9e3779b9; }
+    next() {
+      let x = this.state;
+      x ^= x << 13; x ^= x >>> 17; x ^= x << 5;
+      this.state = x >>> 0;
+      return this.state / 4294967296;
+    }
+    range(min, max) { return min + (max - min) * this.next(); }
+    int(min, maxInclusive) { return Math.floor(this.range(min, maxInclusive + 1)); }
+  }
+
+  class ObjectPool {
+    constructor(size, factory) {
+      this.items = Array.from({ length: size }, (_, index) => ({ ...factory(index), active: false }));
+    }
+    acquire(initializer) {
+      const item = this.items.find((candidate) => !candidate.active);
+      if (!item) return null;
+      item.active = true;
+      if (initializer) initializer(item);
+      return item;
+    }
+    release(item) { if (item) item.active = false; }
+    forEachActive(callback) { for (const item of this.items) if (item.active) callback(item); }
+    countActive() { let count = 0; for (const item of this.items) if (item.active) count += 1; return count; }
+    clear() { for (const item of this.items) item.active = false; }
+  }
+
+  const PATH = Object.freeze([
+    { x: -30, y: 130 }, { x: 150, y: 130 }, { x: 150, y: 350 },
+    { x: 390, y: 350 }, { x: 390, y: 165 }, { x: 650, y: 165 },
+    { x: 650, y: 390 }, { x: 835, y: 390 }, { x: 835, y: 270 },
+    { x: 990, y: 270 },
+  ]);
+
+  const PADS = Object.freeze([
+    { x: 85, y: 235 }, { x: 245, y: 100 }, { x: 245, y: 270 }, { x: 270, y: 445 },
+    { x: 475, y: 270 }, { x: 515, y: 95 }, { x: 570, y: 445 }, { x: 720, y: 275 },
+    { x: 740, y: 465 }, { x: 865, y: 155 }, { x: 900, y: 440 }, { x: 535, y: 345 },
+  ]);
+
+  const TOWERS = Object.freeze({
+    warrior: { id: "warrior", name: "Warrior Bastion", short: "Bastion", icon: "⚔", cost: 70, range: 82, damage: 24, delay: 0.78, color: "#ffb25c", description: "Very short reach. Instant strikes pierce armor and expose it to every tower for 2.3 seconds." },
+    ranger: { id: "ranger", name: "Ranger Lookout", short: "Lookout", icon: "➶", cost: 65, range: 175, damage: 13, delay: 0.40, color: "#67e6a1", description: "Long range. Fast single-target arrows." },
+    mage: { id: "mage", name: "Mage Obelisk", short: "Obelisk", icon: "✦", cost: 95, range: 138, damage: 30, delay: 1.08, color: "#a980ff", splash: 46, burn: 7, description: "Splash damage and lingering starfire." },
+    healer: { id: "healer", name: "Healer Beacon", short: "Beacon", icon: "✚", cost: 80, range: 128, damage: 7, delay: 0.72, color: "#58e8ff", slow: 0.72, description: "Slows corruption, hastens nearby towers, and mends the gate." },
+  });
+
+  function pointSegmentDistanceSquared(point, start, end) {
+    const dx = end.x - start.x, dy = end.y - start.y, length = dx * dx + dy * dy;
+    if (!length) return distanceSquared(point, start);
+    const t = clamp(((point.x - start.x) * dx + (point.y - start.y) * dy) / length, 0, 1);
+    return distanceSquared(point, { x: start.x + t * dx, y: start.y + t * dy });
+  }
+
+  function padCanReach(padIndex, type, level = 1) {
+    const pad = PADS[padIndex], stats = towerStats(type, level);
+    if (!pad || !stats) return false;
+    const reach = stats.range + 9;
+    for (let index = 1; index < PATH.length; index += 1) if (pointSegmentDistanceSquared(pad, PATH[index - 1], PATH[index]) <= reach * reach) return true;
+    return false;
+  }
+
+  const ENEMIES = Object.freeze({
+    swarm: { name: "Thornling", hp: 26, speed: 82, reward: 6, leak: 1, radius: 9, color: "#bdff72" },
+    raider: { name: "Corrupt Raider", hp: 62, speed: 52, reward: 9, leak: 1, radius: 12, color: "#de6d89" },
+    wisp: { name: "Void Wisp", hp: 50, speed: 72, reward: 10, leak: 1, radius: 10, color: "#8fe9ff" },
+    brute: { name: "Bark Brute", hp: 175, speed: 29, reward: 17, leak: 2, radius: 17, armor: 0.16, color: "#a47655" },
+    shaman: { name: "Blight Shaman", hp: 105, shield: 40, speed: 39, reward: 15, leak: 2, radius: 14, color: "#d18aff" },
+    troll: { name: "Siege Troll", hp: 920, speed: 19, reward: 125, leak: 6, radius: 29, armor: 0.10, boss: true, color: "#e06a54" },
+    titan: { name: "Dreadroot Titan", hp: 2250, shield: 260, speed: 15, reward: 260, leak: 12, radius: 38, armor: 0.18, boss: true, color: "#843d9e" },
+  });
+
+  const DIFFICULTIES = Object.freeze({
+    squire: { id: "squire", name: "Squire", hp: 0.84, speed: 0.94, reward: 1.12, startingRunes: 250, gate: 25 },
+    guardian: { id: "guardian", name: "Guardian", hp: 1, speed: 1, reward: 1, startingRunes: 220, gate: 20 },
+    legend: { id: "legend", name: "Legend", hp: 1.22, speed: 1.08, reward: 0.94, startingRunes: 190, gate: 15 },
+  });
+
+  const WAVE_GROUPS = Object.freeze({
+    1: [["raider", 8]],
+    2: [["swarm", 6], ["raider", 8]],
+    3: [["raider", 8], ["brute", 2], ["swarm", 6]],
+    4: [["wisp", 7], ["raider", 10], ["brute", 3]],
+    5: [["raider", 7], ["troll", 1], ["swarm", 8]],
+    6: [["shaman", 4], ["raider", 14], ["wisp", 10]],
+    7: [["brute", 6], ["swarm", 14], ["shaman", 3]],
+    8: [["wisp", 12], ["raider", 14], ["brute", 5], ["shaman", 3]],
+    9: [["swarm", 20], ["brute", 8], ["shaman", 6], ["wisp", 10]],
+    10: [["raider", 10], ["shaman", 5], ["titan", 1], ["swarm", 15]],
+  });
+
+  function makeWave(number) {
+    const groups = WAVE_GROUPS[number];
+    if (!groups) return [];
+    const queue = [];
+    for (const [type, count] of groups) for (let i = 0; i < count; i += 1) queue.push(type);
+    return queue;
+  }
+
+  function towerStats(type, level = 1) {
+    const base = TOWERS[type];
+    if (!base) return null;
+    const rank = clamp(level, 1, 3) - 1;
+    return {
+      ...base,
+      level: rank + 1,
+      damage: Math.round(base.damage * Math.pow(1.46, rank)),
+      range: Math.round(base.range * Math.pow(1.07, rank)),
+      delay: base.delay * Math.pow(0.87, rank),
+      splash: base.splash ? Math.round(base.splash * Math.pow(1.08, rank)) : 0,
+      burn: base.burn ? Math.round(base.burn * Math.pow(1.4, rank)) : 0,
+      slow: base.slow ? clamp(base.slow - rank * 0.06, 0.55, 1) : 1,
+    };
+  }
+
+  function upgradeCost(type, currentLevel) {
+    const base = TOWERS[type];
+    if (!base || currentLevel >= 3) return null;
+    return Math.round(base.cost * (0.72 + currentLevel * 0.36));
+  }
+
+  function sellValue(type, level) {
+    const base = TOWERS[type];
+    if (!base) return 0;
+    let spent = base.cost;
+    for (let current = 1; current < level; current += 1) spent += upgradeCost(type, current);
+    return Math.floor(spent * 0.7);
+  }
+
+  function enemyStats(type, difficulty = "guardian", wave = 1) {
+    const base = ENEMIES[type];
+    const mode = DIFFICULTIES[difficulty] || DIFFICULTIES.guardian;
+    if (!base) return null;
+    const waveScale = 1 + Math.max(0, wave - 1) * 0.035;
+    return {
+      ...base,
+      maxHp: Math.round(base.hp * mode.hp * waveScale),
+      hp: Math.round(base.hp * mode.hp * waveScale),
+      maxShield: Math.round((base.shield || 0) * mode.hp),
+      shield: Math.round((base.shield || 0) * mode.hp),
+      speed: base.speed * mode.speed,
+      reward: Math.max(1, Math.round(base.reward * mode.reward)),
+    };
+  }
+
+  class SaveStore {
+    constructor(storage, key = "dragonswood.defenders.v1") { this.storage = storage; this.key = key; this.memory = null; }
+    defaults() {
+      return { version: 1, bestWave: 0, victories: 0, battles: 0, tutorialSeen: false, settings: { sound: true, reducedMotion: false, highContrast: false } };
+    }
+    load() {
+      try {
+        const parsed = JSON.parse(this.storage.getItem(this.key) || "null");
+        if (!parsed || parsed.version !== 1) return this.memory || this.defaults();
+        const base = this.defaults();
+        this.memory = { ...base, ...parsed, settings: { ...base.settings, ...(parsed.settings || {}) } };
+        return this.memory;
+      } catch (_error) { return this.memory || this.defaults(); }
+    }
+    save(value) {
+      this.memory = { ...value, version: 1 };
+      try { this.storage.setItem(this.key, JSON.stringify(this.memory)); } catch (_error) {}
+      return this.memory;
+    }
+  }
+
+  function makeBattleId(now = Date.now(), random = Math.random()) {
+    return `defenders-${now.toString(36)}-${Math.floor(random * 0xffffff).toString(36)}`;
+  }
+
+  return { RNG, ObjectPool, PATH, PADS, TOWERS, ENEMIES, DIFFICULTIES, WAVE_GROUPS, SaveStore, clamp, distanceSquared, pointSegmentDistanceSquared, padCanReach, makeWave, towerStats, upgradeCost, sellValue, enemyStats, makeBattleId };
+});
+
+</script><script>
+(function () {
+  "use strict";
+
+  const Core = window.DefendersCore;
+  const WIDTH = 960;
+  const HEIGHT = 540;
+  const $ = (id) => document.getElementById(id);
+  const canvas = $("game-canvas");
+  const ctx = canvas.getContext("2d", { alpha: false });
+
+  const ui = {
+    hud: $("hud"), gateText: $("gate-text"), gateFill: $("gate-fill"), waveText: $("wave-text"), enemyText: $("enemy-text"), runeText: $("rune-text"),
+    bossBar: $("boss-bar"), bossName: $("boss-name"), bossPercent: $("boss-percent"), bossFill: $("boss-fill"), announcement: $("announcement"),
+    titlePanel: $("title-panel"), tutorialPanel: $("tutorial-panel"), buildPanel: $("build-panel"), towerPanel: $("tower-panel"), wavePanel: $("wave-panel"), pausePanel: $("pause-panel"), resultPanel: $("result-panel"),
+    towerButtons: $("tower-buttons"), srStatus: $("sr-status"),
+  };
+
+  class SiegeAudio {
+    constructor() { this.context = null; this.enabled = true; }
+    wake() {
+      const AudioEngine = window.AudioContext || window.webkitAudioContext;
+      if (!AudioEngine) return false;
+      try {
+        if (!this.context) this.context = new AudioEngine();
+        if (this.context.state === "suspended") this.context.resume().catch(() => {});
+        return true;
+      } catch (_error) { return false; }
+    }
+    tone(frequency, duration, type = "sine", volume = 0.03, slide = 0) {
+      if (!this.enabled || !this.wake()) return false;
+      const now = this.context.currentTime;
+      const oscillator = this.context.createOscillator();
+      const gain = this.context.createGain();
+      oscillator.type = type;
+      oscillator.frequency.setValueAtTime(frequency, now);
+      if (slide) oscillator.frequency.exponentialRampToValueAtTime(Math.max(35, frequency + slide), now + duration);
+      gain.gain.setValueAtTime(volume, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+      oscillator.connect(gain).connect(this.context.destination);
+      oscillator.start(now); oscillator.stop(now + duration);
+      return true;
+    }
+    build() { this.tone(230, .18, "triangle", .04, 240); }
+    arrow() { this.tone(520, .055, "triangle", .018, 120); }
+    magic() { this.tone(280, .13, "sine", .026, 300); }
+    strike() { this.tone(115, .08, "square", .026, -40); }
+    heal() { this.tone(610, .18, "sine", .025, 280); }
+    leak() { this.tone(90, .32, "sawtooth", .05, -35); }
+    boss() { this.tone(65, .8, "sawtooth", .05, -18); }
+    victory() { this.tone(330, .65, "triangle", .055, 620); }
+    confirm() { this.tone(480, .14, "sine", .025, 180); }
+  }
+
+  const audio = new SiegeAudio();
+  const storage = new Core.SaveStore(window.localStorage);
+  let save = storage.load();
+  const rng = new Core.RNG(Date.now());
+  let state = "title";
+  let tutorialReturn = "title";
+  let lastTime = performance.now();
+  let battleSpeed = 1;
+  let battleId = null;
+  let difficulty = "guardian";
+  let currentWave = 0;
+  let waveActive = false;
+  let spawnQueue = [];
+  let spawnTimer = 0;
+  let runes = 0;
+  let gate = 20;
+  let maxGate = 20;
+  let score = 0;
+  let kills = 0;
+  let towersBuilt = 0;
+  let selectedPad = null;
+  let selectedTower = null;
+  let previewTowerType = "warrior";
+  let activeBoss = null;
+  let screenShake = 0;
+  let pausedFrom = "playing";
+  let announcementTimer = null;
+  const towers = [];
+  const warnings = [];
+
+  const enemies = new Core.ObjectPool(130, () => ({ x: 0, y: 0, type: "raider", hp: 1, maxHp: 1, shield: 0, maxShield: 0, speed: 1, radius: 10, reward: 1, leak: 1, armor: 0, pathIndex: 1, travel: 0, slowTimer: 0, slowFactor: 1, burnTimer: 0, burnDps: 0, armorBreak: 0, boss: false, name: "", color: "#fff", specialTimer: 6, hitFlash: 0 }));
+  const projectiles = new Core.ObjectPool(240, () => ({ x: 0, y: 0, target: null, speed: 300, damage: 1, type: "ranger", radius: 3, color: "#fff", splash: 0, burn: 0, slow: 1 }));
+  const particles = new Core.ObjectPool(260, () => ({ x: 0, y: 0, vx: 0, vy: 0, size: 2, life: 1, maxLife: 1, color: "#fff" }));
+
+  function hidePanels() {
+    [ui.titlePanel, ui.tutorialPanel, ui.buildPanel, ui.towerPanel, ui.wavePanel, ui.pausePanel, ui.resultPanel].forEach((panel) => panel.classList.add("hidden"));
+  }
+
+  function announce(message, accessible = message) {
+    if (announcementTimer) window.clearTimeout(announcementTimer);
+    ui.announcement.textContent = message;
+    ui.announcement.classList.remove("hidden");
+    ui.srStatus.textContent = accessible;
+    announcementTimer = window.setTimeout(() => { ui.announcement.classList.add("hidden"); announcementTimer = null; }, 1700);
+  }
+
+  function hasKingdomWarsHost() {
+    return window.parent !== window;
+  }
+
+  function setState(nextState) {
+    state = nextState;
+    document.body.dataset.gameState = state;
+    refreshGlobalControls();
+  }
+
+  function refreshGlobalControls() {
+    const canControlBattle = state === "playing" || state === "paused";
+    $("pause-button").disabled = !canControlBattle;
+    $("speed-button").disabled = !canControlBattle;
+    $("pause-button").textContent = state === "paused" ? "▶" : "Ⅱ";
+    $("pause-button").setAttribute("aria-label", state === "paused" ? "Resume siege" : canControlBattle ? "Pause siege" : "Pause is available during a siege");
+    $("speed-button").setAttribute("aria-label", canControlBattle ? `Battle speed ${battleSpeed} times` : "Battle speed is available during a siege");
+    $("help-button").disabled = state === "tutorial";
+    $("sound-button").setAttribute("aria-pressed", String(!!save.settings.sound));
+    $("sound-button").setAttribute("aria-label", save.settings.sound ? "Turn sound off" : "Turn sound on");
+    $("exit-button").textContent = hasKingdomWarsHost() ? "Return to Kingdom Wars" : "Return to Title";
+  }
+
+  function showTitle() {
+    setState("title");
+    hidePanels();
+    ui.titlePanel.classList.remove("hidden");
+    ui.hud.classList.add("hidden");
+    ui.bossBar.classList.add("hidden");
+    $("best-wave").textContent = String(save.bestWave);
+    $("victories").textContent = String(save.victories);
+  }
+
+  function showTutorial(from) {
+    tutorialReturn = from || state;
+    if (state === "playing") pausedFrom = "playing";
+    setState("tutorial");
+    hidePanels();
+    ui.tutorialPanel.classList.remove("hidden");
+    const inBattle = tutorialReturn === "playing" || tutorialReturn === "paused";
+    $("tutorial-start").textContent = inBattle ? (tutorialReturn === "paused" ? "RETURN TO PAUSE MENU" : "RETURN TO BATTLE") : tutorialReturn === "result" ? "RETURN TO RESULTS" : "BEGIN SIEGE";
+  }
+
+  function leaveTutorial(startRequested) {
+    if (tutorialReturn === "title") {
+      if (startRequested) beginBattle(); else showTitle();
+      return;
+    }
+    hidePanels();
+    if (tutorialReturn === "result") {
+      setState("result");
+      ui.resultPanel.classList.remove("hidden");
+      return;
+    }
+    if (tutorialReturn === "paused") {
+      setState("paused");
+      ui.pausePanel.classList.remove("hidden");
+      return;
+    }
+    setState("playing");
+    if (selectedTower && towers.includes(selectedTower)) ui.towerPanel.classList.remove("hidden");
+    else if (selectedPad !== null) { renderTowerChoices(); ui.buildPanel.classList.remove("hidden"); }
+    else if (!waveActive) showNextWave();
+  }
+
+  function currentDifficulty() {
+    return document.querySelector('input[name="difficulty"]:checked')?.value || "guardian";
+  }
+
+  function beginBattle() {
+    difficulty = currentDifficulty();
+    const mode = Core.DIFFICULTIES[difficulty];
+    battleSpeed = 1;
+    $("speed-button").textContent = "1×";
+    setState("playing");
+    battleId = Core.makeBattleId();
+    currentWave = 0; waveActive = false; spawnQueue = []; spawnTimer = 0;
+    runes = mode.startingRunes; gate = mode.gate; maxGate = mode.gate;
+    score = 0; kills = 0; towersBuilt = 0; selectedPad = null; selectedTower = null; activeBoss = null; screenShake = 0;
+    towers.length = 0; warnings.length = 0; enemies.clear(); projectiles.clear(); particles.clear();
+    hidePanels();
+    ui.hud.classList.remove("hidden");
+    save.tutorialSeen = true; storage.save(save);
+    showNextWave(); updateHud();
+    emit("defenders:battle-start", { battleId, difficulty, mode: "kingdom-wars-siege" });
+  }
+
+  function previewWave(number) {
+    const queue = Core.makeWave(number);
+    const names = [...new Set(queue.map((type) => Core.ENEMIES[type].name))];
+    return { count: queue.length, names: names.slice(0, 2).join(" + ") + (names.length > 2 ? " + more" : "") };
+  }
+
+  function showNextWave() {
+    closeActions(false);
+    const number = currentWave + 1;
+    const preview = previewWave(number);
+    $("wave-kicker").textContent = number === 1 ? "DEFENSES READY" : "WAVE CLEARED · PLANNING PAUSE";
+    $("next-wave-name").textContent = `Wave ${number} · ${preview.names}`;
+    $("wave-preview").textContent = `${preview.count} enemies · planning time is safe`;
+    $("start-wave-button").textContent = number === 1 ? "START WAVE" : `START WAVE ${number}`;
+    ui.wavePanel.classList.remove("hidden");
+  }
+
+  function startWave() {
+    if (state !== "playing" || waveActive || currentWave >= 10) return;
+    closeActions(false);
+    ui.wavePanel.classList.add("hidden");
+    currentWave += 1;
+    spawnQueue = Core.makeWave(currentWave);
+    spawnTimer = .35;
+    waveActive = true;
+    announce(currentWave === 5 || currentWave === 10 ? `BOSS WAVE ${currentWave}` : `WAVE ${currentWave}`);
+    if (currentWave === 5 || currentWave === 10) audio.boss();
+    updateHud();
+  }
+
+  function finishWave() {
+    waveActive = false;
+    activeBoss = null;
+    ui.bossBar.classList.add("hidden");
+    warnings.length = 0;
+    projectiles.clear();
+    if (currentWave >= 10) { finishBattle(true); return; }
+    const bonus = 22 + currentWave * 5;
+    runes += bonus;
+    let repair = 0;
+    for (const tower of towers) if (tower.type === "healer") repair += tower.level;
+    if (repair && gate < maxGate) {
+      const actual = Math.min(repair, maxGate - gate);
+      gate += actual;
+      announce(`WAVE CLEARED · +${bonus} RUNES · +${actual} GATE`, `Wave cleared. ${bonus} siege runes and ${actual} gate health restored.`);
+      audio.heal();
+    } else announce(`WAVE CLEARED · +${bonus} RUNES`, `Wave cleared. ${bonus} siege runes awarded.`);
+    emit("defenders:wave-complete", { battleId, wave: currentWave, gate, runes });
+    showNextWave(); updateHud();
+  }
+
+  function finishBattle(victory, reason = "gate") {
+    if (state === "result") return;
+    setState("result"); waveActive = false;
+    hidePanels(); ui.resultPanel.classList.remove("hidden"); ui.bossBar.classList.add("hidden");
+    save.bestWave = Math.max(save.bestWave, currentWave);
+    save.battles += 1;
+    if (victory) save.victories += 1;
+    storage.save(save);
+    $("result-kicker").textContent = victory ? "DRAGONSWOOD DEFENDED" : "SIEGE COMPLETE";
+    $("result-title").textContent = victory ? "The gate still stands." : reason === "quit" ? "The wardens withdraw." : "The corruption broke through.";
+    $("result-copy").textContent = victory
+      ? "The Dreadroot Titan has fallen. Your approved siege result is ready for Kingdom Wars to validate later."
+      : reason === "quit" ? "This playtest run ended safely. No Kingdom Wars progress or currency was changed." : "Rebuild, change your tower mix, and hold the road one wave longer.";
+    $("final-score").textContent = score.toLocaleString(); $("final-wave").textContent = String(currentWave); $("final-kills").textContent = String(kills); $("final-gate").textContent = `${gate} / ${maxGate}`;
+    const payload = resultPayload(victory);
+    try { localStorage.setItem("defenders-last-result-v1", JSON.stringify(payload)); } catch (_error) {}
+    emit("defenders:battle-complete", payload);
+    if (victory) audio.victory();
+  }
+
+  function resultPayload(victory) {
+    return { game: "defenders-of-dragonswood", version: 2, mode: "kingdom-wars-siege", battleId, claimToken: battleId, difficulty, victory, wave: currentWave, score, kills, gateRemaining: gate, towersBuilt, completedAt: new Date().toISOString() };
+  }
+
+  function emit(type, detail) {
+    window.dispatchEvent(new CustomEvent(type, { detail }));
+    if (window.parent !== window) window.parent.postMessage({ type, payload: detail }, window.location.origin);
+    if (type === "defenders:battle-complete") { const envelope = { schemaVersion: 1, gameId: "defenders-of-dragonswood", gameVersion: 2, resultId: detail.battleId, completed: true, result: detail }; window.dispatchEvent(new CustomEvent("dragonswood:arcade-result", { detail: envelope })); if (window.parent !== window) window.parent.postMessage({ type: "dragonswood:arcade-result", payload: envelope }, window.location.origin); }
+  }
+
+  function spawnEnemy(type) {
+    const stats = Core.enemyStats(type, difficulty, currentWave);
+    const point = Core.PATH[0];
+    const enemy = enemies.acquire((item) => Object.assign(item, stats, {
+      x: point.x, y: point.y, type, pathIndex: 1, travel: 0, slowTimer: 0, slowFactor: 1,
+      burnTimer: 0, burnDps: 0, armorBreak: 0, boss: !!stats.boss, name: stats.name,
+      specialTimer: type === "titan" ? 5.5 : 7.2, hitFlash: 0,
+    }));
+    if (enemy?.boss) {
+      activeBoss = enemy;
+      ui.bossName.textContent = enemy.name.toUpperCase();
+      ui.bossBar.classList.remove("hidden");
+    }
+  }
+
+  function leakEnemy(enemy) {
+    gate = Math.max(0, gate - enemy.leak);
+    enemy.active = false;
+    if (enemy === activeBoss) { activeBoss = null; ui.bossBar.classList.add("hidden"); }
+    screenShake = save.settings.reducedMotion ? 0 : 10;
+    burst(900, 270, "#ff5c78", 20, 210);
+    audio.leak();
+    announce(`GATE HIT · -${enemy.leak}`, `The Dragon Gate lost ${enemy.leak} health.`);
+    if (gate <= 0) finishBattle(false);
+  }
+
+  function destroyEnemy(enemy) {
+    if (!enemy.active) return;
+    enemy.active = false;
+    runes += enemy.reward;
+    score += Math.round(enemy.maxHp * 3 + enemy.reward * 10);
+    kills += 1;
+    burst(enemy.x, enemy.y, enemy.boss ? "#ff78cc" : enemy.color, enemy.boss ? 48 : 13, enemy.boss ? 280 : 140);
+    if (enemy === activeBoss) { activeBoss = null; ui.bossBar.classList.add("hidden"); warnings.length = 0; }
+  }
+
+  function damageEnemy(enemy, rawDamage, armorPierce = 0) {
+    if (!enemy?.active) return;
+    let damage = rawDamage;
+    if (enemy.shield > 0) {
+      const absorbed = Math.min(enemy.shield, damage);
+      enemy.shield -= absorbed; damage -= absorbed;
+    }
+    if (damage > 0) {
+      const armor = Math.max(0, (enemy.armor || 0) - armorPierce - (enemy.armorBreak > 0 ? .12 : 0));
+      enemy.hp -= damage * (1 - armor);
+    }
+    enemy.hitFlash = .08;
+    if (enemy.hp <= 0) destroyEnemy(enemy);
+  }
+
+  function scheduleBossPulse(enemy) {
+    const candidates = towers.filter((tower) => tower.disabledTimer <= 0);
+    if (!candidates.length) return;
+    const count = enemy.type === "titan" ? Math.min(2, candidates.length) : 1;
+    candidates.sort((a, b) => Core.distanceSquared(a, enemy) - Core.distanceSquared(b, enemy));
+    for (let i = 0; i < count; i += 1) warnings.push({ tower: candidates[i], timer: 1.2, max: 1.2, enemy });
+  }
+
+  function updateWarnings(dt) {
+    for (let i = warnings.length - 1; i >= 0; i -= 1) {
+      const warning = warnings[i];
+      if (!warning.tower || !towers.includes(warning.tower)) { warnings.splice(i, 1); continue; }
+      warning.timer -= dt;
+      if (warning.timer <= 0) {
+        warning.tower.disabledTimer = warning.enemy.type === "titan" ? 3.2 : 2.4;
+        burst(warning.tower.x, warning.tower.y, "#ff5c9f", 20, 170);
+        warnings.splice(i, 1);
+        announce("CORRUPTION PULSE", "A tower has been temporarily silenced.");
+      }
+    }
+  }
+
+  function updateEnemies(dt) {
+    enemies.forEachActive((enemy) => {
+      enemy.hitFlash = Math.max(0, enemy.hitFlash - dt);
+      enemy.slowTimer = Math.max(0, enemy.slowTimer - dt);
+      enemy.armorBreak = Math.max(0, enemy.armorBreak - dt);
+      if (enemy.burnTimer > 0) {
+        const burnStep = Math.min(dt, enemy.burnTimer);
+        enemy.burnTimer -= burnStep;
+        damageEnemy(enemy, enemy.burnDps * burnStep);
+        if (!enemy.active) return;
+      }
+      if (enemy.boss) {
+        enemy.specialTimer -= dt;
+        if (enemy.specialTimer <= 0) { scheduleBossPulse(enemy); enemy.specialTimer = enemy.type === "titan" ? 5.8 : 7.4; }
+      }
+      const target = Core.PATH[enemy.pathIndex];
+      if (!target) { leakEnemy(enemy); return; }
+      const dx = target.x - enemy.x; const dy = target.y - enemy.y; const distance = Math.hypot(dx, dy);
+      const factor = enemy.slowTimer > 0 ? enemy.slowFactor : 1;
+      const step = enemy.speed * factor * dt;
+      if (distance <= step) {
+        enemy.x = target.x; enemy.y = target.y; enemy.travel += distance; enemy.pathIndex += 1;
+        if (enemy.pathIndex >= Core.PATH.length) leakEnemy(enemy);
+      } else {
+        enemy.x += dx / distance * step; enemy.y += dy / distance * step; enemy.travel += step;
+      }
+    });
+  }
+
+  function towerHasHealerHaste(tower) {
+    return towers.some((other) => other !== tower && other.type === "healer" && other.disabledTimer <= 0 && Core.distanceSquared(tower, other) <= Math.pow(Core.towerStats("healer", other.level).range, 2));
+  }
+
+  function findTarget(tower, range) {
+    let target = null;
+    let bestTravel = -1;
+    enemies.forEachActive((enemy) => {
+      if (Core.distanceSquared(tower, enemy) <= range * range && enemy.travel > bestTravel) { target = enemy; bestTravel = enemy.travel; }
+    });
+    return target;
+  }
+
+  function fireTower(tower, target, stats) {
+    if (tower.type === "warrior") {
+      damageEnemy(target, stats.damage, .08);
+      target.armorBreak = Math.max(target.armorBreak, 2.3);
+      burst(target.x, target.y, stats.color, 6, 85); audio.strike();
+      return;
+    }
+    const speed = tower.type === "ranger" ? 430 : tower.type === "mage" ? 275 : 330;
+    projectiles.acquire((projectile) => Object.assign(projectile, {
+      x: tower.x, y: tower.y, target, speed, damage: stats.damage, type: tower.type,
+      radius: tower.type === "mage" ? 6 : 4, color: stats.color, splash: stats.splash || 0,
+      burn: stats.burn || 0, slow: stats.slow || 1,
+    }));
+    if (tower.type === "ranger") audio.arrow();
+    else if (tower.type === "mage") audio.magic();
+    else audio.heal();
+  }
+
+  function updateTowers(dt) {
+    for (const tower of towers) {
+      tower.disabledTimer = Math.max(0, tower.disabledTimer - dt);
+      if (tower.disabledTimer > 0) continue;
+      tower.cooldown -= dt;
+      if (tower.cooldown > 0) continue;
+      const stats = Core.towerStats(tower.type, tower.level);
+      const target = findTarget(tower, stats.range);
+      if (!target) continue;
+      fireTower(tower, target, stats);
+      tower.cooldown = stats.delay * (towerHasHealerHaste(tower) ? .88 : 1);
+    }
+  }
+
+  function updateProjectiles(dt) {
+    projectiles.forEachActive((projectile) => {
+      const target = projectile.target;
+      if (!target?.active) { projectile.active = false; return; }
+      const dx = target.x - projectile.x; const dy = target.y - projectile.y; const distance = Math.hypot(dx, dy);
+      const step = projectile.speed * dt;
+      if (distance <= step + target.radius) {
+        projectile.active = false;
+        if (projectile.type === "mage" && projectile.splash) {
+          enemies.forEachActive((enemy) => {
+            if (Core.distanceSquared(enemy, target) <= projectile.splash * projectile.splash) {
+              damageEnemy(enemy, projectile.damage);
+              enemy.burnTimer = Math.max(enemy.burnTimer, 2.2); enemy.burnDps = Math.max(enemy.burnDps, projectile.burn);
+            }
+          });
+          burst(target.x, target.y, projectile.color, 14, 150);
+        } else {
+          damageEnemy(target, projectile.damage);
+          if (projectile.type === "healer" && target.active) { target.slowTimer = Math.max(target.slowTimer, 1.25); target.slowFactor = Math.min(target.slowFactor, projectile.slow); }
+          burst(target.x, target.y, projectile.color, 4, 70);
+        }
+      } else { projectile.x += dx / distance * step; projectile.y += dy / distance * step; }
+    });
+  }
+
+  function burst(x, y, color, amount = 10, force = 120) {
+    const actual = save.settings.reducedMotion ? Math.ceil(amount * .3) : amount;
+    for (let i = 0; i < actual; i += 1) {
+      const angle = rng.range(0, Math.PI * 2); const speed = rng.range(force * .25, force);
+      particles.acquire((particle) => Object.assign(particle, { x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, size: rng.range(1.4, 4.4), life: rng.range(.25, .7), maxLife: .7, color }));
+    }
+  }
+
+  function updateParticles(dt) {
+    particles.forEachActive((particle) => {
+      particle.life -= dt;
+      if (particle.life <= 0) { particle.active = false; return; }
+      particle.x += particle.vx * dt; particle.y += particle.vy * dt; particle.vx *= .98; particle.vy *= .98;
+    });
+  }
+
+  function update(dt) {
+    updateParticles(dt);
+    if (state !== "playing") return;
+    const battleDt = dt * battleSpeed;
+    screenShake = Math.max(0, screenShake - battleDt * 25);
+    if (waveActive && spawnQueue.length) {
+      spawnTimer -= battleDt;
+      if (spawnTimer <= 0) {
+        const type = spawnQueue.shift(); spawnEnemy(type);
+        spawnTimer = type === "swarm" ? .28 : type === "wisp" ? .4 : type === "troll" || type === "titan" ? 1.2 : .54;
+      }
+    }
+    updateWarnings(battleDt); updateEnemies(battleDt); updateTowers(battleDt); updateProjectiles(battleDt);
+    if (waveActive && !spawnQueue.length && enemies.countActive() === 0) finishWave();
+    updateHud(); refreshActionAffordability();
+  }
+
+  function updateHud() {
+    ui.gateText.textContent = `${gate} / ${maxGate}`; ui.gateFill.style.width = `${Core.clamp(gate / maxGate * 100, 0, 100)}%`;
+    ui.waveText.textContent = `${currentWave} / 10`; ui.enemyText.textContent = String(enemies.countActive() + spawnQueue.length); ui.runeText.textContent = String(runes);
+    if (activeBoss?.active) {
+      const total = activeBoss.hp + activeBoss.shield; const maximum = activeBoss.maxHp + activeBoss.maxShield; const percent = Core.clamp(total / maximum * 100, 0, 100);
+      ui.bossPercent.textContent = `${Math.ceil(percent)}%`; ui.bossFill.style.width = `${percent}%`;
+    }
+    document.body.dataset.wave = String(currentWave);
+    document.body.dataset.waveActive = String(waveActive);
+    document.body.dataset.towers = String(towers.length);
+  }
+
+  function closeActions(restoreWave = true) {
+    selectedPad = null; selectedTower = null;
+    ui.buildPanel.classList.add("hidden"); ui.towerPanel.classList.add("hidden");
+    if (restoreWave && state === "playing" && !waveActive && currentWave < 10) ui.wavePanel.classList.remove("hidden");
+  }
+
+  function openPad(padIndex) {
+    if (state !== "playing") return;
+    const existing = towers.find((tower) => tower.padIndex === padIndex);
+    ui.wavePanel.classList.add("hidden");
+    if (existing) openTower(existing);
+    else {
+      selectedPad = padIndex; selectedTower = null; previewTowerType = "warrior"; ui.towerPanel.classList.add("hidden"); ui.buildPanel.classList.remove("hidden"); renderTowerChoices();
+    }
+  }
+
+  function renderTowerChoices() {
+    ui.towerButtons.innerHTML = "";
+    Object.values(Core.TOWERS).forEach((definition) => {
+      const reachable = selectedPad !== null && Core.padCanReach(selectedPad, definition.id);
+      const button = document.createElement("button"); button.type = "button"; button.className = "tower-choice"; button.dataset.type = definition.id; button.disabled = runes < definition.cost || !reachable;
+      button.innerHTML = `<span style="color:${definition.color}">${definition.icon}</span><div><strong>${definition.short}</strong><small>${reachable?definition.description:"Cannot reach the road from this pad."}</small></div><b>◆ ${definition.cost}</b>`;
+      const preview = () => { previewTowerType = definition.id; };
+      button.addEventListener("pointerenter", preview); button.addEventListener("focus", preview); button.addEventListener("click", () => buildTower(definition.id)); ui.towerButtons.appendChild(button);
+    });
+  }
+
+  function buildTower(type) {
+    if (selectedPad === null || towers.some((tower) => tower.padIndex === selectedPad)) return;
+    const definition = Core.TOWERS[type]; if (!definition || runes < definition.cost || !Core.padCanReach(selectedPad, type)) return;
+    const pad = Core.PADS[selectedPad]; runes -= definition.cost;
+    const tower = { x: pad.x, y: pad.y, padIndex: selectedPad, type, level: 1, cooldown: .2, spent: definition.cost, disabledTimer: 0 };
+    towers.push(tower); towersBuilt += 1; audio.build(); burst(tower.x, tower.y, definition.color, 18, 120); updateHud(); openTower(tower);
+  }
+
+  function openTower(tower) {
+    selectedTower = tower; selectedPad = tower.padIndex; ui.buildPanel.classList.add("hidden"); ui.wavePanel.classList.add("hidden"); ui.towerPanel.classList.remove("hidden"); refreshTowerPanel();
+  }
+
+  function rateLabel(delay) { return delay <= .45 ? "Fast" : delay <= .8 ? "Steady" : "Heavy"; }
+
+  function refreshTowerPanel() {
+    if (!selectedTower || !towers.includes(selectedTower)) return;
+    const stats = Core.towerStats(selectedTower.type, selectedTower.level); const cost = Core.upgradeCost(selectedTower.type, selectedTower.level); const value = Core.sellValue(selectedTower.type, selectedTower.level);
+    $("tower-level-label").textContent = `LEVEL ${selectedTower.level}${selectedTower.disabledTimer > 0 ? " · SILENCED" : ""}`;
+    $("tower-name").textContent = stats.name; $("tower-damage").textContent = String(stats.damage); $("tower-range").textContent = String(stats.range); $("tower-rate").textContent = rateLabel(stats.delay); $("tower-description").textContent = stats.description;
+    $("upgrade-cost").textContent = cost === null ? "MAX" : String(cost); $("upgrade-button").disabled = cost === null || runes < cost; $("upgrade-button").firstChild.textContent = cost === null ? "MAXIMUM LEVEL · ◆ " : "UPGRADE · ◆ ";
+    $("sell-value").textContent = String(value);
+  }
+
+  function upgradeTower() {
+    if (!selectedTower) return;
+    const cost = Core.upgradeCost(selectedTower.type, selectedTower.level); if (cost === null || runes < cost) return;
+    runes -= cost; selectedTower.level += 1; selectedTower.spent += cost; audio.build(); burst(selectedTower.x, selectedTower.y, Core.TOWERS[selectedTower.type].color, 22, 150); refreshTowerPanel(); updateHud();
+  }
+
+  function sellTower() {
+    if (!selectedTower) return;
+    const value = Core.sellValue(selectedTower.type, selectedTower.level); runes += value;
+    const index = towers.indexOf(selectedTower); if (index >= 0) towers.splice(index, 1);
+    warnings.splice(0, warnings.length, ...warnings.filter((warning) => warning.tower !== selectedTower));
+    burst(selectedTower.x, selectedTower.y, "#ffd166", 13, 110); closeActions(); updateHud();
+  }
+
+  function refreshActionAffordability() {
+    if (!ui.buildPanel.classList.contains("hidden")) for (const button of ui.towerButtons.querySelectorAll("button")) button.disabled = runes < Core.TOWERS[button.dataset.type].cost || !Core.padCanReach(selectedPad, button.dataset.type);
+    if (!ui.towerPanel.classList.contains("hidden")) refreshTowerPanel();
+  }
+
+  function pointerToWorld(event) {
+    const rect = canvas.getBoundingClientRect();
+    return { x: (event.clientX - rect.left) / rect.width * WIDTH, y: (event.clientY - rect.top) / rect.height * HEIGHT };
+  }
+
+  function handleCanvasPointer(event) {
+    if (state !== "playing") return;
+    const point = pointerToWorld(event);
+    let best = -1; let bestDistance = Infinity;
+    Core.PADS.forEach((pad, index) => { const d = Core.distanceSquared(point, pad); if (d < 32 * 32 && d < bestDistance) { best = index; bestDistance = d; } });
+    if (best >= 0) openPad(best); else closeActions();
+  }
+
+  function togglePause(force) {
+    if (!["playing", "paused"].includes(state)) return;
+    const shouldPause = typeof force === "boolean" ? force : state === "playing";
+    if (shouldPause) { pausedFrom = "playing"; setState("paused"); hidePanels(); ui.pausePanel.classList.remove("hidden"); }
+    else { setState("playing"); hidePanels(); if (!waveActive) showNextWave(); }
+  }
+
+  function applySettings() {
+    audio.enabled = !!save.settings.sound; $("sound-setting").checked = audio.enabled; $("motion-setting").checked = !!save.settings.reducedMotion; $("contrast-setting").checked = !!save.settings.highContrast;
+    $("sound-button").textContent = audio.enabled ? "♪" : "×"; document.body.classList.toggle("high-contrast", !!save.settings.highContrast); refreshGlobalControls();
+  }
+
+  function saveSettings() {
+    save.settings.sound = $("sound-setting").checked; save.settings.reducedMotion = $("motion-setting").checked; save.settings.highContrast = $("contrast-setting").checked; storage.save(save); applySettings();
+  }
+
+  function drawBackground() {
+    const gradient = ctx.createLinearGradient(0, 0, 0, HEIGHT); gradient.addColorStop(0, save.settings.highContrast ? "#071710" : "#10251b"); gradient.addColorStop(1, "#07100c"); ctx.fillStyle = gradient; ctx.fillRect(0, 0, WIDTH, HEIGHT);
+    ctx.globalAlpha = .16; ctx.fillStyle = "#6eb266";
+    for (let i = 0; i < 80; i += 1) { const x = (i * 137) % WIDTH; const y = (i * 83) % HEIGHT; ctx.beginPath(); ctx.arc(x, y, 2 + i % 4, 0, Math.PI * 2); ctx.fill(); }
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = "#5f4938"; ctx.lineWidth = 56; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.beginPath(); ctx.moveTo(Core.PATH[0].x, Core.PATH[0].y); for (let i = 1; i < Core.PATH.length; i += 1) ctx.lineTo(Core.PATH[i].x, Core.PATH[i].y); ctx.stroke();
+    ctx.strokeStyle = "#9a7750"; ctx.lineWidth = 42; ctx.setLineDash([8, 7]); ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle = "rgba(255,225,166,.12)"; ctx.lineWidth = 2; ctx.stroke();
+    drawGate();
+  }
+
+  function drawGate() {
+    ctx.save(); ctx.translate(920, 270);
+    ctx.fillStyle = "#2b2347"; ctx.strokeStyle = "#b795ff"; ctx.lineWidth = 3;
+    ctx.fillRect(-38, -66, 76, 132); ctx.strokeRect(-38, -66, 76, 132);
+    ctx.fillStyle = "#6f4c2f"; ctx.beginPath(); ctx.arc(0, 16, 26, Math.PI, 0); ctx.lineTo(26, 55); ctx.lineTo(-26, 55); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#9a70ef"; ctx.fillRect(-45, -82, 25, 35); ctx.fillRect(20, -82, 25, 35);
+    ctx.fillStyle = "#ffd166"; ctx.beginPath(); ctx.arc(0, -30, 8, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+
+  function drawPads() {
+    Core.PADS.forEach((pad, index) => {
+      const occupied = towers.some((tower) => tower.padIndex === index);
+      ctx.save(); ctx.translate(pad.x, pad.y);
+      if (!occupied) {
+        ctx.fillStyle = "rgba(96,66,155,.32)"; ctx.strokeStyle = selectedPad === index ? "#56e8ff" : "rgba(193,164,255,.64)"; ctx.lineWidth = selectedPad === index ? 3 : 2;
+        ctx.beginPath(); ctx.arc(0, 0, 22, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = "rgba(255,255,255,.5)"; ctx.font = "700 16px system-ui"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("+", 0, -1);
+      }
+      ctx.restore();
+    });
+    if (selectedPad !== null && !towers.some((tower) => tower.padIndex === selectedPad) && !ui.buildPanel.classList.contains("hidden")) { const pad = Core.PADS[selectedPad], stats = Core.towerStats(previewTowerType, 1), def = Core.TOWERS[previewTowerType], reachable = Core.padCanReach(selectedPad, previewTowerType); ctx.save();ctx.fillStyle=`${def.color}17`;ctx.strokeStyle=reachable?`${def.color}cc`:"#ff5c73";ctx.lineWidth=reachable?3:4;ctx.setLineDash(reachable?[]:[9,7]);ctx.beginPath();ctx.arc(pad.x,pad.y,stats.range,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=reachable?def.color:"#ff9aab";ctx.font="800 12px system-ui";ctx.textAlign="center";ctx.fillText(reachable?`${def.short.toUpperCase()} RANGE`:"ROAD OUT OF RANGE",pad.x,pad.y-stats.range-9);ctx.restore(); }
+  }
+
+  function drawTower(tower) {
+    const def = Core.TOWERS[tower.type]; const selected = tower === selectedTower;
+    if (selected) { const stats = Core.towerStats(tower.type, tower.level); ctx.fillStyle = `${def.color}17`; ctx.strokeStyle = `${def.color}88`; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(tower.x, tower.y, stats.range, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); }
+    ctx.save(); ctx.translate(tower.x, tower.y);
+    ctx.fillStyle = tower.disabledTimer > 0 ? "#44384d" : "#241943"; ctx.strokeStyle = tower.disabledTimer > 0 ? "#ff6b9b" : def.color; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.arc(0, 0, 24, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = tower.disabledTimer > 0 ? "#a897ad" : def.color; ctx.font = "700 23px Georgia,serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(def.icon, 0, -1);
+    for (let i = 0; i < tower.level; i += 1) { ctx.fillStyle = "#ffd166"; ctx.beginPath(); ctx.arc(-7 + i * 7, 20, 2.3, 0, Math.PI * 2); ctx.fill(); }
+    if (tower.disabledTimer > 0) { ctx.strokeStyle = "#ff5c9f"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-14, -14); ctx.lineTo(14, 14); ctx.moveTo(14, -14); ctx.lineTo(-14, 14); ctx.stroke(); }
+    ctx.restore();
+  }
+
+  function drawEnemy(enemy) {
+    ctx.save(); ctx.translate(enemy.x, enemy.y);
+    ctx.shadowBlur = enemy.boss ? 18 : 8; ctx.shadowColor = enemy.color; ctx.fillStyle = enemy.hitFlash > 0 ? "#fff" : enemy.color; ctx.strokeStyle = enemy.boss ? "#ffb0d7" : "rgba(20,10,30,.9)"; ctx.lineWidth = 2;
+    if (enemy.type === "wisp") { ctx.beginPath(); ctx.moveTo(0,-enemy.radius); ctx.lineTo(enemy.radius,0); ctx.lineTo(0,enemy.radius); ctx.lineTo(-enemy.radius,0); ctx.closePath(); }
+    else if (enemy.type === "brute" || enemy.boss) { ctx.beginPath(); for (let i=0;i<8;i+=1){const a=i*Math.PI/4;const r=i%2?enemy.radius*.8:enemy.radius;ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);}ctx.closePath(); }
+    else { ctx.beginPath(); ctx.arc(0,0,enemy.radius,0,Math.PI*2); }
+    ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#160b1e"; ctx.beginPath(); ctx.arc(-enemy.radius*.3,-2,2.2,0,Math.PI*2); ctx.arc(enemy.radius*.3,-2,2.2,0,Math.PI*2); ctx.fill();
+    if (enemy.slowTimer > 0) { ctx.strokeStyle="#56e8ff";ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,enemy.radius+5,0,Math.PI*2);ctx.stroke(); }
+    if (enemy.burnTimer > 0) { ctx.strokeStyle="#ff9b4f";ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,enemy.radius+8,0,Math.PI*1.4);ctx.stroke(); }
+    ctx.restore();
+    const width = enemy.boss ? 66 : 30; const y = enemy.y - enemy.radius - 11;
+    ctx.fillStyle="rgba(0,0,0,.65)";ctx.fillRect(enemy.x-width/2,y,width,4);ctx.fillStyle="#ff5e78";ctx.fillRect(enemy.x-width/2,y,width*Core.clamp(enemy.hp/enemy.maxHp,0,1),4);
+    if (enemy.maxShield > 0 && enemy.shield > 0) { ctx.fillStyle="#56e8ff";ctx.fillRect(enemy.x-width/2,y-4,width*enemy.shield/enemy.maxShield,2); }
+  }
+
+  function drawProjectiles() {
+    projectiles.forEachActive((projectile) => { ctx.save();ctx.translate(projectile.x,projectile.y);ctx.fillStyle=projectile.color;ctx.shadowBlur=10;ctx.shadowColor=projectile.color;ctx.beginPath();ctx.arc(0,0,projectile.radius,0,Math.PI*2);ctx.fill();ctx.restore(); });
+  }
+
+  function drawWarnings() {
+    warnings.forEach((warning) => {
+      const pulse=.4+Math.sin(performance.now()*.018)*.2; ctx.save();ctx.globalAlpha=pulse;ctx.strokeStyle="#ff4f8b";ctx.fillStyle="rgba(255,50,110,.14)";ctx.lineWidth=3;ctx.setLineDash([7,7]);ctx.beginPath();ctx.arc(warning.tower.x,warning.tower.y,38,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.setLineDash([]);ctx.restore();
+    });
+  }
+
+  function drawParticles() {
+    particles.forEachActive((particle) => { ctx.globalAlpha=Core.clamp(particle.life/particle.maxLife,0,1);ctx.fillStyle=particle.color;ctx.fillRect(particle.x,particle.y,particle.size,particle.size); });ctx.globalAlpha=1;
+  }
+
+  function draw() {
+    ctx.save(); if(screenShake>0)ctx.translate(rng.range(-screenShake,screenShake),rng.range(-screenShake,screenShake));
+    drawBackground(); drawPads(); drawWarnings(); towers.forEach(drawTower); enemies.forEachActive(drawEnemy); drawProjectiles(); drawParticles(); ctx.restore();
+  }
+
+  function frame(now) {
+    const dt=Math.min(.034,Math.max(0,(now-lastTime)/1000));lastTime=now;update(dt);draw();requestAnimationFrame(frame);
+  }
+
+  canvas.addEventListener("pointerdown", handleCanvasPointer);
+  $("start-button").addEventListener("click",()=>save.tutorialSeen?beginBattle():showTutorial("title"));
+  $("training-button").addEventListener("click",()=>showTutorial("title"));
+  $("help-button").addEventListener("click",()=>showTutorial(state));
+  $("tutorial-back").addEventListener("click",()=>leaveTutorial(false));
+  $("tutorial-start").addEventListener("click",()=>leaveTutorial(true));
+  $("start-wave-button").addEventListener("click",startWave);
+  $("close-build").addEventListener("click",()=>closeActions()); $("close-tower").addEventListener("click",()=>closeActions());
+  $("upgrade-button").addEventListener("click",upgradeTower); $("sell-button").addEventListener("click",sellTower);
+  $("pause-button").addEventListener("click",()=>togglePause()); $("resume-button").addEventListener("click",()=>togglePause(false)); $("quit-button").addEventListener("click",()=>finishBattle(false,"quit"));
+  $("replay-button").addEventListener("click",beginBattle); $("exit-button").addEventListener("click",()=>{emit("defenders:exit",{battleId});showTitle();});
+  $("sound-button").addEventListener("click",()=>{save.settings.sound=!save.settings.sound;storage.save(save);applySettings();announce(save.settings.sound?"SOUND ON":"SOUND OFF");if(save.settings.sound)audio.confirm();});
+  $("speed-button").addEventListener("click",()=>{battleSpeed=battleSpeed===1?2:1;$("speed-button").textContent=`${battleSpeed}×`;$("speed-button").setAttribute("aria-label",`Battle speed ${battleSpeed} times`);});
+  [$("sound-setting"),$("motion-setting"),$("contrast-setting")].forEach((input)=>input.addEventListener("change",saveSettings));
+  document.addEventListener("keydown",(event)=>{if(event.code==="Enter"&&state==="title")(save.tutorialSeen?beginBattle():showTutorial("title"));if((event.code==="Escape"||event.code==="KeyP")&&["playing","paused"].includes(state))togglePause();if(event.code==="Space"&&state==="playing"&&!waveActive){event.preventDefault();startWave();}});
+  window.addEventListener("blur",()=>{if(state==="playing"&&waveActive)togglePause(true);}); document.addEventListener("visibilitychange",()=>{if(document.hidden&&state==="playing"&&waveActive)togglePause(true);});
+
+  applySettings(); showTitle(); updateHud(); requestAnimationFrame(frame);
+})();
+
+</script>
+  </body>
+</html>

@@ -517,6 +517,14 @@ service cloud.firestore {
       allow update, delete: if isTeacher();
     }
 
+    // Rune Spelling evidence is validated and written by the academic callable.
+    // Browsers can read only their own rows and cannot forge gradebook results.
+    match /spellingResults/{resultId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.studentId == request.auth.uid);
+      allow write: if false;
+    }
+
     // 182 Daily Quests:
     // Teacher can seed/read all.
     // Students can read ONLY while Firestore server time is inside that day's window.
@@ -1297,6 +1305,12 @@ service cloud.firestore {
 
     match /arcadeAudit/{auditId} {
       allow read: if isTeacher();
+      allow write: if false;
+    }
+
+    match /arcadeGameResults/{resultId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && resource.data.uid == request.auth.uid);
       allow write: if false;
     }
 

@@ -23,8 +23,10 @@ async function isAuthorized(request){
   if(!request.auth)return false;
   const email=String(request.auth.token?.email||"").toLowerCase();
   if(email===TEACHER_EMAIL||email.endsWith("@explore.academy"))return true;
-  try{return (await db.doc(`testerAccounts/${request.auth.uid}`).get()).exists}catch{return false}
+  try{const snap=await db.doc(`testerAccounts/${request.auth.uid}`).get();return snap.exists&&snap.data()?.active===true}catch{return false}
 }
+const SPELLING_LEVEL_BY_GRADE=Object.freeze({3:"foundation",4:"grade4",5:"grade5",6:"challenge",8:"master"});
+const currentSpellingWeek=()=>Math.max(1,Math.min(30,Math.floor((Date.parse(`${phoenixDateKey()}T12:00:00Z`)-Date.parse("2026-08-24T12:00:00Z"))/(7*24*60*60*1000))+1));
 function outputText(data){
   if(typeof data?.output_text==="string")return data.output_text;
   const bits=[];
@@ -175,4 +177,26 @@ exports.gradeWriting=onCall({region:"us-central1",timeoutSeconds:25,memory:"256M
     recordUsage(dateKey,cfg.model,apiData?.usage||{})
   ]);
   return {feedback,cached:false,paidCall:true,model:cfg.model,policyVersion:POLICY_VERSION};
+});
+
+exports.recordSpellingResult=onCall({region:"us-central1",timeoutSeconds:20,memory:"256MiB",maxInstances:20},async request=>{
+  if(!(await isAuthorized(request)))throw new HttpsError("permission-denied","Authorized Dragonswood users only.");
+  const d=request.data||{},uid=request.auth.uid;
+  if(d.studentId!==uid)throw new HttpsError("permission-denied","Spelling results are self-only.");
+  if(Number(d.schemaVersion)!==4||String(d.gameId||"")!=="dragonswood-rune-spelling-grounds")throw new HttpsError("invalid-argument","Unknown spelling result contract.");
+  const profileSnap=await db.doc(`students/${uid}`).get(),profile=profileSnap.exists?profileSnap.data():{};
+  const requestedGrade=Number(profile.spellingGrade),fallbackGrade=Number(profile.grade),grade=SPELLING_LEVEL_BY_GRADE[requestedGrade]?requestedGrade:(SPELLING_LEVEL_BY_GRADE[fallbackGrade]?fallbackGrade:5);
+  const expectedLevel=SPELLING_LEVEL_BY_GRADE[grade],week=Math.floor(Number(d.week)),expectedWeek=currentSpellingWeek();
+  if(String(d.levelKey||"")!==expectedLevel)throw new HttpsError("failed-precondition","This result does not match the teacher-assigned spelling level.");
+  if(week!==expectedWeek)throw new HttpsError("failed-precondition","This spelling week is not released yet.");
+  const allowedModes=new Set(["daily-mission","weekly-mastery","recovery","spelling-check","spaced-review","rune-siege"]),mode=clip(d.mode,40);
+  if(!allowedModes.has(mode))throw new HttpsError("invalid-argument","Unknown spelling activity mode.");
+  const idempotencyKey=clip(d.idempotencyKey,1000);if(!idempotencyKey)throw new HttpsError("invalid-argument","A result idempotency key is required.");
+  const dateKey=phoenixDateKey(),resultId=hash(`${uid}:${idempotencyKey}`),ref=db.doc(`spellingResults/${resultId}`);
+  const score=Math.max(0,Math.min(100,Number(d.score?.academic??d.accuracy)||0)),completionStatus=clip(d.completionStatus||"practice-complete",60);
+  let created=false;
+  await db.runTransaction(async tx=>{const existing=await tx.get(ref);if(existing.exists)return;created=true;tx.create(ref,{
+    studentId:uid,studentName:clip(profile.firstName||profile.displayName||request.auth.token?.name||"Scholar",120),dateKey,schoolWeekId:clip(d.schoolWeekId,80),assignmentId:clip(d.assignmentId,180),lessonId:clip(d.lessonId,180),lessonVersion:Math.max(1,Math.min(999,Number(d.lessonVersion)||1)),levelKey:expectedLevel,spellingGrade:grade,week,mode,missionId:clip(d.missionId,120),completionStatus,status:completionStatus.includes("complete")?"complete":"recorded",score,accuracy:score,correctedAccuracy:Math.max(0,Math.min(100,Number(d.correctedAccuracy)||score)),officialAttempt:d.officialAttempt!==false,firstPassLockedAt:clip(d.firstPassLockedAt,80),masteryBand:clip(d.masteryBand,80),wordCount:Math.max(0,Math.min(100,Number(d.wordCount)||0)),contentIds:Array.isArray(d.contentIds)?d.contentIds.map(value=>clip(value,120)).slice(0,40):[],runId:clip(d.runId,180),engineVersion:clip(d.engineVersion,40),source:"rune-spelling-portal",idempotencyHash:hash(idempotencyKey),completedAt:FieldValue.serverTimestamp(),createdAt:FieldValue.serverTimestamp(),updatedAt:FieldValue.serverTimestamp()
+  })});
+  return {acknowledged:true,idempotent:!created,resultId,dateKey,week,spellingGrade:grade};
 });

@@ -23,7 +23,7 @@ assert.equal(unassigned.rows[0].assignments.at(-1).score,null,'historical unassi
 
 const twoDates=book([session('2026-08-27',1200)],{readingTargetsByDate:{'2026-08-27':20,'2026-08-28':20}});
 assert.equal(twoDates.rows[0].reading,50,'one complete and one missing assigned date must average to 50%');
-assert.equal(twoDates.rows[0].total,90);
+assert.equal(twoDates.rows[0].total,88,'the 30/30/20/20 gradebook must exclude unassigned Rune work and normalize the active categories');
 assert.equal(twoDates.rows[0].readingStatus,'Incomplete');
 assert.equal(twoDates.rows[0].missing,1);
 assert.equal(twoDates.rows[0].provisional,true);
@@ -53,11 +53,11 @@ const legacy=Academic.normalizeReadingAssignments({readingTargetMinutes:15,readi
 assert.deepEqual(legacy.targetsByDate,{'2026-08-26':15},'legacy assignment dates must migrate to a stable target snapshot');
 
 assert.match(runtime,/readingTargetsByDate/);
-assert.match(runtime,/gradeIntegrityVersion:2/);
+assert.match(runtime,/gradeIntegrityVersion:4/);
 assert.doesNotMatch(runtime,/lastHeartbeatMs:Date\.now\(\)/,'student-controlled heartbeat time must not be stored');
 assert.match(teacher,/Total Status/);
 for(const header of ['Witches Time','Verified Minutes','Reading Status','Incomplete Assignments'])assert.match(teacher,new RegExp(header));
-assert.match(teacher,/gradeIntegrityVersion!==2\|\|gradebook\.reportCardPercentageReady!==true/,'percentage CSV needs a grade-integrity guard');
+assert.match(teacher,/gradeIntegrityVersion!==4\|\|gradebook\.reportCardPercentageReady!==true/,'percentage CSV needs the V4 grade-integrity guard');
 for(const contract of ['sessionId == request.auth.uid','keys().hasOnly','duration.value(10, \'s\')','request.resource.data.updatedAt == request.time','hasReadingAssignment'])assert.match(rules,new RegExp(contract.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
 
 console.log('V3.3 grade/evidence hardening contracts: PASS (date targets + zeroed missing days + safe statuses/totals/export)');

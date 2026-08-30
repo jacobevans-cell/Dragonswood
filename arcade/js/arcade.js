@@ -1,6 +1,6 @@
 import {GAMES,BOARDS} from './game-registry.js?v=57.1.15';
 import {initLeaderboard,submitBestScore,getTop} from './leaderboard-service.js?v=57.1.15';
-import {getFirebaseContext} from './access-client.js?v=57.1.15';
+import {getFirebaseContext,recordArcadeGameResult} from './access-client.js?v=58.0.0';
 const $=selector=>document.querySelector(selector);
 const screens=[...document.querySelectorAll('.screen')];
 const CONFIG=window.DRAGONSWOOD_ARCADE_CONFIG||{};
@@ -52,6 +52,12 @@ function escapeHtml(value){return String(value).replace(/[&<>'"]/g,char=>({'&':'
 window.addEventListener('message',async event=>{
   if(event.origin!==location.origin||event.source!==$('#gameFrame').contentWindow)return;
   const message=event.data;
+  if(message?.type==='dragonswood:arcade-result'){
+    $('#saveStatus').textContent='RECORDING';
+    try{await recordArcadeGameResult(message.payload);$('#saveStatus').textContent='RESULT SAVED';toast('Arcade result recorded.')}
+    catch(err){console.warn(err);$('#saveStatus').textContent='SAVE ERROR';toast('Arcade result could not be recorded.')}
+    return;
+  }
   if(!message||message.channel!=='dragonswood-arcade')return;
   if(message.type==='ready'){
     try{$('#gameFrame').contentWindow.postMessage({channel:'dragonswood-arcade',type:'profile',profile:{displayName:profile.displayName,studentId:profile.studentId,comfortMode:profile.comfortMode,performanceMode:profile.performanceMode}},location.origin)}catch{}

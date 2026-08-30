@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#4b2aa8">
+  <meta name="description" content="Dragon Tongues is a twelve-language Dragonswood learning adventure with full beginner paths, including Arabic, Vietnamese, Diné Bizaad, and ASL.">
+  <title>Dragon Tongues | Dragonswood</title>
+  <link rel="icon" href="assets/dragon-tongues-icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to lessons</a>
+
+  <div class="app-shell" id="app-shell">
+    <header class="mobile-header">
+      <button class="brand-button" data-view="learn" aria-label="Dragon Tongues home">
+        <span class="brand-crest">DT</span>
+        <span>Dragon Tongues</span>
+      </button>
+      <button class="course-chip" id="mobile-course-button" aria-haspopup="dialog">
+        <span class="language-sigil language-sigil-chip" id="mobile-course-flag">Ñ</span>
+        <span id="mobile-course-name">Spanish</span>
+        <span aria-hidden="true">⌄</span>
+      </button>
+      <span class="mobile-build-badge" data-build-version>V1.5.4</span>
+    </header>
+
+    <aside class="sidebar" aria-label="Main navigation">
+      <button class="brand-button desktop-brand" data-view="learn" aria-label="Dragon Tongues home">
+        <span class="brand-crest">DT</span>
+        <span class="brand-copy"><strong>DRAGON</strong><em>TONGUES</em></span>
+      </button>
+
+      <nav class="primary-nav">
+        <button class="nav-item is-active" data-view="learn"><span>🗺️</span><b>Learn</b></button>
+        <button class="nav-item" data-view="practice"><span>🎯</span><b>Practice</b></button>
+        <button class="nav-item" data-view="quests"><span>📜</span><b>Quests</b></button>
+        <button class="nav-item" data-view="league"><span>🏆</span><b>League</b></button>
+        <button class="nav-item" data-view="shop"><span>🛍️</span><b>Shop</b></button>
+        <button class="nav-item" data-view="profile"><span>🛡️</span><b>Profile</b></button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="school-badge">JOURNEY TO DRAGONSWOOD</div>
+        <div class="build-badge" data-build-version title="Teach-me support release">V1.5.4 · TEACH ME</div>
+        <button class="sound-toggle" id="sound-toggle" aria-pressed="true">
+          <span aria-hidden="true">🔊</span><span>Sound on</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main-column" id="main-content" tabindex="-1">
+      <div id="view-root"></div>
+    </main>
+
+    <aside class="right-rail" aria-label="Learning status">
+      <button class="course-selector" id="course-button" aria-haspopup="dialog">
+        <span class="course-flag language-sigil language-sigil-selector" id="course-flag">Ñ</span>
+        <span><small>Learning</small><strong id="course-name">Spanish</strong></span>
+        <span class="chevron" aria-hidden="true">⌄</span>
+      </button>
+
+      <div class="stat-strip" aria-label="Player statistics">
+        <div title="Study streak"><span>🔥</span><strong id="streak-count">3</strong></div>
+        <div title="Dragon gems"><span>💎</span><strong id="gem-count">180</strong></div>
+        <div title="Hearts"><span>💜</span><strong id="heart-count">5</strong></div>
+      </div>
+
+      <section class="rail-card quest-card">
+        <div class="card-heading"><span><small>DAILY QUEST</small><strong id="rail-quest-title">Earn 50 XP</strong></span><span>📜</span></div>
+        <div class="progress-track"><div class="progress-fill" id="rail-quest-progress"></div></div>
+        <p id="rail-quest-copy">0 / 50 XP</p>
+        <button class="text-button" data-view="quests">View all quests →</button>
+      </section>
+
+      <section class="rail-card league-card">
+        <div class="card-heading"><span><small>CURRENT LEAGUE</small><strong>Amethyst League</strong></span><span>🏆</span></div>
+        <p>You are <b id="league-position">#7</b>. Keep learning to climb.</p>
+        <button class="text-button" data-view="league">See standings →</button>
+      </section>
+
+      <section class="rail-card mascot-card" aria-label="Dragon guide">
+        <div class="mascot-sprite mascot-idle" id="rail-mascot" role="img" aria-label="Friendly purple dragon mascot"></div>
+        <div>
+          <strong id="mascot-message-title">Ready, scholar?</strong>
+          <p id="mascot-message">Your next lesson is waiting.</p>
+        </div>
+      </section>
+    </aside>
+
+    <nav class="mobile-nav" aria-label="Mobile navigation">
+      <button class="is-active" data-view="learn"><span>🗺️</span><b>Learn</b></button>
+      <button data-view="practice"><span>🎯</span><b>Practice</b></button>
+      <button data-view="quests"><span>📜</span><b>Quests</b></button>
+      <button data-view="league"><span>🏆</span><b>League</b></button>
+      <button data-view="profile"><span>🛡️</span><b>Profile</b></button>
+    </nav>
+  </div>
+
+  <dialog class="course-dialog" id="course-dialog">
+    <form method="dialog" class="dialog-card">
+      <div class="dialog-heading">
+        <div><small>CHOOSE YOUR PATH</small><h2>Which tongue will you study?</h2></div>
+        <button class="close-button" value="cancel" aria-label="Close language chooser">×</button>
+      </div>
+      <div class="course-grid" id="course-grid"></div>
+      <p class="dialog-note">Progress is saved separately for every language on this device.</p>
+    </form>
+  </dialog>
+
+  <section class="lesson-shell" id="lesson-shell" hidden aria-label="Lesson">
+    <header class="lesson-topbar">
+      <button class="lesson-close" id="lesson-close" aria-label="Leave lesson">×</button>
+      <div class="lesson-progress"><div id="lesson-progress-fill"></div></div>
+      <div class="lesson-hearts"><span>💜</span><strong id="lesson-heart-count">5</strong></div>
+    </header>
+    <main class="lesson-stage">
+      <div class="lesson-mascot-wrap">
+        <div class="mascot-sprite mascot-idle" id="lesson-mascot" role="img" aria-label="Dragon guide"></div>
+        <div class="speech-bubble" id="lesson-prompt">Choose the correct answer.</div>
+      </div>
+      <div class="lesson-card" id="lesson-card"></div>
+    </main>
+    <footer class="lesson-footer" id="lesson-footer">
+      <div class="answer-feedback" id="answer-feedback" aria-live="polite"></div>
+      <button class="check-button" id="check-button" disabled>Check answer</button>
+    </footer>
+  </section>
+
+  <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+  <div class="confetti-layer" id="confetti-layer" aria-hidden="true"></div>
+
+  <script src="data/courses.js"></script>
+  <script src="data/additional-courses.js"></script>
+  <script src="data/arizona-courses.js"></script>
+  <script src="data/voice-library.js"></script>
+  <script src="data/asl-video-library.js"></script>
+  <script src="data/academic-engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

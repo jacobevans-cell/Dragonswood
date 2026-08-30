@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "provider": "azure-speech",
+  "outputFormat": "audio-24khz-48kbitrate-mono-mp3",
+  "extension": "mp3",
+  "prosodyRate": "-8%",
+  "courses": {
+    "spanish": {
+      "locale": "es-ES",
+      "voice": "es-ES-ElviraNeural"
+    },
+    "french": {
+      "locale": "fr-FR",
+      "voice": "fr-FR-DeniseNeural"
+    },
+    "japanese": {
+      "locale": "ja-JP",
+      "voice": "ja-JP-NanamiNeural"
+    },
+    "korean": {
+      "locale": "ko-KR",
+      "voice": "ko-KR-SunHiNeural"
+    },
+    "icelandic": {
+      "locale": "is-IS",
+      "voice": "is-IS-GudrunNeural"
+    },
+    "somali": {
+      "locale": "so-SO",
+      "voice": "so-SO-UbaxNeural"
+    },
+    "russian": {
+      "locale": "ru-RU",
+      "voice": "ru-RU-SvetlanaNeural"
+    },
+    "mandarin": {
+      "locale": "zh-CN",
+      "voice": "zh-CN-XiaoxiaoNeural"
+    },
+    "arabic": {
+      "locale": "ar-SA",
+      "voice": "ar-SA-ZariyahNeural"
+    },
+    "vietnamese": {
+      "locale": "vi-VN",
+      "voice": "vi-VN-HoaiMyNeural"
+    },
+    "navajo": {
+      "locale": "nv-US",
+      "voice": "reviewed-fluent-dine-speaker",
+      "mode": "manual-native",
+      "reviewRequired": "fluent Diné speaker and Diné language educator"
+    }
+  }
+}

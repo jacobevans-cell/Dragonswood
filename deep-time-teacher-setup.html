@@ -1,0 +1,34 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Deep Time Lab · Teacher Setup</title>
+<style>body{margin:0;background:#071017;color:#eef6f2;font-family:system-ui}main{width:min(850px,94%);margin:40px auto;background:#0d2029;border:1px solid #31545c;border-radius:18px;padding:22px}h1{color:#f3d87f}button{font:inherit;font-weight:800;padding:11px 15px;border-radius:10px;border:1px solid #d8b85f;background:#173847;color:#fff;cursor:pointer;margin:5px}button:disabled{opacity:.45}.ok{color:#80e9b4}.bad{color:#ff9fae}pre{white-space:pre-wrap;background:#050d12;padding:14px;border-radius:12px;min-height:120px}</style></head><body><main><h1>Deep Time Lab · Teacher Setup</h1><p>This page can prepare reveal assets and release QA-approved cases. Server permissions still require the Dragonswood teacher account.</p><div id="who">Checking sign-in…</div><p><button id="signin">SIGN IN WITH GOOGLE</button><button id="sp010" disabled>GENERATE SP010 FOSSIL TILES</button><button id="all" disabled>GENERATE ALL 40 REVEAL SETS</button><button id="releaseAll" disabled>RELEASE ALL QA-READY CASES</button></p><pre id="log">Waiting.</pre></main>
+<script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-functions-compat.js"></script>
+<script>
+const cfg={apiKey:'AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE',authDomain:'dragonswood-9289e.firebaseapp.com',projectId:'dragonswood-9289e',storageBucket:'dragonswood-9289e.firebasestorage.app',messagingSenderId:'1064477064695',appId:'1:1064477064695:web:283e1016ee2303d39042f2',measurementId:'G-LPRLDGVBD2'};if(!firebase.apps.length)firebase.initializeApp(cfg);const auth=firebase.auth(),fn=firebase.functions(),who=document.getElementById('who'),log=document.getElementById('log'),b1=document.getElementById('sp010'),ba=document.getElementById('all'),br=document.getElementById('releaseAll');
+function line(x){log.textContent+='\n'+x}
+const teacherCheck=fn.httpsCallable('getDeepTimeTeacherDashboardV43');
+async function setUser(u){
+  b1.disabled=true;
+  ba.disabled=true;
+  br.disabled=true;
+  who.className='';
+  if(!u){
+    who.textContent='Not signed in';
+    return;
+  }
+  who.textContent='Checking teacher access…';
+  try{
+    await teacherCheck({});
+    who.textContent='Teacher access verified ✓';
+    who.className='ok';
+    b1.disabled=false;
+    ba.disabled=false;
+    br.disabled=false;
+  }catch(e){
+    who.textContent='This signed-in account does not have Deep Time teacher access.';
+    who.className='bad';
+  }
+}
+auth.onAuthStateChanged(setUser);signin.onclick=()=>auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>line('SIGN-IN ERROR: '+e.message));
+async function run(payload){log.textContent='Starting reveal generation…';try{const r=await fn.httpsCallable('prewarmDeepTimeRevealV43')(payload);const d=r.data||r;line(JSON.stringify(d,null,2));if(d.failed)line('Some cases failed. Keep them unreleased until fixed.');else line('✓ Reveal generation completed.')}catch(e){line('ERROR: '+e.message)}}
+b1.onclick=()=>run({caseId:'SP010',force:false});ba.onclick=()=>{if(confirm('Generate/check all 40 reveal sets? This can take several minutes and use Firebase/Storage resources.'))run({force:false})};
+br.onclick=async()=>{if(!confirm('Release every case that has passed the required private QA checks?'))return;log.textContent='Releasing QA-ready cases…';const release=fn.httpsCallable('setDeepTimeCaseReleaseV43');let released=0,blocked=0;for(let i=1;i<=40;i++){const caseId=`SP${String(i).padStart(3,'0')}`;try{await release({caseId,productionReleaseReady:true});released++;line(`✓ ${caseId} released`)}catch(e){blocked++;line(`• ${caseId} kept locked: ${e.message}`)}}line(`Done: ${released} released, ${blocked} safely kept locked.`)};
+</script></body></html>

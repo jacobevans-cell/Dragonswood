@@ -2,6 +2,7 @@
 const {onCall,HttpsError}=require('firebase-functions/v2/https');
 const admin=require('firebase-admin');
 const {getFirestore,FieldValue,Timestamp}=require('firebase-admin/firestore');
+const crypto=require('node:crypto');
 const C=require('./core.js');
 const T=require('./tester-core.js');
 
@@ -123,6 +124,19 @@ exports.endArcadeSession=onCall(OPTIONS,async request=>{
     return {ended:true,sessionId:id};
   });
   await audit('session-end',auth.uid,uid,{sessionId:result.sessionId||'',ended:result.ended});return result;
+});
+
+exports.recordArcadeGameResult=onCall(OPTIONS,async request=>{
+  const auth=await requireStudent(request),uid=auth.uid,envelope=request.data?.result||{},sessionId=C.text(request.data?.sessionId);
+  const allowedGames=new Set(['runeball-arena','runewheel-rally','dragons-gambit-hall','starfall-squadron','defenders-of-dragonswood']);
+  if(Number(envelope.schemaVersion)!==1||envelope.completed!==true||!allowedGames.has(C.text(envelope.gameId)))throw new HttpsError('invalid-argument','Unknown Arcade result contract.');
+  const resultId=C.text(envelope.resultId).slice(0,180);if(!resultId)throw new HttpsError('invalid-argument','A result id is required.');
+  const encoded=JSON.stringify(envelope.result||{});if(encoded.length>30000)throw new HttpsError('invalid-argument','Arcade result is too large.');
+  const ref=db.doc(`arcadeGameResults/${crypto.createHash('sha256').update(`${uid}:${envelope.gameId}:${resultId}`).digest('hex')}`),activeRef=sessionRef(sessionId);
+  let created=false;
+  await db.runTransaction(async tx=>{const [existing,sessionSnap]=await Promise.all([tx.get(ref),tx.get(activeRef)]);if(!sessionSnap.exists)throw new HttpsError('failed-precondition','The Arcade session is missing.');const session=sessionSnap.data();if(session.uid!==uid||session.status!=='active'||session.endAt.toMillis()<=Date.now())throw new HttpsError('failed-precondition','The Arcade session is not active.');if(existing.exists)return;created=true;tx.create(ref,{uid,studentId:uid,sessionId,gameId:C.text(envelope.gameId),gameVersion:Math.max(1,Math.min(10000,Number(envelope.gameVersion)||1)),resultId,result:JSON.parse(encoded),completed:true,dateKey:C.phoenixDateKey(),source:'arcade-result-contract',schemaVersion:1,createdAt:FieldValue.serverTimestamp(),updatedAt:FieldValue.serverTimestamp()})});
+  if(created)await audit('game-result',uid,uid,{sessionId,gameId:C.text(envelope.gameId),resultId});
+  return {acknowledged:true,idempotent:!created,gameId:C.text(envelope.gameId),resultId};
 });
 
 exports.setArcadeAvailability=onCall(OPTIONS,async request=>{

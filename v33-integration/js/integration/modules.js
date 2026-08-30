@@ -10,17 +10,19 @@
     {id:'boss-battle',title:'Daily Boss Battle',icon:'👹',path:'boss-battle.html',returnPage:'boss',morningGate:true},
     {id:'daily-quest',title:"Today's Daily Quest",icon:'📜',path:'daily-quest.html',returnPage:'missions'},
     {id:'level-up-challenge',title:'Level-Up Challenge',icon:'⭐',path:'daily-quest.html',query:'levelup=1',returnPage:'missions'},
+    {id:'rune-spelling',title:'Rune Spelling',icon:'🔤',path:'rune-spelling.html',returnPage:'missions'},
     {id:'curriculum-quest',title:'Curriculum & Recovery Quest',icon:'🐉',path:'curriculum-quest.html',returnPage:'missions'},
+    {id:'dragon-tongues',title:'Dragon Tongues',icon:'🗣️',path:'dragon-tongues/index.html',returnPage:'missions'},
     {id:'decimal-deception',title:'Decimal Deception',icon:'💎',path:'decimal-deception.html',returnPage:'games',morningGate:true},
     {id:'math-operations',title:'Math Operations Quest',icon:'➗',path:'math-operations-quest.html',returnPage:'games',morningGate:true},
     {id:'fraction-forge',title:'Fraction Forge',icon:'🔥',path:'fraction-forge.html',returnPage:'games',morningGate:true},
     {id:'long-division',title:'Long Division Quest',icon:'➗',path:'long-division-quest.html',returnPage:'games',morningGate:true},
     {id:'long-division-custom',title:'Custom Long Division',icon:'🧮',path:'long-division-custom.html',returnPage:'games',morningGate:true},
-    {id:'spelling-practice',title:'Spelling Practice',icon:'📚',path:'spelling-practice.html',returnPage:'games',morningGate:true},
     {id:'witches-test',title:'The Witches Reading Test',icon:'🧙‍♀️',path:'the_witches_pages_1_15_interactive_test.html',returnPage:'games',morningGate:true},
     {id:'elemental-laboratory',title:'Elemental Laboratory',icon:'⚗️',path:'elemental-laboratory.html',returnPage:'games',morningGate:true},
     {id:'cosmic-architect',title:'Cosmic Architect',icon:'🌌',path:'cosmic-architect.html',returnPage:'games',morningGate:true},
     {id:'arcane-forge',title:'Arcane Forge',icon:'🔮',path:'arcane-forge.html',returnPage:'games',morningGate:true},
+    {id:'deep-time-lab',title:'Deep Time Lab',icon:'🦴',path:'deep-time-lab.html',returnPage:'games',morningGate:true},
     {id:'class-reader',title:'The Witches Class Reader',icon:'📖',path:'witches-reader.html',returnPage:'missions'}
   ].map(Object.freeze));
   const byId=new Map(MODULES.map(mod=>[mod.id,mod]));
@@ -43,6 +45,7 @@
     const url=new URL(`../${mod.path}`,baseHref||globalThis.document?.baseURI||globalThis.location?.href);
     if(mod.query)new URLSearchParams(mod.query).forEach((value,key)=>url.searchParams.set(key,value));
     if(mod.id==='daily-quest'||mod.id==='curriculum-quest')url.searchParams.set('v','57.1.16');
+    if(mod.id==='rune-spelling'||mod.id==='dragon-tongues'||mod.id==='deep-time-lab')url.searchParams.set('v','58.0.0');
     if(mod.id==='class-reader')url.searchParams.set('v','57.1.5');
     url.searchParams.set('dwEmbed','1');
     const environment=requestedEnvironment||globalThis.DWV33Integration?.environment||'';

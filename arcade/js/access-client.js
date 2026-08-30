@@ -61,6 +61,7 @@ async function callable(name,data={}){
 
 export async function getArcadeAccess(){currentAccess=await callable('getArcadeAccess');return currentAccess}
 export async function startArcadeSession(){currentAccess=await callable('startArcadeSession');return currentAccess}
+export async function recordArcadeGameResult(result){return callable('recordArcadeGameResult',{sessionId:currentAccess?.sessionId||'',result})}
 export async function endArcadeSession(reason='student-exit'){
   const result=await callable('endArcadeSession',{sessionId:currentAccess?.sessionId||'',reason});
   currentAccess=null;

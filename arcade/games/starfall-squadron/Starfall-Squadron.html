@@ -1,0 +1,1396 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#130d32" />
+    <meta name="description" content="Starfall Squadron — a Dragonswood arcade space shooter." />
+    <title>Starfall Squadron | Dragonswood Arcade</title>
+    <style>
+:root {
+  color-scheme: dark;
+  --ink: #f8f3ff;
+  --muted: #b6acd7;
+  --deep: #09071b;
+  --panel: rgba(18, 12, 47, 0.94);
+  --purple: #8a57ff;
+  --purple-dark: #4a25a8;
+  --cyan: #51e7ff;
+  --gold: #ffd166;
+  --danger: #ff5978;
+  --success: #6dffb0;
+  --line: rgba(170, 143, 255, 0.28);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; background: #070515; color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+body { overflow-x: hidden; background: radial-gradient(circle at 50% -20%, #352069 0, #0d0923 42%, #05040f 100%); }
+button, input { font: inherit; }
+button { color: inherit; }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
+.hidden { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+#game-shell { width: min(100%, 1240px); min-height: 100vh; margin: 0 auto; padding: 14px clamp(10px, 2vw, 24px) 12px; display: flex; flex-direction: column; }
+.topbar { min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.brand-lockup { display: flex; align-items: center; gap: 12px; }
+.crest { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid #b89aff; border-radius: 50%; color: var(--gold); background: radial-gradient(circle, #432b80, #17102f); box-shadow: 0 0 28px rgba(138, 87, 255, .4); font-size: 20px; }
+.eyebrow { margin: 0 0 2px; color: var(--cyan); font-size: 10px; line-height: 1; letter-spacing: .22em; font-weight: 800; }
+h1 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(21px, 3vw, 30px); letter-spacing: .03em; }
+.top-actions { display: flex; gap: 8px; }
+.icon-button { width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 12px; background: rgba(25, 17, 58, .82); cursor: pointer; font-weight: 900; }
+.icon-button:hover { background: #39266f; transform: translateY(-1px); }
+
+.playfield { position: relative; flex: 1; min-height: 0; overflow: hidden; border: 1px solid rgba(172, 143, 255, .42); border-radius: 20px; background: #070615; box-shadow: 0 26px 80px rgba(0, 0, 0, .48), inset 0 0 80px rgba(78, 48, 144, .14); aspect-ratio: 16 / 9; max-height: calc(100vh - 118px); }
+#game-canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.hud { position: absolute; inset: 12px 14px auto; display: grid; grid-template-columns: minmax(150px, 240px) 1fr auto auto; align-items: start; gap: 13px; pointer-events: none; }
+.hud-cluster { display: grid; gap: 6px; }
+.meter-label { display: flex; justify-content: space-between; font-size: 9px; font-weight: 900; letter-spacing: .11em; text-shadow: 0 2px 5px #000; }
+.meter-label strong { font-size: 9px; }
+.meter-track { height: 8px; margin-top: 3px; border: 1px solid rgba(255,255,255,.25); border-radius: 999px; background: rgba(4, 3, 15, .72); overflow: hidden; }
+.meter-track i { display: block; width: 100%; height: 100%; background: linear-gradient(90deg, #ff496b, #ff9c6f); box-shadow: 0 0 12px #ff5c7a; transition: width .2s ease; }
+.meter-shield .meter-track i { width: 0; background: linear-gradient(90deg, #5a8cff, #4cf2ff); box-shadow: 0 0 12px #4cf2ff; }
+.wave-chip { justify-self: center; min-width: 116px; padding: 7px 16px; text-align: center; border: 1px solid var(--line); border-radius: 999px; background: rgba(10, 7, 28, .76); backdrop-filter: blur(5px); }
+.wave-chip span, .score-stack span, .nova-meter > span { display: block; color: var(--muted); font-size: 8px; font-weight: 900; letter-spacing: .18em; }
+.wave-chip strong { color: var(--gold); font-size: 10px; letter-spacing: .08em; }
+.score-stack { min-width: 88px; text-align: right; text-shadow: 0 2px 7px #000; }
+.score-stack strong { display: block; margin-top: 2px; font-size: 18px; font-variant-numeric: tabular-nums; letter-spacing: .06em; }
+.nova-meter { display: flex; align-items: center; gap: 7px; }
+.nova-ring { position: relative; width: 42px; height: 42px; display: grid; place-items: center; overflow: hidden; border: 2px solid rgba(81, 231, 255, .3); border-radius: 50%; background: rgba(3, 7, 20, .8); }
+.nova-ring i { position: absolute; inset: auto 0 0; height: 0%; background: linear-gradient(var(--purple), var(--cyan)); opacity: .85; transition: height .15s; }
+.nova-ring b { position: relative; z-index: 1; font-size: 9px; text-shadow: 0 1px 4px #000; }
+.boss-bar { position: absolute; z-index: 3; top: 72px; left: 50%; width: min(54%, 480px); transform: translateX(-50%); }
+.boss-bar > div:first-child { display: flex; justify-content: space-between; color: #ffd7df; font-size: 10px; font-weight: 900; letter-spacing: .14em; }
+.boss-track { height: 10px; margin-top: 5px; overflow: hidden; border: 1px solid #ff94aa; border-radius: 999px; background: #260816; box-shadow: 0 0 18px rgba(255, 65, 112, .22); }
+.boss-track i { display: block; width: 100%; height: 100%; background: linear-gradient(90deg, #ff315e, #ff80d5); }
+.announcement { position: absolute; z-index: 6; top: 28%; left: 50%; transform: translate(-50%, -50%); color: white; font-family: Georgia, serif; font-size: clamp(24px, 5vw, 54px); font-weight: 800; text-align: center; text-shadow: 0 0 20px #7d4dff, 0 3px 0 #231153; pointer-events: none; animation: announce 1.7s ease both; }
+@keyframes announce { 0% { opacity: 0; transform: translate(-50%, -40%) scale(.85); } 18%, 72% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -58%) scale(1.06); } }
+
+.panel { position: absolute; z-index: 10; top: 50%; left: 50%; width: min(88%, 760px); max-height: 90%; transform: translate(-50%, -50%); overflow-y: auto; padding: clamp(22px, 4vw, 44px); border: 1px solid rgba(184, 154, 255, .55); border-radius: 20px; background: linear-gradient(145deg, rgba(30, 19, 70, .97), rgba(10, 8, 31, .97)); box-shadow: 0 28px 80px rgba(0,0,0,.66), inset 0 1px rgba(255,255,255,.08); text-align: center; }
+.panel::before { content: ""; position: absolute; inset: 8px; z-index: -1; border: 1px solid rgba(184,154,255,.14); border-radius: 14px; pointer-events: none; }
+.title-panel { width: min(86%, 650px); }
+.panel-kicker { margin: 0 0 10px; color: var(--cyan); font-size: 10px; font-weight: 900; letter-spacing: .24em; }
+.panel h2 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(30px, 5vw, 54px); line-height: .98; }
+.panel h2 em { color: #c9b4ff; font-weight: 400; }
+.intro-copy { max-width: 570px; margin: 20px auto; color: #cbc3df; font-size: clamp(13px, 2vw, 16px); line-height: 1.55; }
+.record-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; width: min(100%, 420px); margin: 24px auto; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--line); }
+.record-grid > div { padding: 11px; background: rgba(15, 10, 39, .9); }
+.record-grid span, .result-score span, .result-stats span { display: block; color: var(--muted); font-size: 9px; font-weight: 900; letter-spacing: .16em; }
+.record-grid strong { display: block; margin-top: 3px; color: var(--gold); font-size: 19px; }
+.primary-button, .secondary-button { min-height: 46px; padding: 0 22px; border-radius: 11px; cursor: pointer; font-weight: 900; letter-spacing: .07em; }
+.primary-button { border: 1px solid #c9b7ff; background: linear-gradient(180deg, #8d5cff, #5127ae); box-shadow: 0 8px 24px rgba(82, 39, 174, .42), inset 0 1px rgba(255,255,255,.25); }
+.primary-button:hover { filter: brightness(1.12); transform: translateY(-1px); }
+.primary-button small { margin-left: 16px; padding: 3px 7px; border: 1px solid rgba(255,255,255,.3); border-radius: 5px; color: #e5dbff; font-size: 8px; }
+.secondary-button { border: 1px solid var(--line); background: #17102f; }
+.secondary-button:hover { background: #281a52; }
+.text-button { display: block; margin: 14px auto 0; padding: 5px; border: 0; background: transparent; color: #c7b5f5; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+.panel-actions { display: flex; justify-content: center; gap: 12px; margin-top: 24px; }
+.training-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 24px 0 0; text-align: left; }
+.training-grid article { padding: 16px; border: 1px solid var(--line); border-radius: 13px; background: rgba(8, 7, 28, .55); }
+.training-grid h3 { margin: 10px 0 4px; color: var(--gold); font-family: Georgia, serif; }
+.training-grid p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.4; }
+.keys { display: flex; flex-wrap: wrap; gap: 5px; }
+kbd { padding: 5px 7px; border: 1px solid rgba(255,255,255,.34); border-bottom-width: 3px; border-radius: 6px; background: #2b1b59; font-size: 10px; font-weight: 900; }
+.coach-note { margin: 14px 0 0; padding: 11px 14px; border-left: 3px solid var(--cyan); background: rgba(81,231,255,.07); color: #d5eaff; font-size: 12px; text-align: left; }
+.upgrade-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 25px; }
+.upgrade-card { min-height: 180px; padding: 16px; border: 1px solid rgba(184,154,255,.36); border-radius: 14px; background: linear-gradient(150deg, rgba(68,42,131,.5), rgba(13,10,35,.8)); cursor: pointer; text-align: left; }
+.upgrade-card:hover, .upgrade-card:focus-visible { border-color: var(--cyan); transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+.upgrade-card .upgrade-number { float: right; display: grid; place-items: center; width: 25px; height: 25px; border: 1px solid var(--line); border-radius: 7px; color: var(--muted); font-size: 10px; }
+.upgrade-card .upgrade-icon { display: block; margin: 12px 0 22px; color: var(--gold); font-size: 38px; text-shadow: 0 0 16px currentColor; }
+.upgrade-card strong { display: block; color: white; font-family: Georgia, serif; font-size: 18px; }
+.upgrade-card p { margin: 8px 0 0; color: var(--muted); font-size: 12px; line-height: 1.35; }
+.upgrade-card small { display: block; margin-top: 9px; color: var(--cyan); font-weight: 800; }
+.shortcut-note { color: var(--muted); font-size: 10px; }
+.compact-panel { width: min(86%, 460px); }
+.settings-list { display: grid; gap: 9px; margin: 24px 0; }
+.settings-list label { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: rgba(6,5,20,.45); text-align: left; }
+.settings-list input { width: 21px; height: 21px; accent-color: var(--purple); }
+.danger { color: #ff9bad; border-color: rgba(255,89,120,.35); }
+.result-score { margin: 22px auto; }
+.result-score strong { display: block; color: var(--gold); font-size: clamp(38px, 7vw, 64px); line-height: 1; }
+.result-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; margin: 0 auto 24px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--line); }
+.result-stats div { padding: 11px; background: #130e2d; }
+.result-stats strong { display: block; margin-top: 4px; color: white; }
+
+.touch-controls { position: absolute; z-index: 7; inset: auto 15px 16px; display: flex; align-items: flex-end; justify-content: space-between; pointer-events: none; }
+.touch-pad, .touch-controls button { pointer-events: auto; touch-action: none; user-select: none; }
+.touch-pad { position: relative; width: 110px; height: 110px; border: 2px solid rgba(255,255,255,.3); border-radius: 50%; background: rgba(16,11,43,.46); }
+.touch-pad i { position: absolute; top: 35px; left: 35px; width: 40px; height: 40px; border-radius: 50%; background: rgba(153,119,255,.8); box-shadow: 0 0 20px rgba(81,231,255,.35); }
+.touch-controls button { width: 72px; height: 72px; border: 2px solid rgba(255,255,255,.35); border-radius: 50%; background: rgba(81,39,174,.78); font-size: 12px; font-weight: 900; }
+#touch-nova { margin-left: auto; margin-right: 12px; width: 58px; height: 58px; background: rgba(24,123,151,.78); }
+#touch-nova.ready { background: rgba(33, 193, 213, .92); box-shadow: 0 0 22px rgba(81,231,255,.72); }
+.game-footer { min-height: 34px; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 26px; color: #776d95; font-size: 9px; letter-spacing: .13em; }
+.game-footer b { margin-left: 5px; color: #aaa0c5; }
+
+@media (max-width: 700px), (max-height: 650px) {
+  #game-shell { padding: 6px; min-height: auto; }
+  .topbar { min-height: 50px; }
+  .crest { width: 34px; height: 34px; }
+  .eyebrow { display: none; }
+  .playfield { border-radius: 12px; max-height: none; }
+  .hud { inset: 7px 8px auto; grid-template-columns: minmax(110px, 190px) 1fr auto; gap: 8px; }
+  .wave-chip { min-width: 90px; padding: 5px 9px; }
+  .nova-meter { display: none; }
+  .score-stack strong { font-size: 13px; }
+  .panel { width: 94%; padding: 18px; border-radius: 14px; }
+  .panel h2 { font-size: clamp(25px, 7vw, 38px); }
+  .intro-copy { margin: 12px auto; }
+  .record-grid { margin: 14px auto; }
+  .training-grid { grid-template-columns: 1fr 1fr; margin-top: 13px; }
+  .training-grid article { padding: 10px; }
+  .upgrade-list { gap: 7px; margin-top: 14px; }
+  .upgrade-card { min-height: 132px; padding: 10px; }
+  .upgrade-card .upgrade-icon { margin: 2px 0 8px; font-size: 26px; }
+  .upgrade-card strong { font-size: 14px; }
+  .upgrade-card p { font-size: 10px; }
+  .game-footer { display: none; }
+}
+
+@media (max-width: 500px) {
+  .training-grid { grid-template-columns: 1fr; }
+  .upgrade-list { grid-template-columns: 1fr; }
+  .upgrade-card { min-height: auto; }
+  .upgrade-card .upgrade-icon { display: inline-block; margin: 0 8px 0 0; }
+  .panel-actions { flex-wrap: wrap; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
+
+</style>
+  </head>
+  <body>
+    <main id="game-shell" aria-label="Starfall Squadron game">
+      <header class="topbar">
+        <div class="brand-lockup">
+          <span class="crest" aria-hidden="true">✦</span>
+          <div>
+            <p class="eyebrow">DRAGONSWOOD ARCADE</p>
+            <h1>Starfall Squadron</h1>
+          </div>
+        </div>
+        <div class="top-actions">
+          <button id="help-button" class="icon-button" type="button" aria-label="Open controls and help">?</button>
+          <button id="sound-button" class="icon-button" type="button" aria-label="Toggle sound">♪</button>
+          <button id="pause-button" class="icon-button" type="button" aria-label="Pause game">Ⅱ</button>
+        </div>
+      </header>
+
+      <section id="playfield" class="playfield">
+        <canvas id="game-canvas" width="960" height="540" aria-label="Starfall Squadron play area"></canvas>
+
+        <div id="hud" class="hud" aria-live="polite">
+          <div class="hud-cluster">
+            <div class="meter meter-hull">
+              <div class="meter-label"><span>HULL</span><strong id="hp-text">100 / 100</strong></div>
+              <div class="meter-track"><i id="hp-fill"></i></div>
+            </div>
+            <div class="meter meter-shield">
+              <div class="meter-label"><span>AEGIS</span><strong id="shield-text">0 / 0</strong></div>
+              <div class="meter-track"><i id="shield-fill"></i></div>
+            </div>
+          </div>
+          <div class="wave-chip">
+            <span id="wave-label">WAVE 1</span>
+            <strong id="enemy-count">0 REMAIN</strong>
+          </div>
+          <div class="score-stack">
+            <span>SCORE</span>
+            <strong id="score-text">000000</strong>
+          </div>
+          <div class="nova-meter" aria-label="Nova ability charge">
+            <span>NOVA</span>
+            <div class="nova-ring"><i id="nova-fill"></i><b id="nova-text">0%</b></div>
+          </div>
+        </div>
+
+        <div id="boss-bar" class="boss-bar hidden" aria-live="polite">
+          <div><span id="boss-name">VOID WYRM</span><strong id="boss-hp-text">100%</strong></div>
+          <div class="boss-track"><i id="boss-hp-fill"></i></div>
+        </div>
+
+        <div id="announcement" class="announcement hidden" aria-live="assertive"></div>
+
+        <section id="title-panel" class="panel title-panel">
+          <p class="panel-kicker">THE ASTRAL GATES HAVE OPENED</p>
+          <h2>Defend the skies<br /><em>above Dragonswood.</em></h2>
+          <p class="intro-copy">Pilot a rune-powered skyship through ten waves, defeat two colossal bosses, and forge a stronger craft after every victory.</p>
+          <div class="record-grid">
+            <div><span>BEST SCORE</span><strong id="best-score">0</strong></div>
+            <div><span>HIGHEST WAVE</span><strong id="best-wave">0</strong></div>
+          </div>
+          <button id="start-button" class="primary-button" type="button"><span>LAUNCH SQUADRON</span><small>ENTER</small></button>
+          <button id="training-button" class="text-button" type="button">View flight training</button>
+        </section>
+
+        <section id="tutorial-panel" class="panel tutorial-panel hidden" aria-labelledby="tutorial-title">
+          <p class="panel-kicker">FLIGHT TRAINING</p>
+          <h2 id="tutorial-title">Your skyship answers to four commands.</h2>
+          <div class="training-grid">
+            <article><div class="keys"><kbd>WASD</kbd><kbd>↑↓←→</kbd></div><h3>Steer</h3><p>Move anywhere inside the safe flight field.</p></article>
+            <article><div class="keys"><kbd>SPACE</kbd></div><h3>Starbolts</h3><p>Hold to fire. Bright enemy shots can hurt you.</p></article>
+            <article><div class="keys"><kbd>E</kbd><kbd>SHIFT</kbd></div><h3>Nova Rune</h3><p>When fully charged, clear nearby shots and damage foes.</p></article>
+            <article><div class="keys"><kbd>ESC</kbd><kbd>P</kbd></div><h3>Pause</h3><p>Freeze combat and adjust accessibility settings.</p></article>
+          </div>
+          <p class="coach-note"><strong>Visual Coach:</strong> red lines and circles warn where attacks will land. Move away before they become solid.</p>
+          <div class="panel-actions"><button id="tutorial-back" class="secondary-button" type="button">BACK</button><button id="tutorial-start" class="primary-button" type="button">BEGIN FLIGHT</button></div>
+        </section>
+
+        <section id="upgrade-panel" class="panel upgrade-panel hidden" aria-labelledby="upgrade-title">
+          <p class="panel-kicker">WAVE CLEARED</p>
+          <h2 id="upgrade-title">Choose one rune to bind.</h2>
+          <div id="upgrade-list" class="upgrade-list"></div>
+          <p class="shortcut-note">Keyboard: press 1, 2, or 3</p>
+        </section>
+
+        <section id="pause-panel" class="panel compact-panel hidden" aria-labelledby="pause-title">
+          <p class="panel-kicker">FLIGHT SUSPENDED</p>
+          <h2 id="pause-title">Paused</h2>
+          <div class="settings-list">
+            <label><span>Sound effects</span><input id="sound-setting" type="checkbox" checked /></label>
+            <label><span>Reduced motion</span><input id="motion-setting" type="checkbox" /></label>
+            <label><span>Touch controls</span><input id="touch-setting" type="checkbox" /></label>
+          </div>
+          <div class="panel-actions"><button id="quit-button" class="secondary-button danger" type="button">END RUN</button><button id="resume-button" class="primary-button" type="button">RESUME</button></div>
+        </section>
+
+        <section id="result-panel" class="panel result-panel hidden" aria-labelledby="result-title">
+          <p id="result-kicker" class="panel-kicker">RUN COMPLETE</p>
+          <h2 id="result-title">The stars remember.</h2>
+          <p id="result-copy" class="intro-copy"></p>
+          <div class="result-score"><span>FINAL SCORE</span><strong id="final-score">0</strong></div>
+          <div class="result-stats"><div><span>WAVE</span><strong id="final-wave">0</strong></div><div><span>ENEMIES</span><strong id="final-kills">0</strong></div><div><span>ACCURACY</span><strong id="final-accuracy">0%</strong></div></div>
+          <button id="replay-button" class="primary-button" type="button">FLY AGAIN</button>
+          <button id="exit-button" class="text-button" type="button">Return to Dragonswood</button>
+        </section>
+
+        <div id="touch-controls" class="touch-controls hidden" aria-label="Touch controls">
+          <div id="touch-pad" class="touch-pad"><i></i></div>
+          <button id="touch-nova" type="button">NOVA</button>
+          <button id="touch-fire" type="button">FIRE</button>
+        </div>
+      </section>
+
+      <footer class="game-footer"><span>MOVE <b>WASD / ARROWS</b></span><span>FIRE <b>SPACE</b></span><span>NOVA <b>E / SHIFT</b></span><span>PAUSE <b>ESC</b></span></footer>
+    </main>
+
+    <div id="sr-status" class="sr-only" aria-live="polite"></div>
+    <script>window.STARFALL_CONFIG={parentOrigin:window.location.origin};</script>
+    <script src="dragonswood-starfall-adapter.js"></script>
+    <script>
+(function () {
+  "use strict";
+  // Optional runtime PNG replacements. Null entries use the included lightweight
+  // canvas artwork. Paths are relative to index.html.
+  window.STARFALL_ASSETS = Object.assign({
+    player: null,
+    scout: null,
+    weaver: null,
+    lancer: null,
+    sentinel: null,
+    wyrm: null,
+    dreadnought: null,
+  }, window.STARFALL_ASSETS || {});
+})();
+
+</script>
+    <script>
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === "object" && module.exports) module.exports = api;
+  root.StarfallCore = api;
+})(typeof globalThis !== "undefined" ? globalThis : this, function () {
+  "use strict";
+
+  const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const distanceSquared = (a, b) => {
+    const dx = a.x - b.x;
+    const dy = a.y - b.y;
+    return dx * dx + dy * dy;
+  };
+  const circleHit = (a, b) => {
+    const r = (a.radius || 0) + (b.radius || 0);
+    return distanceSquared(a, b) <= r * r;
+  };
+
+  class RNG {
+    constructor(seed) {
+      this.state = (seed >>> 0) || 0x9e3779b9;
+    }
+
+    next() {
+      let x = this.state;
+      x ^= x << 13;
+      x ^= x >>> 17;
+      x ^= x << 5;
+      this.state = x >>> 0;
+      return this.state / 4294967296;
+    }
+
+    range(min, max) {
+      return min + (max - min) * this.next();
+    }
+
+    int(min, maxInclusive) {
+      return Math.floor(this.range(min, maxInclusive + 1));
+    }
+
+    pick(items) {
+      return items[Math.floor(this.next() * items.length)];
+    }
+
+    shuffle(items) {
+      const result = items.slice();
+      for (let i = result.length - 1; i > 0; i -= 1) {
+        const j = this.int(0, i);
+        [result[i], result[j]] = [result[j], result[i]];
+      }
+      return result;
+    }
+  }
+
+  class ObjectPool {
+    constructor(size, factory) {
+      this.items = Array.from({ length: size }, (_, index) => ({
+        ...factory(index),
+        _poolIndex: index,
+        active: false,
+      }));
+      this.free = Array.from({ length: size }, (_, index) => size - 1 - index);
+    }
+
+    acquire(initializer) {
+      const index = this.free.pop();
+      if (index === undefined) return null;
+      const item = this.items[index];
+      item.active = true;
+      if (initializer) initializer(item);
+      return item;
+    }
+
+    release(item) {
+      if (!item?.active) return;
+      item.active = false;
+      this.free.push(item._poolIndex);
+    }
+
+    forEachActive(callback) {
+      for (const item of this.items) if (item.active) callback(item);
+    }
+
+    countActive() {
+      let count = 0;
+      for (const item of this.items) if (item.active) count += 1;
+      return count;
+    }
+
+    clear() {
+      this.free.length = 0;
+      for (let index = this.items.length - 1; index >= 0; index -= 1) { this.items[index].active = false; this.free.push(index); }
+    }
+  }
+
+  class WaveDirector {
+    constructor() {
+      this.reset();
+    }
+
+    reset() {
+      this.wave = 0;
+      this.stage = "idle";
+      this.spawned = 0;
+      this.defeated = 0;
+      this.target = 0;
+      this.spawnCooldown = 0;
+      this.bossActive = false;
+    }
+
+    startNextWave() {
+      this.wave += 1;
+      this.spawned = 0;
+      this.defeated = 0;
+      this.spawnCooldown = 0.25;
+      this.bossActive = this.wave % 5 === 0;
+      this.target = this.bossActive ? 1 : 5 + this.wave * 2;
+      this.stage = "spawning";
+      return this.snapshot();
+    }
+
+    markSpawned() {
+      this.spawned += 1;
+      if (this.spawned >= this.target) this.stage = "clearing";
+    }
+
+    markDefeated() {
+      this.defeated += 1;
+    }
+
+    isComplete(activeEnemies) {
+      return this.stage === "clearing" && this.defeated >= this.target && activeEnemies === 0;
+    }
+
+    nextSpawnDelay() {
+      return clamp(0.85 - this.wave * 0.035, 0.32, 0.85);
+    }
+
+    snapshot() {
+      return {
+        wave: this.wave,
+        stage: this.stage,
+        spawned: this.spawned,
+        defeated: this.defeated,
+        target: this.target,
+        bossActive: this.bossActive,
+      };
+    }
+  }
+
+  const UPGRADES = Object.freeze([
+    { id: "starbolt", name: "Starbolt Runes", icon: "✦", description: "+25% projectile damage", max: 5 },
+    { id: "swift", name: "Swift Current", icon: "⌁", description: "+15% firing speed", max: 5 },
+    { id: "twin", name: "Twin Runes", icon: "✧", description: "Add a side projectile", max: 2 },
+    { id: "dragonhide", name: "Dragonhide Hull", icon: "◆", description: "+20% maximum hull and repair the gained hull", max: 4 },
+    { id: "aegis", name: "Astral Aegis", icon: "◈", description: "+25% maximum shield and fully restore it", max: 4 },
+    { id: "thrusters", name: "Wyrmwind Thrusters", icon: "➤", description: "+12% movement speed", max: 4 },
+    { id: "nova", name: "Nova Rune", icon: "✹", description: "Charge the starburst faster", max: 4 },
+  ]);
+
+  function availableUpgrades(levels, rng, count = 3) {
+    const available = UPGRADES.filter((upgrade) => (levels[upgrade.id] || 0) < upgrade.max);
+    return rng.shuffle(available).slice(0, count);
+  }
+
+  function applyUpgrade(player, levels, id) {
+    const upgrade = UPGRADES.find((item) => item.id === id);
+    if (!upgrade) return false;
+    const level = levels[id] || 0;
+    if (level >= upgrade.max) return false;
+    levels[id] = level + 1;
+    if (id === "starbolt") player.damage *= 1.25;
+    if (id === "swift") player.fireDelay *= 0.85;
+    if (id === "twin") player.shotLevel += 1;
+    if (id === "dragonhide") {
+      const oldMax = player.maxHp;
+      player.maxHp = Math.round(player.maxHp * 1.2);
+      player.hp = Math.min(player.maxHp, player.hp + (player.maxHp - oldMax));
+    }
+    if (id === "aegis") {
+      player.maxShield = Math.round(player.maxShield * 1.25);
+      player.shield = player.maxShield;
+    }
+    if (id === "thrusters") player.speed *= 1.12;
+    if (id === "nova") player.specialGain *= 1.25;
+    return true;
+  }
+
+  class SaveStore {
+    constructor(storage, key = "dragonswood.starfall.v1") {
+      this.storage = storage;
+      this.key = key;
+    }
+
+    defaults() {
+      return {
+        version: 1,
+        bestScore: 0,
+        highestWave: 0,
+        completedCampaign: false,
+        tutorialSeen: false,
+        runs: 0,
+        settings: { sound: true, reducedMotion: false, touchControls: false },
+      };
+    }
+
+    load() {
+      try {
+        const parsed = JSON.parse(this.storage.getItem(this.key) || "null");
+        if (!parsed || parsed.version !== 1) return this.defaults();
+        const base = this.defaults();
+        return {
+          ...base,
+          ...parsed,
+          settings: { ...base.settings, ...(parsed.settings || {}) },
+        };
+      } catch (_error) {
+        return this.defaults();
+      }
+    }
+
+    save(value) {
+      this.storage.setItem(this.key, JSON.stringify({ ...value, version: 1 }));
+      return value;
+    }
+  }
+
+  function makeRunId(now = Date.now(), random = Math.random()) {
+    return `starfall-${now.toString(36)}-${Math.floor(random * 0xffffff).toString(36)}`;
+  }
+
+  return {
+    RNG,
+    ObjectPool,
+    WaveDirector,
+    SaveStore,
+    UPGRADES,
+    clamp,
+    lerp,
+    distanceSquared,
+    circleHit,
+    availableUpgrades,
+    applyUpgrade,
+    makeRunId,
+  };
+});
+
+</script>
+    <script>
+(function () {
+  "use strict";
+  window.DragonswoodBridge = window.DragonswoodBridge || {
+    onGameEvent(type, payload) {
+      if (type === "starfall:run-complete") {
+        try { localStorage.setItem("starfall-last-result-v1", JSON.stringify(payload)); } catch (_error) {}
+      }
+    }
+  };
+})();
+</script>
+<script>
+(function () {
+  "use strict";
+
+  const Core = window.StarfallCore;
+  const WIDTH = 960;
+  const HEIGHT = 540;
+  const CAMPAIGN_WAVES = 10;
+  const $ = (id) => document.getElementById(id);
+  const canvas = $("game-canvas");
+  const ctx = canvas.getContext("2d", { alpha: false });
+  const imageAssets = {};
+  Object.entries(window.STARFALL_ASSETS || {}).forEach(([key, path]) => {
+    if (!path) return;
+    const image = new Image();
+    image.src = path;
+    imageAssets[key] = image;
+  });
+  const readyImage = (key) => imageAssets[key]?.complete && imageAssets[key]?.naturalWidth ? imageAssets[key] : null;
+
+  const ui = {
+    hud: $("hud"), hpText: $("hp-text"), hpFill: $("hp-fill"), shieldText: $("shield-text"), shieldFill: $("shield-fill"),
+    waveLabel: $("wave-label"), enemyCount: $("enemy-count"), scoreText: $("score-text"), novaFill: $("nova-fill"), novaText: $("nova-text"),
+    bossBar: $("boss-bar"), bossName: $("boss-name"), bossHpText: $("boss-hp-text"), bossHpFill: $("boss-hp-fill"),
+    titlePanel: $("title-panel"), tutorialPanel: $("tutorial-panel"), upgradePanel: $("upgrade-panel"), pausePanel: $("pause-panel"), resultPanel: $("result-panel"),
+    upgradeList: $("upgrade-list"), announcement: $("announcement"), srStatus: $("sr-status"),
+    touchControls: $("touch-controls"), touchPad: $("touch-pad"), touchFire: $("touch-fire"), touchNova: $("touch-nova"),
+  };
+
+  class AudioRune {
+    constructor() {
+      this.context = null;
+      this.enabled = true;
+    }
+
+    wake() {
+      if (!this.context) this.context = new (window.AudioContext || window.webkitAudioContext)();
+      if (this.context.state === "suspended") this.context.resume();
+    }
+
+    tone(frequency, duration, type = "sine", volume = 0.035, slide = 0) {
+      if (!this.enabled) return;
+      this.wake();
+      const now = this.context.currentTime;
+      const oscillator = this.context.createOscillator();
+      const gain = this.context.createGain();
+      oscillator.type = type;
+      oscillator.frequency.setValueAtTime(frequency, now);
+      if (slide) oscillator.frequency.exponentialRampToValueAtTime(Math.max(30, frequency + slide), now + duration);
+      gain.gain.setValueAtTime(volume, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+      oscillator.connect(gain).connect(this.context.destination);
+      oscillator.start(now);
+      oscillator.stop(now + duration);
+    }
+
+    fire() { this.tone(520, 0.06, "triangle", 0.025, 160); }
+    enemyFire() { this.tone(180, 0.12, "sawtooth", 0.018, -70); }
+    hit() { this.tone(120, 0.09, "square", 0.035, -55); }
+    pickup() { this.tone(620, 0.16, "sine", 0.04, 460); }
+    upgrade() { this.tone(370, 0.32, "triangle", 0.05, 520); }
+    nova() { this.tone(110, 0.8, "sine", 0.07, 900); }
+    boss() { this.tone(72, 0.8, "sawtooth", 0.055, -20); }
+  }
+
+  const audio = new AudioRune();
+  const storage = new Core.SaveStore(window.localStorage);
+  let save = storage.load();
+  const rng = new Core.RNG(Date.now());
+  const director = new Core.WaveDirector();
+  let state = "title";
+  let tutorialReturn = "title";
+  let runId = null;
+  let lastTime = performance.now();
+  let elapsed = 0;
+  let score = 0;
+  let kills = 0;
+  let shotsFired = 0;
+  let shotsHit = 0;
+  let screenShake = 0;
+  let currentUpgradeChoices = [];
+  let upgradeLevels = {};
+  let touchVector = { x: 0, y: 0 };
+  let touchFire = false;
+
+  const keys = new Set();
+  const player = {
+    x: WIDTH / 2, y: HEIGHT - 75, radius: 16, hp: 100, maxHp: 100, shield: 0, maxShield: 0,
+    speed: 270, damage: 14, fireDelay: 0.19, fireTimer: 0, shotLevel: 0, special: 0, specialGain: 1,
+    invulnerable: 0, visible: true,
+  };
+
+  const bullets = new Core.ObjectPool(180, () => ({ x: 0, y: 0, vx: 0, vy: 0, radius: 4, damage: 1, friendly: false, color: "#fff", trail: 0 }));
+  const enemies = new Core.ObjectPool(48, () => ({ x: 0, y: 0, vx: 0, vy: 0, radius: 18, hp: 1, maxHp: 1, speed: 1, type: "scout", phase: 0, fireTimer: 1, boss: false, name: "", entered: false, targetY: 100, specialTimer: 3, hitFlash: 0 }));
+  const particles = new Core.ObjectPool(240, () => ({ x: 0, y: 0, vx: 0, vy: 0, size: 2, life: 1, maxLife: 1, color: "#fff" }));
+  const pickups = new Core.ObjectPool(24, () => ({ x: 0, y: 0, vy: 50, radius: 10, spin: 0 }));
+  const warnings = [];
+  let activeBoss = null;
+
+  const stars = Array.from({ length: 110 }, (_, i) => ({
+    x: rng.range(0, WIDTH), y: rng.range(0, HEIGHT), size: rng.range(0.5, 2.2), speed: rng.range(10, 75), layer: i % 3,
+  }));
+  const nebulae = [
+    { x: 150, y: 180, r: 190, color: "rgba(86, 48, 160, .17)" },
+    { x: 770, y: 360, r: 250, color: "rgba(21, 133, 166, .12)" },
+  ];
+
+  function announce(message, accessible = message) {
+    ui.announcement.textContent = message;
+    ui.announcement.classList.remove("hidden");
+    ui.srStatus.textContent = accessible;
+    window.setTimeout(() => ui.announcement.classList.add("hidden"), 1700);
+  }
+
+  function hidePanels() {
+    [ui.titlePanel, ui.tutorialPanel, ui.upgradePanel, ui.pausePanel, ui.resultPanel].forEach((panel) => panel.classList.add("hidden"));
+  }
+
+  function showTitle() {
+    state = "title";
+    hidePanels();
+    ui.titlePanel.classList.remove("hidden");
+    ui.hud.classList.add("hidden");
+    ui.bossBar.classList.add("hidden");
+    ui.touchControls.classList.add("hidden");
+    $("best-score").textContent = save.bestScore.toLocaleString();
+    $("best-wave").textContent = String(save.highestWave);
+  }
+
+  function showTutorial(from) {
+    tutorialReturn = from || state;
+    if (state === "playing") state = "paused";
+    hidePanels();
+    ui.touchControls.classList.add("hidden");
+    ui.tutorialPanel.classList.remove("hidden");
+  }
+
+  function resetPlayer() {
+    Object.assign(player, {
+      x: WIDTH / 2, y: HEIGHT - 75, hp: 100, maxHp: 100, shield: 0, maxShield: 0,
+      speed: 270, damage: 14, fireDelay: 0.19, fireTimer: 0, shotLevel: 0, special: 0,
+      specialGain: 1, invulnerable: 1.25, visible: true,
+    });
+  }
+
+  function beginRun() {
+    hidePanels();
+    state = "playing";
+    runId = Core.makeRunId();
+    score = 0;
+    kills = 0;
+    shotsFired = 0;
+    shotsHit = 0;
+    upgradeLevels = {};
+    warnings.length = 0;
+    activeBoss = null;
+    director.reset();
+    bullets.clear(); enemies.clear(); particles.clear(); pickups.clear();
+    resetPlayer();
+    ui.hud.classList.remove("hidden");
+    applyTouchVisibility();
+    startNextWave();
+    save.tutorialSeen = true;
+    storage.save(save);
+    emitPortalEvent("starfall:run-start", { runId });
+  }
+
+  function startNextWave() {
+    const wave = director.startNextWave();
+    announce(wave.bossActive ? `BOSS WAVE ${wave.wave}` : `WAVE ${wave.wave}`, wave.bossActive ? `Boss wave ${wave.wave}` : `Wave ${wave.wave}`);
+    if (wave.bossActive) audio.boss();
+    updateHud();
+  }
+
+  function showUpgrade() {
+    state = "upgrade";
+    bullets.clear();
+    warnings.length = 0;
+    ui.touchControls.classList.add("hidden");
+    currentUpgradeChoices = Core.availableUpgrades(upgradeLevels, rng, 3);
+    if (!currentUpgradeChoices.length) {
+      startNextWave();
+      state = "playing";
+      return;
+    }
+    ui.upgradeList.innerHTML = "";
+    currentUpgradeChoices.forEach((upgrade, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "upgrade-card";
+      button.dataset.upgrade = upgrade.id;
+      button.innerHTML = `<span class="upgrade-number">${index + 1}</span><span class="upgrade-icon" aria-hidden="true">${upgrade.icon}</span><strong>${upgrade.name}</strong><p>${upgrade.description}</p><small>LEVEL ${(upgradeLevels[upgrade.id] || 0) + 1} / ${upgrade.max}</small>`;
+      button.addEventListener("click", () => chooseUpgrade(index));
+      ui.upgradeList.appendChild(button);
+    });
+    hidePanels();
+    ui.upgradePanel.classList.remove("hidden");
+    ui.upgradeList.querySelector("button")?.focus();
+  }
+
+  function chooseUpgrade(index) {
+    if (state !== "upgrade") return;
+    const choice = currentUpgradeChoices[index];
+    if (!choice || !Core.applyUpgrade(player, upgradeLevels, choice.id)) return;
+    audio.upgrade();
+    hidePanels();
+    state = "playing";
+    applyTouchVisibility();
+    startNextWave();
+  }
+
+  function togglePause(force) {
+    if (!["playing", "paused"].includes(state)) return;
+    const shouldPause = typeof force === "boolean" ? force : state === "playing";
+    if (shouldPause) {
+      state = "paused";
+      ui.touchControls.classList.add("hidden");
+      hidePanels();
+      ui.pausePanel.classList.remove("hidden");
+      $("resume-button").focus();
+    } else {
+      hidePanels();
+      state = "playing";
+      applyTouchVisibility();
+    }
+  }
+
+  function finishRun(victory, reason = "destroyed") {
+    if (!["playing", "paused"].includes(state)) return;
+    state = "result";
+    hidePanels();
+    ui.resultPanel.classList.remove("hidden");
+    ui.bossBar.classList.add("hidden");
+    ui.touchControls.classList.add("hidden");
+    const accuracy = shotsFired ? Math.round((shotsHit / shotsFired) * 100) : 0;
+    save.bestScore = Math.max(save.bestScore, score);
+    save.highestWave = Math.max(save.highestWave, director.wave);
+    save.completedCampaign = save.completedCampaign || victory;
+    save.runs += 1;
+    storage.save(save);
+    $("result-kicker").textContent = victory ? "SKIES SECURED" : "RUN COMPLETE";
+    $("result-title").textContent = victory ? "Dragonswood sees the dawn." : "The stars remember.";
+    $("result-copy").textContent = victory
+      ? "Both astral guardians have fallen. Your flight record has been sealed in the Squadron archive."
+      : reason === "quit" ? "Your run ended safely. Launch again whenever you are ready." : "Your ship was recovered by the wardens. Upgrade, relaunch, and push one wave farther.";
+    $("final-score").textContent = score.toLocaleString();
+    $("final-wave").textContent = String(director.wave);
+    $("final-kills").textContent = String(kills);
+    $("final-accuracy").textContent = `${accuracy}%`;
+    emitPortalEvent("starfall:run-complete", { runId, victory, score, wave: director.wave, kills, accuracy, claimToken: runId });
+  }
+
+  function emitPortalEvent(type, detail) {
+    const payload = { game: "starfall-squadron", version: 2, ...detail };
+    window.dispatchEvent(new CustomEvent(type, { detail: payload }));
+    if (window.parent !== window) window.parent.postMessage({ type, payload }, window.STARFALL_CONFIG?.parentOrigin || window.location.origin);
+    if (type === "starfall:run-complete") { const envelope = { schemaVersion: 1, gameId: "starfall-squadron", gameVersion: 2, resultId: payload.runId, completed: true, result: payload }; window.dispatchEvent(new CustomEvent("dragonswood:arcade-result", { detail: envelope })); if (window.parent !== window) window.parent.postMessage({ type: "dragonswood:arcade-result", payload: envelope }, window.STARFALL_CONFIG?.parentOrigin || window.location.origin); }
+    if (window.DragonswoodBridge && typeof window.DragonswoodBridge.onGameEvent === "function") {
+      window.DragonswoodBridge.onGameEvent(type, payload);
+    }
+  }
+
+  function spawnBullet(config) {
+    return bullets.acquire((bullet) => Object.assign(bullet, {
+      x: config.x, y: config.y, vx: config.vx || 0, vy: config.vy || 0,
+      radius: config.radius || 4, damage: config.damage || 1, friendly: !!config.friendly,
+      color: config.color || "#ffffff", trail: config.trail || 0,
+    }));
+  }
+
+  function firePlayer() {
+    if (player.fireTimer > 0) return;
+    player.fireTimer = player.fireDelay;
+    const offsets = player.shotLevel === 0 ? [0] : player.shotLevel === 1 ? [-10, 10] : [-16, 0, 16];
+    offsets.forEach((offset, i) => spawnBullet({
+      x: player.x + offset, y: player.y - 19, vx: offset * 1.8, vy: -560,
+      radius: i === 1 && offsets.length === 3 ? 4.8 : 4, damage: player.damage, friendly: true,
+      color: i === 1 ? "#fff1a6" : "#67efff", trail: 1,
+    }));
+    shotsFired += offsets.length;
+    audio.fire();
+  }
+
+  function enemyShoot(enemy, count = 1, spread = 0.18, speed = 210) {
+    const angle = Math.atan2(player.y - enemy.y, player.x - enemy.x);
+    for (let i = 0; i < count; i += 1) {
+      const offset = (i - (count - 1) / 2) * spread;
+      spawnBullet({ x: enemy.x, y: enemy.y + enemy.radius * .5, vx: Math.cos(angle + offset) * speed, vy: Math.sin(angle + offset) * speed, radius: enemy.boss ? 6 : 5, damage: enemy.boss ? 14 : 10, color: enemy.boss ? "#ff6598" : "#ff9a5c", trail: 1 });
+    }
+    audio.enemyFire();
+  }
+
+  function spawnEnemy() {
+    if (director.bossActive) return spawnBoss();
+    const wave = director.wave;
+    const types = wave < 2 ? ["scout"] : wave < 4 ? ["scout", "weaver"] : ["scout", "weaver", "lancer", "sentinel"];
+    const type = rng.pick(types);
+    const stats = {
+      scout: { hp: 24 + wave * 3, speed: 72, radius: 17, fire: 2.3 },
+      weaver: { hp: 32 + wave * 4, speed: 62, radius: 19, fire: 1.9 },
+      lancer: { hp: 42 + wave * 5, speed: 95, radius: 21, fire: 2.8 },
+      sentinel: { hp: 58 + wave * 6, speed: 48, radius: 24, fire: 1.6 },
+    }[type];
+    const enemy = enemies.acquire((item) => Object.assign(item, {
+      x: rng.range(70, WIDTH - 70), y: -40, vx: rng.range(-30, 30), vy: stats.speed,
+      radius: stats.radius, hp: stats.hp, maxHp: stats.hp, speed: stats.speed, type,
+      phase: rng.range(0, Math.PI * 2), fireTimer: rng.range(.8, stats.fire), boss: false,
+      name: type.toUpperCase(), entered: false, targetY: rng.range(85, 210), specialTimer: 4, hitFlash: 0,
+    }));
+    if (enemy) director.markSpawned();
+    return !!enemy;
+  }
+
+  function spawnBoss() {
+    if (director.spawned > 0) return true;
+    const second = director.wave >= 10;
+    const hp = second ? 2600 : 680;
+    const boss = enemies.acquire((item) => Object.assign(item, {
+      x: WIDTH / 2, y: -90, vx: second ? 55 : 75, vy: 58, radius: second ? 68 : 54,
+      hp, maxHp: hp, speed: second ? 55 : 75, type: second ? "dreadnought" : "wyrm",
+      phase: 0, fireTimer: 1.2, boss: true, name: second ? "ASTRAL DREADNOUGHT" : "VOID WYRM",
+      entered: false, targetY: second ? 105 : 92, specialTimer: 3.4, hitFlash: 0, phaseTwo: false,
+    }));
+    if (boss) {
+      activeBoss = boss;
+      director.markSpawned();
+      ui.bossName.textContent = boss.name;
+      ui.bossBar.classList.remove("hidden");
+    }
+    return !!boss;
+  }
+
+  function addWarning(enemy, kind) {
+    warnings.push({
+      kind, timer: kind === "line" ? 0.9 : 1.05, maxTimer: kind === "line" ? 0.9 : 1.05,
+      x: player.x, y: player.y, enemy,
+    });
+  }
+
+  function resolveWarning(warning) {
+    if (!warning.enemy.active) return;
+    if (warning.kind === "line") {
+      for (let y = 80; y < HEIGHT; y += 46) {
+        spawnBullet({ x: warning.x, y, vx: 0, vy: 250, radius: 8, damage: 16, color: "#ff4e86", trail: 1 });
+      }
+    } else {
+      const count = 12;
+      for (let i = 0; i < count; i += 1) {
+        const a = (Math.PI * 2 * i) / count;
+        spawnBullet({ x: warning.x, y: warning.y, vx: Math.cos(a) * 175, vy: Math.sin(a) * 175, radius: 6, damage: 13, color: "#ff7ad4", trail: 1 });
+      }
+    }
+    audio.enemyFire();
+  }
+
+  function burst(x, y, color, amount = 10, force = 130) {
+    const actual = save.settings.reducedMotion ? Math.ceil(amount * .35) : amount;
+    for (let i = 0; i < actual; i += 1) {
+      const angle = rng.range(0, Math.PI * 2);
+      const speed = rng.range(force * .25, force);
+      particles.acquire((particle) => Object.assign(particle, {
+        x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+        size: rng.range(1.5, 4.8), life: rng.range(.22, .72), maxLife: .72, color,
+      }));
+    }
+  }
+
+  function spawnPickup(x, y) {
+    pickups.acquire((pickup) => Object.assign(pickup, { x, y, vy: 48, radius: 10, spin: 0 }));
+  }
+
+  function destroyEnemy(enemy) {
+    enemies.release(enemy);
+    director.markDefeated();
+    kills += 1;
+    score += enemy.boss ? 5000 : Math.round(enemy.maxHp * 8);
+    player.special = Core.clamp(player.special + (enemy.boss ? 45 : 9) * player.specialGain, 0, 100);
+    burst(enemy.x, enemy.y, enemy.boss ? "#ff74ca" : "#9a73ff", enemy.boss ? 50 : 16, enemy.boss ? 260 : 150);
+    if (!enemy.boss && rng.next() < .22) spawnPickup(enemy.x, enemy.y);
+    if (enemy.boss) {
+      activeBoss = null;
+      ui.bossBar.classList.add("hidden");
+      warnings.length = 0;
+    }
+  }
+
+  function damagePlayer(amount) {
+    if (player.invulnerable > 0 || state !== "playing") return;
+    let remaining = amount;
+    if (player.shield > 0) {
+      const absorbed = Math.min(player.shield, remaining);
+      player.shield -= absorbed;
+      remaining -= absorbed;
+    }
+    player.hp -= remaining;
+    player.invulnerable = 1;
+    screenShake = save.settings.reducedMotion ? 0 : 8;
+    burst(player.x, player.y, remaining > 0 ? "#ff5b7c" : "#58e9ff", 13, 180);
+    audio.hit();
+    if (player.hp <= 0) {
+      player.hp = 0;
+      burst(player.x, player.y, "#ffd66b", 46, 300);
+      finishRun(false);
+    }
+  }
+
+  function activateNova() {
+    if (state !== "playing" || player.special < 100) return;
+    player.special = 0;
+    audio.nova();
+    screenShake = save.settings.reducedMotion ? 0 : 13;
+    bullets.forEachActive((bullet) => { if (!bullet.friendly) bullets.release(bullet); });
+    enemies.forEachActive((enemy) => {
+      const dx = enemy.x - player.x;
+      const dy = enemy.y - player.y;
+      if (dx * dx + dy * dy < 310 * 310) {
+        enemy.hp -= enemy.boss ? 90 : 120;
+        if (enemy.hp <= 0) destroyEnemy(enemy);
+      }
+    });
+    burst(player.x, player.y, "#74f2ff", 70, 420);
+    announce("NOVA RUNE", "Nova rune activated");
+  }
+
+  function updateStars(dt) {
+    stars.forEach((star) => {
+      star.y += star.speed * dt * (state === "playing" ? 1.35 : .45);
+      if (star.y > HEIGHT + 4) { star.y = -4; star.x = rng.range(0, WIDTH); }
+    });
+  }
+
+  function updatePlayer(dt) {
+    let dx = (keys.has("ArrowRight") || keys.has("KeyD") ? 1 : 0) - (keys.has("ArrowLeft") || keys.has("KeyA") ? 1 : 0) + touchVector.x;
+    let dy = (keys.has("ArrowDown") || keys.has("KeyS") ? 1 : 0) - (keys.has("ArrowUp") || keys.has("KeyW") ? 1 : 0) + touchVector.y;
+    const length = Math.hypot(dx, dy) || 1;
+    if (Math.abs(dx) + Math.abs(dy) > 1) { dx /= length; dy /= length; }
+    player.x = Core.clamp(player.x + dx * player.speed * dt, 28, WIDTH - 28);
+    player.y = Core.clamp(player.y + dy * player.speed * dt, 62, HEIGHT - 30);
+    player.fireTimer = Math.max(0, player.fireTimer - dt);
+    player.invulnerable = Math.max(0, player.invulnerable - dt);
+    player.visible = player.invulnerable <= 0 || Math.floor(player.invulnerable * 12) % 2 === 0;
+    if (keys.has("Space") || touchFire) firePlayer();
+  }
+
+  function updateEnemies(dt) {
+    if (director.stage === "spawning") {
+      director.spawnCooldown -= dt;
+      if (director.spawnCooldown <= 0) {
+        const spawned = spawnEnemy();
+        director.spawnCooldown = spawned ? (director.bossActive ? 4 : director.nextSpawnDelay()) : .1;
+      }
+    }
+
+    enemies.forEachActive((enemy) => {
+      enemy.phase += dt;
+      enemy.fireTimer -= dt;
+      enemy.specialTimer -= dt;
+      enemy.hitFlash = Math.max(0, enemy.hitFlash - dt);
+      if (!enemy.entered) {
+        enemy.y += enemy.vy * dt;
+        if (enemy.y >= enemy.targetY) { enemy.y = enemy.targetY; enemy.entered = true; enemy.vy = 0; }
+        return;
+      }
+
+      if (enemy.boss) {
+        if (enemy.type === "dreadnought" && !enemy.phaseTwo && enemy.hp <= enemy.maxHp * .5) { enemy.phaseTwo = true; enemy.vx *= 1.25; enemy.specialTimer = .65; announce("DREADNOUGHT UNBOUND", "Final phase"); }
+        enemy.x += enemy.vx * dt;
+        if (enemy.x < enemy.radius + 20 || enemy.x > WIDTH - enemy.radius - 20) enemy.vx *= -1;
+        enemy.y = enemy.targetY + Math.sin(enemy.phase * 1.2) * 13;
+        if (enemy.fireTimer <= 0) {
+          enemyShoot(enemy, enemy.type === "dreadnought" ? (enemy.phaseTwo ? 9 : 7) : 5, .17, enemy.type === "dreadnought" ? (enemy.phaseTwo ? 280 : 245) : 215);
+          enemy.fireTimer = enemy.type === "dreadnought" ? (enemy.phaseTwo ? .66 : .85) : 1.15;
+        }
+        if (enemy.specialTimer <= 0) {
+          addWarning(enemy, enemy.type === "dreadnought" && rng.next() < .58 ? "line" : "circle");
+          enemy.specialTimer = enemy.type === "dreadnought" ? (enemy.phaseTwo ? 2.1 : 2.8) : 3.6;
+        }
+      } else if (enemy.type === "scout") {
+        enemy.x += Math.sin(enemy.phase * 2.2) * 70 * dt;
+      } else if (enemy.type === "weaver") {
+        enemy.x += Math.sin(enemy.phase * 3.1) * 120 * dt;
+        enemy.y += Math.cos(enemy.phase * 1.4) * 18 * dt;
+      } else if (enemy.type === "lancer") {
+        enemy.y += 48 * dt;
+        enemy.x += Math.sin(enemy.phase * 1.8) * 38 * dt;
+        if (enemy.y > HEIGHT + 40) { enemy.y = -30; enemy.x = rng.range(80, WIDTH - 80); }
+      } else {
+        enemy.x += Math.sin(enemy.phase) * 32 * dt;
+      }
+
+      enemy.x = Core.clamp(enemy.x, enemy.radius, WIDTH - enemy.radius);
+      if (enemy.fireTimer <= 0) {
+        enemyShoot(enemy, enemy.type === "sentinel" ? 3 : 1, .2, enemy.type === "lancer" ? 265 : 205);
+        enemy.fireTimer = enemy.type === "sentinel" ? 1.55 : enemy.type === "weaver" ? 1.9 : 2.35;
+      }
+      if (Core.circleHit(player, enemy)) damagePlayer(enemy.boss ? 25 : 18);
+    });
+  }
+
+  function updateWarnings(dt) {
+    for (let i = warnings.length - 1; i >= 0; i -= 1) {
+      const warning = warnings[i];
+      warning.timer -= dt;
+      if (warning.timer <= 0) {
+        resolveWarning(warning);
+        warnings.splice(i, 1);
+      }
+    }
+  }
+
+  function updateBullets(dt) {
+    bullets.forEachActive((bullet) => {
+      bullet.x += bullet.vx * dt;
+      bullet.y += bullet.vy * dt;
+      if (bullet.x < -30 || bullet.x > WIDTH + 30 || bullet.y < -40 || bullet.y > HEIGHT + 40) { bullets.release(bullet); return; }
+      if (bullet.friendly) {
+        enemies.forEachActive((enemy) => {
+          if (!bullet.active || !Core.circleHit(bullet, enemy)) return;
+          bullets.release(bullet);
+          enemy.hp -= bullet.damage;
+          enemy.hitFlash = .07;
+          shotsHit += 1;
+          score += 10;
+          burst(bullet.x, bullet.y, "#c6f8ff", 3, 60);
+          if (enemy.hp <= 0) destroyEnemy(enemy);
+        });
+      } else if (Core.circleHit(bullet, player)) {
+        bullets.release(bullet);
+        damagePlayer(bullet.damage);
+      }
+    });
+  }
+
+  function updatePickups(dt) {
+    pickups.forEachActive((pickup) => {
+      pickup.y += pickup.vy * dt;
+      pickup.spin += dt * 4;
+      if (pickup.y > HEIGHT + 20) { pickups.release(pickup); return; }
+      if (Core.circleHit(pickup, player)) {
+        pickups.release(pickup);
+        player.special = Core.clamp(player.special + 18 * player.specialGain, 0, 100);
+        score += 150;
+        audio.pickup();
+      }
+    });
+  }
+
+  function updateParticles(dt) {
+    particles.forEachActive((particle) => {
+      particle.life -= dt;
+      if (particle.life <= 0) { particles.release(particle); return; }
+      particle.x += particle.vx * dt;
+      particle.y += particle.vy * dt;
+      particle.vx *= .98;
+      particle.vy *= .98;
+    });
+  }
+
+  function update(dt) {
+    updateStars(dt);
+    updateParticles(dt);
+    if (state !== "playing") return;
+    elapsed += dt;
+    updatePlayer(dt);
+    updateEnemies(dt);
+    updateWarnings(dt);
+    updateBullets(dt);
+    updatePickups(dt);
+    screenShake = Math.max(0, screenShake - dt * 22);
+    if (director.isComplete(enemies.countActive())) {
+      if (director.wave >= CAMPAIGN_WAVES) finishRun(true);
+      else showUpgrade();
+    }
+    updateHud();
+  }
+
+  function updateHud() {
+    ui.hpText.textContent = `${Math.ceil(player.hp)} / ${player.maxHp}`;
+    ui.hpFill.style.width = `${Core.clamp(player.hp / player.maxHp * 100, 0, 100)}%`;
+    ui.shieldText.textContent = `${Math.ceil(player.shield)} / ${player.maxShield}`;
+    ui.shieldFill.style.width = `${player.maxShield ? player.shield / player.maxShield * 100 : 0}%`;
+    ui.waveLabel.textContent = director.bossActive ? `BOSS WAVE ${director.wave}` : `WAVE ${Math.max(1, director.wave)}`;
+    const remain = Math.max(0, director.target - director.defeated);
+    ui.enemyCount.textContent = `${remain} REMAIN`;
+    ui.scoreText.textContent = String(score).padStart(6, "0");
+    ui.novaFill.style.height = `${player.special}%`;
+    ui.novaText.textContent = player.special >= 100 ? "READY" : `${Math.floor(player.special)}%`;
+    ui.touchNova.classList.toggle("ready", player.special >= 100);
+    if (activeBoss?.active) {
+      const percent = Core.clamp(activeBoss.hp / activeBoss.maxHp * 100, 0, 100);
+      ui.bossHpFill.style.width = `${percent}%`;
+      ui.bossHpText.textContent = `${Math.ceil(percent)}%`;
+    }
+  }
+
+  function drawBackground() {
+    const gradient = ctx.createLinearGradient(0, 0, 0, HEIGHT);
+    gradient.addColorStop(0, "#0b0824");
+    gradient.addColorStop(.55, "#130d31");
+    gradient.addColorStop(1, "#05040f");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+    nebulae.forEach((cloud) => {
+      const g = ctx.createRadialGradient(cloud.x, cloud.y, 0, cloud.x, cloud.y, cloud.r);
+      g.addColorStop(0, cloud.color);
+      g.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(cloud.x - cloud.r, cloud.y - cloud.r, cloud.r * 2, cloud.r * 2);
+    });
+    stars.forEach((star) => {
+      ctx.globalAlpha = .36 + star.layer * .25;
+      ctx.fillStyle = star.layer === 2 ? "#b6f5ff" : "#e8dcff";
+      ctx.fillRect(star.x, star.y, star.size, star.size * (state === "playing" && !save.settings.reducedMotion ? 2.2 : 1));
+    });
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = "rgba(132,96,210,.07)";
+    ctx.lineWidth = 1;
+    for (let x = 0; x < WIDTH; x += 80) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x - 80, HEIGHT); ctx.stroke(); }
+  }
+
+  function drawPlayer() {
+    if (!player.visible || state === "title") return;
+    ctx.save();
+    ctx.translate(player.x, player.y);
+    const sprite = readyImage("player");
+    if (sprite) {
+      ctx.drawImage(sprite, -28, -31, 56, 62);
+      if (player.shield > 0) { ctx.strokeStyle = "rgba(93,233,255,.68)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, 29, 0, Math.PI * 2); ctx.stroke(); }
+      ctx.restore();
+      return;
+    }
+    const glow = ctx.createRadialGradient(0, 3, 2, 0, 3, 34);
+    glow.addColorStop(0, "rgba(81,231,255,.45)"); glow.addColorStop(1, "rgba(81,231,255,0)");
+    ctx.fillStyle = glow; ctx.fillRect(-38, -38, 76, 76);
+    ctx.fillStyle = "#6335c7";
+    ctx.beginPath(); ctx.moveTo(0, -24); ctx.lineTo(23, 20); ctx.lineTo(7, 12); ctx.lineTo(0, 24); ctx.lineTo(-7, 12); ctx.lineTo(-23, 20); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = "#c7afff"; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = "#6ff2ff"; ctx.beginPath(); ctx.moveTo(0, -14); ctx.lineTo(7, 7); ctx.lineTo(0, 13); ctx.lineTo(-7, 7); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#ffd166"; ctx.fillRect(-10, 18, 6, 9); ctx.fillRect(4, 18, 6, 9);
+    if (player.shield > 0) { ctx.strokeStyle = "rgba(93,233,255,.68)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, 27, 0, Math.PI * 2); ctx.stroke(); }
+    ctx.restore();
+  }
+
+  function drawEnemy(enemy) {
+    ctx.save();
+    ctx.translate(enemy.x, enemy.y);
+    if (enemy.boss) ctx.scale(enemy.type === "dreadnought" ? 1.35 : 1.1, enemy.type === "dreadnought" ? 1.35 : 1.1);
+    const sprite = readyImage(enemy.type);
+    if (sprite) {
+      const size = enemy.radius * 2.45;
+      ctx.drawImage(sprite, -size / 2, -size / 2, size, size);
+      ctx.restore();
+      if (!enemy.boss && enemy.hp < enemy.maxHp) {
+        ctx.fillStyle = "rgba(0,0,0,.55)"; ctx.fillRect(enemy.x - 18, enemy.y - enemy.radius - 10, 36, 4);
+        ctx.fillStyle = "#ff6a8c"; ctx.fillRect(enemy.x - 18, enemy.y - enemy.radius - 10, 36 * enemy.hp / enemy.maxHp, 4);
+      }
+      return;
+    }
+    ctx.shadowBlur = enemy.boss ? 20 : 10;
+    ctx.shadowColor = enemy.boss ? "#ff4b98" : "#9d65ff";
+    ctx.fillStyle = enemy.hitFlash > 0 ? "#ffffff" : enemy.boss ? "#8b214f" : enemy.type === "sentinel" ? "#804bd1" : enemy.type === "lancer" ? "#d14d79" : "#56369b";
+    if (enemy.type === "wyrm") {
+      ctx.beginPath(); ctx.moveTo(0, 28); ctx.bezierCurveTo(-62, 15, -48, -28, -12, -34); ctx.lineTo(0, -50); ctx.lineTo(12, -34); ctx.bezierCurveTo(48, -28, 62, 15, 0, 28); ctx.fill();
+      ctx.strokeStyle = "#ffb0df"; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = "#ffdd71"; ctx.fillRect(-15, -24, 7, 4); ctx.fillRect(8, -24, 7, 4);
+    } else if (enemy.type === "dreadnought") {
+      ctx.beginPath(); ctx.moveTo(0, 42); ctx.lineTo(-55, 18); ctx.lineTo(-42, -26); ctx.lineTo(-15, -18); ctx.lineTo(0, -46); ctx.lineTo(15, -18); ctx.lineTo(42, -26); ctx.lineTo(55, 18); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = "#ff9fd0"; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = "#ff5b8b"; ctx.fillRect(-32, 5, 18, 6); ctx.fillRect(14, 5, 18, 6); ctx.fillRect(-6, -18, 12, 20);
+    } else {
+      ctx.rotate(Math.PI);
+      ctx.beginPath();
+      if (enemy.type === "weaver") { ctx.moveTo(0, -21); ctx.lineTo(25, 16); ctx.lineTo(4, 9); ctx.lineTo(0, 22); ctx.lineTo(-4, 9); ctx.lineTo(-25, 16); }
+      else if (enemy.type === "lancer") { ctx.moveTo(0, -28); ctx.lineTo(17, 19); ctx.lineTo(0, 11); ctx.lineTo(-17, 19); }
+      else if (enemy.type === "sentinel") { for (let i = 0; i < 8; i += 1) { const a = i * Math.PI / 4; const r = i % 2 ? 16 : 25; ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r); } }
+      else { ctx.moveTo(0, -22); ctx.lineTo(19, 17); ctx.lineTo(0, 9); ctx.lineTo(-19, 17); }
+      ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = "#c8adff"; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.fillStyle = "#ffcf6b"; ctx.beginPath(); ctx.arc(0, 1, 4, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.restore();
+    if (!enemy.boss && enemy.hp < enemy.maxHp) {
+      ctx.fillStyle = "rgba(0,0,0,.55)"; ctx.fillRect(enemy.x - 18, enemy.y - enemy.radius - 10, 36, 4);
+      ctx.fillStyle = "#ff6a8c"; ctx.fillRect(enemy.x - 18, enemy.y - enemy.radius - 10, 36 * enemy.hp / enemy.maxHp, 4);
+    }
+  }
+
+  function drawBullets() {
+    bullets.forEachActive((bullet) => {
+      ctx.save();
+      ctx.translate(bullet.x, bullet.y);
+      ctx.fillStyle = bullet.color;
+      ctx.shadowBlur = 12; ctx.shadowColor = bullet.color;
+      if (bullet.trail) { ctx.fillRect(-bullet.radius / 2, bullet.friendly ? 0 : -10, bullet.radius, bullet.friendly ? 16 : 20); }
+      ctx.beginPath(); ctx.arc(0, 0, bullet.radius, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    });
+  }
+
+  function drawWarnings() {
+    warnings.forEach((warning) => {
+      const pulse = .35 + Math.sin(performance.now() * .018) * .18;
+      ctx.save();
+      ctx.globalAlpha = pulse + (1 - warning.timer / warning.maxTimer) * .3;
+      ctx.strokeStyle = "#ff4c79"; ctx.fillStyle = "rgba(255,45,95,.12)"; ctx.lineWidth = 3;
+      ctx.setLineDash([8, 8]);
+      if (warning.kind === "line") { ctx.fillRect(warning.x - 15, 0, 30, HEIGHT); ctx.strokeRect(warning.x - 15, 0, 30, HEIGHT); }
+      else { ctx.beginPath(); ctx.arc(warning.x, warning.y, 58, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); }
+      ctx.restore();
+    });
+  }
+
+  function drawPickups() {
+    pickups.forEachActive((pickup) => {
+      ctx.save(); ctx.translate(pickup.x, pickup.y); ctx.rotate(pickup.spin);
+      ctx.fillStyle = "#6df4ff"; ctx.shadowBlur = 16; ctx.shadowColor = "#6df4ff";
+      ctx.beginPath(); ctx.moveTo(0, -10); ctx.lineTo(7, 0); ctx.lineTo(0, 10); ctx.lineTo(-7, 0); ctx.closePath(); ctx.fill(); ctx.restore();
+    });
+  }
+
+  function drawParticles() {
+    particles.forEachActive((particle) => {
+      ctx.globalAlpha = Core.clamp(particle.life / particle.maxLife, 0, 1);
+      ctx.fillStyle = particle.color;
+      ctx.fillRect(particle.x, particle.y, particle.size, particle.size);
+    });
+    ctx.globalAlpha = 1;
+  }
+
+  function draw() {
+    ctx.save();
+    if (screenShake > 0) ctx.translate(rng.range(-screenShake, screenShake), rng.range(-screenShake, screenShake));
+    drawBackground();
+    drawWarnings();
+    drawPickups();
+    enemies.forEachActive(drawEnemy);
+    drawBullets();
+    drawPlayer();
+    drawParticles();
+    ctx.restore();
+  }
+
+  function frame(now) {
+    const dt = Math.min(.034, Math.max(0, (now - lastTime) / 1000));
+    lastTime = now;
+    update(dt);
+    draw();
+    requestAnimationFrame(frame);
+  }
+
+  function applySettings() {
+    audio.enabled = !!save.settings.sound;
+    $("sound-setting").checked = audio.enabled;
+    $("motion-setting").checked = !!save.settings.reducedMotion;
+    $("touch-setting").checked = !!save.settings.touchControls;
+    $("sound-button").textContent = audio.enabled ? "♪" : "×";
+    $("sound-button").setAttribute("aria-label", audio.enabled ? "Mute sound" : "Turn sound on");
+    applyTouchVisibility();
+  }
+
+  function applyTouchVisibility() {
+    const enabled = save.settings.touchControls || window.matchMedia("(pointer: coarse)").matches;
+    ui.touchControls.classList.toggle("hidden", !enabled || state !== "playing");
+  }
+
+  function saveSettings() {
+    save.settings.sound = $("sound-setting").checked;
+    save.settings.reducedMotion = $("motion-setting").checked;
+    save.settings.touchControls = $("touch-setting").checked;
+    storage.save(save);
+    applySettings();
+  }
+
+  document.addEventListener("keydown", (event) => {
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(event.code)) event.preventDefault();
+    keys.add(event.code);
+    if (event.repeat) return;
+    if (event.code === "Enter" && state === "title") save.tutorialSeen ? beginRun() : showTutorial("title");
+    if ((event.code === "Escape" || event.code === "KeyP") && ["playing", "paused"].includes(state)) togglePause();
+    if ((event.code === "KeyE" || event.code === "ShiftLeft" || event.code === "ShiftRight") && state === "playing") activateNova();
+    if (state === "upgrade" && ["Digit1", "Digit2", "Digit3"].includes(event.code)) chooseUpgrade(Number(event.code.slice(-1)) - 1);
+  });
+  document.addEventListener("keyup", (event) => keys.delete(event.code));
+  window.addEventListener("blur", () => { if (state === "playing") togglePause(true); });
+  document.addEventListener("visibilitychange", () => { if (document.hidden && state === "playing") togglePause(true); });
+
+  $("start-button").addEventListener("click", () => save.tutorialSeen ? beginRun() : showTutorial("title"));
+  $("training-button").addEventListener("click", () => showTutorial("title"));
+  $("help-button").addEventListener("click", () => showTutorial(state));
+  $("tutorial-back").addEventListener("click", () => {
+    hidePanels();
+    if (tutorialReturn === "playing" || tutorialReturn === "paused") { state = "playing"; applyTouchVisibility(); }
+    else if (tutorialReturn === "upgrade") { state = "upgrade"; ui.upgradePanel.classList.remove("hidden"); }
+    else if (tutorialReturn === "result") { state = "result"; ui.resultPanel.classList.remove("hidden"); }
+    else showTitle();
+  });
+  $("tutorial-start").addEventListener("click", beginRun);
+  $("pause-button").addEventListener("click", () => togglePause());
+  $("resume-button").addEventListener("click", () => togglePause(false));
+  $("quit-button").addEventListener("click", () => finishRun(false, "quit"));
+  $("replay-button").addEventListener("click", beginRun);
+  $("exit-button").addEventListener("click", () => { emitPortalEvent("starfall:exit", { runId }); showTitle(); });
+  $("sound-button").addEventListener("click", () => { save.settings.sound = !save.settings.sound; storage.save(save); applySettings(); });
+  [$("sound-setting"), $("motion-setting"), $("touch-setting")].forEach((input) => input.addEventListener("change", saveSettings));
+  ui.touchFire.addEventListener("pointerdown", (event) => { event.preventDefault(); touchFire = true; ui.touchFire.setPointerCapture(event.pointerId); });
+  ui.touchFire.addEventListener("pointerup", () => { touchFire = false; });
+  ui.touchFire.addEventListener("pointercancel", () => { touchFire = false; });
+  ui.touchNova.addEventListener("pointerdown", (event) => { event.preventDefault(); activateNova(); });
+
+  function updateTouchPad(event) {
+    const rect = ui.touchPad.getBoundingClientRect();
+    const dx = event.clientX - (rect.left + rect.width / 2);
+    const dy = event.clientY - (rect.top + rect.height / 2);
+    const max = rect.width * .32;
+    const distance = Math.hypot(dx, dy) || 1;
+    const scale = Math.min(1, max / distance);
+    const x = dx * scale;
+    const y = dy * scale;
+    touchVector = { x: Core.clamp(dx / max, -1, 1), y: Core.clamp(dy / max, -1, 1) };
+    const knob = ui.touchPad.querySelector("i");
+    knob.style.transform = `translate(${x}px, ${y}px)`;
+  }
+  ui.touchPad.addEventListener("pointerdown", (event) => { event.preventDefault(); ui.touchPad.setPointerCapture(event.pointerId); updateTouchPad(event); });
+  ui.touchPad.addEventListener("pointermove", (event) => { if (ui.touchPad.hasPointerCapture(event.pointerId)) updateTouchPad(event); });
+  const releasePad = () => { touchVector = { x: 0, y: 0 }; ui.touchPad.querySelector("i").style.transform = "translate(0,0)"; };
+  ui.touchPad.addEventListener("pointerup", releasePad);
+  ui.touchPad.addEventListener("pointercancel", releasePad);
+
+  applySettings();
+  showTitle();
+  updateHud();
+  requestAnimationFrame(frame);
+})();
+
+</script>
+  </body>
+</html>

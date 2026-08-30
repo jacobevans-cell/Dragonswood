@@ -1,0 +1,18 @@
+{
+  "name": "Dragon Tongues | Dragonswood",
+  "short_name": "Dragon Tongues",
+  "description": "A twelve-language Dragonswood learning adventure with full beginner paths for Spanish, French, Japanese, Korean, Icelandic, Somali, Russian, Mandarin, Arabic, Vietnamese, Diné Bizaad, and ASL.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf8fd",
+  "theme_color": "#4b2aa8",
+  "icons": [
+    {
+      "src": "assets/dragon-tongues-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

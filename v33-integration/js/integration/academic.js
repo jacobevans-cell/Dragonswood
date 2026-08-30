@@ -7,9 +7,9 @@
 
   const GAME_CATALOG=Object.freeze([
     ['decimal-deception','Math'],['math-operations','Math'],['fraction-forge','Math'],
-    ['long-division','Math'],['long-division-custom','Math'],['spelling-practice','ELA'],
+    ['long-division','Math'],['long-division-custom','Math'],
     ['witches-test','ELA'],['elemental-laboratory','Science'],['cosmic-architect','Science'],
-    ['arcane-forge','Science'],['class-reader','ELA']
+    ['arcane-forge','Science'],['deep-time-lab','Science'],['class-reader','ELA']
   ].map(([id,subject])=>Object.freeze({id,subject})));
   const GAME_IDS=new Set(GAME_CATALOG.map(game=>game.id));
   const text=value=>String(value??'').trim();
@@ -31,12 +31,13 @@
     }));
   }
   function normalizeWeights(value={}){
-    const daily=clamp(value.daily??value.dailyQuest??40,0,100);
-    const curriculum=clamp(value.curriculum??value.curriculumQuest??40,0,100);
+    const daily=clamp(value.daily??value.dailyQuest??30,0,100);
+    const curriculum=clamp(value.curriculum??value.curriculumQuest??30,0,100);
+    const spelling=clamp(value.spelling??value.runeSpelling??20,0,100);
     const reading=clamp(value.reading??value.readingTests??20,0,100);
-    return daily+curriculum+reading===100
-      ?Object.freeze({daily,curriculum,reading})
-      :Object.freeze({daily:40,curriculum:40,reading:20});
+    return daily+curriculum+spelling+reading===100
+      ?Object.freeze({daily,curriculum,spelling,reading})
+      :Object.freeze({daily:30,curriculum:30,spelling:20,reading:20});
   }
   function normalizeReadingAssignments(value={}){
     const defaultTarget=clamp(value.readingTargetMinutes||20,1,180),targets={};
@@ -117,11 +118,15 @@
     return Object.freeze({scribe:Object.freeze({session,current,portfolio}),games:normalizeGameResults(gameResults)});
   }
 
-  function gradebook(roster=[],dailyRows=[],curriculumRows=[],readingRows=[],weightSettings={}){
+  function gradebook(roster=[],dailyRows=[],curriculumRows=[],readingRows=[],spellingRows=[],weightSettings={}){
+    if(!Array.isArray(spellingRows)){weightSettings=spellingRows||{};spellingRows=[]}
     // DW AUDIT FIX V57.1.9: required Daily/Curriculum work is inferred by grade from the class assignment stream.
     // A scholar who never opens required work now receives missing/zero evidence instead of silently disappearing from the average.
     const weights=normalizeWeights(weightSettings);
     const readingRecords=normalizeReading(readingRows);
+    const validSpellingLevels=new Set(['foundation','grade4','grade5','challenge','master']);
+    const spellingRecords=spellingRows.filter(row=>studentId(row)&&validSpellingLevels.has(text(row.levelKey))&&text(row.mode)==='weekly-mastery'&&row.officialAttempt!==false);
+    const spellingWeeks=[...new Set(spellingRecords.map(row=>number(row.week)).filter(week=>week>=1&&week<=30))].sort((a,b)=>a-b);
     const readingAssignments=normalizeReadingAssignments(weightSettings),assignedDates=readingAssignments.dateKeys,defaultTarget=readingAssignments.defaultTarget,targetsByDate=readingAssignments.targetsByDate;
     const gradeByStudent=new Map(roster.map(student=>[student.id,text(student.grade)]));
     const rowGrade=row=>gradeByStudent.get(studentId(row))||'';
@@ -135,6 +140,9 @@
       const grade=text(student.grade);
       const dailyRecords=dailyRows.filter(row=>studentId(row)===student.id&&assignedDaily(row));
       const curriculumRecords=curriculumRows.filter(row=>studentId(row)===student.id);
+      const spellingLevel=({3:'foundation',4:'grade4',5:'grade5',6:'challenge',8:'master'})[Number(student.spellingGrade)]||'grade5';
+      const ownSpellingRecords=spellingRecords.filter(row=>studentId(row)===student.id&&text(row.levelKey)===spellingLevel);
+      const spellingByWeek=latestByKey(ownSpellingRecords,row=>String(number(row.week)));
       const expectedDaily=expected(dailyRows,grade,dailyKey,assignedDaily),expectedCurriculum=expected(curriculumRows,grade,curriculumKey);
       const dailyByKey=latestByKey(dailyRecords,dailyKey),curriculumByKey=latestByKey(curriculumRecords,curriculumKey);
       const ownDaily=expectedDaily.length
@@ -149,40 +157,44 @@
       const ownReadingRows=allOwnReadingRows.filter(row=>row.integrityValid&&assignedDates.includes(row.dateKey));
       const readingByDate=new Map(ownReadingRows.map(row=>[row.dateKey,row]));
       const readingScores=readingAssigned?assignedDates.map(day=>{const row=readingByDate.get(day),target=targetsByDate[day];return row?clamp(row.activeSeconds/(target*60)*100,0,100):0}):[];
-      const daily=round(mean(ownDaily)),curriculum=round(mean(ownCurriculum)),reading=readingAssigned?round(mean(readingScores)):null;
+      const spellingScores=spellingWeeks.map(week=>clamp(spellingByWeek.get(String(week))?.score??spellingByWeek.get(String(week))?.accuracy??0,0,100));
+      const daily=round(mean(ownDaily)),curriculum=round(mean(ownCurriculum)),spelling=spellingWeeks.length?round(mean(spellingScores)):null,reading=readingAssigned?round(mean(readingScores)):null;
       const dailyIncomplete=expectedDaily.length?expectedDaily.filter(key=>text(dailyByKey.get(key)?.status)!=='complete').length:dailyRecords.filter(row=>text(row.status)!=='complete').length;
       const curriculumIncomplete=expectedCurriculum.length?expectedCurriculum.filter(key=>{const row=curriculumByKey.get(key);return !row||((row.accuracy===undefined&&number(row.questionsSeen)<=0)||text(row.status)==='in-progress')}).length:curriculumRecords.filter(row=>(row.accuracy===undefined&&number(row.questionsSeen)<=0)||text(row.status)==='in-progress').length;
+      const spellingIncomplete=spellingWeeks.filter(week=>!spellingByWeek.has(String(week))).length;
       const readingIncomplete=readingAssigned?assignedDates.filter(day=>{const row=readingByDate.get(day);return !row||row.activeSeconds<targetsByDate[day]*60}).length:0;
       const readingEvidenceIssue=allOwnReadingRows.some(row=>assignedDates.includes(row.dateKey)&&!row.integrityValid);
-      const missing=dailyIncomplete+curriculumIncomplete+readingIncomplete;
-      const categories=[[daily,weights.daily],[curriculum,weights.curriculum],...(readingAssigned?[[reading,weights.reading]]:[])],activeWeight=categories.reduce((sum,[,weight])=>sum+weight,0);
+      const missing=dailyIncomplete+curriculumIncomplete+spellingIncomplete+readingIncomplete;
+      const categories=[[daily,weights.daily],[curriculum,weights.curriculum],...(spellingWeeks.length?[[spelling,weights.spelling]]:[]),...(readingAssigned?[[reading,weights.reading]]:[])],activeWeight=categories.reduce((sum,[,weight])=>sum+weight,0);
       const total=activeWeight?Math.round(categories.reduce((sum,[value,weight])=>sum+(value??0)*weight,0)/activeWeight):0;
       const provisional=missing>0||readingEvidenceIssue||categories.some(([value])=>value===null),totalStatus=readingEvidenceIssue?'Evidence review required':provisional?'Provisional':'Complete evidence';
       const assignments=[
         ...(expectedDaily.length?expectedDaily.map(key=>{const row=dailyByKey.get(key),sample=exemplar(dailyRows,grade,dailyKey,key);return {id:`daily:${key}`,category:'Daily Quest',title:text(row?.title||row?.missionTitle||sample.title||sample.missionTitle||key,'Daily Quest'),score:row&&text(row.status)==='complete'?clamp(row.score,0,100):0,status:row?text(row.status,'in-progress'):'missing'}}):dailyRecords.map(row=>({id:text(row.id||row.dateKey),category:'Daily Quest',title:text(row.title||row.missionTitle||row.dateKey,'Daily Quest'),score:text(row.status)==='complete'?clamp(row.score,0,100):null,status:text(row.status,'in-progress')}))),
         ...(expectedCurriculum.length?expectedCurriculum.map(key=>{const row=curriculumByKey.get(key),sample=exemplar(curriculumRows,grade,curriculumKey,key),raw=curriculumScore(row);return {id:`curriculum:${key}`,category:'Curriculum Quest',title:text(row?.lessonTitle||row?.title||sample.lessonTitle||sample.title||key,'Curriculum Quest'),score:raw===null?0:clamp(raw,0,100),status:row?text(row.status,'recorded'):'missing'}}):curriculumRecords.map(row=>({id:text(row.id||row.lessonId),category:'Curriculum Quest',title:text(row.lessonTitle||row.title||row.lessonId,'Curriculum Quest'),score:row.accuracy===undefined&&number(row.questionsSeen)===0?null:clamp(row.accuracy??number(row.questionsCorrect)/Math.max(1,number(row.questionsSeen))*100,0,100),status:text(row.status,'recorded')}))),
+        ...spellingWeeks.map(week=>{const row=spellingByWeek.get(String(week));return {id:`spelling:${spellingLevel}:${week}`,category:'Rune Spelling',title:`Rune Spelling • Week ${week} • Grade ${student.spellingGrade||5}`,score:row?clamp(row.score??row.accuracy,0,100):0,status:row?'complete':'missing'}}),
         ...(readingAssigned?assignedDates.map(day=>{const row=readingByDate.get(day),minutes=row?Math.round(row.activeSeconds/6)/10:0,target=targetsByDate[day],first=row?.firstPage||0,last=row?.lastPage||0;return {id:`witches:${day}`,category:'Witches Time',title:`The Witches • ${day}`,score:row?clamp(row.activeSeconds/(target*60)*100,0,100):0,status:row&&row.activeSeconds>=target*60?'complete':'incomplete',evidence:`${minutes}/${target} verified min${first?` • pages ${first}${last&&last!==first?`–${last}`:''}`:''}`}}):allOwnReadingRows.filter(row=>row.integrityValid).map(row=>({id:row.id,category:'Witches Time',title:`The Witches • ${row.dateKey}`,score:null,status:'recorded',evidence:`${Math.round(row.activeSeconds/6)/10} verified min${row.firstPage?` • pages ${row.firstPage}${row.lastPage!==row.firstPage?`–${row.lastPage}`:''}`:''} • not assigned`})))
       ];
       const readingMinutes=Math.round(ownReadingRows.reduce((sum,row)=>sum+row.activeSeconds,0)/6)/10;
-      return Object.freeze({id:student.id,name:student.name,grade:student.grade,genderGroup:student.genderGroup,initial:(student.name[0]||'?').toUpperCase(),total,totalStatus,daily:daily??0,curriculum:curriculum??0,reading,readingMinutes,readingAssigned,readingStatus:readingAssigned?(readingIncomplete?'Incomplete':'Complete'):(allOwnReadingRows.length?'Recorded':'Not assigned'),readingEvidenceIssue,provisional,missing,assignments:Object.freeze(assignments.map(Object.freeze))});
+      return Object.freeze({id:student.id,name:student.name,grade:student.grade,spellingGrade:student.spellingGrade||5,genderGroup:student.genderGroup,initial:(student.name[0]||'?').toUpperCase(),total,totalStatus,daily:daily??0,curriculum:curriculum??0,spelling,reading,readingMinutes,readingAssigned,readingStatus:readingAssigned?(readingIncomplete?'Incomplete':'Complete'):(allOwnReadingRows.length?'Recorded':'Not assigned'),readingEvidenceIssue,provisional,missing,assignments:Object.freeze(assignments.map(Object.freeze))});
     });
     const totals=rows.filter(row=>row.total>0).map(row=>row.total);
     const assignedWork=new Set([
       ...dailyRows.filter(assignedDaily).map(row=>`daily:${rowGrade(row)}:${dailyKey(row)}`).filter(key=>!key.endsWith(':')),
       ...curriculumRows.map(row=>`curriculum:${rowGrade(row)}:${curriculumKey(row)}`).filter(key=>!key.endsWith(':')),
+      ...spellingWeeks.map(week=>`spelling:${week}`),
       ...assignedDates.map(day=>`witches:${day}`)
     ]).size;
-    return Object.freeze({rows,classAverage:round(mean(totals))??0,missing:rows.reduce((sum,row)=>sum+row.missing,0),studentsWithMissing:rows.filter(row=>row.missing>0).length,assignedWork,weights,readingTargetMinutes:defaultTarget,readingAssignedDateKeys:Object.freeze(assignedDates),readingTargetsByDate:targetsByDate,gradeIntegrityVersion:3,reportCardPercentageReady:rows.every(row=>!row.readingEvidenceIssue),readingSource:'Verified active time in The Witches reader'});
+    return Object.freeze({rows,classAverage:round(mean(totals))??0,missing:rows.reduce((sum,row)=>sum+row.missing,0),studentsWithMissing:rows.filter(row=>row.missing>0).length,assignedWork,weights,spellingAssignedWeeks:Object.freeze(spellingWeeks),readingTargetMinutes:defaultTarget,readingAssignedDateKeys:Object.freeze(assignedDates),readingTargetsByDate:targetsByDate,gradeIntegrityVersion:4,reportCardPercentageReady:rows.every(row=>!row.readingEvidenceIssue),readingSource:'Verified active time in The Witches reader'});
   }
 
-  function teacherAcademic(roster,activeSession,writingRows,dailyRows,curriculumRows,gameRows,readingRows=[],weightSettings={}){
+  function teacherAcademic(roster,activeSession,writingRows,dailyRows,curriculumRows,gameRows,readingRows=[],spellingRows=[],weightSettings={}){
     const session=normalizeSession(activeSession||{});
     const responses=writingRows.map(normalizeResponse).filter(row=>!session||row.sessionId===session.id);
     const submitted=responses.filter(row=>row.status==='submitted').length;
     const drafting=responses.filter(row=>row.status==='draft').length;
     const aiScored=responses.filter(row=>row.aiStatus==='complete'||row.aiFeedback).length;
     const avgWords=round(mean(responses.map(row=>row.wordCount)))??0;
-    return Object.freeze({gradebook:gradebook(roster,dailyRows,curriculumRows,readingRows,weightSettings),scribe:Object.freeze({session,responses,submitted,drafting,aiScored,avgWords})});
+    return Object.freeze({gradebook:gradebook(roster,dailyRows,curriculumRows,readingRows,spellingRows,weightSettings),scribe:Object.freeze({session,responses,submitted,drafting,aiScored,avgWords})});
   }
 
   return Object.freeze({GAME_CATALOG,writingMetrics,sessionResponseId,normalizeSession,normalizeResponse,normalizeReadingAssignments,writingPortfolio,normalizeGameResults,normalizeReading,normalizeWeights,studentAcademic,gradebook,teacherAcademic});

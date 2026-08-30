@@ -56,7 +56,7 @@ function updateClock(){
 }
 async function unlock(next){
   access=setCurrentAccess(next);
-  if(!loaded){await import('./arcade.js?v=58.0.2');loaded=true}
+  if(!loaded){await import('./arcade.js?v=58.0.3');loaded=true}
   document.documentElement.classList.remove('arcade-auth-pending');
   gate.hidden=true;
   badge.hidden=false;

@@ -18,7 +18,7 @@ function updateClock(){
 }
 async function unlock(next){
   access=next;gate.hidden=true;badge.hidden=false;updateClock();
-  if(!loaded){loaded=true;await import('./manual-preview-arcade.js')}
+  if(!loaded){loaded=true;await import('./manual-preview-arcade.js?v=58.0.3')}
 }
 function lockNow(message){
   access=store.getAccess();document.querySelector('#gameFrame')?.setAttribute('src','about:blank');renderLocked(message);

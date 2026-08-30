@@ -1,4 +1,4 @@
-import {GAMES,BOARDS} from './game-registry.js?v=58.0.2';
+import {GAMES,BOARDS} from './game-registry.js?v=58.0.3';
 import {initLeaderboard,submitBestScore,getTop} from './leaderboard-service.js?v=57.1.15';
 import {getFirebaseContext,recordArcadeGameResult} from './access-client.js?v=58.0.1';
 const $=selector=>document.querySelector(selector);
@@ -33,7 +33,7 @@ function renderGames(){
   const grid=$('#gameGrid');grid.innerHTML='';
   for(const game of GAMES){
     const card=document.createElement('article');card.className=`game-card has-veil-tile ${game.className||''}`;
-    card.innerHTML=`<img class="game-card-art" src="${game.art}" alt="" loading="lazy" decoding="async"><div class="game-card-content"><div class="game-kicker">${game.kicker}</div><h3>${game.title}</h3><h4>${game.subtitle}</h4><p>${game.description}</p><div class="card-tags">${game.tags.map(tag=>`<span>${tag}</span>`).join('')}</div><button class="play-game">ENTER PORTAL</button></div>`;
+    card.innerHTML=`<img class="game-card-art" src="${game.art}" alt="" loading="lazy" decoding="async"><div class="game-card-content"><div class="game-kicker">${game.kicker}</div><h3>${game.title}</h3><h4>${game.subtitle}</h4><p>${game.description}</p><div class="card-tags">${game.tags.map(tag=>`<span>${tag}</span>`).join('')}</div><button class="play-game">${game.button}</button></div>`;
     card.querySelector('button').addEventListener('click',()=>openGame(game));grid.appendChild(card);
   }
 }

@@ -44,7 +44,8 @@
     const mod=definition(id);if(!mod)return '';
     const url=new URL(`../${mod.path}`,baseHref||globalThis.document?.baseURI||globalThis.location?.href);
     if(mod.query)new URLSearchParams(mod.query).forEach((value,key)=>url.searchParams.set(key,value));
-    if(mod.id==='daily-quest'||mod.id==='curriculum-quest')url.searchParams.set('v','58.0.6');
+    if(mod.id==='daily-quest')url.searchParams.set('v','58.0.6');
+    if(mod.id==='curriculum-quest')url.searchParams.set('v','58.0.7');
     if(mod.id==='rune-spelling'||mod.id==='dragon-tongues'||mod.id==='deep-time-lab')url.searchParams.set('v','58.0.0');
     if(mod.id==='class-reader')url.searchParams.set('v','57.1.5');
     const pageUrl=new URL(globalThis.location?.href||baseHref||url.href),previewDate=pageUrl.searchParams.get('previewDate'),testerDate=globalThis.DWV33TesterDateContext?.();

@@ -45,6 +45,8 @@ assert.match(studentApp,/Ask Your Substitute Teacher/,'blocked students must rec
 assert.doesNotMatch(studentApp,/\['fraction-forge','Math'/,'Fraction Forge must not render as a separate Quest Games card');
 assert.match(studentApp,/\['math-operations','Math'[^\n]+,'fraction-forge'\]/,'Math Operations must carry Fraction Forge as its combined secondary choice');
 assert.match(studentApp,/game-actions[^\n]+Fraction Forge →/,'the combined Math Operations card must expose the Fraction Forge choice');
+assert.doesNotMatch(studentApp,/\['(?:witches-test|class-reader)','ELA'/,'Witches test and reader must not render in Quest Games');
+assert.match(studentApp,/data-module="class-reader"/,'the daily Witches reader path must remain available');
 const teacherApp=read('v33-integration/js/teacher-app.js');
 assert.match(teacherApp,/data-substitute-mode/,'Teacher Command must expose the Substitute Mode quick button');
 assert.match(teacherApp,/function manageSubstituteMode\(\)/,'the quick button must use a confirmation flow');

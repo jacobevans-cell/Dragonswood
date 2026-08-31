@@ -30,24 +30,25 @@ const settings={
 const gradebook=Academic.gradebook(roster,dailyRows,curriculumRows,readingRows,spellingRows,settings);
 const row=gradebook.rows[0];
 
-assert.deepStrictEqual({...gradebook.weights},{daily:20,curriculum:40,spelling:20,reading:20},'V4 settings migrate to the daily V5 weights');
-assert.deepStrictEqual({...gradebook.policy},{minimumAcademicDay:21,currentGradeStartDate:'2026-08-31',recoveryIncludedInCurrent:false});
+assert.deepStrictEqual({...gradebook.weights},{daily:20,curriculum:40,spelling:20,reading:20},'Older settings migrate to the V6 completed-evidence weights');
+assert.deepStrictEqual({...gradebook.policy},{minimumAcademicDay:21,currentGradeStartDate:'2026-08-31',recoveryIncludedInCurrent:true});
 assert.strictEqual(Academic.dailyAcademicScore(dailyRows[1]),60,'Morning Work uses academic accuracy plus completion, not game score');
 assert.strictEqual(Academic.curriculumAcademicScore(curriculumRows[1]),56,'Curriculum combines 70% auto mastery and 30% application');
 assert.strictEqual(Academic.curriculumAcademicScore({autoQuestionsSeen:0,questionsSeen:1,accuracy:0,writtenPassed:true,applicationScore:100}),100,'Writing-only curriculum uses the application score');
-assert.strictEqual(row.daily,60);
-assert.strictEqual(row.curriculum,56);
-assert.strictEqual(row.spellingDaily,80);
+assert.strictEqual(row.daily,80);
+assert.strictEqual(row.curriculum,78);
+assert.strictEqual(row.spellingDaily,90);
 assert.strictEqual(row.spellingMastery,70);
-assert.strictEqual(row.spelling,74);
-assert.strictEqual(row.reading,50);
-assert.strictEqual(row.total,59);
-assert.strictEqual(row.dailyGrades.length,1);
-assert.strictEqual(row.dailyGrades[0].dateKey,'2026-08-31');
-assert.strictEqual(row.recovery.total,100,'Historical evidence is preserved as a separate recovery grade');
-assert.strictEqual(row.recovery.includedInCurrent,false);
+assert.strictEqual(row.spelling,78);
+assert.strictEqual(row.reading,75);
+assert.strictEqual(row.total,78);
+assert.strictEqual(row.dailyGrades.length,2);
+assert.strictEqual(row.dailyGrades[0].dateKey,'2026-08-29');
+assert.strictEqual(row.dailyGrades[1].dateKey,'2026-08-31');
+assert.strictEqual(row.recovery.total,100,'Historical evidence keeps its own audit subtotal');
+assert.strictEqual(row.recovery.includedInCurrent,true);
 assert.strictEqual(row.recovery.count,4);
-assert.strictEqual(gradebook.gradeIntegrityVersion,5);
+assert.strictEqual(gradebook.gradeIntegrityVersion,6);
 assert.strictEqual(gradebook.reportCardPercentageReady,true);
 
 const dayTwentyAfterCutoff=Academic.evidencePeriod({day:20,dateKey:'2026-09-01'},gradebook.policy);
@@ -55,11 +56,15 @@ const dayTwentyOneBeforeCutoff=Academic.evidencePeriod({day:21,dateKey:'2026-08-
 assert.strictEqual(dayTwentyAfterCutoff,'recovery','Day 1–20 never enters the current grade');
 assert.strictEqual(dayTwentyOneBeforeCutoff,'recovery','Pre-adoption evidence stays in recovery');
 
-const emptySecondStudent=Academic.gradebook([...roster,{id:'student-b',name:'Bramble',grade:5,spellingGrade:5}],dailyRows,curriculumRows,readingRows,spellingRows,settings);
-assert.strictEqual(emptySecondStudent.classAverage,30,'Class average includes a scholar with a zero current grade');
+const emptySecondStudent=Academic.gradebook([...roster,{id:'student-b',name:'Bramble',grade:4,spellingGrade:4}],dailyRows,curriculumRows,readingRows,spellingRows,settings);
+const missingRow=emptySecondStudent.rows[1];
+assert.strictEqual(missingRow.total,null,'A scholar with no completed evidence has no artificial zero grade');
+assert.ok(missingRow.missing>0&&missingRow.provisional,'Missing work remains visible and keeps the grade provisional');
+assert.ok(missingRow.assignments.filter(item=>item.status==='missing').every(item=>item.score===null),'Every missing assignment is unscored instead of zero');
+assert.strictEqual(emptySecondStudent.classAverage,78,'The class average excludes scholars with no completed graded evidence');
 
 console.log('PASS daily grading weights and academic scoring');
 console.log('PASS Day 21 / 2026-08-31 current-grade boundary');
-console.log('PASS historical recovery grade separation');
-console.log('PASS daily grade ledger and class-average integrity');
-console.log('\n✅ DAILY GRADEBOOK V5 SELF-TESTS PASSED');
+console.log('PASS completed historical grades included in overall averages');
+console.log('PASS missing work is provisional, unscored, and excluded from averages');
+console.log('\n✅ DAILY GRADEBOOK V6 SELF-TESTS PASSED');

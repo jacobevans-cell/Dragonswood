@@ -22,13 +22,13 @@ assert.equal(unassigned.rows[0].total,100,'unassigned Witches must not change th
 assert.equal(unassigned.rows[0].assignments.at(-1).score,null,'historical unassigned evidence must not expose a grade');
 
 const twoDates=book([session('2026-08-31',1200)],{readingTargetsByDate:{'2026-08-31':20,'2026-09-01':20}});
-assert.equal(twoDates.rows[0].reading,50,'one complete and one missing assigned date must average to 50%');
-assert.equal(twoDates.rows[0].total,88,'the 20/40/20/20 gradebook must exclude unassigned Rune work and normalize the active categories');
+assert.equal(twoDates.rows[0].reading,100,'a missing assigned date must not lower the completed reading grade');
+assert.equal(twoDates.rows[0].total,100,'missing work must be excluded from weighted percentages');
 assert.equal(twoDates.rows[0].readingStatus,'Incomplete');
 assert.equal(twoDates.rows[0].missing,1);
 assert.equal(twoDates.rows[0].provisional,true);
 assert.equal(twoDates.rows[0].totalStatus,'Provisional');
-assert.equal(twoDates.rows[0].assignments.find(row=>row.id==='witches:2026-09-01').score,0,'missing assigned date must be scored as 0');
+assert.equal(twoDates.rows[0].assignments.find(row=>row.id==='witches:2026-09-01').score,null,'missing assigned date must be unscored');
 assert.notEqual(twoDates.rows[0].totalStatus,'Complete evidence','Incomplete and Complete evidence may never appear together');
 
 const snapshots=book([session('2026-08-31',600),session('2026-09-01',1200)],{readingTargetMinutes:30,readingTargetsByDate:{'2026-08-31':10,'2026-09-01':20}});
@@ -44,7 +44,7 @@ assert.equal(removed.rows[0].readingStatus,'Recorded');
 assert.match(removed.rows[0].assignments.at(-1).evidence,/not assigned/,'removing an assignment must retain historical evidence');
 
 const forged=book([session('2026-08-31',1200,'forged-duplicate')],{readingTargetsByDate:{'2026-08-31':20}});
-assert.equal(forged.rows[0].reading,0,'non-deterministic reading IDs must never inflate a grade');
+assert.equal(forged.rows[0].reading,null,'non-deterministic reading IDs must never create a numeric grade');
 assert.equal(forged.rows[0].readingEvidenceIssue,true);
 assert.equal(forged.rows[0].totalStatus,'Evidence review required');
 assert.equal(forged.reportCardPercentageReady,false,'percentage export must stay locked when assigned evidence fails integrity');
@@ -56,8 +56,8 @@ assert.match(runtime,/readingTargetsByDate/);
 assert.match(runtime,/gradeIntegrityVersion:Academic\.GRADE_INTEGRITY_VERSION/);
 assert.doesNotMatch(runtime,/lastHeartbeatMs:Date\.now\(\)/,'student-controlled heartbeat time must not be stored');
 assert.match(teacher,/Total Status/);
-for(const header of ['Witches Reading','Verified Minutes','Reading Status','Incomplete Assignments'])assert.match(teacher,new RegExp(header));
-assert.match(teacher,/gradeIntegrityVersion!==5\|\|gradebook\.reportCardPercentageReady!==true/,'percentage CSV needs the V5 grade-integrity guard');
+for(const header of ['Witches Reading','Verified Minutes','Reading Status','Missing Assignments'])assert.match(teacher,new RegExp(header));
+assert.match(teacher,/gradeIntegrityVersion!==6\|\|gradebook\.reportCardPercentageReady!==true/,'percentage CSV needs the V6 grade-integrity guard');
 for(const contract of ['sessionId == request.auth.uid','keys().hasOnly','duration.value(10, \'s\')','request.resource.data.updatedAt == request.time','hasReadingAssignment'])assert.match(rules,new RegExp(contract.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
 
-console.log('V5 grade/evidence hardening contracts: PASS (date targets + zeroed missing days + safe statuses/totals/export)');
+console.log('V6 grade/evidence hardening contracts: PASS (date targets + unscored missing work + safe statuses/totals/export)');

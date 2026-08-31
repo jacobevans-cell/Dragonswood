@@ -12,7 +12,7 @@
     ['arcane-forge','Science'],['deep-time-lab','Science'],['class-reader','ELA']
   ].map(([id,subject])=>Object.freeze({id,subject})));
   const GAME_IDS=new Set(GAME_CATALOG.map(game=>game.id));
-  const GRADE_INTEGRITY_VERSION=5;
+  const GRADE_INTEGRITY_VERSION=6;
   const DEFAULT_MINIMUM_ACADEMIC_DAY=21;
   const DEFAULT_CURRENT_GRADE_START_DATE='2026-08-31';
   const text=value=>String(value??'').trim();
@@ -48,7 +48,7 @@
   function normalizeGradePolicy(value={}){
     const minimumAcademicDay=Math.max(1,Math.min(365,Math.floor(Number(value.minimumAcademicDay)||DEFAULT_MINIMUM_ACADEMIC_DAY)));
     const requestedStart=text(value.currentGradeStartDate),currentGradeStartDate=validDateKey(requestedStart)?requestedStart:DEFAULT_CURRENT_GRADE_START_DATE;
-    return Object.freeze({minimumAcademicDay,currentGradeStartDate,recoveryIncludedInCurrent:false});
+    return Object.freeze({minimumAcademicDay,currentGradeStartDate,recoveryIncludedInCurrent:true});
   }
   function evidencePeriod(row,policy){
     const day=academicDay(row),dayKey=evidenceDateKey(row);
@@ -218,10 +218,10 @@
       return [...byDate.entries()].sort(([a],[b])=>a.localeCompare(b)).map(([day,items])=>{
         const values={};
         for(const key of ['daily','curriculum','spelling','reading']){
-          const found=items.filter(item=>item.weightKey===key),scores=found.map(item=>item.score===null?0:item.score);
-          values[key]=found.length?round(mean(scores)):null;
+          const found=items.filter(item=>item.weightKey===key),scores=found.map(item=>item.score).filter(score=>score!==null&&score!==undefined);
+          values[key]=scores.length?round(mean(scores)):null;
         }
-        const total=round(weightedAvailable([[values.daily,weights.daily],[values.curriculum,weights.curriculum],[values.spelling,weights.spelling],[values.reading,weights.reading]]))??0;
+        const total=round(weightedAvailable([[values.daily,weights.daily],[values.curriculum,weights.curriculum],[values.spelling,weights.spelling],[values.reading,weights.reading]]));
         const incomplete=items.filter(item=>!['complete','recorded'].includes(text(item.status))).length;
         return Object.freeze({dateKey:day,total,status:incomplete?'Provisional':'Complete evidence',incomplete,...values});
       });
@@ -232,66 +232,71 @@
       const spellingLevel=({3:'foundation',4:'grade4',5:'grade5',6:'challenge',7:'master',8:'master'})[Number(student.spellingGrade)]||'grade5';
       const dailyRecords=currentDailyRows.filter(row=>studentId(row)===student.id),curriculumRecords=currentCurriculumRows.filter(row=>studentId(row)===student.id),ownSpellingRecords=currentSpellingRows.filter(row=>studentId(row)===student.id&&text(row.levelKey)===spellingLevel);
       const expectedDaily=expected(currentDailyRows,grade,dailyKey),expectedCurriculum=expected(currentCurriculumRows,grade,curriculumKey),expectedSpellingKeys=expectedSpelling(currentSpellingRows,spellingLevel);
-      const dailyByKey=latestByKey(dailyRecords,dailyKey),curriculumByKey=latestByKey(curriculumRecords,curriculumKey);
-      const spellingByKey=latestByKey(ownSpellingRecords,spellingKey);
-      const ownDaily=expectedDaily.length
-        ? expectedDaily.map(key=>dailyAcademicScore(dailyByKey.get(key))??0)
-        : dailyRecords.map(dailyAcademicScore).filter(value=>value!==null);
-      const ownCurriculum=expectedCurriculum.length
-        ? expectedCurriculum.map(key=>curriculumAcademicScore(curriculumByKey.get(key))??0)
-        : curriculumRecords.map(curriculumAcademicScore).filter(value=>value!==null);
+      const dailyByKey=latestByKey(dailyRecords,dailyKey),curriculumByKey=latestByKey(curriculumRecords,curriculumKey),spellingByKey=latestByKey(ownSpellingRecords,spellingKey);
+      const currentDailyScores=(expectedDaily.length?expectedDaily.map(key=>dailyAcademicScore(dailyByKey.get(key))):dailyRecords.map(dailyAcademicScore)).filter(value=>value!==null);
+      const currentCurriculumScores=(expectedCurriculum.length?expectedCurriculum.map(key=>curriculumAcademicScore(curriculumByKey.get(key))):curriculumRecords.map(curriculumAcademicScore)).filter(value=>value!==null);
       const spellingDailyKeys=expectedSpellingKeys.filter(key=>key.startsWith('daily|')),spellingMasteryKeys=expectedSpellingKeys.filter(key=>key.startsWith('mastery|'));
-      const spellingDailyScores=spellingDailyKeys.map(key=>spellingActivityScore(spellingByKey.get(key))??0),spellingMasteryScores=spellingMasteryKeys.map(key=>spellingActivityScore(spellingByKey.get(key))??0);
-      const spellingDaily=round(mean(spellingDailyScores)),spellingMastery=round(mean(spellingMasteryScores)),spelling=round(weightedAvailable([[spellingDaily,40],[spellingMastery,60]]));
-      const readingAssigned=currentAssignedDates.length>0;
-      const allOwnReadingRows=readingRecords.filter(row=>row.studentId===student.id);
-      const ownReadingRows=allOwnReadingRows.filter(row=>row.integrityValid&&currentAssignedDates.includes(row.dateKey));
-      const currentUnassignedReadingRows=allOwnReadingRows.filter(row=>row.integrityValid&&evidencePeriod(row,policy)==='current'&&!currentAssignedDates.includes(row.dateKey));
-      const readingByDate=new Map(ownReadingRows.map(row=>[row.dateKey,row]));
-      const readingScores=readingAssigned?currentAssignedDates.map(day=>{const row=readingByDate.get(day),target=targetsByDate[day];return row?clamp(row.activeSeconds/(target*60)*100,0,100):0}):[];
-      const daily=round(mean(ownDaily)),curriculum=round(mean(ownCurriculum)),reading=readingAssigned?round(mean(readingScores)):null;
-      const dailyIncomplete=expectedDaily.length?expectedDaily.filter(key=>text(dailyByKey.get(key)?.status)!=='complete').length:dailyRecords.filter(row=>text(row.status)!=='complete').length;
-      const curriculumIncomplete=expectedCurriculum.length?expectedCurriculum.filter(key=>curriculumAcademicScore(curriculumByKey.get(key))===null).length:curriculumRecords.filter(row=>curriculumAcademicScore(row)===null).length;
-      const spellingIncomplete=expectedSpellingKeys.filter(key=>!spellingByKey.has(key)||spellingActivityScore(spellingByKey.get(key))===null).length;
-      const readingIncomplete=readingAssigned?currentAssignedDates.filter(day=>{const row=readingByDate.get(day);return !row||row.activeSeconds<targetsByDate[day]*60}).length:0;
-      const readingEvidenceIssue=allOwnReadingRows.some(row=>currentAssignedDates.includes(row.dateKey)&&!row.integrityValid);
-      const missing=dailyIncomplete+curriculumIncomplete+spellingIncomplete+readingIncomplete;
-      const categories=[[daily,weights.daily],[curriculum,weights.curriculum],...(expectedSpellingKeys.length?[[spelling,weights.spelling]]:[]),...(readingAssigned?[[reading,weights.reading]]:[])],activeWeight=categories.reduce((sum,[,weight])=>sum+weight,0);
-      const total=activeWeight?Math.round(categories.reduce((sum,[value,weight])=>sum+(value??0)*weight,0)/activeWeight):0;
-      const provisional=missing>0||readingEvidenceIssue||categories.some(([value])=>value===null),totalStatus=readingEvidenceIssue?'Evidence review required':provisional?'Provisional':'Complete evidence';
-      const assignments=[
-        ...(expectedDaily.length?expectedDaily.map(key=>{const row=dailyByKey.get(key),sample=exemplar(currentDailyRows,grade,dailyKey,key),day=evidenceDateKey(row||sample);return {id:`daily:${key}`,dateKey:day,weightKey:'daily',category:'Morning Work',title:text(row?.title||row?.missionTitle||sample.title||sample.missionTitle||key,'Morning Work'),score:dailyAcademicScore(row)??0,status:row?text(row.status,'in-progress'):'missing'}}):dailyRecords.map(row=>({id:text(row.id||row.dateKey),dateKey:evidenceDateKey(row),weightKey:'daily',category:'Morning Work',title:text(row.title||row.missionTitle||row.dateKey,'Morning Work'),score:dailyAcademicScore(row),status:text(row.status,'in-progress')}))),
-        ...(expectedCurriculum.length?expectedCurriculum.map(key=>{const row=curriculumByKey.get(key),sample=exemplar(currentCurriculumRows,grade,curriculumKey,key),raw=curriculumAcademicScore(row);return {id:`curriculum:${key}`,dateKey:evidenceDateKey(row||sample),weightKey:'curriculum',category:'Curriculum Quest',title:text(row?.lessonTitle||row?.title||sample.lessonTitle||sample.title||key,'Curriculum Quest'),score:raw===null?0:raw,status:row&&raw!==null?'complete':'missing'}}):curriculumRecords.map(row=>({id:text(row.id||row.itemId||row.lessonId),dateKey:evidenceDateKey(row),weightKey:'curriculum',category:'Curriculum Quest',title:text(row.lessonTitle||row.title||row.itemId||row.lessonId,'Curriculum Quest'),score:curriculumAcademicScore(row),status:curriculumAcademicScore(row)===null?'in-progress':'complete'}))),
-        ...expectedSpellingKeys.map(key=>{const row=spellingByKey.get(key),sample=spellingExemplar(currentSpellingRows,spellingLevel,key),mastery=key.startsWith('mastery|');return {id:`spelling:${spellingLevel}:${key}`,dateKey:evidenceDateKey(row||sample),weightKey:'spelling',category:'Rune Spelling',title:mastery?`Rune Spelling • Week ${number(row?.week||sample.week)} Mastery`:`Rune Spelling • ${text(row?.missionId||sample.missionId||'Daily Mission')}`,score:spellingActivityScore(row)??0,status:row?'complete':'missing'}}),
-        ...(readingAssigned?currentAssignedDates.map(day=>{const row=readingByDate.get(day),minutes=row?Math.round(row.activeSeconds/6)/10:0,target=targetsByDate[day],first=row?.firstPage||0,last=row?.lastPage||0;return {id:`witches:${day}`,dateKey:day,weightKey:'reading',category:'Witches Reading',title:`The Witches • ${day}`,score:row?clamp(row.activeSeconds/(target*60)*100,0,100):0,status:row&&row.activeSeconds>=target*60?'complete':'incomplete',evidence:`${minutes}/${target} verified min${first?` • pages ${first}${last&&last!==first?`–${last}`:''}`:''}`}}):currentUnassignedReadingRows.map(row=>({id:row.id,dateKey:row.dateKey,weightKey:'',category:'Witches Reading',title:`The Witches • ${row.dateKey}`,score:null,status:'recorded',evidence:`${Math.round(row.activeSeconds/6)/10} verified min • not assigned`})))
-      ];
-      const readingMinutes=Math.round(ownReadingRows.reduce((sum,row)=>sum+row.activeSeconds,0)/6)/10;
+      const currentSpellingDailyScores=spellingDailyKeys.map(key=>spellingActivityScore(spellingByKey.get(key))).filter(value=>value!==null),currentSpellingMasteryScores=spellingMasteryKeys.map(key=>spellingActivityScore(spellingByKey.get(key))).filter(value=>value!==null);
 
       const recoveryOwnDaily=recoveryDailyRows.filter(row=>studentId(row)===student.id).map(row=>({row,score:dailyAcademicScore(row)})).filter(item=>item.score!==null);
       const recoveryOwnCurriculum=recoveryCurriculumRows.filter(row=>studentId(row)===student.id).map(row=>({row,score:curriculumAcademicScore(row)})).filter(item=>item.score!==null);
       const recoveryOwnSpelling=recoverySpellingRows.filter(row=>studentId(row)===student.id&&text(row.levelKey)===spellingLevel).map(row=>({row,score:spellingActivityScore(row)})).filter(item=>item.score!==null);
-      const recoverySpellingDaily=round(mean(recoveryOwnSpelling.filter(item=>text(item.row.mode)==='daily-mission').map(item=>item.score))),recoverySpellingMastery=round(mean(recoveryOwnSpelling.filter(item=>text(item.row.mode)==='weekly-mastery').map(item=>item.score)));
+      const recoverySpellingDailyScores=recoveryOwnSpelling.filter(item=>text(item.row.mode)==='daily-mission').map(item=>item.score),recoverySpellingMasteryScores=recoveryOwnSpelling.filter(item=>text(item.row.mode)==='weekly-mastery').map(item=>item.score);
+
+      const currentReadingAssigned=currentAssignedDates.length>0;
+      const allOwnReadingRows=readingRecords.filter(row=>row.studentId===student.id);
+      const ownReadingRows=allOwnReadingRows.filter(row=>row.integrityValid&&currentAssignedDates.includes(row.dateKey));
+      const currentUnassignedReadingRows=allOwnReadingRows.filter(row=>row.integrityValid&&evidencePeriod(row,policy)==='current'&&!currentAssignedDates.includes(row.dateKey));
+      const readingByDate=new Map(ownReadingRows.map(row=>[row.dateKey,row]));
+      const currentReadingScores=(currentReadingAssigned?currentAssignedDates.map(day=>{const row=readingByDate.get(day),target=targetsByDate[day];return row?clamp(row.activeSeconds/(target*60)*100,0,100):null}):[]).filter(value=>value!==null);
       const recoveryReadingRows=allOwnReadingRows.filter(row=>row.integrityValid&&evidencePeriod(row,policy)==='recovery'&&(recoveryAssignedDates.includes(row.dateKey)||row.dateKey<policy.currentGradeStartDate));
       const recoveryReadingScores=recoveryReadingRows.map(row=>clamp(row.activeSeconds/((targetsByDate[row.dateKey]||row.legacyTargetMinutes||defaultTarget)*60)*100,0,100));
+
+      const daily=round(mean([...recoveryOwnDaily.map(item=>item.score),...currentDailyScores]));
+      const curriculum=round(mean([...recoveryOwnCurriculum.map(item=>item.score),...currentCurriculumScores]));
+      const spellingDaily=round(mean([...recoverySpellingDailyScores,...currentSpellingDailyScores])),spellingMastery=round(mean([...recoverySpellingMasteryScores,...currentSpellingMasteryScores])),spelling=round(weightedAvailable([[spellingDaily,40],[spellingMastery,60]]));
+      const reading=round(mean([...recoveryReadingScores,...currentReadingScores])),readingAssigned=currentReadingAssigned||recoveryReadingScores.length>0;
+      const dailyIncomplete=expectedDaily.length?expectedDaily.filter(key=>text(dailyByKey.get(key)?.status)!=='complete').length:dailyRecords.filter(row=>text(row.status)!=='complete').length;
+      const curriculumIncomplete=expectedCurriculum.length?expectedCurriculum.filter(key=>curriculumAcademicScore(curriculumByKey.get(key))===null).length:curriculumRecords.filter(row=>curriculumAcademicScore(row)===null).length;
+      const spellingIncomplete=expectedSpellingKeys.filter(key=>!spellingByKey.has(key)||spellingActivityScore(spellingByKey.get(key))===null).length;
+      const readingIncomplete=currentReadingAssigned?currentAssignedDates.filter(day=>{const row=readingByDate.get(day);return !row||row.activeSeconds<targetsByDate[day]*60}).length:0;
+      const readingEvidenceIssue=allOwnReadingRows.some(row=>currentAssignedDates.includes(row.dateKey)&&!row.integrityValid);
+      const missing=dailyIncomplete+curriculumIncomplete+spellingIncomplete+readingIncomplete;
+      const categories=[[daily,weights.daily],[curriculum,weights.curriculum],...(spelling!==null?[[spelling,weights.spelling]]:[]),...(reading!==null?[[reading,weights.reading]]:[])];
+      const total=round(weightedAvailable(categories));
+      const provisional=missing>0||readingEvidenceIssue||total===null,totalStatus=readingEvidenceIssue?'Evidence review required':provisional?'Provisional':'Complete evidence';
+      const assignments=[
+        ...(expectedDaily.length?expectedDaily.map(key=>{const row=dailyByKey.get(key),sample=exemplar(currentDailyRows,grade,dailyKey,key),day=evidenceDateKey(row||sample);return {id:`daily:${key}`,dateKey:day,weightKey:'daily',category:'Morning Work',title:text(row?.title||row?.missionTitle||sample.title||sample.missionTitle||key,'Morning Work'),score:dailyAcademicScore(row),status:row?text(row.status,'in-progress'):'missing'}}):dailyRecords.map(row=>({id:text(row.id||row.dateKey),dateKey:evidenceDateKey(row),weightKey:'daily',category:'Morning Work',title:text(row.title||row.missionTitle||row.dateKey,'Morning Work'),score:dailyAcademicScore(row),status:text(row.status,'in-progress')}))),
+        ...(expectedCurriculum.length?expectedCurriculum.map(key=>{const row=curriculumByKey.get(key),sample=exemplar(currentCurriculumRows,grade,curriculumKey,key),raw=curriculumAcademicScore(row);return {id:`curriculum:${key}`,dateKey:evidenceDateKey(row||sample),weightKey:'curriculum',category:'Curriculum Quest',title:text(row?.lessonTitle||row?.title||sample.lessonTitle||sample.title||key,'Curriculum Quest'),score:raw,status:row&&raw!==null?'complete':'missing'}}):curriculumRecords.map(row=>({id:text(row.id||row.itemId||row.lessonId),dateKey:evidenceDateKey(row),weightKey:'curriculum',category:'Curriculum Quest',title:text(row.lessonTitle||row.title||row.itemId||row.lessonId,'Curriculum Quest'),score:curriculumAcademicScore(row),status:curriculumAcademicScore(row)===null?'in-progress':'complete'}))),
+        ...expectedSpellingKeys.map(key=>{const row=spellingByKey.get(key),sample=spellingExemplar(currentSpellingRows,spellingLevel,key),mastery=key.startsWith('mastery|'),raw=spellingActivityScore(row);return {id:`spelling:${spellingLevel}:${key}`,dateKey:evidenceDateKey(row||sample),weightKey:'spelling',category:'Rune Spelling',title:mastery?`Rune Spelling • Week ${number(row?.week||sample.week)} Mastery`:`Rune Spelling • ${text(row?.missionId||sample.missionId||'Daily Mission')}`,score:raw,status:row&&raw!==null?'complete':'missing'}}),
+        ...(currentReadingAssigned?currentAssignedDates.map(day=>{const row=readingByDate.get(day),minutes=row?Math.round(row.activeSeconds/6)/10:0,target=targetsByDate[day],first=row?.firstPage||0,last=row?.lastPage||0;return {id:`witches:${day}`,dateKey:day,weightKey:'reading',category:'Witches Reading',title:`The Witches • ${day}`,score:row?clamp(row.activeSeconds/(target*60)*100,0,100):null,status:row&&row.activeSeconds>=target*60?'complete':row?'incomplete':'missing',evidence:`${minutes}/${target} verified min${first?` • pages ${first}${last&&last!==first?`–${last}`:''}`:''}`}}):currentUnassignedReadingRows.map(row=>({id:row.id,dateKey:row.dateKey,weightKey:'',category:'Witches Reading',title:`The Witches • ${row.dateKey}`,score:null,status:'recorded',evidence:`${Math.round(row.activeSeconds/6)/10} verified min • not assigned`})))
+      ];
+      const readingMinutes=Math.round(allOwnReadingRows.filter(row=>row.integrityValid).reduce((sum,row)=>sum+row.activeSeconds,0)/6)/10;
+
+      const recoverySpellingDaily=round(mean(recoverySpellingDailyScores)),recoverySpellingMastery=round(mean(recoverySpellingMasteryScores));
       const recoveryDaily=round(mean(recoveryOwnDaily.map(item=>item.score))),recoveryCurriculum=round(mean(recoveryOwnCurriculum.map(item=>item.score))),recoverySpelling=round(weightedAvailable([[recoverySpellingDaily,40],[recoverySpellingMastery,60]])),recoveryReading=round(mean(recoveryReadingScores));
       const recoveryTotal=round(weightedAvailable([[recoveryDaily,weights.daily],[recoveryCurriculum,weights.curriculum],[recoverySpelling,weights.spelling],[recoveryReading,weights.reading]]));
       const recoveryAssignments=[
-        ...recoveryOwnDaily.map(({row,score})=>({id:`recovery-daily:${text(row.id)||dailyKey(row)}`,dateKey:evidenceDateKey(row),category:'Morning Work',title:text(row.title||row.missionTitle||dailyKey(row),'Morning Work'),score,status:'recorded'})),
-        ...recoveryOwnCurriculum.map(({row,score})=>({id:`recovery-curriculum:${text(row.id)||curriculumKey(row)}`,dateKey:evidenceDateKey(row),category:'Curriculum Quest',title:text(row.lessonTitle||row.title||row.itemId,'Curriculum Quest'),score,status:'recorded'})),
-        ...recoveryOwnSpelling.map(({row,score})=>({id:`recovery-spelling:${text(row.id)||spellingKey(row)}`,dateKey:evidenceDateKey(row),category:'Rune Spelling',title:text(row.mode)==='weekly-mastery'?`Rune Spelling • Week ${number(row.week)} Mastery`:`Rune Spelling • ${text(row.missionId)||'Daily Mission'}`,score,status:'recorded'})),
-        ...recoveryReadingRows.map((row,index)=>({id:`recovery-reading:${row.id||index}`,dateKey:row.dateKey,category:'Witches Reading',title:`The Witches • ${row.dateKey}`,score:recoveryReadingScores[index],status:'recorded'}))
+        ...recoveryOwnDaily.map(({row,score})=>({id:`recovery-daily:${text(row.id)||dailyKey(row)}`,dateKey:evidenceDateKey(row),weightKey:'daily',category:'Morning Work',title:text(row.title||row.missionTitle||dailyKey(row),'Morning Work'),score,status:'recorded'})),
+        ...recoveryOwnCurriculum.map(({row,score})=>({id:`recovery-curriculum:${text(row.id)||curriculumKey(row)}`,dateKey:evidenceDateKey(row),weightKey:'curriculum',category:'Curriculum Quest',title:text(row.lessonTitle||row.title||row.itemId,'Curriculum Quest'),score,status:'recorded'})),
+        ...recoveryOwnSpelling.map(({row,score})=>({id:`recovery-spelling:${text(row.id)||spellingKey(row)}`,dateKey:evidenceDateKey(row),weightKey:'spelling',category:'Rune Spelling',title:text(row.mode)==='weekly-mastery'?`Rune Spelling • Week ${number(row.week)} Mastery`:`Rune Spelling • ${text(row.missionId)||'Daily Mission'}`,score,status:'recorded'})),
+        ...recoveryReadingRows.map((row,index)=>({id:`recovery-reading:${row.id||index}`,dateKey:row.dateKey,weightKey:'reading',category:'Witches Reading',title:`The Witches • ${row.dateKey}`,score:recoveryReadingScores[index],status:'recorded'}))
       ].sort((a,b)=>text(a.dateKey).localeCompare(text(b.dateKey)));
-      const recovery=Object.freeze({total:recoveryTotal,daily:recoveryDaily,curriculum:recoveryCurriculum,spelling:recoverySpelling,reading:recoveryReading,count:recoveryAssignments.length,assignments:Object.freeze(recoveryAssignments.map(Object.freeze)),includedInCurrent:false});
-      return Object.freeze({id:student.id,name:student.name,grade:student.grade,spellingGrade:student.spellingGrade||5,genderGroup:student.genderGroup,initial:(student.name[0]||'?').toUpperCase(),total,totalStatus,daily:daily??0,curriculum:curriculum??0,spelling,spellingDaily,spellingMastery,reading,readingMinutes,readingAssigned,readingStatus:readingAssigned?(readingIncomplete?'Incomplete':'Complete'):(currentUnassignedReadingRows.length?'Recorded':allOwnReadingRows.length?'Recovery only':'Not assigned'),readingEvidenceIssue,provisional,missing,assignments:Object.freeze(assignments.map(Object.freeze)),dailyGrades:Object.freeze(makeDailyGrades(assignments)),recovery});
+      const recovery=Object.freeze({total:recoveryTotal,daily:recoveryDaily,curriculum:recoveryCurriculum,spelling:recoverySpelling,reading:recoveryReading,count:recoveryAssignments.length,assignments:Object.freeze(recoveryAssignments.map(Object.freeze)),includedInCurrent:true});
+      return Object.freeze({id:student.id,name:student.name,grade:student.grade,spellingGrade:student.spellingGrade||5,genderGroup:student.genderGroup,initial:(student.name[0]||'?').toUpperCase(),total,totalStatus,daily,curriculum,spelling,spellingDaily,spellingMastery,reading,readingMinutes,readingAssigned,readingStatus:currentReadingAssigned?(readingIncomplete?'Incomplete':'Complete'):(recoveryReadingScores.length?'Historical evidence':currentUnassignedReadingRows.length?'Recorded':'Not assigned'),readingEvidenceIssue,provisional,missing,assignments:Object.freeze(assignments.map(Object.freeze)),dailyGrades:Object.freeze(makeDailyGrades([...recoveryAssignments,...assignments])),recovery});
     });
-    const totals=rows.map(row=>row.total),recoveryTotals=rows.map(row=>row.recovery.total).filter(value=>value!==null);
+    const totals=rows.map(row=>row.total).filter(value=>value!==null),recoveryTotals=rows.map(row=>row.recovery.total).filter(value=>value!==null);
     const assignedWork=new Set([
       ...currentDailyRows.map(row=>`daily:${rowGrade(row)}:${dailyKey(row)}`).filter(key=>!key.endsWith(':')),
       ...currentCurriculumRows.map(row=>`curriculum:${rowGrade(row)}:${curriculumKey(row)}`).filter(key=>!key.endsWith(':')),
       ...currentSpellingRows.map(row=>`spelling:${text(row.levelKey)}:${spellingKey(row)}`),
-      ...currentAssignedDates.map(day=>`witches:${day}`)
+      ...currentAssignedDates.map(day=>`witches:${day}`),
+      ...recoveryDailyRows.map(row=>`daily:${rowGrade(row)}:${dailyKey(row)}`).filter(key=>!key.endsWith(':')),
+      ...recoveryCurriculumRows.map(row=>`curriculum:${rowGrade(row)}:${curriculumKey(row)}`).filter(key=>!key.endsWith(':')),
+      ...recoverySpellingRows.map(row=>`spelling:${text(row.levelKey)}:${spellingKey(row)}`),
+      ...recoveryAssignedDates.map(day=>`witches:${day}`)
     ]).size;
-    return Object.freeze({rows,classAverage:round(mean(totals))??0,recoveryAverage:round(mean(recoveryTotals)),recoveryEvidence:rows.reduce((sum,row)=>sum+row.recovery.count,0),missing:rows.reduce((sum,row)=>sum+row.missing,0),studentsWithMissing:rows.filter(row=>row.missing>0).length,assignedWork,weights,policy,spellingAssignedWeeks:Object.freeze(currentSpellingWeeks),readingTargetMinutes:defaultTarget,readingAssignedDateKeys:Object.freeze(currentAssignedDates),recoveryReadingAssignedDateKeys:Object.freeze(recoveryAssignedDates),readingTargetsByDate:targetsByDate,gradeIntegrityVersion:GRADE_INTEGRITY_VERSION,reportCardPercentageReady:rows.every(row=>!row.readingEvidenceIssue),readingSource:'Verified active time in The Witches reader'});
+    return Object.freeze({rows,classAverage:round(mean(totals)),recoveryAverage:round(mean(recoveryTotals)),recoveryEvidence:rows.reduce((sum,row)=>sum+row.recovery.count,0),missing:rows.reduce((sum,row)=>sum+row.missing,0),studentsWithMissing:rows.filter(row=>row.missing>0).length,assignedWork,weights,policy,spellingAssignedWeeks:Object.freeze(currentSpellingWeeks),readingTargetMinutes:defaultTarget,readingAssignedDateKeys:Object.freeze(currentAssignedDates),recoveryReadingAssignedDateKeys:Object.freeze(recoveryAssignedDates),readingTargetsByDate:targetsByDate,gradeIntegrityVersion:GRADE_INTEGRITY_VERSION,reportCardPercentageReady:rows.every(row=>!row.readingEvidenceIssue),readingSource:'Verified active time in The Witches reader'});
   }
 
   function teacherAcademic(roster,activeSession,writingRows,dailyRows,curriculumRows,gameRows,readingRows=[],spellingRows=[],weightSettings={}){

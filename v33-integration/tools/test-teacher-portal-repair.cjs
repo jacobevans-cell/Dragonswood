@@ -43,9 +43,9 @@ assert.match(teacher,/\.teacher-content,\.teacher-header-inner\{width:100%;max-w
 assert.match(teacher,/font-size:12px/,'production readability floor is installed');
 assert.match(host,/js\/integration\/academic\.js\?v=58\.1\.2/);
 assert.match(host,/js\/integration\/world\.js\?v=57\.1\.6/);
-assert.match(host,/js\/integration\/operations\.js\?v=58\.1\.0/);
-assert.match(host,/js\/integration\/runtime\.js\?v=58\.1\.5/);
-assert.match(host,/js\/teacher-app\.js\?v=58\.1\.6/);
+assert.match(host,/js\/integration\/operations\.js\?v=58\.1\.1/);
+assert.match(host,/js\/integration\/runtime\.js\?v=58\.1\.6/);
+assert.match(host,/js\/teacher-app\.js\?v=58\.1\.7/);
 
 const book=require('../js/integration/academic.js').gradebook(
  [{id:'s1',name:'Scholar',grade:'5',genderGroup:'girl'}],

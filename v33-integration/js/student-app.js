@@ -21,6 +21,7 @@ const moduleHost=window.DWV33Modules;
 const arcadePortal=window.DWV33ArcadePortal;
 const kingdomPortal=window.DWV33KingdomPortal;
 const REQUIRED_WORK_PAGES=new Set(['games','hall','boss','leaderboards','kingdom','arcade']);
+const AFTERNOON_GAME_MODULES=new Set(['decimal-deception','math-operations','fraction-forge','elemental-laboratory','cosmic-architect','arcane-forge','deep-time-lab']);
 let pendingRequiredWorkNotice='';
 let pendingSubstituteNotice='';
 let lastAttentionChime='';
@@ -99,8 +100,12 @@ const state = {
 };
 
 function effectiveDateKey(){return state.isTester&&/^\d{4}-\d{2}-\d{2}$/.test(state.simulatedDate)?state.simulatedDate:(window.DWV33Core?.phoenixDateKey?.()||new Date().toISOString().slice(0,10))}
-function substituteModeActive(){return state.substituteMode?.active===true}
-function substituteBlocked(target){return substituteModeActive()&&['kingdom','deep-time-lab','dragon-tongues','arcade','boss','boss-battle'].includes(String(target||''))}
+function substituteModeActive(){const expires=Number(state.substituteMode?.expiresAtMs)||0;return state.substituteMode?.active===true&&(!expires||expires>Date.now())}
+function afternoonSubstituteActive(){return substituteModeActive()&&state.substituteMode?.afternoon===true}
+function afternoonSubstituteEligible(){return afternoonSubstituteActive()&&state.morningWorkComplete===true&&state.completedMissions.has('curriculum')}
+function afternoonDestination(target){const id=String(target||'');return id==='games'||id==='arcade'||AFTERNOON_GAME_MODULES.has(id)}
+function substituteBlocked(target){const id=String(target||'');if(!substituteModeActive())return false;if(afternoonSubstituteActive()&&afternoonDestination(id))return false;return ['kingdom','deep-time-lab','dragon-tongues','arcade','boss','boss-battle'].includes(id)}
+function moduleAllowed(id){return moduleHost?.allowed(id,{dailyAccessUnlocked:afternoonSubstituteEligible()&&AFTERNOON_GAME_MODULES.has(String(id||''))?true:state.dailyAccessUnlocked})}
 function weekendAcademicOpen(target){return window.DWV33Core?.isWeekendDateKey?.(effectiveDateKey())===true&&['rune-spelling','dragon-tongues','curriculum-quest'].includes(String(target||''))}
 window.DWV33TesterDateContext=()=>Object.freeze({dateKey:effectiveDateKey(),simulated:state.isTester&&Boolean(state.simulatedDate),isTester:state.isTester,testerUnlocks:Object.freeze({...state.testerUnlocks})});
 
@@ -192,6 +197,11 @@ function unfinishedRequiredWork(target='activity'){
   const rows=[];
   const destination=String(target||'activity');
   if(weekendAcademicOpen(destination))return rows;
+  if(afternoonSubstituteActive()&&afternoonDestination(destination)){
+    if(state.morningWorkComplete!==true)rows.push({id:'morning',icon:'🌅',title:'Morning Work',detail:'Finish today’s Morning Work.',route:'module/daily-quest'});
+    if(!state.completedMissions.has('curriculum'))rows.push({id:'curriculum',icon:'🐉',title:'Current Curriculum Quest',detail:'Finish every lesson in today’s Current Quest.',route:'module/curriculum-quest'});
+    return rows;
+  }
   const testerMorningOverride=state.testerUnlocks.unlockMorning===true;
   if(testerMorningOverride&&['rune-spelling','dragon-tongues'].includes(destination))return rows;
   if(state.testerUnlocks.unlockCurriculum===true&&destination==='curriculum-quest')return rows;
@@ -216,6 +226,7 @@ function unfinishedRequiredWork(target='activity'){
 function requiredWorkLocked(page){const target=String(page||'');if(target==='arcade'&&state.testerUnlocks.unlockArcade===true)return false;if(target==='kingdom'&&state.testerUnlocks.unlockKingdom===true)return false;if(target==='boss'&&state.testerUnlocks.unlockBoss===true)return false;return REQUIRED_WORK_PAGES.has(target)&&unfinishedRequiredWork(target).length>0}
 function modulePathLocked(id){
   const moduleId=String(id||'');
+  if(afternoonSubstituteActive()&&AFTERNOON_GAME_MODULES.has(moduleId))return !afternoonSubstituteEligible();
   if(moduleId==='boss-battle'&&state.testerUnlocks.unlockBoss===true)return false;
   if(['rune-spelling','curriculum-quest','dragon-tongues'].includes(moduleId))return unfinishedRequiredWork(moduleId).length>0;
   return moduleHost?.definition(moduleId)?.morningGate===true&&unfinishedRequiredWork(moduleId).length>0;
@@ -224,13 +235,13 @@ function requestedModuleId(){return moduleHost?.routeId(location.hash)||''}
 function showRequiredWorkDialog(target='activity'){
   const label=target==='arcade'?'Arcade Time':target==='kingdom'?'Kingdom Wars':target==='boss'||target==='boss-battle'?'Boss Battle':target==='scribe'?'Scribe Arena':'this activity';
   const rows=unfinishedRequiredWork(target);
-  openDialog('Finish Dragon’s Path First',`<p><b>${escapeHtml(label)}</b> is still locked. Here is exactly what Dragonswood can see unfinished right now:</p><div class="stack mt-12">${rows.map(row=>`<article class="pass-card"><div class="pass-row"><div class="pass-student"><span class="roster-avatar">${row.icon}</span><div><b>${escapeHtml(row.title)}</b><p>${escapeHtml(row.detail)}</p></div></div>${row.id==='kingdom-access'?'':`<button class="btn btn-primary btn-sm" type="button" data-required-route="${escapeHtml(row.route)}">Go there</button>`}</div></article>`).join('')}</div><p class="muted">This check runs again every time you try to enter a game or recreational area.</p>`,`<button class="btn btn-secondary" data-close-dialog>Stay on Dragon’s Path</button>`);
+  openDialog(afternoonSubstituteActive()&&afternoonDestination(target)?'Finish Today’s Work to Unlock Free Play':'Finish Dragon’s Path First',`<p><b>${escapeHtml(label)}</b> is still locked. Here is exactly what Dragonswood can see unfinished right now:</p><div class="stack mt-12">${rows.map(row=>`<article class="pass-card"><div class="pass-row"><div class="pass-student"><span class="roster-avatar">${row.icon}</span><div><b>${escapeHtml(row.title)}</b><p>${escapeHtml(row.detail)}</p></div></div>${row.id==='kingdom-access'?'':`<button class="btn btn-primary btn-sm" type="button" data-required-route="${escapeHtml(row.route)}">Go there</button>`}</div></article>`).join('')}</div><p class="muted">${afternoonSubstituteActive()&&afternoonDestination(target)?'When both are complete, Quest Games and Arcade unlock free until the one-hour class window ends. No Arcade Tokens are used.':'This check runs again every time you try to enter a game or recreational area.'}</p>`,`<button class="btn btn-secondary" data-close-dialog>Stay on Dragon’s Path</button>`);
   dialogRoot.dataset.dialogKind='required-work';
   dialogRoot.querySelectorAll('[data-required-route]').forEach(button=>button.addEventListener('click',()=>{closeDialog();location.hash=button.dataset.requiredRoute}));
 }
 function showSubstituteModeDialog(target='activity'){
   const labels={kingdom:'Kingdom Wars','deep-time-lab':'Deep Time Lab','dragon-tongues':'Dragon Tongues',arcade:'Arcade',boss:'Boss Battle','boss-battle':'Boss Battle'},label=labels[String(target)]||'This activity';
-  openDialog('Ask Your Substitute Teacher',`<div class="pass-card serious-warning"><b>🛑 ${escapeHtml(label)} is unavailable today.</b><p>Substitute Mode is on, so passes, Kingdom Wars, Deep Time Lab, Dragon Tongues, Arcade, and Boss Battle are disabled for the day.</p></div><p>If you need help or need to leave the room, please ask your substitute teacher directly.</p>`,`<button class="btn btn-primary" data-close-dialog>Return to Dragon’s Path</button>`);
+  openDialog('Ask Your Substitute Teacher',`<div class="pass-card serious-warning"><b>🛑 ${escapeHtml(label)} is unavailable today.</b><p>${afternoonSubstituteActive()?'Afternoon Substitute Day keeps passes and restricted areas closed. Finished students may use Quest Games and Arcade during the one-hour window.':'Substitute Mode is on, so passes, Kingdom Wars, Deep Time Lab, Dragon Tongues, Arcade, and Boss Battle are disabled for the day.'}</p></div><p>If you need help or need to leave the room, please ask your substitute teacher directly.</p>`,`<button class="btn btn-primary" data-close-dialog>Return to Dragon’s Path</button>`);
 }
 
 function activePassRows(){
@@ -308,7 +319,7 @@ function currentPage(){
   const moduleId=moduleHost?.routeId(hash);
   if(moduleId){
     if(substituteBlocked(moduleId)){pendingSubstituteNotice=moduleId;return 'missions'}
-    const gate=moduleHost.allowed(moduleId,{dailyAccessUnlocked:state.dailyAccessUnlocked});
+    const gate=moduleAllowed(moduleId);
     if(!gate.ok||modulePathLocked(moduleId)){pendingRequiredWorkNotice=moduleId;return 'missions'}
     return moduleHost.definition(moduleId).returnPage;
   }
@@ -320,7 +331,7 @@ function currentPage(){
 
 function currentModuleId(){
   const id=requestedModuleId();
-  return id&&!substituteBlocked(id)&&moduleHost?.allowed(id,{dailyAccessUnlocked:state.dailyAccessUnlocked})?.ok&&!modulePathLocked(id)?id:'';
+  return id&&!substituteBlocked(id)&&moduleAllowed(id)?.ok&&!modulePathLocked(id)?id:'';
 }
 
 function navMarkup(){
@@ -357,7 +368,7 @@ function shell(){
       <div class="student-utility">${state.isTester?'<button class="btn btn-secondary btn-sm" type="button" data-tester-controls>🧪 <span>Tester Controls</span></button>':''}<button class="btn btn-secondary btn-sm" type="button" data-passes>🎟️ <span>${substituteModeActive()?'Ask sub for pass':'Passes'}</span></button><button class="btn btn-secondary btn-sm" type="button" data-read>🔊 <span>Read aloud</span></button><div class="profile-pill" role="button" tabindex="0" data-account-menu aria-label="Open account menu"><div class="profile-orb">${escapeHtml(state.initial)}</div><span><b>${escapeHtml(state.firstName)}</b><small>Level ${state.level}</small></span></div></div>
       </div></header>
     <aside class="student-sidebar">${navMarkup()}</aside>
-    <main class="student-main" id="page-content">${state.isTester&&state.simulatedDate?`<div class="tester-date-banner" role="status">🧪 SAFE DATE PREVIEW • real date ${escapeHtml(window.DWV33Core?.phoenixDateKey?.()||'today')} • simulated date ${escapeHtml(state.simulatedDate)} • academic and Boss preview writes are disabled <button type="button" data-return-real-date>Return to Today</button></div>`:''}<div class="student-content">${substituteModeActive()?'<section class="substitute-student-banner" role="alert"><span>🛑</span><div><h2>Substitute Mode is on today</h2><p>Passes, Kingdom Wars, Deep Time Lab, Dragon Tongues, Arcade, and Boss Battle are unavailable. If you need help or need to leave the room, ask your substitute teacher.</p></div></section>':''}${pageMarkup()}</div></main>
+    <main class="student-main" id="page-content">${state.isTester&&state.simulatedDate?`<div class="tester-date-banner" role="status">🧪 SAFE DATE PREVIEW • real date ${escapeHtml(window.DWV33Core?.phoenixDateKey?.()||'today')} • simulated date ${escapeHtml(state.simulatedDate)} • academic and Boss preview writes are disabled <button type="button" data-return-real-date>Return to Today</button></div>`:''}<div class="student-content">${substituteModeActive()?afternoonSubstituteActive()?`<section class="substitute-student-banner" role="alert"><span>🎮</span><div><h2>Afternoon Substitute Day • 1-hour free-play window</h2><p>${afternoonSubstituteEligible()?'You finished Morning Work and today’s Curriculum Quest. Quest Games and Arcade are unlocked free—no Tokens—until the class window ends.':'Finish Morning Work and every lesson in today’s Current Quest to unlock Quest Games and Arcade free. No Tokens will be used.'} Passes and restricted areas remain closed.</p></div></section>`:'<section class="substitute-student-banner" role="alert"><span>🛑</span><div><h2>Substitute Mode is on today</h2><p>Passes, Kingdom Wars, Deep Time Lab, Dragon Tongues, Arcade, and Boss Battle are unavailable. If you need help or need to leave the room, ask your substitute teacher.</p></div></section>':''}${pageMarkup()}</div></main>
     ${passSafetyMarkup()}${teacherAttentionMarkup()}${referenceButton()}${IS_PRODUCTION?'':'<div class="tester-ribbon">V3.3 TESTER • LOCAL ONLY</div>'}
   </div>`;
 }
@@ -446,7 +457,7 @@ function missionsPage(){
   const completeCount=missions.filter(m=>state.completedMissions.has(m.id)).length;
   const optionalOpen=unfinishedRequiredWork('games').length===0;
   const accessSummary=optionalOpen
-    ?substituteModeActive()?'Dragon’s Path is complete. Substitute Mode keeps passes and five optional activities closed today.':'Dragon’s Path is complete. Dragon Tongues, games, Scribe Arena, Boss Battle, Kingdom Wars, and Arcade are available.'
+    ?afternoonSubstituteActive()?afternoonSubstituteEligible()?'Morning Work and Current Quest are complete. Quest Games and Arcade are free during the one-hour window.':'Finish Morning Work and today’s Current Quest for free games and Arcade.':substituteModeActive()?'Dragon’s Path is complete. Substitute Mode keeps passes and five optional activities closed today.':'Dragon’s Path is complete. Dragon Tongues, games, Scribe Arena, Boss Battle, Kingdom Wars, and Arcade are available.'
     :state.testerUnlocks.unlockMorning===true
       ?'Tester access is active. Required work remains incomplete until you do it.'
       :'Complete Morning Work, Rune Spelling, and Curriculum Quest to open free-choice adventures.';
@@ -775,7 +786,8 @@ function setArcadeBusy(trigger,busy){
 }
 
 function arcadeBlockedMessage(access){
-  if(access?.testerOverride===true)return '';
+  if(access?.testerOverride===true||access?.afternoonSubstituteAccess===true)return '';
+  if(access?.afternoonSubstituteActive===true){const requirements=access.afternoonRequirements||{},missing=[requirements.morningComplete!==true?'Morning Work':'',requirements.curriculumComplete!==true?'every Current Quest lesson':''].filter(Boolean);return `Finish ${missing.join(' and ')} to unlock free Afternoon Arcade Time.`}
   if(access?.teacherEnabled!==true)return 'Arcade Time is still locked by your teacher.';
   const tokens=Math.max(0,Math.min(3,Number(access?.tokens)||0));
   if(tokens<3){const missing=3-tokens;return `You need ${missing} more Arcade Token${missing===1?'':'s'} before entering.`}
@@ -791,7 +803,7 @@ async function enterArcade(trigger){
     showToast(access?.active===true?'Resuming your Arcade Time…':'Preparing Arcade Time…');
     await arcadePortal.preflight?.();
     if(access?.active!==true){
-      showToast(access?.testerOverride===true?'Starting your tester Arcade session…':'Using 3 Tokens and starting 30 minutes…');
+      showToast(access?.afternoonSubstituteAccess===true?'Starting free Afternoon Arcade Time—no Tokens used…':access?.testerOverride===true?'Starting your tester Arcade session…':'Using 3 Tokens and starting 30 minutes…');
       access=await arcadePortal.startSession();
     }
     if(access?.active!==true)throw new Error('Arcade session did not start. Your Tokens were not intentionally spent by this page.');
@@ -813,7 +825,7 @@ function openPage(page,trigger=null){
 function openModule(id){
   if(blockingPass()){showToast('Return your active pass before opening another activity.');location.hash='adventure';return}
   if(substituteBlocked(id)){location.hash='missions';showSubstituteModeDialog(id);return}
-  const gate=moduleHost?.allowed(id,{dailyAccessUnlocked:state.dailyAccessUnlocked});
+  const gate=moduleAllowed(id);
   if(!gate?.ok||modulePathLocked(id)){location.hash='missions';showRequiredWorkDialog(id);return}
   location.hash=`module/${encodeURIComponent(id)}`;
 }

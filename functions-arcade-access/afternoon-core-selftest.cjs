@@ -1,0 +1,15 @@
+'use strict';
+const assert=require('node:assert/strict');
+const A=require('./afternoon-core.js');
+const now=2_000_000,dateKey='2026-08-31',mode={active:true,mode:'afternoon',dateKey,expiresAt:now+3_600_000};
+const dailyRows=[{dateKey,session:'morning',status:'complete',day:21}];
+const ids=['I-HUM-D21-C1-A','I-HUM-D21-C2-L1','I-HUM-D21-C3-A','I-Math-D21-C3-L1','I-Science-D21-C3-A'];
+const curriculumRows=ids.map(itemId=>({itemId,practiced:true,watched:true,questionsSeen:itemId==='I-HUM-D21-C3-A'?0:4,questionsCorrect:itemId==='I-HUM-D21-C3-A'?0:4}));
+assert.equal(A.activeMode(mode,dateKey,now),true);
+assert.equal(A.activeMode({...mode,mode:'full-day'},dateKey,now),false);
+assert.equal(A.assess({mode,profile:{grade:4},dailyRows,curriculumRows,dateKey,now}).eligible,true);
+assert.equal(A.assess({mode,profile:{grade:4},dailyRows:[],curriculumRows,dateKey,now}).eligible,false);
+assert.equal(A.assess({mode,profile:{grade:4},dailyRows,curriculumRows:curriculumRows.slice(1),dateKey,now}).eligible,false);
+assert.equal(A.assess({mode,profile:{grade:4},dailyRows,curriculumRows:curriculumRows.map((row,index)=>index?row:{...row,watched:false}),dateKey,now}).eligible,false);
+assert.equal(A.assess({mode,profile:{grade:4},dailyRows,curriculumRows,dateKey,now:now+3_600_001}).active,false);
+console.log('Afternoon substitute eligibility tests: PASS');

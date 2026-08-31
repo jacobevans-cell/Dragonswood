@@ -16,6 +16,11 @@ const now=new Date('2026-08-31T18:00:00.000Z');
 let mode=Ops.datedSubstituteMode({active:true,dateKey:'2026-08-31',reason:'Ask the substitute.',expiresAt:'2026-09-01T07:00:00.000Z'},now);
 assert.equal(mode.active,true);
 assert.equal(mode.reason,'Ask the substitute.');
+assert.equal(mode.mode,'full-day');
+mode=Ops.datedSubstituteMode({active:true,mode:'afternoon',dateKey:'2026-08-31',expiresAt:'2026-08-31T19:00:00.000Z'},now);
+assert.equal(mode.active,true);
+assert.equal(mode.afternoon,true);
+assert.equal(mode.remainingMs,60*60*1000);
 mode=Ops.datedSubstituteMode({active:true,dateKey:'2026-08-31',expiresAt:'2026-09-01T07:00:00.000Z'},new Date('2026-09-01T08:00:00.000Z'));
 assert.equal(mode.active,false,'mode must expire after the Arizona day changes');
 
@@ -33,7 +38,10 @@ assert.match(student,/Arcade, and Boss Battle are disabled for the day/,'the stu
 assert.match(teacher,/Arcade, and Boss Battle are unavailable to students/,'the teacher banner must name Arcade and Boss Battle');
 assert.match(student,/Ask Your Substitute Teacher/);
 assert.match(teacher,/data-substitute-mode/);
-assert.match(runtime,/async setSubstituteMode\(active\)/);
+assert.match(runtime,/async setSubstituteMode\(requested\)/);
+assert.match(runtime,/Date\.now\(\)\+60\*60\*1000/);
+assert.match(teacher,/Afternoon Substitute Day/);
+assert.match(student,/afternoonSubstituteEligible/);
 assert.match(rules,/function substituteModeAllowsPasses\(\)/);
 
-console.log('V58.1.1 Substitute Mode contracts: PASS');
+console.log('V58.1.7 Substitute Mode contracts: PASS');

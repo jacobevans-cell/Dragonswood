@@ -8,7 +8,7 @@ const crypto=require("node:crypto");
 if(!admin.apps.length)admin.initializeApp();
 const db=admin.firestore(),FieldValue=admin.firestore.FieldValue;
 const OPENAI_API_KEY=defineSecret("OPENAI_API_KEY");
-const POLICY_VERSION="academic-rescue-v2.1",DEFAULT_MODEL="gpt-5-nano";
+const POLICY_VERSION="academic-rescue-v2.2",DEFAULT_MODEL="gpt-5-nano";
 const TEACHER_EMAIL="jacobicusjax@gmail.com";
 const PRICE={"gpt-5-nano":{input:0.05,output:0.40}};
 const clip=(v,n)=>String(v??"").slice(0,n);
@@ -76,6 +76,7 @@ If the prompt already names the category, a short subtype can be enough. Example
 Do not approve a different concept just because it is related.
 For equivalence mode, compare the response to the expected concept.
 For reasoning mode, use only the provided prompt, expected lesson concepts, and rubric. Do not invent missing evidence.
+For vocabulary Word Forge work, require the sentence context to demonstrate the supplied definition. The target word appearing by itself is not enough. Accept natural grade 4-5 wording; do not require the model sentence.
 APPROVE only when clearly correct. NOT_APPROVED only when clearly wrong. REVIEW when ambiguous or a human should decide.
 Return only the required structured result.`;
 
@@ -84,6 +85,7 @@ This is one final focused check because the first pass was uncertain. Independen
 For inference work, require both a reasonable interpretation and a relevant supporting detail, without requiring magic words such as inference or clue.
 For peer-feedback work, accept specific praise or a specific question; require a suggested change to include a meaningful reason or benefit.
 For opinion work, require a clear position and a connected reason or result; connectors such as because, since, or a meaningful so clause are all valid.
+For vocabulary Word Forge work, verify that the surrounding sentence shows the supplied meaning, not merely that the target word is present.
 Do not lower the standard merely because this is a second check. Return REVIEW unless the evidence is clear.`;
 
 const WRITING_SYSTEM=`You are a supportive grade 4-5 writing feedback assistant for a teacher-controlled classroom tool.

@@ -155,7 +155,7 @@ body>*{position:relative;z-index:1}
 <script src="q1-curriculum-enhancements.js?v=57.1.6"></script>
 <script src="q1-video-map.js?v=57.1.6"></script>
 <script src="curriculum-question-engine.js"></script>
-<script src="dragonswood-curriculum-validation.js?v=1.0.0"></script>
+<script src="dragonswood-curriculum-validation.js?v=1.0.1"></script>
 <script>
 const DW_LOCAL_TESTER_PARAMS=new URLSearchParams(location.search),DW_LOCAL_TESTER_HOST=/^(?:localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
 window.DWCurriculumLocalTester=DW_LOCAL_TESTER_HOST&&DW_LOCAL_TESTER_PARAMS.get("dw-local-tester")==="1";
@@ -547,7 +547,7 @@ function activitySpec(x){
   if(m){
     const pool=D.morphology.filter(z=>z.grade===x.grade&&z.word&&z.word!==m.word).map(z=>z.word);
     const distract=[...new Set([pool[h%Math.max(1,pool.length)],pool[(h+7)%Math.max(1,pool.length)],pool[(h+13)%Math.max(1,pool.length)]].filter(Boolean))];
-    return {kind:"morph",title:`Word Forge: ${m.word}`,prompt:`Build meaning with the target word “${m.word}.” Choose the target word, then use it correctly in your own sentence.`,word:m.word,root:m.root,options:[m.word,...distract].sort((a,b)=>hashNum(a+x.id)-hashNum(b+x.id))};
+    return {kind:"morph",title:`Word Forge: ${m.word}`,prompt:`Build meaning with the target word “${m.word}.” Choose the target word, then use it correctly in your own sentence.`,word:m.word,root:m.root,meaning:m.morphological||"",modelSentence:m.syntactic||"",application:m.application||"",options:[m.word,...distract].sort((a,b)=>hashNum(a+x.id)-hashNum(b+x.id))};
   }
   if(x.subject==="Math"){
     if(/round/.test(raw)){
@@ -629,9 +629,10 @@ function validateActivity(x){
   }
   if(spec.kind==="morph"){
     if(choice!==spec.word)return {ok:false,code:"missing_choice",msg:"Choose the lesson's target word first."};
+    if(V?.morphologyStructure)return V.morphologyStructure(written,spec.word);
     const q=meaningfulText(written,6);if(!q.ok)return q;
     if(!new RegExp(`\\b${spec.word.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}\\b`,"i").test(written))return {ok:false,code:"missing_example",msg:`Use the word “${spec.word}” in your own sentence.`};
-    return {ok:true,code:"passed"};
+    return {ok:false,code:"needs_meaning_check",aiEligible:true,msg:"Dragonswood is checking whether the target word is used with the correct meaning."};
   }
   if(spec.kind==="readingPov"){
     if(!choice)return {ok:false,code:"missing_choice",msg:"Choose first person or third person."};
@@ -747,7 +748,7 @@ async function requestAutoQuestionOverride(id,index){
 
 function curriculumAiEligible(spec,result,answer){
   if(result.ok||result.reviewable===false||result.aiEligible===false||!String(answer||"").trim())return false;
-  return ["explain","inference","writingCommunity","opinion","quickwrite"].includes(spec.kind);
+  return ["explain","inference","writingCommunity","opinion","quickwrite","morph"].includes(spec.kind);
 }
 function activityHint(spec,result){return window.DWCurriculumValidation?.hintFor?.(spec.kind,result)||"Answer the question directly, add one specific detail, and explain how it supports your answer."}
 async function curriculumAiRescue(x,spec,answer,result){
@@ -762,6 +763,7 @@ async function curriculumAiRescue(x,spec,answer,result){
     spec.kind==="inference"?"Approve when the response gives a plausible interpretation plus a concrete action, statement, thought, event, or observation supporting it. Do not require the literal words inference, clue, evidence, or text.":"",
     spec.kind==="writingCommunity"?"Approve helpful Writing Community feedback that gives a specific praise, relevant question, or useful suggestion. A suggestion should explain how or why it would help; valid connectors include because and so.":"",
     spec.kind==="opinion"?"Require a recognizable stance or recommendation plus a meaningfully connected reason or result. Do not treat a connector word by itself as sufficient.":"",
+    spec.kind==="morph"?`The required target word is “${spec.word}.” Judge whether the sentence context demonstrates this lesson meaning: ${spec.meaning||"the meaning taught in the lesson"}. Do not approve merely because the word appears. Do not require the model sentence.`:"",
     spec.science?"Include an observation/fact/evidence idea and connect it to the claim.":"",
     sourceExcerpt?`Source excerpt for grounding: ${sourceExcerpt}`:"No source excerpt is available. Judge whether the response has a plausible inference-and-support structure; reserve contradictions or genuine ambiguity for review.",
     "Simple grade 4-5 wording is acceptable. Do not require password vocabulary if the meaning is correct.",
@@ -769,8 +771,8 @@ async function curriculumAiRescue(x,spec,answer,result){
   ].filter(Boolean).join(" ");
   return window.DWAcademicAI.judge({
     source:"curriculum",mode:"reasoning",questionId:String(x.id||""),skillId:String(x.strand||x.subject||""),
-    gradeBand:x.grade==="I"?"4":"5",prompt:String(quickOption?.prompt||spec.prompt||activityFor(x)||""),expectedAnswer:concepts.join(", "),
-    studentAnswer:String(answer||""),rubric,strictConventions:false
+    gradeBand:x.grade==="I"?"4":"5",prompt:String(quickOption?.prompt||spec.prompt||activityFor(x)||""),expectedAnswer:spec.kind==="morph"?String(spec.meaning||""):concepts.join(", "),
+    studentAnswer:String(spec.kind==="morph"?structured.response:answer||""),rubric,strictConventions:false
   });
 }
 async function checkActivity(id){
@@ -805,7 +807,7 @@ async function checkActivity(id){
       if(selected){s.quickWriteChoice=selected;s.quickWriteChoiceLocked=true}
     }
     s.practiced=true;s.practiceEvidence=answer;s.overrideStatus="";s.lastValidatorCode="passed";s.lastValidatorMessage="";delete s.lastAiTriage;S.items[id]=s;save();clearCurriculumDraft(id);
-    f.textContent=aiResult?.decision==="approve"?"✓ Quest complete. Sentence count passed, and your content was accepted as matching the selected prompt.":result.msg?"✓ "+result.msg:"✓ Quest complete. Your answer passed the lesson check.";
+    f.textContent=aiResult?.decision==="approve"?(spec.kind==="morph"?"✓ Quest complete. Your sentence uses the target word with the lesson meaning.":"✓ Quest complete. Sentence count passed, and your content was accepted as matching the selected prompt."):result.msg?"✓ "+result.msg:"✓ Quest complete. Your answer passed the lesson check.";
     render();
   }else{
     const reviewButton=document.getElementById("overrideBtn-"+id);

@@ -1,4 +1,4 @@
-/* Dragonswood curriculum response validators v1.0.0
+/* Dragonswood curriculum response validators v1.0.1
    Free, task-specific checks run before the existing AI rescue. */
 (function(root,factory){
   const api=factory();
@@ -61,11 +61,19 @@
     return pass();
   }
 
+  function morphologyStructure(value,targetWord){
+    const quality=meaningfulText(value,6);if(!quality.ok)return quality;
+    const escaped=String(targetWord||"").replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+    if(!escaped||!new RegExp(`\\b${escaped}\\b`,"i").test(String(value||"")))return fail("missing_example",`Use the word “${targetWord}” in your own sentence.`);
+    return fail("needs_meaning_check","Dragonswood is checking whether the target word is used with the correct meaning.",{aiEligible:true});
+  }
+
   const frames=Object.freeze({
     inference:"State what you infer, then name an action, statement, thought, event, or detail that supports it.",
     writingCommunity:"Give helpful feedback. Try: “If I were you, I would ___ so/because ___.”",
     opinion:"State what you think, then give a connected reason. Try: “I think ___ because ___.”",
     science:"Name an observation or fact, then explain what it shows.",
+    morph:"Use the target word in a sentence with enough context to show what the word means.",
     explain:"Answer directly, include one specific detail, and explain how it supports your answer."
   });
   const hints=Object.freeze({
@@ -77,6 +85,7 @@
     missing_inference:"Explain what the detail makes you understand, not only what happened.",
     missing_evidence:"Name something the character did, said, thought, noticed, or experienced that supports your idea.",
     needs_source_check:"Make sure the inference agrees with the passage and that the supporting detail really appears there.",
+    needs_meaning_check:"Add context that shows who or what is affected and what is happening. Using the target word by itself is not enough.",
     missing_example:"Add one specific example.",
     missing_equation:"Show the equation you used.",
     missing_math_steps:"Explain an important step and how you checked it.",
@@ -84,8 +93,8 @@
     copied_prompt:"Use your own words instead of copying the directions.",
     unknown_open_response:"Answer directly, add one specific detail, and explain how the detail supports your answer."
   });
-  const frameFor=kind=>frames[kind]||((kind==="quickwrite"||kind==="morph")?"":frames.explain);
+  const frameFor=kind=>frames[kind]||(kind==="quickwrite"?"":frames.explain);
   const hintFor=(kind,result={})=>hints[result.code]||frames[kind]||hints.unknown_open_response;
 
-  return Object.freeze({version:"1.0.0",meaningfulText,connectedReason,opinion,writingCommunity,inference,science,frameFor,hintFor});
+  return Object.freeze({version:"1.0.1",meaningfulText,connectedReason,opinion,writingCommunity,inference,science,morphologyStructure,frameFor,hintFor});
 });

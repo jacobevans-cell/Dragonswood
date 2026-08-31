@@ -17,6 +17,10 @@ check('clear inference and support passes',()=>assert.equal(V.inference("Emma is
 check('unsupported inference receives missing_evidence',()=>assert.equal(V.inference('Emma is sad.').code,'missing_evidence'));
 check('visible detail alone receives missing_inference',()=>assert.equal(V.inference('Emma smiles when she looks at the picture on the wall.').code,'missing_inference'));
 check('adaptive missing-reason hint does not supply an answer',()=>{const hint=V.hintFor('writingCommunity',{code:'missing_reason'});assert.match(hint,/because|so/i);assert.doesNotMatch(hint,/volleyball|troph/i)});
+check('short Word Forge sentence still fails for free',()=>assert.equal(V.morphologyStructure('I was subjecting myself.','subjecting').code,'too_short'));
+check('complete Word Forge sentence advances to semantic AI check',()=>assert.equal(V.morphologyStructure('The harsh test was subjecting every material sample to extreme heat.','subjecting').code,'needs_meaning_check'));
+check('Word Forge requires the selected word in the sentence',()=>assert.equal(V.morphologyStructure('The harsh test exposed every material sample to extreme heat.','subjecting').code,'missing_example'));
+check('Word Forge response guide asks for meaning in context',()=>assert.match(V.frameFor('morph'),/context.*means|means.*context/i));
 
 const page=fs.readFileSync('curriculum-quest.html','utf8');
 check('Writing Community classification runs before generic opinion',()=>assert.ok(page.indexOf('if(/writing community|peer review|\\bpqp\\b|praise|polish/')<page.indexOf('if(/opinion/.test(raw))')));
@@ -25,6 +29,7 @@ check('teacher requests carry validator and AI triage',()=>{assert.match(page,/v
 check('reading excerpts force source-grounded semantic checking',()=>assert.match(page,/structural\.ok&&sourceExcerpt.*needs_source_check/));
 check('high-confidence rejection requires revision',()=>assert.match(page,/lastAiTriage\?\.decision==="not_approved"&&prior\.lastAiTriage\?\.confidence==="high"/));
 check('copied directions remain blocked',()=>assert.match(page,/code:"copied_prompt",reviewable:false/));
+check('Word Forge semantic check uses lesson definition and existing AI',()=>{assert.match(page,/\"quickwrite\",\"morph\"/);assert.match(page,/spec\.kind===\"morph\"\?String\(spec\.meaning/);assert.match(page,/Do not approve merely because the word appears/) });
 check('Kataleya subtraction expected value is correct',()=>assert.equal(75281-17136,58145));
 const runtime=fs.readFileSync('v33-integration/js/integration/runtime.js','utf8');
 check('legacy Math requires a real answer before auto-resolution',()=>{assert.match(runtime,/!answer\|\|!expected/);assert.match(runtime,/interactive response submitted\|no answer recorded/)});

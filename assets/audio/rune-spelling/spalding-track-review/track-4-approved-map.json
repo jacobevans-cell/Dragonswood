@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 2,
+  "purpose": "Authoritative Spalding Track 4 mapping for Rune Spelling",
+  "sourceTrack": "Track04.mp3",
+  "sourceSha256": "8AC8D247CCDA0588E5CA19846425FAAA22C96B830969A43D5F1E59FDD7B7EC1E",
+  "createdAt": "2026-08-31T06:30:15.077Z",
+  "approval": "Jacob approved all 12 phonograms and all 18 short-sound intervals. Labels were normalized to readable Spalding notation without changing audio or timings.",
+  "mapping": [
+    {"number":59,"expectedPhonogram":"ey","expectedSounds":["/ē/ as in key","/ā/ as in they"],"status":"CORRECT","actualPhonogram":"ey","notes":"","shortSoundIntervals":[[6.37,6.775],[7.185,7.44]]},
+    {"number":60,"expectedPhonogram":"igh","expectedSounds":["/ī/ as in night"],"status":"CORRECT","actualPhonogram":"igh","notes":"","shortSoundIntervals":[[14.37,14.775]]},
+    {"number":61,"expectedPhonogram":"kn","expectedSounds":["/n/; used at the beginning of a base word"],"status":"CORRECT","actualPhonogram":"kn","notes":"","shortSoundIntervals":[[22.41,22.94]]},
+    {"number":62,"expectedPhonogram":"gn","expectedSounds":["/n/ as in gnat or sign"],"status":"CORRECT","actualPhonogram":"gn","notes":"","shortSoundIntervals":[[30.27,30.785]]},
+    {"number":63,"expectedPhonogram":"wr","expectedSounds":["/r/; used at the beginning of a base word"],"status":"CORRECT","actualPhonogram":"wr","notes":"","shortSoundIntervals":[[37.04,37.235]]},
+    {"number":64,"expectedPhonogram":"ie","expectedSounds":["/ē/ as in field","/ī/ as in pie","/ĭ/ as in sieve"],"status":"CORRECT","actualPhonogram":"ie","notes":"","shortSoundIntervals":[[44.325,44.71],[45.38,45.785],[46.42,46.62]]},
+    {"number":65,"expectedPhonogram":"dge","expectedSounds":["/j/ as in edge"],"status":"CORRECT","actualPhonogram":"dge","notes":"","shortSoundIntervals":[[53.075,53.3]]},
+    {"number":66,"expectedPhonogram":"ei","expectedSounds":["/ē/ as in receive","/ā/ as in vein","/ī/ as in height"],"status":"CORRECT","actualPhonogram":"ei","notes":"","shortSoundIntervals":[[60.66,61.11],[61.51,61.985],[62.385,62.615]]},
+    {"number":67,"expectedPhonogram":"eigh","expectedSounds":["/ā/ as in eight"],"status":"CORRECT","actualPhonogram":"eigh","notes":"","shortSoundIntervals":[[69.56,70.03]]},
+    {"number":68,"expectedPhonogram":"ti","expectedSounds":["/sh/ as in nation"],"status":"CORRECT","actualPhonogram":"ti","notes":"","shortSoundIntervals":[[79.355,79.655]]},
+    {"number":69,"expectedPhonogram":"si","expectedSounds":["/sh/ as in session","/zh/ as in vision"],"status":"CORRECT","actualPhonogram":"si","notes":"","shortSoundIntervals":[[86.98,87.255],[87.9,88.255]]},
+    {"number":70,"expectedPhonogram":"ci","expectedSounds":["/sh/ as in special"],"status":"CORRECT","actualPhonogram":"ci","notes":"","shortSoundIntervals":[[94.43,94.72]]}
+  ]
+}

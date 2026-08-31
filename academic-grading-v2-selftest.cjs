@@ -87,8 +87,8 @@ pass(
 );
 
 const teacherRoot=fs.readFileSync("teacher.html","utf8"),teacherApp=fs.readFileSync("v33-integration/js/teacher-app.js","utf8");
-pass("current Teacher Command loads the hardened academic contract",teacherRoot.includes("js/integration/academic.js?v=58.0.2"));
-pass("current Teacher Command keeps V4 evidence-gated grade export",teacherApp.includes("gradeIntegrityVersion!==4||gradebook.reportCardPercentageReady!==true"));
+pass("current Teacher Command loads the daily grading contract",teacherRoot.includes("js/integration/academic.js?v=58.1.1"));
+pass("current Teacher Command keeps V5 evidence-gated grade export",teacherApp.includes("gradeIntegrityVersion!==5||gradebook.reportCardPercentageReady!==true"));
 const rules=fs.readFileSync("firestore.rules","utf8");
 pass("AI usage teacher-readable",rules.includes("match /academicAiUsage/{docId}"));
 pass("AI cache client-denied",rules.includes("match /academicAnswerAiCache/{docId}"));

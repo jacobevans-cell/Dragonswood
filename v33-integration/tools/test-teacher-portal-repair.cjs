@@ -41,21 +41,21 @@ assert.doesNotMatch(teacher,/Assignment list opened in tester mode|CSV export re
 assert.doesNotMatch(teacher,/Open in V2/i);
 assert.match(teacher,/\.teacher-content,\.teacher-header-inner\{width:100%;max-width:none/,'teacher content no longer wastes the center gutter');
 assert.match(teacher,/font-size:12px/,'production readability floor is installed');
-assert.match(host,/js\/integration\/academic\.js\?v=58\.0\.2/);
+assert.match(host,/js\/integration\/academic\.js\?v=58\.1\.1/);
 assert.match(host,/js\/integration\/world\.js\?v=57\.1\.6/);
 assert.match(host,/js\/integration\/operations\.js\?v=58\.1\.0/);
-assert.match(host,/js\/integration\/runtime\.js\?v=58\.1\.3/);
-assert.match(host,/js\/teacher-app\.js\?v=58\.1\.3/);
+assert.match(host,/js\/integration\/runtime\.js\?v=58\.1\.5/);
+assert.match(host,/js\/teacher-app\.js\?v=58\.1\.5/);
 
 const book=require('../js/integration/academic.js').gradebook(
  [{id:'s1',name:'Scholar',grade:'5',genderGroup:'girl'}],
- [{id:'d1',studentId:'s1',dateKey:'2026-08-28',status:'complete',score:80}],
- [{id:'c1',studentId:'s1',lessonTitle:'Decimals',accuracy:90}],
- [{id:'s1_2026-08-28_witches',studentId:'s1',bookId:'witches',dateKey:'2026-08-28',activeSeconds:1200,targetMinutes:20,firstPage:1,lastPage:8}],
- {daily:30,curriculum:50,reading:20,readingTargetMinutes:20,readingAssignedDateKeys:['2026-08-28'],readingTargetsByDate:{'2026-08-28':20}}
+ [{id:'d1',studentId:'s1',dateKey:'2026-08-31',day:21,session:'morning',status:'complete',accuracy:80,score:999}],
+ [{id:'c1',studentId:'s1',itemId:'K-Math-D21-C1-A',dateKey:'2026-08-31',day:21,lessonTitle:'Decimals',questionsSeen:5,autoQuestionsSeen:5,accuracy:90}],
+ [{id:'s1_2026-08-31_witches',studentId:'s1',bookId:'witches',dateKey:'2026-08-31',activeSeconds:1200,targetMinutes:20,firstPage:1,lastPage:8}],
+ {daily:20,curriculum:40,spelling:20,reading:20,readingTargetMinutes:20,readingAssignedDateKeys:['2026-08-31'],readingTargetsByDate:{'2026-08-31':20}}
 );
-assert.equal(book.rows[0].total,89);
+assert.equal(book.rows[0].total,91);
 assert.equal(book.rows[0].assignments.length,3);
-assert.equal(book.assignedWork,1);
-assert.deepEqual(book.weights,{daily:30,curriculum:30,spelling:20,reading:20});
-console.log('V3.3 teacher portal repair contracts: PASS (attention selection + pass header + layout + live gradebook + production labels)');
+assert.equal(book.assignedWork,3);
+assert.deepEqual(book.weights,{daily:20,curriculum:40,spelling:20,reading:20});
+console.log('V5 teacher portal repair contracts: PASS (attention selection + pass header + layout + live daily gradebook + production labels)');

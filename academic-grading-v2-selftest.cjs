@@ -44,7 +44,7 @@ pass("Curriculum imports Firebase Functions",curr.includes("firebase-functions.j
 pass("Curriculum checker async",curr.includes("async function checkActivity(id)"));
 pass("Curriculum reasoning rescue",curr.includes("async function curriculumAiRescue"));
 pass("Curriculum exposes safe item-state saving",curr.includes("function saveCurriculumItemState(id,itemState)"));
-pass("Curriculum cache-busts enhancement loader",curr.includes("q1-curriculum-enhancements.js?v=57.1.5"));
+pass("Curriculum cache-busts enhancement loader",curr.includes("q1-curriculum-enhancements.js?v=57.1.6"));
 
 const mathAuto=fs.readFileSync("dragonswood-math-autograding.js","utf8");
 pass(

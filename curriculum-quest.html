@@ -151,7 +151,7 @@ body>*{position:relative;z-index:1}
 </div>
 <script src="q1-curriculum-data.js"></script>
 <script src="q1-curriculum-day21-overrides.js?v=4"></script>
-<script src="q1-curriculum-enhancements.js?v=57.1.5"></script>
+<script src="q1-curriculum-enhancements.js?v=57.1.6"></script>
 <script src="q1-video-map.js?v=57.1.6"></script>
 <script src="curriculum-question-engine.js"></script>
 <script>
@@ -950,6 +950,7 @@ function canonicalProgress(uid,item,state,forceUnverified=false){
     videoCoverage:Number(state.videoCoverage||0),videoReflection:String(state.videoReflection||""),
     practiced:!!state.practiced,practiceEvidence:String(state.practiceEvidence||""),
     quickWriteChoice:String(state.quickWriteChoice||""),quickWriteChoiceLocked:!!state.quickWriteChoiceLocked,
+    dwInteraction:state.dwInteraction&&typeof state.dwInteraction==="object"?state.dwInteraction:null,
     questionsCorrect:counts.correct,questionsSeen:counts.seen,autoAnswers:state.autoAnswers||{},
     autoAttempts:Number(state.autoAttempts||0),lastActivityAttempt:String(state.lastActivityAttempt||""),
     activityAttempts:Number(state.activityAttempts||0),overrideStatus:String(state.overrideStatus||""),

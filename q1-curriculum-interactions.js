@@ -1,5 +1,5 @@
 /* ==========================================================================
-   DRAGONSWOOD Q1 INTERACTION ENGINE v56.24.2
+   DRAGONSWOOD Q1 INTERACTION ENGINE v56.24.4
    Adds a small, aligned interaction layer across Curriculum Quest without
    changing required-video playback, watch tracking, or source lesson content.
 
@@ -286,7 +286,7 @@
     const s=document.createElement("style");s.id="dwCurriculumInteractionStyle";
     s.textContent=`
 .dw-interactive{margin:11px 0;padding:12px;border:1px solid rgba(244,201,93,.34);border-radius:9px;background:linear-gradient(135deg,rgba(21,13,42,.96),rgba(5,11,24,.96))}
-.dw-interactive-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:7px}.dw-interactive-title{font-family:Georgia,serif;color:#ffe8a0;font-size:16px;font-weight:900}.dw-interactive-badge{font-size:10px;font-weight:900;color:#8eeeff;border:1px solid #245f78;background:#092a39;border-radius:999px;padding:5px 8px}.dw-interactive-prompt{font-size:12px;line-height:1.45;color:#e7dfef;margin:5px 0 10px}.dw-i-bank{min-height:55px;display:flex;gap:8px;flex-wrap:wrap;padding:9px;border:1px dashed #4c3966;border-radius:8px;background:#080612;margin-bottom:9px}.dw-i-chip{min-height:42px;padding:8px 11px;border-radius:8px;border:1px solid #72519b;background:#25153e;color:#fff;font-weight:900;cursor:grab;touch-action:manipulation;box-shadow:0 2px 0 rgba(0,0,0,.3)}.dw-i-chip:active{cursor:grabbing}.dw-i-chip.selected{outline:3px solid #02ccfe;outline-offset:2px}.dw-i-zones{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}.dw-i-zone{min-height:76px;border:1px dashed #695382;border-radius:9px;padding:8px;background:#0b0819;outline:none}.dw-i-zone:focus,.dw-i-zone.dragover{border-style:solid;border-color:#02ccfe;box-shadow:0 0 0 2px rgba(2,204,254,.18)}.dw-i-zone-label{font-size:10px;font-weight:1000;color:#8eeeff;letter-spacing:.03em;margin-bottom:7px}.dw-i-zone-items{display:flex;gap:7px;flex-wrap:wrap;min-height:39px}.dw-i-zone.single .dw-i-zone-items{justify-content:center}.dw-i-zone.single{min-width:90px}.dw-i-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:9px}.dw-i-feedback{display:none;margin-top:8px;padding:9px;border-radius:7px;font-size:12px;font-weight:800}.dw-i-feedback.show{display:block}.dw-i-feedback.good{background:#103b2b;color:#b9f6d1;border:1px solid #2c7d58}.dw-i-feedback.bad{background:#3a1320;color:#ffd0d9;border:1px solid #8e3d54}.dw-interactive.passed{border-color:#3e916b;background:linear-gradient(135deg,rgba(11,45,31,.88),rgba(5,17,18,.96))}.dw-interactive.passed .dw-i-chip{cursor:default;opacity:.9}.dw-i-help{font-size:10px;color:#bfb5ce}.dw-i-slots{grid-template-columns:repeat(auto-fit,minmax(85px,1fr))}
+.dw-interactive-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:7px}.dw-interactive-title{font-family:Georgia,serif;color:#ffe8a0;font-size:16px;font-weight:900}.dw-interactive-badge{font-size:10px;font-weight:900;color:#8eeeff;border:1px solid #245f78;background:#092a39;border-radius:999px;padding:5px 8px}.dw-interactive-prompt{font-size:12px;line-height:1.45;color:#e7dfef;margin:5px 0 10px}.dw-i-bank{min-height:55px;display:flex;gap:8px;flex-wrap:wrap;padding:9px;border:1px dashed #4c3966;border-radius:8px;background:#080612;margin-bottom:9px}.dw-i-chip{min-height:42px;padding:8px 11px;border-radius:8px;border:1px solid #72519b;background:#25153e;color:#fff;font-weight:900;cursor:grab;touch-action:manipulation;box-shadow:0 2px 0 rgba(0,0,0,.3)}.dw-i-chip:active{cursor:grabbing}.dw-i-chip.selected{outline:3px solid #02ccfe;outline-offset:2px}.dw-i-chip.locked{cursor:default;opacity:1;background:#123e2d;border-color:#45ce8c;color:#d2ffe5;box-shadow:0 0 0 2px rgba(69,206,140,.2)}.dw-i-chip.locked::after{content:" ✓";color:#72f0ad}.dw-i-chip.wrong{background:#4a1422;border-color:#ef6d86}.dw-i-zones{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}.dw-i-zone{min-height:76px;border:1px dashed #695382;border-radius:9px;padding:8px;background:#0b0819;outline:none}.dw-i-zone:focus,.dw-i-zone.dragover{border-style:solid;border-color:#02ccfe;box-shadow:0 0 0 2px rgba(2,204,254,.18)}.dw-i-zone.correct{border-style:solid;border-color:#45ce8c;background:#0d2e23;box-shadow:0 0 0 2px rgba(69,206,140,.16)}.dw-i-zone.correct .dw-i-zone-label{color:#72f0ad}.dw-i-zone.wrong{border-style:solid;border-color:#ef6d86;background:#35101a}.dw-i-zone-label{font-size:10px;font-weight:1000;color:#8eeeff;letter-spacing:.03em;margin-bottom:7px}.dw-i-zone-items{display:flex;gap:7px;flex-wrap:wrap;min-height:39px}.dw-i-zone.single .dw-i-zone-items{justify-content:center}.dw-i-zone.single{min-width:90px}.dw-i-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:9px}.dw-i-feedback{display:none;margin-top:8px;padding:9px;border-radius:7px;font-size:12px;font-weight:800}.dw-i-feedback.show{display:block}.dw-i-feedback.good{background:#103b2b;color:#b9f6d1;border:1px solid #2c7d58}.dw-i-feedback.bad{background:#3a1320;color:#ffd0d9;border:1px solid #8e3d54}.dw-interactive.passed{border-color:#3e916b;background:linear-gradient(135deg,rgba(11,45,31,.88),rgba(5,17,18,.96))}.dw-interactive.passed .dw-i-chip{cursor:default;opacity:.9}.dw-i-help{font-size:10px;color:#bfb5ce}.dw-i-slots{grid-template-columns:repeat(auto-fit,minmax(85px,1fr))}
 @media(max-width:620px){.dw-i-zones,.dw-i-slots{grid-template-columns:1fr}.dw-i-chip{width:100%;text-align:left}.dw-i-zone.single{min-width:0}}
 `;
     document.head.appendChild(s);
@@ -299,12 +299,44 @@
   function chipNode(root,chipId){return root?.querySelector(`.dw-i-chip[data-chip-id="${CSS.escape(chipId)}"]`)||null}
   function bankNode(root){return root?.querySelector(".dw-i-bank")||null}
   function zoneNode(root,zoneId){return root?.querySelector(`.dw-i-zone[data-zone-id="${CSS.escape(zoneId)}"]`)||null}
-  function moveChip(root,chipId,zoneId){
+  function interactionRecord(itemId,spec){
+    const current=st(itemId).dwInteraction||{};
+    return current.version===V&&current.specId===spec.id?current:{version:V,specId:spec.id,passed:false,locked:[]};
+  }
+  function lockedIds(itemId,spec){
+    if(spec?.type!=="order")return new Set();
+    const valid=new Set(spec.chips.map(ch=>ch.id));
+    return new Set((interactionRecord(itemId,spec).locked||[]).filter(id=>valid.has(id)));
+  }
+  function saveOrderLock(itemId,spec,chipId){
+    const s=st(itemId),record=interactionRecord(itemId,spec),locked=new Set(record.locked||[]);locked.add(chipId);
+    s.dwInteraction={...record,version:V,specId:spec.id,passed:false,locked:[...locked],updatedAt:Date.now()};S.items[itemId]=s;save();
+  }
+  function moveChip(root,chipId,zoneId,force=false){
     const chip=chipNode(root,chipId);if(!chip)return;
+    if(chip.classList.contains("locked")&&!force)return;
     if(zoneId==="bank"){
+      if(force){chip.classList.remove("locked","wrong");chip.disabled=false;chip.draggable=true}
       bankNode(root)?.appendChild(chip);return;
     }
     const zone=zoneNode(root,zoneId);if(!zone)return;
+    const spec=specForId(root.dataset.itemId);
+    if(spec?.type==="order"&&!force){
+      const expected=spec.chips.find(ch=>ch.id===chipId),fb=root.querySelector(".dw-i-feedback");
+      if(expected?.zone===zoneId){
+        const holder=zone.querySelector(".dw-i-zone-items"),existing=holder?.querySelector(".dw-i-chip:not(.locked)");if(existing&&existing!==chip)bankNode(root)?.appendChild(existing);
+        holder?.appendChild(chip);chip.classList.remove("selected","wrong");chip.classList.add("locked");chip.disabled=true;chip.draggable=false;zone.classList.remove("wrong");zone.classList.add("correct");
+        saveOrderLock(root.dataset.itemId,spec,chipId);
+        const remaining=spec.chips.length-root.querySelectorAll(".dw-i-chip.locked").length;
+        if(fb){fb.className="dw-i-feedback show good";fb.textContent=remaining?`✓ Correct—this box is locked. ${remaining} ${remaining===1?"box remains":"boxes remain"}.`:`✓ Every box is correct and locked. Select CHECK THE FORGE to finish.`}
+      }else{
+        if(!zone.querySelector(".dw-i-chip.locked"))zone.querySelector(".dw-i-zone-items")?.appendChild(chip);
+        chip.classList.add("wrong");chip.disabled=true;chip.draggable=false;zone.classList.add("wrong");
+        if(fb){fb.className="dw-i-feedback show bad";fb.textContent="Not that box. Try another spot—your green answers stay locked."}
+        setTimeout(()=>{bankNode(root)?.appendChild(chip);chip.classList.remove("wrong");chip.disabled=false;chip.draggable=true;zone.classList.remove("wrong")},500);
+      }
+      return;
+    }
     const holder=zone.querySelector(".dw-i-zone-items");
     if(zone.classList.contains("single")){
       const existing=holder?.querySelector(".dw-i-chip");if(existing&&existing!==chip)bankNode(root)?.appendChild(existing);
@@ -320,7 +352,9 @@
     return out;
   }
   function resetInteraction(root,spec){
-    for(const ch of spec.chips)moveChip(root,ch.id,"bank");
+    const itemId=root?.dataset.itemId,s=itemId?st(itemId):null;if(s?.dwInteraction?.specId===spec.id&&!s.dwInteraction.passed){delete s.dwInteraction;S.items[itemId]=s;save()}
+    for(const ch of spec.chips)moveChip(root,ch.id,"bank",true);
+    root?.querySelectorAll(".dw-i-zone").forEach(n=>n.classList.remove("correct","wrong"));
     root?.querySelectorAll(".dw-i-chip.selected").forEach(n=>n.classList.remove("selected"));selected.itemId=selected.chipId=null;
     const fb=root?.querySelector(".dw-i-feedback");if(fb){fb.className="dw-i-feedback";fb.textContent=""}
   }
@@ -333,9 +367,9 @@
   window.dwCurriculumInteractionCheck=function(itemId){
     const x=D.items.find(i=>i.id===itemId),spec=x?interactionSpec(x):null,root=document.querySelector(`.dw-interactive[data-item-id="${CSS.escape(itemId)}"]`);if(!x||!spec||!root)return;
     const placement=placementFromDom(root,spec),fb=root.querySelector(".dw-i-feedback"),unplaced=spec.chips.filter(ch=>placement[ch.id]==="bank"||!placement[ch.id]);
-    if(unplaced.length){fb.className="dw-i-feedback show bad";fb.textContent=`Move every piece before checking. ${unplaced.length} still ${unplaced.length===1?"needs":"need"} a place.`;return}
+    if(unplaced.length){fb.className="dw-i-feedback show bad";fb.textContent=spec.type==="order"?`${unplaced.length} ${unplaced.length===1?"box still needs":"boxes still need"} the correct step. Green boxes stay locked.`:`Move every piece before checking. ${unplaced.length} still ${unplaced.length===1?"needs":"need"} a place.`;return}
     if(!correctPlacement(spec,placement)){fb.className="dw-i-feedback show bad";fb.textContent="Not quite. Recheck the lesson idea and move the pieces that do not fit yet.";return}
-    const s=st(itemId);s.dwInteraction={version:V,specId:spec.id,passed:true,completedAt:Date.now()};S.items[itemId]=s;save();
+    const s=st(itemId);s.dwInteraction={version:V,specId:spec.id,passed:true,locked:spec.type==="order"?spec.chips.map(ch=>ch.id):[],completedAt:Date.now()};S.items[itemId]=s;save();
     fb.className="dw-i-feedback show good";fb.textContent="✓ Interactive check complete.";root.classList.add("passed");
     setTimeout(()=>window.DWCurriculumRenderCoordinator.request("interaction-complete"),120);
   };
@@ -372,8 +406,9 @@
   function renderInteraction(x,spec,grandfathered){
     if(!spec)return "";
     const s=st(x.id),passed=!!(s.dwInteraction&&s.dwInteraction.version===V&&s.dwInteraction.specId===spec.id&&s.dwInteraction.passed),done=passed||grandfathered;
-    const chipHtml=spec.chips.map(ch=>`<button type="button" class="dw-i-chip" draggable="true" data-chip-id="${esc(ch.id)}" aria-label="Move ${esc(ch.label)}">${esc(ch.label)}</button>`).join("");
-    const zones=spec.zones.map(z=>`<div class="dw-i-zone ${z.single?"single":""}" role="button" tabindex="0" data-zone-id="${esc(z.id)}" aria-label="Place selected piece in ${esc(z.label)}"><div class="dw-i-zone-label">${esc(z.label)}</div><div class="dw-i-zone-items"></div></div>`).join("");
+    const locked=lockedIds(x.id,spec),chipButton=(ch,isLocked=false)=>`<button type="button" class="dw-i-chip${isLocked?" locked":""}" draggable="${isLocked?"false":"true"}" ${isLocked?"disabled":""} data-chip-id="${esc(ch.id)}" aria-label="${isLocked?"Correct and locked":"Move"} ${esc(ch.label)}">${esc(ch.label)}</button>`;
+    const chipHtml=spec.chips.filter(ch=>!locked.has(ch.id)).map(ch=>chipButton(ch)).join("");
+    const zones=spec.zones.map(z=>{const lockedChip=spec.chips.find(ch=>locked.has(ch.id)&&ch.zone===z.id);return `<div class="dw-i-zone ${z.single?"single":""}${lockedChip?" correct":""}" role="button" tabindex="0" data-zone-id="${esc(z.id)}" aria-label="${lockedChip?"Correct answer locked in":"Place selected piece in"} ${esc(z.label)}"><div class="dw-i-zone-label">${esc(z.label)}</div><div class="dw-i-zone-items">${lockedChip?chipButton(lockedChip,true):""}</div></div>`}).join("");
     if(done)return `<div class="dw-interactive passed" data-item-id="${esc(x.id)}"><div class="dw-interactive-head"><div class="dw-interactive-title">${spec.title}</div><span class="dw-interactive-badge">${passed?"✓ COMPLETE":"✓ PRIOR WORK PRESERVED"}</span></div><div class="dw-interactive-prompt">${esc(spec.prompt)}</div><div class="dw-i-feedback show good">${passed?"Interactive check complete.":"This mission was already complete before the interactive upgrade, so Dragonswood will not reopen it."}</div></div>`;
     return `<div class="dw-interactive" data-item-id="${esc(x.id)}"><div class="dw-interactive-head"><div class="dw-interactive-title">${spec.title}</div><span class="dw-interactive-badge">INTERACTIVE WARM-UP</span></div><div class="dw-interactive-prompt">${esc(spec.prompt)}</div><div class="dw-i-bank" aria-label="Moveable pieces">${chipHtml}</div><div class="dw-i-zones ${spec.type==="order"?"dw-i-slots":""}">${zones}</div><div class="dw-i-actions"><button type="button" class="btn" onclick="dwCurriculumInteractionCheck('${esc(x.id)}')">CHECK THE FORGE</button><button type="button" class="stage" onclick="dwCurriculumInteractionReset('${esc(x.id)}')">RESET</button><span class="dw-i-help">Drag with a mouse/trackpad, or tap a piece then tap its destination. Keyboard: Enter/Space selects and places.</span></div><div class="dw-i-feedback" aria-live="polite"></div></div>`;
   }

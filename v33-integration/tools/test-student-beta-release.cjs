@@ -42,6 +42,9 @@ for(const route of ['games','boss','leaderboards','kingdom','arcade'])assert.mat
 assert.match(studentApp,/globalThis\.history\?\.replaceState\?\.\(null,'','#missions'\)/,'direct locked hashes must be replaced with the Daily Missions route');
 for(const blocked of ['kingdom','deep-time-lab','dragon-tongues','arcade','boss','boss-battle'])assert.match(studentApp,new RegExp(`substituteModeActive\\(\\)[^\\n]+${blocked}`),`${blocked} must be blocked by the shared Substitute Mode route guard`);
 assert.match(studentApp,/Ask Your Substitute Teacher/,'blocked students must receive a direct instruction to ask the substitute');
+assert.doesNotMatch(studentApp,/\['fraction-forge','Math'/,'Fraction Forge must not render as a separate Quest Games card');
+assert.match(studentApp,/\['math-operations','Math'[^\n]+,'fraction-forge'\]/,'Math Operations must carry Fraction Forge as its combined secondary choice');
+assert.match(studentApp,/game-actions[^\n]+Fraction Forge →/,'the combined Math Operations card must expose the Fraction Forge choice');
 const teacherApp=read('v33-integration/js/teacher-app.js');
 assert.match(teacherApp,/data-substitute-mode/,'Teacher Command must expose the Substitute Mode quick button');
 assert.match(teacherApp,/function manageSubstituteMode\(\)/,'the quick button must use a confirmation flow');

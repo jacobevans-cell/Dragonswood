@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "provider": "azure-speech",
+  "voiceId": "us-brian",
+  "voiceName": "en-US-BrianMultilingualNeural",
+  "defaultLocale": "en-US",
+  "outputFormat": "audio-24khz-48kbitrate-mono-mp3",
+  "prosodyRate": "-8%",
+  "freeTierMinIntervalMs": 3250,
+  "maxCharactersPerClip": 6000
+}

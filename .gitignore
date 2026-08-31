@@ -6,3 +6,4 @@ tools/narration/tmp/
 *.onnx
 *.onnx_data
 narration-generation-report.json
+*.part

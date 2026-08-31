@@ -102,10 +102,9 @@ const state = {
 function effectiveDateKey(){return state.isTester&&/^\d{4}-\d{2}-\d{2}$/.test(state.simulatedDate)?state.simulatedDate:(window.DWV33Core?.phoenixDateKey?.()||new Date().toISOString().slice(0,10))}
 function substituteModeActive(){const expires=Number(state.substituteMode?.expiresAtMs)||0;return state.substituteMode?.active===true&&(!expires||expires>Date.now())}
 function afternoonSubstituteActive(){return substituteModeActive()&&state.substituteMode?.afternoon===true}
-function freeArcadeForAllActive(){return substituteModeActive()&&state.substituteMode?.arcadeFree===true}
 function afternoonSubstituteEligible(){return afternoonSubstituteActive()&&state.morningWorkComplete===true&&state.completedMissions.has('curriculum')}
 function afternoonDestination(target){const id=String(target||'');return id==='games'||id==='arcade'||AFTERNOON_GAME_MODULES.has(id)}
-function substituteBlocked(target){const id=String(target||'');if(!substituteModeActive())return false;if(freeArcadeForAllActive()&&id==='arcade')return false;if(afternoonSubstituteActive()&&afternoonDestination(id))return false;return ['kingdom','deep-time-lab','dragon-tongues','arcade','boss','boss-battle'].includes(id)}
+function substituteBlocked(target){const id=String(target||'');if(!substituteModeActive())return false;if(afternoonSubstituteActive()&&afternoonDestination(id))return false;return ['kingdom','deep-time-lab','dragon-tongues','arcade','boss','boss-battle'].includes(id)}
 function moduleAllowed(id){return moduleHost?.allowed(id,{dailyAccessUnlocked:afternoonSubstituteEligible()&&AFTERNOON_GAME_MODULES.has(String(id||''))?true:state.dailyAccessUnlocked})}
 function weekendAcademicOpen(target){return window.DWV33Core?.isWeekendDateKey?.(effectiveDateKey())===true&&['rune-spelling','dragon-tongues','curriculum-quest'].includes(String(target||''))}
 window.DWV33TesterDateContext=()=>Object.freeze({dateKey:effectiveDateKey(),simulated:state.isTester&&Boolean(state.simulatedDate),isTester:state.isTester,testerUnlocks:Object.freeze({...state.testerUnlocks})});
@@ -198,7 +197,6 @@ function unfinishedRequiredWork(target='activity'){
   const rows=[];
   const destination=String(target||'activity');
   if(weekendAcademicOpen(destination))return rows;
-  if(freeArcadeForAllActive()&&destination==='arcade')return rows;
   if(afternoonSubstituteActive()&&afternoonDestination(destination)){
     if(state.morningWorkComplete!==true)rows.push({id:'morning',icon:'🌅',title:'Morning Work',detail:'Finish today’s Morning Work.',route:'module/daily-quest'});
     if(!state.completedMissions.has('curriculum'))rows.push({id:'curriculum',icon:'🐉',title:'Current Curriculum Quest',detail:'Finish every lesson in today’s Current Quest.',route:'module/curriculum-quest'});
@@ -225,7 +223,7 @@ function unfinishedRequiredWork(target='activity'){
   if(String(target)==='kingdom'&&state.kingdomAccessUnlocked!==true)rows.push({id:'kingdom-access',icon:'🔒',title:'Kingdom Wars teacher unlock',detail:'Your teacher has not opened Kingdom Wars today.',route:'missions'});
   return rows;
 }
-function requiredWorkLocked(page){const target=String(page||'');if(target==='arcade'&&(state.testerUnlocks.unlockArcade===true||freeArcadeForAllActive()))return false;if(target==='kingdom'&&state.testerUnlocks.unlockKingdom===true)return false;if(target==='boss'&&state.testerUnlocks.unlockBoss===true)return false;return REQUIRED_WORK_PAGES.has(target)&&unfinishedRequiredWork(target).length>0}
+function requiredWorkLocked(page){const target=String(page||'');if(target==='arcade'&&state.testerUnlocks.unlockArcade===true)return false;if(target==='kingdom'&&state.testerUnlocks.unlockKingdom===true)return false;if(target==='boss'&&state.testerUnlocks.unlockBoss===true)return false;return REQUIRED_WORK_PAGES.has(target)&&unfinishedRequiredWork(target).length>0}
 function modulePathLocked(id){
   const moduleId=String(id||'');
   if(afternoonSubstituteActive()&&AFTERNOON_GAME_MODULES.has(moduleId))return !afternoonSubstituteEligible();
@@ -274,7 +272,7 @@ function passSafetyMarkup(){
 }
 function passReminder(text){
   try{const AudioContext=window.AudioContext||window.webkitAudioContext;if(AudioContext){const context=new AudioContext(),osc=context.createOscillator(),gain=context.createGain();osc.frequency.value=880;gain.gain.setValueAtTime(.12,context.currentTime);gain.gain.exponentialRampToValueAtTime(.001,context.currentTime+.35);osc.connect(gain);gain.connect(context.destination);osc.start();osc.stop(context.currentTime+.36);osc.addEventListener('ended',()=>context.close())}}catch{}
-  try{if('speechSynthesis' in window){speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(text);utterance.rate=.92;utterance.volume=1;speechSynthesis.speak(utterance)}}catch{}
+  try{window.DWNarrator?.play({id:'v33/pass-reminder',text:String(text||''),contentType:'general',locale:'en-US',rate:.92})}catch{}
 }
 function syncPassSafety(){
   const active=activePassRows(),blocking=active.find(row=>row.blocking===true),overlay=document.querySelector('[data-active-pass-overlay]'),banner=document.querySelector('[data-pass-overdue-banner]');
@@ -370,7 +368,7 @@ function shell(){
       <div class="student-utility">${state.isTester?'<button class="btn btn-secondary btn-sm" type="button" data-tester-controls>🧪 <span>Tester Controls</span></button>':''}<button class="btn btn-secondary btn-sm" type="button" data-passes>🎟️ <span>${substituteModeActive()?'Ask sub for pass':'Passes'}</span></button><button class="btn btn-secondary btn-sm" type="button" data-read>🔊 <span>Read aloud</span></button><div class="profile-pill" role="button" tabindex="0" data-account-menu aria-label="Open account menu"><div class="profile-orb">${escapeHtml(state.initial)}</div><span><b>${escapeHtml(state.firstName)}</b><small>Level ${state.level}</small></span></div></div>
       </div></header>
     <aside class="student-sidebar">${navMarkup()}</aside>
-    <main class="student-main" id="page-content">${state.isTester&&state.simulatedDate?`<div class="tester-date-banner" role="status">🧪 SAFE DATE PREVIEW • real date ${escapeHtml(window.DWV33Core?.phoenixDateKey?.()||'today')} • simulated date ${escapeHtml(state.simulatedDate)} • academic and Boss preview writes are disabled <button type="button" data-return-real-date>Return to Today</button></div>`:''}<div class="student-content">${substituteModeActive()?freeArcadeForAllActive()?'<section class="substitute-student-banner" role="alert"><span>🕹️</span><div><h2>Free Arcade for Everyone • 1 hour</h2><p>Arcade is unlocked free for every student—no work requirements and no Tokens. Passes and restricted areas remain closed.</p></div></section>':afternoonSubstituteActive()?`<section class="substitute-student-banner" role="alert"><span>🎮</span><div><h2>Afternoon Substitute Day • 1-hour free-play window</h2><p>${afternoonSubstituteEligible()?'You finished Morning Work and today’s Curriculum Quest. Quest Games and Arcade are unlocked free—no Tokens—until the class window ends.':'Finish Morning Work and every lesson in today’s Current Quest to unlock Quest Games and Arcade free. No Tokens will be used.'} Passes and restricted areas remain closed.</p></div></section>`:'<section class="substitute-student-banner" role="alert"><span>🛑</span><div><h2>Substitute Mode is on today</h2><p>Passes, Kingdom Wars, Deep Time Lab, Dragon Tongues, Arcade, and Boss Battle are unavailable. If you need help or need to leave the room, ask your substitute teacher.</p></div></section>':''}${pageMarkup()}</div></main>
+    <main class="student-main" id="page-content">${state.isTester&&state.simulatedDate?`<div class="tester-date-banner" role="status">🧪 SAFE DATE PREVIEW • real date ${escapeHtml(window.DWV33Core?.phoenixDateKey?.()||'today')} • simulated date ${escapeHtml(state.simulatedDate)} • academic and Boss preview writes are disabled <button type="button" data-return-real-date>Return to Today</button></div>`:''}<div class="student-content">${substituteModeActive()?afternoonSubstituteActive()?`<section class="substitute-student-banner" role="alert"><span>🎮</span><div><h2>Afternoon Substitute Day • 1-hour free-play window</h2><p>${afternoonSubstituteEligible()?'You finished Morning Work and today’s Curriculum Quest. Quest Games and Arcade are unlocked free—no Tokens—until the class window ends.':'Finish Morning Work and every lesson in today’s Current Quest to unlock Quest Games and Arcade free. No Tokens will be used.'} Passes and restricted areas remain closed.</p></div></section>`:'<section class="substitute-student-banner" role="alert"><span>🛑</span><div><h2>Substitute Mode is on today</h2><p>Passes, Kingdom Wars, Deep Time Lab, Dragon Tongues, Arcade, and Boss Battle are unavailable. If you need help or need to leave the room, ask your substitute teacher.</p></div></section>':''}${pageMarkup()}</div></main>
     ${passSafetyMarkup()}${teacherAttentionMarkup()}${referenceButton()}${IS_PRODUCTION?'':'<div class="tester-ribbon">V3.3 TESTER • LOCAL ONLY</div>'}
   </div>`;
 }
@@ -840,9 +838,9 @@ function mountModule(id){if(id)moduleHost?.mount(app,id,document.baseURI)}
 async function readPage(){
   const title=studentNavItems().find(n=>n[0]===state.page)?.[2]||'Dragonswood';
   if(window.DWV33Narration){
-    try{await window.DWV33Narration.readPage({id:`v33/student/${state.page}`,root:'#page-content',voiceId:state.narrationVoice,contentType:state.page==='scribe'?'ela':'general'});showToast('Cedar read-aloud started.');return}catch(err){showToast(err?.message||'Read-aloud could not start.');return}
+    try{await window.DWV33Narration.readPage({id:`v33/student/${state.page}`,root:'#page-content',voiceId:'us-brian',contentType:state.page==='scribe'?'ela':'general'});showToast('Brian read-aloud started.');return}catch(err){showToast(err?.message||'Read-aloud could not start.');return}
   }
-  if('speechSynthesis' in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(`Dragonswood. ${title}. ${document.querySelector('#page-content h1')?.textContent||''}`);u.rate=.9;speechSynthesis.speak(u);showToast('Read-aloud started.');}else showToast('Read-aloud is not available in this browser.');
+  showToast(`Brian read-aloud is still loading for ${title}. Please try again.`);
 }
 function passesDialog(){
   const rows=state.passes?.rows||{};

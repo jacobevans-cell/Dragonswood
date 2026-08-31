@@ -1672,20 +1672,9 @@ document.addEventListener("keydown",e=>{
 });
 
 function speakText(text, rate=0.85){
-  const id=`spelling/${String(text).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")}`;
-  const fallback=()=>{
-    if(!("speechSynthesis" in window)||!("SpeechSynthesisUtterance" in window))return;
-    window.speechSynthesis.cancel();
-    const utterance=new SpeechSynthesisUtterance(text);
-    utterance.lang="en-US";utterance.rate=rate;utterance.pitch=1;
-    window.speechSynthesis.speak(utterance);
-  };
-  if(window.DWNarrator?.play){
-    try{
-      const result=window.DWNarrator.play({id,text,contentType:"ela",assessmentLanguage:"en",rate});
-      if(result&&typeof result.catch==="function")result.catch(fallback);
-    }catch(error){fallback()}
-  }else fallback();
+  const clean=String(text||"").trim();if(!clean)return;
+  const id=`spelling/${clean.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")}`;
+  window.DWNarrator?.play({id,text:clean,contentType:"ela",assessmentLanguage:"en",locale:"en-US",rate});
 }
 
 function speakWholeWord(){
@@ -1838,7 +1827,7 @@ function submitReviewAnswer(){
 }
 function nextReviewWord(){reviewIndex++;if(reviewIndex>=reviewWordsActive.length)finishReview();else showReviewWord()}
 function finishReview(){
-  window.speechSynthesis&&window.speechSynthesis.cancel();
+  window.DWNarrator?.stop();window.speechSynthesis&&window.speechSynthesis.cancel();
   reviewCard.classList.add("hidden");reviewResults.classList.remove("hidden");
   const data=reviewCompletionData();
   reviewResultScore.textContent=String(reviewCorrect)+"/"+String(data.wordCount);
@@ -2128,7 +2117,7 @@ function shuffledIndices(){
 function startTest(saved=null){
   if(!ensureActiveLesson())return;
   stopActiveGame();
-  window.speechSynthesis && window.speechSynthesis.cancel();
+  window.DWNarrator?.stop(); window.speechSynthesis && window.speechSynthesis.cancel();
   if(!saved&&activeLesson.requireStudy){const studied=new Set(getLessonProgress().studiedIds||[]);if(studied.size<words.length){openFlashcards();petMessage.textContent=`Study ${words.length-studied.size} more rune card${words.length-studied.size===1?"":"s"} to unlock the independent check.`;return}}
   beginRun("test",saved);
   if(saved&&Array.isArray(saved.order)&&saved.order.length===words.length){
@@ -2248,7 +2237,7 @@ function nextTestWord(){
 }
 
 function finishTest(){
-  clearTimeout(speakTimer);speakTimer=0;window.speechSynthesis && window.speechSynthesis.cancel();
+  clearTimeout(speakTimer);speakTimer=0;window.DWNarrator?.stop(); window.speechSynthesis && window.speechSynthesis.cancel();
   document.getElementById("testCard").classList.add("hidden");
   document.getElementById("resultBox").classList.remove("hidden");
 
@@ -2311,7 +2300,7 @@ function saveSiegeQuest(){
 }
 function openRuneSiege(saved=null,options=null){
   if(!ensureActiveLesson())return;siegeRunConfig=deepClone(options||saved?.config||{});const ids=Array.isArray(siegeRunConfig.wordIds)?siegeRunConfig.wordIds:[];siegeWordsActive=ids.length?ids.map(wordById).filter(Boolean):[...words];if(!siegeWordsActive.length)return;siegeWordTotal.textContent=siegeWordsActive.length;
-  stopActiveGame();beginRun("rune-siege",saved||{runId:siegeRunConfig.runId});loadSiegeAssets();window.speechSynthesis&&window.speechSynthesis.cancel();
+  stopActiveGame();beginRun("rune-siege",saved||{runId:siegeRunConfig.runId});loadSiegeAssets();window.DWNarrator?.stop();window.speechSynthesis&&window.speechSynthesis.cancel();
   [modeScreen,flashMode,testMode,reviewMode,teacherScreen,element("wednesdayMode"),element("thursdayMode")].forEach(function(element){element.classList.add("hidden")});
   siegeMode.classList.remove("hidden");siegeResults.classList.add("hidden");siegeSpellPanel.classList.remove("hidden");
   window.scrollTo(0,0);
@@ -2578,7 +2567,7 @@ function exportAllResults(){downloadBlob("dragonswood-spelling-practice-results.
 window.addEventListener("online",()=>retryReportOutbox(false));
 
 function stopActiveGame(){
-  window.speechSynthesis&&window.speechSynthesis.cancel();clearTimeout(advanceTimer);advanceTimer=0;clearTimeout(speakTimer);speakTimer=0;cancelAnimationFrame(siegeFrame);siegeAnim=false;siegeDrag=false;
+  window.DWNarrator?.stop();window.speechSynthesis&&window.speechSynthesis.cancel();clearTimeout(advanceTimer);advanceTimer=0;clearTimeout(speakTimer);speakTimer=0;cancelAnimationFrame(siegeFrame);siegeAnim=false;siegeDrag=false;
 }
 document.addEventListener("keydown",e=>{
   if(e.key!=="Enter")return;

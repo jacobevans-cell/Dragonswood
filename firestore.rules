@@ -247,7 +247,7 @@ service cloud.firestore {
                     && request.resource.data.diff(resource.data).affectedKeys()
                        .hasOnly(['title','avatar','avatarConfig','equipped','homeBackgroundId','narrationVoice','updatedAt'])
                     && request.resource.data.get('narrationVoice','automatic') in [
-                      'automatic','gb-lewis','us-liam','us-bella','es-alex'
+                      'automatic','us-brian','gb-lewis','us-liam','us-bella','es-alex'
                     ]
                     && request.resource.data.get('homeBackgroundId','fairy-purple') in [
                       'fairy-purple','fairy-bamboo','fairy-mushroom','crystal-cave',

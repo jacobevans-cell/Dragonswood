@@ -8,6 +8,8 @@ const crypto=require("node:crypto");
 if(!admin.apps.length)admin.initializeApp();
 const db=admin.firestore(),FieldValue=admin.firestore.FieldValue;
 const OPENAI_API_KEY=defineSecret("OPENAI_API_KEY");
+const AZURE_SPEECH_KEY=defineSecret("AZURE_SPEECH_KEY");
+const AZURE_SPEECH_REGION=defineSecret("AZURE_SPEECH_REGION");
 const POLICY_VERSION="academic-rescue-v2.3",DEFAULT_MODEL="gpt-5-nano";
 const DEFAULT_AI_LIMITS=Object.freeze({
   perStudentDailyCallCap:40,
@@ -228,4 +230,62 @@ exports.recordSpellingResult=onCall({region:"us-central1",timeoutSeconds:20,memo
     studentId:uid,studentName:clip(profile.firstName||profile.displayName||request.auth.token?.name||"Scholar",120),dateKey,schoolWeekId:clip(d.schoolWeekId,80),assignmentId:clip(d.assignmentId,180),lessonId:clip(d.lessonId,180),lessonVersion:Math.max(1,Math.min(999,Number(d.lessonVersion)||1)),levelKey:expectedLevel,spellingGrade:grade,week,mode,missionId:clip(d.missionId,120),completionStatus,status:completionStatus.includes("complete")?"complete":"recorded",score,accuracy:score,correctedAccuracy:Math.max(0,Math.min(100,Number(d.correctedAccuracy)||score)),attempts:Math.max(0,Math.min(1000,Number(d.attempts)||0)),practiceOnly:d.practiceOnly!==false,officialAttempt:d.officialAttempt!==false,firstPassLockedAt:clip(d.firstPassLockedAt,80),masteryBand:clip(d.masteryBand,80),wordCount:Math.max(0,Math.min(100,Number(d.wordCount)||0)),contentIds:Array.isArray(d.contentIds)?d.contentIds.map(value=>clip(value,120)).slice(0,40):[],runId:clip(d.runId,180),engineVersion:clip(d.engineVersion,40),source:"rune-spelling-portal",idempotencyHash:hash(idempotencyKey),completedAt:FieldValue.serverTimestamp(),createdAt:FieldValue.serverTimestamp(),updatedAt:FieldValue.serverTimestamp()
   })});
   return {acknowledged:true,idempotent:!created,resultId,dateKey,week,spellingGrade:grade};
+});
+
+// Sitewide Brian narration. Stable books should normally use the checked-in
+// MP3 manifest; this callable covers authenticated lesson text that changes.
+// The text hash makes identical wording reuse the same private Storage object.
+const BRIAN_VOICE="en-US-BrianMultilingualNeural",BRIAN_CACHE_VERSION="brian-v1";
+const BRIAN_LOCALES=new Set(["en-US","en-GB","en-IE","en-AU","es-ES","fr-FR","ar-SA","zh-CN","vi-VN"]);
+const BRIAN_RATE="-8%",BRIAN_OUTPUT_FORMAT="audio-24khz-48kbitrate-mono-mp3",BRIAN_INTERVAL_MS=3250;
+let brianLastSynthesisAt=0;
+const narrationNormalize=value=>String(value??"").trim().replace(/\s+/g," ");
+const narrationXml=value=>String(value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;");
+const wait=milliseconds=>new Promise(resolve=>setTimeout(resolve,milliseconds));
+
+async function synthesizeBrian(text,locale){
+  const region=String(AZURE_SPEECH_REGION.value()||"").trim().toLowerCase();
+  if(!/^[a-z0-9-]+$/.test(region))throw new Error("Azure Speech region is not configured correctly.");
+  const elapsed=Date.now()-brianLastSynthesisAt;
+  if(elapsed<BRIAN_INTERVAL_MS)await wait(BRIAN_INTERVAL_MS-elapsed);
+  const ssml=`<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-US"><voice name="${BRIAN_VOICE}"><lang xml:lang="${locale}"><prosody rate="${BRIAN_RATE}">${narrationXml(text)}</prosody></lang></voice></speak>`;
+  let lastError;
+  for(let attempt=1;attempt<=3;attempt++){
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),45000);
+    try{
+      brianLastSynthesisAt=Date.now();
+      const response=await fetch(`https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`,{method:"POST",signal:controller.signal,
+        headers:{"Ocp-Apim-Subscription-Key":AZURE_SPEECH_KEY.value(),"Content-Type":"application/ssml+xml","X-Microsoft-OutputFormat":BRIAN_OUTPUT_FORMAT,"User-Agent":"Dragonswood-Brian-Function/1.0"},body:ssml});
+      if(response.ok)return Buffer.from(await response.arrayBuffer());
+      const detail=(await response.text()).slice(0,300),error=new Error(`Azure Speech ${response.status}: ${detail||response.statusText}`);error.status=response.status;error.retryAfter=response.headers.get("retry-after");throw error;
+    }catch(error){
+      lastError=error;
+      if(error.status!==429&&(!error.status||error.status<500))break;
+      if(attempt<3)await wait(Math.min(12000,Math.max(Number(error.retryAfter)||0,2**attempt)*1000));
+    }finally{clearTimeout(timer)}
+  }
+  throw lastError;
+}
+
+exports.synthesizeBrianNarration=onCall({region:"us-central1",timeoutSeconds:60,memory:"512MiB",maxInstances:1,concurrency:1,secrets:[AZURE_SPEECH_KEY,AZURE_SPEECH_REGION]},async request=>{
+  if(!(await isAuthorized(request)))throw new HttpsError("permission-denied","Authorized Dragonswood users only.");
+  const text=narrationNormalize(request.data?.text),locale=BRIAN_LOCALES.has(request.data?.locale)?request.data.locale:"en-US";
+  if(!text)throw new HttpsError("invalid-argument","Narration text is required.");
+  if(text.length>6000)throw new HttpsError("invalid-argument","Narration text must be 6,000 characters or fewer per part.");
+  const cacheHash=hash(`${BRIAN_CACHE_VERSION}\0${BRIAN_VOICE}\0${locale}\0${BRIAN_RATE}\0${text}`),path=`narration-cache/${BRIAN_CACHE_VERSION}/${cacheHash}.mp3`;
+  let bucket,file;
+  try{
+    bucket=admin.storage().bucket();file=bucket.file(path);
+    const [found]=await file.exists();
+    if(found){const [audio]=await file.download();return {audioBase64:audio.toString("base64"),contentType:"audio/mpeg",cacheHit:true,cacheHash,voiceName:BRIAN_VOICE,locale}}
+  }catch(error){console.warn("Brian narration cache read unavailable",error?.message||error)}
+  try{
+    const audio=await synthesizeBrian(text,locale);
+    if(audio.length<500)throw new Error(`Azure returned only ${audio.length} audio bytes.`);
+    if(file){
+      try{await file.save(audio,{resumable:false,metadata:{contentType:"audio/mpeg",cacheControl:"private,max-age=31536000",metadata:{voiceName:BRIAN_VOICE,locale,cacheHash,cacheVersion:BRIAN_CACHE_VERSION}}})}
+      catch(error){console.warn("Brian narration cache write unavailable",error?.message||error)}
+    }
+    return {audioBase64:audio.toString("base64"),contentType:"audio/mpeg",cacheHit:false,cacheHash,voiceName:BRIAN_VOICE,locale};
+  }catch(error){console.error("Brian narration synthesis failed",error?.message||error);throw new HttpsError("unavailable","Brian narration is temporarily unavailable.")}
 });

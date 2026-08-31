@@ -1,13 +1,7 @@
 {
-  "version": 2,
-  "model": "onnx-community/Kokoro-82M-v1.0-ONNX",
-  "speed": 0.9,
-  "voices": {
-    "gb-lewis": {"modelVoice": "bm_lewis", "language": "en-GB", "role": "fantasy-general"},
-    "us-liam": {"modelVoice": "am_liam", "language": "en-US", "role": "ela-academic"},
-    "us-bella": {"modelVoice": "af_bella", "language": "en-US", "role": "student-choice"},
-    "es-alex": {"modelVoice": "em_alex", "language": "es-ES", "role": "spanish-support"}
-  },
+  "version": 3,
+  "voiceId": "us-brian",
+  "voiceName": "en-US-BrianMultilingualNeural",
   "clips": [
     {
       "id": "system/welcome",
@@ -15,10 +9,9 @@
       "lessonId": "welcome",
       "sectionId": "greeting",
       "contentType": "general",
+      "locale": "en-US",
       "text": "Hello, adventurer, and welcome to Dragonswood. We hope to see you soon—and hear the tales of your journey.",
-      "translations": {"es-alex": "Hola, aventurero, y bienvenido a Dragonswood. Esperamos verte pronto y escuchar los relatos de tu viaje."},
-      "voices": ["gb-lewis", "us-liam", "us-bella", "es-alex"],
-      "textVersion": 1,
+      "textVersion": 2,
       "fallback": true
     }
   ]

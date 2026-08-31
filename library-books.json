@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "books": [
+    {
+      "id": "witches",
+      "title": "The Witches",
+      "enabled": true,
+      "source": "witches-reader.html",
+      "sourceFormat": "dragonswood-page-text",
+      "clipIdPrefix": "witches-reader/page-",
+      "locale": "en-US"
+    }
+  ]
+}

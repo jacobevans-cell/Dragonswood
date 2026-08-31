@@ -82,7 +82,7 @@ class DeepTimeEngine{
   }
 
   strip(s){const d=document.createElement('div');d.innerHTML=String(s||'');return d.textContent||''}
-  speak(t){if(!('speechSynthesis'in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=.93;speechSynthesis.speak(u)}
+  speak(t){window.DWNarrator?.play({id:`deep-time/briefing/${this.config?.day||'current'}`,text:String(t||''),contentType:'general',locale:'en-US',rate:.93})}
   tone(freq=480,dur=.07,vol=.022,type='sine'){if(!this.soundOn)return;try{const c=this.audioCtx||(this.audioCtx=new (window.AudioContext||window.webkitAudioContext)());const o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,c.currentTime);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+dur);o.connect(g).connect(c.destination);o.start();o.stop(c.currentTime+dur)}catch(_){}}
   toast(t){const x=$('#toast');x.textContent=t;x.classList.add('show');clearTimeout(x._t);x._t=setTimeout(()=>x.classList.remove('show'),2200)}
 

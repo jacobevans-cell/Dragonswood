@@ -14,7 +14,7 @@
   }
   function ready(){
     if(window.DWNarrator)return Promise.resolve(window.DWNarrator);
-    if(!loader)loader=loadScript('../narration-manifest.js').then(()=>loadScript('../dragonswood-narrator.js?v=57.1.10')).then(()=>{
+    if(!loader)loader=loadScript('../narration-manifest.js?v=59.0.0').then(()=>loadScript('../dragonswood-narrator.js?v=59.0.0')).then(()=>{
       if(!window.DWNarrator)throw new Error('Dragonswood narrator did not initialize.');
       return window.DWNarrator;
     });
@@ -30,9 +30,9 @@
     const text=normalize(options.text||readableText(options.root));
     if(!text)throw new Error('No readable page text was found.');
     const narrator=await ready();
-    const voiceId=['gb-lewis','us-liam','us-bella','es-alex'].includes(String(options.voiceId||''))?String(options.voiceId):'';
+    const voiceId=String(options.voiceId||'')==='us-brian'?'us-brian':'';
     narrator.play({id:String(options.id||`v33/${location.hash||'page'}`),text,voiceId,contentType:String(options.contentType||'general')});
     return {text,voiceId:voiceId||'automatic'};
   }
-  window.DWV33Narration=Object.freeze({version:'cedar-bridge-1',ready,readableText,readPage});
+  window.DWV33Narration=Object.freeze({version:'brian-bridge-2',ready,readableText,readPage});
 })();

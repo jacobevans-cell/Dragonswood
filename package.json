@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "narration:audit": "node tools/narration/audit-narration.mjs",
-    "narration:generate": "node tools/narration/generate-narration.mjs --generate"
-  },
-  "devDependencies": {"kokoro-js": "^1.2.1"}
+    "narration:plan": "node tools/narration/generate-azure-brian.mjs",
+    "narration:generate": "node tools/narration/generate-azure-brian.mjs --generate",
+    "narration:generate:force": "node tools/narration/generate-azure-brian.mjs --generate --force"
+  }
 }

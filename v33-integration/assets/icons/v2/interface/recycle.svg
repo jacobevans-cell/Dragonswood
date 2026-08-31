@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">recycle</title>
+  <style>
+    .none{fill:none}.navy{fill:#0b1426}.teal{fill:#0e6677}.cyan{fill:#45d9f2}.cream{fill:#f6e8bd}
+    .gold-stroke{stroke:#f4c95d;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .cyan-stroke{stroke:#45d9f2;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .teal-stroke{stroke:#0e6677;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke-width:2}.heavy{stroke-width:5}.dash{stroke-dasharray:4 4}
+  </style>
+  <path class="none gold-stroke heavy" d="m30 10 7 11H24zm23 30-13 1 7-11zM14 47l6-12 7 11z"/><path class="none cyan-stroke" d="M36 15c8 2 13 7 15 14M47 42c-5 8-13 11-21 9M16 42c-4-8-2-17 3-23"/>
+</svg>

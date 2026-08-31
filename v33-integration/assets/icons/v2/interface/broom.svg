@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">broom</title>
+  <style>
+    .none{fill:none}.navy{fill:#0b1426}.teal{fill:#0e6677}.cyan{fill:#45d9f2}.cream{fill:#f6e8bd}
+    .gold-stroke{stroke:#f4c95d;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .cyan-stroke{stroke:#45d9f2;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .teal-stroke{stroke:#0e6677;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke-width:2}.heavy{stroke-width:5}.dash{stroke-dasharray:4 4}
+  </style>
+  <path class="none gold-stroke heavy" d="M48 8 23 38"/><path class="teal gold-stroke" d="m8 48 14-13 10 9-11 14z"/><path class="none cyan-stroke thin" d="m13 49 11 5m-7-11 11 6"/>
+</svg>

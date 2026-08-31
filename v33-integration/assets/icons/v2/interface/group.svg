@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">group</title>
+  <style>
+    .none{fill:none}.navy{fill:#0b1426}.teal{fill:#0e6677}.cyan{fill:#45d9f2}.cream{fill:#f6e8bd}
+    .gold-stroke{stroke:#f4c95d;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .cyan-stroke{stroke:#45d9f2;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .teal-stroke{stroke:#0e6677;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke-width:2}.heavy{stroke-width:5}.dash{stroke-dasharray:4 4}
+  </style>
+  <circle class="teal gold-stroke thin" cx="32" cy="20" r="9"/><circle class="navy gold-stroke thin" cx="15" cy="26" r="6"/><circle class="navy gold-stroke thin" cx="49" cy="26" r="6"/><path class="none cyan-stroke" d="M17 52c1-12 7-18 15-18s14 6 15 18M5 49c1-9 5-14 11-14m43 14c-1-9-5-14-11-14"/>
+</svg>

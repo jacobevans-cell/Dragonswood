@@ -75,6 +75,12 @@
       link.dataset.dwV11Visual='1';
       doc.head?.append(link);
     }
+    if(!frame.contentWindow?.DragonswoodIcons&&!doc.querySelector('script[data-dw-icon-runtime]')){
+      const icons=doc.createElement('script');
+      icons.src=new URL('js/dragonswood-icons.js?v=2.0.0',document.baseURI).href;
+      icons.dataset.dwIconRuntime='2';
+      doc.head?.append(icons);
+    }
     const style=doc.createElement('style');
     style.dataset.dwV33Embed='1';
     style.textContent='html.dw-v33-embedded{scrollbar-color:#7051a3 #07091f}html.dw-v33-embedded body{background-attachment:scroll!important}html.dw-v33-embedded a[href^="index.html"],html.dw-v33-embedded a[href^="./index.html"]{display:none!important}';

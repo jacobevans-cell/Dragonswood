@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">bell</title>
+  <style>
+    .none{fill:none}.navy{fill:#0b1426}.teal{fill:#0e6677}.cyan{fill:#45d9f2}.cream{fill:#f6e8bd}
+    .gold-stroke{stroke:#f4c95d;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .cyan-stroke{stroke:#45d9f2;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .teal-stroke{stroke:#0e6677;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke-width:2}.heavy{stroke-width:5}.dash{stroke-dasharray:4 4}
+  </style>
+  <path class="navy gold-stroke" d="M15 45h34l-5-7V27a12 12 0 0 0-24 0v11z"/><path class="teal" d="M27 49h10c0 5-2 7-5 7s-5-2-5-7z"/><path class="none cyan-stroke thin" d="M32 11v4"/>
+</svg>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">headphones</title>
+  <style>
+    .none{fill:none}.navy{fill:#0b1426}.teal{fill:#0e6677}.cyan{fill:#45d9f2}.cream{fill:#f6e8bd}
+    .gold-stroke{stroke:#f4c95d;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .cyan-stroke{stroke:#45d9f2;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .teal-stroke{stroke:#0e6677;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke-width:2}.heavy{stroke-width:5}.dash{stroke-dasharray:4 4}
+  </style>
+  <path class="none gold-stroke heavy" d="M10 34v-7a22 22 0 0 1 44 0v7"/><rect class="navy cyan-stroke thin" x="7" y="31" width="12" height="22" rx="5"/><rect class="navy cyan-stroke thin" x="45" y="31" width="12" height="22" rx="5"/>
+</svg>

@@ -1,0 +1,2158 @@
+{
+  "✨": {
+    "action": "icon",
+    "replacement": "magic-spark",
+    "assetPath": "illustrated/magic-spark.png",
+    "variant": null,
+    "notes": "One reusable magical emphasis/reward mark."
+  },
+  "🔤": {
+    "action": "icon",
+    "replacement": "alphabet-runes",
+    "assetPath": "illustrated/alphabet-runes.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🗺️": {
+    "action": "icon",
+    "replacement": "quest-map",
+    "assetPath": "illustrated/quest-map.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🐢": {
+    "action": "icon",
+    "replacement": "turtle",
+    "assetPath": "illustrated/turtle.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🧱": {
+    "action": "icon",
+    "replacement": "brick",
+    "assetPath": "illustrated/brick.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🐟": {
+    "action": "icon",
+    "replacement": "fish",
+    "assetPath": "illustrated/fish.png",
+    "variant": null,
+    "notes": ""
+  },
+  "⬛": {
+    "action": "css",
+    "replacement": "color-swatch",
+    "assetPath": null,
+    "variant": "ink",
+    "notes": "Render as a CSS shape using the design token; do not use a glyph or image."
+  },
+  "🍂": {
+    "action": "icon",
+    "replacement": "autumn-leaf",
+    "assetPath": "illustrated/autumn-leaf.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🟨": {
+    "action": "css",
+    "replacement": "color-swatch",
+    "assetPath": null,
+    "variant": "gold",
+    "notes": "Render as a CSS shape using the design token; do not use a glyph or image."
+  },
+  "🔒": {
+    "action": "icon",
+    "replacement": "lock",
+    "assetPath": "interface/lock.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "⏳": {
+    "action": "icon",
+    "replacement": "hourglass",
+    "assetPath": "interface/hourglass.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "📝": {
+    "action": "icon",
+    "replacement": "note",
+    "assetPath": "interface/note.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🌳": {
+    "action": "icon",
+    "replacement": "ancient-oak",
+    "assetPath": "illustrated/ancient-oak.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🔎": {
+    "action": "icon",
+    "replacement": "search",
+    "assetPath": "interface/search.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🧬": {
+    "action": "icon",
+    "replacement": "dna",
+    "assetPath": "illustrated/dna.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🔐": {
+    "action": "icon",
+    "replacement": "lock",
+    "assetPath": "interface/lock.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🏞️": {
+    "action": "icon",
+    "replacement": "landscape",
+    "assetPath": "illustrated/landscape.png",
+    "variant": null,
+    "notes": ""
+  },
+  "📋": {
+    "action": "icon",
+    "replacement": "clipboard",
+    "assetPath": "interface/clipboard.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🐉": {
+    "action": "icon",
+    "replacement": "dragon-crest",
+    "assetPath": "illustrated/dragon-crest.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🔬": {
+    "action": "icon",
+    "replacement": "microscope",
+    "assetPath": "illustrated/microscope.png",
+    "variant": null,
+    "notes": ""
+  },
+  "⚙️": {
+    "action": "icon",
+    "replacement": "settings",
+    "assetPath": "interface/settings.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🔊": {
+    "action": "icon",
+    "replacement": "volume",
+    "assetPath": "interface/volume.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🏆": {
+    "action": "icon",
+    "replacement": "victory-trophy",
+    "assetPath": "illustrated/victory-trophy.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🏛️": {
+    "action": "icon",
+    "replacement": "temple",
+    "assetPath": "illustrated/temple.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🦴": {
+    "action": "icon",
+    "replacement": "bone",
+    "assetPath": "illustrated/bone.png",
+    "variant": null,
+    "notes": ""
+  },
+  "📏": {
+    "action": "icon",
+    "replacement": "ruler",
+    "assetPath": "illustrated/ruler.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🔥": {
+    "action": "icon",
+    "replacement": "flame",
+    "assetPath": "illustrated/flame.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🦷": {
+    "action": "icon",
+    "replacement": "tooth",
+    "assetPath": "illustrated/tooth.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🛡️": {
+    "action": "icon",
+    "replacement": "ornate-shield",
+    "assetPath": "illustrated/ornate-shield.png",
+    "variant": null,
+    "notes": ""
+  },
+  "▶": {
+    "action": "icon",
+    "replacement": "play",
+    "assetPath": "interface/play.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "⭐": {
+    "action": "icon",
+    "replacement": "magic-spark",
+    "assetPath": "illustrated/magic-spark.png",
+    "variant": null,
+    "notes": "One reusable magical emphasis/reward mark."
+  },
+  "✅": {
+    "action": "icon",
+    "replacement": "check",
+    "assetPath": "interface/check.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "⚔️": {
+    "action": "icon",
+    "replacement": "enchanted-sword",
+    "assetPath": "illustrated/enchanted-sword.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🪨": {
+    "action": "icon",
+    "replacement": "stone",
+    "assetPath": "illustrated/stone.png",
+    "variant": null,
+    "notes": ""
+  },
+  "📚": {
+    "action": "icon",
+    "replacement": "enchanted-spellbook",
+    "assetPath": "illustrated/enchanted-spellbook.png",
+    "variant": null,
+    "notes": ""
+  },
+  "📜": {
+    "action": "icon",
+    "replacement": "message-scroll",
+    "assetPath": "illustrated/message-scroll.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🧪": {
+    "action": "icon",
+    "replacement": "alchemy-potion",
+    "assetPath": "illustrated/alchemy-potion.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🏰": {
+    "action": "icon",
+    "replacement": "castle-gate",
+    "assetPath": "illustrated/castle-gate.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🔔": {
+    "action": "icon",
+    "replacement": "bell",
+    "assetPath": "interface/bell.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🌿": {
+    "action": "icon",
+    "replacement": "herb",
+    "assetPath": "illustrated/herb.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🧠": {
+    "action": "icon",
+    "replacement": "brain",
+    "assetPath": "illustrated/brain.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🌍": {
+    "action": "icon",
+    "replacement": "globe",
+    "assetPath": "illustrated/globe.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🧩": {
+    "action": "icon",
+    "replacement": "puzzle",
+    "assetPath": "illustrated/puzzle.png",
+    "variant": null,
+    "notes": ""
+  },
+  "⚡": {
+    "action": "icon",
+    "replacement": "lightning",
+    "assetPath": "illustrated/lightning.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🔮": {
+    "action": "icon",
+    "replacement": "magic-crystal",
+    "assetPath": "illustrated/magic-crystal.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🎯": {
+    "action": "icon",
+    "replacement": "target",
+    "assetPath": "illustrated/target.png",
+    "variant": null,
+    "notes": ""
+  },
+  "💬": {
+    "action": "icon",
+    "replacement": "message-scroll",
+    "assetPath": "illustrated/message-scroll.png",
+    "variant": null,
+    "notes": ""
+  },
+  "📖": {
+    "action": "icon",
+    "replacement": "enchanted-spellbook",
+    "assetPath": "illustrated/enchanted-spellbook.png",
+    "variant": null,
+    "notes": ""
+  },
+  "💎": {
+    "action": "icon",
+    "replacement": "magic-crystal",
+    "assetPath": "illustrated/magic-crystal.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🔇": {
+    "action": "icon",
+    "replacement": "mute",
+    "assetPath": "interface/mute.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "⏸": {
+    "action": "icon",
+    "replacement": "pause",
+    "assetPath": "interface/pause.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🎟️": {
+    "action": "icon",
+    "replacement": "ticket",
+    "assetPath": "interface/ticket.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "💡": {
+    "action": "icon",
+    "replacement": "idea-lantern",
+    "assetPath": "illustrated/idea-lantern.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🔍": {
+    "action": "icon",
+    "replacement": "search",
+    "assetPath": "interface/search.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🪵": {
+    "action": "icon",
+    "replacement": "timber",
+    "assetPath": "illustrated/timber.png",
+    "variant": null,
+    "notes": ""
+  },
+  "☀️": {
+    "action": "icon",
+    "replacement": "sun",
+    "assetPath": "interface/sun.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "👑": {
+    "action": "icon",
+    "replacement": "crown",
+    "assetPath": "illustrated/crown.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🌟": {
+    "action": "icon",
+    "replacement": "magic-spark",
+    "assetPath": "illustrated/magic-spark.png",
+    "variant": null,
+    "notes": "One reusable magical emphasis/reward mark."
+  },
+  "🎨": {
+    "action": "icon",
+    "replacement": "paint-palette",
+    "assetPath": "illustrated/paint-palette.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🏐": {
+    "action": "icon",
+    "replacement": "sports-ball",
+    "assetPath": "illustrated/sports-ball.png",
+    "variant": null,
+    "notes": ""
+  },
+  "⚽": {
+    "action": "icon",
+    "replacement": "sports-ball",
+    "assetPath": "illustrated/sports-ball.png",
+    "variant": null,
+    "notes": ""
+  },
+  "➗": {
+    "action": "icon",
+    "replacement": "division",
+    "assetPath": "interface/division.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🌱": {
+    "action": "icon",
+    "replacement": "herb",
+    "assetPath": "illustrated/herb.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🏹": {
+    "action": "icon",
+    "replacement": "bow",
+    "assetPath": "illustrated/bow.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🧙": {
+    "action": "icon",
+    "replacement": "wizard",
+    "assetPath": "illustrated/wizard.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🌅": {
+    "action": "icon",
+    "replacement": "sun",
+    "assetPath": "interface/sun.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "💥": {
+    "action": "icon",
+    "replacement": "magic-spark",
+    "assetPath": "illustrated/magic-spark.png",
+    "variant": null,
+    "notes": "One reusable magical emphasis/reward mark."
+  },
+  "🥚": {
+    "action": "icon",
+    "replacement": "dragon-egg",
+    "assetPath": "illustrated/dragon-egg.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🍎": {
+    "action": "icon",
+    "replacement": "apple",
+    "assetPath": "illustrated/apple.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🎧": {
+    "action": "icon",
+    "replacement": "headphones",
+    "assetPath": "interface/headphones.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🐾": {
+    "action": "icon",
+    "replacement": "paw",
+    "assetPath": "illustrated/paw.png",
+    "variant": null,
+    "notes": ""
+  },
+  "💀": {
+    "action": "icon",
+    "replacement": "skull",
+    "assetPath": "illustrated/skull.png",
+    "variant": null,
+    "notes": ""
+  },
+  "💧": {
+    "action": "icon",
+    "replacement": "water",
+    "assetPath": "illustrated/water.png",
+    "variant": null,
+    "notes": ""
+  },
+  "📘": {
+    "action": "icon",
+    "replacement": "enchanted-spellbook",
+    "assetPath": "illustrated/enchanted-spellbook.png",
+    "variant": null,
+    "notes": ""
+  },
+  "⏰": {
+    "action": "icon",
+    "replacement": "timer",
+    "assetPath": "interface/timer.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "⚠️": {
+    "action": "icon",
+    "replacement": "warning",
+    "assetPath": "interface/warning.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "❌": {
+    "action": "icon",
+    "replacement": "close",
+    "assetPath": "interface/close.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "❤️": {
+    "action": "icon",
+    "replacement": "heart",
+    "assetPath": "interface/heart.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🌙": {
+    "action": "icon",
+    "replacement": "moon-relic",
+    "assetPath": "illustrated/moon-relic.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🌫️": {
+    "action": "icon",
+    "replacement": "cloud",
+    "assetPath": "interface/cloud.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "👥": {
+    "action": "icon",
+    "replacement": "group",
+    "assetPath": "interface/group.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🔨": {
+    "action": "icon",
+    "replacement": "hammer",
+    "assetPath": "interface/hammer.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🧭": {
+    "action": "icon",
+    "replacement": "compass",
+    "assetPath": "illustrated/compass.png",
+    "variant": null,
+    "notes": ""
+  },
+  "⚔": {
+    "action": "icon",
+    "replacement": "enchanted-sword",
+    "assetPath": "illustrated/enchanted-sword.png",
+    "variant": null,
+    "notes": ""
+  },
+  "❄️": {
+    "action": "icon",
+    "replacement": "snowflake",
+    "assetPath": "illustrated/snowflake.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🐲": {
+    "action": "icon",
+    "replacement": "dragon-crest",
+    "assetPath": "illustrated/dragon-crest.png",
+    "variant": null,
+    "notes": ""
+  },
+  "📦": {
+    "action": "icon",
+    "replacement": "package",
+    "assetPath": "interface/package.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🪙": {
+    "action": "icon",
+    "replacement": "coin",
+    "assetPath": "interface/coin.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🙂": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🚪": {
+    "action": "icon",
+    "replacement": "door",
+    "assetPath": "interface/door.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "⚗️": {
+    "action": "icon",
+    "replacement": "alchemy-flask",
+    "assetPath": "illustrated/alchemy-flask.png",
+    "variant": null,
+    "notes": ""
+  },
+  "✍️": {
+    "action": "icon",
+    "replacement": "note",
+    "assetPath": "interface/note.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🌀": {
+    "action": "icon",
+    "replacement": "loading",
+    "assetPath": "interface/loading.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🌤️": {
+    "action": "icon",
+    "replacement": "cloud",
+    "assetPath": "interface/cloud.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "👺": {
+    "action": "icon",
+    "replacement": "goblin",
+    "assetPath": "illustrated/goblin.png",
+    "variant": null,
+    "notes": ""
+  },
+  "💜": {
+    "action": "icon",
+    "replacement": "heart",
+    "assetPath": "interface/heart.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "📅": {
+    "action": "icon",
+    "replacement": "calendar",
+    "assetPath": "interface/calendar.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🧹": {
+    "action": "icon",
+    "replacement": "broom",
+    "assetPath": "interface/broom.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "😊": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🛑": {
+    "action": "icon",
+    "replacement": "stop",
+    "assetPath": "interface/stop.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🟡": {
+    "action": "css",
+    "replacement": "color-swatch",
+    "assetPath": null,
+    "variant": "gold",
+    "notes": "Render as a CSS shape using the design token; do not use a glyph or image."
+  },
+  "↔": {
+    "action": "icon",
+    "replacement": "arrow",
+    "assetPath": "interface/arrow.svg",
+    "variant": "horizontal",
+    "notes": "Rotate or mirror the canonical arrow in CSS."
+  },
+  "↪": {
+    "action": "icon",
+    "replacement": "arrow",
+    "assetPath": "interface/arrow.svg",
+    "variant": "return-right",
+    "notes": "Rotate or mirror the canonical arrow in CSS."
+  },
+  "◀": {
+    "action": "icon",
+    "replacement": "previous",
+    "assetPath": "interface/previous.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🌎": {
+    "action": "icon",
+    "replacement": "globe",
+    "assetPath": "illustrated/globe.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🍦": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🎮": {
+    "action": "icon",
+    "replacement": "gamepad",
+    "assetPath": "interface/gamepad.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "👁️": {
+    "action": "icon",
+    "replacement": "eye",
+    "assetPath": "interface/eye.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "👋": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🪄": {
+    "action": "icon",
+    "replacement": "wizard",
+    "assetPath": "illustrated/wizard.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🚌": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🚶": {
+    "action": "icon",
+    "replacement": "person",
+    "assetPath": "interface/person.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "↕": {
+    "action": "icon",
+    "replacement": "arrow",
+    "assetPath": "interface/arrow.svg",
+    "variant": "vertical",
+    "notes": "Rotate or mirror the canonical arrow in CSS."
+  },
+  "↗": {
+    "action": "icon",
+    "replacement": "arrow",
+    "assetPath": "interface/arrow.svg",
+    "variant": "up-right",
+    "notes": "Rotate or mirror the canonical arrow in CSS."
+  },
+  "⚒️": {
+    "action": "icon",
+    "replacement": "toolbox",
+    "assetPath": "interface/toolbox.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "⚖️": {
+    "action": "icon",
+    "replacement": "balance",
+    "assetPath": "interface/balance.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "⚛️": {
+    "action": "icon",
+    "replacement": "atom",
+    "assetPath": "interface/atom.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "⛈️": {
+    "action": "icon",
+    "replacement": "storm",
+    "assetPath": "illustrated/storm.png",
+    "variant": null,
+    "notes": ""
+  },
+  "⛔": {
+    "action": "icon",
+    "replacement": "warning",
+    "assetPath": "interface/warning.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "➡️": {
+    "action": "icon",
+    "replacement": "arrow",
+    "assetPath": "interface/arrow.svg",
+    "variant": "right",
+    "notes": "Rotate or mirror the canonical arrow in CSS."
+  },
+  "🌬️": {
+    "action": "icon",
+    "replacement": "wind",
+    "assetPath": "interface/wind.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🌲": {
+    "action": "icon",
+    "replacement": "ancient-oak",
+    "assetPath": "illustrated/ancient-oak.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🌼": {
+    "action": "icon",
+    "replacement": "herb",
+    "assetPath": "illustrated/herb.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🎒": {
+    "action": "icon",
+    "replacement": "package",
+    "assetPath": "interface/package.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🎲": {
+    "action": "icon",
+    "replacement": "dice",
+    "assetPath": "interface/dice.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🏠": {
+    "action": "icon",
+    "replacement": "home",
+    "assetPath": "interface/home.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "👀": {
+    "action": "icon",
+    "replacement": "eye",
+    "assetPath": "interface/eye.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "👹": {
+    "action": "icon",
+    "replacement": "goblin",
+    "assetPath": "illustrated/goblin.png",
+    "variant": null,
+    "notes": ""
+  },
+  "📍": {
+    "action": "icon",
+    "replacement": "pin",
+    "assetPath": "interface/pin.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🔴": {
+    "action": "css",
+    "replacement": "color-swatch",
+    "assetPath": null,
+    "variant": "danger",
+    "notes": "Render as a CSS shape using the design token; do not use a glyph or image."
+  },
+  "🕘": {
+    "action": "icon",
+    "replacement": "timer",
+    "assetPath": "interface/timer.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🕹️": {
+    "action": "icon",
+    "replacement": "gamepad",
+    "assetPath": "interface/gamepad.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🥇": {
+    "action": "icon",
+    "replacement": "victory-trophy",
+    "assetPath": "illustrated/victory-trophy.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🥈": {
+    "action": "icon",
+    "replacement": "victory-trophy",
+    "assetPath": "illustrated/victory-trophy.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🧰": {
+    "action": "icon",
+    "replacement": "toolbox",
+    "assetPath": "interface/toolbox.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🪑": {
+    "action": "icon",
+    "replacement": "chair",
+    "assetPath": "interface/chair.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🪖": {
+    "action": "icon",
+    "replacement": "ornate-shield",
+    "assetPath": "illustrated/ornate-shield.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🙋": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "©": {
+    "action": "text",
+    "replacement": "©",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Use text-presentation chess/legal symbols or the board renderer; do not request color emoji presentation."
+  },
+  "↔️": {
+    "action": "icon",
+    "replacement": "arrow",
+    "assetPath": "interface/arrow.svg",
+    "variant": "horizontal",
+    "notes": "Rotate or mirror the canonical arrow in CSS."
+  },
+  "⏱": {
+    "action": "icon",
+    "replacement": "timer",
+    "assetPath": "interface/timer.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "⏱️": {
+    "action": "icon",
+    "replacement": "timer",
+    "assetPath": "interface/timer.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "☠️": {
+    "action": "icon",
+    "replacement": "skull",
+    "assetPath": "illustrated/skull.png",
+    "variant": null,
+    "notes": ""
+  },
+  "⚙": {
+    "action": "icon",
+    "replacement": "settings",
+    "assetPath": "interface/settings.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "⛰️": {
+    "action": "icon",
+    "replacement": "mountain",
+    "assetPath": "illustrated/mountain.png",
+    "variant": null,
+    "notes": ""
+  },
+  "✋": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "✏️": {
+    "action": "icon",
+    "replacement": "note",
+    "assetPath": "interface/note.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "➕": {
+    "action": "icon",
+    "replacement": "plus",
+    "assetPath": "interface/plus.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "➖": {
+    "action": "icon",
+    "replacement": "minus",
+    "assetPath": "interface/minus.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "⬜": {
+    "action": "css",
+    "replacement": "color-swatch",
+    "assetPath": null,
+    "variant": "cream",
+    "notes": "Render as a CSS shape using the design token; do not use a glyph or image."
+  },
+  "🃏": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🌋": {
+    "action": "icon",
+    "replacement": "volcano",
+    "assetPath": "illustrated/volcano.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🌌": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🌑": {
+    "action": "icon",
+    "replacement": "moon-relic",
+    "assetPath": "illustrated/moon-relic.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🌡️": {
+    "action": "icon",
+    "replacement": "thermometer",
+    "assetPath": "interface/thermometer.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🍀": {
+    "action": "icon",
+    "replacement": "herb",
+    "assetPath": "illustrated/herb.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🍫": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🎁": {
+    "action": "icon",
+    "replacement": "package",
+    "assetPath": "interface/package.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🎤": {
+    "action": "icon",
+    "replacement": "music",
+    "assetPath": "interface/music.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🎩": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🏃": {
+    "action": "icon",
+    "replacement": "person",
+    "assetPath": "interface/person.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🏚️": {
+    "action": "icon",
+    "replacement": "castle-gate",
+    "assetPath": "illustrated/castle-gate.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🐇": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🐋": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🐕": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🐘": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "👍": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "💠": {
+    "action": "icon",
+    "replacement": "magic-crystal",
+    "assetPath": "illustrated/magic-crystal.png",
+    "variant": null,
+    "notes": ""
+  },
+  "💨": {
+    "action": "icon",
+    "replacement": "wind",
+    "assetPath": "interface/wind.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "📐": {
+    "action": "icon",
+    "replacement": "ruler",
+    "assetPath": "illustrated/ruler.png",
+    "variant": null,
+    "notes": ""
+  },
+  "📣": {
+    "action": "icon",
+    "replacement": "megaphone",
+    "assetPath": "interface/megaphone.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🔑": {
+    "action": "icon",
+    "replacement": "key",
+    "assetPath": "interface/key.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🔓": {
+    "action": "icon",
+    "replacement": "unlock",
+    "assetPath": "interface/unlock.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🔢": {
+    "action": "text",
+    "replacement": "number",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Use ordinary accessible text, not an icon."
+  },
+  "🔭": {
+    "action": "icon",
+    "replacement": "telescope",
+    "assetPath": "interface/telescope.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🔵": {
+    "action": "css",
+    "replacement": "color-swatch",
+    "assetPath": null,
+    "variant": "cyan",
+    "notes": "Render as a CSS shape using the design token; do not use a glyph or image."
+  },
+  "🕵️‍♀️": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🖼️": {
+    "action": "icon",
+    "replacement": "camera",
+    "assetPath": "interface/camera.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🗡️": {
+    "action": "icon",
+    "replacement": "enchanted-sword",
+    "assetPath": "illustrated/enchanted-sword.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🗣️": {
+    "action": "icon",
+    "replacement": "message-scroll",
+    "assetPath": "illustrated/message-scroll.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🥵": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🥷": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🦋": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🧲": {
+    "action": "icon",
+    "replacement": "magnet",
+    "assetPath": "interface/magnet.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🪟": {
+    "action": "icon",
+    "replacement": "door",
+    "assetPath": "interface/door.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "😄": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "😍": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "😬": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "😲": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🚨": {
+    "action": "icon",
+    "replacement": "warning",
+    "assetPath": "interface/warning.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🚲": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🛠️": {
+    "action": "icon",
+    "replacement": "toolbox",
+    "assetPath": "interface/toolbox.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🟤": {
+    "action": "css",
+    "replacement": "color-swatch",
+    "assetPath": null,
+    "variant": "brown",
+    "notes": "Render as a CSS shape using the design token; do not use a glyph or image."
+  },
+  "↩": {
+    "action": "icon",
+    "replacement": "return",
+    "assetPath": "interface/return.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "⏭️": {
+    "action": "icon",
+    "replacement": "next",
+    "assetPath": "interface/next.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "☁️": {
+    "action": "icon",
+    "replacement": "cloud",
+    "assetPath": "interface/cloud.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "☄️": {
+    "action": "icon",
+    "replacement": "magic-spark",
+    "assetPath": "illustrated/magic-spark.png",
+    "variant": null,
+    "notes": "One reusable magical emphasis/reward mark."
+  },
+  "♟": {
+    "action": "text",
+    "replacement": "black pawn",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Use text-presentation chess/legal symbols or the board renderer; do not request color emoji presentation."
+  },
+  "♿": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "✖️": {
+    "action": "icon",
+    "replacement": "close",
+    "assetPath": "interface/close.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "❄": {
+    "action": "icon",
+    "replacement": "snowflake",
+    "assetPath": "illustrated/snowflake.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🌁": {
+    "action": "icon",
+    "replacement": "cloud",
+    "assetPath": "interface/cloud.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🌊": {
+    "action": "icon",
+    "replacement": "water",
+    "assetPath": "illustrated/water.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🌩️": {
+    "action": "icon",
+    "replacement": "storm",
+    "assetPath": "illustrated/storm.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🌴": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🍱": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🍿": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🎬": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🎭": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🎵": {
+    "action": "icon",
+    "replacement": "music",
+    "assetPath": "interface/music.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🏅": {
+    "action": "icon",
+    "replacement": "victory-trophy",
+    "assetPath": "illustrated/victory-trophy.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🏖️": {
+    "action": "icon",
+    "replacement": "landscape",
+    "assetPath": "illustrated/landscape.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🏗️": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "📊": {
+    "action": "icon",
+    "replacement": "clipboard",
+    "assetPath": "interface/clipboard.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "📕": {
+    "action": "icon",
+    "replacement": "enchanted-spellbook",
+    "assetPath": "illustrated/enchanted-spellbook.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🔷": {
+    "action": "icon",
+    "replacement": "magic-crystal",
+    "assetPath": "illustrated/magic-crystal.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🔹": {
+    "action": "icon",
+    "replacement": "magic-crystal",
+    "assetPath": "illustrated/magic-crystal.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🕵️": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🗓️": {
+    "action": "icon",
+    "replacement": "calendar",
+    "assetPath": "interface/calendar.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🗝️": {
+    "action": "icon",
+    "replacement": "key",
+    "assetPath": "interface/key.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🗿": {
+    "action": "icon",
+    "replacement": "stone",
+    "assetPath": "illustrated/stone.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🥉": {
+    "action": "icon",
+    "replacement": "victory-trophy",
+    "assetPath": "illustrated/victory-trophy.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🥋": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🥻": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🦅": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🧂": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🧊": {
+    "action": "icon",
+    "replacement": "snowflake",
+    "assetPath": "illustrated/snowflake.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🧑": {
+    "action": "icon",
+    "replacement": "person",
+    "assetPath": "interface/person.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🧙‍♀️": {
+    "action": "icon",
+    "replacement": "wizard",
+    "assetPath": "illustrated/wizard.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🧢": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🧮": {
+    "action": "icon",
+    "replacement": "division",
+    "assetPath": "interface/division.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🧿": {
+    "action": "icon",
+    "replacement": "magic-crystal",
+    "assetPath": "illustrated/magic-crystal.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🪐": {
+    "action": "icon",
+    "replacement": "globe",
+    "assetPath": "illustrated/globe.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🪽": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🚀": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🟫": {
+    "action": "css",
+    "replacement": "color-swatch",
+    "assetPath": null,
+    "variant": "brown",
+    "notes": "Render as a CSS shape using the design token; do not use a glyph or image."
+  },
+  "↩️": {
+    "action": "icon",
+    "replacement": "return",
+    "assetPath": "interface/return.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "⌨": {
+    "action": "icon",
+    "replacement": "laptop",
+    "assetPath": "interface/laptop.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "⏮": {
+    "action": "icon",
+    "replacement": "previous",
+    "assetPath": "interface/previous.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "⏹": {
+    "action": "icon",
+    "replacement": "stop",
+    "assetPath": "interface/stop.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "☀": {
+    "action": "icon",
+    "replacement": "sun",
+    "assetPath": "interface/sun.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "☁": {
+    "action": "icon",
+    "replacement": "cloud",
+    "assetPath": "interface/cloud.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "☑": {
+    "action": "icon",
+    "replacement": "check",
+    "assetPath": "interface/check.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "♻️": {
+    "action": "icon",
+    "replacement": "recycle",
+    "assetPath": "interface/recycle.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "✖": {
+    "action": "icon",
+    "replacement": "close",
+    "assetPath": "interface/close.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "⬆": {
+    "action": "icon",
+    "replacement": "arrow",
+    "assetPath": "interface/arrow.svg",
+    "variant": "up",
+    "notes": "Rotate or mirror the canonical arrow in CSS."
+  },
+  "🌞": {
+    "action": "icon",
+    "replacement": "sun",
+    "assetPath": "interface/sun.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🌧️": {
+    "action": "icon",
+    "replacement": "cloud",
+    "assetPath": "interface/cloud.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🌪️": {
+    "action": "icon",
+    "replacement": "storm",
+    "assetPath": "illustrated/storm.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🌸": {
+    "action": "icon",
+    "replacement": "herb",
+    "assetPath": "illustrated/herb.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🍰": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🍽️": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🎓": {
+    "action": "icon",
+    "replacement": "graduation",
+    "assetPath": "interface/graduation.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🎙️": {
+    "action": "icon",
+    "replacement": "music",
+    "assetPath": "interface/music.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🎺": {
+    "action": "icon",
+    "replacement": "music",
+    "assetPath": "interface/music.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🏁": {
+    "action": "icon",
+    "replacement": "flag",
+    "assetPath": "interface/flag.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🏇": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🏥": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🏷️": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🐍": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🐣": {
+    "action": "icon",
+    "replacement": "dragon-egg",
+    "assetPath": "illustrated/dragon-egg.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🐺": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "👘": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "👤": {
+    "action": "icon",
+    "replacement": "person",
+    "assetPath": "interface/person.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "👪": {
+    "action": "icon",
+    "replacement": "group",
+    "assetPath": "interface/group.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "👻": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "💛": {
+    "action": "icon",
+    "replacement": "heart",
+    "assetPath": "interface/heart.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "💫": {
+    "action": "icon",
+    "replacement": "magic-spark",
+    "assetPath": "illustrated/magic-spark.png",
+    "variant": null,
+    "notes": "One reusable magical emphasis/reward mark."
+  },
+  "💯": {
+    "action": "text",
+    "replacement": "100",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Use ordinary accessible text, not an icon."
+  },
+  "💻": {
+    "action": "icon",
+    "replacement": "laptop",
+    "assetPath": "interface/laptop.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "📌": {
+    "action": "icon",
+    "replacement": "pin",
+    "assetPath": "interface/pin.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "📷": {
+    "action": "icon",
+    "replacement": "camera",
+    "assetPath": "interface/camera.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "📸": {
+    "action": "icon",
+    "replacement": "camera",
+    "assetPath": "interface/camera.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🔁": {
+    "action": "icon",
+    "replacement": "loading",
+    "assetPath": "interface/loading.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🔄": {
+    "action": "icon",
+    "replacement": "loading",
+    "assetPath": "interface/loading.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🔰": {
+    "action": "icon",
+    "replacement": "warning",
+    "assetPath": "interface/warning.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🔶": {
+    "action": "icon",
+    "replacement": "magic-crystal",
+    "assetPath": "illustrated/magic-crystal.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🕯️": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🖐️": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🤖": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🤝": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🤟": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🤲": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🥤": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🦃": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🦄": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🦉": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🧍": {
+    "action": "icon",
+    "replacement": "person",
+    "assetPath": "interface/person.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🧍‍♀️": {
+    "action": "icon",
+    "replacement": "person",
+    "assetPath": "interface/person.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🧑‍🏫": {
+    "action": "icon",
+    "replacement": "teacher",
+    "assetPath": "interface/teacher.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🧥": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🧴": {
+    "action": "icon",
+    "replacement": "alchemy-potion",
+    "assetPath": "illustrated/alchemy-potion.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🪣": {
+    "action": "icon",
+    "replacement": "broom",
+    "assetPath": "interface/broom.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🪬": {
+    "action": "icon",
+    "replacement": "magic-crystal",
+    "assetPath": "illustrated/magic-crystal.png",
+    "variant": null,
+    "notes": ""
+  },
+  "🪶": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "😇": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "😢": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🙏": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🚻": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🛍️": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🛒": {
+    "action": "text",
+    "replacement": "context-label",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Rare literal/decorative pictogram: remove it and use the adjacent word, accessible label, or neutral copy. No standalone asset is intended."
+  },
+  "🛠": {
+    "action": "icon",
+    "replacement": "toolbox",
+    "assetPath": "interface/toolbox.svg",
+    "variant": null,
+    "notes": ""
+  },
+  "🟠": {
+    "action": "css",
+    "replacement": "color-swatch",
+    "assetPath": null,
+    "variant": "amber",
+    "notes": "Render as a CSS shape using the design token; do not use a glyph or image."
+  },
+  "🟢": {
+    "action": "css",
+    "replacement": "color-swatch",
+    "assetPath": null,
+    "variant": "success",
+    "notes": "Render as a CSS shape using the design token; do not use a glyph or image."
+  },
+  "🟥": {
+    "action": "css",
+    "replacement": "color-swatch",
+    "assetPath": null,
+    "variant": "danger",
+    "notes": "Render as a CSS shape using the design token; do not use a glyph or image."
+  },
+  "1️⃣": {
+    "action": "text",
+    "replacement": "1",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Use ordinary accessible text, not an icon."
+  },
+  "2️⃣": {
+    "action": "text",
+    "replacement": "2",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Use ordinary accessible text, not an icon."
+  },
+  "3️⃣": {
+    "action": "text",
+    "replacement": "3",
+    "assetPath": null,
+    "variant": null,
+    "notes": "Use ordinary accessible text, not an icon."
+  }
+}

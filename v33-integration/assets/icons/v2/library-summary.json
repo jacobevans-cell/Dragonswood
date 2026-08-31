@@ -1,0 +1,19 @@
+{
+  "auditedCommit": "8f08caad4e045ba346999fbf9285a8772ca64af4",
+  "occurrences": 10530,
+  "sequences": 308,
+  "occurrenceDecisions": {
+    "icon": 10124,
+    "css": 248,
+    "text": 158
+  },
+  "sequenceDecisions": {
+    "icon": 223,
+    "css": 11,
+    "text": 74
+  },
+  "illustratedAssets": 52,
+  "interfaceAssets": 63,
+  "unmappedSequences": 0,
+  "missingAssets": []
+}

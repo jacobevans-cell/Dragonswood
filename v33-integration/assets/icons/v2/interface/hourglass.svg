@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">hourglass</title>
+  <style>
+    .none{fill:none}.navy{fill:#0b1426}.teal{fill:#0e6677}.cyan{fill:#45d9f2}.cream{fill:#f6e8bd}
+    .gold-stroke{stroke:#f4c95d;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .cyan-stroke{stroke:#45d9f2;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .teal-stroke{stroke:#0e6677;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .thin{stroke-width:2}.heavy{stroke-width:5}.dash{stroke-dasharray:4 4}
+  </style>
+  <path class="navy gold-stroke" d="M17 9h30v8c0 8-6 12-11 15 5 3 11 7 11 15v8H17v-8c0-8 6-12 11-15-5-3-11-7-11-15z"/><path class="teal" d="M23 16h18c0 6-4 9-9 12-5-3-9-6-9-12zm0 32c1-6 5-9 9-12 4 3 8 6 9 12z"/><path class="none cyan-stroke thin" d="M18 9h28M18 55h28"/>
+</svg>

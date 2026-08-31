@@ -3,8 +3,9 @@ let failed=0;
 const pass=x=>console.log("PASS",x);
 const fail=(x,detail="")=>{failed++;console.error("FAIL",x,detail)};
 
-const engine=fs.readFileSync("curriculum-question-engine.js","utf8")+
-  "\n;globalThis.__pacingTest={DW_CURRIC_ITEMS,DW_SKILLS,dwTopicSkills,dwCurricPractice,dwValidQuestion};";
+const engine=fs.readFileSync("dragonswood-grading-core.js","utf8")+"\n"+
+  fs.readFileSync("curriculum-question-engine.js","utf8")+
+  "\n;globalThis.__pacingTest={DW_CURRIC_ITEMS,DW_SKILLS,dwTopicSkills,dwCurricPractice,dwValidQuestion,dwQuestionWithParams};";
 const context={console,window:{}};vm.createContext(context);vm.runInContext(engine,context,{timeout:30000});
 const T=context.__pacingTest;
 
@@ -30,10 +31,15 @@ else fail("4th-grade Day 16 addition lock",[...new Set(d16.map(q=>q.skillId))]);
 if(d17.length&&d17.every(q=>q.skillId==="math.sub.multi"))pass("4th-grade Day 17 is locked to multi-digit subtraction");
 else fail("4th-grade Day 17 subtraction lock",[...new Set(d17.map(q=>q.skillId))]);
 
+const morph=T.dwQuestionWithParams("curric.morph",{root:"spec/spect",word:"inspector"},1800003,3);
+if(morph&&context.window.DWGrading.auditQuestion(morph).length===0)pass("parameterized morphology retries unfair answer-choice patterns");
+else fail("parameterized morphology fairness retry",morph);
+
 const daily=fs.readFileSync("daily-quest.html","utf8"),teacher=fs.readFileSync("v33-integration/js/teacher-app.js","utf8"),runtime=fs.readFileSync("v33-integration/js/integration/runtime.js","utf8");
 for(const [label,needle] of [
   ["daily pacing contract","function dwBuildPacingLesson"],
   ["fail-closed daily generator","if(task?.pacingLocked) throw new Error"],
+  ["daily parameterized questions retry fairness failures","parameterized attempt ${a+1}"],
   ["pacing metadata in teacher review","pacingItemId:String(t.pacingItemId"],
   ["AI rescue preserved","gradeTypedAnswerWithRescue"],
   ["all approved game engines preserved","DW_PACING_ENGINES"],

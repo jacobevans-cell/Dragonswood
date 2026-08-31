@@ -5748,7 +5748,8 @@ function dwQuestionWithParams(skillId, params, seed, i){
     try{
       const r=hashSeed(Number(seed||1)+i*37+a*7919);
       const q=gen(r, Object.assign({}, entry[2]||{}, params||{}), i+a);
-      if(dwValidQuestion(q)) return Object.assign({},q,{skillId,label,source:"registry",family});
+      if(dwValidQuestion(q)&&(!window.DWGrading||window.DWGrading.assertQuestion(q,`${skillId} parameterized attempt ${a+1}`)))
+        return Object.assign({},q,{skillId,label,source:"registry",family});
     }catch(err){}
   }
   return null;

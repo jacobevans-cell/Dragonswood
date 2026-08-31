@@ -44,7 +44,7 @@
     const mod=definition(id);if(!mod)return '';
     const url=new URL(`../${mod.path}`,baseHref||globalThis.document?.baseURI||globalThis.location?.href);
     if(mod.query)new URLSearchParams(mod.query).forEach((value,key)=>url.searchParams.set(key,value));
-    if(mod.id==='daily-quest')url.searchParams.set('v','58.0.6');
+    if(mod.id==='daily-quest')url.searchParams.set('v','58.0.7');
     // Daily curriculum changes frequently. A fresh iframe URL prevents the portal
     // from reopening a cached copy after a lesson publish.
     if(mod.id==='curriculum-quest')url.searchParams.set('v',Date.now().toString(36));

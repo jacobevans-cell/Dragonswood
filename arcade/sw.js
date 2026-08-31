@@ -42,18 +42,20 @@ async function networkFirst(request){
     throw err;
   }
 }
-async function cacheFirst(request){
+async function staleWhileRevalidate(request){
   const cache=await caches.open(CACHE);
   const cached=await cache.match(request);
-  if(cached)return cached;
-  const response=await fetch(request);
-  if(response.ok)cache.put(request,response.clone());
-  return response;
+  const update=fetch(request).then(response=>{
+    if(response.ok)cache.put(request,response.clone());
+    return response;
+  });
+  if(cached){update.catch(()=>{});return cached}
+  return update;
 }
 self.addEventListener('fetch',event=>{
   if(event.request.method!=='GET')return;
   const url=new URL(event.request.url);
   if(url.origin!==self.location.origin)return;
   const freshCode=event.request.mode==='navigate'||['script','style','worker'].includes(event.request.destination)||/\.(?:js|mjs|css|html)$/.test(url.pathname);
-  event.respondWith(freshCode?networkFirst(event.request):cacheFirst(event.request));
+  event.respondWith(freshCode?networkFirst(event.request):staleWhileRevalidate(event.request));
 });

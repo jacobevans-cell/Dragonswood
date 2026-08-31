@@ -5,7 +5,9 @@
   const BRIAN_ID="us-brian",BRIAN_NAME="en-US-BrianMultilingualNeural";
   const LEGACY_VOICE_IDS=new Set(["automatic","gb-lewis","us-liam","us-bella","es-alex"]);
   const SUPPORTED_LOCALES=new Set(["en-US","en-GB","en-IE","en-AU","es-ES","fr-FR","ar-SA","zh-CN","vi-VN"]);
-  const manifest=window.DRAGONSWOOD_NARRATION_MANIFEST||{clips:{},voices:{}};
+  const runtimeScript=document.currentScript||[...document.scripts].reverse().find(script=>/dragonswood-narrator\.js(?:\?|$)/.test(script.src));
+  const assetRoot=runtimeScript?.src?new URL("./",runtimeScript.src):new URL("./",location.href);
+  let manifest=window.DRAGONSWOOD_NARRATION_MANIFEST||{clips:{},voices:{}};
   const voices=manifest.voices||{},clips=manifest.clips||{};
   let audio=null,objectUrl="",utterance=null,current=null,raf=0,speechQueue=[],speechIndex=0;
   let cloudChunks=[],cloudIndex=0,runToken=0;
@@ -14,6 +16,28 @@
   const hash=text=>{let h=2166136261;for(const ch of normalize(text)){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return(h>>>0).toString(16).padStart(8,"0")};
   const fmt=n=>`${Math.floor((n||0)/60)}:${String(Math.floor((n||0)%60)).padStart(2,"0")}`;
   const localeOf=value=>SUPPORTED_LOCALES.has(String(value||""))?String(value):"en-US";
+  const replaceMap=(target,source)=>{Object.keys(target).forEach(key=>delete target[key]);Object.assign(target,source||{})};
+
+  if(runtimeScript?.src&&!document.querySelector("script[data-dw-site-cache]")){
+    const updater=document.createElement("script");
+    updater.defer=true;updater.dataset.dwSiteCache="";
+    updater.src=new URL("dragonswood-site-cache.js?v=1.0.0",assetRoot).href;
+    document.head.append(updater);
+  }
+
+  async function refreshManifest(){
+    try{
+      const url=new URL("narration-manifest.generated.json",assetRoot);url.searchParams.set("dw",Date.now());
+      const response=await fetch(url,{cache:"reload"});
+      if(!response.ok)throw new Error(`manifest ${response.status}`);
+      const latest=await response.json();
+      if(!latest||typeof latest!=="object"||!latest.clips)throw new Error("invalid manifest");
+      manifest=latest;replaceMap(voices,latest.voices);replaceMap(clips,latest.clips);
+      window.DRAGONSWOOD_NARRATION_MANIFEST=latest;
+      return true;
+    }catch(error){console.warn("Fresh Brian narration manifest unavailable:",error?.message||error);return false}
+  }
+  refreshManifest();
 
   const root=document.createElement("section");
   root.className="dw-narrator";
@@ -184,7 +208,11 @@
     playCloudChunk(token);
   }
 
-  function resolveSource(entry,voiceId){return entry?.sources?.[voiceId]||entry?.sources?.[entry.defaultVoice]||entry?.src||""}
+  function resolveSource(entry,voiceId){
+    const value=entry?.sources?.[voiceId]||entry?.sources?.[entry.defaultVoice]||entry?.src||"";
+    if(!value)return "";
+    try{return new URL(value,assetRoot).href}catch(_){return value}
+  }
   function play(opts={}){
     stop(false);mount();root.hidden=false;
     const token=runToken;
@@ -238,7 +266,7 @@
   };
   q("#dwNarratorProgress").oninput=()=>{if(audio&&audio.duration)audio.currentTime=Number(q("#dwNarratorProgress").value)/100*audio.duration};
   ["pagehide","beforeunload","hashchange"].forEach(eventName=>addEventListener(eventName,()=>stop(true)));
-  document.addEventListener("visibilitychange",()=>{if(document.hidden)stop(true)});
+  document.addEventListener("visibilitychange",()=>{if(document.hidden)stop(true);else refreshManifest()});
 
   window.DWVoicePreferences=Object.freeze({get:pref,set:setVoicePreference,voices});
   window.DWNarrator=Object.freeze({play,previewVoice,stop,hash,normalize,setVoicePreference,getVoicePreference:pref,voiceId:BRIAN_ID,modelVoice:BRIAN_NAME});

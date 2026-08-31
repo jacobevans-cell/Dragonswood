@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Dragonswood Site Cache Browser Gate</title>
+  <script>
+    const baseline=new URLSearchParams(location.search).get("dw-site-version-baseline");
+    const marker=`dwSiteCacheBaseline:${baseline}`;
+    if(baseline&&sessionStorage.getItem(marker)!=="1"){
+      localStorage.setItem("dwSiteVersionSeenV1",baseline);
+      sessionStorage.setItem(marker,"1");
+    }
+  </script>
+  <script defer src="../../dragonswood-site-cache.js?v=1.0.0" data-dw-site-cache></script>
+</head>
+<body>
+  <h1>Dragonswood Site Cache Browser Gate</h1>
+  <p id="cache-status">checking</p>
+  <script>
+    addEventListener("load",async()=>{
+      const status=document.getElementById("cache-status");
+      if(!("serviceWorker" in navigator)){status.textContent="unsupported";return}
+      try{
+        const registration=await navigator.serviceWorker.ready;
+        const [response,versionResponse]=await Promise.all([
+          fetch("../../narration-manifest.generated.json?browser-gate=1",{cache:"reload"}),
+          fetch("browser-version.json")
+        ]);
+        const [manifest,version]=await Promise.all([response.json(),versionResponse.json()]);
+        const clip=manifest.clips?.["witches-reader/page-1"];
+        const deadline=Date.now()+3000;
+        while(!navigator.serviceWorker.controller&&Date.now()<deadline)await new Promise(resolve=>setTimeout(resolve,50));
+        status.textContent=[
+          navigator.serviceWorker.controller?"controlled":"not-controlled",
+          registration.active?.scriptURL?.endsWith("/dragonswood-sw.js")?"root-worker":"wrong-worker",
+          response.ok?"manifest-ok":"manifest-failed",
+          clip?.sources?.["us-brian"]?.includes(`?h=${clip.hash}`)?"hashed-audio":"unhashed-audio",
+          `version-${version.version}`
+        ].join("|");
+      }catch(error){status.textContent=`failed|${error.message}`}
+    });
+  </script>
+</body>
+</html>

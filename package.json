@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "site-cache:audit": "node tools/site-cache/audit-site-cache.mjs",
     "narration:audit": "node tools/narration/audit-narration.mjs",
     "narration:plan": "node tools/narration/generate-azure-brian.mjs",
     "narration:generate": "node tools/narration/generate-azure-brian.mjs --generate",

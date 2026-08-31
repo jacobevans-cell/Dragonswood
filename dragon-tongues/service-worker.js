@@ -1,4 +1,5 @@
 const CACHE_NAME = "dragon-tongues-v1-5-4-teach-me";
+const CACHE_PREFIX = "dragon-tongues-";
 const CORE_FILES = [
   "./",
   "./index.html",
@@ -22,7 +23,7 @@ self.addEventListener("install", event => {
 });
 
 self.addEventListener("activate", event => {
-  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key)))));
+  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME).map(key => caches.delete(key)))));
   self.clients.claim();
 });
 

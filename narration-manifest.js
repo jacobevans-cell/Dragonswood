@@ -2,7 +2,7 @@
 window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
   "version": 3,
   "system": "Dragonswood Brian Narrator",
-  "generatedAt": "2026-08-31T21:49:04.619Z",
+  "generatedAt": "2026-08-31T22:34:25.685Z",
   "provider": "azure-speech",
   "outputFormat": "audio-24khz-48kbitrate-mono-mp3",
   "voices": {
@@ -20,7 +20,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "general",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/narration/system/welcome/greeting--us-brian.mp3"
+        "us-brian": "assets/audio/narration/system/welcome/greeting--us-brian.mp3?h=1c8b12cb"
       },
       "voiceHashes": {
         "us-brian": "1c8b12cb"
@@ -36,7 +36,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-001.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-001.mp3?h=a4210418"
       },
       "voiceHashes": {
         "us-brian": "a4210418"
@@ -52,7 +52,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-002.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-002.mp3?h=8daf7731"
       },
       "voiceHashes": {
         "us-brian": "8daf7731"
@@ -68,7 +68,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-003.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-003.mp3?h=159eb4b0"
       },
       "voiceHashes": {
         "us-brian": "159eb4b0"
@@ -84,7 +84,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-004.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-004.mp3?h=32593e78"
       },
       "voiceHashes": {
         "us-brian": "32593e78"
@@ -100,7 +100,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-005.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-005.mp3?h=eed764ee"
       },
       "voiceHashes": {
         "us-brian": "eed764ee"
@@ -116,7 +116,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-006.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-006.mp3?h=ec83672f"
       },
       "voiceHashes": {
         "us-brian": "ec83672f"
@@ -132,7 +132,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-007.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-007.mp3?h=d1b91056"
       },
       "voiceHashes": {
         "us-brian": "d1b91056"
@@ -148,7 +148,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-008.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-008.mp3?h=1af801af"
       },
       "voiceHashes": {
         "us-brian": "1af801af"
@@ -164,7 +164,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-009.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-009.mp3?h=ab97f14a"
       },
       "voiceHashes": {
         "us-brian": "ab97f14a"
@@ -180,7 +180,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-010.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-010.mp3?h=d450d54a"
       },
       "voiceHashes": {
         "us-brian": "d450d54a"
@@ -196,7 +196,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-011.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-011.mp3?h=e41455dc"
       },
       "voiceHashes": {
         "us-brian": "e41455dc"
@@ -212,7 +212,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-012.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-012.mp3?h=001e920d"
       },
       "voiceHashes": {
         "us-brian": "001e920d"
@@ -228,7 +228,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-013.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-013.mp3?h=0ac698c8"
       },
       "voiceHashes": {
         "us-brian": "0ac698c8"
@@ -244,7 +244,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-014.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-014.mp3?h=3ceab646"
       },
       "voiceHashes": {
         "us-brian": "3ceab646"
@@ -260,7 +260,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-015.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-015.mp3?h=3a89a937"
       },
       "voiceHashes": {
         "us-brian": "3a89a937"
@@ -276,7 +276,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-016.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-016.mp3?h=173b542f"
       },
       "voiceHashes": {
         "us-brian": "173b542f"
@@ -292,7 +292,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-017.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-017.mp3?h=dfb6b43c"
       },
       "voiceHashes": {
         "us-brian": "dfb6b43c"
@@ -308,7 +308,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-018.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-018.mp3?h=a0ff0bdb"
       },
       "voiceHashes": {
         "us-brian": "a0ff0bdb"
@@ -324,7 +324,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-019.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-019.mp3?h=3683cb53"
       },
       "voiceHashes": {
         "us-brian": "3683cb53"
@@ -340,7 +340,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-020.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-020.mp3?h=a004cf33"
       },
       "voiceHashes": {
         "us-brian": "a004cf33"
@@ -356,7 +356,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-021.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-021.mp3?h=7579d273"
       },
       "voiceHashes": {
         "us-brian": "7579d273"
@@ -372,7 +372,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-022.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-022.mp3?h=768027b0"
       },
       "voiceHashes": {
         "us-brian": "768027b0"
@@ -388,7 +388,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-023.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-023.mp3?h=020f1bb1"
       },
       "voiceHashes": {
         "us-brian": "020f1bb1"
@@ -404,7 +404,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-024.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-024.mp3?h=71f5a391"
       },
       "voiceHashes": {
         "us-brian": "71f5a391"
@@ -420,7 +420,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-025.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-025.mp3?h=396899c9"
       },
       "voiceHashes": {
         "us-brian": "396899c9"
@@ -436,7 +436,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-026.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-026.mp3?h=6a8eabe7"
       },
       "voiceHashes": {
         "us-brian": "6a8eabe7"
@@ -452,7 +452,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-027.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-027.mp3?h=0212e915"
       },
       "voiceHashes": {
         "us-brian": "0212e915"
@@ -468,7 +468,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-028.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-028.mp3?h=4144755c"
       },
       "voiceHashes": {
         "us-brian": "4144755c"
@@ -484,7 +484,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-029.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-029.mp3?h=f899ea29"
       },
       "voiceHashes": {
         "us-brian": "f899ea29"
@@ -500,7 +500,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-030.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-030.mp3?h=5b14c4b1"
       },
       "voiceHashes": {
         "us-brian": "5b14c4b1"
@@ -516,7 +516,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-031.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-031.mp3?h=7d12671d"
       },
       "voiceHashes": {
         "us-brian": "7d12671d"
@@ -532,7 +532,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-032.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-032.mp3?h=30d3c9fe"
       },
       "voiceHashes": {
         "us-brian": "30d3c9fe"
@@ -548,7 +548,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-033.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-033.mp3?h=cbb07c54"
       },
       "voiceHashes": {
         "us-brian": "cbb07c54"
@@ -564,7 +564,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-034.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-034.mp3?h=09b9e829"
       },
       "voiceHashes": {
         "us-brian": "09b9e829"
@@ -580,7 +580,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-035.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-035.mp3?h=798c7327"
       },
       "voiceHashes": {
         "us-brian": "798c7327"
@@ -596,7 +596,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-036.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-036.mp3?h=82e3c63c"
       },
       "voiceHashes": {
         "us-brian": "82e3c63c"
@@ -612,7 +612,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-037.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-037.mp3?h=64712bbb"
       },
       "voiceHashes": {
         "us-brian": "64712bbb"
@@ -628,7 +628,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-038.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-038.mp3?h=b468c46b"
       },
       "voiceHashes": {
         "us-brian": "b468c46b"
@@ -644,7 +644,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-039.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-039.mp3?h=2df27671"
       },
       "voiceHashes": {
         "us-brian": "2df27671"
@@ -660,7 +660,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-040.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-040.mp3?h=2b5888f2"
       },
       "voiceHashes": {
         "us-brian": "2b5888f2"
@@ -676,7 +676,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-041.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-041.mp3?h=795831a3"
       },
       "voiceHashes": {
         "us-brian": "795831a3"
@@ -692,7 +692,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-042.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-042.mp3?h=336e4393"
       },
       "voiceHashes": {
         "us-brian": "336e4393"
@@ -708,7 +708,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-043.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-043.mp3?h=f060c306"
       },
       "voiceHashes": {
         "us-brian": "f060c306"
@@ -724,7 +724,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-044.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-044.mp3?h=49cd4af7"
       },
       "voiceHashes": {
         "us-brian": "49cd4af7"
@@ -740,7 +740,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-045.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-045.mp3?h=ce876ae7"
       },
       "voiceHashes": {
         "us-brian": "ce876ae7"
@@ -756,7 +756,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-046.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-046.mp3?h=16c0b635"
       },
       "voiceHashes": {
         "us-brian": "16c0b635"
@@ -772,7 +772,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-047.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-047.mp3?h=5ecc20cd"
       },
       "voiceHashes": {
         "us-brian": "5ecc20cd"
@@ -788,7 +788,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-048.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-048.mp3?h=5497d6ec"
       },
       "voiceHashes": {
         "us-brian": "5497d6ec"
@@ -804,7 +804,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-049.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-049.mp3?h=056266ee"
       },
       "voiceHashes": {
         "us-brian": "056266ee"
@@ -820,7 +820,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-050.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-050.mp3?h=4dc3c000"
       },
       "voiceHashes": {
         "us-brian": "4dc3c000"
@@ -836,7 +836,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-051.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-051.mp3?h=68b0e579"
       },
       "voiceHashes": {
         "us-brian": "68b0e579"
@@ -852,7 +852,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-052.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-052.mp3?h=3d522955"
       },
       "voiceHashes": {
         "us-brian": "3d522955"
@@ -868,7 +868,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-053.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-053.mp3?h=e09d689e"
       },
       "voiceHashes": {
         "us-brian": "e09d689e"
@@ -884,7 +884,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-054.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-054.mp3?h=e10b1357"
       },
       "voiceHashes": {
         "us-brian": "e10b1357"
@@ -900,7 +900,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-055.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-055.mp3?h=71322882"
       },
       "voiceHashes": {
         "us-brian": "71322882"
@@ -916,7 +916,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-056.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-056.mp3?h=eab6f93c"
       },
       "voiceHashes": {
         "us-brian": "eab6f93c"
@@ -932,7 +932,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-057.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-057.mp3?h=d11761ba"
       },
       "voiceHashes": {
         "us-brian": "d11761ba"
@@ -948,7 +948,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-058.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-058.mp3?h=2343c065"
       },
       "voiceHashes": {
         "us-brian": "2343c065"
@@ -964,7 +964,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-059.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-059.mp3?h=d68c4d97"
       },
       "voiceHashes": {
         "us-brian": "d68c4d97"
@@ -980,7 +980,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-060.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-060.mp3?h=d7ec73df"
       },
       "voiceHashes": {
         "us-brian": "d7ec73df"
@@ -996,7 +996,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-061.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-061.mp3?h=37121939"
       },
       "voiceHashes": {
         "us-brian": "37121939"
@@ -1012,7 +1012,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-062.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-062.mp3?h=77af22c3"
       },
       "voiceHashes": {
         "us-brian": "77af22c3"
@@ -1028,7 +1028,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-063.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-063.mp3?h=c217f0a2"
       },
       "voiceHashes": {
         "us-brian": "c217f0a2"
@@ -1044,7 +1044,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-064.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-064.mp3?h=c8b09478"
       },
       "voiceHashes": {
         "us-brian": "c8b09478"
@@ -1060,7 +1060,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-065.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-065.mp3?h=7afc43f6"
       },
       "voiceHashes": {
         "us-brian": "7afc43f6"
@@ -1076,7 +1076,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-066.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-066.mp3?h=076a5d8e"
       },
       "voiceHashes": {
         "us-brian": "076a5d8e"
@@ -1092,7 +1092,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-067.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-067.mp3?h=f977a15a"
       },
       "voiceHashes": {
         "us-brian": "f977a15a"
@@ -1108,7 +1108,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-068.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-068.mp3?h=c792edd6"
       },
       "voiceHashes": {
         "us-brian": "c792edd6"
@@ -1124,7 +1124,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-069.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-069.mp3?h=8aa4c90a"
       },
       "voiceHashes": {
         "us-brian": "8aa4c90a"
@@ -1140,7 +1140,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-070.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-070.mp3?h=4a050b79"
       },
       "voiceHashes": {
         "us-brian": "4a050b79"
@@ -1156,7 +1156,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-071.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-071.mp3?h=dbfd33f1"
       },
       "voiceHashes": {
         "us-brian": "dbfd33f1"
@@ -1172,7 +1172,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-072.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-072.mp3?h=d7c051e4"
       },
       "voiceHashes": {
         "us-brian": "d7c051e4"
@@ -1188,7 +1188,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-073.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-073.mp3?h=5ff3ef17"
       },
       "voiceHashes": {
         "us-brian": "5ff3ef17"
@@ -1204,7 +1204,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-074.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-074.mp3?h=7fd56720"
       },
       "voiceHashes": {
         "us-brian": "7fd56720"
@@ -1220,7 +1220,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-075.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-075.mp3?h=6e7e5b8e"
       },
       "voiceHashes": {
         "us-brian": "6e7e5b8e"
@@ -1236,7 +1236,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-076.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-076.mp3?h=880c8b01"
       },
       "voiceHashes": {
         "us-brian": "880c8b01"
@@ -1252,7 +1252,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-077.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-077.mp3?h=cd1d7428"
       },
       "voiceHashes": {
         "us-brian": "cd1d7428"
@@ -1268,7 +1268,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-078.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-078.mp3?h=4498a510"
       },
       "voiceHashes": {
         "us-brian": "4498a510"
@@ -1284,7 +1284,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-079.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-079.mp3?h=166964c5"
       },
       "voiceHashes": {
         "us-brian": "166964c5"
@@ -1300,7 +1300,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-080.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-080.mp3?h=8e1623c9"
       },
       "voiceHashes": {
         "us-brian": "8e1623c9"
@@ -1316,7 +1316,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-081.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-081.mp3?h=d68cf08c"
       },
       "voiceHashes": {
         "us-brian": "d68cf08c"
@@ -1332,7 +1332,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-082.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-082.mp3?h=039849ec"
       },
       "voiceHashes": {
         "us-brian": "039849ec"
@@ -1348,7 +1348,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-083.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-083.mp3?h=34e66f38"
       },
       "voiceHashes": {
         "us-brian": "34e66f38"
@@ -1364,7 +1364,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-084.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-084.mp3?h=0e300fbb"
       },
       "voiceHashes": {
         "us-brian": "0e300fbb"
@@ -1380,7 +1380,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-085.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-085.mp3?h=cc8d8488"
       },
       "voiceHashes": {
         "us-brian": "cc8d8488"
@@ -1396,7 +1396,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-086.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-086.mp3?h=605d2157"
       },
       "voiceHashes": {
         "us-brian": "605d2157"
@@ -1412,7 +1412,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-087.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-087.mp3?h=9dbc67a5"
       },
       "voiceHashes": {
         "us-brian": "9dbc67a5"
@@ -1428,7 +1428,7 @@ window.DRAGONSWOOD_NARRATION_MANIFEST = Object.freeze({
       "contentType": "book",
       "locale": "en-US",
       "sources": {
-        "us-brian": "assets/audio/library/witches/us-brian/page-088.mp3"
+        "us-brian": "assets/audio/library/witches/us-brian/page-088.mp3?h=0c4cb2a7"
       },
       "voiceHashes": {
         "us-brian": "0c4cb2a7"

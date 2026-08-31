@@ -39,6 +39,14 @@ service cloud.firestore {
               || !exists(/databases/$(database)/documents/passRequests/$(uid + '_office_' + dateKey))
               || get(/databases/$(database)/documents/passRequests/$(uid + '_office_' + dateKey)).data.status != 'pending');
     }
+    function substituteModeAllowsPasses() {
+      return !exists(/databases/$(database)/documents/classData/substituteMode)
+        || get(/databases/$(database)/documents/classData/substituteMode).data.active != true
+        || (
+          get(/databases/$(database)/documents/classData/substituteMode).data.get('expiresAt', null) is timestamp
+          && get(/databases/$(database)/documents/classData/substituteMode).data.expiresAt <= request.time
+        );
+    }
 
     match /students/{studentId} {
       allow read: if isTeacher() || isOwner(studentId);
@@ -215,6 +223,7 @@ service cloud.firestore {
       allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
       allow create: if gateSeed()
                     || (isStudent()
+                        && substituteModeAllowsPasses()
                         && request.resource.data.studentId == request.auth.uid
                         && request.resource.data.status == 'pending'
                         && requestId == request.auth.uid + '_' + request.resource.data.dateKey
@@ -227,6 +236,7 @@ service cloud.firestore {
       allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
       allow create: if gateSeed()
                     || (isStudent()
+                        && substituteModeAllowsPasses()
                         && request.resource.data.studentId == request.auth.uid
                         && request.resource.data.status == 'pending'
                         && requestId == request.auth.uid + '_' + request.resource.data.dateKey
@@ -239,6 +249,7 @@ service cloud.firestore {
       allow read: if isTeacher() || (signedIn() && resource.data.studentId == request.auth.uid);
       allow create: if gateSeed()
                     || (isStudent()
+                        && substituteModeAllowsPasses()
                         && request.resource.data.studentId == request.auth.uid
                         && request.resource.data.status == 'pending'
                         && request.resource.data.type in ['outOfSeat','office']

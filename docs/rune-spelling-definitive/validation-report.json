@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "generatedAt": "2026-08-31T08:37:58.687Z",
+  "sourceWorkbookSha256": "A4CE8669B462DBD464291B3D8ED7B9F2EDF9B420F0A654B2DC810230F5EB452C",
+  "gates": {
+    "exactWordCount": true,
+    "uniqueWords": true,
+    "exactLessonCount": true,
+    "fiveLevels": true,
+    "thirtyWeeksPerLevel": true,
+    "lessonSizesElevenOrTwelve": true,
+    "allRequiredFieldsPresent": true,
+    "allBreakdownsReconstructWords": true,
+    "oneApprovedSoundPerPhonogram": true,
+    "noUnapprovedPhonogramAudioFallback": true,
+    "allTokensInApprovedSpaldingSet": true,
+    "positionsContiguous": true,
+    "difficultyNondecreasing": true,
+    "allOwnerApproved": true
+  },
+  "counts": {
+    "rows": 1683,
+    "uniqueWords": 1683,
+    "lessons": 150,
+    "usedPhonograms": 69,
+    "allowedPhonograms": 70,
+    "allowedButUnused": [
+      "oe"
+    ],
+    "isolatedAudioRouteExceptions": 1
+  },
+  "audioRouteExceptions": [
+    {
+      "word": "disappear",
+      "workbookRow": 853,
+      "phonogram": "ear",
+      "selectedSound": "ēr (sound 2 of 3)",
+      "reason": "The authorized Track 1–4 library contains no isolated recording for this selected sound."
+    }
+  ],
+  "perLevel": [
+    {
+      "level": "Foundation",
+      "words": 337,
+      "lessons": 30,
+      "lessonSizeMinimum": 11,
+      "lessonSizeMaximum": 12,
+      "difficultyMinimum": 7.77,
+      "difficultyMaximum": 9.84
+    },
+    {
+      "level": "4th Grade",
+      "words": 337,
+      "lessons": 30,
+      "lessonSizeMinimum": 11,
+      "lessonSizeMaximum": 12,
+      "difficultyMinimum": 9.85,
+      "difficultyMaximum": 11.23
+    },
+    {
+      "level": "5th Grade",
+      "words": 337,
+      "lessons": 30,
+      "lessonSizeMinimum": 11,
+      "lessonSizeMaximum": 12,
+      "difficultyMinimum": 11.26,
+      "difficultyMaximum": 12.79
+    },
+    {
+      "level": "6th Grade",
+      "words": 336,
+      "lessons": 30,
+      "lessonSizeMinimum": 11,
+      "lessonSizeMaximum": 12,
+      "difficultyMinimum": 12.8,
+      "difficultyMaximum": 14.91
+    },
+    {
+      "level": "Middle School",
+      "words": 336,
+      "lessons": 30,
+      "lessonSizeMinimum": 11,
+      "lessonSizeMaximum": 12,
+      "difficultyMinimum": 14.92,
+      "difficultyMaximum": 25.5
+    }
+  ]
+}

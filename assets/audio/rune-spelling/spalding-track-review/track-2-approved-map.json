@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 2,
+  "purpose": "Authoritative Spalding Track 2 mapping for Rune Spelling",
+  "sourceTrack": "Track02.mp3",
+  "sourceSha256": "D1417576EF30DBC7D74D3484B87CC85BD89BC59E279FD4512898D355484EE84B",
+  "createdAt": "2026-08-31T06:28:27.385Z",
+  "approval": "Jacob approved all 19 phonograms and all 29 short-sound intervals. Labels were normalized to readable Spalding notation without changing audio or timings.",
+  "mapping": [
+    {"number":27,"expectedPhonogram":"sh","expectedSounds":["/sh/"],"status":"CORRECT","actualPhonogram":"sh","notes":"","shortSoundIntervals":[[5.045,5.415]]},
+    {"number":28,"expectedPhonogram":"ee","expectedSounds":["/ē/"],"status":"CORRECT","actualPhonogram":"ee","notes":"","shortSoundIntervals":[[11.285,11.71]]},
+    {"number":29,"expectedPhonogram":"th","expectedSounds":["unvoiced /th/ as in thin","voiced /th/ as in this"],"status":"CORRECT","actualPhonogram":"th","notes":"","shortSoundIntervals":[[17.8,18.09],[18.675,19.08]]},
+    {"number":30,"expectedPhonogram":"ow","expectedSounds":["/ow/ as in cow","/ō/ as in snow"],"status":"CORRECT","actualPhonogram":"ow","notes":"","shortSoundIntervals":[[25.885,26.35],[26.695,27.1]]},
+    {"number":31,"expectedPhonogram":"ou","expectedSounds":["/ow/ as in out","/ō/ as in soul","/oo/ as in soup","/ŭ/ as in country"],"status":"CORRECT","actualPhonogram":"ou","notes":"","shortSoundIntervals":[[34.855,35.235],[35.835,36.21],[36.93,37.305],[37.975,38.18]]},
+    {"number":32,"expectedPhonogram":"oo","expectedSounds":["long /oo/ as in food","short /oo/ as in book"],"status":"CORRECT","actualPhonogram":"oo","notes":"","shortSoundIntervals":[[44.275,44.665],[45.205,45.45]]},
+    {"number":33,"expectedPhonogram":"ch","expectedSounds":["/ch/ as in child","/k/ as in school","/sh/ as in chef"],"status":"CORRECT","actualPhonogram":"ch","notes":"","shortSoundIntervals":[[51.305,51.485],[52.2,52.315],[52.99,53.295]]},
+    {"number":34,"expectedPhonogram":"ar","expectedSounds":["/ar/"],"status":"CORRECT","actualPhonogram":"ar","notes":"","shortSoundIntervals":[[60.375,60.835]]},
+    {"number":35,"expectedPhonogram":"ay","expectedSounds":["/ā/; used at the end of a word"],"status":"CORRECT","actualPhonogram":"ay","notes":"","shortSoundIntervals":[[67.505,67.95]]},
+    {"number":36,"expectedPhonogram":"ai","expectedSounds":["/ā/; not normally used at the end of a word"],"status":"CORRECT","actualPhonogram":"ai","notes":"","shortSoundIntervals":[[74.915,75.39]]},
+    {"number":37,"expectedPhonogram":"oy","expectedSounds":["/oy/; used at the end of a word"],"status":"CORRECT","actualPhonogram":"oy","notes":"","shortSoundIntervals":[[81.625,82.07]]},
+    {"number":38,"expectedPhonogram":"oi","expectedSounds":["/oy/; not normally used at the end of a word"],"status":"CORRECT","actualPhonogram":"oi","notes":"","shortSoundIntervals":[[88.275,88.7]]},
+    {"number":39,"expectedPhonogram":"er","expectedSounds":["/er/ as in her"],"status":"CORRECT","actualPhonogram":"er","notes":"","shortSoundIntervals":[[94.68,95.095]]},
+    {"number":40,"expectedPhonogram":"ir","expectedSounds":["/er/ as in first"],"status":"CORRECT","actualPhonogram":"ir","notes":"","shortSoundIntervals":[[100.405,100.815]]},
+    {"number":41,"expectedPhonogram":"ur","expectedSounds":["/er/ as in nurse"],"status":"CORRECT","actualPhonogram":"ur","notes":"","shortSoundIntervals":[[105.585,106.03]]},
+    {"number":42,"expectedPhonogram":"wor","expectedSounds":["/wer/ as in work"],"status":"CORRECT","actualPhonogram":"wor","notes":"","shortSoundIntervals":[[111.9,112.425]]},
+    {"number":43,"expectedPhonogram":"ear","expectedSounds":["/er/ as in early — the single sound recorded on Track 2"],"status":"CORRECT","actualPhonogram":"ear","notes":"","shortSoundIntervals":[[119.215,119.655]]},
+    {"number":44,"expectedPhonogram":"ng","expectedSounds":["/ng/"],"status":"CORRECT","actualPhonogram":"ng","notes":"","shortSoundIntervals":[[126.41,126.94]]},
+    {"number":45,"expectedPhonogram":"ea","expectedSounds":["/ē/ as in eat","/ĕ/ as in head","/ā/ as in steak"],"status":"CORRECT","actualPhonogram":"ea","notes":"","shortSoundIntervals":[[132.505,132.935],[133.345,133.69],[134.155,134.54]]}
+  ]
+}

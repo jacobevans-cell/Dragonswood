@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "verifiedAt": "2026-08-31T09:12:45.285Z",
+  "sourceWorkbookSha256": "A4CE8669B462DBD464291B3D8ED7B9F2EDF9B420F0A654B2DC810230F5EB452C",
+  "counts": {
+    "canonicalWords": 1683,
+    "lessons": 150,
+    "runtimeWords": 1683,
+    "uniqueApprovedAudioFilesUsed": 100,
+    "phonogramClipRoutes": 10335,
+    "silentRoutes": 999,
+    "wholeWordExceptionRoutes": 2167,
+    "isolatedAudioExceptions": 1
+  },
+  "isolatedAudioExceptions": [
+    {
+      "word": "disappear",
+      "workbookRow": 853,
+      "phonogram": "ear",
+      "selectedSound": "ēr (sound 2 of 3)"
+    }
+  ],
+  "htmlReports": [
+    {
+      "file": "rune-spelling.html",
+      "embeddedLessons": 150,
+      "embeddedWords": 1683,
+      "inlineScriptsChecked": 3,
+      "bankSha256": "1aaa86ca73fa1b2bb9613a6271355f4ddc1748a7fa788f66454c87ac4494f4ad"
+    },
+    {
+      "file": "rune-spelling-rebuild-preview.html",
+      "embeddedLessons": 150,
+      "embeddedWords": 1683,
+      "inlineScriptsChecked": 3,
+      "bankSha256": "1aaa86ca73fa1b2bb9613a6271355f4ddc1748a7fa788f66454c87ac4494f4ad"
+    }
+  ],
+  "errors": []
+}

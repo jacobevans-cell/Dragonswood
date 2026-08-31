@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 2,
+  "purpose": "Authoritative Spalding Track 3 mapping for Rune Spelling",
+  "sourceTrack": "Track03.mp3",
+  "sourceSha256": "B5DAE34422ED3E6737BF9017EFAD985B31CB5C65FD83CB0C08334B157300548D",
+  "createdAt": "2026-08-31T06:29:32.187Z",
+  "approval": "Jacob approved all 13 phonograms and all 22 short-sound intervals. Labels were normalized to readable Spalding notation without changing audio or timings.",
+  "mapping": [
+    {"number":46,"expectedPhonogram":"aw","expectedSounds":["/aw/ as in saw"],"status":"CORRECT","actualPhonogram":"aw","notes":"","shortSoundIntervals":[[5.13,5.515]]},
+    {"number":47,"expectedPhonogram":"au","expectedSounds":["/aw/ as in haul"],"status":"CORRECT","actualPhonogram":"au","notes":"","shortSoundIntervals":[[11.51,11.875]]},
+    {"number":48,"expectedPhonogram":"or","expectedSounds":["/or/"],"status":"CORRECT","actualPhonogram":"or","notes":"","shortSoundIntervals":[[17.795,18.24]]},
+    {"number":49,"expectedPhonogram":"ck","expectedSounds":["/k/"],"status":"CORRECT","actualPhonogram":"ck","notes":"","shortSoundIntervals":[[23.44,23.62]]},
+    {"number":50,"expectedPhonogram":"wh","expectedSounds":["/hw/ or /w/"],"status":"CORRECT","actualPhonogram":"wh","notes":"","shortSoundIntervals":[[29.765,29.985]]},
+    {"number":51,"expectedPhonogram":"ed","expectedSounds":["/ĕd/ as in wanted","/d/ as in played","/t/ as in jumped"],"status":"CORRECT","actualPhonogram":"ed","notes":"","shortSoundIntervals":[[36.4,36.86],[37.345,37.55],[38.3,38.46]]},
+    {"number":52,"expectedPhonogram":"ew","expectedSounds":["/oo/ as in grew","/ū/ as in few"],"status":"CORRECT","actualPhonogram":"ew","notes":"","shortSoundIntervals":[[44.925,45.375],[45.925,46.39]]},
+    {"number":53,"expectedPhonogram":"ui","expectedSounds":["/oo/ as in fruit","/ū/ as in suit"],"status":"CORRECT","actualPhonogram":"ui","notes":"","shortSoundIntervals":[[52.62,53.02],[53.47,53.925]]},
+    {"number":54,"expectedPhonogram":"oa","expectedSounds":["/ō/ as in boat"],"status":"CORRECT","actualPhonogram":"oa","notes":"","shortSoundIntervals":[[59.625,60.125]]},
+    {"number":55,"expectedPhonogram":"gu","expectedSounds":["/g/ as in guess"],"status":"CORRECT","actualPhonogram":"gu","notes":"","shortSoundIntervals":[[65.74,65.89]]},
+    {"number":56,"expectedPhonogram":"ph","expectedSounds":["/f/ as in phone"],"status":"CORRECT","actualPhonogram":"ph","notes":"","shortSoundIntervals":[[73.395,73.755]]},
+    {"number":57,"expectedPhonogram":"ough","expectedSounds":["/ō/ as in though","/oo/ as in through","/ŭf/ as in rough","/ŏf/ as in cough","/aw/ as in thought","/ow/ as in bough"],"status":"CORRECT","actualPhonogram":"ough","notes":"","shortSoundIntervals":[[79.94,80.355],[80.925,81.375],[81.965,82.17],[82.905,83.185],[83.91,84.28],[84.87,85.215]]},
+    {"number":58,"expectedPhonogram":"oe","expectedSounds":["/ō/ as in toe"],"status":"CORRECT","actualPhonogram":"oe","notes":"","shortSoundIntervals":[[93.095,93.555]]}
+  ]
+}

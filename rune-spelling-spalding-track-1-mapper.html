@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Rune Spelling · Phonics Track 1 Mapper</title>
+  <style>
+    :root{font-family:Inter,system-ui,sans-serif;color:#eef7ff;background:#071328;color-scheme:dark}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#26306a 0,#071328 42%);min-height:100vh}
+    header{position:sticky;top:0;z-index:4;background:#071328f2;border-bottom:2px solid #28c9e8;padding:16px 20px;backdrop-filter:blur(10px)}
+    header>div,main{width:min(1120px,94vw);margin:auto}h1{margin:0;color:#ffe69b;font-family:Georgia,serif;font-size:clamp(25px,4vw,40px)}
+    p{line-height:1.45}.sub{margin:6px 0;color:#c8d5eb}.toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:12px}
+    button,select,input{font:inherit}.toolbar button,.play{border:1px solid #65dff2;border-radius:10px;background:#104b78;color:white;padding:10px 13px;font-weight:850;cursor:pointer}
+    .toolbar button:hover,.play:hover{background:#176895}.play:disabled{opacity:.55;cursor:wait}.primary{background:linear-gradient(135deg,#7047ea,#039fcc)!important;border-color:#ffd75e!important}
+    .progress{font-weight:900;color:#7df3d3;margin-left:auto}.now{margin-top:9px;color:#7df3d3;font-weight:800;min-height:22px}
+    main{padding:22px 0 50px}.notice{padding:14px 16px;border:1px solid #e4bc43;border-radius:14px;background:#30260d;color:#ffe8a8;margin-bottom:16px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:13px}.card{border:1px solid #345a8a;border-radius:16px;background:linear-gradient(145deg,#101b42,#08334b);padding:15px;box-shadow:0 9px 24px #0004}
+    .card.playing{outline:3px solid #ffcf4a;box-shadow:0 0 25px #ffcf4a55}.top{display:flex;gap:11px;align-items:center}.num{width:42px;height:42px;display:grid;place-items:center;border-radius:50%;background:#6f45de;color:#fff5bd;font-weight:1000}.name{font-size:26px;font-weight:1000;color:white}.sounds{color:#aeeeff;margin:8px 0 12px;font-weight:800;min-height:25px}
+    .controls{display:flex;gap:8px;flex-wrap:wrap}.choice{display:flex;gap:7px;margin-top:12px}.choice button{flex:1;min-height:44px;border:1px solid #526d9f;border-radius:9px;background:#111c38;color:#dbe7fb;font-weight:850;cursor:pointer}.choice button.selected[data-value=CORRECT]{background:#087d68;border-color:#55f2c8}.choice button.selected[data-value=WRONG]{background:#a63246;border-color:#ff8195}.choice button.selected[data-value=UNCLEAR]{background:#8b6411;border-color:#ffd364}
+    label{display:block;margin-top:10px;color:#a9bad4;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.5px}.mapping,.notes{width:100%;margin-top:4px;border:1px solid #4b6797;border-radius:9px;background:#07162d;color:white;padding:9px}.notes{min-height:42px}.small{font-size:12px;color:#91a8c9;margin-top:7px}
+    @media(max-width:620px){.grid{grid-template-columns:1fr}.progress{width:100%;margin-left:0}header{position:relative}}
+  </style>
+</head>
+<body>
+<header><div>
+  <h1>Phonics Track 1 · Phonograms 1–26</h1>
+  <p class="sub">Play each isolated sound. Every button contains only the short sound—no introduction and no long silent section.</p>
+  <div class="toolbar">
+    <button id="stop" type="button">■ Stop</button>
+    <button id="next" type="button">↓ Go to next unreviewed</button>
+    <button id="allCorrect" type="button">✓ Mark all correct</button>
+    <button id="export" class="primary" type="button">Export Track 1 mapping</button>
+    <span id="progress" class="progress">0 / 26 reviewed</span>
+  </div>
+  <div id="now" class="now" aria-live="polite"></div>
+</div></header>
+<main>
+  <div id="loading" class="notice"><strong>Loading locked Track 1 sounds…</strong> These are the exact timings approved on August 30, 2026.</div>
+  <div id="grid" class="grid"></div>
+</main>
+<audio id="audio" preload="metadata"></audio>
+<script>
+const SOURCE_SHA256="E6444B67AC73DF868CC4701A6AE14110500D7511F283F639CDF9D9EA9E4E4E19";
+const TRACK_SOURCE="assets/audio/rune-spelling/spalding-track-review/Track01.mp3";
+const APPROVED_MAP="assets/audio/rune-spelling/spalding-track-review/track-1-approved-map.json";
+const items=[
+  [1,"a",["ă /æ/ as in at","ā /eɪ/ as in ate","ah /ɑ/ as in father"],80.600,89.119],[2,"c",["/k/ as in cat","/s/ as in cent"],89.119,94.837],[3,"d",["/d/"],94.837,100.890],
+  [4,"f",["/f/"],100.890,106.807],[5,"g",["/g/ as in go","/j/ as in gentle"],106.807,114.141],[6,"o",["ŏ /ɑ/ as in odd","ō /oʊ/ as in open","oo /u/ as in do"],114.141,121.143],
+  [7,"s",["/s/ as in sit","/z/ as in has"],121.143,127.888],[8,"qu",["/kw/"],127.888,133.866],[9,"b",["/b/"],133.866,140.687],
+  [10,"e",["ĕ /ɛ/ as in end","ē /i/ as in me"],140.687,147.520],[11,"h",["/h/"],147.520,154.152],[12,"i",["ĭ /ɪ/ as in it","ī /aɪ/ as in item"],154.152,160.744],
+  [13,"j",["/j/"],160.744,166.901],[14,"k",["/k/"],166.901,172.972],[15,"l",["/l/"],172.972,178.884],
+  [16,"m",["/m/"],178.884,184.640],[17,"n",["/n/"],184.640,191.550],[18,"p",["/p/"],191.550,198.012],
+  [19,"r",["/r/"],198.012,204.394],[20,"t",["/t/"],204.394,210.591],[21,"u",["ŭ /ʌ/ as in up","ū /ju/ as in unit","oo /u/ as in rule"],210.591,218.262],
+  [22,"v",["/v/"],218.262,224.010],[23,"w",["/w/"],224.010,229.802],[24,"x",["/ks/"],229.802,235.721],
+  [25,"y",["/y/ as in yes","ĭ /ɪ/ as in gym","ī /aɪ/ as in my"],235.721,243.512],[26,"z",["/z/"],243.512,249.800]
+].map(([number,phonogram,sounds,start,end])=>({number,phonogram,sounds,start,end}));
+const KEY="dw-spalding-track-1-map-v2",audio=document.querySelector("#audio"),grid=document.querySelector("#grid"),now=document.querySelector("#now");
+let saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch{}let active=null,timer=null,approvedTrackOne=null;
+const optionHtml=items.map(x=>`<option value="${x.phonogram}">${x.number}. ${x.phonogram}</option>`).join("");
+function stop(){clearInterval(timer);timer=null;audio.pause();if(active)active.classList.remove("playing");active=null;now.textContent=""}
+async function playBurst(item,index,card){const burst=item.bursts?.[index];if(!burst)return;stop();active=card;card.classList.add("playing");const [start,end]=burst;now.textContent=`Playing ${item.number}. ${item.phonogram}: ${item.sounds[index]}`;audio.src=`${TRACK_SOURCE}#t=${start.toFixed(3)},${end.toFixed(3)}`;audio.load();await audio.play();timer=setInterval(()=>{if(audio.currentTime>=end||audio.ended)stop()},25)}
+function save(number,patch){saved[number]={...(saved[number]||{}),...patch,reviewedAt:new Date().toISOString()};localStorage.setItem(KEY,JSON.stringify(saved));renderProgress()}
+function renderProgress(){const count=items.filter(x=>saved[x.number]?.status).length;document.querySelector("#progress").textContent=`${count} / 26 reviewed`}
+for(const item of items){
+  const card=document.createElement("article");card.className="card";card.dataset.number=item.number;
+  card.innerHTML=`<div class="top"><span class="num">${item.number}</span><span class="name">${item.phonogram}</span></div><div class="sounds">${item.sounds.join(" · ")}</div><div class="controls">${item.sounds.map((sound,index)=>`<button class="play" data-sound="${index}" type="button" disabled>🔊 ${sound}</button>`).join("")}</div><div class="choice"><button type="button" data-value="CORRECT">Correct</button><button type="button" data-value="WRONG">Wrong</button><button type="button" data-value="UNCLEAR">Unclear</button></div><label>What is actually heard?<select class="mapping"><option value="">Choose if different or unclear</option>${optionHtml}</select></label><label>Notes<input class="notes" placeholder="Example: first sound is missing"></label><div class="small">Isolated from source section ${item.start.toFixed(3)}–${item.end.toFixed(3)} seconds</div>`;
+  const entry=saved[item.number]||{};card.querySelector(".mapping").value=entry.actualPhonogram||item.phonogram;card.querySelector(".notes").value=entry.notes||"";
+  if(entry.status)card.querySelector(`[data-value="${entry.status}"]`)?.classList.add("selected");
+  card.querySelectorAll(".play").forEach(button=>button.addEventListener("click",()=>playBurst(item,Number(button.dataset.sound),card)));
+  card.querySelectorAll(".choice button").forEach(button=>button.addEventListener("click",()=>{card.querySelectorAll(".choice button").forEach(x=>x.classList.remove("selected"));button.classList.add("selected");const actual=button.dataset.value==="CORRECT"?item.phonogram:card.querySelector(".mapping").value;card.querySelector(".mapping").value=actual||"";save(item.number,{status:button.dataset.value,actualPhonogram:actual||null,expectedSounds:item.sounds})}));
+  card.querySelector(".mapping").addEventListener("change",event=>save(item.number,{actualPhonogram:event.target.value||null}));
+  card.querySelector(".notes").addEventListener("input",event=>save(item.number,{notes:event.target.value}));grid.append(card);
+}
+document.querySelector("#stop").addEventListener("click",stop);
+document.querySelector("#next").addEventListener("click",()=>{const item=items.find(x=>!saved[x.number]?.status)||items[0];grid.querySelector(`[data-number="${item.number}"]`).scrollIntoView({behavior:"smooth",block:"center"})});
+document.querySelector("#allCorrect").addEventListener("click",()=>{for(const item of items)saved[item.number]={status:"CORRECT",actualPhonogram:item.phonogram,expectedSounds:item.sounds,reviewedAt:new Date().toISOString()};localStorage.setItem(KEY,JSON.stringify(saved));location.reload()});
+document.querySelector("#export").addEventListener("click",()=>{if(!approvedTrackOne)return;const blob=new Blob([JSON.stringify(approvedTrackOne,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="rune-spelling-phonics-track-1-map.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)});
+async function loadApprovedTrackOne(){
+  try{
+    const response=await fetch(APPROVED_MAP);if(!response.ok)throw new Error(`Approved map request failed: ${response.status}`);approvedTrackOne=await response.json();
+    if(approvedTrackOne.sourceSha256!==SOURCE_SHA256||approvedTrackOne.mapping?.length!==26)throw new Error("Approved Track 1 map failed identity validation.");
+    let soundCount=0;
+    for(const item of items){
+      const approved=approvedTrackOne.mapping.find(entry=>entry.number===item.number);
+      if(!approved||approved.status!=="CORRECT"||approved.actualPhonogram!==item.phonogram||approved.shortSoundIntervals?.length!==item.sounds.length)throw new Error(`Approved Track 1 entry ${item.number} failed validation.`);
+      item.bursts=approved.shortSoundIntervals.map(([start,end])=>[Number(start.toFixed(3)),Number(end.toFixed(3))]);soundCount+=item.bursts.length;
+      saved[item.number]={status:"CORRECT",actualPhonogram:item.phonogram,expectedSounds:item.sounds,notes:approved.notes||"",reviewedAt:approvedTrackOne.createdAt};
+      const card=grid.querySelector(`[data-number="${item.number}"]`),buttons=[...card.querySelectorAll(".play")];buttons.forEach((button,index)=>{button.disabled=!item.bursts[index]});card.querySelectorAll(".choice button").forEach(button=>button.classList.toggle("selected",button.dataset.value==="CORRECT"));
+    }
+    if(soundCount!==39)throw new Error(`Approved Track 1 map contains ${soundCount} sounds instead of 39.`);localStorage.setItem(KEY,JSON.stringify(saved));renderProgress();document.querySelector("#loading").innerHTML=`<strong>Track 1 is locked.</strong> All 26 phonograms and 39 short sounds are loaded from Jacob's approved map—no timings are recalculated.`;
+  }catch(error){document.querySelector("#loading").innerHTML=`<strong>Could not load the locked Track 1 sounds.</strong> ${error.message}`;console.error(error)}
+}
+renderProgress();
+loadApprovedTrackOne();
+</script>
+</body>
+</html>

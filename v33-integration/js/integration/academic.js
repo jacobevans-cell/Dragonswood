@@ -140,7 +140,7 @@
       const grade=text(student.grade);
       const dailyRecords=dailyRows.filter(row=>studentId(row)===student.id&&assignedDaily(row));
       const curriculumRecords=curriculumRows.filter(row=>studentId(row)===student.id);
-      const spellingLevel=({3:'foundation',4:'grade4',5:'grade5',6:'challenge',8:'master'})[Number(student.spellingGrade)]||'grade5';
+      const spellingLevel=({3:'foundation',4:'grade4',5:'grade5',6:'challenge',7:'master',8:'master'})[Number(student.spellingGrade)]||'grade5';
       const ownSpellingRecords=spellingRecords.filter(row=>studentId(row)===student.id&&text(row.levelKey)===spellingLevel);
       const spellingByWeek=latestByKey(ownSpellingRecords,row=>String(number(row.week)));
       const expectedDaily=expected(dailyRows,grade,dailyKey,assignedDaily),expectedCurriculum=expected(curriculumRows,grade,curriculumKey);

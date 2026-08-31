@@ -697,7 +697,7 @@ function currentSpellingWeek(){
   const today=effectiveDateKey(),start=Date.UTC(2026,7,24),current=Date.parse(`${today}T12:00:00Z`),week=Math.floor((current-start)/(7*86400000))+1;
   return Math.max(1,Math.min(30,Number.isFinite(week)?week:1));
 }
-function spellingLevelKey(grade=state.spellingGrade){return ({3:'foundation',4:'grade4',5:'grade5',6:'challenge',8:'master'})[Number(grade)]||'grade5'}
+function spellingLevelKey(grade=state.spellingGrade){return ({3:'foundation',4:'grade4',5:'grade5',6:'challenge',7:'master',8:'master'})[Number(grade)]||'grade5'}
 window.DWV33SpellingContext=()=>({
   studentId:integrationSession.user?.uid||'',studentName:state.displayName||state.firstName||'Adventurer',assignmentId:`weekly-spelling-${currentSpellingWeek()}`,
   spellingLevel:spellingLevelKey(),spellingWeek:currentSpellingWeek(),spellingDay:['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][window.DWV33Core?.weekday?.(effectiveDateKey())]||'',gradeCode:String(state.spellingGrade||5),role:state.isTester?'tester':'student',className:'Explore Academy',level:String(state.level||1),petName:state.pet||'Dragon',lessonBank:[],

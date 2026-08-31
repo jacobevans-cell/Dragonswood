@@ -15,7 +15,7 @@ for(const [name,html] of [['student',student],['teacher',teacher]]){
   assert.doesNotMatch(html,/Student Tester|Teacher Tester/i,`${name} root must not retain tester titles`);
 }
 assert.match(teacher,/\.\.\/functions-arcade-access\/tester-core\.js\?v=57\.1\.16/,'teacher root must load the shared tester contract');
-assert.ok(teacher.indexOf('../functions-arcade-access/tester-core.js?v=57.1.16')<teacher.indexOf('js/integration/runtime.js?v=58.1.1'),'teacher root must load the tester contract before runtime');
+assert.ok(teacher.indexOf('../functions-arcade-access/tester-core.js?v=57.1.16')<teacher.indexOf('js/integration/runtime.js?v=58.1.2'),'teacher root must load the tester contract before runtime');
 for(const legacy of ['student-v2.html','teacher-v2.html','Tester1111.html','index-live-welcome-test.html','dragonswood-teacher-tools.js','dragonswood-request-center.js','dragonswood-academic-ai-teacher.js']){
   assert.equal(fs.existsSync(path.join(ROOT,legacy)),false,`${legacy} must stay retired; Git history and the rollback branch preserve the pre-cutover portal`);
 }

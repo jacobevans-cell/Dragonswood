@@ -15,6 +15,10 @@ assert.match(teacher,/pending-pass-badge/,'top Pass Control exposes the live pen
 assert.match(teacher,/teacher-pass-chip/,'active pass names, types, and times are visible in the header');
 assert.match(teacher,/data-attention-audience="selected"/,'Teacher Attention exposes selected-student delivery');
 assert.match(teacher,/data-attention-audience="class"/,'whole-class attention remains an explicit choice');
+assert.match(teacher,/attentionOpen:false/,'Teacher Attention starts collapsed');
+assert.match(teacher,/data-edit-selected-students/,'Student Management exposes a direct edit control');
+assert.match(teacher,/Foundation — Grade 3/,'spelling assignment exposes the Foundation path');
+assert.match(teacher,/Middle School/,'spelling assignment exposes the Middle School path');
 assert.match(runtime,/studentIds,requireAcknowledgment/,'attention payload persists its selected audience');
 assert.match(operations,/audienceActive/,'non-targeted students do not receive selected attention');
 assert.match(runtime,/gradebookSettings/,'live category settings are subscribed');
@@ -28,11 +32,11 @@ assert.doesNotMatch(teacher,/Assignment list opened in tester mode|CSV export re
 assert.doesNotMatch(teacher,/Open in V2/i);
 assert.match(teacher,/\.teacher-content,\.teacher-header-inner\{width:100%;max-width:none/,'teacher content no longer wastes the center gutter');
 assert.match(teacher,/font-size:12px/,'production readability floor is installed');
-assert.match(host,/js\/integration\/academic\.js\?v=57\.1\.9/);
+assert.match(host,/js\/integration\/academic\.js\?v=58\.0\.2/);
 assert.match(host,/js\/integration\/world\.js\?v=57\.1\.6/);
-assert.match(host,/js\/integration\/operations\.js\?v=57\.1\.9/);
-assert.match(host,/js\/integration\/runtime\.js\?v=57\.1\.9/);
-assert.match(host,/js\/teacher-app\.js\?v=57\.1\.15/);
+assert.match(host,/js\/integration\/operations\.js\?v=58\.1\.0/);
+assert.match(host,/js\/integration\/runtime\.js\?v=58\.1\.2/);
+assert.match(host,/js\/teacher-app\.js\?v=58\.1\.2/);
 
 const book=require('../js/integration/academic.js').gradebook(
  [{id:'s1',name:'Scholar',grade:'5',genderGroup:'girl'}],
@@ -44,5 +48,5 @@ const book=require('../js/integration/academic.js').gradebook(
 assert.equal(book.rows[0].total,89);
 assert.equal(book.rows[0].assignments.length,3);
 assert.equal(book.assignedWork,1);
-assert.deepEqual(book.weights,{daily:30,curriculum:50,reading:20});
+assert.deepEqual(book.weights,{daily:30,curriculum:30,spelling:20,reading:20});
 console.log('V3.3 teacher portal repair contracts: PASS (attention selection + pass header + layout + live gradebook + production labels)');

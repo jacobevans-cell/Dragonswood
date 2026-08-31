@@ -14,7 +14,7 @@
     ['Grayson','Grade 5 • Boys'],['Joshua','Grade 5 • Boys'],['Kinsley','Grade 4 • Girls'],
     ['Nala','Grade 4 • Girls'],['Raul','Grade 5 • Boys']
   ];
-  const students=names.map(([name,meta,id],i)=>({id:id||`manual-${i}-${name.toLowerCase()}`,name,meta,grade:(meta.match(/Grade (\d)/)||[])[1]||'—',genderGroup:/Girls/.test(meta)?'girls':/Boys/.test(meta)?'boys':'tester'}));
+  const students=names.map(([name,meta,id],i)=>{const grade=(meta.match(/Grade (\d)/)||[])[1]||'5',genderGroup=/Girls/.test(meta)?'girl':'boy';return{id:id||`manual-${i}-${name.toLowerCase()}`,name,firstName:name,email:`${name.toLowerCase().replace(/\s+/g,'.')}@example.invalid`,meta,grade,genderGroup,classId:i?'':'warrior',spellingGrade:Number(grade)===4?4:5,dailyQuestTrack:'auto',title:i?'':'dragonkeeper',avatar:'dragon-purple',hp:i?10:48,gold:i?0:385,xp:i?0:1520,eggInventory:0,rpgInventory:[],ownedPets:i?[]:['nyx'],activePet:i?'':'nyx',bossWins:0,legacyDayCredit:0}});
 
   root.DWV33Integration=Object.freeze({
     version:'manual-preview-v1',environment:'manual-preview',
@@ -23,8 +23,9 @@
       return {async signIn(){},async signOut(){},dispose(){}};
     },
     async startTeacher(onUpdate){
-      queueMicrotask(()=>onUpdate({status:'authorized',environment:'manual-preview',user:{uid:'manual-teacher',email:'preview-teacher@example.invalid',displayName:'Mr. Evans'},teacherName:'Mr. Evans',students,operations:{dateKey:substituteMode.dateKey,substituteMode,pending:[],active:[],recognition:[],curriculumOverrides:[],attention:{active:false,events:[]},kingdomAccess:{active:false,all:false,studentIds:[]},goals:{shared:64,universal:24,rows:[]}}}));
-      return {async signIn(){},async signOut(){},dispose(){}};
+      const emit=()=>onUpdate({status:'authorized',environment:'manual-preview',user:{uid:'manual-teacher',email:'preview-teacher@example.invalid',displayName:'Mr. Evans'},teacherName:'Mr. Evans',students,operations:{dateKey:substituteMode.dateKey,substituteMode,pending:[],active:[],recognition:[],curriculumOverrides:[],attention:{active:false,events:[]},kingdomAccess:{active:false,all:false,studentIds:[]},goals:{shared:64,universal:24,rows:[]}}});
+      queueMicrotask(emit);
+      return {async signIn(){},async signOut(){},async updateStudentProfile(uid,input={}){const row=students.find(student=>student.id===uid);if(!row)throw new Error('Choose a current student.');Object.assign(row,input,{name:String(input.firstName||row.name),firstName:String(input.firstName||row.firstName),ownedPets:Array.isArray(input.ownedPets)?input.ownedPets:String(input.ownedPets||'').split(',').map(value=>value.trim()).filter(Boolean),rpgInventory:Array.isArray(input.rpgInventory)?input.rpgInventory:String(input.rpgInventory||'').split(',').map(value=>value.trim()).filter(Boolean)});row.meta=`Grade ${row.grade} • ${row.genderGroup==='girl'?'Girls':'Boys'}`;emit();return row},dispose(){}};
     }
   });
 

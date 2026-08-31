@@ -9,6 +9,8 @@ const runtime=read('v33-integration/js/integration/runtime.js');
 const operations=read('v33-integration/js/integration/operations.js');
 const academic=read('v33-integration/js/integration/academic.js');
 const host=read('teacher.html');
+const dailyQuest=read('daily-quest.html');
+const manualPreview=read('v33-integration/tools/manual-preview-runtime.js');
 
 assert.match(teacher,/data-open-passes[^>]*>Pass Control/,'top header exposes the Pass Control command center');
 assert.match(teacher,/pending-pass-badge/,'top Pass Control exposes the live pending count');
@@ -19,6 +21,13 @@ assert.match(teacher,/attentionOpen:false/,'Teacher Attention starts collapsed')
 assert.match(teacher,/data-edit-selected-students/,'Student Management exposes a direct edit control');
 assert.match(teacher,/Foundation — Grade 3/,'spelling assignment exposes the Foundation path');
 assert.match(teacher,/Middle School/,'spelling assignment exposes the Middle School path');
+assert.match(teacher,/Full Student Profile Editor/,'the full profile editor is restored');
+for(const field of ['firstName','grade','genderGroup','classId','spellingGrade','dailyQuestTrack','hp','gold','xp','eggInventory','ownedPets','rpgInventory'])assert.match(teacher,new RegExp(`data-profile-field="${field}"`),`full profile editor exposes ${field}`);
+assert.match(runtime,/async updateStudentProfile/,'the teacher runtime saves complete profile edits');
+assert.match(runtime,/teacher-profile-edit/,'profile stat changes are audited');
+assert.match(manualPreview,/async updateStudentProfile/,'the manual preview supports safe profile-edit testing');
+assert.match(dailyQuest,/grade<=3\)return"foundation"/,'automatic Morning Work maps Grade 3 to Foundation');
+assert.match(dailyQuest,/grade>=6\)return"challenge"/,'automatic Morning Work maps Grade 6+ to Challenge');
 assert.match(runtime,/studentIds,requireAcknowledgment/,'attention payload persists its selected audience');
 assert.match(operations,/audienceActive/,'non-targeted students do not receive selected attention');
 assert.match(runtime,/gradebookSettings/,'live category settings are subscribed');
@@ -35,8 +44,8 @@ assert.match(teacher,/font-size:12px/,'production readability floor is installed
 assert.match(host,/js\/integration\/academic\.js\?v=58\.0\.2/);
 assert.match(host,/js\/integration\/world\.js\?v=57\.1\.6/);
 assert.match(host,/js\/integration\/operations\.js\?v=58\.1\.0/);
-assert.match(host,/js\/integration\/runtime\.js\?v=58\.1\.2/);
-assert.match(host,/js\/teacher-app\.js\?v=58\.1\.2/);
+assert.match(host,/js\/integration\/runtime\.js\?v=58\.1\.3/);
+assert.match(host,/js\/teacher-app\.js\?v=58\.1\.3/);
 
 const book=require('../js/integration/academic.js').gradebook(
  [{id:'s1',name:'Scholar',grade:'5',genderGroup:'girl'}],

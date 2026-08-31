@@ -1429,9 +1429,12 @@ const DWStorage=(()=>{
 })();
 const dwContext=window.DW_SPELLING_CONTEXT||{};
 const cleanKey=value=>String(value??"").trim().toLowerCase().replace(/[^a-z0-9_-]+/g,"-").replace(/^-+|-+$/g,"")||"local";
-const studentId=cleanKey(dwContext.studentId||dwContext.studentName||"local-student");
+// Firebase UIDs are case-sensitive. Keep the legacy normalized key for local
+// storage compatibility, but always report the exact portal UID to Firebase.
+const storageStudentId=cleanKey(dwContext.studentId||dwContext.studentName||"local-student");
+const studentId=String(dwContext.studentId||"").trim()||storageStudentId;
 const assignmentId=cleanKey(dwContext.assignmentId||"weekly-spelling-practice");
-const ENGINE_PREFIX=`dw-spelling-v5:${studentId}:${assignmentId}`;
+const ENGINE_PREFIX=`dw-spelling-v5:${storageStudentId}:${assignmentId}`;
 const LESSON_BANK_KEY=`${ENGINE_PREFIX}:lesson-bank`;
 const RESULT_INDEX_KEY=`${ENGINE_PREFIX}:results`;
 const REPORT_OUTBOX_KEY=`${ENGINE_PREFIX}:report-outbox`;
@@ -1800,7 +1803,7 @@ function reportCompletion(mode,details={}){
 async function retryReportOutbox(manual=false){
   const moduleReporter=window.DragonswoodModuleHost?.reportMission,host=moduleReporter||dwContext.reportMission,hostOwner=moduleReporter?window.DragonswoodModuleHost:dwContext;if(typeof host!=="function"){if(manual)setPortalStatus("Saved locally. No portal connection is available in this standalone tab.","pending");return}
   const records=outbox();for(const record of records.filter(item=>item.status!=="sent")){
-    try{record.attempts=(Number(record.attempts)||0)+1;record.lastAttemptAt=new Date().toISOString();const result=host.call(hostOwner,deepClone(record.payload));if(result&&typeof result.then==="function"){const ack=await result;if(ack===false)throw new Error("Portal did not acknowledge the result.")}else if(result===false)throw new Error("Portal did not acknowledge the result.");record.status="sent";record.sentAt=new Date().toISOString();const results=resultIndex(),index=results.findIndex(item=>item.idempotencyKey===record.idempotencyKey);if(index>=0){results[index].reportStatus="sent";results[index].reportedAt=record.sentAt;saveResultIndex(results);if(lastCompletion?.idempotencyKey===record.idempotencyKey)lastCompletion=results[index]}setPortalStatus("Practice evidence sent to the portal.","sent")
+    try{if(record.payload&&String(dwContext.studentId||"").trim())record.payload.studentId=studentId;record.attempts=(Number(record.attempts)||0)+1;record.lastAttemptAt=new Date().toISOString();const result=host.call(hostOwner,deepClone(record.payload));if(result&&typeof result.then==="function"){const ack=await result;if(ack===false)throw new Error("Portal did not acknowledge the result.")}else if(result===false)throw new Error("Portal did not acknowledge the result.");record.status="sent";record.sentAt=new Date().toISOString();const results=resultIndex(),index=results.findIndex(item=>item.idempotencyKey===record.idempotencyKey);if(index>=0){results[index].studentId=studentId;results[index].reportStatus="sent";results[index].reportedAt=record.sentAt;saveResultIndex(results);if(lastCompletion?.idempotencyKey===record.idempotencyKey)lastCompletion=results[index]}setPortalStatus("Practice evidence sent to the portal.","sent")
     }catch(error){record.status="pending";record.lastError="Portal unavailable; safe retry remains queued.";setPortalStatus("Practice evidence is saved; portal delivery will retry safely.","pending")}
   }saveOutbox(records.filter(item=>item.status!=="sent"));renderTeacherResults();
 }

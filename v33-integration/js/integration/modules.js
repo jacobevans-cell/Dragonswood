@@ -48,7 +48,8 @@
     // Daily curriculum changes frequently. A fresh iframe URL prevents the portal
     // from reopening a cached copy after a lesson publish.
     if(mod.id==='curriculum-quest')url.searchParams.set('v',Date.now().toString(36));
-    if(mod.id==='rune-spelling'||mod.id==='dragon-tongues'||mod.id==='deep-time-lab')url.searchParams.set('v','58.0.0');
+    if(mod.id==='rune-spelling')url.searchParams.set('v','58.1.6');
+    if(mod.id==='dragon-tongues'||mod.id==='deep-time-lab')url.searchParams.set('v','58.0.0');
     if(mod.id==='class-reader')url.searchParams.set('v','57.1.5');
     const pageUrl=new URL(globalThis.location?.href||baseHref||url.href),previewDate=pageUrl.searchParams.get('previewDate'),testerDate=globalThis.DWV33TesterDateContext?.();
     if(mod.path==='daily-quest.html'&&['localhost','127.0.0.1'].includes(pageUrl.hostname)&&/^\d{4}-\d{2}-\d{2}$/.test(String(previewDate||'')))url.searchParams.set('date',previewDate);

@@ -12,7 +12,7 @@ function setLocalTesterUnlocks(patch){const next={...localTesterUnlocks(),...pat
 function storedRecoverySummary(){try{const value=JSON.parse(storageGet('recovery-summary','{}'));return value&&typeof value==='object'?value:{}}catch{return {}}}
 const toast = document.querySelector('#toast');
 const dialogRoot = document.querySelector('#dialog-root');
-let integrationController=null,recoveryProbe=null,arcadeEntering=false;
+let integrationController=null,recoveryProbe=null,arcadeEntering=false,legacySpellingRecoveryPromise=null,legacySpellingRecoveryUid='',legacySpellingRecoveryLastAttempt=0;
 let integrationSession={status:'loading',message:'Loading Dragonswood identity…'};
 let passSafetyInterval=null;
 const passFallbackStarts=new Map();
@@ -698,6 +698,29 @@ function currentSpellingWeek(){
   return Math.max(1,Math.min(30,Number.isFinite(week)?week:1));
 }
 function spellingLevelKey(grade=state.spellingGrade){return ({3:'foundation',4:'grade4',5:'grade5',6:'challenge',7:'master',8:'master'})[Number(grade)]||'grade5'}
+function legacySpellingStorageId(value){return String(value||'').trim().toLowerCase().replace(/[^a-z0-9_-]+/g,'-').replace(/^-+|-+$/g,'')||'local'}
+async function recoverLegacySpellingOutbox(){
+  const uid=String(integrationSession.user?.uid||'').trim();
+  if(integrationSession.status!=='authorized'||!uid||!integrationController?.reportSpellingMission)return;
+  if(legacySpellingRecoveryPromise)return legacySpellingRecoveryPromise;
+  if(legacySpellingRecoveryUid===uid&&Date.now()-legacySpellingRecoveryLastAttempt<30000)return;
+  legacySpellingRecoveryUid=uid;legacySpellingRecoveryLastAttempt=Date.now();
+  legacySpellingRecoveryPromise=(async()=>{
+    const prefix=`dw-spelling-v5:${legacySpellingStorageId(uid)}:`,suffix=':report-outbox';let recovered=0;
+    const keys=[];try{for(let index=0;index<localStorage.length;index++){const key=localStorage.key(index);if(key?.startsWith(prefix)&&key.endsWith(suffix))keys.push(key)}}catch{return 0}
+    for(const key of keys){
+      let records;try{records=JSON.parse(localStorage.getItem(key)||'[]')}catch{continue}if(!Array.isArray(records))continue;
+      for(const record of records.filter(item=>item&&item.status!=='sent'&&item.payload?.type==='dragonswood-spelling-complete')){
+        try{record.payload.studentId=uid;record.attempts=(Number(record.attempts)||0)+1;record.lastAttemptAt=new Date().toISOString();const acknowledged=await integrationController.reportSpellingMission({...record.payload});if(acknowledged!==true)throw new Error('Portal did not acknowledge the result.');record.status='sent';record.sentAt=new Date().toISOString();recovered++;
+          const resultKey=`${key.slice(0,-suffix.length)}:results`;try{const results=JSON.parse(localStorage.getItem(resultKey)||'[]');if(Array.isArray(results)){const match=results.find(item=>item?.idempotencyKey===record.idempotencyKey);if(match){match.studentId=uid;match.reportStatus='sent';match.reportedAt=record.sentAt;localStorage.setItem(resultKey,JSON.stringify(results))}}}catch{}
+        }catch(error){record.status='pending';record.lastError='Portal unavailable; safe retry remains queued.'}
+      }
+      const pending=records.filter(item=>item?.status!=='sent');try{pending.length?localStorage.setItem(key,JSON.stringify(pending)):localStorage.removeItem(key)}catch{}
+    }
+    if(recovered)showToast(`${recovered} saved Rune Spelling ${recovered===1?'result was':'results were'} recovered.`);return recovered;
+  })();
+  try{return await legacySpellingRecoveryPromise}finally{legacySpellingRecoveryPromise=null}
+}
 window.DWV33SpellingContext=()=>({
   studentId:integrationSession.user?.uid||'',studentName:state.displayName||state.firstName||'Adventurer',assignmentId:`weekly-spelling-${currentSpellingWeek()}`,
   spellingLevel:spellingLevelKey(),spellingWeek:currentSpellingWeek(),spellingDay:['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][window.DWV33Core?.weekday?.(effectiveDateKey())]||'',gradeCode:String(state.spellingGrade||5),role:state.isTester?'tester':'student',className:'Explore Academy',level:String(state.level||1),petName:state.pet||'Dragon',lessonBank:[],
@@ -842,8 +865,10 @@ window.addEventListener('message',handleModuleState);
     const previousPassSignature=passModelSignature();
     const previousTesterSignature=JSON.stringify([state.isTester,state.testerCapabilities,state.testerUnlocks]);
     const previousSubstituteSignature=JSON.stringify(state.substituteMode||{});
-    if(session.status==='authorized')applyStudentModel(session.student,session.academic,session.world,session.passes,session.poll,session.attention,session.kingdomAccess,session.classGoals,session);
+    if(session.status==='authorized'){applyStudentModel(session.student,session.academic,session.world,session.passes,session.poll,session.attention,session.kingdomAccess,session.classGoals,session);queueMicrotask(()=>recoverLegacySpellingOutbox())}
     const passChanged=previousPassSignature!==passModelSignature(),testerChanged=previousTesterSignature!==JSON.stringify([state.isTester,state.testerCapabilities,state.testerUnlocks]),substituteChanged=previousSubstituteSignature!==JSON.stringify(state.substituteMode||{});
     if(passChanged||!currentModuleId()||testerChanged||substituteChanged||!app.querySelector('[data-module-frame]'))render();else syncPassSafety();
   });
+  recoverLegacySpellingOutbox();
 })();
+window.addEventListener('online',()=>recoverLegacySpellingOutbox());

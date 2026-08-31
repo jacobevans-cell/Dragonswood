@@ -590,7 +590,7 @@ function activitySpec(x){
   return {kind:"explain",title:"Quest Check",prompt:activityFor(x),keywords:lessonWords(x).slice(0,5),minWords:7};
 }
 function activityAnswerText(x){
-  const spec=activitySpec(x), id=x.id, choice=document.querySelector(`input[name="act-${CSS.escape(id)}"]:checked`)?.value||"";
+  const spec=activitySpec(x), id=x.id, state=st(id), choice=document.querySelector(`input[name="act-${CSS.escape(id)}"]:checked`)?.value||state.quickWriteChoice||"";
   const written=document.getElementById("actText-"+id)?.value||"";
   const number=document.getElementById("actNumber-"+id)?.value||"";
   if(spec.kind==="mc")return choice;
@@ -662,20 +662,31 @@ function renderActivity(x){
   const spec=activitySpec(x),s=st(x.id),savedAnswer=s.practiceEvidence||"",answer=systemAuthoredResponse(x,savedAnswer)?"":savedAnswer,status=s.overrideStatus||"";
   const structured=structuredActivityParts(answer);
   const quickwritePassed=spec.kind==="quickwrite"&&!!s.practiced;
-  const quickwriteOption=quickwritePassed?spec.options.find(option=>option.prompt===structured.choice):null;
+  const quickwriteChoice=String(s.quickWriteChoice||structured.choice||"");
+  const quickwriteLocked=spec.kind==="quickwrite"&&!!quickwriteChoice&&!!(s.quickWriteChoiceLocked||s.practiced);
+  const quickwriteOption=spec.kind==="quickwrite"?spec.options.find(option=>option.prompt===quickwriteChoice):null;
   const quickwritePassMessage=quickwritePassed&&quickwriteOption?`✓ Auto-approved: ${sentenceCount(structured.response)} complete sentences, and the story stays connected to ${quickwriteOption.label}.`:"";
   let controls="";
   if(spec.kind==="number")controls=`<div class="activity-line"><input id="actNumber-${x.id}" type="text" inputmode="decimal" placeholder="Enter your answer" value="${esc(answer)}"></div>`;
   else if(spec.kind==="mc")controls=`<div class="activity-options">${spec.options.map(o=>`<label class="activity-option"><input type="radio" name="act-${x.id}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join("")}</div>`;
   else if(spec.kind==="quickwrite"){
     const [minimum,maximum]=spec.sentenceRange,current=sentenceCount(structured.response);
-    controls=`<div class="activity-options">${spec.options.map((option,index)=>`<label class="activity-option"><input type="radio" name="act-${x.id}" value="${esc(option.prompt)}" ${structured.choice===option.prompt?"checked":""}><span><strong>${esc(option.label)}:</strong> ${esc(option.prompt)}</span></label>`).join("")}</div><div class="activity-feedback show">Sentence target: ${minimum}–${maximum} • <span id="quickCount-${x.id}">${current} ${current===1?"sentence":"sentences"}</span></div><textarea class="activity-input" id="actText-${x.id}" oninput="updateQuickWriteCount('${x.id}')" placeholder="Write your Quickwrite here…">${esc(structured.response)}</textarea>`;
+    controls=`<div class="activity-options">${spec.options.map(option=>`<label class="activity-option"><input type="radio" name="act-${x.id}" value="${esc(option.prompt)}" ${quickwriteChoice===option.prompt?"checked":""} ${quickwriteLocked?"disabled":""} onchange="lockQuickWriteChoice('${x.id}',this.value,this)"><span><strong>${esc(option.label)}:</strong> ${esc(option.prompt)}</span></label>`).join("")}</div>${quickwriteLocked&&quickwriteOption?`<div class="activity-feedback show good">🔒 Story starter locked: ${esc(quickwriteOption.label)}. Continue this story for your Quickwrite.</div>`:""}<div class="activity-feedback show">Sentence target: ${minimum}–${maximum} • <span id="quickCount-${x.id}">${current} ${current===1?"sentence":"sentences"}</span></div><textarea class="activity-input" id="actText-${x.id}" oninput="updateQuickWriteCount('${x.id}')" placeholder="Write your Quickwrite here…">${esc(structured.response)}</textarea>`;
   }
   else if(spec.kind==="morph"||spec.kind==="readingPov"){
     controls=`<div class="activity-options">${spec.options.map(o=>`<label class="activity-option"><input type="radio" name="act-${x.id}" value="${esc(o)}" ${structured.choice===o?"checked":""}><span>${esc(o)}</span></label>`).join("")}</div><textarea class="activity-input" id="actText-${x.id}" placeholder="Write your evidence or example here…">${esc(structured.response)}</textarea>`;
   } else controls=`<textarea class="activity-input" id="actText-${x.id}" placeholder="Write your answer here…">${esc(answer)}</textarea>`;
   const approvalRow=quickwritePassed?`<div class="override-row"><button class="override-btn approved" type="button" disabled>✅ AUTO-APPROVED</button><span class="override-note">Sentence count and selected-prompt content passed automatically.</span></div>`:`<div class="override-row"><button class="override-btn ${status}" id="overrideBtn-${x.id}" onclick="requestOverride('${x.id}')">${status==="pending"?"🟡 TEACHER REVIEW REQUESTED":status==="approved"?"✅ TEACHER OVERRIDE APPROVED":"🛡️ REQUEST TEACHER REVIEW"}</button><span class="override-note">Use this if you believe your answer is correct but Dragonswood will not accept it.</span></div>`;
   return `${renderAutoPractice(x)}<div class="activity-shell"><div class="activity-title">Apply What You Learned • ${esc(spec.title)}</div><div class="activity-prompt">${esc(spec.prompt)}</div>${controls}<div class="actions"><button class="btn" onclick="checkActivity('${x.id}')">${s.practiced?"CHECK AGAIN":"CHECK MY WORK"}</button></div><div class="activity-feedback${quickwritePassMessage?" show good":""}" id="actFeedback-${x.id}">${esc(quickwritePassMessage)}</div>${approvalRow}${status==="returned"&&s.teacherNote?`<div class="teacher-note"><b>↩ Teacher feedback:</b> ${esc(s.teacherNote)}</div>`:""}</div>`;
+}
+function lockQuickWriteChoice(id,choice,control){
+  const x=findItem(id);if(!x)return;
+  const spec=activitySpec(x),s=st(id);if(spec.kind!=="quickwrite")return;
+  if(s.quickWriteChoiceLocked&&s.quickWriteChoice){render();return}
+  const option=spec.options.find(row=>row.prompt===choice);if(!option)return;
+  const confirmed=window.confirm(`Lock in ${option.label}?\n\nOnce you confirm, you cannot switch to the other story starter.`);
+  if(!confirmed){if(control)control.checked=false;return}
+  s.quickWriteChoice=option.prompt;s.quickWriteChoiceLocked=true;S.items[id]=s;save();render("quickwrite-choice-locked");
 }
 function updateQuickWriteCount(id){
   const field=document.getElementById("actText-"+id),counter=document.getElementById("quickCount-"+id),count=sentenceCount(field?.value||"");
@@ -768,6 +779,10 @@ async function checkActivity(id){
   window.recordCurriculumAttempt?.(x,s,result.ok);
   f.className="activity-feedback show "+(result.ok?"good":"bad");
   if(result.ok){
+    if(spec.kind==="quickwrite"){
+      const selected=structuredActivityParts(answer).choice;
+      if(selected){s.quickWriteChoice=selected;s.quickWriteChoiceLocked=true}
+    }
     s.practiced=true;s.practiceEvidence=answer;s.overrideStatus="";S.items[id]=s;save();clearCurriculumDraft(id);
     f.textContent=aiResult?.decision==="approve"?"✓ Quest complete. Sentence count passed, and your content was accepted as matching the selected prompt.":result.msg?"✓ "+result.msg:"✓ Quest complete. Your answer passed the lesson check.";
     render();
@@ -934,6 +949,7 @@ function canonicalProgress(uid,item,state,forceUnverified=false){
     standardCode:(entry?.standards||[]).join(","),watched:!!state.watched,
     videoCoverage:Number(state.videoCoverage||0),videoReflection:String(state.videoReflection||""),
     practiced:!!state.practiced,practiceEvidence:String(state.practiceEvidence||""),
+    quickWriteChoice:String(state.quickWriteChoice||""),quickWriteChoiceLocked:!!state.quickWriteChoiceLocked,
     questionsCorrect:counts.correct,questionsSeen:counts.seen,autoAnswers:state.autoAnswers||{},
     autoAttempts:Number(state.autoAttempts||0),lastActivityAttempt:String(state.lastActivityAttempt||""),
     activityAttempts:Number(state.activityAttempts||0),overrideStatus:String(state.overrideStatus||""),

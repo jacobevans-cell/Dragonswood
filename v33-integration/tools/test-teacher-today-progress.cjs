@@ -53,6 +53,20 @@ assert(noSchool.rows.every(row=>row.status==='not-assigned'));
 const heldVideo=Academic.todayProgress([roster[0]],daily,curriculumProgress,{...options,videoMap:{'video-ready':{status:'pending'}}});
 assert.equal(heldVideo.rows[0].curriculum.total,1,'source-pending curriculum is held out just like the student Current Quest');
 
+const legacyCatalog=[
+  {id:'I-HUM-D21-C1-L1',grade:'I',day:21,subject:'HUM',strand:'Reading',requirement:'Legacy video lesson',resourceName:'Lesson video',resourceUrl:'https://docs.google.com/videos/d/legacy-ready/edit'},
+  {id:'I-HUM-D21-C3-A',grade:'I',day:21,subject:'HUM',strand:'Writing',requirement:'Publish quickwrite',quickWriteSentenceRange:[3,5]},
+];
+const legacyComplete=Academic.todayProgress([roster[0]],[],[
+  {studentId:'a',itemId:'I-HUM-D21-C1-L1',day:21,practiced:true,watched:true,questionsSeen:6,questionsCorrect:6},
+  {studentId:'a',itemId:'I-HUM-D21-C3-A',day:21,practiced:true,watched:false,questionsSeen:0,questionsCorrect:0},
+],{...options,curriculumCatalog:legacyCatalog,videoMap:{'legacy-ready':{status:'ready'}}});
+assert.equal(legacyComplete.rows[0].curriculum.completed,2,'legacy rows without complete are derived from the same quiz, writing, and video gates');
+const legacyIncomplete=Academic.todayProgress([roster[0]],[],[
+  {studentId:'a',itemId:'I-HUM-D21-C1-L1',day:21,practiced:true,watched:true,questionsSeen:5,questionsCorrect:5},
+],{...options,curriculumCatalog:legacyCatalog,videoMap:{'legacy-ready':{status:'ready'}}});
+assert.equal(legacyIncomplete.rows[0].curriculum.completed,0,'partial legacy quiz evidence never counts as complete');
+
 const book=Academic.gradebook(roster,daily,[],[],[],{}, {...options,curriculumProgress});
 assert.equal(book.today.dateKey,today);
 assert.equal(book.rows[0].today.morning.percent,30);
@@ -72,6 +86,8 @@ assert.match(runtime,/where\('day','==',assignedDay\)/);
 assert.match(dailyQuest,/totalQuestions:live\.totalQuestions/);
 assert.match(dailyQuest,/completedQuestions:live\.completedQuestions/);
 assert.match(read('curriculum-quest.html'),/complete:missionComplete\(item,state\)/);
+assert.match(read('curriculum-quest.html'),/questionsTotal:counts\.total/);
+assert(host.indexOf('../q1-curriculum-day21-overrides.js')<host.indexOf('js/integration/academic.js'),'Day 21 quickwrite and custom-question metadata loads before the academic model');
 assert(host.indexOf('../q1-curriculum-data.js')<host.indexOf('js/integration/academic.js'),'the authoritative curriculum catalog loads before the academic model');
 assert(host.indexOf('../q1-video-map.js')<host.indexOf('js/integration/academic.js'),'video availability loads before the academic model');
 

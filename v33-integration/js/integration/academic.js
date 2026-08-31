@@ -210,6 +210,20 @@
     if(text(item.grade)!==gradeCode||academicDay(item)!==day||day<3||HIDDEN_CURRICULUM_ITEM_IDS.has(text(item.id))||curriculumSupportMetadata(item))return false;
     return text(curriculumMedia(item,videoMap)?.status)!=='pending';
   }
+  function curriculumQuestionTotal(item={},progress={}){
+    if(hasNumber(progress.questionsTotal))return Math.max(0,number(progress.questionsTotal));
+    if(Array.isArray(item.lessonQuestions))return item.lessonQuestions.length;
+    if(Array.isArray(item.quickWriteSentenceRange))return 0;
+    return 6;
+  }
+  function curriculumProgressComplete(item={},progress={},videoMap={}){
+    if(progress.complete===true)return true;
+    if(progress.complete===false||!progress.practiced)return false;
+    if(curriculumVideoRequired(item,videoMap)&&progress.watched!==true)return false;
+    const required=curriculumQuestionTotal(item,progress);
+    if(required===0)return Array.isArray(item.quickWriteSentenceRange);
+    return number(progress.questionsSeen)>=required&&number(progress.questionsCorrect)>=required;
+  }
   function latestRowsBy(source=[],keyFn){
     const rows=new Map(),times=new Map();
     for(const row of source){
@@ -244,7 +258,7 @@
       for(const item of items){
         const progress=progressByStudentItem.get(`${student.id}|${text(item.id)}`);
         if(progress)curriculumStarted++;
-        if(progress?.complete===true)curriculumCompleted++;
+        if(progress&&curriculumProgressComplete(item,progress,videoMap))curriculumCompleted++;
       }
       const curriculumTotal=items.length,curriculum=Object.freeze({completed:curriculumCompleted,total:curriculumTotal,percent:curriculumTotal?round(curriculumCompleted/curriculumTotal*100):0,started:curriculumStarted,status:curriculumTotal?(curriculumCompleted===curriculumTotal?'complete':curriculumStarted?'in-progress':'not-started'):(assigned?'none-assigned':'not-assigned')});
       const total=morningTotal+curriculumTotal,completed=morningCompleted+curriculumCompleted,remaining=Math.max(0,total-completed);

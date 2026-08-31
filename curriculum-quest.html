@@ -995,7 +995,7 @@ function questionCounts(item,state){
   const qs=autoQuestionsFor(item),answers=state.autoAnswers||{};
   let seen=0,correct=0;
   qs.forEach((q,i)=>{if(String(answers[i]||"")!==""){seen++;if(window.DWGrading?window.DWGrading.questionAnswerEquivalent(q,answers[i]):String(answers[i])===String(q.answer))correct++}});
-  return {seen,correct};
+  return {seen,correct,total:qs.length};
 }
 function canonicalProgress(uid,item,state,forceUnverified=false){
   const counts=questionCounts(item,state),entry=typeof dwCurricEntry==="function"?dwCurricEntry(item):null;
@@ -1006,7 +1006,7 @@ function canonicalProgress(uid,item,state,forceUnverified=false){
     practiced:!!state.practiced,practiceEvidence:String(state.practiceEvidence||""),complete:missionComplete(item,state),
     quickWriteChoice:String(state.quickWriteChoice||""),quickWriteChoiceLocked:!!state.quickWriteChoiceLocked,
     dwInteraction:state.dwInteraction&&typeof state.dwInteraction==="object"?state.dwInteraction:null,
-    questionsCorrect:counts.correct,questionsSeen:counts.seen,autoAnswers:state.autoAnswers||{},
+    questionsCorrect:counts.correct,questionsSeen:counts.seen,questionsTotal:counts.total,autoAnswers:state.autoAnswers||{},
     autoAttempts:Number(state.autoAttempts||0),lastActivityAttempt:String(state.lastActivityAttempt||""),
     activityAttempts:Number(state.activityAttempts||0),overrideStatus:String(state.overrideStatus||""),
     reviewRevisionAttempts:Number(state.reviewRevisionAttempts||0),reviewBaselineFingerprint:String(state.reviewBaselineFingerprint||""),

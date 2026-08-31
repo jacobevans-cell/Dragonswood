@@ -15,7 +15,7 @@ for(const [name,html] of [['student',student],['teacher',teacher]]){
   assert.doesNotMatch(html,/Student Tester|Teacher Tester/i,`${name} root must not retain tester titles`);
 }
 assert.match(teacher,/\.\.\/functions-arcade-access\/tester-core\.js\?v=57\.1\.16/,'teacher root must load the shared tester contract');
-assert.ok(teacher.indexOf('../functions-arcade-access/tester-core.js?v=57.1.16')<teacher.indexOf('js/integration/runtime.js?v=58.1.0'),'teacher root must load the tester contract before runtime');
+assert.ok(teacher.indexOf('../functions-arcade-access/tester-core.js?v=57.1.16')<teacher.indexOf('js/integration/runtime.js?v=58.1.1'),'teacher root must load the tester contract before runtime');
 for(const legacy of ['student-v2.html','teacher-v2.html','Tester1111.html','index-live-welcome-test.html','dragonswood-teacher-tools.js','dragonswood-request-center.js','dragonswood-academic-ai-teacher.js']){
   assert.equal(fs.existsSync(path.join(ROOT,legacy)),false,`${legacy} must stay retired; Git history and the rollback branch preserve the pre-cutover portal`);
 }
@@ -40,7 +40,7 @@ assert.match(studentApp,/data-account-signout>↪ Sign Out<\/button>/,'the accou
 assert.match(studentApp,/data-account-signout[^\n]+signOutStudent/,'the account-menu sign-out action must use the existing Firebase controller logout');
 for(const route of ['games','boss','leaderboards','kingdom','arcade'])assert.match(studentApp,new RegExp(`REQUIRED_WORK_PAGES[^\\n]+['\"]${route}['\"]`),`${route} must use the required-work gate`);
 assert.match(studentApp,/globalThis\.history\?\.replaceState\?\.\(null,'','#missions'\)/,'direct locked hashes must be replaced with the Daily Missions route');
-for(const blocked of ['kingdom','deep-time-lab','dragon-tongues'])assert.match(studentApp,new RegExp(`substituteModeActive\\(\\)[^\\n]+${blocked}`),`${blocked} must be blocked by the shared Substitute Mode route guard`);
+for(const blocked of ['kingdom','deep-time-lab','dragon-tongues','arcade','boss','boss-battle'])assert.match(studentApp,new RegExp(`substituteModeActive\\(\\)[^\\n]+${blocked}`),`${blocked} must be blocked by the shared Substitute Mode route guard`);
 assert.match(studentApp,/Ask Your Substitute Teacher/,'blocked students must receive a direct instruction to ask the substitute');
 const teacherApp=read('v33-integration/js/teacher-app.js');
 assert.match(teacherApp,/data-substitute-mode/,'Teacher Command must expose the Substitute Mode quick button');

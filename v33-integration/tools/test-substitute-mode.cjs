@@ -28,10 +28,12 @@ for(const row of Object.values(passes.rows)){
 const ROOT=path.resolve(__dirname,'../..');
 const read=file=>fs.readFileSync(path.join(ROOT,file),'utf8');
 const student=read('v33-integration/js/student-app.js'),teacher=read('v33-integration/js/teacher-app.js'),runtime=read('v33-integration/js/integration/runtime.js'),rules=read('firestore.rules');
-for(const blocked of ['kingdom','deep-time-lab','dragon-tongues'])assert.ok(student.includes(blocked),`${blocked} must remain in the Substitute Mode guard`);
+for(const blocked of ['kingdom','deep-time-lab','dragon-tongues','arcade','boss','boss-battle'])assert.ok(student.includes(blocked),`${blocked} must remain in the Substitute Mode guard`);
+assert.match(student,/Arcade, and Boss Battle are disabled for the day/,'the student block dialog must name Arcade and Boss Battle');
+assert.match(teacher,/Arcade, and Boss Battle are unavailable to students/,'the teacher banner must name Arcade and Boss Battle');
 assert.match(student,/Ask Your Substitute Teacher/);
 assert.match(teacher,/data-substitute-mode/);
 assert.match(runtime,/async setSubstituteMode\(active\)/);
 assert.match(rules,/function substituteModeAllowsPasses\(\)/);
 
-console.log('V58.1.0 Substitute Mode contracts: PASS');
+console.log('V58.1.1 Substitute Mode contracts: PASS');

@@ -1,4 +1,4 @@
-/* Dragonswood cost-controlled academic AI rescue client v1.2 */
+/* Dragonswood cost-controlled academic AI rescue client v1.2.1 */
 (function(){
   "use strict";
   if(window.DWAcademicAI)return;
@@ -14,9 +14,13 @@
   const key=p=>JSON.stringify([p.mode,p.questionId,p.skillId,p.prompt,p.expectedAnswer,p.studentAnswer,p.rubric,p.strictConventions]);
   function configure(fn){transport=typeof fn==="function"?fn:null}
   function studentAdvice(result,fallback="Add one specific detail that shows your thinking."){
-    const reason=String(result?.reason||"").replace(/\s+/g," ").trim().slice(0,240);
-    if(!reason||result?.decision==="unavailable"||/temporarily unavailable|not connected|daily .*cap|unreadable result|disabled by the teacher|use teacher review/i.test(reason))return String(fallback||"").trim();
-    return reason;
+    const administrative=/temporarily unavailable|not connected|daily .*cap|unreadable result|disabled by the teacher|use teacher review|numeric equivalence|convention-specific work/i;
+    const candidates=[result?.reason,result?.strongRetryReason,result?.primaryReason,result?.escalationReason];
+    for(const value of candidates){
+      const reason=String(value||"").replace(/\s+/g," ").trim().slice(0,240);
+      if(reason&&!administrative.test(reason))return reason;
+    }
+    return String(fallback||"").trim();
   }
   async function judge(payload){
     const p=cleanPayload(payload),k=key(p);
@@ -37,5 +41,5 @@
       return {decision:"unavailable",confidence:"low",reason:"AI rescue is temporarily unavailable.",paidCall:false};
     }
   }
-  window.DWAcademicAI={version:"1.2.0",configure,judge,studentAdvice,clear:()=>sessionCache.clear()};
+  window.DWAcademicAI={version:"1.2.1",configure,judge,studentAdvice,clear:()=>sessionCache.clear()};
 })();

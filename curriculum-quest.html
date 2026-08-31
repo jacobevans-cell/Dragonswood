@@ -934,7 +934,7 @@ let miss=due.filter(x=>!missionComplete(x)&&!mediaPending(x));$("#audit").innerH
 $("#grade").onchange=e=>{if(currentStudent&&!isTeacher){e.target.value=S.grade;return}S.grade=e.target.value;if(window.DWCurriculumLocalTester){S.day=DW_LOCAL_TESTER_DAY;syncLocalTesterUrl()}save();render()};$("#day").onchange=e=>{if(window.DWCurriculumLocalTester){S.day=DW_LOCAL_TESTER_DAY;e.target.value=S.day;return}if(!isTeacher){e.target.value=S.day;return}S.day=Math.max(1,Math.min(40,+e.target.value||1));save();render()};$$(".tabs button").forEach(b=>b.onclick=()=>{$$(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");$$(".panel").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.tab).classList.add("active")});render();
 </script>
 <script src="dragonswood-grading-core.js?v=56.21.0"></script>
-<script src="dragonswood-academic-ai-client.js?v=56.21.2"></script>
+<script src="dragonswood-academic-ai-client.js?v=56.21.3"></script>
 <script src="functions-arcade-access/tester-core.js?v=57.1.16"></script>
 <script type="module">
 import {initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";

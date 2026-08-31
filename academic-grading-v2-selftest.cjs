@@ -30,7 +30,7 @@ pass("capitalization task stays deterministic",!G.shouldUseAiRescue({prompt:"Whi
 pass("unusual open wording may use AI rescue",G.shouldUseAiRescue({prompt:"Explain why erosion changes land.",answer:"erosion"},"water carries dirt away"));
 
 const daily=fs.readFileSync("daily-quest.html","utf8");
-pass("Daily loads current AI client",daily.includes("dragonswood-academic-ai-client.js?v=56.21.2"));
+pass("Daily loads current AI client",daily.includes("dragonswood-academic-ai-client.js?v=56.21.3"));
 pass("Daily imports Firebase Functions",daily.includes("firebase-functions.js"));
 pass("Daily uses contextual equivalence",daily.includes("questionAnswerEquivalent(q,value)"));
 pass("Daily blocks multiword cold typing",daily.includes("minimalAcceptedAnswer?.(q)"));
@@ -40,7 +40,7 @@ pass("Daily rune awaits rescue",daily.includes("await gradeTypedAnswerWithRescue
 pass("Daily displays response-specific AI advice",daily.includes("Accepted! ${result.reason}")&&daily.includes("Almost there—your answer was saved"));
 
 const curr=fs.readFileSync("curriculum-quest.html","utf8");
-pass("Curriculum loads current AI client",curr.includes("dragonswood-academic-ai-client.js?v=56.21.2"));
+pass("Curriculum loads current AI client",curr.includes("dragonswood-academic-ai-client.js?v=56.21.3"));
 pass("Curriculum imports Firebase Functions",curr.includes("firebase-functions.js"));
 pass("Curriculum checker async",curr.includes("async function checkActivity(id)"));
 pass("Curriculum reasoning rescue",curr.includes("async function curriculumAiRescue"));
@@ -49,9 +49,10 @@ pass("Curriculum cache-busts enhancement loader",curr.includes("q1-curriculum-en
 pass("Curriculum displays response-specific AI advice",curr.includes("function curriculumAiAdvice")&&curr.includes("Almost there—your answer was saved"));
 
 const aiClient=fs.readFileSync("dragonswood-academic-ai-client.js","utf8"),aiContext={window:{},console};vm.createContext(aiContext);vm.runInContext(aiClient,aiContext);
-pass("AI client exposes student-facing advice",aiContext.window.DWAcademicAI?.version==="1.2.0"&&typeof aiContext.window.DWAcademicAI?.studentAdvice==="function");
+pass("AI client exposes student-facing advice",aiContext.window.DWAcademicAI?.version==="1.2.1"&&typeof aiContext.window.DWAcademicAI?.studentAdvice==="function");
 pass("AI advice uses specific model reason",aiContext.window.DWAcademicAI.studentAdvice({decision:"review",reason:"Name what the word 'this' refers to."},"fallback")==="Name what the word 'this' refers to.");
 pass("AI outage uses safe generic fallback",aiContext.window.DWAcademicAI.studentAdvice({decision:"review",reason:"AI rescue is temporarily unavailable. Use teacher review."},"Add a specific detail.")==="Add a specific detail.");
+pass("AI retry-cap falls back to useful first-pass advice",aiContext.window.DWAcademicAI.studentAdvice({decision:"review",reason:"Your daily focused-check cap reached.",strongRetryReason:"Your daily focused-check cap reached.",primaryReason:"The word 'this' is too vague; name what you were subjecting yourself to."},"generic")==="The word 'this' is too vague; name what you were subjecting yourself to.");
 
 const mathAuto=fs.readFileSync("dragonswood-math-autograding.js","utf8");
 pass("Daily loads current Math policy",daily.includes("dragonswood-math-autograding.js?v=57.1.3"));

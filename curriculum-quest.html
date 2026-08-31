@@ -712,17 +712,17 @@ function autoQuestionsFor(x){
   try{const rows=Array.isArray(x.lessonQuestions)?x.lessonQuestions:(typeof dwCurricPractice==="function"?dwCurricPractice(x,6):[]);return window.DWGrading?rows.filter((q,i)=>window.DWGrading.assertQuestion(q,`Curriculum ${x.id} #${i+1}`)):rows}
   catch(e){console.error("Curriculum practice",x.id,e);return []}
 }
-function autoPassed(x){
-  const q=autoQuestionsFor(x),s=st(x.id),a=s.autoAnswers||{};
+function autoPassed(x,s=st(x.id)){
+  const q=autoQuestionsFor(x),a=s.autoAnswers||{};
   if(!q.length&&activitySpec(x).kind==="quickwrite")return true;
   return q.length>0&&q.every((item,i)=>(window.DWGrading?window.DWGrading.questionAnswerEquivalent(item,a[i]||""):String(a[i]||"")===String(item.answer))||s.autoOverrideStatus?.[i]==="approved");
 }
 // v56.23 — routine passing work auto-completes. Human review is reserved
 // for exception requests when Dragonswood cannot confidently accept an answer.
 function missionNeedsTeacher(x){return false}
-function missionComplete(x){
-  const s=st(x.id),pendingBlocked=mediaPending(x)&&(!window.DWCurriculumLocalTester||!s.watched),videoOk=!vid(x)||s.watched||mediaPending(x);
-  return videoOk&&autoPassed(x)&&!!s.practiced&&(!missionNeedsTeacher(x)||!!s.verified)&&!pendingBlocked;
+function missionComplete(x,s=st(x.id)){
+  const pendingBlocked=mediaPending(x)&&(!window.DWCurriculumLocalTester||!s.watched),videoOk=!vid(x)||s.watched||mediaPending(x);
+  return videoOk&&autoPassed(x,s)&&!!s.practiced&&(!missionNeedsTeacher(x)||!!s.verified)&&!pendingBlocked;
 }
 function renderAutoPractice(x){
   const q=autoQuestionsFor(x),s=st(x.id),answers=s.autoAnswers||{},review=s.autoOverrideStatus||{};
@@ -1003,7 +1003,7 @@ function canonicalProgress(uid,item,state,forceUnverified=false){
     studentId:uid,itemId:item.id,grade:item.grade,day:Number(item.day),subject:item.subject,strand:item.strand||"",
     standardCode:(entry?.standards||[]).join(","),watched:!!state.watched,
     videoCoverage:Number(state.videoCoverage||0),videoReflection:String(state.videoReflection||""),
-    practiced:!!state.practiced,practiceEvidence:String(state.practiceEvidence||""),
+    practiced:!!state.practiced,practiceEvidence:String(state.practiceEvidence||""),complete:missionComplete(item,state),
     quickWriteChoice:String(state.quickWriteChoice||""),quickWriteChoiceLocked:!!state.quickWriteChoiceLocked,
     dwInteraction:state.dwInteraction&&typeof state.dwInteraction==="object"?state.dwInteraction:null,
     questionsCorrect:counts.correct,questionsSeen:counts.seen,autoAnswers:state.autoAnswers||{},

@@ -662,7 +662,7 @@ service cloud.firestore {
                       'watched','videoCoverage','videoReflection','practiced',
                       'practiceEvidence','questionsCorrect','questionsSeen',
                       'autoAnswers','autoAttempts','lastActivityAttempt',
-                      'activityAttempts','overrideStatus','quickWriteChoice',
+                      'activityAttempts','overrideStatus','quickWriteChoice','complete',
                       'quickWriteChoiceLocked','dwInteraction','lastValidatorCode',
                       'lastValidatorMessage','lastAiTriage','updatedAt'
                     ])

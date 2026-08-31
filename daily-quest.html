@@ -6063,11 +6063,19 @@ async function readProgress(session){
   // v48 intentionally does not infer academic completion from older RPG claims; this resets Daily Quest work without re-awarding RPG loot.
   return null
 }
+function liveProgressCounts(){
+  const current=Array.isArray(tasks)?tasks:[],totalTasks=current.length,totalQuestions=current.reduce((sum,task)=>sum+Math.max(0,Number(task.count)||0),0);
+  const finishedTasks=Math.max(0,Math.min(totalTasks,Number(taskIndex)||0)),finishedQuestions=current.slice(0,finishedTasks).reduce((sum,task)=>sum+Math.max(0,Number(task.count)||0),0);
+  const activeTask=current[finishedTasks],activeQuestions=activeTask?Math.max(0,Math.min(Number(activeTask.count)||0,Number(qIndex)||0)):0,completedQuestions=Math.min(totalQuestions,finishedQuestions+activeQuestions);
+  return {totalTasks,completedTasks:finishedTasks,totalQuestions,completedQuestions,progressPercent:totalQuestions?Math.min(99,Math.round(completedQuestions/totalQuestions*100)):0};
+}
 async function saveProgress(extra={}){
   if(!user||!lesson||!sessionName)return;
+  const live=liveProgressCounts();
   const payload={
     studentId:user.uid,studentEmail:user.email||"",dateKey:lesson.date,day:Number(lesson.day||0),
     session:sessionName,mode:progressModeKey(),status:"in_progress",taskIndex:Number(taskIndex||0),qIndex:Number(qIndex||0),
+    totalTasks:live.totalTasks,completedTasks:live.completedTasks,totalQuestions:live.totalQuestions,completedQuestions:live.completedQuestions,progressPercent:live.progressPercent,
     score:Number(score||0),correct:Number(correct||0),attempts:Math.min(60,Number(attempts||0)),
     mathSkill:String(lesson.mathSkill||""),elaSkill:String(lesson.elaSkill||""),
     skills:skillStats,needsReteach:[...needsReteach],activeSeconds:Number(activeSeconds||0),idleEvents:Number(idleEvents||0),perQuestionSeconds:perQuestionSeconds.slice(0,60),
@@ -6457,9 +6465,10 @@ async function finishSession(){
   const questPet=[...(window.DWRPG?.pets||[]),...(window.DWRPG?.prestigePets||[])].find(x=>x.id===profile?.activePet);
   if(questPet&&window.DWPetMotion){new DWPetMotion.PetActor($("questPetCelebration"),questPet,{caption:true}).play("celebrate",2600);$("questPetMessage").textContent=`${questPet.name} celebrates your completed quest!`}
 
-  const completionProgress={
+  const live=liveProgressCounts(),completionProgress={
     studentId:user.uid,studentEmail:user.email||"",dateKey:lesson.date,day:Number(lesson.day||0),track:lesson.track||"4",trackName:lesson.trackName||"4TH GRADE",session:sessionName,
     mode:progressModeKey(),status:"complete",taskIndex:tasks.length,qIndex:0,score:Number(score||0),correct:Number(correct||0),attempts:Math.min(60,Number(attempts||0)),
+    totalTasks:live.totalTasks,completedTasks:live.totalTasks,totalQuestions:live.totalQuestions,completedQuestions:live.totalQuestions,progressPercent:100,
     accuracy:Math.round(acc*100),seconds:elapsed,mathSkill:String(lesson.mathSkill||""),elaSkill:String(lesson.elaSkill||""),
     skills:skillStats,needsReteach:[...needsReteach],activeSeconds:Number(activeSeconds||0),idleEvents:Number(idleEvents||0),perQuestionSeconds:perQuestionSeconds.slice(0,60),
     sequenceAudit:tasks.slice(0,60).map(t=>({subject:String(t.subject||""),skillId:String(t.skillId||""),sourceDate:String(t.sourceDate||lesson.date||""),remediationStatus:String(t._isRetry?"retry":t.remediationStatus||"none"),substitutionReason:String(t._isRetry?"missed item; delayed differently structured retry":t.substitutionReason||"current pacing target"),interaction:String(t.engine||"choice")})),

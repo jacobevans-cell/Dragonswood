@@ -31,7 +31,7 @@ assert.match(curriculumProbe,/new URLSearchParams\(location[.]search\)[.]get\("d
 assert.match(curriculumProbe,/isTeacher\|\|!curriculumStateReady/,'teacher and pre-ready recovery reports must be suppressed');
 
 const teacher=read('v33-integration/js/teacher-app.js');
-assert.doesNotMatch(teacher,/Alerts permanently on/);assert.match(teacher,/Live lesson progress/);assert.match(teacher,/Full-screen student direction/);assert.match(teacher,/Event log/);assert.match(teacher,/Collapse panel/);
+assert.doesNotMatch(teacher,/Alerts permanently on/);assert.match(teacher,/Today’s live progress/);assert.match(teacher,/Full-screen student direction/);assert.match(teacher,/Event log/);assert.match(teacher,/Collapse panel/);
 assert.match(teacher,/state[.]pendingCommand\?`<div class="review-dock"/,'Selected Command dock must render only while a command is active');
 assert.match(teacher,/data-manage-kingdom-access/);assert.match(teacher,/sendAttention/);assert.match(teacher,/playAttentionTone\(true\)/);
 

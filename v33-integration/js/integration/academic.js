@@ -184,7 +184,77 @@
     return weight?active.reduce((sum,[value,part])=>sum+number(value)*part,0)/weight:null;
   }
 
-  function gradebook(roster=[],dailyRows=[],curriculumRows=[],readingRows=[],spellingRows=[],weightSettings={}){
+  const HIDDEN_CURRICULUM_ITEM_IDS=new Set([
+    'I-HUM-D1-C1-A','I-HUM-D1-C2-A','I-HUM-D1-C3-A','I-HUM-D1-C4-A','I-HUM-D2-C1-A','I-HUM-D2-C2-A','I-HUM-D2-C3-A','I-HUM-D2-C4-A',
+    'K-HUM-D1-C1-A','K-HUM-D1-C2-A','K-HUM-D1-C3-A','K-HUM-D1-C4-A','K-HUM-D2-C1-A','K-HUM-D2-C2-A','K-HUM-D2-C3-A','K-HUM-D2-C4-A',
+    'I-Math-D1-C1-A','I-Math-D1-C2-A','I-Math-D1-C3-A','I-Math-D2-C3-A','K-Math-D1-C1-A','K-Math-D1-C2-A','K-Math-D1-C3-A','K-Math-D2-C1-A',
+    'I-Science-D1-C1-A','I-Science-D1-C3-A','I-Science-D2-C1-A','I-Science-D2-C3-A','K-Science-D1-C1-A','K-Science-D1-C3-A','K-Science-D1-C4-A'
+  ]);
+  function curriculumSupportMetadata(item={}){
+    if(text(item.resourceUrl))return false;
+    const strand=text(item.strand).toLowerCase(),requirement=text(item.requirement);
+    if((item.subject==='Math'||item.subject==='Science')&&(strand==='foundational skills'||strand==='vocabulary'||/teacher created|anecdotal|assessment\/ check point|assessment\/check point/.test(strand)))return true;
+    return !text(item.resourceName)&&requirement.split(/\s+/).filter(Boolean).length<=3&&/^(application|communication|benchmark|data analysis|conductor|impact|momentum|questioning|predicting|measuring)$/i.test(requirement);
+  }
+  function googleFileId(value=''){const match=text(value).match(/\/d\/([^/?]+)/);return match?match[1]:''}
+  function curriculumMedia(item={},videoMap={}){
+    const url=text(item.resourceUrl),id=googleFileId(url),mapped=id&&videoMap&&typeof videoMap==='object'?videoMap[id]:null;
+    if(mapped)return mapped;
+    if(/\.mp4(?:[?#].*)?$/i.test(url))return {status:'ready'};
+    return null;
+  }
+  function curriculumVideoRequired(item={},videoMap={}){
+    return !!curriculumMedia(item,videoMap)||!!(text(item.resourceUrl)&&(text(item.resourceUrl).includes('google.com/videos')||/video/i.test(text(item.resourceName))));
+  }
+  function curriculumItemAvailableToday(item={},day=0,gradeCode='',videoMap={}){
+    if(text(item.grade)!==gradeCode||academicDay(item)!==day||day<3||HIDDEN_CURRICULUM_ITEM_IDS.has(text(item.id))||curriculumSupportMetadata(item))return false;
+    return text(curriculumMedia(item,videoMap)?.status)!=='pending';
+  }
+  function latestRowsBy(source=[],keyFn){
+    const rows=new Map(),times=new Map();
+    for(const row of source){
+      const key=keyFn(row);if(!key)continue;
+      const time=timestampMs(row.updatedAt||row.completedAt||row.createdAt||row.startedAt);
+      if(!rows.has(key)||time>=times.get(key)){rows.set(key,row);times.set(key,time)}
+    }
+    return rows;
+  }
+  function liveMorningPercent(row){
+    if(!row)return 0;
+    if(text(row.status)==='complete')return 100;
+    if(hasNumber(row.progressPercent))return round(clamp(row.progressPercent,0,100));
+    const totalQuestions=number(row.totalQuestions),completedQuestions=number(row.completedQuestions);
+    if(totalQuestions>0)return round(clamp(completedQuestions/totalQuestions*100,0,99));
+    const totalTasks=number(row.totalTasks)||Math.max(0,Array.isArray(row.sequenceAudit)?row.sequenceAudit.length:0),completedTasks=number(row.completedTasks)||number(row.taskIndex);
+    if(totalTasks>0)return round(clamp(completedTasks/totalTasks*100,0,99));
+    return 1;
+  }
+  function todayProgress(roster=[],dailyRows=[],curriculumProgressRows=[],options={}){
+    const today=text(options.dateKey),assignment=options.assignment&&typeof options.assignment==='object'?options.assignment:{},day=academicDay(assignment),assigned=validDateKey(today)&&day>0;
+    const catalog=Array.isArray(options.curriculumCatalog)?options.curriculumCatalog:[],videoMap=options.videoMap&&typeof options.videoMap==='object'?options.videoMap:{};
+    const dailyToday=dailyRows.filter(row=>studentId(row)&&dateKey(row)===today&&text(row.session)==='morning'&&text(row.mode)!=='levelup'&&!text(row.id).includes('_levelup_'));
+    const morningByStudent=latestRowsBy(dailyToday,row=>studentId(row));
+    const progressByStudentItem=latestRowsBy(curriculumProgressRows,row=>{const uid=studentId(row),item=text(row.itemId);return uid&&item?`${uid}|${item}`:''});
+    const catalogByGrade=new Map(['I','K'].map(code=>[code,catalog.filter(item=>curriculumItemAvailableToday(item,day,code,videoMap))]));
+    const rows=roster.map(student=>{
+      const morningRow=morningByStudent.get(student.id)||null,morningTotal=assigned?1:0,morningCompleted=morningTotal&&text(morningRow?.status)==='complete'?1:0;
+      const morning=Object.freeze({completed:morningCompleted,total:morningTotal,percent:morningTotal?liveMorningPercent(morningRow):0,started:!!morningRow,status:morningCompleted?'complete':morningRow?'in-progress':assigned?'not-started':'not-assigned'});
+      const gradeCode=Number(student.grade)===4?'I':Number(student.grade)===5?'K':'',items=assigned&&gradeCode?(catalogByGrade.get(gradeCode)||[]):[];
+      let curriculumCompleted=0,curriculumStarted=0;
+      for(const item of items){
+        const progress=progressByStudentItem.get(`${student.id}|${text(item.id)}`);
+        if(progress)curriculumStarted++;
+        if(progress?.complete===true)curriculumCompleted++;
+      }
+      const curriculumTotal=items.length,curriculum=Object.freeze({completed:curriculumCompleted,total:curriculumTotal,percent:curriculumTotal?round(curriculumCompleted/curriculumTotal*100):0,started:curriculumStarted,status:curriculumTotal?(curriculumCompleted===curriculumTotal?'complete':curriculumStarted?'in-progress':'not-started'):(assigned?'none-assigned':'not-assigned')});
+      const total=morningTotal+curriculumTotal,completed=morningCompleted+curriculumCompleted,remaining=Math.max(0,total-completed);
+      return Object.freeze({studentId:student.id,dateKey:today,day,assigned,morning,curriculum,total,completed,remaining,percent:total?round(completed/total*100):0,status:!assigned?'not-assigned':remaining===0&&total>0?'complete':completed||morning.started||curriculumStarted?'in-progress':'not-started'});
+    });
+    const totalRequired=rows.reduce((sum,row)=>sum+row.total,0),totalCompleted=rows.reduce((sum,row)=>sum+row.completed,0);
+    return Object.freeze({dateKey:today,day,assigned,totalRequired,totalCompleted,remaining:Math.max(0,totalRequired-totalCompleted),studentsComplete:rows.filter(row=>row.status==='complete').length,rows:Object.freeze(rows)});
+  }
+
+  function gradebook(roster=[],dailyRows=[],curriculumRows=[],readingRows=[],spellingRows=[],weightSettings={},todayOptions={}){
     if(!Array.isArray(spellingRows)){weightSettings=spellingRows||{};spellingRows=[]}
     const weights=normalizeWeights(weightSettings);
     const policy=normalizeGradePolicy(weightSettings);
@@ -227,6 +297,7 @@
       });
     }
 
+    const liveToday=todayProgress(roster,dailyRows,todayOptions.curriculumProgress||[],todayOptions),todayByStudent=new Map(liveToday.rows.map(row=>[row.studentId,row]));
     const rows=roster.map(student=>{
       const grade=text(student.grade);
       const spellingLevel=({3:'foundation',4:'grade4',5:'grade5',6:'challenge',7:'master',8:'master'})[Number(student.spellingGrade)]||'grade5';
@@ -283,7 +354,7 @@
         ...recoveryReadingRows.map((row,index)=>({id:`recovery-reading:${row.id||index}`,dateKey:row.dateKey,weightKey:'reading',category:'Witches Reading',title:`The Witches • ${row.dateKey}`,score:recoveryReadingScores[index],status:'recorded'}))
       ].sort((a,b)=>text(a.dateKey).localeCompare(text(b.dateKey)));
       const recovery=Object.freeze({total:recoveryTotal,daily:recoveryDaily,curriculum:recoveryCurriculum,spelling:recoverySpelling,reading:recoveryReading,count:recoveryAssignments.length,assignments:Object.freeze(recoveryAssignments.map(Object.freeze)),includedInCurrent:true});
-      return Object.freeze({id:student.id,name:student.name,grade:student.grade,spellingGrade:student.spellingGrade||5,genderGroup:student.genderGroup,initial:(student.name[0]||'?').toUpperCase(),total,totalStatus,daily,curriculum,spelling,spellingDaily,spellingMastery,reading,readingMinutes,readingAssigned,readingStatus:currentReadingAssigned?(readingIncomplete?'Incomplete':'Complete'):(recoveryReadingScores.length?'Historical evidence':currentUnassignedReadingRows.length?'Recorded':'Not assigned'),readingEvidenceIssue,provisional,missing,assignments:Object.freeze(assignments.map(Object.freeze)),dailyGrades:Object.freeze(makeDailyGrades([...recoveryAssignments,...assignments])),recovery});
+      return Object.freeze({id:student.id,name:student.name,grade:student.grade,spellingGrade:student.spellingGrade||5,genderGroup:student.genderGroup,initial:(student.name[0]||'?').toUpperCase(),total,totalStatus,daily,curriculum,spelling,spellingDaily,spellingMastery,reading,readingMinutes,readingAssigned,readingStatus:currentReadingAssigned?(readingIncomplete?'Incomplete':'Complete'):(recoveryReadingScores.length?'Historical evidence':currentUnassignedReadingRows.length?'Recorded':'Not assigned'),readingEvidenceIssue,provisional,missing,assignments:Object.freeze(assignments.map(Object.freeze)),dailyGrades:Object.freeze(makeDailyGrades([...recoveryAssignments,...assignments])),recovery,today:todayByStudent.get(student.id)});
     });
     const totals=rows.map(row=>row.total).filter(value=>value!==null),recoveryTotals=rows.map(row=>row.recovery.total).filter(value=>value!==null);
     const assignedWork=new Set([
@@ -296,18 +367,18 @@
       ...recoverySpellingRows.map(row=>`spelling:${text(row.levelKey)}:${spellingKey(row)}`),
       ...recoveryAssignedDates.map(day=>`witches:${day}`)
     ]).size;
-    return Object.freeze({rows,classAverage:round(mean(totals)),recoveryAverage:round(mean(recoveryTotals)),recoveryEvidence:rows.reduce((sum,row)=>sum+row.recovery.count,0),missing:rows.reduce((sum,row)=>sum+row.missing,0),studentsWithMissing:rows.filter(row=>row.missing>0).length,assignedWork,weights,policy,spellingAssignedWeeks:Object.freeze(currentSpellingWeeks),readingTargetMinutes:defaultTarget,readingAssignedDateKeys:Object.freeze(currentAssignedDates),recoveryReadingAssignedDateKeys:Object.freeze(recoveryAssignedDates),readingTargetsByDate:targetsByDate,gradeIntegrityVersion:GRADE_INTEGRITY_VERSION,reportCardPercentageReady:rows.every(row=>!row.readingEvidenceIssue),readingSource:'Verified active time in The Witches reader'});
+    return Object.freeze({rows,classAverage:round(mean(totals)),recoveryAverage:round(mean(recoveryTotals)),recoveryEvidence:rows.reduce((sum,row)=>sum+row.recovery.count,0),missing:rows.reduce((sum,row)=>sum+row.missing,0),studentsWithMissing:rows.filter(row=>row.missing>0).length,assignedWork,weights,policy,today:Object.freeze({dateKey:liveToday.dateKey,day:liveToday.day,assigned:liveToday.assigned,totalRequired:liveToday.totalRequired,totalCompleted:liveToday.totalCompleted,remaining:liveToday.remaining,studentsComplete:liveToday.studentsComplete}),spellingAssignedWeeks:Object.freeze(currentSpellingWeeks),readingTargetMinutes:defaultTarget,readingAssignedDateKeys:Object.freeze(currentAssignedDates),recoveryReadingAssignedDateKeys:Object.freeze(recoveryAssignedDates),readingTargetsByDate:targetsByDate,gradeIntegrityVersion:GRADE_INTEGRITY_VERSION,reportCardPercentageReady:rows.every(row=>!row.readingEvidenceIssue),readingSource:'Verified active time in The Witches reader'});
   }
 
-  function teacherAcademic(roster,activeSession,writingRows,dailyRows,curriculumRows,gameRows,readingRows=[],spellingRows=[],weightSettings={}){
+  function teacherAcademic(roster,activeSession,writingRows,dailyRows,curriculumRows,gameRows,readingRows=[],spellingRows=[],weightSettings={},todayOptions={}){
     const session=normalizeSession(activeSession||{});
     const responses=writingRows.map(normalizeResponse).filter(row=>!session||row.sessionId===session.id);
     const submitted=responses.filter(row=>row.status==='submitted').length;
     const drafting=responses.filter(row=>row.status==='draft').length;
     const aiScored=responses.filter(row=>row.aiStatus==='complete'||row.aiFeedback).length;
     const avgWords=round(mean(responses.map(row=>row.wordCount)))??0;
-    return Object.freeze({gradebook:gradebook(roster,dailyRows,curriculumRows,readingRows,spellingRows,weightSettings),scribe:Object.freeze({session,responses,submitted,drafting,aiScored,avgWords})});
+    return Object.freeze({gradebook:gradebook(roster,dailyRows,curriculumRows,readingRows,spellingRows,weightSettings,todayOptions),scribe:Object.freeze({session,responses,submitted,drafting,aiScored,avgWords})});
   }
 
-  return Object.freeze({GRADE_INTEGRITY_VERSION,DEFAULT_MINIMUM_ACADEMIC_DAY,DEFAULT_CURRENT_GRADE_START_DATE,GAME_CATALOG,writingMetrics,sessionResponseId,normalizeSession,normalizeResponse,normalizeReadingAssignments,normalizeGradePolicy,evidenceDateKey,academicDay,evidencePeriod,dailyAcademicScore,curriculumAcademicScore,spellingActivityScore,writingPortfolio,normalizeGameResults,normalizeReading,normalizeWeights,studentAcademic,gradebook,teacherAcademic});
+  return Object.freeze({GRADE_INTEGRITY_VERSION,DEFAULT_MINIMUM_ACADEMIC_DAY,DEFAULT_CURRENT_GRADE_START_DATE,GAME_CATALOG,writingMetrics,sessionResponseId,normalizeSession,normalizeResponse,normalizeReadingAssignments,normalizeGradePolicy,evidenceDateKey,academicDay,evidencePeriod,dailyAcademicScore,curriculumAcademicScore,spellingActivityScore,todayProgress,writingPortfolio,normalizeGameResults,normalizeReading,normalizeWeights,studentAcademic,gradebook,teacherAcademic});
 });

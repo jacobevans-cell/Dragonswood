@@ -239,14 +239,14 @@
     let F;
     try{F=await createFirebase('teacher')}catch(err){emit(onUpdate,{status:'error',message:`Firebase could not load: ${err?.message||err}`});return {environment,signIn:async()=>{},signOut:async()=>{},dispose(){}}}
     const {S,auth,db}=F;
-    let currentUser=null,lastOperations=null;
+    let currentUser=null,lastOperations=null,curriculumProgressStarted=false;
     const reconcilingBathroomSlots=new Set(),reconcilingCurriculumOverrides=new Set();
     const unsubs=[];
-    const data={roster:[],daily:[],spellingResults:[],curriculum:[],scribe:{},responses:[],games:[],readingSessions:[],studentTransactions:[],bathroomRequests:[],snackRequests:[],passRequests:[],pointRequests:[],bathroomStatus:[],snackStatus:[],passStatus:[],passHistory:[],bathroomSlots:[],curriculumOverrides:[],pollVotes:[],attentionEvents:[],studentSuggestions:[],suggestionNotes:[],academicAiUsage:[],activePoll:{},activeAttention:{},kingdomAccess:{},substituteMode:{},dailyOverride:{},gradeSettings:{},academicAiConfig:{},passBlackout:{},classMain:{},secondRecess:{},classPet:{},fieldTrip:{},universalPoints:{},classJobs:{},jobWeeks:[],classSchedule:{},calendarEvents:[],scores:[],leaderboardRewards:[]};
+    const data={roster:[],daily:[],spellingResults:[],curriculum:[],curriculumProgress:[],todayQuest:{},scribe:{},responses:[],games:[],readingSessions:[],studentTransactions:[],bathroomRequests:[],snackRequests:[],passRequests:[],pointRequests:[],bathroomStatus:[],snackStatus:[],passStatus:[],passHistory:[],bathroomSlots:[],curriculumOverrides:[],pollVotes:[],attentionEvents:[],studentSuggestions:[],suggestionNotes:[],academicAiUsage:[],activePoll:{},activeAttention:{},kingdomAccess:{},substituteMode:{},dailyOverride:{},gradeSettings:{},academicAiConfig:{},passBlackout:{},classMain:{},secondRecess:{},classPet:{},fieldTrip:{},universalPoints:{},classJobs:{},jobWeeks:[],classSchedule:{},calendarEvents:[],scores:[],leaderboardRewards:[]};
     const timestampMs=value=>Number(value?.seconds)*1000||Number(value?.toMillis?.())||Date.parse(String(value||''))||0;
     const ready=Object.fromEntries(Object.keys(data).map(key=>[key,false]));
     try{await S.auth.setPersistence(auth,S.auth.browserSessionPersistence)}catch{}
-    const clear=()=>{while(unsubs.length)try{unsubs.pop()?.()}catch{}for(const key of Object.keys(ready))ready[key]=false;lastOperations=null};
+    const clear=()=>{while(unsubs.length)try{unsubs.pop()?.()}catch{}for(const key of Object.keys(ready))ready[key]=false;lastOperations=null;curriculumProgressStarted=false};
     const push=()=>{
       if(!currentUser||!Object.values(ready).every(Boolean))return;
       const rawById=new Map(data.roster.map(row=>[row.id,row]));
@@ -261,7 +261,7 @@
       const suggestions=data.studentSuggestions.slice().sort((a,b)=>timestampMs(b.updatedAt||b.createdAt)-timestampMs(a.updatedAt||a.createdAt)).map(row=>Object.freeze({...row,privateNote:String(notes[row.id]||'')}));
       const usageId=`global_${today()}`,usage=data.academicAiUsage.find(row=>row.id===usageId)||{};
       lastOperations=Object.freeze({...baseOperations,studentSuggestions:Object.freeze(suggestions),academicAiConfig:Object.freeze({...data.academicAiConfig}),academicAiUsage:Object.freeze({...usage})});
-      emit(onUpdate,{status:'authorized',user:currentUser,teacherName:currentUser.displayName||'Mr. Evans',students,academic:Academic.teacherAcademic(students,data.scribe,data.responses,data.daily,data.curriculum,data.games,data.readingSessions,data.spellingResults,data.gradeSettings),operations:lastOperations});
+      emit(onUpdate,{status:'authorized',user:currentUser,teacherName:currentUser.displayName||'Mr. Evans',students,academic:Academic.teacherAcademic(students,data.scribe,data.responses,data.daily,data.curriculum,data.games,data.readingSessions,data.spellingResults,data.gradeSettings,{dateKey:Core.phoenixDateKey(),assignment:data.todayQuest,curriculumProgress:data.curriculumProgress,curriculumCatalog:Array.isArray(window.DRAGONSWOOD_DATA?.items)?window.DRAGONSWOOD_DATA.items:[],videoMap:window.DRAGONSWOOD_VIDEO_MAP||{}}),operations:lastOperations});
       scheduleBathroomSlotReconcile();
       scheduleLegacyMathOverrideReconcile();
     };
@@ -288,8 +288,21 @@
         ));
       };
       const watchDoc=(id,key)=>unsubs.push(S.firestore.onSnapshot(S.firestore.doc(db,'classData',id),snap=>{data[key]=snap.exists()?{id:snap.id,...snap.data()}:{};ready[key]=true;push()},err=>emit(onUpdate,{status:'error',user,message:`classData/${id} read failed: ${err?.code||err?.message||err}`})));
+      const watchTodayQuest=()=>unsubs.push(S.firestore.onSnapshot(S.firestore.doc(db,'dailyQuests',Core.phoenixDateKey()),snap=>{
+        data.todayQuest=snap.exists()?{id:snap.id,...snap.data()}:{};ready.todayQuest=true;
+        if(!curriculumProgressStarted){
+          curriculumProgressStarted=true;
+          const assignedDay=Math.floor(Number(data.todayQuest.day)||0);
+          if(assignedDay>0){
+            const source=S.firestore.query(S.firestore.collection(db,'curriculumProgress'),S.firestore.where('day','==',assignedDay));
+            unsubs.push(S.firestore.onSnapshot(source,progressSnap=>{data.curriculumProgress=progressSnap.docs.map(d=>({id:d.id,...d.data()}));ready.curriculumProgress=true;push()},err=>emit(onUpdate,{status:'error',user,message:`Today curriculum progress read failed: ${err?.code||err?.message||err}`})));
+          }else{data.curriculumProgress=[];ready.curriculumProgress=true}
+        }
+        push();
+      },err=>emit(onUpdate,{status:'error',user,message:`Today assignment read failed: ${err?.code||err?.message||err}`})));
       [['students','roster'],['dailyQuestProgress','daily'],['spellingResults','spellingResults',true],['curriculumAttempts','curriculum'],['writingResponses','responses'],['gameResults','games'],['readingSessions','readingSessions'],['studentTransactions','studentTransactions'],['bathroomRequests','bathroomRequests'],['snackRequests','snackRequests'],['passRequests','passRequests'],['pointRequests','pointRequests'],['bathroomStatus','bathroomStatus'],['snackStatus','snackStatus'],['passStatus','passStatus'],['passHistory','passHistory'],['bathroomSlots','bathroomSlots'],['curriculumOverrideRequests','curriculumOverrides'],['classPollVotes','pollVotes'],['teacherAttentionEvents','attentionEvents'],['studentSuggestions','studentSuggestions'],['studentSuggestionNotes','suggestionNotes'],['academicAiUsage','academicAiUsage'],['studentJobWeeks','jobWeeks'],['classCalendarEvents','calendarEvents'],['scores','scores'],['leaderboardRewards','leaderboardRewards']].forEach(([collection,key,optional])=>watchCollection(collection,key,optional));
       [['activeWritingSession','scribe'],['activePoll','activePoll'],['activeTeacherAttention','activeAttention'],['kingdomAccess','kingdomAccess'],['substituteMode','substituteMode'],['dailyAccessOverride','dailyOverride'],['gradebookSettings','gradeSettings'],['academicAiConfig','academicAiConfig'],['passBlackout','passBlackout'],['main','classMain'],['secondRecess','secondRecess'],['classPet','classPet'],['fieldTrip','fieldTrip'],['universalPoints','universalPoints'],['classJobs','classJobs'],['classSchedule','classSchedule']].forEach(([id,key])=>watchDoc(id,key));
+      watchTodayQuest();
     });
     const requireWrite=()=>{if(environment!=='emulator'&&environment!=='production')throw new Error('Teacher writes are disabled in this read-only environment.');if(!currentUser)throw new Error('Teacher sign-in required.')};
     const today=()=>Core.phoenixDateKey();

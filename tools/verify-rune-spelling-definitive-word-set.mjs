@@ -57,7 +57,9 @@ for (const name of ["rune-spelling.html", "rune-spelling-rebuild-preview.html"])
   const file = path.join(root, name);
   const text = fs.readFileSync(file, "utf8");
   const start = text.indexOf(bankToken);
-  const end = text.indexOf(";\nlet lessonBank=", start);
+  const bankBodyStart = start + bankToken.length;
+  const separator = text.slice(bankBodyStart).match(/;\r?\nlet lessonBank=/);
+  const end = separator ? bankBodyStart + separator.index : -1;
   assertions(start >= 0 && end > start, `${name}: embedded lesson bank marker is missing.`);
   let embedded = [];
   if (start >= 0 && end > start) embedded = JSON.parse(text.slice(start + bankToken.length, end));

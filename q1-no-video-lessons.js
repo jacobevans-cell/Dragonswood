@@ -323,6 +323,16 @@
     </div>`;
   }
   function performanceHtml(x){
+    if(Array.isArray(x.quickWriteOptions)){
+      const range=Array.isArray(x.quickWriteSentenceRange)?x.quickWriteSentenceRange:(x.grade==="I"?[3,5]:[5,7]);
+      return `<div class="self-lesson">
+        <div class="lesson-banner">✍️ QUICKWRITE ADVENTURE</div>
+        <div class="key-idea"><strong>No video today.</strong> Choose one imaginative story starter below and continue the scene in your own words.</div>
+        <div class="example-box"><strong>Your task:</strong> Write ${range[0]}–${range[1]} complete sentences that introduce action, show what happens next, and stay connected to your chosen starter.</div>
+        <div class="remember"><strong>Before you finish:</strong> Reread for complete sentences, clear sequence, capitalization, and punctuation.</div>
+        <span class="mission-note">No video today • Imagine → Draft → Reread</span>
+      </div>`;
+    }
     const req=String(x.requirement||"").replace(/\n+/g," ").replace(/\s+/g," ").trim();
     return `<div class="self-lesson">
       <div class="lesson-banner">🏰 PERFORMANCE MISSION</div>
@@ -424,7 +434,7 @@
       if(type==="fluency")return "No video today. Read the Dragonswood passage twice: first for accuracy, then for smoother phrasing and expression.";
       if(type==="writing-progress")return "No new writing lesson today. Review the recent skills below, then complete the writing check independently.";
       if(type==="assessment")return "This is a check of previously taught skills. Dragonswood will use only verified questions from earlier lessons in this strand.";
-      if(type==="performance")return "No new lesson today. Use the mission brief below to prepare, share your work, and reflect.";
+      if(type==="performance")return Array.isArray(x.quickWriteOptions)?"No video today. Choose one story starter, imagine what happens next, and continue the scene in your own words.":"No new lesson today. Use the mission brief below to prepare, share your work, and reflect.";
       if(type==="word-lesson"){const w=currentWordStudy(x);return w?`No video today. Learn the word “${w.word}” here in Dragonswood, then prove what its parts mean and use it correctly.`:"No video today. Complete the word-study lesson below.";}
       return "Learn today's skill here in Dragonswood. Study the model, try the guided thinking step, then complete the mission.";
     };
@@ -457,7 +467,7 @@
         return "Write a short example that demonstrates at least two skills from the recent-skills review above. Then reread and revise one part for clarity.";
       }
       if(type==="assessment")return "After you finish the check questions, explain one answer you were confident about and name the rule, evidence, or strategy that helped you answer it.";
-      if(type==="performance")return "After you present or share your work, write 2 sentences: what you shared and one revision, speaking choice, or detail that made the final work stronger.";
+      if(type==="performance")return Array.isArray(x.quickWriteOptions)?"Choose one story starter below and continue the story in the required number of complete sentences.":"After you present or share your work, write 2 sentences: what you shared and one revision, speaking choice, or detail that made the final work stronger.";
       if(type==="word-lesson"){
         const w=currentWordStudy(x);
         if(w)return `${w.row.application?`${w.row.application} `:""}Then explain how the root or another word part helps with the meaning of “${w.word},” and use “${w.word}” correctly in your own complete sentence.`;
@@ -493,6 +503,7 @@
     window.renderAutoPractice=function(x){
       if(!noVideo(x))return O.renderAutoPractice(x);
       const type=classify(x);
+      if(type==="performance"&&Array.isArray(x.quickWriteOptions))return O.renderAutoPractice(x);
       if(type==="fluency")return `<div class="activity-feedback show good">Fluency is a reading performance, so Dragonswood gives you the passage and reflection instead of inventing a multiple-choice quiz.</div>`;
       if(type==="writing-progress")return `<div class="activity-feedback show good">This is a writing performance check. Your evidence is the writing you produce below, not a fake multiple-choice quiz.</div>`;
       if(type==="performance")return `<div class="activity-feedback show good">This mission is based on presenting or sharing your work. Complete the reflection below after the performance.</div>`;
@@ -504,6 +515,7 @@
 
     window.activitySpec=function(x){
       if(!noVideo(x))return O.activitySpec(x);
+      if(Array.isArray(x.quickWriteOptions))return O.activitySpec(x);
       const type=classify(x),prompt=window.activityFor(x);
       if(type==="fluency")return {kind:"explain",title:"Fluency Reflection",prompt,minWords:7};
       if(type==="word-progress")return {kind:"explain",title:"Word Meaning Proof",prompt,minWords:8};
@@ -522,6 +534,7 @@
 
     window.validateActivity=function(x){
       if(!noVideo(x))return O.validateActivity(x);
+      if(Array.isArray(x.quickWriteOptions))return O.validateActivity(x);
       const type=classify(x),id=x.id,written=(document.getElementById("actText-"+id)?.value||"").trim();
       if(window.systemAuthoredResponse?.(x,written))return {ok:false,reviewable:false,msg:"Answer in your own words instead of copying Dragonswood's directions or question."};
       const words=written.split(/\s+/).filter(Boolean);
@@ -577,7 +590,7 @@
         return html.replace("1. Learn It in Dragonswood","1. Review What You Know").replace("Everything needed for this lesson is here.","Everything needed for this check is here.");
       }
       if(type==="fluency")return html.replace("1. Learn It in Dragonswood","1. Fluency Training").replace("Everything needed for this lesson is here.","Your reading passage and fluency directions are below.");
-      if(type==="performance")return html.replace("1. Learn It in Dragonswood","1. Mission Brief").replace("Everything needed for this lesson is here.","Your performance directions are below.");
+      if(type==="performance")return Array.isArray(x.quickWriteOptions)?html.replace("1. Learn It in Dragonswood","1. Quickwrite Mission").replace("Everything needed for this lesson is here.","Choose a story starter below and continue the adventure."):html.replace("1. Learn It in Dragonswood","1. Mission Brief").replace("Everything needed for this lesson is here.","Your performance directions are below.");
       if(type==="word-lesson")return html.replace("1. Learn It in Dragonswood","1. Learn the Word in Dragonswood").replace("Everything needed for this lesson is here.","Your complete word lesson is below.");
       return html;
     };

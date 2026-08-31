@@ -44,7 +44,7 @@ pass("Curriculum imports Firebase Functions",curr.includes("firebase-functions.j
 pass("Curriculum checker async",curr.includes("async function checkActivity(id)"));
 pass("Curriculum reasoning rescue",curr.includes("async function curriculumAiRescue"));
 pass("Curriculum exposes safe item-state saving",curr.includes("function saveCurriculumItemState(id,itemState)"));
-pass("Curriculum cache-busts enhancement loader",curr.includes("q1-curriculum-enhancements.js?v=57.1.3"));
+pass("Curriculum cache-busts enhancement loader",curr.includes("q1-curriculum-enhancements.js?v=57.1.5"));
 
 const mathAuto=fs.readFileSync("dragonswood-math-autograding.js","utf8");
 pass(
@@ -63,7 +63,7 @@ pass(
 );
 
 const teacherRoot=fs.readFileSync("teacher.html","utf8"),teacherApp=fs.readFileSync("v33-integration/js/teacher-app.js","utf8");
-pass("current Teacher Command loads the hardened academic contract",teacherRoot.includes("js/integration/academic.js?v=58.0.1"));
+pass("current Teacher Command loads the hardened academic contract",teacherRoot.includes("js/integration/academic.js?v=58.0.2"));
 pass("current Teacher Command keeps V4 evidence-gated grade export",teacherApp.includes("gradeIntegrityVersion!==4||gradebook.reportCardPercentageReady!==true"));
 const rules=fs.readFileSync("firestore.rules","utf8");
 pass("AI usage teacher-readable",rules.includes("match /academicAiUsage/{docId}"));

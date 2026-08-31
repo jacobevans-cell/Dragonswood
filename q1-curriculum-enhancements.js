@@ -90,7 +90,7 @@
   if(window.__DW_NO_VIDEO_ENGINE_LOADER__)return;
   window.__DW_NO_VIDEO_ENGINE_LOADER__=true;
   const s=document.createElement("script");
-  s.src="q1-no-video-lessons.js?v=56.25.4";
+  s.src="q1-no-video-lessons.js?v=56.25.6";
   s.async=false;
   document.head.appendChild(s);
 })();

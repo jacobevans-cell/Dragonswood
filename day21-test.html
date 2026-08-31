@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dragonswood • Day 21 Tester</title>
+  <meta name="robots" content="noindex,nofollow">
+</head>
+<body>
+  <p>Opening the isolated Day 21 tester…</p>
+  <script>
+    (()=>{
+      const requested=new URLSearchParams(location.search).get("grade");
+      const grade=requested==="K"?"K":"I";
+      location.replace(`curriculum-quest.html?dw-local-tester=1&day=21&grade=${grade}`);
+    })();
+  </script>
+</body>
+</html>

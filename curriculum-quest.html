@@ -157,6 +157,7 @@ body>*{position:relative;z-index:1}
 <script>
 const DW_LOCAL_TESTER_PARAMS=new URLSearchParams(location.search),DW_LOCAL_TESTER_HOST=/^(?:localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
 window.DWCurriculumLocalTester=DW_LOCAL_TESTER_HOST&&DW_LOCAL_TESTER_PARAMS.get("dw-local-tester")==="1";
+window.DWCurriculumTesterVideoTools=window.DWCurriculumLocalTester;
 const DW_LOCAL_TESTER_DAY=21;
 const D=window.DRAGONSWOOD_DATA, VM=window.DRAGONSWOOD_VIDEO_MAP||{}, BASE_K="dragonswood_q1_integrated_progress_v4";
 const Q1_SCHOOL_DAYS={"2026-08-03":1,"2026-08-04":2,"2026-08-05":3,"2026-08-06":4,"2026-08-07":5,"2026-08-10":6,"2026-08-11":7,"2026-08-12":8,"2026-08-13":9,"2026-08-14":10,"2026-08-17":11,"2026-08-18":12,"2026-08-19":13,"2026-08-20":14,"2026-08-21":15,"2026-08-24":16,"2026-08-25":17,"2026-08-26":18,"2026-08-27":19,"2026-08-28":20,"2026-08-31":21,"2026-09-01":22,"2026-09-02":23,"2026-09-03":24,"2026-09-04":25,"2026-09-08":26,"2026-09-09":27,"2026-09-10":28,"2026-09-11":29,"2026-09-14":30,"2026-09-15":31,"2026-09-16":32,"2026-09-17":33,"2026-09-18":34,"2026-09-21":35,"2026-09-22":36,"2026-09-23":37,"2026-09-24":38,"2026-09-25":39,"2026-09-28":40};
@@ -179,15 +180,16 @@ function syncLocalTesterUrl(){
   const url=new URL(location.href);url.searchParams.set("dw-local-tester","1");url.searchParams.set("day",String(DW_LOCAL_TESTER_DAY));url.searchParams.set("grade",S.grade);history.replaceState(null,"",url);
 }
 function localTesterVideoRows(){return D.items.filter(x=>x.grade===S.grade&&Number(x.day)===DW_LOCAL_TESTER_DAY&&vid(x))}
+function curriculumVideoTesterEnabled(){return window.DWCurriculumLocalTester===true||window.DWCurriculumTesterVideoTools===true}
 function updateLocalTesterStatus(){
   if(!window.DWCurriculumLocalTester)return;
   const videos=localTesterVideoRows(),watched=videos.filter(x=>st(x.id).watched).length,status=document.getElementById("localTesterStatus");
   if(status)status.textContent=`DAY 21 TESTER • ${watched}/${videos.length} VIDEOS WATCHED`;
 }
 function setTesterVideoWatched(id,watched){
-  if(!window.DWCurriculumLocalTester)return;
-  const x=findItem(id);if(!x||Number(x.day)!==DW_LOCAL_TESTER_DAY||x.grade!==S.grade||!vid(x))return;
-  const state=st(id);state.watched=!!watched;state.videoCoverage=watched?100:0;state.videoReflection=watched?"Local tester override — counted as watched.":"";S.items[id]=state;save();render("tester-video-override");
+  if(!curriculumVideoTesterEnabled())return;
+  const x=findItem(id),local=window.DWCurriculumLocalTester===true;if(!x||x.grade!==S.grade||!vid(x)||local&&Number(x.day)!==DW_LOCAL_TESTER_DAY)return;
+  const state=st(id);state.watched=!!watched;state.videoCoverage=watched?100:0;state.videoReflection=watched?"Tester override — counted as watched.":"";S.items[id]=state;save();render("tester-video-override");
 }
 function markTesterVideosWatched(){
   if(!window.DWCurriculumLocalTester)return;
@@ -854,10 +856,10 @@ function missionMinutes(x){
 function compactMinutes(total){const n=Math.max(0,Math.round(total));if(n<60)return `${n} MIN`;const h=Math.floor(n/60),m=n%60;return `${h} HR${h===1?"":"S"}${m?` ${m} MIN`:""}`}
 function dayEstimate(list){const totals=list.reduce((sum,x)=>{const range=missionMinutes(x).range;sum[0]+=range[0];sum[1]+=range[1];return sum},[0,0]);return `EST. ${compactMinutes(totals[0])}–${compactMinutes(totals[1])} TOTAL`}
 function card(x){
-  const s=st(x.id),testerMode=window.DWCurriculumLocalTester===true,hasVideo=vid(x),readyVideo=mediaReady(x),pendingVideo=mediaPending(x),effectivePending=pendingVideo&&!testerMode,canPractice=!hasVideo||s.watched||effectivePending,m=mediaFor(x),needsTeacher=missionNeedsTeacher(x),complete=missionComplete(x),workReady=(!hasVideo||s.watched)&&autoPassed(x)&&s.practiced;
+  const s=st(x.id),testerMode=curriculumVideoTesterEnabled(),hasVideo=vid(x),readyVideo=mediaReady(x),pendingVideo=mediaPending(x),effectivePending=pendingVideo&&!testerMode,canPractice=!hasVideo||s.watched||effectivePending,m=mediaFor(x),needsTeacher=missionNeedsTeacher(x),complete=missionComplete(x),workReady=(!hasVideo||s.watched)&&autoPassed(x)&&s.practiced;
   const finalText=effectivePending?(s.practiced?"Activity saved. Final completion waits for the restored video.":"Complete the activity while video access is restored."):complete?"✅ Curriculum mission complete. Your work passed the lesson checks automatically.":needsTeacher?(workReady?"Your work is ready for teacher verification.":"Finish the video, standard check, and written application first."):"Pass the standard check and written application to complete this mission.";
   const verifyButton=isTeacher&&needsTeacher&&!effectivePending?`<div class="actions"><button class="stage verify ${workReady?"":"locked"}" ${workReady?"":"disabled"} onclick="teacherVerify('${x.id}')">${s.verified?"UNVERIFY":"TEACHER VERIFY"}</button></div>`:"";
-  const testerVideoButton=testerMode&&hasVideo?`<button type="button" class="stage tester-override ${s.watched?"on":""}" onclick="setTesterVideoWatched('${x.id}',${s.watched?"false":"true"})">${s.watched?"TESTER: CLEAR WATCHED":"TESTER OVERRIDE: MARK WATCHED"}</button>`:"";
+  const testerVideoButton=testerMode&&hasVideo?`<button type="button" class="stage tester-override ${s.watched?"on":""}" onclick="setTesterVideoWatched('${x.id}',${s.watched?"false":"true"})">${s.watched?"TESTER: RESET VIDEO":"TESTER: UNLOCK VIDEO"}</button>`:"";
   const youtubeId=youtubeVideoId(x.resourceUrl);
   const embeddedYouTubeButton=hasVideo&&youtubeId&&!effectivePending?`<button class="resource" onclick="launchYouTubeVideo('${x.id}','${youtubeId}','${esc(friendlyTitle(x))}')">${s.watched?"REWATCH VIDEO":"WATCH REQUIRED VIDEO"} ▶</button>`:"";
   const externalVideoButton=hasVideo&&!youtubeId&&!readyVideo&&!effectivePending&&x.resourceUrl?`<a class="resource" href="${esc(x.resourceUrl)}" target="_blank" rel="noopener noreferrer" onclick="launchExternalVideo('${x.id}','${esc(x.resourceUrl)}','${esc(friendlyTitle(x))}')">${s.watched?"REWATCH VIDEO":"WATCH REQUIRED VIDEO"} ↗</a>`:"";
@@ -1086,14 +1088,16 @@ onAuthStateChanged(auth,async u=>{
   const embedded=DW_V33_PARAMS.get("dwEmbed")==="1";
   isTeacher=!!u && String(u.email||"").toLowerCase()===TEACHER.toLowerCase()&&!embedded;
   testerSession=Tester.normalizeTester(u?.uid||'',null);testerControls={};testerCurriculumOverride=false;
+  window.DWCurriculumTesterVideoTools=false;
   if(u){
     try{
       const [testerSnap,controlsSnap]=await Promise.all([getDoc(doc(db,"testerAccounts",u.uid)),getDoc(doc(db,"testerSelfControls",u.uid))]);
       testerSession=Tester.normalizeTester(u.uid,testerSnap.exists()?testerSnap.data():null);
       testerControls=Tester.normalizeControls(testerSession,controlsSnap.exists()?controlsSnap.data():{});
       testerCurriculumOverride=Tester.unlockEnabled(testerSession,testerControls,'unlockCurriculum');
-      let liveAccount=testerSnap.exists()?testerSnap.data():null,liveControls=controlsSnap.exists()?controlsSnap.data():{},previousOverride=testerCurriculumOverride;
-      const syncTester=()=>{const nextSession=Tester.normalizeTester(u.uid,liveAccount),nextControls=Tester.normalizeControls(nextSession,liveControls),nextOverride=Tester.unlockEnabled(nextSession,nextControls,'unlockCurriculum');if(previousOverride&&!nextOverride){location.reload();return}testerSession=nextSession;testerControls=nextControls;testerCurriculumOverride=nextOverride;previousOverride=nextOverride};
+      window.DWCurriculumTesterVideoTools=Tester.hasCapability(testerSession,'selfUnlockCurriculum');
+      let liveAccount=testerSnap.exists()?testerSnap.data():null,liveControls=controlsSnap.exists()?controlsSnap.data():{},previousOverride=testerCurriculumOverride,previousVideoTools=window.DWCurriculumTesterVideoTools;
+      const syncTester=()=>{const nextSession=Tester.normalizeTester(u.uid,liveAccount),nextControls=Tester.normalizeControls(nextSession,liveControls),nextOverride=Tester.unlockEnabled(nextSession,nextControls,'unlockCurriculum'),nextVideoTools=Tester.hasCapability(nextSession,'selfUnlockCurriculum');if(previousOverride&&!nextOverride){location.reload();return}testerSession=nextSession;testerControls=nextControls;testerCurriculumOverride=nextOverride;window.DWCurriculumTesterVideoTools=nextVideoTools;if(previousVideoTools!==nextVideoTools)requestCurriculumRefresh("tester-video-tools");previousOverride=nextOverride;previousVideoTools=nextVideoTools};
       testerAccountUnsub=onSnapshot(doc(db,"testerAccounts",u.uid),snap=>{liveAccount=snap.exists()?snap.data():null;syncTester()});
       testerControlsUnsub=onSnapshot(doc(db,"testerSelfControls",u.uid),snap=>{liveControls=snap.exists()?snap.data():{};syncTester()});
      }catch(e){console.warn("Tester curriculum access unavailable",e)}

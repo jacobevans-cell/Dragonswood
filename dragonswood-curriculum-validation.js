@@ -1,4 +1,4 @@
-/* Dragonswood curriculum response validators v1.0.1
+/* Dragonswood curriculum response validators v1.0.2
    Free, task-specific checks run before the existing AI rescue. */
 (function(root,factory){
   const api=factory();
@@ -68,6 +68,12 @@
     return fail("needs_meaning_check","Dragonswood is checking whether the target word is used with the correct meaning.",{aiEligible:true});
   }
 
+  function morphologyAdvice(value,targetWord){
+    const vague=String(value||"").match(/\b(this|that|it|something|stuff|thing)\b/i)?.[0];
+    if(vague)return `The word “${vague}” is too vague. Name exactly what it refers to so your sentence clearly shows what “${targetWord}” means.`;
+    return `Name who or what is affected and the specific condition or experience connected to “${targetWord}.”`;
+  }
+
   const frames=Object.freeze({
     inference:"State what you infer, then name an action, statement, thought, event, or detail that supports it.",
     writingCommunity:"Give helpful feedback. Try: “If I were you, I would ___ so/because ___.”",
@@ -96,5 +102,5 @@
   const frameFor=kind=>frames[kind]||(kind==="quickwrite"?"":frames.explain);
   const hintFor=(kind,result={})=>hints[result.code]||frames[kind]||hints.unknown_open_response;
 
-  return Object.freeze({version:"1.0.1",meaningfulText,connectedReason,opinion,writingCommunity,inference,science,morphologyStructure,frameFor,hintFor});
+  return Object.freeze({version:"1.0.2",meaningfulText,connectedReason,opinion,writingCommunity,inference,science,morphologyStructure,morphologyAdvice,frameFor,hintFor});
 });

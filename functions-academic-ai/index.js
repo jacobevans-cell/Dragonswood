@@ -9,6 +9,12 @@ if(!admin.apps.length)admin.initializeApp();
 const db=admin.firestore(),FieldValue=admin.firestore.FieldValue;
 const OPENAI_API_KEY=defineSecret("OPENAI_API_KEY");
 const POLICY_VERSION="academic-rescue-v2.3",DEFAULT_MODEL="gpt-5-nano";
+const DEFAULT_AI_LIMITS=Object.freeze({
+  perStudentDailyCallCap:40,
+  dailyClassCallCap:1000,
+  focusedRetryPerStudentDailyCallCap:10,
+  focusedRetryDailyClassCallCap:100
+});
 const TEACHER_EMAIL="jacobicusjax@gmail.com";
 const PRICE={"gpt-5-nano":{input:0.05,output:0.40}};
 const clip=(v,n)=>String(v??"").slice(0,n);
@@ -36,11 +42,12 @@ function outputText(data){
 async function readConfig(){
   try{
     const s=await db.doc("classData/academicAiConfig").get(),d=s.exists?s.data():{};
-    return {enabled:d.enabled!==false,perStudentDailyCallCap:Math.max(1,Math.min(50,Number(d.perStudentDailyCallCap)||12)),
-      dailyClassCallCap:Math.max(1,Math.min(1000,Number(d.dailyClassCallCap)||250)),
-      focusedRetryPerStudentDailyCallCap:Math.max(1,Math.min(10,Number(d.focusedRetryPerStudentDailyCallCap)||2)),
-      focusedRetryDailyClassCallCap:Math.max(1,Math.min(100,Number(d.focusedRetryDailyClassCallCap)||40)),model:DEFAULT_MODEL};
-  }catch{return {enabled:true,perStudentDailyCallCap:12,dailyClassCallCap:250,focusedRetryPerStudentDailyCallCap:2,focusedRetryDailyClassCallCap:40,model:DEFAULT_MODEL}}
+    return {enabled:d.enabled!==false,
+      perStudentDailyCallCap:Math.max(DEFAULT_AI_LIMITS.perStudentDailyCallCap,Math.min(50,Number(d.perStudentDailyCallCap)||DEFAULT_AI_LIMITS.perStudentDailyCallCap)),
+      dailyClassCallCap:Math.max(DEFAULT_AI_LIMITS.dailyClassCallCap,Math.min(1000,Number(d.dailyClassCallCap)||DEFAULT_AI_LIMITS.dailyClassCallCap)),
+      focusedRetryPerStudentDailyCallCap:Math.max(DEFAULT_AI_LIMITS.focusedRetryPerStudentDailyCallCap,Math.min(10,Number(d.focusedRetryPerStudentDailyCallCap)||DEFAULT_AI_LIMITS.focusedRetryPerStudentDailyCallCap)),
+      focusedRetryDailyClassCallCap:Math.max(DEFAULT_AI_LIMITS.focusedRetryDailyClassCallCap,Math.min(100,Number(d.focusedRetryDailyClassCallCap)||DEFAULT_AI_LIMITS.focusedRetryDailyClassCallCap)),model:DEFAULT_MODEL};
+  }catch{return {enabled:true,...DEFAULT_AI_LIMITS,model:DEFAULT_MODEL}}
 }
 async function reservePaidCall(uid,dateKey,cfg,stage="primary"){
   const g=db.doc(`academicAiUsage/global_${dateKey}`),u=db.doc(`academicAiUsage/${uid}_${dateKey}`);

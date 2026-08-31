@@ -1,4 +1,4 @@
-/* Dragonswood cost-controlled academic AI rescue client v1.2.1 */
+/* Dragonswood cost-controlled academic AI rescue client v1.2.2 */
 (function(){
   "use strict";
   if(window.DWAcademicAI)return;
@@ -41,5 +41,5 @@
       return {decision:"unavailable",confidence:"low",reason:"AI rescue is temporarily unavailable.",paidCall:false};
     }
   }
-  window.DWAcademicAI={version:"1.2.1",configure,judge,studentAdvice,clear:()=>sessionCache.clear()};
+  window.DWAcademicAI={version:"1.2.2",configure,judge,studentAdvice,clear:()=>sessionCache.clear()};
 })();

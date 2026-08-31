@@ -123,7 +123,7 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
 
 <script src="foundation-track.js"></script>
 <script src="dragonswood-grading-core.js?v=56.21.0"></script>
-<script src="dragonswood-academic-ai-client.js?v=56.21.3"></script>
+<script src="dragonswood-academic-ai-client.js?v=56.21.4"></script>
 <style id="dw-grading-hardening-styles">
 .dw-question-review{margin-top:14px;padding:10px 12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1px solid rgba(255,211,94,.42);border-radius:10px;background:rgba(11,10,35,.84)}
 .dw-question-review-btn{padding:9px 12px!important;background:linear-gradient(90deg,#5f2da5,#176a8c)!important;border-color:#f4c95d!important}
@@ -308,6 +308,12 @@ function typedAnswerIsCorrect(q,value){
  if(window.DWGrading&&window.DWGrading.answersEquivalent&&window.DWGrading.answersEquivalent(q?.answer,value))return true;
  return acceptedTypedAnswers(q).includes(normalizeTypedAnswer(value));
 }
+function dailyAiFallbackAdvice(q){
+ const prompt=String(q?.prompt||"");
+ if(/synonym|similar meaning/i.test(prompt))return "Check whether your answer has the same meaning as the target word, then try a more precise synonym.";
+ if(/antonym|opposite/i.test(prompt))return "Check whether your answer has the opposite meaning from the target word, then try a more precise antonym.";
+ return "Check whether your answer directly names the concept asked for, then try a more precise word or phrase.";
+}
 async function gradeTypedAnswerWithRescue(q,value,t){
  if(typedAnswerIsCorrect(q,value))return {ok:true,method:"deterministic"};
  const mode=dwQuestionInputMode(q,t);
@@ -324,7 +330,7 @@ async function gradeTypedAnswerWithRescue(q,value,t){
    studentAnswer:String(value||""),
    strictConventions:!!window.DWGrading?.strictProfile?.(q)?.strict
  });
- const advice=window.DWAcademicAI?.studentAdvice?.(result,"Add one specific detail that shows the lesson idea.")||"Add one specific detail that shows the lesson idea.";
+ const fallback=dailyAiFallbackAdvice(q),advice=window.DWAcademicAI?.studentAdvice?.(result,fallback)||fallback;
  if(result.decision==="approve")return {ok:true,method:"ai",reason:advice,cached:result.cached};
  if(result.decision==="review"||result.decision==="unavailable")return {ok:false,review:true,method:result.decision,reason:advice};
  return {ok:false,method:"ai",reason:advice};

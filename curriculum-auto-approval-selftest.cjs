@@ -21,6 +21,7 @@ check('short Word Forge sentence still fails for free',()=>assert.equal(V.morpho
 check('complete Word Forge sentence advances to semantic AI check',()=>assert.equal(V.morphologyStructure('The harsh test was subjecting every material sample to extreme heat.','subjecting').code,'needs_meaning_check'));
 check('Word Forge requires the selected word in the sentence',()=>assert.equal(V.morphologyStructure('The harsh test exposed every material sample to extreme heat.','subjecting').code,'missing_example'));
 check('Word Forge response guide asks for meaning in context',()=>assert.match(V.frameFor('morph'),/context.*means|means.*context/i));
+check('Word Forge vague fallback gives response-specific advice',()=>assert.match(V.morphologyAdvice('I was subjecting myself to this again.','subjecting'),/“this” is too vague.*“subjecting”/i));
 
 const page=fs.readFileSync('curriculum-quest.html','utf8');
 check('Writing Community classification runs before generic opinion',()=>assert.ok(page.indexOf('if(/writing community|peer review|\\bpqp\\b|praise|polish/')<page.indexOf('if(/opinion/.test(raw))')));

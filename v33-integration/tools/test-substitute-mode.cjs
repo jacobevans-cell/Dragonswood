@@ -21,6 +21,8 @@ mode=Ops.datedSubstituteMode({active:true,mode:'afternoon',dateKey:'2026-08-31',
 assert.equal(mode.active,true);
 assert.equal(mode.afternoon,true);
 assert.equal(mode.remainingMs,60*60*1000);
+mode=Ops.datedSubstituteMode({active:true,mode:'arcade-free',dateKey:'2026-08-31',expiresAt:'2026-08-31T19:00:00.000Z'},now);
+assert.equal(mode.arcadeFree,true);
 mode=Ops.datedSubstituteMode({active:true,dateKey:'2026-08-31',expiresAt:'2026-09-01T07:00:00.000Z'},new Date('2026-09-01T08:00:00.000Z'));
 assert.equal(mode.active,false,'mode must expire after the Arizona day changes');
 
@@ -41,6 +43,7 @@ assert.match(teacher,/data-substitute-mode/);
 assert.match(runtime,/async setSubstituteMode\(requested\)/);
 assert.match(runtime,/Date\.now\(\)\+60\*60\*1000/);
 assert.match(teacher,/Afternoon Substitute Day/);
+assert.match(teacher,/Free Arcade for Everyone/);
 assert.match(student,/afternoonSubstituteEligible/);
 assert.match(rules,/function substituteModeAllowsPasses\(\)/);
 

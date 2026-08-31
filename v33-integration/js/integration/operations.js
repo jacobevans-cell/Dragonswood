@@ -115,8 +115,8 @@
   }
   function datedSubstituteMode(config={},date=new Date()){
     const dateKey=Core.phoenixDateKey(date),expiresAtMs=timestamp(config?.expiresAt),sameDay=text(config?.dateKey)===dateKey,notExpired=!expiresAtMs||expiresAtMs>date.getTime();
-    const active=config?.active===true&&sameDay&&notExpired,mode=text(config?.mode)==='afternoon'?'afternoon':'full-day';
-    return Object.freeze({dateKey,active,mode,afternoon:active&&mode==='afternoon',reason:text(config?.reason,'Ask your substitute teacher if you need help or need to leave the room.'),expiresAtMs,remainingMs:active&&expiresAtMs?Math.max(0,expiresAtMs-date.getTime()):0});
+    const active=config?.active===true&&sameDay&&notExpired,rawMode=text(config?.mode),mode=rawMode==='afternoon'||rawMode==='arcade-free'?rawMode:'full-day';
+    return Object.freeze({dateKey,active,mode,afternoon:active&&mode==='afternoon',arcadeFree:active&&mode==='arcade-free',reason:text(config?.reason,'Ask your substitute teacher if you need help or need to leave the room.'),expiresAtMs,remainingMs:active&&expiresAtMs?Math.max(0,expiresAtMs-date.getTime()):0});
   }
   function attentionModel(activeAttention={},events=[],students=[],date=new Date()){
     const dateKey=Core.phoenixDateKey(date),id=text(activeAttention?.id),active=activeAttention?.active===true&&text(activeAttention?.dateKey)===dateKey&&!!id;

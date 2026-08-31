@@ -8,6 +8,7 @@ const curriculumRows=ids.map(itemId=>({itemId,practiced:true,watched:true,questi
 assert.equal(A.activeMode(mode,dateKey,now),true);
 assert.equal(A.activeMode({...mode,mode:'full-day'},dateKey,now),false);
 assert.equal(A.assess({mode,profile:{grade:4},dailyRows,curriculumRows,dateKey,now}).eligible,true);
+assert.equal(A.assess({mode:{...mode,mode:'arcade-free'},profile:{grade:4},dailyRows:[],curriculumRows:[],dateKey,now}).eligible,true);
 assert.equal(A.assess({mode,profile:{grade:4},dailyRows:[],curriculumRows,dateKey,now}).eligible,false);
 assert.equal(A.assess({mode,profile:{grade:4},dailyRows,curriculumRows:curriculumRows.slice(1),dateKey,now}).eligible,false);
 assert.equal(A.assess({mode,profile:{grade:4},dailyRows,curriculumRows:curriculumRows.map((row,index)=>index?row:{...row,watched:false}),dateKey,now}).eligible,false);

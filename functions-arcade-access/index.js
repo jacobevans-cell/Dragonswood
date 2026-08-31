@@ -58,7 +58,8 @@ async function readAfternoon(uid,now=Date.now(),get=ref=>ref.get()){
 }
 async function readActiveAfternoonSession(now=Date.now()){
   const snapshot=await substituteRef().get(),mode=snapshot.exists?snapshot.data():{},dateKey=C.phoenixDateKey(new Date(now)),active=A.activeMode(mode,dateKey,now);
-  return {active,eligible:active,morningComplete:active,curriculumComplete:active,completedCount:0,expectedCount:0,expiresAtMs:active?A.toMillis(mode.expiresAt):0};
+  const currentMode=A.modeName(mode),arcadeForAll=active&&currentMode==='arcade-free';
+  return {active,eligible:active,mode:currentMode,arcadeForAll,morningComplete:active,curriculumComplete:active,completedCount:0,expectedCount:0,expiresAtMs:active?A.toMillis(mode.expiresAt):0};
 }
 function accessView(access,settings,session,now,testerOverride,afternoon){
   const afternoonAccess=afternoon?.eligible===true,afternoonActive=afternoon?.active===true,freeAccess=testerOverride||afternoonAccess;
@@ -67,7 +68,7 @@ function accessView(access,settings,session,now,testerOverride,afternoon){
   const testerRevoked=session?.testerSelfControl===true&&!testerOverride,afternoonRevoked=session?.afternoonSubstitute===true&&!afternoonAccess,effectiveSession=testerRevoked||afternoonRevoked?null:session;
   return {
     ...C.publicAccess(effectiveAccess,effectiveSettings,effectiveSession,now),testerOverride,
-    freeAccess,afternoonSubstituteActive:afternoonActive,afternoonSubstituteAccess:afternoonAccess,
+    freeAccess,afternoonSubstituteActive:afternoonActive,afternoonSubstituteAccess:afternoonAccess,substituteArcadeForAll:afternoon?.arcadeForAll===true,substituteArcadeMode:C.text(afternoon?.mode),
     afternoonRequirements:{morningComplete:afternoon?.morningComplete===true,curriculumComplete:afternoon?.curriculumComplete===true,completedCount:Number(afternoon?.completedCount)||0,expectedCount:Number(afternoon?.expectedCount)||0},
     afternoonExpiresAtMillis:Number(afternoon?.expiresAtMs)||0
   };
@@ -128,7 +129,7 @@ exports.startArcadeSession=onCall(OPTIONS,async request=>{
     const tokens=C.clampTokens(access.tokens),cost=freeAccess?0:C.SESSION_COST;
     if(tokens<cost)throw new HttpsError('failed-precondition','Three Arcade Tokens are required.');
     if(prior&&prior.status==='active')tx.set(priorRef,{status:'expired',endReason:'expired',endedAt:FieldValue.serverTimestamp()},{merge:true});
-    const source=afternoonOverride?'afternoon-substitute':testerOverride?'tester-self-control':'arcade-token-wallet',endAt=afternoonOverride?afternoon.expiresAtMs:now+C.SESSION_MS;
+    const source=afternoonOverride?(afternoon.arcadeForAll?'substitute-arcade-free':'afternoon-substitute'):testerOverride?'tester-self-control':'arcade-token-wallet',endAt=afternoonOverride?afternoon.expiresAtMs:now+C.SESSION_MS;
     const session={uid,status:'active',cost,source,testerSelfControl:testerOverride,afternoonSubstitute:afternoonOverride,startAt:Timestamp.fromMillis(now),endAt:Timestamp.fromMillis(endAt),createdAt:FieldValue.serverTimestamp(),schemaVersion:1};
     tx.create(newRef,session);
     tx.set(aRef,{uid,tokens:tokens-cost,currentSessionId:newRef.id,sessionStatus:'active',updatedAt:FieldValue.serverTimestamp()},{merge:true});

@@ -39,11 +39,12 @@ function renderLocked(message='Checking your Arcade Time…'){
   const enabled=access?.teacherEnabled===true;
   const testerOverride=access?.testerOverride===true;
   const afternoonAccess=access?.afternoonSubstituteAccess===true;
+  const arcadeForAll=access?.substituteArcadeForAll===true;
   const ready=afternoonAccess||testerOverride||(count===3&&enabled);
   document.documentElement.classList.remove('arcade-auth-pending');
   gate.hidden=false;
   badge.hidden=true;
-  gate.innerHTML=`<div class="arcade-access-card"><img src="../v33-integration/assets/branding/dragonswood-mascot-crest.png" alt=""><h1>Arcade Time</h1>${tokens(count)}<p>${esc(message)}</p><p class="arcade-access-note">${afternoonAccess?'🎮 Afternoon Substitute free play is active. No Arcade Tokens will be charged.':testerOverride?'🧪 TRUE TESTER self-unlock is active. Your normal Token wallet will not be charged.':'3 Tokens = one 30-minute session. Tokens are earned for Ready, Responsible, and Complete choices. Wallet maximum: 3.'}</p><div class="arcade-access-actions"><button type="button" data-start-arcade ${ready?'':'disabled'}>${afternoonAccess?'Start Free Afternoon Arcade':testerOverride?'Start Tester Session':'Use 3 Tokens — Start 30 Minutes'}</button><a href="${portalHref()}">Return to Dragonswood</a></div><p class="arcade-access-note">${afternoonAccess?'Finished-work access':testerOverride?'Tester-only personal access':enabled?'Teacher Arcade Time is open.':'Teacher Arcade Time is currently locked.'} • ${environment}</p></div>`;
+  gate.innerHTML=`<div class="arcade-access-card"><img src="../v33-integration/assets/branding/dragonswood-mascot-crest.png" alt=""><h1>Arcade Time</h1>${tokens(count)}<p>${esc(message)}</p><p class="arcade-access-note">${arcadeForAll?'🕹️ Free Arcade for Everyone is active. No work requirements and no Tokens.':afternoonAccess?'🎮 Afternoon Substitute free play is active. No Arcade Tokens will be charged.':testerOverride?'🧪 TRUE TESTER self-unlock is active. Your normal Token wallet will not be charged.':'3 Tokens = one 30-minute session. Tokens are earned for Ready, Responsible, and Complete choices. Wallet maximum: 3.'}</p><div class="arcade-access-actions"><button type="button" data-start-arcade ${ready?'':'disabled'}>${arcadeForAll?'Start Free Arcade':afternoonAccess?'Start Free Afternoon Arcade':testerOverride?'Start Tester Session':'Use 3 Tokens — Start 30 Minutes'}</button><a href="${portalHref()}">Return to Dragonswood</a></div><p class="arcade-access-note">${arcadeForAll?'Whole-class free access':afternoonAccess?'Finished-work access':testerOverride?'Tester-only personal access':enabled?'Teacher Arcade Time is open.':'Teacher Arcade Time is currently locked.'} • ${environment}</p></div>`;
   gate.querySelector('[data-start-arcade]')?.addEventListener('click',begin);
 }
 function updateClock(){
@@ -75,7 +76,7 @@ async function refresh(){
     const next=await getArcadeAccess();
     access=next;
     if(next.active&&remainingMs(next)>0)await unlock(next);
-    else renderLocked(next.afternoonSubstituteAccess?'Your free Afternoon Arcade window is ready.':next.afternoonSubstituteActive?'Finish today’s Morning Work and every Current Quest lesson first.':next.testerOverride?'Your tester self-unlock is ready. Start a tester session.':next.teacherEnabled?'Return to Dragonswood and earn all 3 Arcade Tokens first.':'Arcade is locked until your teacher opens Arcade Time.');
+    else renderLocked(next.substituteArcadeForAll?'Free Arcade for Everyone is ready.':next.afternoonSubstituteAccess?'Your free Afternoon Arcade window is ready.':next.afternoonSubstituteActive?'Finish today’s Morning Work and every Current Quest lesson first.':next.testerOverride?'Your tester self-unlock is ready. Start a tester session.':next.teacherEnabled?'Return to Dragonswood and earn all 3 Arcade Tokens first.':'Arcade is locked until your teacher opens Arcade Time.');
   }catch(err){
     console.error('[Arcade access]',err);
     renderLocked(navigator.onLine?`Arcade could not finish loading: ${err?.message||err}`:'Arcade is locked while this device is offline.');

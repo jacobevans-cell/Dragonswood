@@ -100,7 +100,7 @@ const state = {
 
 function effectiveDateKey(){return state.isTester&&/^\d{4}-\d{2}-\d{2}$/.test(state.simulatedDate)?state.simulatedDate:(window.DWV33Core?.phoenixDateKey?.()||new Date().toISOString().slice(0,10))}
 function substituteModeActive(){return state.substituteMode?.active===true}
-function substituteBlocked(target){return substituteModeActive()&&['kingdom','deep-time-lab','dragon-tongues'].includes(String(target||''))}
+function substituteBlocked(target){return substituteModeActive()&&['kingdom','deep-time-lab','dragon-tongues','arcade','boss','boss-battle'].includes(String(target||''))}
 function weekendAcademicOpen(target){return window.DWV33Core?.isWeekendDateKey?.(effectiveDateKey())===true&&['rune-spelling','dragon-tongues','curriculum-quest'].includes(String(target||''))}
 window.DWV33TesterDateContext=()=>Object.freeze({dateKey:effectiveDateKey(),simulated:state.isTester&&Boolean(state.simulatedDate),isTester:state.isTester,testerUnlocks:Object.freeze({...state.testerUnlocks})});
 
@@ -222,8 +222,8 @@ function showRequiredWorkDialog(target='activity'){
   dialogRoot.querySelectorAll('[data-required-route]').forEach(button=>button.addEventListener('click',()=>{closeDialog();location.hash=button.dataset.requiredRoute}));
 }
 function showSubstituteModeDialog(target='activity'){
-  const labels={kingdom:'Kingdom Wars','deep-time-lab':'Deep Time Lab','dragon-tongues':'Dragon Tongues'},label=labels[String(target)]||'This activity';
-  openDialog('Ask Your Substitute Teacher',`<div class="pass-card serious-warning"><b>🛑 ${escapeHtml(label)} is unavailable today.</b><p>Substitute Mode is on, so passes, Kingdom Wars, Deep Time Lab, and Dragon Tongues are disabled for the day.</p></div><p>If you need help or need to leave the room, please ask your substitute teacher directly.</p>`,`<button class="btn btn-primary" data-close-dialog>Return to Dragon’s Path</button>`);
+  const labels={kingdom:'Kingdom Wars','deep-time-lab':'Deep Time Lab','dragon-tongues':'Dragon Tongues',arcade:'Arcade',boss:'Boss Battle','boss-battle':'Boss Battle'},label=labels[String(target)]||'This activity';
+  openDialog('Ask Your Substitute Teacher',`<div class="pass-card serious-warning"><b>🛑 ${escapeHtml(label)} is unavailable today.</b><p>Substitute Mode is on, so passes, Kingdom Wars, Deep Time Lab, Dragon Tongues, Arcade, and Boss Battle are disabled for the day.</p></div><p>If you need help or need to leave the room, please ask your substitute teacher directly.</p>`,`<button class="btn btn-primary" data-close-dialog>Return to Dragon’s Path</button>`);
 }
 
 function activePassRows(){
@@ -349,7 +349,7 @@ function shell(){
       <div class="student-utility">${state.isTester?'<button class="btn btn-secondary btn-sm" type="button" data-tester-controls>🧪 <span>Tester Controls</span></button>':''}<button class="btn btn-secondary btn-sm" type="button" data-passes>🎟️ <span>${substituteModeActive()?'Ask sub for pass':'Passes'}</span></button><button class="btn btn-secondary btn-sm" type="button" data-read>🔊 <span>Read aloud</span></button><div class="profile-pill" role="button" tabindex="0" data-account-menu aria-label="Open account menu"><div class="profile-orb">${escapeHtml(state.initial)}</div><span><b>${escapeHtml(state.firstName)}</b><small>Level ${state.level}</small></span></div></div>
       </div></header>
     <aside class="student-sidebar">${navMarkup()}</aside>
-    <main class="student-main" id="page-content">${state.isTester&&state.simulatedDate?`<div class="tester-date-banner" role="status">🧪 SAFE DATE PREVIEW • real date ${escapeHtml(window.DWV33Core?.phoenixDateKey?.()||'today')} • simulated date ${escapeHtml(state.simulatedDate)} • academic and Boss preview writes are disabled <button type="button" data-return-real-date>Return to Today</button></div>`:''}<div class="student-content">${substituteModeActive()?'<section class="substitute-student-banner" role="alert"><span>🛑</span><div><h2>Substitute Mode is on today</h2><p>Passes, Kingdom Wars, Deep Time Lab, and Dragon Tongues are unavailable. If you need help or need to leave the room, ask your substitute teacher.</p></div></section>':''}${pageMarkup()}</div></main>
+    <main class="student-main" id="page-content">${state.isTester&&state.simulatedDate?`<div class="tester-date-banner" role="status">🧪 SAFE DATE PREVIEW • real date ${escapeHtml(window.DWV33Core?.phoenixDateKey?.()||'today')} • simulated date ${escapeHtml(state.simulatedDate)} • academic and Boss preview writes are disabled <button type="button" data-return-real-date>Return to Today</button></div>`:''}<div class="student-content">${substituteModeActive()?'<section class="substitute-student-banner" role="alert"><span>🛑</span><div><h2>Substitute Mode is on today</h2><p>Passes, Kingdom Wars, Deep Time Lab, Dragon Tongues, Arcade, and Boss Battle are unavailable. If you need help or need to leave the room, ask your substitute teacher.</p></div></section>':''}${pageMarkup()}</div></main>
     ${passSafetyMarkup()}${teacherAttentionMarkup()}${referenceButton()}${IS_PRODUCTION?'':'<div class="tester-ribbon">V3.3 TESTER • LOCAL ONLY</div>'}
   </div>`;
 }
@@ -438,7 +438,7 @@ function missionsPage(){
   const completeCount=missions.filter(m=>state.completedMissions.has(m.id)).length;
   const optionalOpen=unfinishedRequiredWork('games').length===0;
   const accessSummary=optionalOpen
-    ?substituteModeActive()?'Dragon’s Path is complete. Substitute Mode keeps passes and three optional activities closed today.':'Dragon’s Path is complete. Dragon Tongues, games, Scribe Arena, Boss Battle, Kingdom Wars, and Arcade are available.'
+    ?substituteModeActive()?'Dragon’s Path is complete. Substitute Mode keeps passes and five optional activities closed today.':'Dragon’s Path is complete. Dragon Tongues, games, Scribe Arena, Boss Battle, Kingdom Wars, and Arcade are available.'
     :state.testerUnlocks.unlockMorning===true
       ?'Tester access is active. Required work remains incomplete until you do it.'
       :'Complete Morning Work, Rune Spelling, and Curriculum Quest to open free-choice adventures.';

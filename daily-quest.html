@@ -123,7 +123,7 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
 
 <script src="foundation-track.js"></script>
 <script src="dragonswood-grading-core.js?v=56.21.0"></script>
-<script src="dragonswood-academic-ai-client.js?v=56.21.4"></script>
+<script src="dragonswood-academic-ai-client.js?v=56.21.5"></script>
 <style id="dw-grading-hardening-styles">
 .dw-question-review{margin-top:14px;padding:10px 12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1px solid rgba(255,211,94,.42);border-radius:10px;background:rgba(11,10,35,.84)}
 .dw-question-review-btn{padding:9px 12px!important;background:linear-gradient(90deg,#5f2da5,#176a8c)!important;border-color:#f4c95d!important}
@@ -160,7 +160,7 @@ const $=id=>document.getElementById(id);
 let user=null,profile=null,lesson=null,sessionName="",questionPlan=[],tasks=[],taskIndex=0,qIndex=0,score=0,correct=0,attempts=0,sessionStart=0,currentQuestion=null,currentQuestionSeen=false,currentQuestionCorrect=false,localPreviewMode=false;
 let testerSession=Tester.normalizeTester('',null),testerControls={},testerMorningOverride=false;
 let testerAccountUnsub=null,testerControlsUnsub=null;
-let dwDailyOverrideUnsub=null,dwDailyOverrideRows=[],dwLastStudentAnswer="";
+let dwDailyOverrideUnsub=null,dwDailyOverrideRows=[],dwLastStudentAnswer="",dwDailyReviewRevisionStates={};
 const dwRejectedQuestionKeys=new Set(),dwOverrideAppliedKeys=new Set();
 window.addEventListener("dw:narration-voice-change",async e=>{const voiceId=e.detail?.voiceId||"automatic";if(!user||profile?.narrationVoice===voiceId)return;profile={...(profile||{}),narrationVoice:voiceId};try{await setDoc(doc(db,"students",user.uid),{narrationVoice:voiceId,updatedAt:serverTimestamp()},{merge:true})}catch(err){console.warn("Could not sync narration preference",err)}});
 let activeSeconds=0,idleEvents=0,perQuestionSeconds=[],questionStartedAt=0,lastInteractionAt=0,idleAnnounced=false,activeTimer=null,skillStats={},needsReteach=new Set(),retryKeys=new Set();
@@ -6070,6 +6070,7 @@ async function saveProgress(extra={}){
     score:Number(score||0),correct:Number(correct||0),attempts:Math.min(60,Number(attempts||0)),
     mathSkill:String(lesson.mathSkill||""),elaSkill:String(lesson.elaSkill||""),
     skills:skillStats,needsReteach:[...needsReteach],activeSeconds:Number(activeSeconds||0),idleEvents:Number(idleEvents||0),perQuestionSeconds:perQuestionSeconds.slice(0,60),
+    reviewRevisionStates:dwDailyReviewRevisionStates,
     sequenceAudit:tasks.slice(0,60).map(t=>({subject:String(t.subject||""),skillId:String(t.skillId||""),sourceDate:String(t.sourceDate||lesson.date||""),remediationStatus:String(t._isRetry?"retry":t.remediationStatus||"none"),substitutionReason:String(t._isRetry?"missed item; delayed differently structured retry":t.substitutionReason||"current pacing target"),interaction:String(t.engine||"choice")})),
     updatedAt:serverTimestamp(),...extra
   };
@@ -6164,7 +6165,7 @@ async function startSession(name){
     taskIndex=Math.max(0,Number(sessionProgress.taskIndex||0));qIndex=Math.max(0,Number(sessionProgress.qIndex||0));
     score=Math.max(0,Number(sessionProgress.score||0));correct=Math.max(0,Number(sessionProgress.correct||0));attempts=Math.max(0,Number(sessionProgress.attempts||0));
   }else{taskIndex=0;qIndex=0;score=0;correct=0;attempts=0}
-  skillStats=sessionProgress?.skills||{};needsReteach=new Set(sessionProgress?.needsReteach||[]);activeSeconds=Number(sessionProgress?.activeSeconds||0);idleEvents=Number(sessionProgress?.idleEvents||0);perQuestionSeconds=Array.isArray(sessionProgress?.perQuestionSeconds)?sessionProgress.perQuestionSeconds:[];retryKeys=new Set();
+  skillStats=sessionProgress?.skills||{};needsReteach=new Set(sessionProgress?.needsReteach||[]);activeSeconds=Number(sessionProgress?.activeSeconds||0);idleEvents=Number(sessionProgress?.idleEvents||0);perQuestionSeconds=Array.isArray(sessionProgress?.perQuestionSeconds)?sessionProgress.perQuestionSeconds:[];dwDailyReviewRevisionStates=sessionProgress?.reviewRevisionStates&&typeof sessionProgress.reviewRevisionStates==="object"?sessionProgress.reviewRevisionStates:{};retryKeys=new Set();
   sessionStart=Date.now();
   questionStartedAt=Date.now();startActiveTimer();
   $("playTitle").textContent=name==="morning"?"🌅 Morning Adventure":"🌙 Exit Quest";
@@ -6178,6 +6179,20 @@ function dwReviewHash(value){let h=2166136261;for(const ch of String(value||""))
 function dwDailyQuestionKey(q=currentQuestion){
  const sig=q?`${String(q.prompt||"")}||${String(q.answer||"")}||${currentSkillId()}`:"none";
  return `${dateKey()}|${sessionName||"session"}|${dwReviewHash(sig)}`;
+}
+function dwDailyRevisionState(key=dwDailyQuestionKey()){
+ const row=dwDailyReviewRevisionStates[key];if(row&&typeof row==="object")return row;
+ return dwDailyReviewRevisionStates[key]={};
+}
+function dwDailyReviewGate(key=dwDailyQuestionKey()){return window.DWAcademicAI.revisionGate(dwDailyRevisionState(key))}
+function dwRegisterDailyReviewAttempt(answer){
+ const key=dwDailyQuestionKey(),state=dwDailyRevisionState(key),gate=window.DWAcademicAI.registerRevisionAttempt(state,answer);
+ dwDailyReviewRevisionStates[key]=state;void saveProgress({reviewRevisionStates:dwDailyReviewRevisionStates});queueMicrotask(dwRefreshDailyReviewFooter);return gate;
+}
+function dwDailyReviewGateMessage(gate){
+ if(gate.unlocked)return "You completed three genuine revisions. Teacher Review is now available.";
+ const repeat=gate.repeated?"This matches an earlier answer, so it did not count as a revision. ":"";
+ return `${repeat}Change your answer using the feedback, then check again. Teacher Review unlocks after ${gate.remaining} more changed ${gate.remaining===1?"answer":"answers"}.`;
 }
 function dwCurrentStudentAnswer(){
  const arena=$("arena");if(!arena)return dwLastStudentAnswer||"Interactive response";
@@ -6204,11 +6219,12 @@ function dwRefreshDailyReviewFooter(){
   f.innerHTML='<button type="button" class="dw-question-review-btn">🛡️ REQUEST TEACHER REVIEW</button><span class="dw-question-review-note">Use this when you believe Dragonswood rejected a correct answer.</span>';
   arena.appendChild(f);f.querySelector("button").onclick=requestDailyQuestionReview;
  }
- const r=dwDailyReviewRow(),b=f.querySelector("button"),n=f.querySelector(".dw-question-review-note");
- if(r?.status==="approved"){b.disabled=true;b.textContent="✅ TEACHER APPROVED";n.textContent="This question is being counted as correct."}
- else if(r?.status==="pending"){b.disabled=true;b.textContent="🟡 TEACHER REVIEW REQUESTED";n.textContent="Your exact question and response were sent."}
- else if(r?.status==="returned"){b.disabled=false;b.textContent="🛡️ REQUEST REVIEW AGAIN";n.textContent=r.teacherNote||"Revise and try again."}
- else{b.disabled=false;b.textContent="🛡️ REQUEST TEACHER REVIEW";n.textContent="Use this when you believe Dragonswood rejected a correct answer."}
+  const r=dwDailyReviewRow(),gate=dwDailyReviewGate(),b=f.querySelector("button"),n=f.querySelector(".dw-question-review-note");
+  if(r?.status==="approved"){b.disabled=true;b.textContent="✅ TEACHER APPROVED";n.textContent="This question is being counted as correct."}
+  else if(r?.status==="pending"){b.disabled=true;b.textContent="🟡 TEACHER REVIEW REQUESTED";n.textContent="Your exact question and response were sent."}
+  else if(!gate.unlocked){b.disabled=true;b.textContent=`🔒 REVISE ${gate.count}/${gate.required} BEFORE REVIEW`;n.textContent=`Teacher Review unlocks after ${gate.remaining} more changed ${gate.remaining===1?"answer":"answers"}. Repeating the same answer does not count.`}
+  else if(r?.status==="returned"){b.disabled=false;b.textContent="🛡️ REQUEST REVIEW AGAIN";n.textContent=r.teacherNote||"You completed three genuine revisions. Teacher Review is available again."}
+  else{b.disabled=false;b.textContent="🛡️ REQUEST TEACHER REVIEW";n.textContent="You completed three genuine revisions. Use Teacher Review only if Dragonswood still cannot decide."}
 }
 function dwInstallDailyReviewUI(){
  const arena=$("arena");if(!arena||arena.dataset.dwReviewInstalled)return;arena.dataset.dwReviewInstalled="1";
@@ -6218,9 +6234,10 @@ function dwInstallDailyReviewUI(){
  dwRefreshDailyReviewFooter();
 }
 async function requestDailyQuestionReview(){
- if(!user||!currentQuestion)return;
- const key=dwDailyQuestionKey(),prior=dwDailyReviewRow(key);if(prior?.status==="pending"||prior?.status==="approved")return;
- const t=tasks[taskIndex]||{},answer=String(dwCurrentStudentAnswer()||"Interactive response").slice(0,5000);
+  if(!user||!currentQuestion)return;
+  const key=dwDailyQuestionKey(),prior=dwDailyReviewRow(key);if(prior?.status==="pending"||prior?.status==="approved")return;
+  const gate=dwDailyReviewGate(key);if(!gate.unlocked){feedback(`Teacher Review unlocks after ${gate.remaining} more changed ${gate.remaining===1?"answer":"answers"}. Use the feedback, revise, and check again. Repeating the same answer does not count.`,"bad");return}
+  const t=tasks[taskIndex]||{},answer=String(dwCurrentStudentAnswer()||"Interactive response").slice(0,5000);
  try{
   const requestId=`${user.uid}_daily_${String(key).replace(/[^a-zA-Z0-9_-]/g,"_")}`;
   await setDoc(doc(db,"curriculumOverrideRequests",requestId),{
@@ -6231,7 +6248,7 @@ async function requestDailyQuestionReview(){
    grade:String(profile?.grade||""),day:Number(lesson?.day||0),subject:String(t.subject||"Daily Work"),strand:String(t.pacingStrand||t.skill||""),
    pacingItemId:String(t.pacingItemId||""),pacingRequirement:String(t.pacingRequirement||""),engine:engineName(t.engine),
    questionPrompt:String(currentQuestion.prompt||"").slice(0,5000),expectedAnswer:String(currentQuestion.answer||"").slice(0,1000),
-   studentAnswer:answer,attempts:Number(attempts||0),status:"pending",requestedAt:serverTimestamp(),updatedAt:serverTimestamp()
+    studentAnswer:answer,attempts:Number(attempts||0),revisionAttempts:gate.count,status:"pending",requestedAt:serverTimestamp(),updatedAt:serverTimestamp()
   },{merge:true});
   dwCancelFalseRetry();feedback("Teacher review requested. Your exact question and response were sent.","good");
  }catch(e){console.error("daily review",e);feedback(`Teacher review was not sent: ${e.code||e.message||e}`,"bad")}
@@ -6271,7 +6288,7 @@ function queueRetry(skillId){
 function award(ok){
  attempts++;markActive();const skillId=currentSkillId(),row=skillStats[skillId]||{seen:0,correct:0};if(!currentQuestionSeen){row.seen++;currentQuestionSeen=true}
  if(ok){correct++;if(!currentQuestionCorrect){row.correct++;currentQuestionCorrect=true}score+=100+Math.max(0,50-Math.floor((Date.now()-sessionStart)/10000));feedback("Correct! ✨","good");if(tasks[taskIndex]?._isRetry){for(let i=tasks.length-1;i>taskIndex;i--)if(tasks[i]?._isRetry&&String(tasks[i].skillId||"")===skillId){tasks.splice(i,1);questionPlan.splice(i,1)}}}
- else{dwRejectedQuestionKeys.add(dwDailyQuestionKey());score=Math.max(0,score-15);feedback("Not yet. Try again.","bad");const t=tasks[taskIndex];if(t?._isRetry)needsReteach.add(skillId);else queueRetry(skillId)}
+  else{dwRejectedQuestionKeys.add(dwDailyQuestionKey());dwRegisterDailyReviewAttempt(dwLastStudentAnswer);score=Math.max(0,score-15);feedback("Not yet. Try again.","bad");const t=tasks[taskIndex];if(t?._isRetry)needsReteach.add(skillId);else queueRetry(skillId)}
  skillStats[skillId]=row;updateRun()
 }
 function feedback(t,c){$("feedback").textContent=t;$("feedback").className=`feedback ${c}`}
@@ -6381,7 +6398,7 @@ function dwQuestionInputMode(q,t){
 function freeResponseEngine(q,t){
  const mode=dwQuestionInputMode(q,t),label=mode==="number"?"Enter the number":"Type the answer";
  $("arena").innerHTML=`${promptBlock(q,t)}<div class="visual-note">This one is open response—produce the answer instead of choosing it.</div><div class="runeinput"><input id="freeAnswer" ${mode==="number"?'inputmode="decimal"':""} autocomplete="off" placeholder="${label}"><button id="checkFree">CHECK ANSWER</button></div>`;
- $("checkFree").onclick=async()=>{const btn=$("checkFree"),value=$("freeAnswer").value;btn.disabled=true;dwLastStudentAnswer=String(value||"").trim();try{const result=await gradeTypedAnswerWithRescue(q,value,t);if(result.ok){award(true);if(result.method==="ai")feedback(`Accepted! ${result.reason} ✨`,"good");advance()}else if(result.review){feedback(`Almost there—your answer was saved and was not counted wrong. ${result.reason} Revise once more, or use REQUEST TEACHER REVIEW below.`,"");dwRefreshDailyReviewFooter()}else{award(false);if(result.method==="ai")feedback(`Not yet: ${result.reason}`,"bad")}}finally{btn.disabled=false}};
+ $("checkFree").onclick=async()=>{const btn=$("checkFree"),value=$("freeAnswer").value;btn.disabled=true;dwLastStudentAnswer=String(value||"").trim();try{const result=await gradeTypedAnswerWithRescue(q,value,t);if(result.ok){award(true);if(result.method==="ai")feedback(`Accepted! ${result.reason} ✨`,"good");advance()}else if(result.review){const gate=dwRegisterDailyReviewAttempt(value);feedback(`Almost there—your answer was saved and was not counted wrong. ${result.reason} ${dwDailyReviewGateMessage(gate)}`,"");dwRefreshDailyReviewFooter()}else{award(false);if(result.method==="ai")feedback(`Not yet: ${result.reason}`,"bad")}}finally{btn.disabled=false}};
  $("freeAnswer").onkeydown=e=>{if(e.key==="Enter")$("checkFree").click()};$("freeAnswer").focus();
 }
 function orderInputEngine(q,t){
@@ -6421,7 +6438,7 @@ function runeEngine(q,t){
  const bank=Array.isArray(q?.choices)&&q.choices.length?q.choices:acceptedTypedAnswers(q);
  $("arena").innerHTML=`${promptBlock(q,t)}<div class="visual-note">Choose from the Answer Bank, or type a correct answer to unlock the rune. Equivalent vocabulary answers are accepted when the question allows more than one.</div>${bank.length?`<div class="answer-bank"><div class="visual-title">🧰 ANSWER BANK</div><div class="answer-bank-options">${bank.map(c=>`<button type="button" class="answer-bank-choice" data-v="${String(c).replaceAll('&','&amp;').replaceAll('"','&quot;')}">${c}</button>`).join("")}</div></div>`:""}<div class="runeinput"><input id="rin" autocomplete="off" placeholder="Choose from the bank or type your answer"><button id="runlock">UNLOCK 🔐</button></div>`;
  document.querySelectorAll(".answer-bank-choice").forEach(b=>b.onclick=()=>{$("rin").value=b.dataset.v;document.querySelectorAll(".answer-bank-choice").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");$("rin").focus()});
- $("runlock").onclick=async()=>{const btn=$("runlock"),value=$("rin").value;btn.disabled=true;dwLastStudentAnswer=String(value||"").trim();try{const result=await gradeTypedAnswerWithRescue(q,value,t);if(result.ok){award(true);if(result.method==="ai")feedback(`Accepted! ${result.reason} ✨`,"good");advance()}else if(result.review){feedback(`Almost there—your answer was saved and was not counted wrong. ${result.reason} Revise once more, or use REQUEST TEACHER REVIEW below.`,"");dwRefreshDailyReviewFooter()}else{award(false);if(result.method==="ai")feedback(`Not yet: ${result.reason}`,"bad")}}finally{btn.disabled=false}};$("rin").onkeydown=e=>{if(e.key==="Enter")$("runlock").click()}}
+ $("runlock").onclick=async()=>{const btn=$("runlock"),value=$("rin").value;btn.disabled=true;dwLastStudentAnswer=String(value||"").trim();try{const result=await gradeTypedAnswerWithRescue(q,value,t);if(result.ok){award(true);if(result.method==="ai")feedback(`Accepted! ${result.reason} ✨`,"good");advance()}else if(result.review){const gate=dwRegisterDailyReviewAttempt(value);feedback(`Almost there—your answer was saved and was not counted wrong. ${result.reason} ${dwDailyReviewGateMessage(gate)}`,"");dwRefreshDailyReviewFooter()}else{award(false);if(result.method==="ai")feedback(`Not yet: ${result.reason}`,"bad")}}finally{btn.disabled=false}};$("rin").onkeydown=e=>{if(e.key==="Enter")$("runlock").click()}}
 
 function crystalEngine(q,t){
  const cards=shuffle(hashSeed(q.prompt.length+taskIndex*97+qIndex*31),q.choices);

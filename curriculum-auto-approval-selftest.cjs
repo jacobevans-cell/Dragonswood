@@ -28,7 +28,7 @@ check('Writing Community classification runs before generic opinion',()=>assert.
 check('Math teacher-review requests are blocked',()=>{assert.match(page,/if\(x\.subject==="Math"\)\{alert\("Math is checked automatically/);assert.match(page,/Math is checked automatically\. Revise and try again/)});
 check('teacher requests carry validator and AI triage',()=>{assert.match(page,/validatorCode:String\(meta\.validatorCode/);assert.match(page,/strongRetryUsed:!!meta\.strongRetryUsed/)});
 check('reading excerpts force source-grounded semantic checking',()=>assert.match(page,/structural\.ok&&sourceExcerpt.*needs_source_check/));
-check('high-confidence rejection requires revision',()=>assert.match(page,/lastAiTriage\?\.decision==="not_approved"&&prior\.lastAiTriage\?\.confidence==="high"/));
+check('high-confidence rejection still requires three genuine revisions before review',()=>{assert.match(page,/registerRevisionAttempt\(s,answer,priorAnswer\)/);assert.match(page,/if\(!gate\.unlocked\)/)});
 check('copied directions remain blocked',()=>assert.match(page,/code:"copied_prompt",reviewable:false/));
 check('Word Forge semantic check uses lesson definition and existing AI',()=>{assert.match(page,/\"quickwrite\",\"morph\"/);assert.match(page,/spec\.kind===\"morph\"\?String\(spec\.meaning/);assert.match(page,/Do not approve merely because the word appears/) });
 check('Kataleya subtraction expected value is correct',()=>assert.equal(75281-17136,58145));

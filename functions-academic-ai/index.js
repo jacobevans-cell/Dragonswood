@@ -19,6 +19,7 @@ const TEACHER_EMAIL="jacobicusjax@gmail.com";
 const PRICE={"gpt-5-nano":{input:0.05,output:0.40}};
 const clip=(v,n)=>String(v??"").slice(0,n);
 const hash=v=>crypto.createHash("sha256").update(String(v)).digest("hex");
+const normalizedAnswer=v=>String(v??"").trim().replace(/\s+/g," ").toLowerCase();
 const phoenixDateKey=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Phoenix",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 
 function looksNumeric(v){
@@ -104,7 +105,7 @@ Give one specific strength and one concise, age-appropriate next step. Do not re
 Return only the required structured result.`;
 
 async function callAnswerJudge(uid,p,cfg,dateKey,stage="primary"){
-  const cacheKey=hash(JSON.stringify([POLICY_VERSION,cfg.model,stage,p.mode,p.prompt,p.expectedAnswer,p.studentAnswer,p.rubric,p.strictConventions]));
+  const cacheKey=hash(JSON.stringify([POLICY_VERSION,cfg.model,stage,p.mode,p.prompt,p.expectedAnswer,normalizedAnswer(p.studentAnswer),p.rubric,p.strictConventions]));
   const cacheRef=db.doc(`academicAnswerAiCache/${cacheKey}`),cached=await cacheRef.get();
   if(cached.exists){
     const c=cached.data();await recordCacheHit(dateKey);

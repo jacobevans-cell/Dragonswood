@@ -2581,6 +2581,13 @@
     position:relative;
     overflow:hidden;
   }
+  .game-visual img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:cover;
+    object-position:center 11%;
+  }
   .hall-character{
     overflow:hidden;
     min-height:475px;

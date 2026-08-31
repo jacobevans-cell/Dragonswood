@@ -156,6 +156,7 @@ body>*{position:relative;z-index:1}
 <script src="q1-video-map.js?v=57.1.6"></script>
 <script src="curriculum-question-engine.js"></script>
 <script src="dragonswood-curriculum-validation.js?v=1.0.2"></script>
+<script src="dragonswood-academic-ai-client.js?v=56.21.5"></script>
 <script>
 const DW_LOCAL_TESTER_PARAMS=new URLSearchParams(location.search),DW_LOCAL_TESTER_HOST=/^(?:localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
 window.DWCurriculumLocalTester=DW_LOCAL_TESTER_HOST&&DW_LOCAL_TESTER_PARAMS.get("dw-local-tester")==="1";
@@ -670,6 +671,7 @@ function validateActivity(x){
 }
 function renderActivity(x){
   const spec=activitySpec(x),s=st(x.id),savedAnswer=s.practiceEvidence||"",answer=systemAuthoredResponse(x,savedAnswer)?"":savedAnswer,status=s.overrideStatus||"";
+  const reviewGate=window.DWAcademicAI.revisionGate(s),reviewLocked=!reviewGate.unlocked&&!['pending','approved'].includes(status);
   const structured=structuredActivityParts(answer);
   const quickwritePassed=spec.kind==="quickwrite"&&!!s.practiced;
   const quickwriteChoice=String(s.quickWriteChoice||structured.choice||"");
@@ -687,7 +689,9 @@ function renderActivity(x){
   else if(spec.kind==="morph"||spec.kind==="readingPov"){
     controls=`<div class="activity-options">${spec.options.map(o=>`<label class="activity-option"><input type="radio" name="act-${x.id}" value="${esc(o)}" ${structured.choice===o?"checked":""}><span>${esc(o)}</span></label>`).join("")}</div><textarea class="activity-input" id="actText-${x.id}" placeholder="Write your evidence or example here…">${esc(structured.response)}</textarea>`;
   } else controls=`<textarea class="activity-input" id="actText-${x.id}" placeholder="Write your answer here…">${esc(answer)}</textarea>`;
-  const approvalRow=quickwritePassed?`<div class="override-row"><button class="override-btn approved" type="button" disabled>✅ AUTO-APPROVED</button><span class="override-note">Sentence count and selected-prompt content passed automatically.</span></div>`:x.subject==="Math"?`<div class="override-row"><span class="override-note">Math is checked automatically. Revise and try again if it does not pass yet.</span></div>`:`<div class="override-row"><button class="override-btn ${status}" id="overrideBtn-${x.id}" onclick="requestOverride('${x.id}')">${status==="pending"?"🟡 TEACHER REVIEW REQUESTED":status==="approved"?"✅ TEACHER OVERRIDE APPROVED":"🛡️ REQUEST TEACHER REVIEW"}</button><span class="override-note">Use this only after Dragonswood's automatic checks cannot decide.</span></div>`;
+  const reviewLabel=status==="pending"?"🟡 TEACHER REVIEW REQUESTED":status==="approved"?"✅ TEACHER OVERRIDE APPROVED":reviewGate.unlocked?"🛡️ REQUEST TEACHER REVIEW":`🔒 REVISE ${reviewGate.count}/${reviewGate.required} BEFORE REVIEW`;
+  const reviewNote=reviewGate.unlocked?"You completed three genuine revisions. Teacher Review is now available.":`Teacher Review unlocks after ${reviewGate.remaining} more changed ${reviewGate.remaining===1?"answer":"answers"}. Repeating the same answer does not count.`;
+  const approvalRow=quickwritePassed?`<div class="override-row"><button class="override-btn approved" type="button" disabled>✅ AUTO-APPROVED</button><span class="override-note">Sentence count and selected-prompt content passed automatically.</span></div>`:x.subject==="Math"?`<div class="override-row"><span class="override-note">Math is checked automatically. Revise and try again if it does not pass yet.</span></div>`:`<div class="override-row"><button class="override-btn ${status}" id="overrideBtn-${x.id}" onclick="requestOverride('${x.id}')" ${status==="pending"||status==="approved"||reviewLocked?"disabled":""}>${reviewLabel}</button><span class="override-note">${reviewNote}</span></div>`;
   return `${renderAutoPractice(x)}<div class="activity-shell"><div class="activity-title">Apply What You Learned • ${esc(spec.title)}</div><div class="activity-prompt">${esc(spec.prompt)}</div>${frameHtml}${controls}<div class="actions"><button class="btn" onclick="checkActivity('${x.id}')">${s.practiced?"CHECK AGAIN":"CHECK MY WORK"}</button></div><div class="activity-feedback${quickwritePassMessage?" show good":""}" id="actFeedback-${x.id}">${esc(quickwritePassMessage)}</div>${approvalRow}${status==="returned"&&s.teacherNote?`<div class="teacher-note"><b>↩ Teacher feedback:</b> ${esc(s.teacherNote)}</div>`:""}</div>`;
 }
 function lockQuickWriteChoice(id,choice,control){
@@ -764,6 +768,17 @@ function curriculumAiAdvice(aiResult,spec,result,answer){
   const fallback=curriculumFallbackAdvice(spec,result,answer);
   return window.DWAcademicAI?.studentAdvice?.(aiResult,fallback)||fallback;
 }
+function curriculumReviewGateMessage(gate){
+  if(gate.unlocked)return "You completed three genuine revisions. Teacher Review is now available.";
+  const repeat=gate.repeated?"This matches an earlier answer, so it did not count as a revision. ":"";
+  return `${repeat}Change your answer using the feedback, then check it again. Teacher Review unlocks after ${gate.remaining} more changed ${gate.remaining===1?"answer":"answers"}.`;
+}
+function updateCurriculumReviewGate(id,s){
+  const button=document.getElementById("overrideBtn-"+id);if(!button)return;
+  const gate=window.DWAcademicAI.revisionGate(s),note=button.parentElement?.querySelector(".override-note");
+  button.disabled=!gate.unlocked;button.textContent=gate.unlocked?"🛡️ REQUEST TEACHER REVIEW":`🔒 REVISE ${gate.count}/${gate.required} BEFORE REVIEW`;
+  if(note)note.textContent=gate.unlocked?"You completed three genuine revisions. Teacher Review is now available.":`Teacher Review unlocks after ${gate.remaining} more changed ${gate.remaining===1?"answer":"answers"}. Repeating the same answer does not count.`;
+}
 async function curriculumAiRescue(x,spec,answer,result){
   if(!window.DWAcademicAI?.judge)return {decision:"unavailable",confidence:"low",reason:"AI rescue is not connected."};
   const structured=structuredActivityParts(answer),quickOption=spec.kind==="quickwrite"?spec.options.find(option=>option.prompt===structured.choice):null;
@@ -791,6 +806,7 @@ async function curriculumAiRescue(x,spec,answer,result){
 async function checkActivity(id){
   const x=findItem(id);if(!x)return;
   const f=document.getElementById("actFeedback-"+id),spec=activitySpec(x),answer=activityAnswerText(x),s=st(id);
+  const priorAnswer=String(s.lastActivityAttempt||"");
   let result=validateActivity(x),aiResult=null;
   s.lastActivityAttempt=answer;s.activityAttempts=(s.activityAttempts||0)+1;s.lastValidatorCode=String(result.code||(result.ok?"passed":"unknown_open_response"));s.lastValidatorMessage=String(result.msg||"");S.items[id]=s;save();
 
@@ -802,14 +818,15 @@ async function checkActivity(id){
     if(aiResult.decision==="approve")result={ok:true,aiApproved:true,msg:""};
     else if(aiResult.decision==="review"||aiResult.decision==="unavailable"){
       const advice=curriculumAiAdvice(aiResult,spec,result,answer);
+      const gate=window.DWAcademicAI.registerRevisionAttempt(s,answer,priorAnswer);S.items[id]=s;save();
       f.className="activity-feedback show";
-      f.textContent=`Almost there—your answer was saved and was not counted wrong. ${advice} Revise once more, or use REQUEST TEACHER REVIEW.`;
-      const reviewButton=document.getElementById("overrideBtn-"+id);reviewButton?.classList.remove("approved");if(reviewButton){reviewButton.disabled=false;reviewButton.textContent="🛡️ REQUEST TEACHER REVIEW"}
+      f.textContent=`Almost there—your answer was saved and was not counted wrong. ${advice} ${curriculumReviewGateMessage(gate)}`;
+      const reviewButton=document.getElementById("overrideBtn-"+id);reviewButton?.classList.remove("approved");updateCurriculumReviewGate(id,s);
       return;
     }
     else if(aiResult.decision==="not_approved"&&aiResult.confidence==="high"){
-      const reviewButton=document.getElementById("overrideBtn-"+id);if(reviewButton){reviewButton.disabled=true;reviewButton.textContent="REVISE BEFORE REVIEW"}
-      f.className="activity-feedback show bad";f.textContent=`Not yet: ${curriculumAiAdvice(aiResult,spec,result,answer)} Revise your answer and check it again.`;return;
+      const gate=window.DWAcademicAI.registerRevisionAttempt(s,answer,priorAnswer);S.items[id]=s;save();updateCurriculumReviewGate(id,s);
+      f.className="activity-feedback show bad";f.textContent=`Not yet: ${curriculumAiAdvice(aiResult,spec,result,answer)} ${curriculumReviewGateMessage(gate)}`;return;
     }
   }
 
@@ -820,7 +837,7 @@ async function checkActivity(id){
       const selected=structuredActivityParts(answer).choice;
       if(selected){s.quickWriteChoice=selected;s.quickWriteChoiceLocked=true}
     }
-    s.practiced=true;s.practiceEvidence=answer;s.overrideStatus="";s.lastValidatorCode="passed";s.lastValidatorMessage="";delete s.lastAiTriage;S.items[id]=s;save();clearCurriculumDraft(id);
+    s.practiced=true;s.practiceEvidence=answer;s.overrideStatus="";s.lastValidatorCode="passed";s.lastValidatorMessage="";delete s.lastAiTriage;window.DWAcademicAI.clearRevisionGate(s);S.items[id]=s;save();clearCurriculumDraft(id);
     f.textContent=aiResult?.decision==="approve"?`✓ Quest complete. ${curriculumAiAdvice(aiResult,spec,result,answer)}`:result.msg?"✓ "+result.msg:"✓ Quest complete. Your answer passed the lesson check.";
     render();
   }else{
@@ -831,13 +848,13 @@ async function checkActivity(id){
       s.lastActivityAttempt="";if(systemAuthoredResponse(x,s.practiceEvidence)){s.practiceEvidence="";s.practiced=false}s.overrideStatus="";S.items[id]=s;save();
       if(reviewButton)reviewButton.hidden=true;
       f.textContent="Not yet: "+result.msg+" Dragonswood cleared the copied text. Write your own response, then check it again.";
-    }else f.textContent=`Not yet: ${result.msg} Hint: ${activityHint(spec,result)} Your answer was saved. Revise it before requesting teacher review.`;
+    }else{const gate=window.DWAcademicAI.registerRevisionAttempt(s,answer,priorAnswer);S.items[id]=s;save();updateCurriculumReviewGate(id,s);f.textContent=`Not yet: ${result.msg} Hint: ${activityHint(spec,result)} Your answer was saved. ${curriculumReviewGateMessage(gate)}`}
   }
 }
 async function requestOverride(id){
   const x=findItem(id);if(!x)return;const answer=activityAnswerText(x).trim();
   if(x.subject==="Math"){alert("Math is checked automatically. Review the lesson, revise the answer, and try again.");return}
-  const prior=st(id);if(prior.lastAiTriage?.decision==="not_approved"&&prior.lastAiTriage?.confidence==="high"){alert("Revise this answer and check it again before requesting teacher review.");return}
+  const prior=st(id),gate=window.DWAcademicAI.revisionGate(prior);if(!gate.unlocked){alert(`Teacher Review unlocks after ${gate.remaining} more changed ${gate.remaining===1?"answer":"answers"}. Use the feedback, revise, and check again. Repeating the same answer does not count.`);return}
   if(answer.length<3){alert("Enter your answer first so your teacher can review what Dragonswood rejected.");return}
   if(systemAuthoredResponse(x,answer)){const field=document.getElementById("actText-"+id);if(field)field.value="";alert("Dragonswood cleared its own directions from the answer box. Write your own response before requesting teacher review.");return}
   const s=st(id);s.lastActivityAttempt=answer;S.items[id]=s;save();
@@ -845,7 +862,7 @@ async function requestOverride(id){
     alert("Teacher review is not connected yet. Your answer is saved, but no request was sent.");
     return;
   }
-  const ai=s.lastAiTriage||{},ok=await window.submitCurriculumOverride(x,answer,s.activityAttempts||1,{validatorCode:s.lastValidatorCode||"unknown_open_response",validatorMessage:s.lastValidatorMessage||"",aiDecision:ai.decision||"not_run",aiConfidence:ai.confidence||"",aiReason:ai.reason||"",aiModel:ai.model||"",aiPolicyVersion:ai.policyVersion||"",aiCached:!!ai.cached,strongRetryUsed:!!ai.strongRetryUsed,strongRetryDecision:ai.strongRetryDecision||"",strongRetryConfidence:ai.strongRetryConfidence||"",escalationReason:ai.reason||s.lastValidatorMessage||"Automatic checks could not confidently resolve this response."});
+  const ai=s.lastAiTriage||{},ok=await window.submitCurriculumOverride(x,answer,s.activityAttempts||1,{revisionAttempts:gate.count,validatorCode:s.lastValidatorCode||"unknown_open_response",validatorMessage:s.lastValidatorMessage||"",aiDecision:ai.decision||"not_run",aiConfidence:ai.confidence||"",aiReason:ai.reason||"",aiModel:ai.model||"",aiPolicyVersion:ai.policyVersion||"",aiCached:!!ai.cached,strongRetryUsed:!!ai.strongRetryUsed,strongRetryDecision:ai.strongRetryDecision||"",strongRetryConfidence:ai.strongRetryConfidence||"",escalationReason:ai.reason||s.lastValidatorMessage||"Automatic checks could not confidently resolve this response."});
   if(ok){
     s.overrideStatus="pending";S.items[id]=s;save();render();
   }else{
@@ -943,7 +960,6 @@ let miss=due.filter(x=>!missionComplete(x)&&!mediaPending(x));$("#audit").innerH
 $("#grade").onchange=e=>{if(currentStudent&&!isTeacher){e.target.value=S.grade;return}S.grade=e.target.value;if(window.DWCurriculumLocalTester){S.day=DW_LOCAL_TESTER_DAY;syncLocalTesterUrl()}save();render()};$("#day").onchange=e=>{if(window.DWCurriculumLocalTester){S.day=DW_LOCAL_TESTER_DAY;e.target.value=S.day;return}if(!isTeacher){e.target.value=S.day;return}S.day=Math.max(1,Math.min(40,+e.target.value||1));save();render()};$$(".tabs button").forEach(b=>b.onclick=()=>{$$(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");$$(".panel").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.tab).classList.add("active")});render();
 </script>
 <script src="dragonswood-grading-core.js?v=56.21.0"></script>
-<script src="dragonswood-academic-ai-client.js?v=56.21.4"></script>
 <script src="functions-arcade-access/tester-core.js?v=57.1.16"></script>
 <script type="module">
 import {initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
@@ -993,6 +1009,8 @@ function canonicalProgress(uid,item,state,forceUnverified=false){
     questionsCorrect:counts.correct,questionsSeen:counts.seen,autoAnswers:state.autoAnswers||{},
     autoAttempts:Number(state.autoAttempts||0),lastActivityAttempt:String(state.lastActivityAttempt||""),
     activityAttempts:Number(state.activityAttempts||0),overrideStatus:String(state.overrideStatus||""),
+    reviewRevisionAttempts:Number(state.reviewRevisionAttempts||0),reviewBaselineFingerprint:String(state.reviewBaselineFingerprint||""),
+    reviewAttemptFingerprints:Array.isArray(state.reviewAttemptFingerprints)?state.reviewAttemptFingerprints.slice(-12):[],
     lastValidatorCode:String(state.lastValidatorCode||""),lastValidatorMessage:String(state.lastValidatorMessage||""),
     lastAiTriage:state.lastAiTriage&&typeof state.lastAiTriage==="object"?state.lastAiTriage:null,
     verified:forceUnverified?false:!!state.verified,updatedAt:serverTimestamp()
@@ -1071,7 +1089,7 @@ window.submitCurriculumOverride=async (item,answer,attempts,meta={})=>{
       questionIndex:Number.isInteger(meta.questionIndex)?meta.questionIndex:null,
       questionPrompt:String(meta.questionPrompt||"").slice(0,5000),
       expectedAnswer:String(meta.expectedAnswer||"").slice(0,1000),
-      studentAnswer:answer,attempts:Number(attempts||1),status:"pending",
+      studentAnswer:answer,attempts:Number(attempts||1),revisionAttempts:Number(meta.revisionAttempts||0),status:"pending",
       validatorCode:String(meta.validatorCode||"").slice(0,80),
       validatorMessage:String(meta.validatorMessage||"").slice(0,500),
       aiDecision:String(meta.aiDecision||"not_run").slice(0,40),

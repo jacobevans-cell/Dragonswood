@@ -479,7 +479,7 @@ service cloud.firestore {
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.status == "pending"
                     && request.resource.data.diff(resource.data).affectedKeys()
-                         .hasOnly(['studentAnswer','attempts','status','validatorCode','validatorMessage',
+                         .hasOnly(['studentAnswer','attempts','revisionAttempts','status','validatorCode','validatorMessage',
                                    'aiDecision','aiConfidence','aiReason','aiModel','aiPolicyVersion','aiCached',
                                    'strongRetryUsed','strongRetryDecision','strongRetryConfidence','escalationReason',
                                    'gradingPolicyVersion','requestedAt','updatedAt']);

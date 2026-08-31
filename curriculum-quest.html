@@ -751,6 +751,10 @@ function curriculumAiEligible(spec,result,answer){
   return ["explain","inference","writingCommunity","opinion","quickwrite","morph"].includes(spec.kind);
 }
 function activityHint(spec,result){return window.DWCurriculumValidation?.hintFor?.(spec.kind,result)||"Answer the question directly, add one specific detail, and explain how it supports your answer."}
+function curriculumAiAdvice(aiResult,spec,result){
+  const fallback=activityHint(spec,result);
+  return window.DWAcademicAI?.studentAdvice?.(aiResult,fallback)||fallback;
+}
 async function curriculumAiRescue(x,spec,answer,result){
   if(!window.DWAcademicAI?.judge)return {decision:"unavailable",confidence:"low",reason:"AI rescue is not connected."};
   const structured=structuredActivityParts(answer),quickOption=spec.kind==="quickwrite"?spec.options.find(option=>option.prompt===structured.choice):null;
@@ -788,14 +792,15 @@ async function checkActivity(id){
     s.lastAiTriage={decision:String(aiResult.decision||"review"),confidence:String(aiResult.confidence||"low"),reason:String(aiResult.reason||"").slice(0,240),model:String(aiResult.model||""),policyVersion:String(aiResult.policyVersion||""),cached:!!aiResult.cached,strongRetryUsed:!!aiResult.strongRetryUsed,strongRetryDecision:String(aiResult.strongRetryDecision||""),strongRetryConfidence:String(aiResult.strongRetryConfidence||"")};S.items[id]=s;save();
     if(aiResult.decision==="approve")result={ok:true,aiApproved:true,msg:""};
     else if(aiResult.decision==="review"||aiResult.decision==="unavailable"){
+      const advice=curriculumAiAdvice(aiResult,spec,result);
       f.className="activity-feedback show";
-      f.textContent=`Your answer was saved and was NOT counted wrong. Dragonswood could not make a confident judgment. Hint: ${activityHint(spec,result)} Revise once more, or use REQUEST TEACHER REVIEW.`;
+      f.textContent=`Almost there—your answer was saved and was not counted wrong. ${advice} Revise once more, or use REQUEST TEACHER REVIEW.`;
       const reviewButton=document.getElementById("overrideBtn-"+id);reviewButton?.classList.remove("approved");if(reviewButton){reviewButton.disabled=false;reviewButton.textContent="🛡️ REQUEST TEACHER REVIEW"}
       return;
     }
     else if(aiResult.decision==="not_approved"&&aiResult.confidence==="high"){
       const reviewButton=document.getElementById("overrideBtn-"+id);if(reviewButton){reviewButton.disabled=true;reviewButton.textContent="REVISE BEFORE REVIEW"}
-      f.className="activity-feedback show bad";f.textContent=`Not yet: ${aiResult.reason||result.msg} Hint: ${activityHint(spec,result)} Revise your answer and check it again.`;return;
+      f.className="activity-feedback show bad";f.textContent=`Not yet: ${curriculumAiAdvice(aiResult,spec,result)} Revise your answer and check it again.`;return;
     }
   }
 
@@ -807,7 +812,7 @@ async function checkActivity(id){
       if(selected){s.quickWriteChoice=selected;s.quickWriteChoiceLocked=true}
     }
     s.practiced=true;s.practiceEvidence=answer;s.overrideStatus="";s.lastValidatorCode="passed";s.lastValidatorMessage="";delete s.lastAiTriage;S.items[id]=s;save();clearCurriculumDraft(id);
-    f.textContent=aiResult?.decision==="approve"?(spec.kind==="morph"?"✓ Quest complete. Your sentence uses the target word with the lesson meaning.":"✓ Quest complete. Sentence count passed, and your content was accepted as matching the selected prompt."):result.msg?"✓ "+result.msg:"✓ Quest complete. Your answer passed the lesson check.";
+    f.textContent=aiResult?.decision==="approve"?`✓ Quest complete. ${curriculumAiAdvice(aiResult,spec,result)}`:result.msg?"✓ "+result.msg:"✓ Quest complete. Your answer passed the lesson check.";
     render();
   }else{
     const reviewButton=document.getElementById("overrideBtn-"+id);
@@ -929,7 +934,7 @@ let miss=due.filter(x=>!missionComplete(x)&&!mediaPending(x));$("#audit").innerH
 $("#grade").onchange=e=>{if(currentStudent&&!isTeacher){e.target.value=S.grade;return}S.grade=e.target.value;if(window.DWCurriculumLocalTester){S.day=DW_LOCAL_TESTER_DAY;syncLocalTesterUrl()}save();render()};$("#day").onchange=e=>{if(window.DWCurriculumLocalTester){S.day=DW_LOCAL_TESTER_DAY;e.target.value=S.day;return}if(!isTeacher){e.target.value=S.day;return}S.day=Math.max(1,Math.min(40,+e.target.value||1));save();render()};$$(".tabs button").forEach(b=>b.onclick=()=>{$$(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");$$(".panel").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.tab).classList.add("active")});render();
 </script>
 <script src="dragonswood-grading-core.js?v=56.21.0"></script>
-<script src="dragonswood-academic-ai-client.js?v=56.21.1"></script>
+<script src="dragonswood-academic-ai-client.js?v=56.21.2"></script>
 <script src="functions-arcade-access/tester-core.js?v=57.1.16"></script>
 <script type="module">
 import {initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";

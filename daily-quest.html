@@ -123,7 +123,7 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
 
 <script src="foundation-track.js"></script>
 <script src="dragonswood-grading-core.js?v=56.21.0"></script>
-<script src="dragonswood-academic-ai-client.js?v=56.21.1"></script>
+<script src="dragonswood-academic-ai-client.js?v=56.21.2"></script>
 <style id="dw-grading-hardening-styles">
 .dw-question-review{margin-top:14px;padding:10px 12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1px solid rgba(255,211,94,.42);border-radius:10px;background:rgba(11,10,35,.84)}
 .dw-question-review-btn{padding:9px 12px!important;background:linear-gradient(90deg,#5f2da5,#176a8c)!important;border-color:#f4c95d!important}
@@ -324,9 +324,10 @@ async function gradeTypedAnswerWithRescue(q,value,t){
    studentAnswer:String(value||""),
    strictConventions:!!window.DWGrading?.strictProfile?.(q)?.strict
  });
- if(result.decision==="approve")return {ok:true,method:"ai",reason:result.reason,cached:result.cached};
- if(result.decision==="review"||result.decision==="unavailable")return {ok:false,review:true,method:result.decision,reason:result.reason};
- return {ok:false,method:"ai",reason:result.reason};
+ const advice=window.DWAcademicAI?.studentAdvice?.(result,"Add one specific detail that shows the lesson idea.")||"Add one specific detail that shows the lesson idea.";
+ if(result.decision==="approve")return {ok:true,method:"ai",reason:advice,cached:result.cached};
+ if(result.decision==="review"||result.decision==="unavailable")return {ok:false,review:true,method:result.decision,reason:advice};
+ return {ok:false,method:"ai",reason:advice};
 }
 
 function elaQ(skill,seed,i){const r=hashSeed(seed+i*41),low=skill.toLowerCase();let prompt,answer,choices;
@@ -6374,7 +6375,7 @@ function dwQuestionInputMode(q,t){
 function freeResponseEngine(q,t){
  const mode=dwQuestionInputMode(q,t),label=mode==="number"?"Enter the number":"Type the answer";
  $("arena").innerHTML=`${promptBlock(q,t)}<div class="visual-note">This one is open response—produce the answer instead of choosing it.</div><div class="runeinput"><input id="freeAnswer" ${mode==="number"?'inputmode="decimal"':""} autocomplete="off" placeholder="${label}"><button id="checkFree">CHECK ANSWER</button></div>`;
- $("checkFree").onclick=async()=>{const btn=$("checkFree"),value=$("freeAnswer").value;btn.disabled=true;dwLastStudentAnswer=String(value||"").trim();try{const result=await gradeTypedAnswerWithRescue(q,value,t);if(result.ok){award(true);if(result.method==="ai")feedback("Accepted! Your wording shows the right idea. ✨","good");advance()}else if(result.review){feedback("Your answer was saved and was NOT counted wrong. Use REQUEST TEACHER REVIEW below.","");dwRefreshDailyReviewFooter()}else award(false)}finally{btn.disabled=false}};
+ $("checkFree").onclick=async()=>{const btn=$("checkFree"),value=$("freeAnswer").value;btn.disabled=true;dwLastStudentAnswer=String(value||"").trim();try{const result=await gradeTypedAnswerWithRescue(q,value,t);if(result.ok){award(true);if(result.method==="ai")feedback(`Accepted! ${result.reason} ✨`,"good");advance()}else if(result.review){feedback(`Almost there—your answer was saved and was not counted wrong. ${result.reason} Revise once more, or use REQUEST TEACHER REVIEW below.`,"");dwRefreshDailyReviewFooter()}else{award(false);if(result.method==="ai")feedback(`Not yet: ${result.reason}`,"bad")}}finally{btn.disabled=false}};
  $("freeAnswer").onkeydown=e=>{if(e.key==="Enter")$("checkFree").click()};$("freeAnswer").focus();
 }
 function orderInputEngine(q,t){
@@ -6414,7 +6415,7 @@ function runeEngine(q,t){
  const bank=Array.isArray(q?.choices)&&q.choices.length?q.choices:acceptedTypedAnswers(q);
  $("arena").innerHTML=`${promptBlock(q,t)}<div class="visual-note">Choose from the Answer Bank, or type a correct answer to unlock the rune. Equivalent vocabulary answers are accepted when the question allows more than one.</div>${bank.length?`<div class="answer-bank"><div class="visual-title">🧰 ANSWER BANK</div><div class="answer-bank-options">${bank.map(c=>`<button type="button" class="answer-bank-choice" data-v="${String(c).replaceAll('&','&amp;').replaceAll('"','&quot;')}">${c}</button>`).join("")}</div></div>`:""}<div class="runeinput"><input id="rin" autocomplete="off" placeholder="Choose from the bank or type your answer"><button id="runlock">UNLOCK 🔐</button></div>`;
  document.querySelectorAll(".answer-bank-choice").forEach(b=>b.onclick=()=>{$("rin").value=b.dataset.v;document.querySelectorAll(".answer-bank-choice").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");$("rin").focus()});
- $("runlock").onclick=async()=>{const btn=$("runlock"),value=$("rin").value;btn.disabled=true;dwLastStudentAnswer=String(value||"").trim();try{const result=await gradeTypedAnswerWithRescue(q,value,t);if(result.ok){award(true);if(result.method==="ai")feedback("Accepted! Your wording shows the right idea. ✨","good");advance()}else if(result.review){feedback("Your answer was saved and was NOT counted wrong. Use REQUEST TEACHER REVIEW below.","");dwRefreshDailyReviewFooter()}else award(false)}finally{btn.disabled=false}};$("rin").onkeydown=e=>{if(e.key==="Enter")$("runlock").click()}}
+ $("runlock").onclick=async()=>{const btn=$("runlock"),value=$("rin").value;btn.disabled=true;dwLastStudentAnswer=String(value||"").trim();try{const result=await gradeTypedAnswerWithRescue(q,value,t);if(result.ok){award(true);if(result.method==="ai")feedback(`Accepted! ${result.reason} ✨`,"good");advance()}else if(result.review){feedback(`Almost there—your answer was saved and was not counted wrong. ${result.reason} Revise once more, or use REQUEST TEACHER REVIEW below.`,"");dwRefreshDailyReviewFooter()}else{award(false);if(result.method==="ai")feedback(`Not yet: ${result.reason}`,"bad")}}finally{btn.disabled=false}};$("rin").onkeydown=e=>{if(e.key==="Enter")$("runlock").click()}}
 
 function crystalEngine(q,t){
  const cards=shuffle(hashSeed(q.prompt.length+taskIndex*97+qIndex*31),q.choices);

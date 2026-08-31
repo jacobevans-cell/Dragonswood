@@ -1,4 +1,4 @@
-/* Dragonswood cost-controlled academic AI rescue client v1 */
+/* Dragonswood cost-controlled academic AI rescue client v1.1 */
 (function(){
   "use strict";
   if(window.DWAcademicAI)return;
@@ -21,12 +21,16 @@
       const raw=await transport(p),decision=["approve","not_approved","review"].includes(raw?.decision)?raw.decision:"review";
       const result={decision,confidence:["high","medium","low"].includes(raw?.confidence)?raw.confidence:"low",
         reason:clip(raw?.reason||"",240),cached:!!raw?.cached,paidCall:!!raw?.paidCall,
-        model:clip(raw?.model||"",80),policyVersion:clip(raw?.policyVersion||"",80)};
+        model:clip(raw?.model||"",80),policyVersion:clip(raw?.policyVersion||"",80),
+        primaryDecision:clip(raw?.primaryDecision||"",40),primaryConfidence:clip(raw?.primaryConfidence||"",20),
+        primaryReason:clip(raw?.primaryReason||"",240),strongRetryUsed:!!raw?.strongRetryUsed,
+        strongRetryDecision:clip(raw?.strongRetryDecision||"",40),strongRetryConfidence:clip(raw?.strongRetryConfidence||"",20),
+        strongRetryReason:clip(raw?.strongRetryReason||"",240),escalationReason:clip(raw?.escalationReason||"",240)};
       sessionCache.set(k,result);return result;
     }catch(err){
       console.warn("Academic AI rescue unavailable",err);
       return {decision:"unavailable",confidence:"low",reason:"AI rescue is temporarily unavailable.",paidCall:false};
     }
   }
-  window.DWAcademicAI={version:"1.0.0",configure,judge,clear:()=>sessionCache.clear()};
+  window.DWAcademicAI={version:"1.1.0",configure,judge,clear:()=>sessionCache.clear()};
 })();

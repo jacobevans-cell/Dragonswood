@@ -41,6 +41,7 @@ main{padding:20px 0 35px}.hero{padding:22px;display:grid;grid-template-columns:1
 .activity-line input[type="text"],.activity-line input[type="number"],.activity-line select{background:#050411;color:#fff;border:1px solid #493263;border-radius:7px;padding:9px}
 .activity-feedback{margin-top:9px;padding:10px;border-radius:7px;display:none;font-weight:800;line-height:1.4}
 .activity-feedback.show{display:block}.activity-feedback.good{background:#103b2b;color:#a9f4ca;border:1px solid #2c7d58}.activity-feedback.bad{background:#3a1320;color:#ffd0d9;border:1px solid #8e3d54}
+.activity-hint{margin:8px 0;padding:8px 10px;border-left:3px solid #ffd766;border-radius:5px;background:#171027;color:#efe6c8;font-size:12px;line-height:1.45}.activity-hint b{color:#ffd766}
 .override-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px dashed #3d2b54}
 .override-btn{background:#3a284d;color:#f4e8ff;border:1px solid #775998;border-radius:7px;padding:8px 10px;font-weight:900}
 .override-btn.pending{background:#624b18;color:#ffeca8}.override-btn.approved{background:#18583f;color:#bff7d7}
@@ -154,6 +155,7 @@ body>*{position:relative;z-index:1}
 <script src="q1-curriculum-enhancements.js?v=57.1.6"></script>
 <script src="q1-video-map.js?v=57.1.6"></script>
 <script src="curriculum-question-engine.js"></script>
+<script src="dragonswood-curriculum-validation.js?v=1.0.0"></script>
 <script>
 const DW_LOCAL_TESTER_PARAMS=new URLSearchParams(location.search),DW_LOCAL_TESTER_HOST=/^(?:localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
 window.DWCurriculumLocalTester=DW_LOCAL_TESTER_HOST&&DW_LOCAL_TESTER_PARAMS.get("dw-local-tester")==="1";
@@ -470,6 +472,7 @@ $("#youtubePlayPauseBtn").onclick=toggleYouTubePlayback;
 
 function hashNum(s){let h=2166136261;for(const c of String(s)){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return Math.abs(h>>>0)}
 function meaningfulText(v,minWords=6){
+  if(window.DWCurriculumValidation?.meaningfulText)return window.DWCurriculumValidation.meaningfulText(v,minWords);
   const raw=String(v||"").trim();
   if(raw.length<20)return {ok:false,msg:"Write a fuller answer. One complete thought is needed."};
   const words=(raw.toLowerCase().match(/[a-z']+/g)||[]).filter(w=>w.length>1);
@@ -579,14 +582,15 @@ function activitySpec(x){
   }
   if(x.strand==="Reading"){
     if(/point of view|first or third/.test(raw))return {kind:"readingPov",title:"Evidence Detective",prompt:"Choose the point of view you found in the class text, then prove it with a pronoun or clue from the text.",options:["First person","Third person"]};
-    if(/infer|inference|between the lines/.test(raw))return {kind:"explain",title:"Inference Detective",prompt:"State one inference from the text and explain what clue or evidence helped you make it.",keywords:["clue","evidence","because","text"],minWords:9};
+    if(/infer|inference|between the lines/.test(raw))return {kind:"inference",title:"Inference Detective",prompt:"State one inference from the text and explain what clue or evidence helped you make it.",keywords:["clue","evidence","because","text"],minWords:9};
     return {kind:"explain",title:"Reading Evidence Mission",prompt:activityFor(x),keywords:["text","because","evidence","character","story"],minWords:8};
   }
   if(x.strand==="Writing"){
+    if(/writing community|peer review|\bpqp\b|praise|polish/.test(raw))return {kind:"writingCommunity",title:"Writing Community Feedback",prompt:"Give one specific piece of helpful feedback. A suggestion should explain how or why it would help."};
     if(/fanboys|conjunction|compound/.test(raw))return {kind:"fanboys",title:"Sentence Forge",prompt:"Write one compound sentence using a comma and a FANBOYS conjunction (for, and, nor, but, or, yet, so)."};
     if(/comma.*series|commas in a series/.test(raw))return {kind:"commas",title:"Punctuation Forge",prompt:"Write a sentence that correctly lists at least three items using commas."};
     if(/capitalization/.test(raw))return {kind:"capital",title:"Editing Forge",prompt:"Write one complete sentence with correct capitalization and ending punctuation."};
-    if(/opinion/.test(raw))return {kind:"opinion",title:"Opinion Forge",prompt:"Write an opinion statement and support it with a reason using because."};
+    if(/opinion/.test(raw))return {kind:"opinion",title:"Opinion Forge",prompt:"Write an opinion or recommendation and support it with a connected reason or result."};
     return {kind:"explain",title:"Writing Forge",prompt:activityFor(x),keywords:lessonWords(x).slice(0,5),minWords:8};
   }
   return {kind:"explain",title:"Quest Check",prompt:activityFor(x),keywords:lessonWords(x).slice(0,5),minWords:7};
@@ -609,56 +613,59 @@ function systemAuthoredResponse(x,value){
 }
 function validateActivity(x){
   const spec=activitySpec(x),id=x.id,choice=document.querySelector(`input[name="act-${CSS.escape(id)}"]:checked`)?.value||"",written=(document.getElementById("actText-"+id)?.value||"").trim(),number=(document.getElementById("actNumber-"+id)?.value||"").trim();
-  if(systemAuthoredResponse(x,written))return {ok:false,reviewable:false,msg:"Answer in your own words instead of copying Dragonswood's directions or question."};
-  if(spec.kind==="number")return (window.DWGrading?window.DWGrading.answersEquivalent(spec.answer,number):number.replace(/,/g,"")===String(spec.answer).replace(/,/g,""))?{ok:true}:{ok:false,msg:"That number is not correct yet. Check your work and try again."};
-  if(spec.kind==="mc")return choice===spec.answer?{ok:true}:{ok:false,msg:"That choice does not match the lesson target. Try again or request teacher review."};
+  const V=window.DWCurriculumValidation;
+  if(systemAuthoredResponse(x,written))return {ok:false,code:"copied_prompt",reviewable:false,msg:"Answer in your own words instead of copying Dragonswood's directions or question."};
+  if(spec.kind==="number")return (window.DWGrading?window.DWGrading.answersEquivalent(spec.answer,number):number.replace(/,/g,"")===String(spec.answer).replace(/,/g,""))?{ok:true,code:"passed"}:{ok:false,code:"incorrect_math",aiEligible:false,msg:"That number is not correct yet. Check your work and try again."};
+  if(spec.kind==="mc")return choice===spec.answer?{ok:true,code:"passed"}:{ok:false,code:"incorrect_choice",aiEligible:false,msg:"That choice does not match the lesson target. Try again."};
   if(spec.kind==="quickwrite"){
     const selected=spec.options.find(option=>option.prompt===choice);
-    if(!selected)return {ok:false,aiEligible:false,msg:"Choose Quickwrite Option 1 or Option 2 first."};
+    if(!selected)return {ok:false,code:"missing_choice",aiEligible:false,msg:"Choose Quickwrite Option 1 or Option 2 first."};
     const [minimum,maximum]=spec.sentenceRange,count=sentenceCount(written);
-    if(count<minimum||count>maximum)return {ok:false,aiEligible:false,msg:`Write ${minimum}–${maximum} complete sentences. Dragonswood counted ${count}.`};
+    if(count<minimum||count>maximum)return {ok:false,code:"sentence_count",aiEligible:false,msg:`Write ${minimum}–${maximum} complete sentences. Dragonswood counted ${count}.`};
     const quality=meaningfulText(written,Math.max(15,minimum*4));if(!quality.ok)return {...quality,aiEligible:false};
     const matches=quickWriteTopicMatches(written,selected.keywords);
-    if(matches.length<2)return {ok:false,msg:"Connect your response more clearly to the Quickwrite prompt you selected."};
-    return {ok:true,msg:`Auto-approved: ${count} complete sentences, and the story stays connected to ${selected.label}.`};
+    if(matches.length<2)return {ok:false,code:"off_topic",msg:"Connect your response more clearly to the Quickwrite prompt you selected."};
+    return {ok:true,code:"passed",msg:`Auto-approved: ${count} complete sentences, and the story stays connected to ${selected.label}.`};
   }
   if(spec.kind==="morph"){
-    if(choice!==spec.word)return {ok:false,msg:"Choose the lesson's target word first."};
+    if(choice!==spec.word)return {ok:false,code:"missing_choice",msg:"Choose the lesson's target word first."};
     const q=meaningfulText(written,6);if(!q.ok)return q;
-    if(!new RegExp(`\\b${spec.word.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}\\b`,"i").test(written))return {ok:false,msg:`Use the word “${spec.word}” in your own sentence.`};
-    return {ok:true};
+    if(!new RegExp(`\\b${spec.word.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}\\b`,"i").test(written))return {ok:false,code:"missing_example",msg:`Use the word “${spec.word}” in your own sentence.`};
+    return {ok:true,code:"passed"};
   }
   if(spec.kind==="readingPov"){
-    if(!choice)return {ok:false,msg:"Choose first person or third person."};
+    if(!choice)return {ok:false,code:"missing_choice",msg:"Choose first person or third person."};
     const q=meaningfulText(written,8);if(!q.ok)return q;
-    if(!/\b(i|me|my|we|our|he|she|they|his|her|their|pronoun|clue|text|says|shows)\b/i.test(written))return {ok:false,msg:"Include a pronoun or a specific clue from the text as evidence."};
-    return {ok:true};
+    if(!/\b(i|me|my|we|our|he|she|they|his|her|their|pronoun|clue|text|says|shows)\b/i.test(written))return {ok:false,code:"missing_evidence",msg:"Include a pronoun or a specific clue from the text as evidence."};
+    return {ok:true,code:"passed"};
   }
+  if(spec.kind==="inference"){
+    const structural=V?.inference?V.inference(written):meaningfulText(written,9),sourceExcerpt=String(x.sourceExcerpt||x.readingPassage||x.lessonContent?.sourceExcerpt||"").trim();
+    if(structural.ok&&sourceExcerpt)return {ok:false,code:"needs_source_check",aiEligible:true,msg:"Dragonswood is checking that your inference matches the reading passage."};
+    return structural;
+  }
+  if(spec.kind==="writingCommunity")return V?.writingCommunity?V.writingCommunity(written):meaningfulText(written,8);
   if(spec.kind==="fanboys"){
     const q=meaningfulText(written,7);if(!q.ok)return q;
-    if(!/,\s*(for|and|nor|but|or|yet|so)\b/i.test(written))return {ok:false,msg:"Use a comma followed by a FANBOYS conjunction to join the ideas."};
-    return {ok:true};
+    if(!/,\s*(for|and|nor|but|or|yet|so)\b/i.test(written))return {ok:false,code:"missing_conjunction",msg:"Use a comma followed by a FANBOYS conjunction to join the ideas."};
+    return {ok:true,code:"passed"};
   }
   if(spec.kind==="commas"){
     const q=meaningfulText(written,6);if(!q.ok)return q;
-    if((written.match(/,/g)||[]).length<2)return {ok:false,msg:"A series of at least three items should show at least two commas."};
-    return {ok:true};
+    if((written.match(/,/g)||[]).length<2)return {ok:false,code:"missing_commas",msg:"A series of at least three items should show at least two commas."};
+    return {ok:true,code:"passed"};
   }
   if(spec.kind==="capital"){
     const q=meaningfulText(written,5);if(!q.ok)return q;
-    if(!/^[A-Z]/.test(written)||!/[.!?]["']?$/.test(written))return {ok:false,msg:"Start with a capital letter and finish with ending punctuation."};
-    return {ok:true};
+    if(!/^[A-Z]/.test(written)||!/[.!?]["']?$/.test(written))return {ok:false,code:"missing_conventions",msg:"Start with a capital letter and finish with ending punctuation."};
+    return {ok:true,code:"passed"};
   }
-  if(spec.kind==="opinion"){
-    const q=meaningfulText(written,8);if(!q.ok)return q;
-    if(!/\b(because|since|reason|should|think|believe)\b/i.test(written))return {ok:false,msg:"State an opinion and support it with a reason."};
-    return {ok:true};
-  }
+  if(spec.kind==="opinion")return V?.opinion?V.opinion(written):meaningfulText(written,8);
   const q=meaningfulText(written,spec.minWords||7);if(!q.ok)return q;
   const concept=conceptEvidence(x,written);
-  if(!concept.ok)return {ok:false,msg:"Use at least two important ideas from today’s lesson and connect them in your explanation."};
-  if(spec.science&&!/\b(because|evidence|cause|effect|observe|observation|shows|result|data)\b/i.test(written))return {ok:false,msg:"Include an observation or fact and explain why it supports your science claim."};
-  return {ok:true};
+  if(!concept.ok)return {ok:false,code:"off_topic",msg:"Use at least two important ideas from today’s lesson and connect them in your explanation."};
+  if(spec.science)return V?.science?V.science(written,spec.minWords||8):(/\b(because|evidence|cause|effect|observe|observation|shows|result|data)\b/i.test(written)?{ok:true,code:"passed"}:{ok:false,code:"missing_evidence",msg:"Include an observation or fact and explain why it supports your science claim."});
+  return {ok:true,code:"passed"};
 }
 function renderActivity(x){
   const spec=activitySpec(x),s=st(x.id),savedAnswer=s.practiceEvidence||"",answer=systemAuthoredResponse(x,savedAnswer)?"":savedAnswer,status=s.overrideStatus||"";
@@ -668,6 +675,7 @@ function renderActivity(x){
   const quickwriteLocked=spec.kind==="quickwrite"&&!!quickwriteChoice&&!!(s.quickWriteChoiceLocked||s.practiced);
   const quickwriteOption=spec.kind==="quickwrite"?spec.options.find(option=>option.prompt===quickwriteChoice):null;
   const quickwritePassMessage=quickwritePassed&&quickwriteOption?`✓ Auto-approved: ${sentenceCount(structured.response)} complete sentences, and the story stays connected to ${quickwriteOption.label}.`:"";
+  const responseFrame=window.DWCurriculumValidation?.frameFor?.(spec.kind)||"",frameHtml=responseFrame?`<div class="activity-hint"><b>Response guide:</b> ${esc(responseFrame)}</div>`:"";
   let controls="";
   if(spec.kind==="number")controls=`<div class="activity-line"><input id="actNumber-${x.id}" type="text" inputmode="decimal" placeholder="Enter your answer" value="${esc(answer)}"></div>`;
   else if(spec.kind==="mc")controls=`<div class="activity-options">${spec.options.map(o=>`<label class="activity-option"><input type="radio" name="act-${x.id}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join("")}</div>`;
@@ -678,8 +686,8 @@ function renderActivity(x){
   else if(spec.kind==="morph"||spec.kind==="readingPov"){
     controls=`<div class="activity-options">${spec.options.map(o=>`<label class="activity-option"><input type="radio" name="act-${x.id}" value="${esc(o)}" ${structured.choice===o?"checked":""}><span>${esc(o)}</span></label>`).join("")}</div><textarea class="activity-input" id="actText-${x.id}" placeholder="Write your evidence or example here…">${esc(structured.response)}</textarea>`;
   } else controls=`<textarea class="activity-input" id="actText-${x.id}" placeholder="Write your answer here…">${esc(answer)}</textarea>`;
-  const approvalRow=quickwritePassed?`<div class="override-row"><button class="override-btn approved" type="button" disabled>✅ AUTO-APPROVED</button><span class="override-note">Sentence count and selected-prompt content passed automatically.</span></div>`:`<div class="override-row"><button class="override-btn ${status}" id="overrideBtn-${x.id}" onclick="requestOverride('${x.id}')">${status==="pending"?"🟡 TEACHER REVIEW REQUESTED":status==="approved"?"✅ TEACHER OVERRIDE APPROVED":"🛡️ REQUEST TEACHER REVIEW"}</button><span class="override-note">Use this if you believe your answer is correct but Dragonswood will not accept it.</span></div>`;
-  return `${renderAutoPractice(x)}<div class="activity-shell"><div class="activity-title">Apply What You Learned • ${esc(spec.title)}</div><div class="activity-prompt">${esc(spec.prompt)}</div>${controls}<div class="actions"><button class="btn" onclick="checkActivity('${x.id}')">${s.practiced?"CHECK AGAIN":"CHECK MY WORK"}</button></div><div class="activity-feedback${quickwritePassMessage?" show good":""}" id="actFeedback-${x.id}">${esc(quickwritePassMessage)}</div>${approvalRow}${status==="returned"&&s.teacherNote?`<div class="teacher-note"><b>↩ Teacher feedback:</b> ${esc(s.teacherNote)}</div>`:""}</div>`;
+  const approvalRow=quickwritePassed?`<div class="override-row"><button class="override-btn approved" type="button" disabled>✅ AUTO-APPROVED</button><span class="override-note">Sentence count and selected-prompt content passed automatically.</span></div>`:x.subject==="Math"?`<div class="override-row"><span class="override-note">Math is checked automatically. Revise and try again if it does not pass yet.</span></div>`:`<div class="override-row"><button class="override-btn ${status}" id="overrideBtn-${x.id}" onclick="requestOverride('${x.id}')">${status==="pending"?"🟡 TEACHER REVIEW REQUESTED":status==="approved"?"✅ TEACHER OVERRIDE APPROVED":"🛡️ REQUEST TEACHER REVIEW"}</button><span class="override-note">Use this only after Dragonswood's automatic checks cannot decide.</span></div>`;
+  return `${renderAutoPractice(x)}<div class="activity-shell"><div class="activity-title">Apply What You Learned • ${esc(spec.title)}</div><div class="activity-prompt">${esc(spec.prompt)}</div>${frameHtml}${controls}<div class="actions"><button class="btn" onclick="checkActivity('${x.id}')">${s.practiced?"CHECK AGAIN":"CHECK MY WORK"}</button></div><div class="activity-feedback${quickwritePassMessage?" show good":""}" id="actFeedback-${x.id}">${esc(quickwritePassMessage)}</div>${approvalRow}${status==="returned"&&s.teacherNote?`<div class="teacher-note"><b>↩ Teacher feedback:</b> ${esc(s.teacherNote)}</div>`:""}</div>`;
 }
 function lockQuickWriteChoice(id,choice,control){
   const x=findItem(id);if(!x)return;
@@ -729,6 +737,7 @@ function checkAutoQuestion(id,index,value){
 
 async function requestAutoQuestionOverride(id,index){
  const x=findItem(id);if(!x)return;const q=autoQuestionsFor(x)[index];if(!q)return;
+ if(x.subject==="Math"){alert("Math answers are checked automatically. Try the problem again instead of sending it to teacher review.");return}
  const s=st(id),answer=String(s.autoAnswers?.[index]||"").trim();if(!answer){alert("Choose an answer first so your teacher can review exactly what Dragonswood rejected.");return}
  if(window.DWGrading?.answersEquivalent(q.answer,answer)){alert("That answer is already being accepted as correct.");return}
  s.autoOverrideStatus=s.autoOverrideStatus||{};if(["pending","approved"].includes(s.autoOverrideStatus[index]))return;
@@ -738,18 +747,23 @@ async function requestAutoQuestionOverride(id,index){
 
 function curriculumAiEligible(spec,result,answer){
   if(result.ok||result.reviewable===false||result.aiEligible===false||!String(answer||"").trim())return false;
-  return spec.kind==="explain"||spec.kind==="opinion"||spec.kind==="quickwrite";
+  return ["explain","inference","writingCommunity","opinion","quickwrite"].includes(spec.kind);
 }
+function activityHint(spec,result){return window.DWCurriculumValidation?.hintFor?.(spec.kind,result)||"Answer the question directly, add one specific detail, and explain how it supports your answer."}
 async function curriculumAiRescue(x,spec,answer,result){
   if(!window.DWAcademicAI?.judge)return {decision:"unavailable",confidence:"low",reason:"AI rescue is not connected."};
   const structured=structuredActivityParts(answer),quickOption=spec.kind==="quickwrite"?spec.options.find(option=>option.prompt===structured.choice):null;
   const concepts=(quickOption?.keywords||lessonWords(x)).slice(0,8);
-  const rubric=[
+  const sourceExcerpt=String(x.sourceExcerpt||x.readingPassage||x.lessonContent?.sourceExcerpt||"").trim().slice(0,700),rubric=[
     "Respond directly to the task.",
     concepts.length?`Relevant lesson ideas include: ${concepts.join(", ")}.`:"",
     quickOption?`The student selected this Quickwrite: ${quickOption.prompt}`:"",
     spec.kind==="quickwrite"?`The required ${spec.sentenceRange[0]}–${spec.sentenceRange[1]} sentence count already passed; judge only whether the writing meaningfully answers the selected Quickwrite.`:"",
+    spec.kind==="inference"?"Approve when the response gives a plausible interpretation plus a concrete action, statement, thought, event, or observation supporting it. Do not require the literal words inference, clue, evidence, or text.":"",
+    spec.kind==="writingCommunity"?"Approve helpful Writing Community feedback that gives a specific praise, relevant question, or useful suggestion. A suggestion should explain how or why it would help; valid connectors include because and so.":"",
+    spec.kind==="opinion"?"Require a recognizable stance or recommendation plus a meaningfully connected reason or result. Do not treat a connector word by itself as sufficient.":"",
     spec.science?"Include an observation/fact/evidence idea and connect it to the claim.":"",
+    sourceExcerpt?`Source excerpt for grounding: ${sourceExcerpt}`:"No source excerpt is available. Judge whether the response has a plausible inference-and-support structure; reserve contradictions or genuine ambiguity for review.",
     "Simple grade 4-5 wording is acceptable. Do not require password vocabulary if the meaning is correct.",
     `Free-validator concern: ${result.msg||"response did not match the rule check"}`
   ].filter(Boolean).join(" ");
@@ -763,18 +777,23 @@ async function checkActivity(id){
   const x=findItem(id);if(!x)return;
   const f=document.getElementById("actFeedback-"+id),spec=activitySpec(x),answer=activityAnswerText(x),s=st(id);
   let result=validateActivity(x),aiResult=null;
-  s.lastActivityAttempt=answer;s.activityAttempts=(s.activityAttempts||0)+1;S.items[id]=s;save();
+  s.lastActivityAttempt=answer;s.activityAttempts=(s.activityAttempts||0)+1;s.lastValidatorCode=String(result.code||(result.ok?"passed":"unknown_open_response"));s.lastValidatorMessage=String(result.msg||"");S.items[id]=s;save();
 
   if(curriculumAiEligible(spec,result,answer)){
     f.className="activity-feedback show";
     f.textContent="Checking whether your wording shows the lesson idea…";
     aiResult=await curriculumAiRescue(x,spec,answer,result);
+    s.lastAiTriage={decision:String(aiResult.decision||"review"),confidence:String(aiResult.confidence||"low"),reason:String(aiResult.reason||"").slice(0,240),model:String(aiResult.model||""),policyVersion:String(aiResult.policyVersion||""),cached:!!aiResult.cached,strongRetryUsed:!!aiResult.strongRetryUsed,strongRetryDecision:String(aiResult.strongRetryDecision||""),strongRetryConfidence:String(aiResult.strongRetryConfidence||"")};S.items[id]=s;save();
     if(aiResult.decision==="approve")result={ok:true,aiApproved:true,msg:""};
     else if(aiResult.decision==="review"||aiResult.decision==="unavailable"){
       f.className="activity-feedback show";
-      f.textContent="Your answer was saved and was NOT counted wrong. Dragonswood could not make a confident judgment. Use REQUEST TEACHER REVIEW below.";
-      document.getElementById("overrideBtn-"+id)?.classList.remove("approved");
+      f.textContent=`Your answer was saved and was NOT counted wrong. Dragonswood could not make a confident judgment. Hint: ${activityHint(spec,result)} Revise once more, or use REQUEST TEACHER REVIEW.`;
+      const reviewButton=document.getElementById("overrideBtn-"+id);reviewButton?.classList.remove("approved");if(reviewButton){reviewButton.disabled=false;reviewButton.textContent="🛡️ REQUEST TEACHER REVIEW"}
       return;
+    }
+    else if(aiResult.decision==="not_approved"&&aiResult.confidence==="high"){
+      const reviewButton=document.getElementById("overrideBtn-"+id);if(reviewButton){reviewButton.disabled=true;reviewButton.textContent="REVISE BEFORE REVIEW"}
+      f.className="activity-feedback show bad";f.textContent=`Not yet: ${aiResult.reason||result.msg} Hint: ${activityHint(spec,result)} Revise your answer and check it again.`;return;
     }
   }
 
@@ -785,7 +804,7 @@ async function checkActivity(id){
       const selected=structuredActivityParts(answer).choice;
       if(selected){s.quickWriteChoice=selected;s.quickWriteChoiceLocked=true}
     }
-    s.practiced=true;s.practiceEvidence=answer;s.overrideStatus="";S.items[id]=s;save();clearCurriculumDraft(id);
+    s.practiced=true;s.practiceEvidence=answer;s.overrideStatus="";s.lastValidatorCode="passed";s.lastValidatorMessage="";delete s.lastAiTriage;S.items[id]=s;save();clearCurriculumDraft(id);
     f.textContent=aiResult?.decision==="approve"?"✓ Quest complete. Sentence count passed, and your content was accepted as matching the selected prompt.":result.msg?"✓ "+result.msg:"✓ Quest complete. Your answer passed the lesson check.";
     render();
   }else{
@@ -796,11 +815,13 @@ async function checkActivity(id){
       s.lastActivityAttempt="";if(systemAuthoredResponse(x,s.practiceEvidence)){s.practiceEvidence="";s.practiced=false}s.overrideStatus="";S.items[id]=s;save();
       if(reviewButton)reviewButton.hidden=true;
       f.textContent="Not yet: "+result.msg+" Dragonswood cleared the copied text. Write your own response, then check it again.";
-    }else f.textContent="Not yet: "+result.msg+" Your answer was saved. You can revise it or request teacher review.";
+    }else f.textContent=`Not yet: ${result.msg} Hint: ${activityHint(spec,result)} Your answer was saved. Revise it before requesting teacher review.`;
   }
 }
 async function requestOverride(id){
   const x=findItem(id);if(!x)return;const answer=activityAnswerText(x).trim();
+  if(x.subject==="Math"){alert("Math is checked automatically. Review the lesson, revise the answer, and try again.");return}
+  const prior=st(id);if(prior.lastAiTriage?.decision==="not_approved"&&prior.lastAiTriage?.confidence==="high"){alert("Revise this answer and check it again before requesting teacher review.");return}
   if(answer.length<3){alert("Enter your answer first so your teacher can review what Dragonswood rejected.");return}
   if(systemAuthoredResponse(x,answer)){const field=document.getElementById("actText-"+id);if(field)field.value="";alert("Dragonswood cleared its own directions from the answer box. Write your own response before requesting teacher review.");return}
   const s=st(id);s.lastActivityAttempt=answer;S.items[id]=s;save();
@@ -808,7 +829,7 @@ async function requestOverride(id){
     alert("Teacher review is not connected yet. Your answer is saved, but no request was sent.");
     return;
   }
-  const ok=await window.submitCurriculumOverride(x,answer,s.activityAttempts||1);
+  const ai=s.lastAiTriage||{},ok=await window.submitCurriculumOverride(x,answer,s.activityAttempts||1,{validatorCode:s.lastValidatorCode||"unknown_open_response",validatorMessage:s.lastValidatorMessage||"",aiDecision:ai.decision||"not_run",aiConfidence:ai.confidence||"",aiReason:ai.reason||"",aiModel:ai.model||"",aiPolicyVersion:ai.policyVersion||"",aiCached:!!ai.cached,strongRetryUsed:!!ai.strongRetryUsed,strongRetryDecision:ai.strongRetryDecision||"",strongRetryConfidence:ai.strongRetryConfidence||"",escalationReason:ai.reason||s.lastValidatorMessage||"Automatic checks could not confidently resolve this response."});
   if(ok){
     s.overrideStatus="pending";S.items[id]=s;save();render();
   }else{
@@ -906,7 +927,7 @@ let miss=due.filter(x=>!missionComplete(x)&&!mediaPending(x));$("#audit").innerH
 $("#grade").onchange=e=>{if(currentStudent&&!isTeacher){e.target.value=S.grade;return}S.grade=e.target.value;if(window.DWCurriculumLocalTester){S.day=DW_LOCAL_TESTER_DAY;syncLocalTesterUrl()}save();render()};$("#day").onchange=e=>{if(window.DWCurriculumLocalTester){S.day=DW_LOCAL_TESTER_DAY;e.target.value=S.day;return}if(!isTeacher){e.target.value=S.day;return}S.day=Math.max(1,Math.min(40,+e.target.value||1));save();render()};$$(".tabs button").forEach(b=>b.onclick=()=>{$$(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");$$(".panel").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.tab).classList.add("active")});render();
 </script>
 <script src="dragonswood-grading-core.js?v=56.21.0"></script>
-<script src="dragonswood-academic-ai-client.js?v=56.21.0"></script>
+<script src="dragonswood-academic-ai-client.js?v=56.21.1"></script>
 <script src="functions-arcade-access/tester-core.js?v=57.1.16"></script>
 <script type="module">
 import {initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
@@ -956,6 +977,8 @@ function canonicalProgress(uid,item,state,forceUnverified=false){
     questionsCorrect:counts.correct,questionsSeen:counts.seen,autoAnswers:state.autoAnswers||{},
     autoAttempts:Number(state.autoAttempts||0),lastActivityAttempt:String(state.lastActivityAttempt||""),
     activityAttempts:Number(state.activityAttempts||0),overrideStatus:String(state.overrideStatus||""),
+    lastValidatorCode:String(state.lastValidatorCode||""),lastValidatorMessage:String(state.lastValidatorMessage||""),
+    lastAiTriage:state.lastAiTriage&&typeof state.lastAiTriage==="object"?state.lastAiTriage:null,
     verified:forceUnverified?false:!!state.verified,updatedAt:serverTimestamp()
   };
 }
@@ -1033,6 +1056,19 @@ window.submitCurriculumOverride=async (item,answer,attempts,meta={})=>{
       questionPrompt:String(meta.questionPrompt||"").slice(0,5000),
       expectedAnswer:String(meta.expectedAnswer||"").slice(0,1000),
       studentAnswer:answer,attempts:Number(attempts||1),status:"pending",
+      validatorCode:String(meta.validatorCode||"").slice(0,80),
+      validatorMessage:String(meta.validatorMessage||"").slice(0,500),
+      aiDecision:String(meta.aiDecision||"not_run").slice(0,40),
+      aiConfidence:String(meta.aiConfidence||"").slice(0,20),
+      aiReason:String(meta.aiReason||"").slice(0,500),
+      aiModel:String(meta.aiModel||"").slice(0,80),
+      aiPolicyVersion:String(meta.aiPolicyVersion||"").slice(0,80),
+      aiCached:!!meta.aiCached,
+      strongRetryUsed:!!meta.strongRetryUsed,
+      strongRetryDecision:String(meta.strongRetryDecision||"").slice(0,40),
+      strongRetryConfidence:String(meta.strongRetryConfidence||"").slice(0,20),
+      escalationReason:String(meta.escalationReason||"").slice(0,500),
+      gradingPolicyVersion:"curriculum-validator-v3.0",
       requestedAt:serverTimestamp(),updatedAt:serverTimestamp()
     },{merge:true});
     return true;

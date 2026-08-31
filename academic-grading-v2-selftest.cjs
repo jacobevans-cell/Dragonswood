@@ -30,7 +30,7 @@ pass("capitalization task stays deterministic",!G.shouldUseAiRescue({prompt:"Whi
 pass("unusual open wording may use AI rescue",G.shouldUseAiRescue({prompt:"Explain why erosion changes land.",answer:"erosion"},"water carries dirt away"));
 
 const daily=fs.readFileSync("daily-quest.html","utf8");
-pass("Daily loads AI client",daily.includes("dragonswood-academic-ai-client.js?v=56.21.0"));
+pass("Daily loads current AI client",daily.includes("dragonswood-academic-ai-client.js?v=56.21.1"));
 pass("Daily imports Firebase Functions",daily.includes("firebase-functions.js"));
 pass("Daily uses contextual equivalence",daily.includes("questionAnswerEquivalent(q,value)"));
 pass("Daily blocks multiword cold typing",daily.includes("minimalAcceptedAnswer?.(q)"));
@@ -39,7 +39,7 @@ pass("Daily free response awaits rescue",daily.includes("await gradeTypedAnswerW
 pass("Daily rune awaits rescue",daily.includes("await gradeTypedAnswerWithRescue(q,value,t)"));
 
 const curr=fs.readFileSync("curriculum-quest.html","utf8");
-pass("Curriculum loads AI client",curr.includes("dragonswood-academic-ai-client.js?v=56.21.0"));
+pass("Curriculum loads current AI client",curr.includes("dragonswood-academic-ai-client.js?v=56.21.1"));
 pass("Curriculum imports Firebase Functions",curr.includes("firebase-functions.js"));
 pass("Curriculum checker async",curr.includes("async function checkActivity(id)"));
 pass("Curriculum reasoning rescue",curr.includes("async function curriculumAiRescue"));
@@ -47,6 +47,8 @@ pass("Curriculum exposes safe item-state saving",curr.includes("function saveCur
 pass("Curriculum cache-busts enhancement loader",curr.includes("q1-curriculum-enhancements.js?v=57.1.6"));
 
 const mathAuto=fs.readFileSync("dragonswood-math-autograding.js","utf8");
+pass("Daily loads current Math policy",daily.includes("dragonswood-math-autograding.js?v=57.1.3"));
+pass("Math policy reports current version",mathAuto.includes('const VERSION="57.1.3"'));
 pass(
   "Exact Math delegates to original deterministic grader",
   mathAuto.includes('if(spec.kind!=="explain")return O.checkActivity(id);')
@@ -68,6 +70,13 @@ pass("current Teacher Command keeps V4 evidence-gated grade export",teacherApp.i
 const rules=fs.readFileSync("firestore.rules","utf8");
 pass("AI usage teacher-readable",rules.includes("match /academicAiUsage/{docId}"));
 pass("AI cache client-denied",rules.includes("match /academicAnswerAiCache/{docId}"));
+pass("Override triage metadata is update-safe",rules.includes("'strongRetryUsed','strongRetryDecision','strongRetryConfidence','escalationReason'"));
+const backend=fs.readFileSync("functions-academic-ai/index.js","utf8");
+pass("Academic rescue keeps the existing nano model",backend.includes('DEFAULT_MODEL="gpt-5-nano"')&&!/gpt-5(?:\.4)?-mini/.test(backend));
+pass("Ambiguous retry uses the same configured model",backend.includes('model:cfg.model,instructions:stage==="focused"?FOCUSED_SYSTEM:SYSTEM'));
+pass("Focused retry has separate class and student caps",backend.includes("focusedRetryPerStudentDailyCallCap")&&backend.includes("focusedRetryDailyClassCallCap"));
+pass("Focused retry cache is stage-specific",backend.includes("cfg.model,stage,p.mode"));
+pass("Only high-confidence AI decisions can resolve",backend.includes('if(confidence!=="high")decision="review"'));
 try{cp.execFileSync(process.execPath,["--check","functions-academic-ai/index.js"],{stdio:"pipe"});pass("backend JavaScript syntax",true)}
 catch(e){pass("backend JavaScript syntax",false,String(e.stderr||e.message))}
 if(failures){console.error(`\n❌ ${failures} ACADEMIC HARDENING TEST(S) FAILED`);process.exit(1)}

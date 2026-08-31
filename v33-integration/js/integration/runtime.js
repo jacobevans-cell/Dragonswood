@@ -240,7 +240,7 @@
     try{F=await createFirebase('teacher')}catch(err){emit(onUpdate,{status:'error',message:`Firebase could not load: ${err?.message||err}`});return {environment,signIn:async()=>{},signOut:async()=>{},dispose(){}}}
     const {S,auth,db}=F;
     let currentUser=null,lastOperations=null;
-    const reconcilingBathroomSlots=new Set();
+    const reconcilingBathroomSlots=new Set(),reconcilingCurriculumOverrides=new Set();
     const unsubs=[];
     const data={roster:[],daily:[],spellingResults:[],curriculum:[],scribe:{},responses:[],games:[],readingSessions:[],studentTransactions:[],bathroomRequests:[],snackRequests:[],passRequests:[],pointRequests:[],bathroomStatus:[],snackStatus:[],passStatus:[],passHistory:[],bathroomSlots:[],curriculumOverrides:[],pollVotes:[],attentionEvents:[],studentSuggestions:[],suggestionNotes:[],academicAiUsage:[],activePoll:{},activeAttention:{},kingdomAccess:{},substituteMode:{},dailyOverride:{},gradeSettings:{},academicAiConfig:{},passBlackout:{},classMain:{},secondRecess:{},classPet:{},fieldTrip:{},universalPoints:{},classJobs:{},jobWeeks:[],classSchedule:{},calendarEvents:[],scores:[],leaderboardRewards:[]};
     const timestampMs=value=>Number(value?.seconds)*1000||Number(value?.toMillis?.())||Date.parse(String(value||''))||0;
@@ -263,6 +263,7 @@
       lastOperations=Object.freeze({...baseOperations,studentSuggestions:Object.freeze(suggestions),academicAiConfig:Object.freeze({...data.academicAiConfig}),academicAiUsage:Object.freeze({...usage})});
       emit(onUpdate,{status:'authorized',user:currentUser,teacherName:currentUser.displayName||'Mr. Evans',students,academic:Academic.teacherAcademic(students,data.scribe,data.responses,data.daily,data.curriculum,data.games,data.readingSessions,data.spellingResults,data.gradeSettings),operations:lastOperations});
       scheduleBathroomSlotReconcile();
+      scheduleLegacyMathOverrideReconcile();
     };
     const authUnsub=S.auth.onAuthStateChanged(auth,user=>{
       clear();currentUser=user||null;
@@ -297,6 +298,12 @@
       if(!currentUser||!['emulator','production'].includes(environment))return;
       const dateKey=Core.phoenixDateKey(),activeByStudent=new Map(data.bathroomStatus.filter(row=>row.dateKey===dateKey&&row.active===true).map(row=>[String(row.studentId||row.id||''),String(row.activeVisitId||'')]));
       for(const slot of data.bathroomSlots){if(slot.occupied!==true)continue;const studentId=String(slot.studentId||''),activeId=activeByStudent.get(studentId),slotVisit=String(slot.activeVisitId||''),valid=!!studentId&&activeByStudent.has(studentId)&&(!slotVisit||!activeId||slotVisit===activeId);if(valid||reconcilingBathroomSlots.has(slot.id))continue;reconcilingBathroomSlots.add(slot.id);reconcileBathroomSlot(slot.id).catch(err=>console.warn('[V3.3 pass slot reconcile]',err)).finally(()=>reconcilingBathroomSlots.delete(slot.id))}
+    }
+    function legacyMathNumber(value){const raw=String(value||'').trim().replace(/,/g,''),percent=raw.endsWith('%'),body=percent?raw.slice(0,-1):raw,factor=percent ? 0.01 : 1;if(/^[-+]?\d+(?:\.\d+)?\/[-+]?\d+(?:\.\d+)?$/.test(body)){const [a,b]=body.split('/').map(Number);return b?(a/b)*factor:NaN}const n=Number(body);return Number.isFinite(n)?n*factor:NaN}
+    function legacyMathMatch(row){if(row.status!=='pending'||String(row.subject||'').toLowerCase()!=='math')return false;const answer=String(row.studentAnswer||'').trim(),expected=String(row.expectedAnswer||'').trim();if(!answer||!expected||/^(?:interactive response submitted|no answer recorded)/i.test(answer))return false;const a=legacyMathNumber(answer),b=legacyMathNumber(expected);if(Number.isFinite(a)&&Number.isFinite(b))return Math.abs(a-b)<1e-9;return answer.toLowerCase().replace(/\s+/g,' ')===expected.toLowerCase().replace(/\s+/g,' ')}
+    function scheduleLegacyMathOverrideReconcile(){
+      if(!currentUser||!['emulator','production'].includes(environment))return;
+      for(const row of data.curriculumOverrides){if(!legacyMathMatch(row)||reconcilingCurriculumOverrides.has(row.id))continue;reconcilingCurriculumOverrides.add(row.id);S.firestore.setDoc(S.firestore.doc(db,'curriculumOverrideRequests',row.id),{status:'approved',teacherNote:'Auto-resolved by deterministic legacy Math equivalence.',resolutionSource:'legacy-math-deterministic',resolvedAt:S.firestore.serverTimestamp(),updatedAt:S.firestore.serverTimestamp()},{merge:true}).catch(err=>console.warn('[V3.3 legacy Math override reconcile]',err)).finally(()=>reconcilingCurriculumOverrides.delete(row.id))}
     }
     async function reconcileBathroomSlot(slotId){
       const slotRef=S.firestore.doc(db,'bathroomSlots',slotId);return S.firestore.runTransaction(db,async tx=>{const slotSnap=await tx.get(slotRef);if(!slotSnap.exists()||slotSnap.data().occupied!==true)return false;const slot=slotSnap.data(),studentId=String(slot.studentId||''),statusRef=studentId?S.firestore.doc(db,'bathroomStatus',studentId):null,statusSnap=statusRef?await tx.get(statusRef):null,status=statusSnap?.exists()?statusSnap.data():{},sameVisit=!slot.activeVisitId||!status.activeVisitId||String(slot.activeVisitId)===String(status.activeVisitId),valid=studentId&&status.dateKey===Core.phoenixDateKey()&&status.active===true&&sameVisit;if(valid)return false;tx.set(slotRef,{group:slotId,occupied:false,studentId:'',studentName:'',activeVisitId:'',releasedAt:S.firestore.serverTimestamp(),reconciledAt:S.firestore.serverTimestamp(),updatedAt:S.firestore.serverTimestamp()},{merge:true});return true})

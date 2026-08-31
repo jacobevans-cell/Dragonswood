@@ -1,5 +1,5 @@
 /* ==========================================================================
-   DRAGONSWOOD MATH AUTO-GRADING POLICY v57.1.2
+   DRAGONSWOOD MATH AUTO-GRADING POLICY v57.1.3
 
    System rule:
    - Math never requires teacher approval.
@@ -12,7 +12,7 @@
      answer-lock policy, or non-Math teacher-review behavior.
    ========================================================================== */
 (function(){
-  const VERSION="57.1.2";
+  const VERSION="57.1.3";
   const page=(location.pathname.split("/").pop()||"").toLowerCase();
 
   const norm=v=>String(v||"").trim().toLowerCase().replace(/,/g,"").replace(/\s+/g," ");

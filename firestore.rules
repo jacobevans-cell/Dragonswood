@@ -479,7 +479,10 @@ service cloud.firestore {
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.status == "pending"
                     && request.resource.data.diff(resource.data).affectedKeys()
-                         .hasOnly(['studentAnswer','attempts','status','requestedAt','updatedAt']);
+                         .hasOnly(['studentAnswer','attempts','status','validatorCode','validatorMessage',
+                                   'aiDecision','aiConfidence','aiReason','aiModel','aiPolicyVersion','aiCached',
+                                   'strongRetryUsed','strongRetryDecision','strongRetryConfidence','escalationReason',
+                                   'gradingPolicyVersion','requestedAt','updatedAt']);
 
       allow update, delete: if isTeacher();
     }
@@ -659,7 +662,9 @@ service cloud.firestore {
                       'watched','videoCoverage','videoReflection','practiced',
                       'practiceEvidence','questionsCorrect','questionsSeen',
                       'autoAnswers','autoAttempts','lastActivityAttempt',
-                      'activityAttempts','overrideStatus','updatedAt'
+                      'activityAttempts','overrideStatus','quickWriteChoice',
+                      'quickWriteChoiceLocked','dwInteraction','lastValidatorCode',
+                      'lastValidatorMessage','lastAiTriage','updatedAt'
                     ])
                     && request.resource.data.questionsCorrect is number
                     && request.resource.data.questionsSeen is number

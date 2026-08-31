@@ -176,6 +176,13 @@ function ensureSubstituteModeStyles(){
   `;document.head?.appendChild(style);
 }
 
+function ensureCombinedGameStyles(){
+  if(document.querySelector('#v33-combined-game-styles'))return;
+  const style=document.createElement('style');style.id='v33-combined-game-styles';style.textContent=`
+  .game-actions{display:grid;grid-template-columns:1fr;gap:6px}.game-actions.split{grid-template-columns:repeat(2,minmax(0,1fr))}.game-actions .btn{width:100%;min-width:0;padding-inline:6px}
+  `;document.head?.appendChild(style);
+}
+
 function recoverySummaryCurrent(){return state.recoverySummary?.checked===true&&state.recoverySummary?.dateKey===state.missionDate}
 function ensureRecoveryProbe(){
   if(recoverySummaryCurrent()||recoveryProbe||requestedModuleId()==='curriculum-quest'||!moduleHost?.href)return;
@@ -343,6 +350,7 @@ function navButton(item){
 function shell(){
   ensureTesterControlsStyles();
   ensureSubstituteModeStyles();
+  ensureCombinedGameStyles();
   return `<div class="portal student-shell student-page-${state.page}" data-${IS_PRODUCTION?'release':'tester-build'}="v3.3">
     <header class="student-topbar"><div class="student-brand">
       <div class="brand-lockup"><img class="student-crest" src="assets/branding/dragonswood-mascot-crest.png" alt="Dragonswood mascot crest"><div><div class="brand-name">DRAGONSWOOD</div><div class="brand-sub">STUDENT ADVENTURE PORTAL</div></div></div>
@@ -463,8 +471,7 @@ function missionRow(m,i){
 
 const games=[
   ['decimal-deception','Math','assets/art/game-visual-1.jpg','Decimal Deception','Restore the crystal grid with decimal clues.'],
-  ['math-operations','Math','assets/art/game-visual-2.jpg','Math Operations Quest','Practice the four operations through a guided adventure.'],
-  ['fraction-forge','Math','assets/art/game-visual-3.jpg','Fraction Forge','Forge fractions and power up your battle skills.'],
+  ['math-operations','Math','assets/art/game-visual-2.jpg','Math Operations Quest','Practice whole-number operations or enter Fraction Forge for fraction operations.','fraction-forge'],
   ['witches-test','ELA','assets/art/game-visual-5.jpg','The Witches Reading Test','Show your understanding of the current class reading.'],
   ['class-reader','ELA','assets/art/game-visual-5.jpg','The Witches Reader','Continue the class novel with read-aloud.'],
   ['elemental-laboratory','Science','assets/art/game-visual-6.jpg','Elemental Laboratory','Build atoms and investigate matter.'],
@@ -476,7 +483,7 @@ function gamesPage(){
   const visible=state.gameFilter==='All'?games:games.filter(g=>g[1]===state.gameFilter);
   return `${studentTitle('🎮','Quest Games','Choose your adventure','Every game practices a real school skill. Pick a subject and jump in.')}
   <div class="filter-tabs game-filters">${['All','Math','ELA','Science'].map(f=>`<button class="filter-tab ${state.gameFilter===f?'active':''}" data-game-filter="${f}">${f==='All'?'✦ ':''}${f}</button>`).join('')}</div>
-  <section class="game-grid">${visible.map(g=>{const substituteLocked=substituteBlocked(g[0]);return `<article class="panel game-card ${substituteLocked?'substitute-locked':''}"><div class="game-visual"><img src="${g[2]}" alt=""></div><div class="game-copy"><div class="subject">${substituteLocked?'SUBSTITUTE MODE':`${g[1]} ADVENTURE`}</div><h3>${g[3]}</h3><p>${substituteLocked?'Unavailable today. Ask your substitute teacher if you need help.':g[4]}</p><div class="game-badges"><span class="${substituteLocked?'substitute-lock-note':''}">${substituteLocked?'🛑 Closed today':'✨ Earn XP'}</span></div><button class="btn ${substituteLocked?'btn-secondary':'btn-primary'}" type="button" data-module="${g[0]}" ${substituteLocked?'disabled':''}>${substituteLocked?'Unavailable today':'Play quest →'}</button></div></article>`}).join('')}</section>`;
+  <section class="game-grid">${visible.map(g=>{const substituteLocked=substituteBlocked(g[0]),secondaryId=g[5],secondaryLocked=secondaryId&&substituteBlocked(secondaryId);return `<article class="panel game-card ${substituteLocked?'substitute-locked':''}"><div class="game-visual"><img src="${g[2]}" alt=""></div><div class="game-copy"><div class="subject">${substituteLocked?'SUBSTITUTE MODE':`${g[1]} ADVENTURE`}</div><h3>${g[3]}</h3><p>${substituteLocked?'Unavailable today. Ask your substitute teacher if you need help.':g[4]}</p><div class="game-badges"><span class="${substituteLocked?'substitute-lock-note':''}">${substituteLocked?'🛑 Closed today':'✨ Earn XP'}</span></div><div class="game-actions ${secondaryId?'split':''}"><button class="btn ${substituteLocked?'btn-secondary':'btn-primary'}" type="button" data-module="${g[0]}" ${substituteLocked?'disabled':''}>${substituteLocked?'Unavailable today':secondaryId?'Operations →':'Play quest →'}</button>${secondaryId?`<button class="btn btn-secondary" type="button" data-module="${secondaryId}" ${secondaryLocked?'disabled':''}>${secondaryLocked?'Unavailable today':'Fraction Forge →'}</button>`:''}</div></div></article>`}).join('')}</section>`;
 }
 
 function wordCount(text){return text.trim()?text.trim().split(/\s+/).length:0}

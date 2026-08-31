@@ -16,8 +16,9 @@ for(const [name,html] of [['production student root',studentRoot],['student fixt
   assert.match(html,/dragonswood-student-tools[.]js/,`${name} must load the existing student tool bundle`);
 }
 
-const games=['decimal-deception','math-operations','fraction-forge','long-division','long-division-custom','spelling-practice','witches-test','class-reader','elemental-laboratory','cosmic-architect','arcane-forge'];
+const games=['decimal-deception','math-operations','long-division','long-division-custom','spelling-practice','witches-test','class-reader','elemental-laboratory','cosmic-architect','arcane-forge'];
 for(const game of games)assert.match(student,new RegExp(`\\['${game}'`),`${game} must be present in the student catalog`);
+assert.match(student,/\['math-operations','Math'[^\n]+,'fraction-forge'\]/,'Fraction Forge must remain available inside the combined Math Operations card');
 assert.doesNotMatch(student,/History'\]\s*\.map|\['All','Math','ELA','Science','History'\]/,'the empty History game filter must not return');
 assert.match(student,/data-open-portfolio/,'the Scribe portfolio must have a live control');
 assert.match(student,/data-module="boss-battle"/,'Boss Battle must route to the authoritative module');

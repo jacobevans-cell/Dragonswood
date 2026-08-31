@@ -472,8 +472,6 @@ function missionRow(m,i){
 const games=[
   ['decimal-deception','Math','assets/art/game-visual-1.jpg','Decimal Deception','Restore the crystal grid with decimal clues.'],
   ['math-operations','Math','assets/art/game-visual-2.jpg','Math Operations Quest','Practice whole-number operations or enter Fraction Forge for fraction operations.','fraction-forge'],
-  ['witches-test','ELA','assets/art/game-visual-5.jpg','The Witches Reading Test','Show your understanding of the current class reading.'],
-  ['class-reader','ELA','assets/art/game-visual-5.jpg','The Witches Reader','Continue the class novel with read-aloud.'],
   ['elemental-laboratory','Science','assets/art/game-visual-6.jpg','Elemental Laboratory','Build atoms and investigate matter.'],
   ['cosmic-architect','Science','assets/art/game-visual-6.jpg','Cosmic Architect','Build and investigate a model of the cosmos.'],
   ['arcane-forge','Science','assets/art/game-visual-6.jpg','Arcane Forge','Use science evidence to power the forge.'],

@@ -2,6 +2,9 @@
   'use strict';
   const store=root.DWArcadeManualStore;
   if(!store)throw new Error('Manual Arcade preview store did not load.');
+  const substitutePreview=new URLSearchParams(location.search).get('substitute')==='1';
+  const substituteMode=Object.freeze({active:substitutePreview,dateKey:new Intl.DateTimeFormat('en-CA',{timeZone:'America/Phoenix'}).format(new Date()),reason:'Ask your substitute teacher if you need help or need to leave the room.'});
+  const previewPasses=substitutePreview?Object.freeze({blackout:true,blackoutReason:'Substitute Mode is on today. Ask your substitute teacher if you need a pass.',rows:Object.freeze(Object.fromEntries([['bathroom','Bathroom','🚻'],['snack','Snack','🍎'],['outOfSeat','Out of Seat','🚶'],['office','Emergency Office','🏥']].map(([type,label,icon])=>[type,Object.freeze({type,label,icon,action:'blocked',message:'Substitute Mode is on today. Ask your substitute teacher if you need a pass.',active:false,blocking:type==='bathroom'||type==='office'})]))) }):null;
 
   const names=[
     ['Jacob Preview','Grade 5 • Tester',store.STUDENT_UID],
@@ -16,11 +19,11 @@
   root.DWV33Integration=Object.freeze({
     version:'manual-preview-v1',environment:'manual-preview',
     async startStudent(onUpdate){
-      queueMicrotask(()=>onUpdate({status:'authorized',environment:'manual-preview',user:{uid:store.STUDENT_UID,email:'preview-student@example.invalid',displayName:'Jacob'},student:{uid:store.STUDENT_UID,email:'preview-student@example.invalid',firstName:'Jacob',initial:'J',displayName:'Jacob the Dragon Keeper',grade:'5',genderGroup:'tester',hp:48,gold:385,xp:1520,level:12,xpFloor:0,xpNext:2000,xpPct:76,streak:7,classId:'warrior',classLabel:'Warrior',activePet:'nyx',petName:'Nyx',inventory:[],equipped:{},title:'dragonkeeper',narrationVoice:'',profileMissing:false,morningWorkComplete:true,dailyAccessOverride:false,dailyAccessUnlocked:true},kingdomAccess:{unlocked:true}}));
+      queueMicrotask(()=>onUpdate({status:'authorized',environment:'manual-preview',user:{uid:store.STUDENT_UID,email:'preview-student@example.invalid',displayName:'Jacob'},student:{uid:store.STUDENT_UID,email:'preview-student@example.invalid',firstName:'Jacob',initial:'J',displayName:'Jacob the Dragon Keeper',grade:'5',genderGroup:'tester',hp:48,gold:385,xp:1520,level:12,xpFloor:0,xpNext:2000,xpPct:76,streak:7,classId:'warrior',classLabel:'Warrior',activePet:'nyx',petName:'Nyx',inventory:[],equipped:{},title:'dragonkeeper',narrationVoice:'',profileMissing:false,morningWorkComplete:true,dailyAccessOverride:false,dailyAccessUnlocked:true},passes:previewPasses,substituteMode,kingdomAccess:{unlocked:!substitutePreview}}));
       return {async signIn(){},async signOut(){},dispose(){}};
     },
     async startTeacher(onUpdate){
-      queueMicrotask(()=>onUpdate({status:'authorized',environment:'manual-preview',user:{uid:'manual-teacher',email:'preview-teacher@example.invalid',displayName:'Mr. Evans'},teacherName:'Mr. Evans',students}));
+      queueMicrotask(()=>onUpdate({status:'authorized',environment:'manual-preview',user:{uid:'manual-teacher',email:'preview-teacher@example.invalid',displayName:'Mr. Evans'},teacherName:'Mr. Evans',students,operations:{dateKey:substituteMode.dateKey,substituteMode,pending:[],active:[],recognition:[],curriculumOverrides:[],attention:{active:false,events:[]},kingdomAccess:{active:false,all:false,studentIds:[]},goals:{shared:64,universal:24,rows:[]}}}));
       return {async signIn(){},async signOut(){},dispose(){}};
     }
   });

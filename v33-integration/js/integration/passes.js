@@ -41,7 +41,7 @@
     const statuses=input.statuses||{},requests=input.requests||{},slots=input.slots||{};
     const pending=Object.entries(requests).find(([,row])=>row?.status==='pending')||null;
     const group=bathroomGroup(input.profile||{}),slot=slots[group]||{};
-    const blackout=input.blackout?.active===true;
+    const blackout=input.blackout?.active===true,blackoutReason=String(input.blackout?.reason||'Passes are paused by your teacher right now.');
     const rows={};
     for(const [type,def] of Object.entries(TYPES)){
       const row=sameDay(statuses[type],dateKey)?statuses[type]:{};
@@ -50,13 +50,13 @@
       const slotBlocked=type==='bathroom'&&sameDay(slot,dateKey)&&slot.occupied===true&&slot.studentId!==uid;
       let action='request',message=`Your ${def.automatic} automatic ${def.label.toLowerCase()} pass${def.automatic===1?'':'es'} have been used today.`;
       if(active){action='return';message=`${def.label} pass active. Tap when you are back.`}
-      else if(blackout){action='blocked';message=`${def.label} passes are paused by your teacher right now.`}
+      else if(blackout){action='blocked';message=blackoutReason}
       else if(slotBlocked){action='blocked';message=`${slot.studentName||'Another scholar'} is using the ${group==='girl'?'Girls':'Boys'} bathroom pass. Your pass will not be used.`}
       else if(pending){action='pending';message=`Your ${definition(pending[0])?.label||'extra pass'} request is waiting for teacher review.`}
       else if(used<def.automatic||credits>0){action='start';message=credits>0&&used>=def.automatic?`${credits} teacher-approved extra pass${credits===1?'':'es'} available.`:`${Math.max(0,def.automatic-used)} of ${def.automatic} automatic pass${def.automatic===1?'':'es'} remaining today.`}
       rows[type]=Object.freeze({type,label:def.label,icon:def.icon,automatic:def.automatic,used,credits,active,action,message,requestPending:requests[type]?.status==='pending',blocking:type==='bathroom'||type==='office',startedMs:active?passStartMs(row):0});
     }
-    return Object.freeze({dateKey,group,blackout,pendingType:pending?.[0]||'',rows:Object.freeze(rows)});
+    return Object.freeze({dateKey,group,blackout,blackoutReason:blackout?blackoutReason:'',pendingType:pending?.[0]||'',rows:Object.freeze(rows)});
   }
 
   return Object.freeze({TYPES,PASS_LIMIT_MS,OVERDUE_REPEAT_MS,definition,statusId,requestId,bathroomGroup,timestampMs,passStartMs,passTiming,studentPasses});

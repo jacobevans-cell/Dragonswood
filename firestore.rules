@@ -170,6 +170,15 @@ service cloud.firestore {
               || get(/databases/$(database)/documents/passRequests/$(uid + '_office_' + dateKey)).data.status != 'pending');
     }
 
+    function substituteModeAllowsPasses() {
+      return !exists(/databases/$(database)/documents/classData/substituteMode)
+        || get(/databases/$(database)/documents/classData/substituteMode).data.active != true
+        || (
+          get(/databases/$(database)/documents/classData/substituteMode).data.get('expiresAt', null) is timestamp
+          && get(/databases/$(database)/documents/classData/substituteMode).data.expiresAt <= request.time
+        );
+    }
+
     // Seating Command is teacher-only. Student presentation is rendered from
     // the authenticated teacher page and never reads these private rules.
     match /classrooms/{classroomId}/seatingPlans/{planId} {
@@ -911,12 +920,14 @@ service cloud.firestore {
       allow read: if isTeacher() || isOwner(studentId);
       allow create: if isOwner(studentId)
                     && isExploreStudent()
+                    && substituteModeAllowsPasses()
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.passesUsed == 1
                     && request.resource.data.approvalCredits == 0
                     && request.resource.data.active == true;
       allow update: if isOwner(studentId)
                     && (isExploreStudent() || isTester())
+                    && (request.resource.data.active == false || substituteModeAllowsPasses())
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.passesUsed is number
                     && request.resource.data.passesUsed >= 0
@@ -940,6 +951,7 @@ service cloud.firestore {
 
     match /bathroomRequests/{requestId} {
       allow create: if isExploreStudent()
+                    && substituteModeAllowsPasses()
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.status == "pending"
                     && requestId == request.auth.uid + '_' + request.resource.data.dateKey
@@ -948,6 +960,7 @@ service cloud.firestore {
                   || (isSignedIn() && requestId.matches('^' + request.auth.uid + '_.*$'))
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
       allow update: if isExploreStudent()
+                    && substituteModeAllowsPasses()
                     && resource.data.studentId == request.auth.uid
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.status == "pending"
@@ -964,12 +977,14 @@ service cloud.firestore {
       allow read: if isTeacher() || isOwner(studentId);
       allow create: if isOwner(studentId)
                     && isExploreStudent()
+                    && substituteModeAllowsPasses()
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.passesUsed == 1
                     && request.resource.data.approvalCredits == 0
                     && request.resource.data.active == true;
       allow update: if isOwner(studentId)
                     && isExploreStudent()
+                    && (request.resource.data.active == false || substituteModeAllowsPasses())
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.passesUsed is number
                     && request.resource.data.passesUsed >= 0
@@ -993,6 +1008,7 @@ service cloud.firestore {
 
     match /snackRequests/{requestId} {
       allow create: if isExploreStudent()
+                    && substituteModeAllowsPasses()
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.status == "pending"
                     && requestId == request.auth.uid + '_' + request.resource.data.dateKey
@@ -1001,6 +1017,7 @@ service cloud.firestore {
                   || (isSignedIn() && requestId.matches('^' + request.auth.uid + '_.*$'))
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
       allow update: if isExploreStudent()
+                    && substituteModeAllowsPasses()
                     && resource.data.studentId == request.auth.uid
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.status == "pending"
@@ -1078,9 +1095,11 @@ service cloud.firestore {
                   || (isSignedIn() && passId.matches('^' + request.auth.uid + '_.*$'))
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
       allow create: if isExploreStudent()
+                    && substituteModeAllowsPasses()
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.type in ['outOfSeat','office'];
       allow update: if isExploreStudent()
+                    && (request.resource.data.active == false || substituteModeAllowsPasses())
                     && resource.data.studentId == request.auth.uid
                     && request.resource.data.studentId == resource.data.studentId
                     && request.resource.data.type == resource.data.type;
@@ -1093,6 +1112,7 @@ service cloud.firestore {
     // Each student gets one automatic use per type per day; teacher approval grants extras.
     match /passRequests/{requestId} {
       allow create: if isExploreStudent()
+                    && substituteModeAllowsPasses()
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.status == "pending"
                     && request.resource.data.type in ['outOfSeat','office']
@@ -1102,6 +1122,7 @@ service cloud.firestore {
                   || (isSignedIn() && requestId.matches('^' + request.auth.uid + '_.*$'))
                   || (isSignedIn() && resource.data.studentId == request.auth.uid);
       allow update: if isExploreStudent()
+                    && substituteModeAllowsPasses()
                     && resource.data.studentId == request.auth.uid
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.status == "pending"

@@ -22,6 +22,7 @@ const arcadePortal=window.DWV33ArcadePortal;
 const kingdomPortal=window.DWV33KingdomPortal;
 const REQUIRED_WORK_PAGES=new Set(['games','hall','boss','leaderboards','kingdom','arcade']);
 let pendingRequiredWorkNotice='';
+let pendingSubstituteNotice='';
 let lastAttentionChime='';
 let adventurePetActor=null,adventureMotionTimer=null;
 
@@ -91,12 +92,15 @@ const state = {
   spellingResults: [],
   recoverySummary: storedRecoverySummary(),
   kingdomAccessUnlocked: false,
+  substituteMode: null,
   attention: null,
   passes: null,
   poll: null
 };
 
 function effectiveDateKey(){return state.isTester&&/^\d{4}-\d{2}-\d{2}$/.test(state.simulatedDate)?state.simulatedDate:(window.DWV33Core?.phoenixDateKey?.()||new Date().toISOString().slice(0,10))}
+function substituteModeActive(){return state.substituteMode?.active===true}
+function substituteBlocked(target){return substituteModeActive()&&['kingdom','deep-time-lab','dragon-tongues'].includes(String(target||''))}
 function weekendAcademicOpen(target){return window.DWV33Core?.isWeekendDateKey?.(effectiveDateKey())===true&&['rune-spelling','dragon-tongues','curriculum-quest'].includes(String(target||''))}
 window.DWV33TesterDateContext=()=>Object.freeze({dateKey:effectiveDateKey(),simulated:state.isTester&&Boolean(state.simulatedDate),isTester:state.isTester,testerUnlocks:Object.freeze({...state.testerUnlocks})});
 
@@ -164,6 +168,14 @@ function ensureTeacherDirectionStyles(){
   `;document.head?.appendChild(style);
 }
 
+function ensureSubstituteModeStyles(){
+  if(document.querySelector('#v33-substitute-mode-styles'))return;
+  const style=document.createElement('style');style.id='v33-substitute-mode-styles';style.textContent=`
+  .substitute-student-banner{display:flex;align-items:center;gap:13px;margin:0 0 16px;padding:14px 17px;border:2px solid #ffc45d;border-radius:14px;background:linear-gradient(120deg,rgba(102,40,9,.97),rgba(72,15,29,.97));box-shadow:0 0 30px rgba(255,116,43,.2);color:#fff}.substitute-student-banner span{font-size:34px}.substitute-student-banner h2,.substitute-student-banner p{margin:0}.substitute-student-banner h2{color:#fff3ad;font-size:19px}.substitute-student-banner p{margin-top:3px;color:#ffe5cf;font-size:14px;line-height:1.45}.game-card.substitute-locked{border-color:rgba(255,174,75,.55);filter:saturate(.55)}.game-card.substitute-locked .game-visual{opacity:.55}.game-card.substitute-locked .subject{color:#ffcf7e}.substitute-lock-note{color:#ffcf7e!important;font-weight:900}
+  @media(max-width:620px){.substitute-student-banner{align-items:flex-start}.substitute-student-banner span{font-size:28px}}
+  `;document.head?.appendChild(style);
+}
+
 function recoverySummaryCurrent(){return state.recoverySummary?.checked===true&&state.recoverySummary?.dateKey===state.missionDate}
 function ensureRecoveryProbe(){
   if(recoverySummaryCurrent()||recoveryProbe||requestedModuleId()==='curriculum-quest'||!moduleHost?.href)return;
@@ -208,6 +220,10 @@ function showRequiredWorkDialog(target='activity'){
   openDialog('Finish Dragon’s Path First',`<p><b>${escapeHtml(label)}</b> is still locked. Here is exactly what Dragonswood can see unfinished right now:</p><div class="stack mt-12">${rows.map(row=>`<article class="pass-card"><div class="pass-row"><div class="pass-student"><span class="roster-avatar">${row.icon}</span><div><b>${escapeHtml(row.title)}</b><p>${escapeHtml(row.detail)}</p></div></div>${row.id==='kingdom-access'?'':`<button class="btn btn-primary btn-sm" type="button" data-required-route="${escapeHtml(row.route)}">Go there</button>`}</div></article>`).join('')}</div><p class="muted">This check runs again every time you try to enter a game or recreational area.</p>`,`<button class="btn btn-secondary" data-close-dialog>Stay on Dragon’s Path</button>`);
   dialogRoot.dataset.dialogKind='required-work';
   dialogRoot.querySelectorAll('[data-required-route]').forEach(button=>button.addEventListener('click',()=>{closeDialog();location.hash=button.dataset.requiredRoute}));
+}
+function showSubstituteModeDialog(target='activity'){
+  const labels={kingdom:'Kingdom Wars','deep-time-lab':'Deep Time Lab','dragon-tongues':'Dragon Tongues'},label=labels[String(target)]||'This activity';
+  openDialog('Ask Your Substitute Teacher',`<div class="pass-card serious-warning"><b>🛑 ${escapeHtml(label)} is unavailable today.</b><p>Substitute Mode is on, so passes, Kingdom Wars, Deep Time Lab, and Dragon Tongues are disabled for the day.</p></div><p>If you need help or need to leave the room, please ask your substitute teacher directly.</p>`,`<button class="btn btn-primary" data-close-dialog>Return to Dragon’s Path</button>`);
 }
 
 function activePassRows(){
@@ -284,18 +300,20 @@ function currentPage(){
   }
   const moduleId=moduleHost?.routeId(hash);
   if(moduleId){
+    if(substituteBlocked(moduleId)){pendingSubstituteNotice=moduleId;return 'missions'}
     const gate=moduleHost.allowed(moduleId,{dailyAccessUnlocked:state.dailyAccessUnlocked});
     if(!gate.ok||modulePathLocked(moduleId)){pendingRequiredWorkNotice=moduleId;return 'missions'}
     return moduleHost.definition(moduleId).returnPage;
   }
   const page=studentNavItems().some(n=>n[0]===hash) ? hash : 'adventure';
+  if(substituteBlocked(page)){pendingSubstituteNotice=page;return 'missions'}
   if(requiredWorkLocked(page)){pendingRequiredWorkNotice=page;return 'missions'}
   return page;
 }
 
 function currentModuleId(){
   const id=requestedModuleId();
-  return id&&moduleHost?.allowed(id,{dailyAccessUnlocked:state.dailyAccessUnlocked})?.ok&&!modulePathLocked(id)?id:'';
+  return id&&!substituteBlocked(id)&&moduleHost?.allowed(id,{dailyAccessUnlocked:state.dailyAccessUnlocked})?.ok&&!modulePathLocked(id)?id:'';
 }
 
 function navMarkup(){
@@ -318,18 +336,20 @@ function navMarkup(){
 }
 function navButton(item){
   const [id,icon,label,sub,badge] = item;
-  return `<button class="nav-link ${state.page===id?'active':''}" type="button" data-page="${id}" ${state.page===id?'aria-current="page"':''}><picture class="nav-icon"><source srcset="assets/navigation/sidebar-hq-v1/webp/${icon}.webp" type="image/webp"><img src="assets/navigation/sidebar-hq-v1/png/${icon}.png" alt=""></picture><span><span class="nav-main">${label}</span><span class="nav-sub">${sub}</span></span>${badge?`<span class="nav-badge">${badge}</span>`:''}</button>`;
+  const substituteLocked=substituteBlocked(id);
+  return `<button class="nav-link ${state.page===id?'active':''}" type="button" data-page="${id}" ${state.page===id?'aria-current="page"':''}><picture class="nav-icon"><source srcset="assets/navigation/sidebar-hq-v1/webp/${icon}.webp" type="image/webp"><img src="assets/navigation/sidebar-hq-v1/png/${icon}.png" alt=""></picture><span><span class="nav-main">${label}</span><span class="nav-sub">${substituteLocked?'Off during Substitute Mode':sub}</span></span>${badge?`<span class="nav-badge">${badge}</span>`:''}</button>`;
 }
 
 function shell(){
   ensureTesterControlsStyles();
+  ensureSubstituteModeStyles();
   return `<div class="portal student-shell student-page-${state.page}" data-${IS_PRODUCTION?'release':'tester-build'}="v3.3">
     <header class="student-topbar"><div class="student-brand">
       <div class="brand-lockup"><img class="student-crest" src="assets/branding/dragonswood-mascot-crest.png" alt="Dragonswood mascot crest"><div><div class="brand-name">DRAGONSWOOD</div><div class="brand-sub">STUDENT ADVENTURE PORTAL</div></div></div>
-      <div class="student-utility">${state.isTester?'<button class="btn btn-secondary btn-sm" type="button" data-tester-controls>🧪 <span>Tester Controls</span></button>':''}<button class="btn btn-secondary btn-sm" type="button" data-passes>🎟️ <span>Passes</span></button><button class="btn btn-secondary btn-sm" type="button" data-read>🔊 <span>Read aloud</span></button><div class="profile-pill" role="button" tabindex="0" data-account-menu aria-label="Open account menu"><div class="profile-orb">${escapeHtml(state.initial)}</div><span><b>${escapeHtml(state.firstName)}</b><small>Level ${state.level}</small></span></div></div>
+      <div class="student-utility">${state.isTester?'<button class="btn btn-secondary btn-sm" type="button" data-tester-controls>🧪 <span>Tester Controls</span></button>':''}<button class="btn btn-secondary btn-sm" type="button" data-passes>🎟️ <span>${substituteModeActive()?'Ask sub for pass':'Passes'}</span></button><button class="btn btn-secondary btn-sm" type="button" data-read>🔊 <span>Read aloud</span></button><div class="profile-pill" role="button" tabindex="0" data-account-menu aria-label="Open account menu"><div class="profile-orb">${escapeHtml(state.initial)}</div><span><b>${escapeHtml(state.firstName)}</b><small>Level ${state.level}</small></span></div></div>
       </div></header>
     <aside class="student-sidebar">${navMarkup()}</aside>
-    <main class="student-main" id="page-content">${state.isTester&&state.simulatedDate?`<div class="tester-date-banner" role="status">🧪 SAFE DATE PREVIEW • real date ${escapeHtml(window.DWV33Core?.phoenixDateKey?.()||'today')} • simulated date ${escapeHtml(state.simulatedDate)} • academic and Boss preview writes are disabled <button type="button" data-return-real-date>Return to Today</button></div>`:''}<div class="student-content">${pageMarkup()}</div></main>
+    <main class="student-main" id="page-content">${state.isTester&&state.simulatedDate?`<div class="tester-date-banner" role="status">🧪 SAFE DATE PREVIEW • real date ${escapeHtml(window.DWV33Core?.phoenixDateKey?.()||'today')} • simulated date ${escapeHtml(state.simulatedDate)} • academic and Boss preview writes are disabled <button type="button" data-return-real-date>Return to Today</button></div>`:''}<div class="student-content">${substituteModeActive()?'<section class="substitute-student-banner" role="alert"><span>🛑</span><div><h2>Substitute Mode is on today</h2><p>Passes, Kingdom Wars, Deep Time Lab, and Dragon Tongues are unavailable. If you need help or need to leave the room, ask your substitute teacher.</p></div></section>':''}${pageMarkup()}</div></main>
     ${passSafetyMarkup()}${teacherAttentionMarkup()}${referenceButton()}${IS_PRODUCTION?'':'<div class="tester-ribbon">V3.3 TESTER • LOCAL ONLY</div>'}
   </div>`;
 }
@@ -418,17 +438,17 @@ function missionsPage(){
   const completeCount=missions.filter(m=>state.completedMissions.has(m.id)).length;
   const optionalOpen=unfinishedRequiredWork('games').length===0;
   const accessSummary=optionalOpen
-    ?'Dragon’s Path is complete. Dragon Tongues, games, Scribe Arena, Boss Battle, Kingdom Wars, and Arcade are available.'
+    ?substituteModeActive()?'Dragon’s Path is complete. Substitute Mode keeps passes and three optional activities closed today.':'Dragon’s Path is complete. Dragon Tongues, games, Scribe Arena, Boss Battle, Kingdom Wars, and Arcade are available.'
     :state.testerUnlocks.unlockMorning===true
       ?'Tester access is active. Required work remains incomplete until you do it.'
       :'Complete Morning Work, Rune Spelling, and Curriculum Quest to open free-choice adventures.';
   const accessLabel=state.dailyAccessOverride===true?'🔓 Teacher override':state.testerUnlocks.unlockMorning===true?'🧪 Tester access':optionalOpen?'🔓 Adventures open':'🔒 Path in progress';
   const readingRows=state.reading?.rows||[],today=window.DWV33Core?.phoenixDateKey?.()||'',readingRow=readingRows.find(row=>row.dateKey===today)||readingRows.slice().sort((a,b)=>String(b.dateKey).localeCompare(String(a.dateKey)))[0],readingMinutes=readingRow?Math.round(readingRow.activeSeconds/6)/10:0,readingTarget=state.reading?.targetMinutes||20,readingAssigned=(state.reading?.assignedDateKeys||[]).includes(today);
-  const languageLocked=!(optionalOpen||weekendAcademicOpen('dragon-tongues')||state.testerUnlocks.unlockMorning===true);
+  const languageSubstituteLocked=substituteBlocked('dragon-tongues'),languageLocked=languageSubstituteLocked||!(optionalOpen||weekendAcademicOpen('dragon-tongues')||state.testerUnlocks.unlockMorning===true);
   return `${studentTitle('📜','DRAGON’S PATH','Your quest path','Complete each glowing step. Free-choice adventures unlock when your required path is finished.')}
     <div class="panel path-summary"><div class="path-count"><strong>${completeCount}</strong><small>of 3</small></div><div class="path-copy"><div class="eyebrow">TODAY’S PROGRESS</div><b>One mission at a time.</b><div>${accessSummary}</div></div><div class="path-lock">${accessLabel}</div></div>
     <div class="mission-list">${missions.map((m,i)=>missionRow(m,i)).join('')}</div>
-    <div class="mission-list mt-12"><article class="panel mission-row ${languageLocked?'locked':'current'}"><div class="mission-num">✦</div><div class="mission-art">🗣️</div><div><div class="eyebrow">OPTIONAL LANGUAGE PATH</div><h3>Dragon Tongues</h3><p>Choose a language and learn freely at your own pace after Curriculum Quest.</p><div class="reward-line"><span>🌍 12 languages</span><span>🐉 Free path</span></div></div><button class="btn ${languageLocked?'btn-secondary':'btn-primary'} btn-sm" type="button" data-module="dragon-tongues" ${languageLocked?'disabled':''}>Explore languages →</button></article></div>
+    <div class="mission-list mt-12"><article class="panel mission-row ${languageLocked?'locked':'current'}"><div class="mission-num">✦</div><div class="mission-art">🗣️</div><div><div class="eyebrow">${languageSubstituteLocked?'SUBSTITUTE MODE':'OPTIONAL LANGUAGE PATH'}</div><h3>Dragon Tongues</h3><p>${languageSubstituteLocked?'Unavailable today. Ask your substitute teacher if you need help.':'Choose a language and learn freely at your own pace after Curriculum Quest.'}</p><div class="reward-line"><span>🌍 12 languages</span><span>${languageSubstituteLocked?'🛑 Closed today':'🐉 Free path'}</span></div></div><button class="btn ${languageLocked?'btn-secondary':'btn-primary'} btn-sm" type="button" data-module="dragon-tongues" ${languageLocked?'disabled':''}>${languageSubstituteLocked?'Unavailable today':'Explore languages →'}</button></article></div>
     <div class="mission-extra"><article class="panel extra-card"><div class="extra-icon">✅</div><div><div class="extra-kicker">END OF DAY</div><h3>Exit Quest</h3><p>Return at the end of the day to show what you learned.</p></div><button class="btn btn-secondary btn-sm" data-module="daily-quest">${state.completedMissions.has('exit')?'Review exit quest':'Open exit quest'}</button></article><article class="panel extra-card"><div class="extra-icon">📖</div><div><div class="extra-kicker">${readingAssigned?'ASSIGNED CLASS READING':'CLASS READING'}</div><h3>The Witches</h3><p>${readingMinutes}/${readingTarget} verified active minutes${readingRow?.lastPage?` • last page ${readingRow.lastPage}`:''}. Time pauses when the reader is hidden or idle.</p></div><button class="btn btn-secondary btn-sm" data-module="class-reader">${readingAssigned&&readingMinutes<readingTarget?'Continue reading':'Open reader'}</button></article><article class="panel extra-card"><div class="extra-icon">⭐</div><div><div class="extra-kicker">BONUS CHALLENGE</div><h3>Level-Up Mission</h3><p>Ready for more? Try a mission one level above.</p></div><button class="btn btn-secondary btn-sm" data-module="level-up-challenge">Try the challenge</button></article></div>`;
 }
 function missionRow(m,i){
@@ -456,7 +476,7 @@ function gamesPage(){
   const visible=state.gameFilter==='All'?games:games.filter(g=>g[1]===state.gameFilter);
   return `${studentTitle('🎮','Quest Games','Choose your adventure','Every game practices a real school skill. Pick a subject and jump in.')}
   <div class="filter-tabs game-filters">${['All','Math','ELA','Science'].map(f=>`<button class="filter-tab ${state.gameFilter===f?'active':''}" data-game-filter="${f}">${f==='All'?'✦ ':''}${f}</button>`).join('')}</div>
-  <section class="game-grid">${visible.map(g=>`<article class="panel game-card"><div class="game-visual"><img src="${g[2]}" alt=""></div><div class="game-copy"><div class="subject">${g[1]} ADVENTURE</div><h3>${g[3]}</h3><p>${g[4]}</p><div class="game-badges"><span>✨ Earn XP</span></div><button class="btn btn-primary" type="button" data-module="${g[0]}">Play quest →</button></div></article>`).join('')}</section>`;
+  <section class="game-grid">${visible.map(g=>{const substituteLocked=substituteBlocked(g[0]);return `<article class="panel game-card ${substituteLocked?'substitute-locked':''}"><div class="game-visual"><img src="${g[2]}" alt=""></div><div class="game-copy"><div class="subject">${substituteLocked?'SUBSTITUTE MODE':`${g[1]} ADVENTURE`}</div><h3>${g[3]}</h3><p>${substituteLocked?'Unavailable today. Ask your substitute teacher if you need help.':g[4]}</p><div class="game-badges"><span class="${substituteLocked?'substitute-lock-note':''}">${substituteLocked?'🛑 Closed today':'✨ Earn XP'}</span></div><button class="btn ${substituteLocked?'btn-secondary':'btn-primary'}" type="button" data-module="${g[0]}" ${substituteLocked?'disabled':''}>${substituteLocked?'Unavailable today':'Play quest →'}</button></div></article>`}).join('')}</section>`;
 }
 
 function wordCount(text){return text.trim()?text.trim().split(/\s+/).length:0}
@@ -579,6 +599,7 @@ function applyStudentModel(model,academic,world,passes,poll,attention,kingdomAcc
   state.spellingComplete=state.spellingResults.some(row=>String(row.dateKey||'')===effectiveDateKey()&&String(row.completionStatus||row.status||'').includes('complete'));
   setMissionStatus('spelling',state.spellingComplete?'complete':'not_started');
   state.kingdomAccessUnlocked=kingdomAccess?.unlocked===true;
+  state.substituteMode=session.substituteMode||null;
   state.attention=attention||null;
   if(!accessWasUnlocked&&state.dailyAccessUnlocked&&dialogRoot?.dataset.dialogKind==='required-work')closeDialog();
   if(model.dailyMissions&&!state.simulatedDate){
@@ -655,6 +676,11 @@ function render(){
     const target=pendingRequiredWorkNotice;pendingRequiredWorkNotice='';
     globalThis.history?.replaceState?.(null,'','#missions');
     showRequiredWorkDialog(target);
+  }
+  if(pendingSubstituteNotice){
+    const target=pendingSubstituteNotice;pendingSubstituteNotice='';
+    globalThis.history?.replaceState?.(null,'','#missions');
+    showSubstituteModeDialog(target);
   }
 }
 function bindAuthGate(){
@@ -750,6 +776,7 @@ async function enterArcade(trigger){
 
 function openPage(page,trigger=null){
   if(blockingPass()){showToast('Return your active pass before continuing Dragonswood.');location.hash='adventure';return}
+  if(substituteBlocked(page)){location.hash='missions';showSubstituteModeDialog(page);return}
   if(requiredWorkLocked(page)){location.hash='missions';showRequiredWorkDialog(page);return}
   if(String(page)==='arcade'){enterArcade(trigger);return}
   if(String(page)==='hall'&&state.page!=='hall')state.previousPortalPage=state.page||'adventure';
@@ -757,6 +784,7 @@ function openPage(page,trigger=null){
 }
 function openModule(id){
   if(blockingPass()){showToast('Return your active pass before opening another activity.');location.hash='adventure';return}
+  if(substituteBlocked(id)){location.hash='missions';showSubstituteModeDialog(id);return}
   const gate=moduleHost?.allowed(id,{dailyAccessUnlocked:state.dailyAccessUnlocked});
   if(!gate?.ok||modulePathLocked(id)){location.hash='missions';showRequiredWorkDialog(id);return}
   location.hash=`module/${encodeURIComponent(id)}`;
@@ -778,7 +806,7 @@ function passesDialog(){
   const rows=state.passes?.rows||{};
   const actionLabel=row=>row?.action==='return'?'✅ I am back':row?.action==='start'?`${row.icon} Use ${row.label} pass`:row?.action==='request'?`🙋 Request extra ${row.label} pass`:row?.action==='pending'?'⏳ Request sent':'🔒 Unavailable';
   const cards=['bathroom','snack','outOfSeat','office'].map(type=>{const row=rows[type]||{type,label:window.DWV33Passes?.definition(type)?.label||type,icon:window.DWV33Passes?.definition(type)?.icon||'🎟️',message:'Loading pass status…',action:'blocked'};return `<div class="pass-card"><div class="pass-row"><div class="pass-student"><span class="roster-avatar">${row.icon}</span><div><b>${escapeHtml(row.label)}</b><p>${escapeHtml(row.message)}</p></div></div><button class="btn ${row.action==='return'?'btn-primary':'btn-secondary'} btn-sm" data-use-student-pass="${escapeHtml(type)}" ${['blocked','pending'].includes(row.action)?'disabled':''}>${escapeHtml(actionLabel(row))}</button></div></div>`}).join('');
-  openDialog('Passes',`<p class="muted">Only one extra-pass request can wait at a time. Active passes must be checked back in here.</p><div class="stack mt-12">${cards}</div>`,'<button class="btn btn-secondary" data-close-dialog>Close</button>');
+  openDialog('Passes',`<p class="muted">${substituteModeActive()?'Substitute Mode is on. If you need to leave the room, ask your substitute teacher directly.':'Only one extra-pass request can wait at a time. Active passes must be checked back in here.'}</p><div class="stack mt-12">${cards}</div>`,'<button class="btn btn-secondary" data-close-dialog>Close</button>');
   dialogRoot.querySelectorAll('[data-use-student-pass]').forEach(button=>button.addEventListener('click',async()=>{button.disabled=true;try{await integrationController?.usePass(button.dataset.useStudentPass);closeDialog();showToast('Pass status updated.')}catch(err){button.disabled=false;showToast(err?.message||'Pass could not update.')}}));
 }
 function showReference(){
@@ -808,8 +836,9 @@ window.addEventListener('message',handleModuleState);
     integrationSession=session;
     const previousPassSignature=passModelSignature();
     const previousTesterSignature=JSON.stringify([state.isTester,state.testerCapabilities,state.testerUnlocks]);
+    const previousSubstituteSignature=JSON.stringify(state.substituteMode||{});
     if(session.status==='authorized')applyStudentModel(session.student,session.academic,session.world,session.passes,session.poll,session.attention,session.kingdomAccess,session.classGoals,session);
-    const passChanged=previousPassSignature!==passModelSignature(),testerChanged=previousTesterSignature!==JSON.stringify([state.isTester,state.testerCapabilities,state.testerUnlocks]);
-    if(passChanged||testerChanged||!currentModuleId()||!app.querySelector('[data-module-frame]'))render();else syncPassSafety();
+    const passChanged=previousPassSignature!==passModelSignature(),testerChanged=previousTesterSignature!==JSON.stringify([state.isTester,state.testerCapabilities,state.testerUnlocks]),substituteChanged=previousSubstituteSignature!==JSON.stringify(state.substituteMode||{});
+    if(passChanged||!currentModuleId()||testerChanged||substituteChanged||!app.querySelector('[data-module-frame]'))render();else syncPassSafety();
   });
 })();

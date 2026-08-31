@@ -45,8 +45,10 @@ model=Passes.studentPasses(uid,dateKey,{profile:{genderGroup:'girls'},slots:{gir
 assert.equal(model.rows.bathroom.action,'blocked');
 assert.match(model.rows.bathroom.message,/Another Scholar/);
 
-model=Passes.studentPasses(uid,dateKey,{blackout:{active:true}});
+model=Passes.studentPasses(uid,dateKey,{blackout:{active:true,reason:'Ask your substitute teacher for a pass.'}});
 assert.equal(model.rows.snack.action,'blocked');
+assert.equal(model.blackoutReason,'Ask your substitute teacher for a pass.');
+assert.equal(model.rows.bathroom.message,'Ask your substitute teacher for a pass.');
 
 assert.equal(Passes.requestId('office',uid,dateKey),`${uid}_office_${dateKey}`);
 assert.equal(Passes.statusId('office',uid),`${uid}_office`);

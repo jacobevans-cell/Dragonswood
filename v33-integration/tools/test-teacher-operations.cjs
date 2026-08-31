@@ -26,7 +26,7 @@ assert.equal(beforeThreshold.overdue,false,'pass is not overdue immediately befo
 const operations=Ops.teacherOperations({
   students:[{id:'u1',name:'Fifth',hp:9,dailyXpEarned:12},{id:'u2',name:'Fourth',hp:10,dailyXpEarned:8}],
   requests:{bathroomRequests:[{id:'u1_'+today,studentId:'u1',studentName:'Fifth',dateKey:today,status:'pending'}]},statuses:{},
-  pointRequests:[{id:'point-u2',studentId:'u2',studentName:'Fourth',dateKey:today,status:'pending',reason:'Helpful choice'}],passHistory:[{dateKey:today,status:'returned'}],bathroomSlots:[{id:'boy',occupied:true,studentId:'stale'}],passBlackout:{active:true,reason:'Testing'},curriculumOverrides:[{id:'override',status:'pending'}],dailyOverride:{all:false},
+  pointRequests:[{id:'point-u2',studentId:'u2',studentName:'Fourth',dateKey:today,status:'pending',reason:'Helpful choice'}],passHistory:[{dateKey:today,status:'returned'}],bathroomSlots:[{id:'boy',occupied:true,studentId:'stale'}],passBlackout:{active:true,reason:'Testing'},substituteMode:{active:true,dateKey:today,reason:'Ask the substitute.',expiresAt:'2026-08-27T07:00:00.000Z'},curriculumOverrides:[{id:'override',status:'pending'}],dailyOverride:{all:false},
   activePoll:{id:'poll-1',active:true,question:'Choose one',choices:['A','B']},pollVotes:[{pollId:'poll-1',studentId:'u1',choiceIndex:0},{pollId:'poll-1',studentId:'u2',choiceIndex:1}],
   classData:{main:{points:64},universalPoints:{points:24},secondRecess:{points:8,goal:10},classPet:{points:172,goal:250},fieldTrip:{points:418,goal:750}},
   classJobs:{jobs:[{id:'floor',name:'Floor Captain',pay:5}],assignments:{u1:{id:'floor',name:'Floor Captain',pay:5}}},jobWeeks:[{id:'u1_2026-08-24',studentId:'u1',studentName:'Fifth',weekKey:'2026-08-24',completedCount:4,paid:false}],
@@ -34,6 +34,7 @@ const operations=Ops.teacherOperations({
 },now);
 assert.equal(operations.recognition.length,1);assert.equal(operations.curriculumOverrides.length,1);assert.equal(operations.returned,1);
 assert.equal(operations.passHistory.length,1);assert.equal(operations.passBlackout.active,true);assert.equal(operations.needsAttention,1);
+assert.equal(operations.substituteMode.active,true);assert.equal(operations.substituteMode.reason,'Ask the substitute.');
 assert.equal(operations.poll.active,true);assert.deepEqual([...operations.poll.counts],[1,1]);assert.equal(operations.poll.total,2);
 assert.equal(operations.goals.shared,64);assert.equal(operations.goals.universal,24);assert.equal(operations.goals.rows[0].pct,80);
 assert.equal(operations.jobs.payrollTotal,5);assert.equal(operations.jobs.payroll.length,1);assert.equal(operations.schedule.today[0].title,'Live Math');
@@ -43,4 +44,5 @@ const selectedAttention=Ops.attentionModel({id:'a1',active:true,dateKey:today,al
 assert.equal(selectedAttention.active,true);assert.equal(selectedAttention.total,1);assert.deepEqual([...selectedAttention.waiting].map(row=>row.id),['u1']);
 const nonTarget=Ops.attentionModel({id:'a1',active:true,dateKey:today,all:false,studentIds:['u1'],message:'Selected only'},[],[{id:'u2',name:'Fourth'}],now);
 assert.equal(nonTarget.active,false,'selected attention must remain invisible to non-targeted students');
+assert.equal(Ops.datedSubstituteMode({active:true,dateKey:'2026-08-25',expiresAt:'2026-08-26T07:00:00.000Z'},now).active,false,'Substitute Mode expires outside its Arizona date');
 console.log('V3.3 Teacher Operations contracts: PASS (pass dedupe + overdue boundary + legacy calendar + weekly/all-time leaderboard)');

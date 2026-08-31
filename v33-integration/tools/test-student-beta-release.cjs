@@ -15,7 +15,7 @@ for(const [name,html] of [['student',student],['teacher',teacher]]){
   assert.doesNotMatch(html,/Student Tester|Teacher Tester/i,`${name} root must not retain tester titles`);
 }
 assert.match(teacher,/\.\.\/functions-arcade-access\/tester-core\.js\?v=57\.1\.16/,'teacher root must load the shared tester contract');
-assert.ok(teacher.indexOf('../functions-arcade-access/tester-core.js?v=57.1.16')<teacher.indexOf('js/integration/runtime.js?v=58.0.1'),'teacher root must load the tester contract before runtime');
+assert.ok(teacher.indexOf('../functions-arcade-access/tester-core.js?v=57.1.16')<teacher.indexOf('js/integration/runtime.js?v=58.1.0'),'teacher root must load the tester contract before runtime');
 for(const legacy of ['student-v2.html','teacher-v2.html','Tester1111.html','index-live-welcome-test.html','dragonswood-teacher-tools.js','dragonswood-request-center.js','dragonswood-academic-ai-teacher.js']){
   assert.equal(fs.existsSync(path.join(ROOT,legacy)),false,`${legacy} must stay retired; Git history and the rollback branch preserve the pre-cutover portal`);
 }
@@ -25,6 +25,9 @@ const runtime=read('v33-integration/js/integration/runtime.js');
 assert.match(runtime,/declaredEnvironment==='production'/,'production must be declared by the root document, not a query string alone');
 assert.match(runtime,/environment!=='emulator'&&environment!=='production'/,'read-only environments must reject writes');
 assert.match(runtime,/async usePass\(type\)/,'student pass actions must be wired into the controller');
+assert.match(runtime,/watchDoc\(\['classData','substituteMode'\]/,'students must receive the live Substitute Mode record');
+assert.match(runtime,/async setSubstituteMode\(active\)/,'the teacher runtime must expose the one-click Substitute Mode write');
+assert.match(runtime,/substituteSnap[\s\S]*datedSubstituteMode[\s\S]*Ask your substitute teacher/,'pass starts must re-check Substitute Mode inside the Firestore transaction');
 
 const modules=read('v33-integration/js/integration/modules.js');
 assert.match(modules,/environment==='production'/,'embedded modules must inherit live production mode');
@@ -37,6 +40,11 @@ assert.match(studentApp,/data-account-signout>↪ Sign Out<\/button>/,'the accou
 assert.match(studentApp,/data-account-signout[^\n]+signOutStudent/,'the account-menu sign-out action must use the existing Firebase controller logout');
 for(const route of ['games','boss','leaderboards','kingdom','arcade'])assert.match(studentApp,new RegExp(`REQUIRED_WORK_PAGES[^\\n]+['\"]${route}['\"]`),`${route} must use the required-work gate`);
 assert.match(studentApp,/globalThis\.history\?\.replaceState\?\.\(null,'','#missions'\)/,'direct locked hashes must be replaced with the Daily Missions route');
+for(const blocked of ['kingdom','deep-time-lab','dragon-tongues'])assert.match(studentApp,new RegExp(`substituteModeActive\\(\\)[^\\n]+${blocked}`),`${blocked} must be blocked by the shared Substitute Mode route guard`);
+assert.match(studentApp,/Ask Your Substitute Teacher/,'blocked students must receive a direct instruction to ask the substitute');
+const teacherApp=read('v33-integration/js/teacher-app.js');
+assert.match(teacherApp,/data-substitute-mode/,'Teacher Command must expose the Substitute Mode quick button');
+assert.match(teacherApp,/function manageSubstituteMode\(\)/,'the quick button must use a confirmation flow');
 const arcade=read('v33-integration/js/integration/arcade-portal.js');
 assert.match(arcade,/dw-arcade-live/,'Arcade production routing must retain the explicit live opt-in');
 const kingdom=read('v33-integration/js/integration/kingdom-portal.js');
@@ -58,6 +66,9 @@ assert.equal(productionGate.firestore.indexes,'arcade/firestore.indexes.json');
 const rules=read('firestore.rules');
 assert.match(rules,/match \/passStatus\/\{passId\}[\s\S]*passId\.matches\('\^' \+ request\.auth\.uid \+ '_\.\*\$'\)/,'students must be able to read their not-yet-created pass status documents');
 assert.doesNotMatch(release.firestore.rules,/gate/i,'release must never deploy emulator gate rules');
+assert.match(rules,/function substituteModeAllowsPasses\(\)/,'production rules must recognize Substitute Mode');
+assert.match(rules,/match \/bathroomStatus\/[\s\S]*substituteModeAllowsPasses\(\)/,'production rules must block bathroom pass starts during Substitute Mode');
+assert.match(rules,/match \/passRequests\/[\s\S]*substituteModeAllowsPasses\(\)/,'production rules must block extra pass requests during Substitute Mode');
 
 const identityGate=read('v33-integration/tools/firebase-identity-gate.cjs');
 assert.match(identityGate,/v instanceof Date[^\n]+timestampValue/,'the REST fixture encoder must preserve Firestore timestamps');

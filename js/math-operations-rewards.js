@@ -64,11 +64,10 @@
 
     if (!service) {
       if(environment === 'production'){
-        setBadge('PRODUCTION • REWARDS UNAVAILABLE', 'production');
-        setStatus(config.hostError
-          ? `Dragonswood account connection failed: ${config.hostError}. Math practice still works, but no account rewards will save.`
-          : 'Dragonswood account rewards are unavailable. Math practice still works normally and no account changes will be attempted.', 'error');
-        if (account) account.textContent = 'Dragonswood rewards unavailable';
+        setBadge('REWARD LEDGER UNAVAILABLE', 'production');
+        if(config.hostError)console.warn('[Math rewards connection]',config.hostError);
+        setStatus('The reward ledger cannot be reached. Math practice still works, but rewards will not be recorded yet.', 'error');
+        if (account) account.textContent = 'Reward ledger unavailable';
         if (reward) reward.textContent = 'Practice only';
       }else{
         setBadge('PREVIEW • LIVE REWARDS OFF', 'preview');
@@ -100,7 +99,7 @@
       }
     } catch (error) {
       console.error('Math reward profile load failed', error);
-      setStatus('Reward profile could not load. Math practice still works; account rewards are unavailable until the connection recovers.', 'error');
+      setStatus('Your adventurer record could not be opened. Math practice still works; rewards will wait until the connection returns.', 'error');
     }
   }
 
@@ -143,8 +142,8 @@
       setStatus(result?.statusText || 'Math quest result saved successfully.', 'good');
     } catch (error) {
       console.error('Math reward claim failed', error);
-      if (loot) loot.textContent = 'Practice complete • reward save failed. Your math work remains complete.';
-      setStatus('The math quest completed, but the reward save failed. Your math progress is still complete; no automatic duplicate retry will be attempted.', 'error');
+      if (loot) loot.textContent = 'Practice complete • reward not recorded. Your math work remains complete.';
+      setStatus('The math quest is complete, but the reward ledger could not be updated. Your math progress is safe.', 'error');
     }
   });
 

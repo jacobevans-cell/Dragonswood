@@ -48,7 +48,7 @@ export async function getFirebaseContext(){
       try{fnMod.connectFunctionsEmulator(functions,'127.0.0.1',5001)}catch{}
     }
     const user=await waitForUser(auth,authMod);
-    if(!user)throw new Error('Sign in through the Dragonswood portal before opening Arcade.');
+    if(!user)throw new Error('The gate is sealed. Sign in through Dragonswood before opening the Arcade.');
     return {app,auth,db,functions,user,appMod,authMod,fsMod,fnMod};
   }).catch(err=>{contextPromise=null;throw err});
   return contextPromise;

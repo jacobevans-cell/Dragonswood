@@ -133,7 +133,7 @@
       window.requestAutoQuestionOverride=async function(id,index){
         const x=window.findItem(id);
         if(isMathItem(x)){
-          alert("Math questions are graded automatically. Review the lesson or use the next attempt instead of requesting teacher approval.");
+          await window.DWImmersiveUI?.alert({title:"Keep working the problem",message:"Math questions are graded automatically. Review the lesson or use the next attempt instead of requesting teacher approval."});
           return;
         }
         return O.requestAutoQuestionOverride(id,index);
@@ -141,7 +141,7 @@
       window.requestOverride=async function(id){
         const x=window.findItem(id);
         if(isMathItem(x)){
-          alert("Math does not require teacher approval. Revise your equation, steps, or explanation and check it again.");
+          await window.DWImmersiveUI?.alert({title:"Revise and check again",message:"Math does not require teacher approval. Revise your equation, steps, or explanation, then check it again."});
           return;
         }
         return O.requestOverride(id);

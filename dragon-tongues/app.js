@@ -99,7 +99,7 @@
   }
 
   function bindGlobalEvents() {
-    document.addEventListener("click", event => {
+    document.addEventListener("click", async event => {
       const aslRateButton = event.target.closest("[data-asl-rate]");
       if (aslRateButton) {
         const video = aslRateButton.closest(".asl-model")?.querySelector("video");
@@ -167,7 +167,7 @@
         else {
           const sample = course.units[0].vocab[0].target;
           const source = speechSourceFor(sample, course.speechLang);
-          if (!source) toast(`No compatible ${course.name} voice is available. English fallback is blocked; generate or install the packaged voice pack.`);
+          if (!source) toast(`${course.name} listening practice is resting for now. Reading and activities are still available.`);
           else if (speak(sample, course.speechLang)) toast(`${course.name} ${source === "packaged" ? "packaged audio" : "device voice"} playing.`);
         }
         return;
@@ -189,7 +189,8 @@
       }
 
       if (event.target.closest("[data-reset-progress]")) {
-        if (window.confirm("Reset all Dragon Tongues progress on this device?")) {
+        const approved = await (window.DWImmersiveUI?.confirm({title:"Erase this language journey?",message:"This removes all Dragon Tongues progress saved on this device.",confirmLabel:"Erase progress",cancelLabel:"Keep progress",danger:true})||Promise.resolve(false));
+        if (approved) {
           state = structuredClone(defaultState);
           saveState();
           renderCourseDialog();
@@ -385,7 +386,7 @@
       if (speak(course.portalGreeting, course.speechLang)) {
         toast(`${course.portalGreeting} · ${course.name} portal greeting`);
       } else {
-        toast(`No compatible ${course.name} voice is available. English fallback is blocked; add the packaged voice pack.`);
+        toast(`${course.name} listening practice is resting for now. Reading and activities are still available.`);
       }
       return;
     }
@@ -922,7 +923,7 @@
       const audioControls = speechReady
         ? `<div class="exposure-actions"><button class="audio-pill" id="teach-audio" type="button">🔊 Hear it</button><button class="audio-pill secondary" id="teach-slow" type="button">🐢 Hear it slowly</button></div>`
         : course.modality === "spoken"
-          ? `<div class="audio-pending-note"><strong>🔇 Reviewed audio pending</strong><span>${escapeHtml(course.audioPendingNote || `A compatible ${course.name} voice pack is not installed yet. English fallback is blocked.`)}</span></div>`
+          ? `<div class="audio-pending-note"><strong>Listening practice is resting</strong><span>${escapeHtml(course.audioPendingNote || `${course.name} reading and activities are ready while the voice guide prepares.`)}</span></div>`
           : renderAslModel(word.target, word.english, course, { context: "teach" });
       const exposureKicker = question.isPracticePreview ? "PREVIEW BEFORE PRACTICE" : "LEARN FIRST";
       const exposureName = question.isPracticePreview ? "FOUNDATION REVIEW" : "NEW LANGUAGE";
@@ -970,7 +971,7 @@
             </div>`).join("")}
         </div>
         ${videoNote}
-        ${course.modality === "spoken" && !dialogueSpeechReady ? `<div class="audio-pending-note"><strong>🔇 Conversation audio pending</strong><span>${escapeHtml(course.audioPendingNote || `Install the compatible ${course.name} voice pack to activate listening. English fallback is blocked.`)}</span></div>` : ""}
+        ${course.modality === "spoken" && !dialogueSpeechReady ? `<div class="audio-pending-note"><strong>Conversation audio is resting</strong><span>${escapeHtml(course.audioPendingNote || `${course.name} reading and activities are ready while the voice guide prepares.`)}</span></div>` : ""}
         <p class="no-risk-note">Listen or watch, read both roles, then say or sign the response. This preview is not graded.</p>`;
       checkButton.disabled = false;
       checkButton.textContent = "Start practice";
@@ -1363,9 +1364,9 @@
     burstConfetti();
   }
 
-  function closeLesson(force = false) {
+  async function closeLesson(force = false) {
     if (lessonSession && !lessonSession.finished && !force) {
-      const leave = window.confirm("Leave this lesson? Finished questions will not count toward path progress.");
+      const leave = await (window.DWImmersiveUI?.confirm({title:"Leave this lesson?",message:"Finished questions will not count toward path progress.",confirmLabel:"Leave lesson",cancelLabel:"Keep learning"})||Promise.resolve(false));
       if (!leave) return;
     }
     stopSpeechPlayback();
@@ -1627,7 +1628,7 @@
     const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const result = document.querySelector("#speech-result");
     if (!Recognition) {
-      result.textContent = "Microphone scoring is unavailable in this browser. Practice with the model, then use the confirmation button.";
+      result.textContent = "The speaking mirror is unavailable here. Practice with the model, then confirm the attempt yourself.";
       return;
     }
     if (activeRecognition) activeRecognition.abort();

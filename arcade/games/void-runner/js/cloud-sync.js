@@ -22,7 +22,7 @@ export async function initCloudSync({ getSnapshot, applySnapshot, onStatus } = {
     return {enabled:false,preview:true};
   }
   try {
-    status('CONNECTING…');
+    status('OPENING THE RECORD LEDGER…');
     const C=await getFirebaseContext(),user=C.user,dbMod=C.fsMod;
     state.docRef = dbMod.doc(C.db, 'voidRunnerPlayers', user.uid);
     state.setDoc = dbMod.setDoc;
@@ -57,7 +57,7 @@ export async function flushCloudSync() {
   if (!snapshot) return;
   state.pending = null;
   try {
-    status('SAVING…');
+    status('INSCRIBING PROGRESS…');
     await state.setDoc(state.docRef, {
       ...snapshot,
       schemaVersion: 2,

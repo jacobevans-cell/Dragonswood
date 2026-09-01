@@ -20,6 +20,6 @@ for(const name of cards){
 check("Quest cards use the recommended crop",/\.game-visual img\s*\{[^}]*object-position:center 11%/s.test(css));
 check("Quest cards lazy-load with useful alt text",app.includes('alt="${g[3]} game artwork" loading="lazy" decoding="async"'));
 check("Production shell cache-busts the card CSS",shell.includes("css/dragonswood.css?v=58.0.14"));
-check("Production shell cache-busts the game registry",shell.includes("js/student-app.js?v=58.1.6"));
+check("Production shell cache-busts the game registry",shell.includes("js/student-app.js?v=58.1.9"));
 if(failures){console.error(`\n${failures} Quest Game card check(s) failed.`);process.exit(1)}
 console.log("\n✅ QUEST GAME CARD TESTS PASSED");

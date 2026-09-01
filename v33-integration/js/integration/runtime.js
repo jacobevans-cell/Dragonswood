@@ -104,7 +104,7 @@
     const authUnsub=S.auth.onAuthStateChanged(auth,async user=>{
       clear();currentUser=user||null;
       if(!user){emit(onUpdate,{status:'signed-out',message:'Sign in with your school Google account.'});return}
-      emit(onUpdate,{status:'checking',user,message:'Checking Dragonswood access…'});
+      emit(onUpdate,{status:'checking',user,message:'Reading your entry seal…'});
       const email=Core.normalizedEmail(user.email);
       const tester=await Tester.resolveTester(user.uid,async uid=>{const snap=await S.firestore.getDoc(S.firestore.doc(db,'testerAccounts',uid));return snap.exists()?snap.data():null});
       if(!Core.isStudentEligibleEmail(email,tester.isTester)){

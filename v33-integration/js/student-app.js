@@ -13,7 +13,7 @@ function storedRecoverySummary(){try{const value=JSON.parse(storageGet('recovery
 const toast = document.querySelector('#toast');
 const dialogRoot = document.querySelector('#dialog-root');
 let integrationController=null,recoveryProbe=null,arcadeEntering=false,legacySpellingRecoveryPromise=null,legacySpellingRecoveryUid='',legacySpellingRecoveryLastAttempt=0;
-let integrationSession={status:'loading',message:'Loading Dragonswood identity…'};
+let integrationSession={status:'loading',message:'Opening the portal…'};
 let passSafetyInterval=null;
 const passFallbackStarts=new Map();
 const passAlertBuckets=new Map();
@@ -291,7 +291,7 @@ function syncPassSafety(){
   for(const row of active){const timing=passTiming(row);if(!timing.overdue)continue;const key=`${row.type}:${row.startedMs}`;if(passAlertBuckets.get(key)===timing.alertBucket)continue;passAlertBuckets.set(key,timing.alertBucket);passReminder(`Your ${row.label} pass is overdue. Please return your pass and check back in now.`)}
 }
 function startPassSafetyEngine(){clearInterval(passSafetyInterval);passSafetyInterval=null;syncPassSafety();if(activePassRows().length)passSafetyInterval=setInterval(syncPassSafety,1000)}
-async function returnActivePass(button){const type=button?.dataset?.returnActivePass;if(!type)return;button.disabled=true;button.textContent='Checking you back in…';try{await integrationController?.usePass(type);showToast('Pass returned. Welcome back.')}catch(err){button.disabled=false;button.textContent='✅ I AM BACK — RETURN PASS';showToast(err?.message||'Pass could not return.')}}
+async function returnActivePass(button){const type=button?.dataset?.returnActivePass;if(!type)return;button.disabled=true;button.textContent='Closing your pass…';try{await integrationController?.usePass(type);showToast('Pass returned. Welcome back.')}catch(err){button.disabled=false;button.textContent='✅ I AM BACK — RETURN PASS';showToast(err?.message||'The pass ledger could not be updated. Try again.')}}
 
 function teacherAttentionMarkup(){
   ensureTeacherDirectionStyles();
@@ -558,10 +558,10 @@ function escapeHtml(value){return String(value??'').replace(/[&<>"]/g,c=>({'&':'
 
 async function signOutStudent(button=null){
   if(button)button.disabled=true;
-  try{state.simulatedDate='';sessionSet(SIMULATED_DATE_KEY,'');await integrationController?.signOut();closeDialog()}catch(err){if(button)button.disabled=false;showToast(`Sign-out failed: ${err?.message||err}`)}
+  try{state.simulatedDate='';sessionSet(SIMULATED_DATE_KEY,'');await integrationController?.signOut();closeDialog()}catch(err){if(button)button.disabled=false;console.warn('[Dragonswood sign-out]',err);showToast('Dragonswood could not sign you out. Try again.')}
 }
 function accountDialog(){
-  openDialog('Account',`<div class="pass-student"><span class="roster-avatar">${escapeHtml(state.initial)}</span><div><b>${escapeHtml(state.displayName||state.firstName)}</b><p>Level ${state.level} • Grade ${escapeHtml(state.grade)}</p></div></div><p class="muted mt-12">Sign out here when you need to switch Dragonswood accounts.</p>`,`<button class="btn btn-secondary" type="button" data-suggest-improvement>💡 Suggest an Improvement</button><button class="btn btn-secondary" type="button" data-close-dialog>Close</button><button class="btn btn-danger" type="button" data-account-signout>↪ Sign Out</button>`);
+  openDialog('Leave Dragonswood?',`<div class="pass-student"><span class="roster-avatar">${escapeHtml(state.initial)}</span><div><b>${escapeHtml(state.displayName||state.firstName)}</b><p>Level ${state.level} • Grade ${escapeHtml(state.grade)}</p></div></div><p class="muted mt-12">Sign out only when you need to switch school accounts.</p>`,`<button class="btn btn-secondary" type="button" data-suggest-improvement>💡 Suggest an Improvement</button><button class="btn btn-secondary" type="button" data-close-dialog>Stay</button><button class="btn btn-danger" type="button" data-account-signout>↪ Sign Out</button>`);
   dialogRoot.querySelector('[data-suggest-improvement]')?.addEventListener('click',()=>{closeDialog();window.dispatchEvent(new Event('dragonswood:open-suggestion'))});
   dialogRoot.querySelector('[data-account-signout]')?.addEventListener('click',e=>signOutStudent(e.currentTarget));
 }
@@ -665,10 +665,11 @@ function handleModuleState(event){
   if(!currentModuleId())render();
 }
 function authGate(){
-  const status=integrationSession.status||'loading',message=integrationSession.message||'Checking Dragonswood access…';
+  const status=integrationSession.status||'loading',message=integrationSession.message||'Reading your entry seal…';
   const canSignIn=status==='signed-out'||status==='unauthorized'||status==='error';
   const emulatorForm=!IS_PRODUCTION&&canSignIn?'<div class="stack mt-12" data-emulator-signin><label>Emulator email<input class="w-full" type="email" autocomplete="username" data-emulator-email></label><label>Emulator password<input class="w-full" type="password" autocomplete="current-password" data-emulator-password></label><button class="btn btn-secondary w-full" type="button" data-emulator-submit>Sign in to local emulator</button></div>':'';
-  return `<div class="portal student-shell" data-${IS_PRODUCTION?'release':'tester-build'}="v3.3"><main class="student-main" id="page-content"><div class="student-content"><section class="panel next-step"><div class="eyebrow">${IS_PRODUCTION?'SECURE STUDENT PORTAL':'SECURE INTEGRATION CANDIDATE'}</div><img class="auth-crest" src="assets/branding/dragonswood-mascot-crest.png" alt="Dragonswood mascot crest"><h2>${status==='unauthorized'?'Account not authorized':'Dragonswood Sign In'}</h2><p>${escapeHtml(message)}</p>${canSignIn?'<button class="btn btn-primary w-full" type="button" data-signin>Sign in with Google</button>':''}${emulatorForm}<p class="center muted mt-12 text-11">${IS_PRODUCTION?'Explore Academy • live student data':`${escapeHtml(window.DWV33Integration?.environment||'loading')} • no production writes enabled`}</p></section></div></main>${IS_PRODUCTION?'':'<div class="tester-ribbon">V3.3 INTEGRATION • SAFE MODE</div>'}</div>`;
+  const loadingSkeleton=status==='loading'&&window.DWImmersiveUI?window.DWImmersiveUI.skeletonMarkup('portal'):'';
+  return `<div class="portal student-shell" data-${IS_PRODUCTION?'release':'tester-build'}="v3.3"><main class="student-main" id="page-content"><div class="student-content"><section class="panel next-step"><div class="eyebrow">${IS_PRODUCTION?'SECURE STUDENT PORTAL':'SECURE INTEGRATION CANDIDATE'}</div><img class="auth-crest" src="assets/branding/dragonswood-mascot-crest.png" alt="Dragonswood mascot crest"><h2>${status==='unauthorized'?'The gate is sealed':status==='loading'?'Opening the portal…':'Dragonswood Sign In'}</h2><p>${escapeHtml(message)}</p>${loadingSkeleton}${canSignIn?'<button class="btn btn-primary w-full" type="button" data-signin>Enter with your school Google account</button>':''}${emulatorForm}<p class="center muted mt-12 text-11">${IS_PRODUCTION?'Explore Academy • secure student portal':`${escapeHtml(window.DWV33Integration?.environment||'loading')} • no production writes enabled`}</p></section></div></main>${IS_PRODUCTION?'':'<div class="tester-ribbon">V3.3 INTEGRATION • SAFE MODE</div>'}</div>`;
 }
 function render(){
   if(integrationSession.status!=='authorized'){
@@ -700,7 +701,7 @@ function render(){
   }
 }
 function bindAuthGate(){
-  app.querySelector('[data-signin]')?.addEventListener('click',async()=>{try{await integrationController?.signIn()}catch(err){showToast(`Sign-in failed: ${err?.code||err?.message||err}`)}});
+  app.querySelector('[data-signin]')?.addEventListener('click',async()=>{try{await integrationController?.signIn()}catch(err){console.warn('[Dragonswood sign-in]',err);showToast('The portal did not open. Check your connection and try again.')}});
   app.querySelector('[data-emulator-submit]')?.addEventListener('click',async()=>{const email=app.querySelector('[data-emulator-email]')?.value||'',password=app.querySelector('[data-emulator-password]')?.value||'';try{await integrationController?.signInForEmulator(email,password)}catch(err){showToast(`Emulator sign-in failed: ${err?.code||err?.message||err}`)}});
 }
 
@@ -777,7 +778,7 @@ function setArcadeBusy(trigger,busy){
     trigger.dataset.arcadeLabel=trigger.innerHTML;
     trigger.disabled=true;
     trigger.setAttribute('aria-busy','true');
-    trigger.innerHTML='<span class="nav-icon">🕹️</span><span><span class="nav-main">Opening Arcade…</span><span class="nav-sub">Checking Tokens</span></span>';
+    trigger.innerHTML='<span class="nav-icon">🕹️</span><span><span class="nav-main">Opening the Arcade gates…</span><span class="nav-sub">Counting your tokens</span></span>';
   }else{
     trigger.disabled=false;
     trigger.removeAttribute('aria-busy');
@@ -796,11 +797,11 @@ function arcadeBlockedMessage(access){
 async function enterArcade(trigger){
   if(arcadeEntering)return;
   if(!arcadePortal){showToast('Arcade Time is unavailable.');return}
-  arcadeEntering=true;setArcadeBusy(trigger,true);showToast('Checking Arcade Tokens…');
+  arcadeEntering=true;setArcadeBusy(trigger,true);showToast('Counting your Arcade Tokens…');
   try{
     let access=await arcadePortal.getAccess();
     if(access?.active!==true){const blocked=arcadeBlockedMessage(access);if(blocked)throw new Error(blocked)}
-    showToast(access?.active===true?'Resuming your Arcade Time…':'Preparing Arcade Time…');
+    showToast(access?.active===true?'Reopening your Arcade session…':'Turning the Arcade hourglass…');
     await arcadePortal.preflight?.();
     if(access?.active!==true){
       showToast(access?.afternoonSubstituteAccess===true?'Starting free Afternoon Arcade Time—no Tokens used…':access?.testerOverride===true?'Starting your tester Arcade session…':'Using 3 Tokens and starting 30 minutes…');
@@ -840,12 +841,12 @@ async function readPage(){
   if(window.DWV33Narration){
     try{await window.DWV33Narration.readPage({id:`v33/student/${state.page}`,root:'#page-content',voiceId:'us-brian',contentType:state.page==='scribe'?'ela':'general'});showToast('Brian read-aloud started.');return}catch(err){showToast(err?.message||'Read-aloud could not start.');return}
   }
-  showToast(`Brian read-aloud is still loading for ${title}. Please try again.`);
+  showToast(`Brian is preparing ${title}. Try the read-aloud again in a moment.`);
 }
 function passesDialog(){
   const rows=state.passes?.rows||{};
   const actionLabel=row=>row?.action==='return'?'✅ I am back':row?.action==='start'?`${row.icon} Use ${row.label} pass`:row?.action==='request'?`🙋 Request extra ${row.label} pass`:row?.action==='pending'?'⏳ Request sent':'🔒 Unavailable';
-  const cards=['bathroom','snack','outOfSeat','office'].map(type=>{const row=rows[type]||{type,label:window.DWV33Passes?.definition(type)?.label||type,icon:window.DWV33Passes?.definition(type)?.icon||'🎟️',message:'Loading pass status…',action:'blocked'};return `<div class="pass-card"><div class="pass-row"><div class="pass-student"><span class="roster-avatar">${row.icon}</span><div><b>${escapeHtml(row.label)}</b><p>${escapeHtml(row.message)}</p></div></div><button class="btn ${row.action==='return'?'btn-primary':'btn-secondary'} btn-sm" data-use-student-pass="${escapeHtml(type)}" ${['blocked','pending'].includes(row.action)?'disabled':''}>${escapeHtml(actionLabel(row))}</button></div></div>`}).join('');
+  const cards=['bathroom','snack','outOfSeat','office'].map(type=>{const row=rows[type]||{type,label:window.DWV33Passes?.definition(type)?.label||type,icon:window.DWV33Passes?.definition(type)?.icon||'🎟️',message:'Consulting the pass ledger…',action:'blocked'};return `<div class="pass-card"><div class="pass-row"><div class="pass-student"><span class="roster-avatar">${row.icon}</span><div><b>${escapeHtml(row.label)}</b><p>${escapeHtml(row.message)}</p></div></div><button class="btn ${row.action==='return'?'btn-primary':'btn-secondary'} btn-sm" data-use-student-pass="${escapeHtml(type)}" ${['blocked','pending'].includes(row.action)?'disabled':''}>${escapeHtml(actionLabel(row))}</button></div></div>`}).join('');
   openDialog('Passes',`<p class="muted">${substituteModeActive()?'Substitute Mode is on. If you need to leave the room, ask your substitute teacher directly.':'Only one extra-pass request can wait at a time. Active passes must be checked back in here.'}</p><div class="stack mt-12">${cards}</div>`,'<button class="btn btn-secondary" data-close-dialog>Close</button>');
   dialogRoot.querySelectorAll('[data-use-student-pass]').forEach(button=>button.addEventListener('click',async()=>{button.disabled=true;try{await integrationController?.usePass(button.dataset.useStudentPass);closeDialog();showToast('Pass status updated.')}catch(err){button.disabled=false;showToast(err?.message||'Pass could not update.')}}));
 }

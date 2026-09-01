@@ -407,7 +407,7 @@
       const x=findItem(itemId);if(!x)return;
       const q=window.autoQuestionsFor(x),item=q[index],p=stateFor(x,true),settings=policySettings(x);
       if(!item||p.grandfathered||p.locked?.[index])return;
-      const selected=String(p.drafts?.[index]||"");if(!selected){alert("Choose an answer before submitting it.");return}
+      const selected=String(p.drafts?.[index]||"");if(!selected){void window.DWImmersiveUI?.alert({title:"Choose an answer first",message:"Select the answer you want to submit."});return}
       const s=st(itemId);s.autoAnswers=s.autoAnswers||{};s.autoAttempts=(s.autoAttempts||0)+1;
       p.attempts=p.attempts||{};p.submitted=p.submitted||{};p.locked=p.locked||{};p.results=p.results||{};
       p.attempts[index]=Number(p.attempts[index]||0)+1;p.submitted[index]=true;s.autoAnswers[index]=selected;

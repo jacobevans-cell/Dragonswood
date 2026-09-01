@@ -112,11 +112,11 @@ body>*{position:relative;z-index:1}
 @media(max-width:900px){#curriculumTabs,#curriculumTabs.teacher-tabs{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:760px){.recovery-day>summary{grid-template-columns:auto 1fr}.day-heading{text-align:left}.day-stats{grid-column:1/-1;justify-content:flex-start;flex-wrap:wrap;padding-left:22px}.day-total{white-space:normal}.mission-summary{grid-template-columns:1fr}.mission-time{text-align:left!important;margin-top:7px}}
 @media(max-width:520px){#curriculumTabs,#curriculumTabs.teacher-tabs{grid-template-columns:repeat(2,1fr)}}
-</style><link rel="stylesheet" href="v33-integration/css/direct-visual-v11.css?v=1.1"></head>
+</style><link rel="stylesheet" href="v33-integration/css/direct-visual-v11.css?v=1.1"><script defer src="dragonswood-immersive-ui.js?v=1.0.0"></script></head>
 <body>
 <header class="top"><div class="shell topin"><div class="brand"><img class="shield" src="v33-integration/assets/branding/dragonswood-mascot-crest.png" alt="Dragonswood volleyball dragon crest"><div><h1 style="color:#f7c94f;background:linear-gradient(180deg,#fff9d8 0%,#ffe99a 27%,#f8ca50 58%,#ffe99a 82%,#dfa12a 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 1px 0 rgba(116,67,8,.95)) drop-shadow(0 2px 1px rgba(22,5,34,.95)) drop-shadow(0 0 5px rgba(255,216,91,.16));letter-spacing:.3px">DRAGONSWOOD</h1><p>CURRICULUM QUEST • EXPLORE ACADEMY</p></div></div>
 <div class="controls">
-      <span id="authStatus" style="font-size:11px;color:#bfb5ce;margin-right:8px">Checking sign-in…</span><span id="studentIdentity" style="color:#c7c1d5;font-weight:900;font-size:12px">Checking your Dragonswood profile…</span>
+      <span id="authStatus" style="font-size:11px;color:#bfb5ce;margin-right:8px">Opening the quest gate…</span><span id="studentIdentity" style="color:#c7c1d5;font-weight:900;font-size:12px">Finding your adventurer record…</span>
       <select id="grade"><option value="I">I • 4th Grade</option><option value="K">K • 5th Grade</option></select>
       <label>Day <input id="day" type="number" min="1" max="40" value="14" style="width:62px"></label>
       <select id="teacherStudent" style="display:none;max-width:220px"><option value="">Select a scholar…</option></select>
@@ -170,9 +170,11 @@ function curriculumScope(scope){return String(scope||"anonymous").replace(/[^a-z
 function loadScopedState(scope){curriculumDraftScope=curriculumScope(scope);K=BASE_K+"_"+curriculumDraftScope;try{S=JSON.parse(localStorage.getItem(K)||"{}")}catch(e){S={}}S.grade=S.grade||"I";S.day=q1CalendarCursor();S.items=S.items||{}}
 const $=x=>document.querySelector(x), $$=x=>[...document.querySelectorAll(x)];
 const esc=(x="")=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+function dwNotice(title,message,details=""){return window.DWImmersiveUI?.alert({title,message,details,icon:details?"warning":"portal"})||Promise.resolve()}
+function dwConfirm(options){return window.DWImmersiveUI?.confirm(options)||Promise.resolve(false)}
 let isTeacher=false,currentStudent=null,activeVideoId=null,externalVideoMode=false,youtubeVideoMode=false,watchedRanges=[],lastVideoTime=0;
 let youtubePlayer=null,youtubePollTimer=0,youtubeApiPromise=null;
-let studentCurriculumAccess=false,accessMessage="Checking today's school-day assignment…";
+let studentCurriculumAccess=false,accessMessage="Consulting today’s quest ledger…";
 let currentQuestOpen=false,curriculumStateReady=false;
 const WATCH_REQUIRED_FRACTION=.90;
 function save(){if(window.DWCurriculumSafePreview===true)return;localStorage.setItem(K,JSON.stringify(S));if(window.queueCurriculumProgress)window.queueCurriculumProgress(S)}
@@ -413,8 +415,8 @@ function activityFor(x){
 }
 function kidIntro(x){if(x.kidIntro)return String(x.kidIntro);const m=morphFor(x);if(m)return `Today you are learning the word “${m.word}.” Watch the lesson first. Then complete the word mission below.`;if(/point of view|first or third person/i.test((x.resourceName||"")+" "+(x.requirement||"")))return "Watch the lesson to learn how to tell who is telling a story. Then prove the point of view using the class novel.";if(/FANBOYS/i.test((x.resourceName||"")+" "+(x.requirement||"")))return "Watch the lesson to learn how FANBOYS can connect ideas. Then use what you learned in your own sentence.";return "Watch the lesson first. Then complete the mission using what you learned."}
 function togglePractice(id){const box=document.getElementById("practice-"+id);if(box)box.hidden=!box.hidden}
-function submitPractice(id){const ta=document.getElementById("practiceText-"+id),answer=(ta?.value||"").trim();if(answer.length<15){alert("Give a complete answer or explain what you completed. Try at least one good sentence.");return}const s=st(id);s.practiced=true;s.practiceEvidence=answer;S.items[id]=s;save();render()}
-async function teacherVerify(id){if(!isTeacher||!window.setCurriculumVerification)return;const s=st(id);if(!s.watched||!s.practiced){alert("This quest still needs the required video check and activity evidence.");return}const next=!s.verified;const ok=await window.setCurriculumVerification(id,next);if(!ok)return;s.verified=next;S.items[id]=s;localStorage.setItem(K,JSON.stringify(S));render()}
+function submitPractice(id){const ta=document.getElementById("practiceText-"+id),answer=(ta?.value||"").trim();if(answer.length<15){void dwNotice("Add one more detail","Give a complete answer or explain what you completed. Try at least one good sentence.");return}const s=st(id);s.practiced=true;s.practiceEvidence=answer;S.items[id]=s;save();render()}
+async function teacherVerify(id){if(!isTeacher||!window.setCurriculumVerification)return;const s=st(id);if(!s.watched||!s.practiced){await dwNotice("This quest is not ready to verify","The required video check and activity evidence still need to be completed.");return}const next=!s.verified;const ok=await window.setCurriculumVerification(id,next);if(!ok)return;s.verified=next;S.items[id]=s;localStorage.setItem(K,JSON.stringify(S));render()}
 function mergeRanges(ranges){if(!ranges.length)return[];const a=ranges.slice().sort((x,y)=>x[0]-y[0]),out=[a[0].slice()];for(let i=1;i<a.length;i++){const last=out[out.length-1],cur=a[i];if(cur[0]<=last[1]+1)last[1]=Math.max(last[1],cur[1]);else out.push(cur.slice())}return out}
 function watchedFraction(v){if(!v.duration||!isFinite(v.duration))return 0;return Math.min(1,mergeRanges(watchedRanges).reduce((n,r)=>n+Math.max(0,r[1]-r[0]),0)/v.duration)}
 function launchVideo(id,url,title){activeVideoId=id;watchedRanges=[];lastVideoTime=0;$("#videoModalTitle").textContent=title;$("#videoReflection").value=st(id).videoReflection||"";const v=$("#nativeVideo");v.src=url;v.currentTime=0;$("#videoModal").classList.add("show");$("#videoModal").setAttribute("aria-hidden","false");updateVideoTimer()}
@@ -449,7 +451,7 @@ function pollYouTubeWatch(){
 function launchYouTubeVideo(id,videoId,title){
   activeVideoId=id;externalVideoMode=false;youtubeVideoMode=true;watchedRanges=[];lastVideoTime=0;$("#videoModalTitle").textContent=title;$("#videoReflection").value=st(id).videoReflection||"";
   const native=$("#nativeVideo");native.pause();native.removeAttribute("src");native.load();native.style.display="none";
-  $("#youtubePlayerShell").classList.add("show");$("#youtubeControls").classList.add("show");$("#youtubeProgress").textContent="Loading embedded lesson…";$("#videoModal").classList.add("show");$("#videoModal").setAttribute("aria-hidden","false");
+  $("#youtubePlayerShell").classList.add("show");$("#youtubeControls").classList.add("show");$("#youtubeProgress").textContent="Unrolling the lesson scroll…";$("#videoModal").classList.add("show");$("#videoModal").setAttribute("aria-hidden","false");
   clearInterval(youtubePollTimer);try{youtubePlayer?.destroy?.()}catch(e){}youtubePlayer=null;$("#youtubePlayerShell").innerHTML='<div id="youtubePlayerHost"></div>';
   ensureYouTubeApi().then(()=>{youtubePlayer=new YT.Player("youtubePlayerHost",{videoId,width:"100%",height:"100%",playerVars:{controls:0,disablekb:1,fs:0,playsinline:1,rel:0,iv_load_policy:3,origin:location.origin},events:{onReady:event=>{lastVideoTime=Number(event.target.getCurrentTime()||0);$("#youtubeProgress").textContent="Seeking is disabled • press Play to begin";updateYouTubeControl();updateVideoTimer();youtubePollTimer=setInterval(pollYouTubeWatch,500)},onStateChange:()=>{updateYouTubeControl();pollYouTubeWatch()},onError:()=>{$("#youtubeProgress").textContent="This video could not be embedded. Check its YouTube embedding permission."}}})}).catch(()=>{$("#youtubeProgress").textContent="The YouTube player could not load."});
 }
@@ -694,12 +696,12 @@ function renderActivity(x){
   const approvalRow=quickwritePassed?`<div class="override-row"><button class="override-btn approved" type="button" disabled>✅ AUTO-APPROVED</button><span class="override-note">Sentence count and selected-prompt content passed automatically.</span></div>`:x.subject==="Math"?`<div class="override-row"><span class="override-note">Math is checked automatically. Revise and try again if it does not pass yet.</span></div>`:`<div class="override-row"><button class="override-btn ${status}" id="overrideBtn-${x.id}" onclick="requestOverride('${x.id}')" ${status==="pending"||status==="approved"||reviewLocked?"disabled":""}>${reviewLabel}</button><span class="override-note">${reviewNote}</span></div>`;
   return `${renderAutoPractice(x)}<div class="activity-shell"><div class="activity-title">Apply What You Learned • ${esc(spec.title)}</div><div class="activity-prompt">${esc(spec.prompt)}</div>${frameHtml}${controls}<div class="actions"><button class="btn" onclick="checkActivity('${x.id}')">${s.practiced?"CHECK AGAIN":"CHECK MY WORK"}</button></div><div class="activity-feedback${quickwritePassMessage?" show good":""}" id="actFeedback-${x.id}">${esc(quickwritePassMessage)}</div>${approvalRow}${status==="returned"&&s.teacherNote?`<div class="teacher-note"><b>↩ Teacher feedback:</b> ${esc(s.teacherNote)}</div>`:""}</div>`;
 }
-function lockQuickWriteChoice(id,choice,control){
+async function lockQuickWriteChoice(id,choice,control){
   const x=findItem(id);if(!x)return;
   const spec=activitySpec(x),s=st(id);if(spec.kind!=="quickwrite")return;
   if(s.quickWriteChoiceLocked&&s.quickWriteChoice){render();return}
   const option=spec.options.find(row=>row.prompt===choice);if(!option)return;
-  const confirmed=window.confirm(`Lock in ${option.label}?\n\nOnce you confirm, you cannot switch to the other story starter.`);
+  const confirmed=await dwConfirm({title:"Seal this story path?",message:`Choose ${option.label}. You cannot switch story starters after sealing this path.`,confirmLabel:"Seal this path",cancelLabel:"Keep choosing",icon:"quest"});
   if(!confirmed){if(control)control.checked=false;return}
   s.quickWriteChoice=option.prompt;s.quickWriteChoiceLocked=true;S.items[id]=s;save();render("quickwrite-choice-locked");
 }
@@ -742,9 +744,9 @@ function checkAutoQuestion(id,index,value){
 
 async function requestAutoQuestionOverride(id,index){
  const x=findItem(id);if(!x)return;const q=autoQuestionsFor(x)[index];if(!q)return;
- if(x.subject==="Math"){alert("Math answers are checked automatically. Try the problem again instead of sending it to teacher review.");return}
- const s=st(id),answer=String(s.autoAnswers?.[index]||"").trim();if(!answer){alert("Choose an answer first so your teacher can review exactly what Dragonswood rejected.");return}
- if(window.DWGrading?.answersEquivalent(q.answer,answer)){alert("That answer is already being accepted as correct.");return}
+ if(x.subject==="Math"){await dwNotice("Keep working the problem","Math answers are checked automatically. Try the problem again instead of sending it to teacher review.");return}
+ const s=st(id),answer=String(s.autoAnswers?.[index]||"").trim();if(!answer){await dwNotice("Choose an answer first","Your teacher needs to see the exact answer Dragonswood did not accept.");return}
+ if(window.DWGrading?.answersEquivalent(q.answer,answer)){await dwNotice("This answer already passed","Dragonswood is already accepting this answer as correct.");return}
  s.autoOverrideStatus=s.autoOverrideStatus||{};if(["pending","approved"].includes(s.autoOverrideStatus[index]))return;
  const ok=await window.submitCurriculumOverride?.(x,answer,s.autoAttempts||1,{overrideType:"auto-question",questionIndex:index,questionPrompt:String(q.prompt||""),expectedAnswer:String(q.answer||"")});
  if(ok){s.autoOverrideStatus[index]="pending";S.items[id]=s;save();render()}
@@ -853,13 +855,13 @@ async function checkActivity(id){
 }
 async function requestOverride(id){
   const x=findItem(id);if(!x)return;const answer=activityAnswerText(x).trim();
-  if(x.subject==="Math"){alert("Math is checked automatically. Review the lesson, revise the answer, and try again.");return}
-  const prior=st(id),gate=window.DWAcademicAI.revisionGate(prior);if(!gate.unlocked){alert(`Teacher Review unlocks after ${gate.remaining} more changed ${gate.remaining===1?"answer":"answers"}. Use the feedback, revise, and check again. Repeating the same answer does not count.`);return}
-  if(answer.length<3){alert("Enter your answer first so your teacher can review what Dragonswood rejected.");return}
-  if(systemAuthoredResponse(x,answer)){const field=document.getElementById("actText-"+id);if(field)field.value="";alert("Dragonswood cleared its own directions from the answer box. Write your own response before requesting teacher review.");return}
+  if(x.subject==="Math"){await dwNotice("Keep working the problem","Math is checked automatically. Review the lesson, revise the answer, and try again.");return}
+  const prior=st(id),gate=window.DWAcademicAI.revisionGate(prior);if(!gate.unlocked){await dwNotice("Teacher Review is still sealed",`It unlocks after ${gate.remaining} more changed ${gate.remaining===1?"answer":"answers"}. Use the feedback, revise, and check again. Repeating the same answer does not count.`);return}
+  if(answer.length<3){await dwNotice("Enter your answer first","Your teacher needs to see the exact answer Dragonswood did not accept.");return}
+  if(systemAuthoredResponse(x,answer)){const field=document.getElementById("actText-"+id);if(field)field.value="";await dwNotice("Write your own response","Dragonswood cleared its directions from the answer box. Write your answer before requesting teacher review.");return}
   const s=st(id);s.lastActivityAttempt=answer;S.items[id]=s;save();
   if(!window.submitCurriculumOverride){
-    alert("Teacher review is not connected yet. Your answer is saved, but no request was sent.");
+    await dwNotice("The review path is unavailable","Your answer is saved, but the teacher-review request could not be sent.");
     return;
   }
   const ai=s.lastAiTriage||{},ok=await window.submitCurriculumOverride(x,answer,s.activityAttempts||1,{revisionAttempts:gate.count,validatorCode:s.lastValidatorCode||"unknown_open_response",validatorMessage:s.lastValidatorMessage||"",aiDecision:ai.decision||"not_run",aiConfidence:ai.confidence||"",aiReason:ai.reason||"",aiModel:ai.model||"",aiPolicyVersion:ai.policyVersion||"",aiCached:!!ai.cached,strongRetryUsed:!!ai.strongRetryUsed,strongRetryDecision:ai.strongRetryDecision||"",strongRetryConfidence:ai.strongRetryConfidence||"",escalationReason:ai.reason||s.lastValidatorMessage||"Automatic checks could not confidently resolve this response."});
@@ -1066,14 +1068,14 @@ window.recordCurriculumAttempt=async(item,state,writtenPassed)=>{
 };
 window.setCurriculumVerification=async(id,value)=>{
   if(DW_LOCAL_TESTER)return false;
-  if(!isTeacher||!selectedStudentId){alert("Choose a scholar first.");return false}
+  if(!isTeacher||!selectedStudentId){await dwNotice("Choose a scholar first","Select the student whose work you want to verify.");return false}
   try{await updateDoc(doc(db,"curriculumProgress",progressDocId(selectedStudentId,id)),{verified:!!value,updatedAt:serverTimestamp()});return true}
-  catch(e){alert("Verification was not saved: "+(e.code||e.message));return false}
+  catch(e){console.error('[Curriculum verification]',e);await dwNotice("Verification was not recorded","The student’s work is unchanged. Try again.",e.code||e.message);return false}
 };
 window.submitCurriculumOverride=async (item,answer,attempts,meta={})=>{
   if(DW_LOCAL_TESTER||DW_SAFE_PREVIEW)return false;
   if(!auth.currentUser){
-    alert("You are not signed in to Dragonswood on this page. Return to the Dragonswood portal, sign in, and open Curriculum Quest again.");
+    await dwNotice("The gate is sealed","Return to the Dragonswood portal, sign in, and open Curriculum Quest again.");
     return false;
   }
   try{
@@ -1108,7 +1110,7 @@ window.submitCurriculumOverride=async (item,answer,attempts,meta={})=>{
     return true;
   }catch(e){
     console.error("override request",e);
-    alert("Teacher review was NOT sent. Your answer is still saved. Error: "+(e.code||e.message));
+    await dwNotice("The review request was not sent","Your answer is still saved. Try again or ask your teacher for help.",e.code||e.message);
     return false;
   }
 };
@@ -1178,7 +1180,7 @@ onAuthStateChanged(auth,async u=>{
   loadScopedState(isTeacher?"teacher":u?.uid||"anonymous");
   studentCurriculumAccess=isTeacher||testerCurriculumOverride;
   currentQuestOpen=isTeacher||testerCurriculumOverride;
-  accessMessage=u?"Checking today's school-day assignment…":"Open Curriculum Quest from your signed-in Dragonswood portal.";
+  accessMessage=u?"Consulting today’s quest ledger…":"Open Curriculum Quest from your signed-in Dragonswood portal.";
   document.getElementById("teacherBadge").style.display=isTeacher?"inline-block":"none";
   if(u){
     watchMyOverrides(u.uid);

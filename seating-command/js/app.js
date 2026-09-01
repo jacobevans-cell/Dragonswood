@@ -425,7 +425,8 @@ async function savePlan() {
     setTab('rules');
     return;
   }
-  if (!window.confirm('Save this plan as the active classroom seating chart? The previous active plan will remain in history.')) return;
+  const approved = await (window.DWImmersiveUI?.confirm({title:'Make this the active seating chart?',message:'The previous active plan will remain safely available in history.',confirmLabel:'Use this plan',cancelLabel:'Keep editing'})||Promise.resolve(false));
+  if (!approved) return;
   const previous = clone(state.previousPlan || state.plan);
   const payload = { layout: state.layout, flipped: state.flipped, purpose: state.purpose, plan: clone(state.plan), previousPlan: previous, rules: clone(state.rules), status: 'active', updatedAt: serverTimestamp(), updatedBy: auth.currentUser?.uid || '' };
   const button = $('#savePlanButton');

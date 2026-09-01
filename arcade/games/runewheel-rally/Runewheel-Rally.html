@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<script defer src="../../../dragonswood-immersive-ui.js?v=1.0.0"></script>
 <meta name="theme-color" content="#071816">
 <title>Runewheel Rally</title>
 <style>
@@ -153,7 +154,7 @@ function finishGame(){
 }
 $('#rematch').addEventListener('click',startGame);
 function renderRecords(){$('#record-races').textContent=records.races;$('#record-podiums').textContent=records.podiums;$('#record-first').textContent=records.firstTry;$('#record-best').textContent=records.bestTime?fmtTime(records.bestTime):'—'}
-$('#clear-records').addEventListener('click',()=>{if(confirm('Clear Runewheel Rally records saved on this device?')){records=Object.assign({},DEFAULT_RECORDS);save(STORE.records,records);renderRecords();renderHome()}});
+$('#clear-records').addEventListener('click',async()=>{const approved=await(window.DWImmersiveUI?.confirm({title:'Clear the Runewheel record book?',message:'This removes Runewheel Rally records saved on this device.',confirmLabel:'Clear records',cancelLabel:'Keep records',danger:true})||Promise.resolve(false));if(approved){records=Object.assign({},DEFAULT_RECORDS);save(STORE.records,records);renderRecords();renderHome()}});
 [['effects','effects'],['vibration','vibration'],['reduced-motion','reducedMotion'],['high-contrast','highContrast'],['auto-pause','autoPause']].forEach(([id,key])=>$('#'+id).addEventListener(id==='effects'?'input':'change',e=>{settings[key]=id==='effects'?+e.target.value/100:e.target.checked;if(id==='effects'&&settings.effects)previousEffects=settings.effects;save(STORE.settings,settings);applySettings()}));
 $('#run-qa').addEventListener('click',()=>{const t=performance.now(),r=runMathQA(200),ms=Math.round(performance.now()-t);$('#qa-output').textContent=r.ok?`PASS\n${r.checked} generated questions checked in ${ms} ms.\nEvery answer was present exactly once.\nEvery choice set had four distinct options.\nEvery item included a standard, prompt, model, and support path.`:`FAIL\n${r.errors.join('\n')}`});
 window.addEventListener('keydown',e=>{if(!game||!$('#screen-race').classList.contains('active'))return;const k=e.key.toLowerCase();if(['arrowleft','arrowright','a','d',' ','escape'].includes(k))e.preventDefault();if((k==='escape'||k==='p')&&!e.repeat)setPause(!paused);if(k===' '&&!e.repeat)useBoost();game.keys.add(k)});window.addEventListener('keyup',e=>game?.keys.delete(e.key.toLowerCase()));window.addEventListener('blur',()=>{game?.keys.clear();game?.touch.clear();if(game)game.player.pointerAxis=0;if(settings.autoPause&&game&&$('#screen-race').classList.contains('active'))setPause(true)});

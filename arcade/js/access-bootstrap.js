@@ -1,4 +1,4 @@
-import {environment,getArcadeAccess,startArcadeSession,setCurrentAccess,remainingMs} from './access-client.js?v=58.0.1';
+import {environment,getArcadeAccess,startArcadeSession,setCurrentAccess,remainingMs} from './access-client.js?v=58.0.2';
 let loaded=false;
 let refreshing=false;
 let access=null;
@@ -33,7 +33,7 @@ function returnToPortal(message=''){
   if(message)try{sessionStorage.setItem('dw-arcade-return-message',String(message).slice(0,220))}catch{}
   location.replace(portalHref());
 }
-function renderLocked(message='Checking your Arcade Time…'){
+function renderLocked(message='Checking the Arcade hourglass…'){
   if(portalOwned){returnToPortal(message);return}
   const count=Math.max(0,Math.min(3,Number(access?.tokens)||0));
   const enabled=access?.teacherEnabled===true;
@@ -44,7 +44,7 @@ function renderLocked(message='Checking your Arcade Time…'){
   document.documentElement.classList.remove('arcade-auth-pending');
   gate.hidden=false;
   badge.hidden=true;
-  gate.innerHTML=`<div class="arcade-access-card"><img src="../v33-integration/assets/branding/dragonswood-mascot-crest.png" alt=""><h1>Arcade Time</h1>${tokens(count)}<p>${esc(message)}</p><p class="arcade-access-note">${arcadeForAll?'🕹️ Free Arcade for Everyone is active. No work requirements and no Tokens.':afternoonAccess?'🎮 Afternoon Substitute free play is active. No Arcade Tokens will be charged.':testerOverride?'🧪 TRUE TESTER self-unlock is active. Your normal Token wallet will not be charged.':'3 Tokens = one 30-minute session. Tokens are earned for Ready, Responsible, and Complete choices. Wallet maximum: 3.'}</p><div class="arcade-access-actions"><button type="button" data-start-arcade ${ready?'':'disabled'}>${arcadeForAll?'Start Free Arcade':afternoonAccess?'Start Free Afternoon Arcade':testerOverride?'Start Tester Session':'Use 3 Tokens — Start 30 Minutes'}</button><a href="${portalHref()}">Return to Dragonswood</a></div><p class="arcade-access-note">${arcadeForAll?'Whole-class free access':afternoonAccess?'Finished-work access':testerOverride?'Tester-only personal access':enabled?'Teacher Arcade Time is open.':'Teacher Arcade Time is currently locked.'} • ${environment}</p></div>`;
+  gate.innerHTML=`<div class="arcade-access-card"><img src="../v33-integration/assets/branding/dragonswood-mascot-crest.png" alt=""><h1>Arcade Time</h1>${tokens(count)}<p>${esc(message)}</p><p class="arcade-access-note">${arcadeForAll?'🕹️ Free Arcade for Everyone is active. No work requirements and no Tokens.':afternoonAccess?'🎮 Afternoon Substitute free play is active. No Arcade Tokens will be charged.':testerOverride?'🧪 TRUE TESTER self-unlock is active. Your normal Token wallet will not be charged.':'3 Tokens = one 30-minute session. Tokens are earned for Ready, Responsible, and Complete choices. Wallet maximum: 3.'}</p><div class="arcade-access-actions"><button type="button" data-start-arcade ${ready?'':'disabled'}>${arcadeForAll?'Start Free Arcade':afternoonAccess?'Start Free Afternoon Arcade':testerOverride?'Start Tester Session':'Use 3 Tokens — Start 30 Minutes'}</button><a href="${portalHref()}">Return to Dragonswood</a></div><p class="arcade-access-note">${arcadeForAll?'Whole-class free access':afternoonAccess?'Finished-work access':testerOverride?'Tester-only personal access':enabled?'Teacher Arcade Time is open.':'Teacher Arcade Time is currently locked.'}${environment==='production'?'':` • ${esc(environment)}`}</p></div>`;
   gate.querySelector('[data-start-arcade]')?.addEventListener('click',begin);
 }
 function updateClock(){
@@ -58,7 +58,7 @@ function updateClock(){
 }
 async function unlock(next){
   access=setCurrentAccess(next);
-  if(!loaded){await import('./arcade.js?v=58.0.3');loaded=true}
+  if(!loaded){await import('./arcade.js?v=58.0.4');loaded=true}
   document.documentElement.classList.remove('arcade-auth-pending');
   gate.hidden=true;
   badge.hidden=false;
@@ -76,10 +76,10 @@ async function refresh(){
     const next=await getArcadeAccess();
     access=next;
     if(next.active&&remainingMs(next)>0)await unlock(next);
-    else renderLocked(next.substituteArcadeForAll?'Free Arcade for Everyone is ready.':next.afternoonSubstituteAccess?'Your free Afternoon Arcade window is ready.':next.afternoonSubstituteActive?'Finish today’s Morning Work and every Current Quest lesson first.':next.testerOverride?'Your tester self-unlock is ready. Start a tester session.':next.teacherEnabled?'Return to Dragonswood and earn all 3 Arcade Tokens first.':'Arcade is locked until your teacher opens Arcade Time.');
+    else renderLocked(next.substituteArcadeForAll?'Free Arcade for Everyone is ready.':next.afternoonSubstituteAccess?'Your free Afternoon Arcade window is ready.':next.afternoonSubstituteActive?'Finish today’s Morning Work and every Current Quest lesson first.':next.testerOverride?'Your tester self-unlock is ready. Start a tester session.':next.teacherEnabled?'Return to Dragonswood and earn all 3 Arcade Tokens first.':'The Arcade gate is sealed until your teacher opens Arcade Time.');
   }catch(err){
     console.error('[Arcade access]',err);
-    renderLocked(navigator.onLine?`Arcade could not finish loading: ${err?.message||err}`:'Arcade is locked while this device is offline.');
+    renderLocked(navigator.onLine?'The Arcade gates did not open. Return to Dragonswood, confirm you are signed in, and try again.':'The road to the Arcade is closed while this device is offline. Reconnect, then try again.');
   }finally{refreshing=false}
 }
 async function begin(){
@@ -88,7 +88,7 @@ async function begin(){
   try{await unlock(await startArcadeSession())}
   catch(err){console.error('[Arcade session start]',err);renderLocked(err?.message||'Arcade Time could not start.')}
 }
-window.addEventListener('offline',()=>lockNow('Arcade is locked while this device is offline.'));
+window.addEventListener('offline',()=>lockNow('The road to the Arcade is closed while this device is offline. Reconnect, then try again.'));
 window.addEventListener('online',refresh);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
 refreshTimer=setInterval(refresh,15000);

@@ -17,7 +17,7 @@ check('Portal retries through the existing authenticated reporter',portal.includ
 check('Portal removes delivered records and retains pending records',portal.includes("pending.length?localStorage.setItem(key,JSON.stringify(pending)):localStorage.removeItem(key)"));
 check('Portal retries after authorization and when back online',portal.includes('queueMicrotask(()=>recoverLegacySpellingOutbox())')&&portal.includes("window.addEventListener('online',()=>recoverLegacySpellingOutbox())"));
 check('Rune iframe cache version is current',modules.includes("if(mod.id==='rune-spelling')url.searchParams.set('v','58.1.6')"));
-check('Production portal cache version is current',shell.includes('js/student-app.js?v=58.1.6')&&shell.includes('js/integration/modules.js?v=58.1.0'));
+check('Production portal cache version is current',shell.includes('js/student-app.js?v=58.1.9')&&shell.includes('js/integration/modules.js?v=58.1.0'));
 
 if(failures){console.error(`\n${failures} Rune Spelling reporting check(s) failed.`);process.exit(1)}
 console.log('\n✅ RUNE SPELLING REPORTING TESTS PASSED');

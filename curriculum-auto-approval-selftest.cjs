@@ -25,7 +25,7 @@ check('Word Forge vague fallback gives response-specific advice',()=>assert.matc
 
 const page=fs.readFileSync('curriculum-quest.html','utf8');
 check('Writing Community classification runs before generic opinion',()=>assert.ok(page.indexOf('if(/writing community|peer review|\\bpqp\\b|praise|polish/')<page.indexOf('if(/opinion/.test(raw))')));
-check('Math teacher-review requests are blocked',()=>{assert.match(page,/if\(x\.subject==="Math"\)\{alert\("Math is checked automatically/);assert.match(page,/Math is checked automatically\. Revise and try again/)});
+check('Math teacher-review requests are blocked with the branded notice',()=>{assert.match(page,/if\(x\.subject==="Math"\)\{await dwNotice\("Keep working the problem","Math is checked automatically/);assert.match(page,/Math is checked automatically\. Review the lesson, revise the answer, and try again/)});
 check('teacher requests carry validator and AI triage',()=>{assert.match(page,/validatorCode:String\(meta\.validatorCode/);assert.match(page,/strongRetryUsed:!!meta\.strongRetryUsed/)});
 check('reading excerpts force source-grounded semantic checking',()=>assert.match(page,/structural\.ok&&sourceExcerpt.*needs_source_check/));
 check('high-confidence rejection still requires three genuine revisions before review',()=>{assert.match(page,/registerRevisionAttempt\(s,answer,priorAnswer\)/);assert.match(page,/if\(!gate\.unlocked\)/)});

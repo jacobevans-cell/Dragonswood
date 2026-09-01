@@ -1,4 +1,4 @@
-import {getFirebaseContext,getCurrentAccess} from './access-client.js?v=57.1.15';
+import {getFirebaseContext,getCurrentAccess} from './access-client.js?v=58.0.2';
 const CFG=window.DRAGONSWOOD_ARCADE_CONFIG||{};
 const TIMEZONE=CFG.leaderboard?.timezone||'America/Phoenix';
 const LOCAL_DAILY_DAYS=Math.max(7,Number(CFG.leaderboard?.localDailyRetentionDays)||60);
@@ -49,7 +49,7 @@ function writeLocal(value){localStorage.setItem(localKey(),JSON.stringify(pruneL
 
 export async function initLeaderboard(onStatus=()=>{}){
   try{
-    onStatus('CONNECTING…');
+    onStatus('SUMMONING THE STANDINGS…');
     const C=await getFirebaseContext();
     cloud={enabled:true,db:C.db,auth:C.auth,user:C.user,fs:C.fsMod};
     onStatus('CLOUD LEADERBOARD');

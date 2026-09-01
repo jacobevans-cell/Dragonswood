@@ -1,6 +1,6 @@
 import {GAMES,BOARDS} from './game-registry.js?v=58.0.3';
-import {initLeaderboard,submitBestScore,getTop} from './leaderboard-service.js?v=57.1.15';
-import {getFirebaseContext,recordArcadeGameResult} from './access-client.js?v=58.0.1';
+import {initLeaderboard,submitBestScore,getTop} from './leaderboard-service.js?v=57.1.16';
+import {getFirebaseContext,recordArcadeGameResult} from './access-client.js?v=58.0.2';
 const $=selector=>document.querySelector(selector);
 const screens=[...document.querySelectorAll('.screen')];
 const CONFIG=window.DRAGONSWOOD_ARCADE_CONFIG||{};
@@ -40,11 +40,11 @@ function renderGames(){
 function openGame(game){currentGame=game;$('#gameTitle').textContent=game.title;$('#gameSubtitle').textContent=game.subtitle.toUpperCase();const url=new URL(game.path,location.href);url.searchParams.set('comfort',profile.comfortMode?'1':'0');url.searchParams.set('perf',profile.performanceMode);$('#gameFrame').src=url.href;$('#saveStatus').textContent='PLAYING';show('gameScreen')}
 function exitGame(){const frame=$('#gameFrame');frame.src='about:blank';currentGame=null;show('homeScreen');$('#saveStatus').textContent='READY'}
 async function renderLeaderboard(){
-  const host=$('#leaderboardBoards');host.innerHTML=BOARDS.map(board=>`<section class="board" data-board="${board.id}"><h3>${board.title}</h3><div class="empty-board">Loading records…</div></section>`).join('');
+  const host=$('#leaderboardBoards'),skeleton=window.DWImmersiveUI?.skeletonMarkup('leaderboard')||'<div class="empty-board">Consulting the Hall of Records…</div>';host.innerHTML=BOARDS.map(board=>`<section class="board" data-board="${board.id}"><h3>${board.title}</h3>${skeleton}</section>`).join('');
   await Promise.all(BOARDS.map(async board=>{
     const el=host.querySelector(`[data-board="${board.id}"]`);
     try{const rows=await getTop(board.id,currentPeriod,TOP_N);el.innerHTML=`<h3>${board.title}</h3>`+(rows.length?rows.map((row,index)=>`<div class="leader-row"><div class="rank">${index+1}</div><div class="leader-name">${escapeHtml(row.displayName||'Adventurer')}</div><div class="leader-metric">${escapeHtml(row.metric||String(row.score))}</div></div>`).join(''):'<div class="empty-board">No scores yet. A brief period of peace.</div>')}
-    catch(err){console.warn(err);el.innerHTML=`<h3>${board.title}</h3><div class="empty-board">Leaderboard unavailable.</div>`}
+    catch(err){console.warn(err);el.innerHTML=`<h3>${board.title}</h3><div class="empty-board"><strong>The Hall of Records cannot be reached.</strong><br>You can still play; this score will stay on this device.</div>`}
   }));
 }
 function escapeHtml(value){return String(value).replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]))}
@@ -65,7 +65,7 @@ window.addEventListener('message',async event=>{
   }
   if(message.type==='score'){
     if(message.practice||message.custom)return;
-    $('#saveStatus').textContent='SAVING';
+    $('#saveStatus').textContent='RECORDING SCORE…';
     try{const result=await submitBestScore(message,profile);$('#saveStatus').textContent=result.updated?'BEST SAVED':'BEST KEPT';toast(result.updated?'Leaderboard best updated.':'Your existing best stays on the board.')}
     catch(err){console.warn(err);$('#saveStatus').textContent='SAVE ERROR';toast('Score could not be saved.')}
   }

@@ -83,9 +83,9 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
 @media(max-width:620px){.answer-bank-options{grid-template-columns:1fr}}
 </style>
 <script src="pet-registry-v5614.js"></script><script src="dragonswood-rpg-v56.js"></script><script src="pet-motion-controller.js"></script>
-<link rel="stylesheet" href="v33-integration/css/direct-visual-v11.css?v=1.1"></head><body>
+<link rel="stylesheet" href="v33-integration/css/direct-visual-v11.css?v=1.1"><script defer src="dragonswood-immersive-ui.js?v=1.0.0"></script></head><body>
 <div class="shell">
-  <header class="glass top"><div><div class="brand"><img src="v33-integration/assets/branding/dragonswood-mascot-crest.png" alt="Dragonswood volleyball dragon crest" style="width:38px;height:38px;object-fit:contain;vertical-align:middle;margin-right:8px"><span style="color:#f7c94f;background:linear-gradient(180deg,#fff9d8 0%,#ffe99a 27%,#f8ca50 58%,#ffe99a 82%,#dfa12a 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 1px 0 rgba(116,67,8,.95)) drop-shadow(0 2px 1px rgba(22,5,34,.95)) drop-shadow(0 0 5px rgba(255,216,91,.16));letter-spacing:.3px">DRAGONSWOOD • DAILY QUEST</span></div><div class="sub" id="account">Connecting to Dragonswood…</div></div><a class="back" href="index.html#quests">← DAILY MISSIONS</a></header>
+  <header class="glass top"><div><div class="brand"><img src="v33-integration/assets/branding/dragonswood-mascot-crest.png" alt="Dragonswood volleyball dragon crest" style="width:38px;height:38px;object-fit:contain;vertical-align:middle;margin-right:8px"><span style="color:#f7c94f;background:linear-gradient(180deg,#fff9d8 0%,#ffe99a 27%,#f8ca50 58%,#ffe99a 82%,#dfa12a 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 1px 0 rgba(116,67,8,.95)) drop-shadow(0 2px 1px rgba(22,5,34,.95)) drop-shadow(0 0 5px rgba(255,216,91,.16));letter-spacing:.3px">DRAGONSWOOD • DAILY QUEST</span></div><div class="sub" id="account">Opening the quest gate…</div></div><a class="back" href="index.html#quests">← DAILY MISSIONS</a></header>
   <section class="hud">
     <div class="glass"><small>PLAYER LEVEL</small><b id="lvl">—</b></div>
     <div class="glass"><small>PLAYER XP</small><b id="pxp">—</b></div>
@@ -94,9 +94,9 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
     <div class="glass"><small>DAILY XP</small><b id="dxp">— / 150</b></div>
     <div class="glass"><small>SCHOOL JOURNEY</small><b id="journey">— / 180</b></div>
   </section>
-  <div id="status" class="glass status">Checking today's sealed quest…</div>
+  <div id="status" class="glass status">Breaking today’s quest seal…</div>
   <section class="glass hero">
-    <div><div class="chapter" id="chapter">THE ROAD AWAITS</div><h1 id="title">Today's Daily Quest</h1><div class="sub" id="skills">Only the assigned school-day quest can be opened.</div><div class="sub" id="trackLabelMini" style="margin-top:6px;color:#ffe58a;font-weight:900">TRACK: loading…</div></div>
+    <div><div class="chapter" id="chapter">THE ROAD AWAITS</div><h1 id="title">Today's Daily Quest</h1><div class="sub" id="skills">Only the assigned school-day quest can be opened.</div><div class="sub" id="trackLabelMini" style="margin-top:6px;color:#ffe58a;font-weight:900">Finding your quest path…</div></div>
     <div class="daypill" id="datepill">🔒</div>
   </section>
   <div class="levelup-mode" id="levelUpBanner" style="display:none">⭐ OPTIONAL LEVEL-UP CHALLENGE<small>This does not replace your assigned Daily Mission. It is extra practice one level higher.</small></div>
@@ -6143,7 +6143,7 @@ const lub=$("levelUpBanner");if(lub)lub.style.display=isLevelUpMode()?"block":"n
 const td=$("trackDesc");if(td)td.textContent=isLevelUpMode()
   ? (lesson.track==="challenge"?"Optional enrichment • Early–Mid 6th Grade":lesson.track==="foundation"?"Optional fourth-grade level-up work":"Optional fifth-grade challenge work")
   : (lesson.track==="challenge"?"Advanced enrichment • Early–Mid 6th Grade":lesson.track==="5"?"Fifth-grade spiral practice":lesson.track==="foundation"?"Foundation spiral practice • Grade 3 prerequisite skills":"Fourth-grade spiral practice");
-const mini=$("trackLabelMini");if(mini)mini.textContent=`TRACK: ${lesson.trackName}`;await refreshSessionCards();status(localPreviewMode?`🧪 SAFE DATE PREVIEW • Showing ${key} • Progress, scores, XP, and Gold will not be written.`:Number(profile.hp||0)<=0?"💀 You may complete today's academics, but knocked-out players earn no Player XP or Gold until revival.":"Today's quest is unlocked. Future quests remain sealed by Dragonswood server time.","good");}catch(err){console.error(err);status(`Today's quest is sealed or unavailable: ${err.code||err.message||"permission denied"}`,"bad");$("morningBtn").disabled=$("exitBtn").disabled=true;postDailyMissionState(false)}}
+const mini=$("trackLabelMini");if(mini)mini.textContent=`TRACK: ${lesson.trackName}`;await refreshSessionCards();status(localPreviewMode?`🧪 SAFE DATE PREVIEW • Showing ${key} • Progress, scores, XP, and Gold will not be written.`:Number(profile.hp||0)<=0?"💀 You may complete today's academics, but knocked-out players earn no Player XP or Gold until revival.":"Today's quest is unlocked. Future quests remain sealed by Dragonswood server time.","good");}catch(err){console.error(err);status("Today’s quest is still sealed. Make sure you are signed in and today’s assignment is open.","bad");$("morningBtn").disabled=$("exitBtn").disabled=true;postDailyMissionState(false)}}
 onAuthStateChanged(auth,async u=>{
  testerAccountUnsub?.();testerControlsUnsub?.();testerAccountUnsub=testerControlsUnsub=null;
  user=u;testerSession=Tester.normalizeTester(u?.uid||'',null);testerControls={};testerMorningOverride=false;
@@ -6160,7 +6160,7 @@ onAuthStateChanged(auth,async u=>{
  }catch(e){console.warn("Tester Morning Work access unavailable",e)}
  const email=String(u.email||"").toLowerCase();
  if(!email.endsWith("@"+DOMAIN)&&email!==TEACHER&&!testerSession.isTester){status("Daily Quest requires an Explore Academy or approved tester account.","bad");return}
-  try{const s=await getDoc(doc(db,"students",u.uid));if(s.exists())profile=s.data();else if(testerSession.isTester)profile={firstName:u.displayName||"Tester",grade:"4",hp:10,gold:0,xp:0};window.DWVoicePreferences?.set?.(profile?.narrationVoice||"automatic");renderAccount();renderSchoolCountdowns();watchDailyQuestProgress();await loadToday();if(testerMorningOverride&&lesson)status("🧪 Tester Morning Work self-unlock is active. Completion evidence remains unchanged until you do the work.","good")}catch(e){status("Dragonswood profile error: "+(e.code||e.message),"bad")}
+  try{const s=await getDoc(doc(db,"students",u.uid));if(s.exists())profile=s.data();else if(testerSession.isTester)profile={firstName:u.displayName||"Tester",grade:"4",hp:10,gold:0,xp:0};window.DWVoicePreferences?.set?.(profile?.narrationVoice||"automatic");renderAccount();renderSchoolCountdowns();watchDailyQuestProgress();await loadToday();if(testerMorningOverride&&lesson)status("🧪 Tester Morning Work self-unlock is active. Completion evidence remains unchanged until you do the work.","good")}catch(e){console.warn('[Daily Quest profile]',e);status("Your adventurer record could not be opened. Return to the portal and try again.","bad")}
 });
 $("morningBtn").onclick=()=>startSession("morning");$("exitBtn").onclick=()=>startSession("exit");$("closePlay").onclick=async()=>{if(sessionName&&taskIndex<tasks.length)await saveProgress();$("playModal").classList.remove("show")};
 async function startSession(name){
@@ -6432,7 +6432,7 @@ function renderCurrent(){
    console.error("Daily Quest render error",err,tasks?.[taskIndex]);
    const t=tasks?.[taskIndex]||{subject:"ELA",skill:lesson?.elaSkill||"Language Arts",seed:Date.now()};
    try{ if(t.pacingLocked)throw err;const q=String(t.subject||"").trim().toUpperCase()==="ELA"?elaQ(t.skill,t.seed||1,qIndex):numQ(t.skill,t.seed||1,qIndex);choiceEngine(q,t); }
-   catch(fallbackErr){ console.error("Fallback render error",fallbackErr); $("arena").innerHTML=`<div class="complete"><h2>QUEST RECOVERY</h2><p>This question failed to load.</p><button class="choice" id="skipBroken">CONTINUE QUEST →</button></div>`; $("skipBroken").onclick=advance; }
+   catch(fallbackErr){ console.error("Fallback render error",fallbackErr); $("arena").innerHTML=`<div class="complete"><h2>A PAGE WOULD NOT OPEN</h2><p>Your place is safe. Continue when you are ready.</p><button class="choice" id="skipBroken">CONTINUE TO THE NEXT CHALLENGE →</button></div>`; $("skipBroken").onclick=advance; }
  }
 }
 function choiceEngine(q,t){$("arena").innerHTML=`${promptBlock(q,t)}<div class="choices">${q.choices.map(c=>`<button class="choice">${c}</button>`).join("")}</div>`;document.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{const ok=b.textContent===q.answer;b.classList.add(ok?"good":"bad");award(ok);if(ok)advance()})}
@@ -6461,7 +6461,7 @@ async function finishSession(){
   const requested=sessionName==="morning"?Number(lesson.morningXp||4):Number(lesson.exitXp||2);
   const claimId=`${user.uid}_${isLevelUpMode()?"levelup":"dailyquest"}_${lesson.date}_${lesson.track||"4"}_${sessionName}`;
   $("prog").style.width="100%";
-  $("arena").innerHTML=`<div class="complete"><h2>QUEST COMPLETE!</h2><div id="questPetCelebration" style="height:190px;max-width:260px;margin:auto"></div><p id="questPetMessage"></p><p>Run Score: <b>${score.toLocaleString()}</b> • Accuracy: <b>${Math.round(acc*100)}%</b></p><div class="loot" id="loot">Saving Dragonswood results…</div><p>Your academic completion is saved even if your RPG character is knocked out.</p></div>`;
+  $("arena").innerHTML=`<div class="complete"><h2>QUEST COMPLETE!</h2><div id="questPetCelebration" style="height:190px;max-width:260px;margin:auto"></div><p id="questPetMessage"></p><p>Run Score: <b>${score.toLocaleString()}</b> • Accuracy: <b>${Math.round(acc*100)}%</b></p><div class="loot" id="loot">Inscribing today’s victory…</div><p>Your academic completion is saved even if your RPG character is knocked out.</p></div>`;
   const questPet=[...(window.DWRPG?.pets||[]),...(window.DWRPG?.prestigePets||[])].find(x=>x.id===profile?.activePet);
   if(questPet&&window.DWPetMotion){new DWPetMotion.PetActor($("questPetCelebration"),questPet,{caption:true}).play("celebrate",2600);$("questPetMessage").textContent=`${questPet.name} celebrates your completed quest!`}
 
@@ -6523,7 +6523,7 @@ async function finishSession(){
     await batch.commit();
     if(knockedOut){profile=p;$("loot").textContent="💀 ACADEMIC COMPLETION SAVED • Knocked out: +0 XP • +0 Gold"}
     else{profile={...p,xp:Number(p.xp||0)+actualGrant,gold:Number(p.gold||0)+goldAward,dailyXpDate:dateKey(),dailyXpEarned:actualBefore+actualGrant,dailyGoldEarned:goldWindow.earned+goldAward,dailyGoldWindowStartedAt:goldWindow.reset?new Date():p.dailyGoldWindowStartedAt,lastGameClaimId:claimId};renderAccount();$("loot").textContent=`🐉 SAVED • +${actualGrant} PLAYER XP • +${goldAward} GOLD`}
-  }catch(e){console.warn(e);$("loot").textContent=`✓ Academic completion saved • RPG result save unavailable (${e.code||"unknown"}).`}
+  }catch(e){console.warn(e);$("loot").textContent="✓ Academic completion saved • Your rewards could not be recorded yet."}
   await refreshSessionCards();
 }
 </script>

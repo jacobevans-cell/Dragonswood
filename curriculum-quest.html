@@ -685,7 +685,7 @@ function validateActivity(x){
   return {ok:true,code:"passed"};
 }
 function renderActivity(x){
-  const spec=activitySpec(x),s=st(x.id),savedAnswer=s.practiceEvidence||"",answer=systemAuthoredResponse(x,savedAnswer)?"":savedAnswer,status=s.overrideStatus||"";
+  const spec=activitySpec(x),s=st(x.id),submittedAnswer=s.practiceEvidence||"",draftResponse=typeof s.activityDraftResponse==="string"?s.activityDraftResponse:null,draftChoice=String(s.activityDraftChoice||s.quickWriteChoice||""),savedAnswer=draftResponse===null?submittedAnswer:((spec.kind==="morph"||spec.kind==="readingPov"||spec.kind==="quickwrite")?`Choice: ${draftChoice}\nResponse: ${draftResponse}`:draftResponse),answer=systemAuthoredResponse(x,savedAnswer)?"":savedAnswer,status=s.overrideStatus||"";
   const reviewGate=window.DWAcademicAI.revisionGate(s),teacherReviewEligible=s.teacherReviewEligible===true||['pending','approved','returned'].includes(status),reviewLocked=!reviewGate.unlocked&&!['pending','approved'].includes(status);
   const structured=structuredActivityParts(answer);
   const quickwritePassed=spec.kind==="quickwrite"&&!!s.practiced;
@@ -703,8 +703,8 @@ function renderActivity(x){
     controls=`<div class="activity-options">${spec.options.map(option=>`<label class="activity-option"><input type="radio" name="act-${x.id}" value="${esc(option.prompt)}" ${quickwriteChoice===option.prompt?"checked":""} ${quickwriteLocked?"disabled":""} onchange="lockQuickWriteChoice('${x.id}',this.value,this)"><span><strong>${esc(option.label)}:</strong> ${esc(option.prompt)}</span></label>`).join("")}</div>${quickwriteLocked&&quickwriteOption?`<div class="activity-feedback show good">🔒 Story starter locked: ${esc(quickwriteOption.label)}. Continue this story for your Quickwrite.</div>`:""}<div class="activity-feedback show">Sentence target: ${quickWriteSentenceTarget(spec.sentenceRange)} • <span id="quickCount-${x.id}">${current} ${current===1?"sentence":"sentences"}</span></div><textarea class="activity-input" id="actText-${x.id}" oninput="updateQuickWriteCount('${x.id}')" placeholder="Write your Quickwrite here…">${esc(structured.response)}</textarea>`;
   }
   else if(spec.kind==="morph"||spec.kind==="readingPov"){
-    controls=`<div class="activity-options">${spec.options.map(o=>`<label class="activity-option"><input type="radio" name="act-${x.id}" value="${esc(o)}" ${structured.choice===o?"checked":""}><span>${esc(o)}</span></label>`).join("")}</div><textarea class="activity-input" id="actText-${x.id}" placeholder="Write your evidence or example here…">${esc(structured.response)}</textarea>`;
-  } else controls=`<textarea class="activity-input" id="actText-${x.id}" placeholder="Write your answer here…">${esc(answer)}</textarea>`;
+    controls=`<div class="activity-options">${spec.options.map(o=>`<label class="activity-option"><input type="radio" name="act-${x.id}" value="${esc(o)}" ${structured.choice===o?"checked":""} onchange="saveActivityChoice('${x.id}',this.value)"><span>${esc(o)}</span></label>`).join("")}</div><textarea class="activity-input" id="actText-${x.id}" oninput="saveActivityDraftFromControl('${x.id}',this)" placeholder="Write your evidence or example here…">${esc(structured.response)}</textarea>`;
+  } else controls=`<textarea class="activity-input" id="actText-${x.id}" oninput="saveActivityDraftFromControl('${x.id}',this)" placeholder="Write your answer here…">${esc(answer)}</textarea>`;
   const reviewLabel=status==="pending"?"🟡 TEACHER REVIEW REQUESTED":status==="approved"?"✅ TEACHER OVERRIDE APPROVED":reviewGate.unlocked?"🛡️ REQUEST TEACHER REVIEW":`🔒 REVISE ${reviewGate.count}/${reviewGate.required} BEFORE REVIEW`;
   const reviewNote=reviewGate.unlocked?"You completed three genuine revisions. Teacher Review is now available.":`Teacher Review unlocks after ${reviewGate.remaining} more changed ${reviewGate.remaining===1?"answer":"answers"}. Repeating the same answer does not count.`;
   const approvalRow=s.practiced?`<div class="override-row"><button class="override-btn approved" type="button" disabled>${approvedAi?"✅ AI-APPROVED":"✅ AUTO-APPROVED"}</button><span class="override-note">${approvedAi?`Checked by ${esc(approvedModel||"AI")}${esc(approvedScore)}.`:"The automatic lesson check passed."}</span></div>`:x.subject==="Math"?`<div class="override-row"><span class="override-note">Math is checked automatically. Revise and try again if it does not pass yet.</span></div>`:teacherReviewEligible?`<div class="override-row"><button class="override-btn ${status}" id="overrideBtn-${x.id}" onclick="requestOverride('${x.id}')" ${status==="pending"||status==="approved"||reviewLocked?"disabled":""}>${reviewLabel}</button><span class="override-note">${reviewNote}</span></div>`:`<div class="override-row"><button class="override-btn" id="overrideBtn-${x.id}" onclick="requestOverride('${x.id}')" hidden disabled>🔒 TEACHER REVIEW</button><span class="override-note">Fix the required check and try again. Teacher Review is reserved for answers the grader marks uncertain.</span></div>`;
@@ -719,9 +719,30 @@ async function lockQuickWriteChoice(id,choice,control){
   if(!confirmed){if(control)control.checked=false;return}
   s.quickWriteChoice=option.prompt;s.quickWriteChoiceLocked=true;S.items[id]=s;save();render("quickwrite-choice-locked");
 }
+const activityDraftTimers={};
+function persistActivityDraft(id,value,choice){
+  const s=st(id);s.activityDraftResponse=String(value??"");
+  if(choice!==undefined)s.activityDraftChoice=String(choice||"");
+  S.items[id]=s;
+  try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}
+  clearTimeout(activityDraftTimers[id]);
+  activityDraftTimers[id]=setTimeout(()=>{delete activityDraftTimers[id];save()},650);
+}
+function saveActivityDraftFromControl(id,control){
+  const choice=document.querySelector(`input[name="act-${CSS.escape(id)}"]:checked`)?.value;
+  persistActivityDraft(id,control?.value||"",choice);
+}
+function saveActivityChoice(id,choice){
+  const field=document.getElementById("actText-"+id);
+  persistActivityDraft(id,field?.value||"",choice);
+}
+function flushActivityDrafts(){if(Object.keys(activityDraftTimers).length){Object.keys(activityDraftTimers).forEach(id=>{clearTimeout(activityDraftTimers[id]);delete activityDraftTimers[id]});save()}}
+window.addEventListener("pagehide",flushActivityDrafts);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")flushActivityDrafts()});
 function updateQuickWriteCount(id){
   const field=document.getElementById("actText-"+id),counter=document.getElementById("quickCount-"+id),count=sentenceCount(field?.value||"");
   if(counter)counter.textContent=`${count} ${count===1?"sentence":"sentences"}`;
+  saveActivityDraftFromControl(id,field);
 }
 function findItem(id){return D.items.find(x=>x.id===id)}
 function autoQuestionsFor(x){
@@ -846,6 +867,7 @@ async function checkActivity(id){
   const f=document.getElementById("actFeedback-"+id),spec=activitySpec(x),answer=activityAnswerText(x),s=st(id);
   const priorAnswer=String(s.lastActivityAttempt||"");
   let result=validateActivity(x),aiResult=null;
+  const currentParts=structuredActivityParts(answer);s.activityDraftResponse=String((spec.kind==="morph"||spec.kind==="readingPov"||spec.kind==="quickwrite")?currentParts.response:answer||"");s.activityDraftChoice=String(currentParts.choice||s.quickWriteChoice||"");
   s.lastActivityAttempt=answer;s.activityAttempts=(s.activityAttempts||0)+1;s.lastValidatorCode=String(result.code||(result.ok?"passed":"unknown_open_response"));s.lastValidatorMessage=String(result.msg||"");S.items[id]=s;save();
 
   if(curriculumAiEligible(spec,result,answer)){
@@ -876,7 +898,7 @@ async function checkActivity(id){
       const selected=structuredActivityParts(answer).choice;
       if(selected){s.quickWriteChoice=selected;s.quickWriteChoiceLocked=true}
     }
-    s.practiced=true;s.practiceEvidence=answer;s.overrideStatus="";s.teacherReviewEligible=false;s.lastValidatorCode="passed";s.lastValidatorMessage="";
+    s.practiced=true;s.practiceEvidence=answer;delete s.activityDraftResponse;delete s.activityDraftChoice;s.overrideStatus="";s.teacherReviewEligible=false;s.lastValidatorCode="passed";s.lastValidatorMessage="";
     if(aiResult?.decision==="approve")s.lastApprovedAi={model:String(aiResult.model||""),score:aiResult.score!==null&&aiResult.score!==undefined&&Number.isFinite(Number(aiResult.score))?Number(aiResult.score):null,policyVersion:String(aiResult.policyVersion||""),strongRetryUsed:!!aiResult.strongRetryUsed,exceptionalCheckUsed:!!aiResult.exceptionalCheckUsed};else delete s.lastApprovedAi;
     delete s.lastAiTriage;window.DWAcademicAI.clearRevisionGate(s);S.items[id]=s;save();clearCurriculumDraft(id);
     f.textContent=aiResult?.decision==="approve"?`✓ Quest complete. ${curriculumAiAdvice(aiResult,spec,result,answer)}`:result.msg?"✓ "+result.msg:"✓ Quest complete. Your answer passed the lesson check.";

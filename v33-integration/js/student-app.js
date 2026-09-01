@@ -366,7 +366,7 @@ function shell(){
   return `<div class="portal student-shell student-page-${state.page}" data-${IS_PRODUCTION?'release':'tester-build'}="v3.3">
     <header class="student-topbar"><div class="student-brand">
       <div class="brand-lockup"><img class="student-crest" src="assets/branding/dragonswood-mascot-crest.png" alt="Dragonswood mascot crest"><div><div class="brand-name">DRAGONSWOOD</div><div class="brand-sub">STUDENT ADVENTURE PORTAL</div></div></div>
-      <div class="student-utility">${state.isTester?'<button class="btn btn-secondary btn-sm" type="button" data-tester-controls>🧪 <span>Tester Controls</span></button>':''}<button class="btn btn-secondary btn-sm" type="button" data-passes>🎟️ <span>${substituteModeActive()?'Ask sub for pass':'Passes'}</span></button><button class="btn btn-secondary btn-sm" type="button" data-read>🔊 <span>Read aloud</span></button><div class="profile-pill" role="button" tabindex="0" data-account-menu aria-label="Open account menu"><div class="profile-orb">${escapeHtml(state.initial)}</div><span><b>${escapeHtml(state.firstName)}</b><small>Level ${state.level}</small></span></div></div>
+      <div class="student-utility">${state.isTester?'<button class="btn btn-secondary btn-sm" type="button" data-tester-controls>🧪 <span>Tester Controls</span></button>':''}<button class="btn btn-secondary btn-sm" type="button" data-passes>🎟️ <span>${substituteModeActive()?'Ask sub for pass':'Passes'}</span></button><div class="profile-pill" role="button" tabindex="0" data-account-menu aria-label="Open account menu"><div class="profile-orb">${escapeHtml(state.initial)}</div><span><b>${escapeHtml(state.firstName)}</b><small>Level ${state.level}</small></span></div></div>
       </div></header>
     <aside class="student-sidebar">${navMarkup()}</aside>
     <main class="student-main" id="page-content">${state.isTester&&state.simulatedDate?`<div class="tester-date-banner" role="status">🧪 SAFE DATE PREVIEW • real date ${escapeHtml(window.DWV33Core?.phoenixDateKey?.()||'today')} • simulated date ${escapeHtml(state.simulatedDate)} • academic and Boss preview writes are disabled <button type="button" data-return-real-date>Return to Today</button></div>`:''}<div class="student-content">${substituteModeActive()?afternoonSubstituteActive()?`<section class="substitute-student-banner" role="alert"><span>🎮</span><div><h2>Afternoon Substitute Day • 1-hour free-play window</h2><p>${afternoonSubstituteEligible()?'You finished Morning Work and today’s Curriculum Quest. Quest Games and Arcade are unlocked free—no Tokens—until the class window ends.':'Finish Morning Work and every lesson in today’s Current Quest to unlock Quest Games and Arcade free. No Tokens will be used.'} Passes and restricted areas remain closed.</p></div></section>`:'<section class="substitute-student-banner" role="alert"><span>🛑</span><div><h2>Substitute Mode is on today</h2><p>Passes, Kingdom Wars, Deep Time Lab, Dragon Tongues, Arcade, and Boss Battle are unavailable. If you need help or need to leave the room, ask your substitute teacher.</p></div></section>':''}${pageMarkup()}</div></main>
@@ -788,7 +788,6 @@ function bind(){
   const accountMenu=app.querySelector('[data-account-menu]');
   accountMenu?.addEventListener('click',accountDialog);
   accountMenu?.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();accountDialog()}});
-  app.querySelectorAll('[data-read]').forEach(el=>el.addEventListener('click',readPage));
   app.querySelector('[data-passes]')?.addEventListener('click',passesDialog);
   app.querySelector('[data-tester-controls]')?.addEventListener('click',testerControlsDialog);
   app.querySelector('[data-return-real-date]')?.addEventListener('click',()=>{state.simulatedDate='';sessionSet(SIMULATED_DATE_KEY,'');render();showToast('Returned to the real date.');});
@@ -876,13 +875,6 @@ function closeModule(){
 }
 function mountModule(id){if(id)moduleHost?.mount(app,id,document.baseURI)}
 
-async function readPage(){
-  const title=studentNavItems().find(n=>n[0]===state.page)?.[2]||'Dragonswood';
-  if(window.DWV33Narration){
-    try{await window.DWV33Narration.readPage({id:`v33/student/${state.page}`,root:'#page-content',voiceId:'us-brian',contentType:state.page==='scribe'?'ela':'general'});showToast('Brian read-aloud started.');return}catch(err){showToast(err?.message||'Read-aloud could not start.');return}
-  }
-  showToast(`Brian is preparing ${title}. Try the read-aloud again in a moment.`);
-}
 function passesDialog(){
   const rows=state.passes?.rows||{};
   const actionLabel=row=>row?.action==='return'?'✅ I am back':row?.action==='start'?`${row.icon} Use ${row.label} pass`:row?.action==='request'?`🙋 Request extra ${row.label} pass`:row?.action==='pending'?'⏳ Request sent':'🔒 Unavailable';

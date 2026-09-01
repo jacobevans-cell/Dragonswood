@@ -62,6 +62,7 @@ export function emptyStudentState() {
     pageVersions: {},
     passedTests: {},
     attempts: {},
+    chapterOverrides: {},
     completedBookIds: [],
     seriesOverrideBookIds: [],
     storageMode: "device"
@@ -78,6 +79,7 @@ function normalizeStudentState(value) {
     pageVersions: next.pageVersions && typeof next.pageVersions === "object" ? next.pageVersions : {},
     passedTests: next.passedTests && typeof next.passedTests === "object" ? next.passedTests : {},
     attempts: next.attempts && typeof next.attempts === "object" ? next.attempts : {},
+    chapterOverrides: next.chapterOverrides && typeof next.chapterOverrides === "object" ? next.chapterOverrides : {},
     completedBookIds: Array.isArray(next.completedBookIds) ? [...new Set(next.completedBookIds)] : [],
     seriesOverrideBookIds: Array.isArray(next.seriesOverrideBookIds) ? [...new Set(next.seriesOverrideBookIds)] : []
   };
@@ -235,6 +237,15 @@ export async function loadStudentPlans() {
   const store = await directStore();
   if (!store) return [];
   try { return await store.loadStudentPlans(); } catch { return []; }
+}
+
+export async function forceStudentChapter(studentId, bookId, chapterNumber, startPage) {
+  const response = await parentRequest("force-student-chapter", { studentId, bookId, chapterNumber, startPage }, 10000);
+  if (response?.ok) return true;
+  const store = await directStore();
+  if (!store) return false;
+  await store.forceStudentChapter(studentId, bookId, chapterNumber, startPage);
+  return true;
 }
 
 export async function unlockStudentBook(studentId) {

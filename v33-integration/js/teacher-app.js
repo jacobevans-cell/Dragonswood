@@ -3,13 +3,14 @@ const toast=document.querySelector('#toast');
 const dialogRoot=document.querySelector('#dialog-root');
 const IS_PRODUCTION=window.DWV33Integration?.environment==='production';
 let integrationController=null;
+let classLibraryStorePromise=null;
 let integrationSession={status:'loading',message:'Opening Teacher Command…'};
 let teacherName='Mr. Evans';
 const arcadeTeacher=window.DWV33ArcadeTeacher;
 let teacherAlertSignature='';
 
 const navItems=[
- ['student-command','🪄','Student Command'],['gradebook','📊','Gradebook'],['scribe','📜','Scribe Command'],['rewards','🎯','Class Rewards'],['passes','🎟️','Pass Control'],['jobs','🧹','Guild Jobs'],['schedule','🕘','Schedule'],['tools','🧰','Classroom Tools'],['ai-usage','🤖','AI & Billing'],['seating','🪑','Seating Command'],['leaderboards','🏆','Leaderboards']
+ ['student-command','🪄','Student Command'],['gradebook','📊','Gradebook'],['scribe','📜','Scribe Command'],['rewards','🎯','Class Rewards'],['passes','🎟️','Pass Control'],['jobs','🧹','Guild Jobs'],['schedule','🕘','Schedule'],['tools','🧰','Classroom Tools'],['storyvault','📚','Storyvault'],['ai-usage','🤖','AI & Billing'],['seating','🪑','Seating Command'],['leaderboards','🏆','Leaderboards']
 ];
 const arcadeNav=['arcade','🕹️','Arcade Time'];
 function teacherNavItems(){return arcadeTeacher?.enabled?[...navItems,arcadeNav]:navItems}
@@ -63,7 +64,7 @@ function shell(){const visualFreeze=window.DWV33VisualFreeze===true;if(!visualFr
 function referenceButton(){return new URLSearchParams(location.search).get('reference')==='1'?`<button type="button" class="btn btn-gold btn-sm reference-button" data-reference>Reference</button>`:''}
 function pageBanner(icon,eyebrow,title,sub,action=''){return `<section class="teacher-page-banner"><div class="teacher-page-title"><div class="teacher-page-icon">${icon}</div><div><div class="eyebrow">${eyebrow}</div><h2>${title}</h2><p>${sub}</p></div></div>${action}</section>`}
 function metric(icon,label,value,sub){return `<article class="panel metric"><div class="metric-icon">${icon}</div><div><div class="eyebrow">${label}</div><strong>${value}</strong><small>${sub}</small></div></article>`}
-function pageMarkup(){switch(state.page){case'gradebook':return gradebookPage();case'scribe':return scribePage();case'rewards':return rewardsPage();case'passes':return passesPage();case'jobs':return jobsPage();case'schedule':return schedulePage();case'tools':return toolsPage();case'ai-usage':return aiUsagePage();case'seating':return seatingPage();case'leaderboards':return leaderboardsPage();case'arcade':return arcadePage();default:return studentCommandPage()}}
+function pageMarkup(){switch(state.page){case'gradebook':return gradebookPage();case'scribe':return scribePage();case'rewards':return rewardsPage();case'passes':return passesPage();case'jobs':return jobsPage();case'schedule':return schedulePage();case'tools':return toolsPage();case'storyvault':return storyvaultPage();case'ai-usage':return aiUsagePage();case'seating':return seatingPage();case'leaderboards':return leaderboardsPage();case'arcade':return arcadePage();default:return studentCommandPage()}}
 
 function teacherAttentionPanel(){
  const ops=state.operations,attention=ops?.attention||{},progress=state.gradebook?.rows||[],today=state.gradebook?.today||{},events=attention.events||[],kingdom=ops?.kingdomAccess||{},substitute=ops?.substituteMode||{};
@@ -161,6 +162,8 @@ function leaderboardsPage(){
  return `${pageBanner('🏆','Positive recognition','Leaderboard Command','Switch between the current Monday-bounded standings and the complete score history without refreshing.',`<div class="filter-tabs">${['This Week','All Time'].map(range=>`<button type="button" class="filter-tab ${state.leaderRange===range?'active':''}" data-leader-range="${range}" aria-pressed="${state.leaderRange===range}">${range}</button>`).join('')}</div>`)}<article class="panel teacher-podium">${podium.length?podiumCard(podium[0],2,'second')+podiumCard(podium[1],1,'first')+podiumCard(podium[2],3,'third'):'<div class="empty-center"><div>🏆<strong>No qualifying scores yet.</strong></div></div>'}</article><section class="split-main mt-12"><article class="panel leader-table"><div class="row between"><div><div class="eyebrow">${allTime?'All-time Hall of Fame':'This week'}</div><h3>${allTime?'All-Time XP Standings':'Weekly XP Standings'}</h3></div>${allTime?'<span class="selected-badge">View only • rewards stay weekly</span>':'<button class="btn btn-primary btn-sm" data-reward-leaders>Reward top scholars</button>'}</div>${top.length?top.map(row=>`<div class="leader-row"><div class="rank-num">#${row.rank}</div><div class="roster-avatar">${escapeHtml(row.name?.[0]||'?')}</div><b>${escapeHtml(row.name)}</b><span class="gold text-10">${Number(row.score).toLocaleString()} XP</span></div>`).join(''):'<p class="muted">No qualifying scores in this period.</p>'}</article><aside class="panel reward-rules"><div class="eyebrow">Reward rules</div><h3>${allTime?'Hall of Fame':'Weekly Recognition'}</h3>${allTime?'<p>All-time scores are for recognition only. Switch to This Week before issuing rewards.</p>':[['🥇','1st Place','Bonus badge + 20 XP'],['🥈','2nd & 3rd','Bonus badge + 10 XP'],['📚','Reading streak','Class shout-out'],['🌱','Biggest growth','Class shout-out']].map(rule=>`<div class="reward-rule">${rule[0]} <b>${rule[1]}</b><small>${rule[2]}</small></div>`).join('')}<div class="selected-badge mt-12">${allTime?'Rewards disabled in All Time':'Duplicate rewards blocked'}</div></aside></section>`;
 }
 
+function storyvaultHref(){const url=new URL('../class-library.html',document.baseURI);url.searchParams.set('role','teacher');url.searchParams.set('v','storyvault-2.1.1');url.searchParams.set('dwEmbed','1');if(!IS_PRODUCTION)url.searchParams.set('dw-env','emulator');return url.href}
+function storyvaultPage(){return `${pageBanner('📚','Class reading management','Dragonswood Storyvault','Manage book locks, series overrides, chapter tests, and teacher previews without leaving Teacher Command.','<button class="btn btn-secondary btn-sm" type="button" data-page="tools">← Classroom Tools</button>')}<section class="panel" style="padding:0;overflow:hidden;min-height:calc(100vh - 190px)"><iframe data-storyvault-frame title="Dragonswood Storyvault teacher management" src="${escapeHtml(storyvaultHref())}" style="display:block;width:100%;height:calc(100vh - 195px);min-height:720px;border:0;background:#07101f"></iframe></section>`}
 function seatingHref(){const url=new URL('../seating-command/index.html',document.baseURI);url.searchParams.set('v','57.1.15');url.searchParams.set('dwEmbed','1');if(!IS_PRODUCTION)url.searchParams.set('dw-env','emulator');return url.href}
 function seatingPage(){return `${pageBanner('🪑','Classroom layout','Seating Command','Build, optimize, save, and present the room inside the normal Dragonswood teacher route.','<button class="btn btn-secondary btn-sm" type="button" data-page="tools">← Classroom Tools</button>')}<section class="panel" style="padding:0;overflow:hidden;min-height:calc(100vh - 190px)"><iframe title="Seating Command and Room Builder" src="${escapeHtml(seatingHref())}" style="display:block;width:100%;height:calc(100vh - 195px);min-height:690px;border:0;background:#07101f"></iframe></section>`}
 function arcadePage(){
@@ -440,6 +443,33 @@ function stopAmbientSound(){try{ambientContext?.close()}catch{}ambientContext=nu
 async function startVolumeMeter(){stopVolumeMeter();try{volumeStream=await navigator.mediaDevices.getUserMedia({audio:true});const Context=window.AudioContext||window.webkitAudioContext,ctx=new Context(),source=ctx.createMediaStreamSource(volumeStream),analyser=ctx.createAnalyser(),data=new Uint8Array(analyser.frequencyBinCount);source.connect(analyser);const tick=()=>{analyser.getByteFrequencyData(data);const avg=data.reduce((sum,value)=>sum+value,0)/data.length,fill=dialogRoot.querySelector('#volume-meter-fill');if(fill)fill.style.width=`${Math.min(100,avg*1.8)}%`;volumeAnimation=requestAnimationFrame(tick)};tick();volumeStream._dwContext=ctx}catch(err){showToast(err?.message||'Microphone access was not available.')}}
 function stopVolumeMeter(){if(volumeAnimation)cancelAnimationFrame(volumeAnimation);volumeAnimation=null;try{volumeStream?.getTracks().forEach(track=>track.stop());volumeStream?._dwContext?.close()}catch{}volumeStream=null;const fill=dialogRoot.querySelector('#volume-meter-fill');if(fill)fill.style.width='0'}
 function showReference(){const path=references[state.page];if(!path){openDialog('Reference discrepancy',`<p>The supplied teacher screenshot set does not contain a distinct visible Pass Control design. The file named <code>dragonswood-teacher-05-pass-control.jpg</code> visibly shows <b>Class Rewards & Goals</b>.</p><p>This Pass Control page therefore follows the Master Bible requirements and shared teacher visual system instead of inventing a fake “exact” source.</p>`);return}const overlay=document.createElement('div');overlay.className='reference-overlay';overlay.innerHTML=`<button class="btn btn-gold reference-close">Close reference</button><img src="${path}" alt="Approved reference screenshot for current teacher page">`;document.body.appendChild(overlay);overlay.querySelector('button').addEventListener('click',()=>overlay.remove())}
+function classLibraryStore(){
+ classLibraryStorePromise ||= import('./js/integration/class-library-store.js');
+ return classLibraryStorePromise;
+}
+async function handleClassLibraryRequest(event){
+ const message=event.data||{},response={type:'dw-class-library-account-response',requestId:message.requestId,ok:false};
+ try{
+  const store=await classLibraryStore();
+  if(message.action==='load-reading-state')response.state=await store.loadReadingState();
+  else if(message.action==='save-reading-state')response.state=await store.saveReadingState(message.payload?.state);
+  else if(message.action==='load-chapter-tests')response.tests=await store.loadChapterTests();
+  else if(message.action==='save-chapter-test')response.test=await store.saveChapterTest(message.payload?.test);
+  else if(message.action==='grade-library-summary')response.result=await store.gradeLibrarySummary(message.payload);
+  else if(message.action==='load-student-plans')response.plans=await store.loadStudentPlans();
+  else if(message.action==='unlock-student-book')response.saved=await store.unlockStudentBook(message.payload?.studentId);
+  else if(message.action==='allow-next-series-book')response.saved=await store.allowNextSeriesBook(message.payload?.studentId,message.payload?.nextBookId);
+  else throw new Error('Unknown class library request.');
+  response.ok=true;
+ }catch(err){response.error=String(err?.message||err||'Class library account storage is unavailable.').slice(0,500)}
+ event.source?.postMessage(response,event.origin);
+}
+function handleTeacherModuleMessage(event){
+ if(event.origin!==location.origin||event.data?.type!=='dw-class-library-account-request')return;
+ const frame=app.querySelector('[data-storyvault-frame]');
+ if(frame&&event.source===frame.contentWindow)handleClassLibraryRequest(event);
+}
+window.addEventListener('message',handleTeacherModuleMessage);
 window.addEventListener('hashchange',()=>{if(integrationSession.status==='authorized')render()});
 (async function bootstrapIntegration(){
  if(!window.DWV33Integration){integrationSession={status:'error',message:'Integration runtime did not load.'};render();return}

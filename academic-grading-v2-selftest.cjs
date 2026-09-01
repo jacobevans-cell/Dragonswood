@@ -30,7 +30,7 @@ pass("capitalization task stays deterministic",!G.shouldUseAiRescue({prompt:"Whi
 pass("unusual open wording may use AI rescue",G.shouldUseAiRescue({prompt:"Explain why erosion changes land.",answer:"erosion"},"water carries dirt away"));
 
 const daily=fs.readFileSync("daily-quest.html","utf8");
-pass("Daily loads current AI client",daily.includes("dragonswood-academic-ai-client.js?v=56.21.5"));
+pass("Daily loads current AI client",daily.includes("dragonswood-academic-ai-client.js?v=56.22.0"));
 pass("Daily imports Firebase Functions",daily.includes("firebase-functions.js"));
 pass("Daily uses contextual equivalence",daily.includes("questionAnswerEquivalent(q,value)"));
 pass("Daily blocks multiword cold typing",daily.includes("minimalAcceptedAnswer?.(q)"));
@@ -42,18 +42,18 @@ pass("Daily AI fallback remains question-specific",daily.includes("function dail
 pass("Daily review waits for three changed answers",daily.includes("dwRegisterDailyReviewAttempt")&&daily.includes("REVISE ${gate.count}/${gate.required} BEFORE REVIEW"));
 
 const curr=fs.readFileSync("curriculum-quest.html","utf8");
-pass("Curriculum loads current AI client",curr.includes("dragonswood-academic-ai-client.js?v=56.21.5"));
+pass("Curriculum loads current AI client",curr.includes("dragonswood-academic-ai-client.js?v=56.22.0"));
 pass("Curriculum imports Firebase Functions",curr.includes("firebase-functions.js"));
 pass("Curriculum checker async",curr.includes("async function checkActivity(id)"));
 pass("Curriculum reasoning rescue",curr.includes("async function curriculumAiRescue"));
 pass("Curriculum exposes safe item-state saving",curr.includes("function saveCurriculumItemState(id,itemState)"));
-pass("Curriculum cache-busts enhancement loader",curr.includes("q1-curriculum-enhancements.js?v=57.1.6"));
+pass("Curriculum cache-busts enhancement loader",curr.includes("q1-curriculum-enhancements.js?v=57.1.7"));
 pass("Curriculum displays response-specific AI advice",curr.includes("function curriculumAiAdvice")&&curr.includes("Almost there—your answer was saved"));
 pass("Curriculum always has response-aware AI fallback",curr.includes("function curriculumFallbackAdvice")&&curr.includes("morphologyAdvice?.(structured.response,spec.word)"));
 pass("Curriculum review waits for three changed answers",curr.includes("registerRevisionAttempt(s,answer,priorAnswer)")&&curr.includes("REVISE ${reviewGate.count}/${reviewGate.required} BEFORE REVIEW"));
 
 const aiClient=fs.readFileSync("dragonswood-academic-ai-client.js","utf8"),aiContext={window:{},console};vm.createContext(aiContext);vm.runInContext(aiClient,aiContext);
-pass("AI client exposes student-facing advice",aiContext.window.DWAcademicAI?.version==="1.3.0"&&typeof aiContext.window.DWAcademicAI?.studentAdvice==="function");
+pass("AI client exposes student-facing advice",aiContext.window.DWAcademicAI?.version==="1.4.0"&&typeof aiContext.window.DWAcademicAI?.studentAdvice==="function");
 pass("AI advice uses specific model reason",aiContext.window.DWAcademicAI.studentAdvice({decision:"review",reason:"Name what the word 'this' refers to."},"fallback")==="Name what the word 'this' refers to.");
 pass("AI outage uses safe generic fallback",aiContext.window.DWAcademicAI.studentAdvice({decision:"review",reason:"AI rescue is temporarily unavailable. Use teacher review."},"Add a specific detail.")==="Add a specific detail.");
 pass("AI retry-cap falls back to useful first-pass advice",aiContext.window.DWAcademicAI.studentAdvice({decision:"review",reason:"Your daily focused-check cap reached.",strongRetryReason:"Your daily focused-check cap reached.",primaryReason:"The word 'this' is too vague; name what you were subjecting yourself to."},"generic")==="The word 'this' is too vague; name what you were subjecting yourself to.");
@@ -94,12 +94,13 @@ pass("AI usage teacher-readable",rules.includes("match /academicAiUsage/{docId}"
 pass("AI cache client-denied",rules.includes("match /academicAnswerAiCache/{docId}"));
 pass("Override triage metadata is update-safe",rules.includes("'strongRetryUsed','strongRetryDecision','strongRetryConfidence','escalationReason'"));
 const backend=fs.readFileSync("functions-academic-ai/index.js","utf8");
-pass("Academic rescue keeps the existing nano model",backend.includes('DEFAULT_MODEL="gpt-5-nano"')&&!/gpt-5(?:\.4)?-mini/.test(backend));
-pass("Academic rescue uses the raised AI guardrails",backend.includes("perStudentDailyCallCap:40")&&backend.includes("dailyClassCallCap:1000")&&backend.includes("focusedRetryPerStudentDailyCallCap:10")&&backend.includes("focusedRetryDailyClassCallCap:100"));
+pass("Academic rescue routes Luna then Terra then exceptional Sol",backend.includes('PRIMARY_MODEL="gpt-5.6-luna"')&&backend.includes('FOCUSED_MODEL="gpt-5.6-terra"')&&backend.includes('EXCEPTIONAL_MODEL="gpt-5.6-sol"')&&!backend.includes('gpt-5-nano'));
+pass("Academic rescue uses the raised AI guardrails",backend.includes("perStudentDailyCallCap:40")&&backend.includes("dailyClassCallCap:1000")&&backend.includes("focusedRetryPerStudentDailyCallCap:10")&&backend.includes("focusedRetryDailyClassCallCap:100")&&backend.includes("exceptionalMonthlyClassCallCap:25")&&backend.includes("monthlyBudgetUsd:5"));
 pass("Server answer cache is checked before paid usage",backend.includes("normalizedAnswer(p.studentAnswer)")&&backend.indexOf("const cacheRef=")<backend.indexOf("try{await reservePaidCall"));
-pass("Ambiguous retry uses the same configured model",backend.includes('model:cfg.model,instructions:stage==="focused"?FOCUSED_SYSTEM:SYSTEM'));
+pass("Ambiguous work routes to the stage-specific model",backend.includes('modelForStage(stage)')&&backend.includes('callAnswerJudge(request.auth.uid,p,cfg,dateKey,"exceptional")'));
 pass("Focused retry has separate class and student caps",backend.includes("focusedRetryPerStudentDailyCallCap")&&backend.includes("focusedRetryDailyClassCallCap"));
-pass("Focused retry cache is stage-specific",backend.includes("cfg.model,stage,p.mode"));
+pass("Focused retry cache is model and stage specific",backend.includes("model,stage,p.taskType,p.mode"));
+pass("Quickwrite evidence is scored by application code",backend.includes("evaluateQuickwriteEvidence(p.studentAnswer,parsed,p.requiredSentenceRange)")&&backend.includes("quickwrite?QUICKWRITE_SCHEMA:ANSWER_SCHEMA"));
 pass("Only high-confidence AI decisions can resolve",backend.includes('if(confidence!=="high")decision="review"'));
 pass("Academic grader requests concise student-facing reasons",backend.includes('one short, student-facing sentence')&&backend.includes('specific unclear or missing part'));
 try{cp.execFileSync(process.execPath,["--check","functions-academic-ai/index.js"],{stdio:"pipe"});pass("backend JavaScript syntax",true)}

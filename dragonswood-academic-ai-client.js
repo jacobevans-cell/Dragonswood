@@ -1,4 +1,4 @@
-/* Dragonswood cost-controlled academic AI rescue client v1.3.0 */
+/* Dragonswood cost-controlled academic AI rescue client v1.4.0 */
 (function(){
   "use strict";
   if(window.DWAcademicAI)return;
@@ -34,12 +34,12 @@
     delete state.reviewBaselineFingerprint;delete state.reviewAttemptFingerprints;delete state.reviewRevisionAttempts;
   }
   function cleanPayload(p={}){
-    return {source:clip(p.source||"unknown",40),mode:p.mode==="reasoning"?"reasoning":"equivalence",
+    return {source:clip(p.source||"unknown",40),mode:p.mode==="reasoning"?"reasoning":"equivalence",taskType:clip(p.taskType||"",40),
       questionId:clip(p.questionId||"",180),skillId:clip(p.skillId||"",180),gradeBand:clip(p.gradeBand||"4-5",20),
-      prompt:clip(p.prompt||"",1400),expectedAnswer:clip(p.expectedAnswer||"",500),studentAnswer:clip(p.studentAnswer||"",800),
-      rubric:clip(p.rubric||"",1200),strictConventions:!!p.strictConventions};
+      prompt:clip(p.prompt||"",2000),promptFinalEvent:clip(p.promptFinalEvent||"",1000),expectedAnswer:clip(p.expectedAnswer||"",500),studentAnswer:clip(p.studentAnswer||"",5000),
+      rubric:clip(p.rubric||"",1600),requiredSentenceRange:Array.isArray(p.requiredSentenceRange)?p.requiredSentenceRange.slice(0,2).map(Number):[],strictConventions:!!p.strictConventions};
   }
-  const key=p=>JSON.stringify([p.mode,p.questionId,p.skillId,p.prompt,p.expectedAnswer,answerFingerprint(p.studentAnswer),p.rubric,p.strictConventions]);
+  const key=p=>JSON.stringify([p.mode,p.taskType,p.questionId,p.skillId,p.prompt,p.promptFinalEvent,p.expectedAnswer,answerFingerprint(p.studentAnswer),p.rubric,p.requiredSentenceRange,p.strictConventions]);
   function configure(fn){transport=typeof fn==="function"?fn:null}
   function studentAdvice(result,fallback="Add one specific detail that shows your thinking."){
     const administrative=/temporarily unavailable|not connected|daily .*cap|unreadable result|disabled by the teacher|use teacher review|numeric equivalence|convention-specific work/i;
@@ -62,12 +62,14 @@
         primaryDecision:clip(raw?.primaryDecision||"",40),primaryConfidence:clip(raw?.primaryConfidence||"",20),
         primaryReason:clip(raw?.primaryReason||"",240),strongRetryUsed:!!raw?.strongRetryUsed,
         strongRetryDecision:clip(raw?.strongRetryDecision||"",40),strongRetryConfidence:clip(raw?.strongRetryConfidence||"",20),
-        strongRetryReason:clip(raw?.strongRetryReason||"",240),escalationReason:clip(raw?.escalationReason||"",240)};
+        strongRetryReason:clip(raw?.strongRetryReason||"",240),exceptionalCheckUsed:!!raw?.exceptionalCheckUsed,
+        exceptionalDecision:clip(raw?.exceptionalDecision||"",40),exceptionalConfidence:clip(raw?.exceptionalConfidence||"",20),
+        exceptionalReason:clip(raw?.exceptionalReason||"",240),score:Number.isFinite(raw?.score)?Number(raw.score):null,escalationReason:clip(raw?.escalationReason||"",240)};
       sessionCache.set(k,result);return result;
     }catch(err){
       console.warn("Academic AI rescue unavailable",err);
       return {decision:"unavailable",confidence:"low",reason:"AI rescue is temporarily unavailable.",paidCall:false};
     }
   }
-  window.DWAcademicAI={version:"1.3.0",configure,judge,studentAdvice,answerFingerprint,revisionGate,registerRevisionAttempt,clearRevisionGate,clear:()=>sessionCache.clear()};
+  window.DWAcademicAI={version:"1.4.0",configure,judge,studentAdvice,answerFingerprint,revisionGate,registerRevisionAttempt,clearRevisionGate,clear:()=>sessionCache.clear()};
 })();

@@ -18,11 +18,13 @@
         {
           label:"Option 1 • The Secret Scoreboard",
           prompt:"During the championship game, the scoreboard suddenly displayed a secret map instead of the score. Then the team mascot pointed toward a locked tunnel beneath the bleachers. Continue the story.",
+          finalEvent:"Then the team mascot pointed toward a locked tunnel beneath the bleachers.",
           keywords:["championship","game","scoreboard","map","score","team","mascot","tunnel","bleachers","locked"]
         },
         {
           label:"Option 2 • The Moonlight Kingdom",
           prompt:"A silver fox wearing a tiny crown appeared beside the costume rack and whispered, “The Moonlight Kingdom has lost its princess—and only you can find her.” Continue the story.",
+          finalEvent:"A silver fox wearing a tiny crown appeared beside the costume rack and whispered, “The Moonlight Kingdom has lost its princess—and only you can find her.”",
           keywords:["silver fox","fox","crown","costume","moonlight","kingdom","princess","find","whisper","magic"]
         }
       ]
@@ -33,11 +35,13 @@
         {
           label:"Option 1 • The Compass in the Handlebars",
           prompt:"During a mountain-bike race, Kai’s handlebars opened to reveal a glowing compass. It pointed away from the finish line and toward an abandoned research station. Continue the story.",
+          finalEvent:"It pointed away from the finish line and toward an abandoned research station.",
           keywords:["mountain","bike","race","kai","handlebars","compass","finish","abandoned","research station","glowing"]
         },
         {
           label:"Option 2 • The Crystal Locket",
           prompt:"While preparing for the school dance, Ava found a crystal locket inside an old costume box. When she opened it, the ballroom in the mirror filled with people who had disappeared one hundred years ago. Continue the story.",
+          finalEvent:"When she opened it, the ballroom in the mirror filled with people who had disappeared one hundred years ago.",
           keywords:["dance","ava","crystal","locket","costume","mirror","ballroom","disappeared","past","hundred years"]
         }
       ]
@@ -49,11 +53,13 @@
         {
           label:"Option 1 • The Hidden Level",
           prompt:"During the final round of a school gaming tournament, Kai’s screen suddenly showed a hidden level that was not part of the game. A message appeared: “Win this level before the timer reaches zero, or your entire school will disappear.” Continue the story.",
+          finalEvent:"A message appeared: “Win this level before the timer reaches zero, or your entire school will disappear.”",
           keywords:["gaming","tournament","kai","screen","hidden level","game","message","timer","school","disappear","level"]
         },
         {
           label:"Option 2 • The Dragon’s Bracelet",
           prompt:"While helping backstage at the school play, Ava found a silver bracelet shaped like a tiny dragon. The moment she put it on, the dragon opened its eyes and whispered, “They finally found us.” Continue the story.",
+          finalEvent:"The moment she put it on, the dragon opened its eyes and whispered, “They finally found us.”",
           keywords:["backstage","school play","ava","silver","bracelet","dragon","eyes","whispered","found","us"]
         }
       ]
@@ -65,11 +71,13 @@
         {
           label:"Option 1 • The Hidden Level",
           prompt:"During the final round of a school gaming tournament, Kai’s screen suddenly showed a hidden level that was not part of the game. A message appeared: “Win this level before the timer reaches zero, or your entire school will disappear.” Continue the story.",
+          finalEvent:"A message appeared: “Win this level before the timer reaches zero, or your entire school will disappear.”",
           keywords:["gaming","tournament","kai","screen","hidden level","game","message","timer","school","disappear","level"]
         },
         {
           label:"Option 2 • The Dragon’s Bracelet",
           prompt:"While helping backstage at the school play, Ava found a silver bracelet shaped like a tiny dragon. The moment she put it on, the dragon opened its eyes and whispered, “They finally found us.” Continue the story.",
+          finalEvent:"The moment she put it on, the dragon opened its eyes and whispered, “They finally found us.”",
           keywords:["backstage","school play","ava","silver","bracelet","dragon","eyes","whispered","found","us"]
         }
       ]

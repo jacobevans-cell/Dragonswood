@@ -152,12 +152,12 @@ body>*{position:relative;z-index:1}
   </div>
 </div>
 <script src="q1-curriculum-data.js"></script>
-<script src="q1-curriculum-day21-overrides.js?v=7"></script>
+<script src="q1-curriculum-day21-overrides.js?v=8"></script>
 <script src="q1-curriculum-enhancements.js?v=57.1.7"></script>
 <script src="q1-video-map.js?v=57.1.6"></script>
 <script src="curriculum-question-engine.js"></script>
 <script src="dragonswood-curriculum-validation.js?v=1.0.2"></script>
-<script src="dragonswood-academic-ai-client.js?v=56.21.5"></script>
+<script src="dragonswood-academic-ai-client.js?v=56.22.0"></script>
 <script>
 const DW_LOCAL_TESTER_PARAMS=new URLSearchParams(location.search),DW_LOCAL_TESTER_HOST=/^(?:localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
 window.DWCurriculumLocalTester=DW_LOCAL_TESTER_HOST&&DW_LOCAL_TESTER_PARAMS.get("dw-local-tester")==="1";
@@ -549,6 +549,7 @@ function activitySpec(x){
     const options=x.quickWriteOptions.slice(0,2).map((option,index)=>({
       label:String(option.label||`Option ${index+1}`),
       prompt:String(option.prompt||""),
+      finalEvent:String(option.finalEvent||""),
       keywords:Array.isArray(option.keywords)?option.keywords:[]
     }));
     return {kind:"quickwrite",title:"Quickwrite Choice",prompt:`Choose one prompt and write ${quickWriteSentenceTarget(range)} complete sentences. Dragonswood checks that your response answers the prompt you selected.`,options,sentenceRange:range};
@@ -639,7 +640,8 @@ function validateActivity(x){
     const quality=meaningfulText(written,Math.max(15,minimum*4));if(!quality.ok)return {...quality,aiEligible:false};
     const matches=quickWriteTopicMatches(written,selected.keywords);
     if(matches.length<2)return {ok:false,code:"off_topic",msg:"Connect your response more clearly to the Quickwrite prompt you selected."};
-    return {ok:true,code:"passed",msg:`Auto-approved: ${count} complete sentences, and the story stays connected to ${selected.label}.`};
+    if(window.DWCurriculumLocalTester)return {ok:true,code:"passed",msg:`Auto-approved: ${count} complete sentences, and the story stays connected to ${selected.label}.`};
+    return {ok:false,code:"needs_narrative_grade",aiEligible:true,msg:"Dragonswood is checking the events, details, and ending in your continuation."};
   }
   if(spec.kind==="morph"){
     if(choice!==spec.word)return {ok:false,code:"missing_choice",msg:"Choose the lesson's target word first."};
@@ -704,7 +706,7 @@ function renderActivity(x){
   } else controls=`<textarea class="activity-input" id="actText-${x.id}" placeholder="Write your answer here…">${esc(answer)}</textarea>`;
   const reviewLabel=status==="pending"?"🟡 TEACHER REVIEW REQUESTED":status==="approved"?"✅ TEACHER OVERRIDE APPROVED":reviewGate.unlocked?"🛡️ REQUEST TEACHER REVIEW":`🔒 REVISE ${reviewGate.count}/${reviewGate.required} BEFORE REVIEW`;
   const reviewNote=reviewGate.unlocked?"You completed three genuine revisions. Teacher Review is now available.":`Teacher Review unlocks after ${reviewGate.remaining} more changed ${reviewGate.remaining===1?"answer":"answers"}. Repeating the same answer does not count.`;
-  const approvalRow=quickwritePassed?`<div class="override-row"><button class="override-btn approved" type="button" disabled>✅ AUTO-APPROVED</button><span class="override-note">Sentence count and selected-prompt content passed automatically.</span></div>`:x.subject==="Math"?`<div class="override-row"><span class="override-note">Math is checked automatically. Revise and try again if it does not pass yet.</span></div>`:`<div class="override-row"><button class="override-btn ${status}" id="overrideBtn-${x.id}" onclick="requestOverride('${x.id}')" ${status==="pending"||status==="approved"||reviewLocked?"disabled":""}>${reviewLabel}</button><span class="override-note">${reviewNote}</span></div>`;
+  const approvalRow=quickwritePassed?`<div class="override-row"><button class="override-btn approved" type="button" disabled>✅ AUTO-APPROVED</button><span class="override-note">Narrative evidence passed the automatic grader.</span></div>`:x.subject==="Math"?`<div class="override-row"><span class="override-note">Math is checked automatically. Revise and try again if it does not pass yet.</span></div>`:`<div class="override-row"><button class="override-btn ${status}" id="overrideBtn-${x.id}" onclick="requestOverride('${x.id}')" ${status==="pending"||status==="approved"||reviewLocked?"disabled":""}>${reviewLabel}</button><span class="override-note">${reviewNote}</span></div>`;
   return `${renderAutoPractice(x)}<div class="activity-shell"><div class="activity-title">Apply What You Learned • ${esc(spec.title)}</div><div class="activity-prompt">${esc(spec.prompt)}</div>${frameHtml}${controls}<div class="actions"><button class="btn" onclick="checkActivity('${x.id}')">${s.practiced?"CHECK AGAIN":"CHECK MY WORK"}</button></div><div class="activity-feedback${quickwritePassMessage?" show good":""}" id="actFeedback-${x.id}">${esc(quickwritePassMessage)}</div>${approvalRow}${status==="returned"&&s.teacherNote?`<div class="teacher-note"><b>↩ Teacher feedback:</b> ${esc(s.teacherNote)}</div>`:""}</div>`;
 }
 async function lockQuickWriteChoice(id,choice,control){
@@ -800,7 +802,7 @@ async function curriculumAiRescue(x,spec,answer,result){
     "Respond directly to the task.",
     concepts.length?`Relevant lesson ideas include: ${concepts.join(", ")}.`:"",
     quickOption?`The student selected this Quickwrite: ${quickOption.prompt}`:"",
-    spec.kind==="quickwrite"?`The required ${quickWriteSentenceTarget(spec.sentenceRange)} sentence count already passed; judge only whether the writing meaningfully answers the selected Quickwrite.`:"",
+    spec.kind==="quickwrite"?`The required ${quickWriteSentenceTarget(spec.sentenceRange)} sentence count already passed. Extract only evidence actually present in the student's continuation; the application calculates the score.`:"",
     spec.kind==="inference"?"Approve when the response gives a plausible interpretation plus a concrete action, statement, thought, event, or observation supporting it. Do not require the literal words inference, clue, evidence, or text.":"",
     spec.kind==="writingCommunity"?"Approve helpful Writing Community feedback that gives a specific praise, relevant question, or useful suggestion. A suggestion should explain how or why it would help; valid connectors include because and so.":"",
     spec.kind==="opinion"?"Require a recognizable stance or recommendation plus a meaningfully connected reason or result. Do not treat a connector word by itself as sufficient.":"",
@@ -811,9 +813,10 @@ async function curriculumAiRescue(x,spec,answer,result){
     `Free-validator concern: ${result.msg||"response did not match the rule check"}`
   ].filter(Boolean).join(" ");
   return window.DWAcademicAI.judge({
-    source:"curriculum",mode:"reasoning",questionId:String(x.id||""),skillId:String(x.strand||x.subject||""),
+    source:"curriculum",mode:"reasoning",taskType:spec.kind==="quickwrite"?"narrative_quickwrite":"",questionId:String(x.id||""),skillId:String(x.strand||x.subject||""),
     gradeBand:x.grade==="I"?"4":"5",prompt:String(quickOption?.prompt||spec.prompt||activityFor(x)||""),expectedAnswer:spec.kind==="morph"?String(spec.meaning||""):concepts.join(", "),
-    studentAnswer:String(spec.kind==="morph"?structured.response:answer||""),rubric,strictConventions:false
+    promptFinalEvent:String(quickOption?.finalEvent||""),requiredSentenceRange:spec.kind==="quickwrite"?spec.sentenceRange:[],
+    studentAnswer:String(spec.kind==="morph"||spec.kind==="quickwrite"?structured.response:answer||""),rubric,strictConventions:false
   });
 }
 async function checkActivity(id){

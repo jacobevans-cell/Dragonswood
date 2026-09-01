@@ -59,6 +59,7 @@ main{padding:20px 0 35px}.hero{padding:22px;display:grid;grid-template-columns:1
 .self-lesson .remember{margin-top:8px;color:#c9bee0;font-size:12px}
 .mission-note{display:inline-block;margin-top:8px;padding:5px 8px;border-radius:999px;background:#1b1530;border:1px solid #4a3863;color:#d8caef;font-size:11px;font-weight:900}
 .lesson-vocab-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}.lesson-vocab-card{padding:10px;border:1px solid #46345f;border-radius:8px;background:#0c0918}.lesson-vocab-card b{display:block;color:#8eeeff;margin-bottom:3px}.lesson-challenge{margin-top:9px;padding:10px 12px;border:1px dashed #6a518c;border-radius:7px;background:#161025;color:#f4e8ff}
+.lesson-reading{margin-top:12px;border:1px solid #3c5579;border-radius:9px;background:#080d1d;color:#f7f2ff}.lesson-reading summary{cursor:pointer;padding:11px 13px;color:#8eeeff;font-weight:1000}.lesson-reading-body{padding:0 14px 14px}.lesson-reading-body p{margin:0 0 11px;line-height:1.65}.lesson-reading-body p:last-child{margin-bottom:0}
 @media(max-width:620px){.lesson-vocab-grid{grid-template-columns:1fr}}
 
 /* v55.22 — shared enchanted Dragonswood environment */
@@ -121,7 +122,7 @@ body>*{position:relative;z-index:1}
       <label>Day <input id="day" type="number" min="1" max="40" value="14" style="width:62px"></label>
       <select id="teacherStudent" style="display:none;max-width:220px"><option value="">Select a scholar…</option></select>
       <span id="teacherBadge" class="btn" style="display:none">🛡️ TEACHER VERIFIED</span>
-      <span id="localTesterControls" class="local-tester-controls"><span id="localTesterStatus" class="tester-status">DAY 21 TESTER</span><button type="button" class="stage tester-override" onclick="markTesterVideosWatched()">MARK DAY 21 VIDEOS WATCHED</button><button type="button" class="stage" onclick="resetTesterGrade()">RESET GRADE TEST</button></span>
+      <span id="localTesterControls" class="local-tester-controls"><span id="localTesterStatus" class="tester-status">DAY TESTER</span><button id="localTesterMarkVideos" type="button" class="stage tester-override" onclick="markTesterVideosWatched()">MARK DAY VIDEOS WATCHED</button><button type="button" class="stage" onclick="resetTesterGrade()">RESET GRADE TEST</button></span>
       <a class="btn" href="index.html">← Portal</a>
     </div></div></header>
 <main class="shell">
@@ -151,8 +152,8 @@ body>*{position:relative;z-index:1}
   </div>
 </div>
 <script src="q1-curriculum-data.js"></script>
-<script src="q1-curriculum-day21-overrides.js?v=4"></script>
-<script src="q1-curriculum-enhancements.js?v=57.1.6"></script>
+<script src="q1-curriculum-day21-overrides.js?v=7"></script>
+<script src="q1-curriculum-enhancements.js?v=57.1.7"></script>
 <script src="q1-video-map.js?v=57.1.6"></script>
 <script src="curriculum-question-engine.js"></script>
 <script src="dragonswood-curriculum-validation.js?v=1.0.2"></script>
@@ -161,7 +162,8 @@ body>*{position:relative;z-index:1}
 const DW_LOCAL_TESTER_PARAMS=new URLSearchParams(location.search),DW_LOCAL_TESTER_HOST=/^(?:localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
 window.DWCurriculumLocalTester=DW_LOCAL_TESTER_HOST&&DW_LOCAL_TESTER_PARAMS.get("dw-local-tester")==="1";
 window.DWCurriculumTesterVideoTools=window.DWCurriculumLocalTester;
-const DW_LOCAL_TESTER_DAY=21;
+const DW_LOCAL_TESTER_DAY_REQUESTED=Number(DW_LOCAL_TESTER_PARAMS.get("day"));
+const DW_LOCAL_TESTER_DAY=Number.isInteger(DW_LOCAL_TESTER_DAY_REQUESTED)&&DW_LOCAL_TESTER_DAY_REQUESTED>=1&&DW_LOCAL_TESTER_DAY_REQUESTED<=40?DW_LOCAL_TESTER_DAY_REQUESTED:21;
 const D=window.DRAGONSWOOD_DATA, VM=window.DRAGONSWOOD_VIDEO_MAP||{}, BASE_K="dragonswood_q1_integrated_progress_v4";
 const Q1_SCHOOL_DAYS={"2026-08-03":1,"2026-08-04":2,"2026-08-05":3,"2026-08-06":4,"2026-08-07":5,"2026-08-10":6,"2026-08-11":7,"2026-08-12":8,"2026-08-13":9,"2026-08-14":10,"2026-08-17":11,"2026-08-18":12,"2026-08-19":13,"2026-08-20":14,"2026-08-21":15,"2026-08-24":16,"2026-08-25":17,"2026-08-26":18,"2026-08-27":19,"2026-08-28":20,"2026-08-31":21,"2026-09-01":22,"2026-09-02":23,"2026-09-03":24,"2026-09-04":25,"2026-09-08":26,"2026-09-09":27,"2026-09-10":28,"2026-09-11":29,"2026-09-14":30,"2026-09-15":31,"2026-09-16":32,"2026-09-17":33,"2026-09-18":34,"2026-09-21":35,"2026-09-22":36,"2026-09-23":37,"2026-09-24":38,"2026-09-25":39,"2026-09-28":40};
 function q1CalendarCursor(){const today=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Phoenix",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date()),dates=Object.keys(Q1_SCHOOL_DAYS).sort(),todayDay=Q1_SCHOOL_DAYS[today];if(todayDay)return todayDay;const next=dates.find(d=>d>today);if(next)return Q1_SCHOOL_DAYS[next];return 40}
@@ -188,8 +190,9 @@ function localTesterVideoRows(){return D.items.filter(x=>x.grade===S.grade&&Numb
 function curriculumVideoTesterEnabled(){return window.DWCurriculumLocalTester===true||window.DWCurriculumTesterVideoTools===true}
 function updateLocalTesterStatus(){
   if(!window.DWCurriculumLocalTester)return;
-  const videos=localTesterVideoRows(),watched=videos.filter(x=>st(x.id).watched).length,status=document.getElementById("localTesterStatus");
-  if(status)status.textContent=`DAY 21 TESTER • ${watched}/${videos.length} VIDEOS WATCHED`;
+  const videos=localTesterVideoRows(),watched=videos.filter(x=>st(x.id).watched).length,status=document.getElementById("localTesterStatus"),mark=document.getElementById("localTesterMarkVideos");
+  if(status)status.textContent=`DAY ${DW_LOCAL_TESTER_DAY} TESTER • ${watched}/${videos.length} VIDEOS WATCHED`;
+  if(mark)mark.textContent=`MARK DAY ${DW_LOCAL_TESTER_DAY} VIDEOS WATCHED`;
 }
 function setTesterVideoWatched(id,watched){
   if(!curriculumVideoTesterEnabled())return;
@@ -382,8 +385,8 @@ function miniLessonFor(x){
 }
 function renderMiniLesson(x){
   if(x.lessonContent){
-    const lesson=x.lessonContent,vocabulary=Array.isArray(lesson.vocabulary)?lesson.vocabulary:[];
-    return `<div class="self-lesson"><div class="lesson-banner">${esc(lesson.banner||"📖 LEARN IT HERE")}</div><div class="key-idea">${esc(lesson.keyIdea||"")}</div>${vocabulary.length?`<div class="lesson-vocab-grid">${vocabulary.map(row=>`<div class="lesson-vocab-card"><b>${esc(row.term||"")}</b><span>${esc(row.definition||"")}</span></div>`).join("")}</div>`:""}${lesson.example?`<div class="example-box"><strong>Collision example:</strong> ${esc(lesson.example)}</div>`:""}${lesson.remember?`<div class="remember"><strong>Remember:</strong> ${esc(lesson.remember)}</div>`:""}${lesson.challenge?`<div class="lesson-challenge"><strong>Try it:</strong> ${esc(lesson.challenge)}</div>`:""}<span class="mission-note">Watch → Investigate → Explain the energy transfer</span></div>`;
+    const lesson=x.lessonContent,vocabulary=Array.isArray(lesson.vocabulary)?lesson.vocabulary:[],passage=String(lesson.readingPassage||"").trim();
+    return `<div class="self-lesson"><div class="lesson-banner">${esc(lesson.banner||"📖 LEARN IT HERE")}</div><div class="key-idea">${esc(lesson.keyIdea||"")}</div>${vocabulary.length?`<div class="lesson-vocab-grid">${vocabulary.map(row=>`<div class="lesson-vocab-card"><b>${esc(row.term||"")}</b><span>${esc(row.definition||"")}</span></div>`).join("")}</div>`:""}${passage?`<details class="lesson-reading" open><summary>📖 ${esc(lesson.readingTitle||"Read the lesson text")}</summary><div class="lesson-reading-body">${passage.split(/\n\s*\n/).map(paragraph=>`<p>${esc(paragraph)}</p>`).join("")}</div></details>`:""}${lesson.example?`<div class="example-box"><strong>${esc(lesson.exampleLabel||"Example")}:</strong> ${esc(lesson.example)}</div>`:""}${lesson.remember?`<div class="remember"><strong>${esc(lesson.rememberLabel||"Remember")}:</strong> ${esc(lesson.remember)}</div>`:""}${lesson.challenge?`<div class="lesson-challenge"><strong>${esc(lesson.challengeLabel||"Try it")}:</strong> ${esc(lesson.challenge)}</div>`:""}<span class="mission-note">${esc(lesson.missionNote||"Watch → Learn → Show what you know")}</span></div>`;
   }
   const morph=morphFor(x);
   if(morph){
@@ -532,6 +535,10 @@ function quickWriteTopicMatches(value,keywords=[]){
     return new RegExp(`\\b${escaped}(?:s|es|ed|ing)?\\b`,"i").test(text);
   });
 }
+function quickWriteSentenceTarget(range){
+  const minimum=Number(range?.[0]||0),maximum=Number(range?.[1]||minimum);
+  return minimum===maximum?String(minimum):`${minimum}–${maximum}`;
+}
 function activitySpec(x){
   const raw=((x.resourceName||"")+" "+(x.requirement||"")+" "+(x.strand||"")).toLowerCase();
   const h=hashNum(x.id);
@@ -544,7 +551,11 @@ function activitySpec(x){
       prompt:String(option.prompt||""),
       keywords:Array.isArray(option.keywords)?option.keywords:[]
     }));
-    return {kind:"quickwrite",title:"Quickwrite Choice",prompt:`Choose one prompt and write ${range[0]}–${range[1]} complete sentences. Dragonswood checks that your response answers the prompt you selected.`,options,sentenceRange:range};
+    return {kind:"quickwrite",title:"Quickwrite Choice",prompt:`Choose one prompt and write ${quickWriteSentenceTarget(range)} complete sentences. Dragonswood checks that your response answers the prompt you selected.`,options,sentenceRange:range};
+  }
+
+  if(x.readingThemeMission){
+    return {kind:"inference",title:"Theme Evidence Mission",prompt:activityFor(x),keywords:["theme","message","character","evidence","because","shows"],minWords:x.grade==="K"?28:20};
   }
 
   if(m){
@@ -624,7 +635,7 @@ function validateActivity(x){
     const selected=spec.options.find(option=>option.prompt===choice);
     if(!selected)return {ok:false,code:"missing_choice",aiEligible:false,msg:"Choose Quickwrite Option 1 or Option 2 first."};
     const [minimum,maximum]=spec.sentenceRange,count=sentenceCount(written);
-    if(count<minimum||count>maximum)return {ok:false,code:"sentence_count",aiEligible:false,msg:`Write ${minimum}–${maximum} complete sentences. Dragonswood counted ${count}.`};
+    if(count<minimum||count>maximum)return {ok:false,code:"sentence_count",aiEligible:false,msg:`Write ${quickWriteSentenceTarget(spec.sentenceRange)} complete sentences. Dragonswood counted ${count}.`};
     const quality=meaningfulText(written,Math.max(15,minimum*4));if(!quality.ok)return {...quality,aiEligible:false};
     const matches=quickWriteTopicMatches(written,selected.keywords);
     if(matches.length<2)return {ok:false,code:"off_topic",msg:"Connect your response more clearly to the Quickwrite prompt you selected."};
@@ -686,7 +697,7 @@ function renderActivity(x){
   else if(spec.kind==="mc")controls=`<div class="activity-options">${spec.options.map(o=>`<label class="activity-option"><input type="radio" name="act-${x.id}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join("")}</div>`;
   else if(spec.kind==="quickwrite"){
     const [minimum,maximum]=spec.sentenceRange,current=sentenceCount(structured.response);
-    controls=`<div class="activity-options">${spec.options.map(option=>`<label class="activity-option"><input type="radio" name="act-${x.id}" value="${esc(option.prompt)}" ${quickwriteChoice===option.prompt?"checked":""} ${quickwriteLocked?"disabled":""} onchange="lockQuickWriteChoice('${x.id}',this.value,this)"><span><strong>${esc(option.label)}:</strong> ${esc(option.prompt)}</span></label>`).join("")}</div>${quickwriteLocked&&quickwriteOption?`<div class="activity-feedback show good">🔒 Story starter locked: ${esc(quickwriteOption.label)}. Continue this story for your Quickwrite.</div>`:""}<div class="activity-feedback show">Sentence target: ${minimum}–${maximum} • <span id="quickCount-${x.id}">${current} ${current===1?"sentence":"sentences"}</span></div><textarea class="activity-input" id="actText-${x.id}" oninput="updateQuickWriteCount('${x.id}')" placeholder="Write your Quickwrite here…">${esc(structured.response)}</textarea>`;
+    controls=`<div class="activity-options">${spec.options.map(option=>`<label class="activity-option"><input type="radio" name="act-${x.id}" value="${esc(option.prompt)}" ${quickwriteChoice===option.prompt?"checked":""} ${quickwriteLocked?"disabled":""} onchange="lockQuickWriteChoice('${x.id}',this.value,this)"><span><strong>${esc(option.label)}:</strong> ${esc(option.prompt)}</span></label>`).join("")}</div>${quickwriteLocked&&quickwriteOption?`<div class="activity-feedback show good">🔒 Story starter locked: ${esc(quickwriteOption.label)}. Continue this story for your Quickwrite.</div>`:""}<div class="activity-feedback show">Sentence target: ${quickWriteSentenceTarget(spec.sentenceRange)} • <span id="quickCount-${x.id}">${current} ${current===1?"sentence":"sentences"}</span></div><textarea class="activity-input" id="actText-${x.id}" oninput="updateQuickWriteCount('${x.id}')" placeholder="Write your Quickwrite here…">${esc(structured.response)}</textarea>`;
   }
   else if(spec.kind==="morph"||spec.kind==="readingPov"){
     controls=`<div class="activity-options">${spec.options.map(o=>`<label class="activity-option"><input type="radio" name="act-${x.id}" value="${esc(o)}" ${structured.choice===o?"checked":""}><span>${esc(o)}</span></label>`).join("")}</div><textarea class="activity-input" id="actText-${x.id}" placeholder="Write your evidence or example here…">${esc(structured.response)}</textarea>`;
@@ -789,7 +800,7 @@ async function curriculumAiRescue(x,spec,answer,result){
     "Respond directly to the task.",
     concepts.length?`Relevant lesson ideas include: ${concepts.join(", ")}.`:"",
     quickOption?`The student selected this Quickwrite: ${quickOption.prompt}`:"",
-    spec.kind==="quickwrite"?`The required ${spec.sentenceRange[0]}–${spec.sentenceRange[1]} sentence count already passed; judge only whether the writing meaningfully answers the selected Quickwrite.`:"",
+    spec.kind==="quickwrite"?`The required ${quickWriteSentenceTarget(spec.sentenceRange)} sentence count already passed; judge only whether the writing meaningfully answers the selected Quickwrite.`:"",
     spec.kind==="inference"?"Approve when the response gives a plausible interpretation plus a concrete action, statement, thought, event, or observation supporting it. Do not require the literal words inference, clue, evidence, or text.":"",
     spec.kind==="writingCommunity"?"Approve helpful Writing Community feedback that gives a specific praise, relevant question, or useful suggestion. A suggestion should explain how or why it would help; valid connectors include because and so.":"",
     spec.kind==="opinion"?"Require a recognizable stance or recommendation plus a meaningfully connected reason or result. Do not treat a connector word by itself as sufficient.":"",
@@ -968,7 +979,7 @@ import {initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/1
 import {getAuth,onAuthStateChanged,connectAuthEmulator} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {getFirestore,doc,getDoc,getDocs,setDoc,updateDoc,addDoc,collection,serverTimestamp,onSnapshot,query,where,connectFirestoreEmulator} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 import {getFunctions,httpsCallable,connectFunctionsEmulator} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-functions.js";
-const DW_V33_PARAMS=new URLSearchParams(location.search),DW_V33_ENV=DW_V33_PARAMS.get("dw-env")||"production",DW_V33_EMULATOR=DW_V33_ENV==="emulator",DW_SAFE_PREVIEW=DW_V33_PARAMS.get("dw-safe-preview")==="1"&&/^\d{4}-\d{2}-\d{2}$/.test(String(DW_V33_PARAMS.get("date")||"")),DW_LOCAL_TESTER=window.DWCurriculumLocalTester===true,DW_LOCAL_TESTER_DAY=21;
+const DW_V33_PARAMS=new URLSearchParams(location.search),DW_V33_ENV=DW_V33_PARAMS.get("dw-env")||"production",DW_V33_EMULATOR=DW_V33_ENV==="emulator",DW_SAFE_PREVIEW=DW_V33_PARAMS.get("dw-safe-preview")==="1"&&/^\d{4}-\d{2}-\d{2}$/.test(String(DW_V33_PARAMS.get("date")||"")),DW_LOCAL_TESTER=window.DWCurriculumLocalTester===true,DW_LOCAL_TESTER_DAY_REQUESTED=Number(DW_V33_PARAMS.get("day")),DW_LOCAL_TESTER_DAY=Number.isInteger(DW_LOCAL_TESTER_DAY_REQUESTED)&&DW_LOCAL_TESTER_DAY_REQUESTED>=1&&DW_LOCAL_TESTER_DAY_REQUESTED<=40?DW_LOCAL_TESTER_DAY_REQUESTED:21;
 window.DWCurriculumSafePreview=DW_SAFE_PREVIEW;
 const firebaseConfig=DW_V33_EMULATOR
   ? {apiKey:"demo-key",authDomain:"demo-dragonswood-v33.localhost",projectId:"demo-dragonswood-v33",storageBucket:"demo-dragonswood-v33.appspot.com",messagingSenderId:"000000000000",appId:"1:000000000000:web:demo-v33"}
@@ -1144,15 +1155,15 @@ function watchMyOverrides(uid){
 onAuthStateChanged(auth,async u=>{
   if(DW_LOCAL_TESTER){
     currentStudent=null;isTeacher=true;progressReady=false;selectedStudentId="";teacherProgressRows=[];teacherAllProgress=[];
-    loadScopedState("local_day21_tester");
+    loadScopedState(`local_day${DW_LOCAL_TESTER_DAY}_tester`);
     const requestedGrade=String(DW_V33_PARAMS.get("grade")||"").toUpperCase();if(requestedGrade==="I"||requestedGrade==="K")S.grade=requestedGrade;
     S.day=DW_LOCAL_TESTER_DAY;S.items=S.items||{};studentCurriculumAccess=true;currentQuestOpen=true;curriculumStateReady=true;accessMessage="";
     const authStatus=document.getElementById("authStatus"),identity=document.getElementById("studentIdentity"),badge=document.getElementById("teacherBadge"),testerControls=document.getElementById("localTesterControls"),notice=document.querySelector(".notice");
-    authStatus.textContent="🧪 LOCAL TESTER";authStatus.style.color="#9cf2c7";identity.textContent="Isolated Day 21 state • no student account";
-    badge.textContent="DAY 21 TEST MODE";badge.style.display="inline-block";testerControls?.classList.add("show");
+    authStatus.textContent="🧪 LOCAL TESTER";authStatus.style.color="#9cf2c7";identity.textContent=`Isolated Day ${DW_LOCAL_TESTER_DAY} state • no student account`;
+    badge.textContent=`DAY ${DW_LOCAL_TESTER_DAY} TEST MODE`;badge.style.display="inline-block";testerControls?.classList.add("show");
     document.getElementById("teacherStudent").style.display="none";document.getElementById("grade").disabled=false;document.getElementById("day").disabled=true;
-    if(notice)notice.textContent="Tester mode uses the real Current Quest renderer. Video overrides and answers are saved only in this browser's isolated Day 21 test state. No student records or Firestore progress are changed.";
-    syncLocalTesterUrl();save();render("local-day21-tester-ready");return;
+    if(notice)notice.textContent=`Tester mode uses the real Current Quest renderer. Video overrides and answers are saved only in this browser's isolated Day ${DW_LOCAL_TESTER_DAY} test state. No student records or Firestore progress are changed.`;
+    syncLocalTesterUrl();save();render(`local-day${DW_LOCAL_TESTER_DAY}-tester-ready`);return;
   }
   testerAccountUnsub?.();testerControlsUnsub?.();testerAccountUnsub=testerControlsUnsub=null;
   currentStudent=u||null;

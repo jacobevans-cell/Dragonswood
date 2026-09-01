@@ -76,7 +76,7 @@
     const t=textOf(x),req=String(x.requirement||"").trim();
     if(/flavor assessment|core assessment/i.test(t))return "assessment";
     if(/progress monitor|progress monitoring/i.test(t)&&/foundational skills/i.test(`${x.strand||""} ${req}`))return "word-progress";
-    if(/fluency|partner read|read aloud/i.test(t))return "fluency";
+    if(/fluency|partner read|read aloud/i.test(t)&&x.subject==="HUM"&&x.strand==="Reading")return "fluency";
     if(/progress monitor|progress monitoring/i.test(t)&&/writing/i.test(x.strand||""))return "writing-progress";
     if(/progress monitor|progress monitoring/i.test(t))return "progress";
     if(/\bpresent(?:ing|ations?)?\b|publish|share their work|ready,\s*set,\s*publish/i.test(t))return "performance";
@@ -265,7 +265,7 @@
   }
   function objectiveFor(x,type){
     if(type==="word-progress")return "Show what you remember from the word-study lessons you have already completed.";
-    if(type==="fluency")return "Read a new passage accurately, smoothly, and with phrasing that follows the punctuation.";
+    if(type==="fluency")return "Use witness statements, times, actions, and contradictions to solve a mystery and support a theory with evidence.";
     if(type==="writing-progress")return "Show that you can independently use the writing skills from your recent lessons.";
     if(type==="assessment")return "Show what you know from the lessons that came before this assessment.";
     if(type==="performance")return "Use, present, or share work you have already prepared.";
@@ -285,21 +285,75 @@
       <span class="mission-note">No video today • Review → Check → Apply</span>
     </div>`;
   }
+  const CHARACTER_CASE={
+    id:"golden-eagle-v1",
+    report:[
+      "The Golden Eagle Trophy disappeared from the gym display case between 3:00 and 4:00 p.m. last Friday.",
+      "The case was locked, but a spare key hangs in the equipment closet—a key almost everyone knows about.",
+      "Three people were in the building that afternoon. Read their answers carefully."
+    ],
+    characters:[
+      {id:"coach",name:"Coach Reyes",role:"P.E. Teacher",color:"#7fb3d5",image:"assets/character-case/coach-reyes.png",questions:[
+        {q:"Where were you between 3:00 and 4:00 p.m.?",a:"In my office grading papers. I stepped out once, around 3:40, for coffee."},
+        {q:"Did you notice anything near the trophy case?",a:"The case was already open a crack when I passed by at 3:40."},
+        {q:"Who knew about the spare key?",a:"Pretty much every staff member—and some student aides too."}
+      ]},
+      {id:"janitor",name:"Mr. Okafor",role:"Custodian",color:"#e0a83a",image:"assets/character-case/mr-okafor.png",questions:[
+        {q:"What were you doing this afternoon?",a:"Mopping the cafeteria, except for one trip to get supplies around 3:30."},
+        {q:"Did you see anyone near the gym?",a:"Around 3:30, someone in a red hoodie slipped into the gym hallway."},
+        {q:"Do you know whose hoodie that was?",a:"Half the debate team wears those red hoodies. It could have been anybody."}
+      ]},
+      {id:"priya",name:"Priya N.",role:"Class President",color:"#c9789a",image:"assets/character-case/priya.png",questions:[
+        {q:"Where were you this afternoon?",a:"Practicing my speech in the gym until 3:15, then straight to the library."},
+        {q:"Were you near the trophy case?",a:"The podium is right next to it, so yes."},
+        {q:"Anything you have not mentioned?",a:"I wore my red debate hoodie because it was cold, and I moved the trophy off the podium to make room. I meant to put it back!"}
+      ]}
+    ],
+    quiz:[
+      {q:"What time did Coach Reyes notice the case looked different?",choices:["3:00","3:15","3:40","4:15"],correct:2,explain:"Coach Reyes said the case was already open a crack when she passed it at 3:40."},
+      {q:"Who saw a person in a red hoodie near the gym?",choices:["Coach Reyes","Mr. Okafor","Priya","No one"],correct:1,explain:"Mr. Okafor saw someone in a red hoodie near the gym around 3:30."},
+      {q:"Which clue connects Priya to the red-hoodie sighting?",choices:["She wore her red debate hoodie in the gym","She was outside the building all afternoon","She said that she did not own a hoodie","She stayed in the library for the entire day"],correct:0,explain:"Priya admitted that she wore her red debate hoodie while she practiced in the gym."}
+    ]
+  };
+  const mysteryActive={};
+  const mysteryTimers={};
+  const mysteryRecords={};
+  function mysteryState(id){
+    const s=window.st(id);let record=mysteryRecords[id]||s.dwMystery;
+    if(!record||record.caseId!==CHARACTER_CASE.id)record={caseId:CHARACTER_CASE.id,interviewed:[],answers:{},notebook:""};
+    mysteryRecords[id]=record;s.dwMystery=record;return {s,record};
+  }
+  function mysteryInitials(name){return String(name).split(/\s+/).map(word=>word[0]||"").join("").replace(/[^A-Z]/gi,"").slice(0,2).toUpperCase()}
   function fluencyHtml(x){
-    const passage=fluencyPassage(x),wc=passage.trim().split(/\s+/).length,id=escHtml(x.id);
-    return `<div class="self-lesson">
-      <div class="lesson-banner">📜 FLUENCY TRAINING GROUND</div>
-      <div class="key-idea"><strong>Goal:</strong> Read accurately, smoothly, and with expression. Fluency is not a race. Your voice should sound like the punctuation and meaning of the text.</div>
-      <div class="example-box"><strong>Before you read:</strong> At a comma, make a short pause. At a period, stop the thought. If a sentence contains an important word or feeling, let your voice show it.</div>
-      <div style="margin-top:12px;padding:14px;border:1px solid #5c4776;border-radius:9px;background:#080611;font-size:16px;line-height:1.75;color:#fff8e9"><div style="font-size:11px;color:#8eeeff;font-weight:900;margin-bottom:7px">ORIGINAL DRAGONSWOOD PASSAGE • ${wc} WORDS</div>${escHtml(passage)}</div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px">
-        <button type="button" class="resource" onclick="dwNvStartFluency('${id}')">START READING TIMER</button>
-        <button type="button" class="stage" onclick="dwNvStopFluency('${id}')">STOP</button>
-        <span id="nvFluency-${id}" class="mission-note">Timer ready</span>
-      </div>
-      <div class="remember"><strong>Read twice:</strong> First read for accuracy. Second read for smoother phrasing and expression. Correct a mistake and keep going if you notice one.</div>
-      <span class="mission-note">No video today • Passage provided inside Dragonswood</span>
+    const id=escHtml(x.id),{record}=mysteryState(x.id),interviewed=new Set(record.interviewed||[]),active=mysteryActive[x.id]||"",activeCharacter=CHARACTER_CASE.characters.find(c=>c.id===active);
+    const tiles=CHARACTER_CASE.characters.map(c=>{
+      const closed=interviewed.has(c.id),open=active===c.id,disabled=!!active&&!open;
+      return `<div class="dw-case-witness${closed?" closed":""}${open?" open":""}${disabled?" disabled":""}">
+        <div class="dw-case-avatar" style="background:${escHtml(c.color)}"><img src="${escHtml(c.image)}" alt="Cartoon portrait of ${escHtml(c.name)}"></div>
+        <div class="dw-case-name">${escHtml(c.name)}</div><div class="dw-case-role">${escHtml(c.role)}</div>
+        ${closed?`<div class="dw-case-status">🔒 Statement closed</div>`:open?`<div class="dw-case-status" id="dwCaseTimer-${id}">⏱ 1:00 remaining</div><div class="dw-case-statement">${c.questions.map(row=>`<div class="dw-case-q">${escHtml(row.q)}</div><div class="dw-case-a">${escHtml(row.a)}</div>`).join("")}<div class="dw-case-actions"><button type="button" class="resource" onclick="dwNvReadWitness('${id}','${escHtml(c.id)}')">🔊 READ ALOUD</button><button type="button" class="stage" onclick="dwNvFinishInterview('${id}','${escHtml(c.id)}')">END INTERVIEW</button></div></div>`:`<button type="button" class="resource dw-case-open" ${disabled?"disabled":""} onclick="dwNvStartInterview('${id}','${escHtml(c.id)}')">INTERVIEW</button>`}
+      </div>`;
+    }).join("");
+    return `<div class="self-lesson dw-case-file">
+      <div class="lesson-banner">🕵️ THE CHARACTER CASE FILES • CASE 01</div>
+      <div class="key-idea"><strong>Your mission:</strong> Read the case report, interview every witness, record useful clues, and decide what happened. Each statement closes after 60 seconds, so read for meaning and evidence.</div>
+      <div class="dw-case-report">${CHARACTER_CASE.report.map(line=>`<p>${escHtml(line)}</p>`).join("")}</div>
+      <div class="dw-case-heading">Interview the witnesses</div>
+      <div class="dw-case-witnesses">${tiles}</div>
+      <div class="dw-case-progress">${interviewed.size} of ${CHARACTER_CASE.characters.length} interviews complete</div>
+      <label class="dw-case-notebook"><strong>Detective Notebook</strong><span>Record names, times, locations, actions, and statements that may matter.</span><textarea oninput="dwNvMysteryNotebook('${id}',this.value)" placeholder="Write your clues here…">${escHtml(record.notebook||"")}</textarea></label>
+      <span class="mission-note">No video today • Read → Interview → Compare clues → Solve the case</span>
     </div>`;
+  }
+  function mysteryQuizHtml(x){
+    const id=escHtml(x.id),{record}=mysteryState(x.id),ready=(record.interviewed||[]).length===CHARACTER_CASE.characters.length,answers=record.answers||{};
+    if(!ready)return `<div class="activity-feedback show">🔒 Interview all three witnesses to unlock the case questions.</div>`;
+    const questions=CHARACTER_CASE.quiz.map((item,index)=>{
+      const answer=answers[index],locked=Number.isInteger(answer),correct=item.choices[item.correct];
+      return `<div class="dw-case-quiz"><div class="dw-case-qnum">Question ${index+1} of ${CHARACTER_CASE.quiz.length}</div><div class="dw-case-quizprompt">${escHtml(item.q)}</div><div class="dw-case-choices">${item.choices.map((choice,choiceIndex)=>{const picked=answer===choiceIndex,good=locked&&choiceIndex===item.correct,bad=locked&&picked&&!good;return `<button type="button" class="dw-case-choice${good?" correct":""}${bad?" wrong":""}" ${locked?"disabled":""} onclick="dwNvMysteryAnswer('${id}',${index},${choiceIndex})">${escHtml(choice)}</button>`}).join("")}</div>${locked?`<div class="dw-case-explain"><strong>${answer===item.correct?"✓ Correct":"Review the evidence"}:</strong> ${escHtml(item.explain)} <span class="dw-case-answer">Answer: ${escHtml(correct)}</span></div>`:""}</div>`;
+    }).join("");
+    const complete=Object.keys(answers).length===CHARACTER_CASE.quiz.length;
+    return `<div class="dw-case-check"><div class="dw-interactive-head"><div class="dw-interactive-title">Case Evidence Check</div><span class="dw-interactive-badge">${complete?"✓ COMPLETE":"3 QUESTIONS"}</span></div>${questions}</div>`;
   }
   function writingProgressHtml(x){
     const skills=writingReview(x);
@@ -375,6 +429,51 @@
     if(el)el.textContent=`Reading time: ${Math.floor(secs/60)}:${String(secs%60).padStart(2,"0")}`;
   };
 
+  function saveMystery(id,record,reason){
+    mysteryRecords[id]=record;
+    const s=window.st(id);s.dwMystery=record;window.save();
+    if(reason)window.DWCurriculumRenderCoordinator?.request(reason);
+  }
+  window.dwNvStartInterview=function(id,characterId){
+    const {record}=mysteryState(id);
+    if(mysteryActive[id]||(record.interviewed||[]).includes(characterId))return;
+    const character=CHARACTER_CASE.characters.find(c=>c.id===characterId);if(!character)return;
+    mysteryActive[id]=characterId;
+    clearInterval(mysteryTimers[id]);
+    let remaining=60;
+    window.DWCurriculumRenderCoordinator?.request("character-interview-open");
+    mysteryTimers[id]=setInterval(()=>{
+      remaining--;
+      const el=document.getElementById(`dwCaseTimer-${id}`);
+      if(el){el.textContent=`⏱ 0:${String(Math.max(0,remaining)).padStart(2,"0")} remaining`;if(remaining<=10)el.classList.add("urgent")}
+      if(remaining<=0)window.dwNvFinishInterview(id,characterId);
+    },1000);
+  };
+  window.dwNvFinishInterview=function(id,characterId){
+    if(!CHARACTER_CASE.characters.some(character=>character.id===characterId))return;
+    clearInterval(mysteryTimers[id]);delete mysteryTimers[id];delete mysteryActive[id];
+    if("speechSynthesis" in window)window.speechSynthesis.cancel();
+    const {record}=mysteryState(id);
+    record.interviewed=Array.from(new Set([...(record.interviewed||[]),characterId]));
+    saveMystery(id,record);
+    if(typeof window.render==="function")window.render();
+    else window.DWCurriculumRenderCoordinator?.request("character-interview-finished");
+  };
+  window.dwNvReadWitness=function(id,characterId){
+    const character=CHARACTER_CASE.characters.find(c=>c.id===characterId);if(!character||!("speechSynthesis" in window))return;
+    window.speechSynthesis.cancel();
+    const speech=new SpeechSynthesisUtterance(character.questions.map(row=>`${row.q} ${row.a}`).join(" "));
+    speech.rate=.92;window.speechSynthesis.speak(speech);
+  };
+  window.dwNvMysteryNotebook=function(id,value){
+    const {record}=mysteryState(id);record.notebook=String(value||"").slice(0,3000);saveMystery(id,record);
+  };
+  window.dwNvMysteryAnswer=function(id,index,choice){
+    const {record}=mysteryState(id);
+    if((record.interviewed||[]).length!==CHARACTER_CASE.characters.length||Number.isInteger(record.answers?.[index]))return;
+    record.answers={...(record.answers||{}),[index]:choice};saveMystery(id,record,"character-case-answer");
+  };
+
   let tries=0;
   function install(){
     const required=["render","vid","friendlyTitle","miniLessonFor","renderMiniLesson","activityFor","kidIntro","card","grouped","autoQuestionsFor","renderAutoPractice","activitySpec","validateActivity","supportMetadataRow"];
@@ -406,6 +505,8 @@
       style.textContent=`
         .grid > .quest.dw-no-video{align-self:start;height:auto;min-height:0}
         .quest.dw-no-video{align-self:start}
+        .dw-case-avatar{width:82px;height:82px;overflow:hidden}.dw-case-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+        .dw-case-file{--case-gold:#ffd75f;--case-cyan:#62e7ff}.dw-case-report{margin:12px 0;padding:12px 14px;border:1px solid #67518a;border-left:4px solid var(--case-gold);border-radius:9px;background:#0b0a18}.dw-case-report p{margin:5px 0;line-height:1.5}.dw-case-heading{margin:14px 0 8px;color:#ffe8a0;font-weight:900;font-size:1.08rem}.dw-case-witnesses{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}.dw-case-witness{padding:12px;border:1px solid #5a4777;border-radius:12px;background:#120d21;text-align:center;transition:.2s}.dw-case-witness.open{grid-column:1/-1;text-align:left;border-color:var(--case-cyan);box-shadow:0 0 0 1px #62e7ff44}.dw-case-witness.closed{opacity:.72}.dw-case-witness.disabled{opacity:.45}.dw-case-avatar{display:grid;place-items:center;width:48px;height:48px;margin:0 auto 7px;border:2px solid #fff8;border-radius:50%;color:#090714;font-weight:1000}.dw-case-witness.open .dw-case-avatar{margin-left:0}.dw-case-name{font-weight:1000;color:#fff0b4}.dw-case-role,.dw-case-status{margin-top:3px;color:#c9bddc;font-size:.88rem}.dw-case-status{color:var(--case-cyan);font-weight:800}.dw-case-status.urgent{color:#ff7b8d}.dw-case-open{margin-top:10px}.dw-case-statement{margin-top:10px}.dw-case-q{margin-top:10px;color:#ffe8a0;font-weight:900}.dw-case-a{margin-top:3px;padding:8px 10px;border-radius:7px;background:#090716;line-height:1.45}.dw-case-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.dw-case-progress{margin:10px 0;color:var(--case-cyan);font-weight:900}.dw-case-notebook{display:grid;gap:5px;margin-top:12px}.dw-case-notebook span{color:#c9bddc;font-size:.9rem}.dw-case-notebook textarea{min-height:90px;padding:10px;border:1px solid #60447f;border-radius:8px;background:#090716;color:#fff;font:inherit}.dw-case-check{display:grid;gap:12px}.dw-case-quiz{padding:13px;border:1px solid #55416f;border-radius:10px;background:#0e0a1b}.dw-case-qnum{color:#61e8ff;font-size:.78rem;font-weight:900;text-transform:uppercase}.dw-case-quizprompt{margin:5px 0 10px;color:#fff0b4;font-weight:900}.dw-case-choices{display:grid;gap:7px}.dw-case-choice{text-align:left;padding:10px;border:1px solid #604d78;border-radius:8px;background:#181029;color:#fff;font:inherit}.dw-case-choice:not(:disabled):hover{border-color:#62e7ff}.dw-case-choice.correct{border-color:#2ed89c;background:#0b493a}.dw-case-choice.wrong{border-color:#ff6f8d;background:#4b1527}.dw-case-explain{margin-top:9px;color:#dcd3e8}.dw-case-answer{color:#ffe37f;font-weight:900}
       `;
       document.head.appendChild(style);
     }
@@ -417,9 +518,10 @@
 
     window.friendlyTitle=function(x){
       if(!noVideo(x))return O.friendlyTitle(x);
+      if(x.quickWriteDirect===true)return "Quickwrite";
       const type=classify(x);
       if(type==="word-progress")return "Word Study Progress Check";
-      if(type==="fluency")return "Fluency Training Ground";
+      if(type==="fluency")return "The Character Case Files";
       if(type==="writing-progress")return "Writing Progress Check";
       if(type==="assessment")return /core assessment/i.test(textOf(x))?"Core Assessment":"Quarter Assessment";
       if(type==="performance")return "Publish & Share";
@@ -429,9 +531,10 @@
 
     window.kidIntro=function(x){
       if(!noVideo(x))return O.kidIntro(x);
+      if(x.quickWriteDirect===true)return "";
       const type=classify(x);
       if(type==="word-progress")return "No new lesson today. Review the word-study targets below, then show what you can do independently.";
-      if(type==="fluency")return "No video today. Read the Dragonswood passage twice: first for accuracy, then for smoother phrasing and expression.";
+      if(type==="fluency")return "No video today. Read the case report, interview all three witnesses before their statements close, then use the evidence to solve the case.";
       if(type==="writing-progress")return "No new writing lesson today. Review the recent skills below, then complete the writing check independently.";
       if(type==="assessment")return "This is a check of previously taught skills. Dragonswood will use only verified questions from earlier lessons in this strand.";
       if(type==="performance")return Array.isArray(x.quickWriteOptions)?"No video today. Choose one story starter, imagine what happens next, and continue the scene in your own words.":"No new lesson today. Use the mission brief below to prepare, share your work, and reflect.";
@@ -441,6 +544,7 @@
 
     window.renderMiniLesson=function(x){
       if(!noVideo(x))return O.renderMiniLesson(x);
+      if(x.quickWriteDirect===true)return "";
       const type=classify(x);
       if(type==="word-progress")return wordProgressHtml(x);
       if(type==="fluency")return fluencyHtml(x);
@@ -458,7 +562,7 @@
         const words=recentWordStudy(x).map(v=>v.word).filter(Boolean);
         return `Choose one reviewed word${words.length?` (${words.join(", ")})`:""} and explain how its root helps you understand its meaning. Then use the word correctly in a complete sentence.`;
       }
-      if(type==="fluency")return "Read the passage aloud twice. Then write 1–2 sentences explaining what improved on your second read. Mention accuracy, phrasing, punctuation, expression, or pace.";
+      if(type==="fluency")return "Who moved the Golden Eagle Trophy, and which two clues from the witness interviews prove what happened? Explain your case theory in complete sentences.";
       if(type==="writing-progress"){
         const review=writingReview(x).join(" ").toLowerCase();
         if(/fanboys|compound sentence|compound sentences|conjunction/.test(review))return "Write one correct compound sentence using a comma plus a FANBOYS conjunction. Then add a second sentence that works as a clear conclusion or wrap-up.";
@@ -502,9 +606,10 @@
 
     window.renderAutoPractice=function(x){
       if(!noVideo(x))return O.renderAutoPractice(x);
+      if(x.quickWriteDirect===true)return "";
       const type=classify(x);
       if(type==="performance"&&Array.isArray(x.quickWriteOptions))return O.renderAutoPractice(x);
-      if(type==="fluency")return `<div class="activity-feedback show good">Fluency is a reading performance, so Dragonswood gives you the passage and reflection instead of inventing a multiple-choice quiz.</div>`;
+      if(type==="fluency")return mysteryQuizHtml(x);
       if(type==="writing-progress")return `<div class="activity-feedback show good">This is a writing performance check. Your evidence is the writing you produce below, not a fake multiple-choice quiz.</div>`;
       if(type==="performance")return `<div class="activity-feedback show good">This mission is based on presenting or sharing your work. Complete the reflection below after the performance.</div>`;
       let html=O.renderAutoPractice(x);
@@ -517,7 +622,7 @@
       if(!noVideo(x))return O.activitySpec(x);
       if(Array.isArray(x.quickWriteOptions))return O.activitySpec(x);
       const type=classify(x),prompt=window.activityFor(x);
-      if(type==="fluency")return {kind:"explain",title:"Fluency Reflection",prompt,minWords:7};
+      if(type==="fluency")return {kind:"explain",title:"Your Case Theory",prompt,minWords:x.grade==="K"?16:12};
       if(type==="word-progress")return {kind:"explain",title:"Word Meaning Proof",prompt,minWords:8};
       if(type==="writing-progress"){
         const review=writingReview(x).join(" ").toLowerCase();
@@ -539,8 +644,14 @@
       if(window.systemAuthoredResponse?.(x,written))return {ok:false,reviewable:false,msg:"Answer in your own words instead of copying Dragonswood's directions or question."};
       const words=written.split(/\s+/).filter(Boolean);
       if(type==="fluency"){
-        if(words.length<7)return {ok:false,msg:"Write at least one complete sentence about what changed on your second read."};
-        if(!/\b(accur|smooth|phrase|punctuation|expression|pace|pause|correct|mistake|read|voice)\w*/i.test(written))return {ok:false,msg:"Mention something about accuracy, phrasing, punctuation, expression, pace, or a correction you made."};
+        const {record}=mysteryState(id);
+        if((record.interviewed||[]).length<CHARACTER_CASE.characters.length)return {ok:false,reviewable:false,msg:"Interview all three witnesses before submitting your case theory."};
+        if(Object.keys(record.answers||{}).length<CHARACTER_CASE.quiz.length)return {ok:false,reviewable:false,msg:"Complete all three Case Evidence Check questions first."};
+        const min=x.grade==="K"?16:12;
+        if(words.length<min)return {ok:false,msg:`Explain your theory with at least ${min} words.`};
+        if(!/\bpriya\b/i.test(written))return {ok:false,msg:"Name the person your evidence identifies."};
+        const clues=[/red\s+(?:debate\s+)?hoodie/i,/mov(?:e|ed|ing)\s+(?:the\s+)?trophy|trophy.{0,30}podium|make room/i,/\b(?:gym|podium|trophy case)\b/i,/\bforgot\b|put (?:it|the trophy) back|\blibrary\b/i];
+        if(clues.filter(pattern=>pattern.test(written)).length<2)return {ok:false,msg:"Use at least two different interview clues, such as a time, clothing, location, or action, to prove your theory."};
         return {ok:true};
       }
       if(type==="word-progress"){
@@ -576,20 +687,26 @@
       let html=O.card(x);
       if(!noVideo(x))return html;
       const type=classify(x);
-      const timingLabel={
+      const timingLabel=x.quickWriteDirect===true?"Quickwrite":{
         "word-progress":"Review included",
         "progress":"Review included",
         "writing-progress":"Review included",
-        "fluency":"Fluency passage + two reads included",
+        "fluency":"Mystery case + witness interviews included",
         "assessment":"Prior-skill assessment included",
         "performance":"Performance brief included"
       }[type];
       html=html.replace('class="frame quest ',`class="frame quest dw-no-video dw-nv-${type} `);
       if(timingLabel)html=html.replace(/Dragonswood lesson included/g,timingLabel);
+      if(x.quickWriteDirect===true){
+        const bodyMarker='<div class="mission-body">',quickMarker='<div class="step"><strong>2. Standard Check + Application</strong>';
+        const bodyStart=html.indexOf(bodyMarker),quickStart=html.indexOf(quickMarker,bodyStart+bodyMarker.length);
+        if(bodyStart>=0&&quickStart>=0)html=html.slice(0,bodyStart+bodyMarker.length)+html.slice(quickStart);
+        return html.replace(quickMarker,'<div class="step dw-quickwrite-only"><strong>Quickwrite</strong>');
+      }
       if(type==="word-progress"||type==="progress"||type==="writing-progress"||type==="assessment"){
         return html.replace("1. Learn It in Dragonswood","1. Review What You Know").replace("Everything needed for this lesson is here.","Everything needed for this check is here.");
       }
-      if(type==="fluency")return html.replace("1. Learn It in Dragonswood","1. Fluency Training").replace("Everything needed for this lesson is here.","Your reading passage and fluency directions are below.");
+      if(type==="fluency")return html.replace("1. Learn It in Dragonswood","1. Open the Case File").replace("Everything needed for this lesson is here.","The case report and witness interviews are below.");
       if(type==="performance")return Array.isArray(x.quickWriteOptions)?html.replace("1. Learn It in Dragonswood","1. Quickwrite Mission").replace("Everything needed for this lesson is here.","Choose a story starter below and continue the adventure."):html.replace("1. Learn It in Dragonswood","1. Mission Brief").replace("Everything needed for this lesson is here.","Your performance directions are below.");
       if(type==="word-lesson")return html.replace("1. Learn It in Dragonswood","1. Learn the Word in Dragonswood").replace("Everything needed for this lesson is here.","Your complete word lesson is below.");
       return html;

@@ -41,12 +41,212 @@
           keywords:["dance","ava","crystal","locket","costume","mirror","ballroom","disappeared","past","hundred years"]
         }
       ]
+    },
+    "I-HUM-D22-C3-A":{
+      quickWriteDirect:true,
+      quickWriteSentenceRange:[5,5],
+      quickWriteOptions:[
+        {
+          label:"Option 1 • The Hidden Level",
+          prompt:"During the final round of a school gaming tournament, Kai’s screen suddenly showed a hidden level that was not part of the game. A message appeared: “Win this level before the timer reaches zero, or your entire school will disappear.” Continue the story.",
+          keywords:["gaming","tournament","kai","screen","hidden level","game","message","timer","school","disappear","level"]
+        },
+        {
+          label:"Option 2 • The Dragon’s Bracelet",
+          prompt:"While helping backstage at the school play, Ava found a silver bracelet shaped like a tiny dragon. The moment she put it on, the dragon opened its eyes and whispered, “They finally found us.” Continue the story.",
+          keywords:["backstage","school play","ava","silver","bracelet","dragon","eyes","whispered","found","us"]
+        }
+      ]
+    },
+    "K-HUM-D22-C3-A":{
+      quickWriteDirect:true,
+      quickWriteSentenceRange:[7,7],
+      quickWriteOptions:[
+        {
+          label:"Option 1 • The Hidden Level",
+          prompt:"During the final round of a school gaming tournament, Kai’s screen suddenly showed a hidden level that was not part of the game. A message appeared: “Win this level before the timer reaches zero, or your entire school will disappear.” Continue the story.",
+          keywords:["gaming","tournament","kai","screen","hidden level","game","message","timer","school","disappear","level"]
+        },
+        {
+          label:"Option 2 • The Dragon’s Bracelet",
+          prompt:"While helping backstage at the school play, Ava found a silver bracelet shaped like a tiny dragon. The moment she put it on, the dragon opened its eyes and whispered, “They finally found us.” Continue the story.",
+          keywords:["backstage","school play","ava","silver","bracelet","dragon","eyes","whispered","found","us"]
+        }
+      ]
     }
   };
   for(const [id,override] of Object.entries(publishQuickwrites)){
     const item=data.items.find(row=>row.id===id);
     if(item)Object.assign(item,override);
   }
+
+  const theoNinaPassage="Theo sat alone on the bench by the fence, at the far edge of the school garden. He had a shoebox full of tiny gears, wires, and bottle caps, and he was carefully building a little robot out of the pieces. Across the field, the other kids were laughing and racing each other in a game of kickball. Theo watched the ball fly past, wishing he could feel that easy and loud, but his hands stayed still on his robot, and he felt like he was watching everything through a window.\n\nA girl named Nina wandered over from the kickball game. Nina was quick and a little clumsy, and she had grass stains on both knees from sliding into home plate.\n\n\"Whoa,\" she said, crouching down. \"Is that a robot? Are you going to play kickball with us?\"\n\nTheo shook his head. \"I like building things. I'm not very good at kicking.\"\n\n\"That's fine,\" Nina said, shrugging. \"I'm not very good at building. Everything I make falls apart. But it's still fun to try.\"\n\nShe pointed back at the field. \"We actually need one more player for second base. Come on — I'll stand next to you the whole time.\"\n\nTheo paused. He looked down at his half-finished robot, then up at Nina's eager, dirt-smudged grin. He set the shoebox on the bench. \"Okay,\" he said quietly.\n\nNina cheered and pulled him up by the sleeve. They jogged together to second base. Theo missed the first ball that came his way, but he didn't care much. When the game ended, they walked back to the bench together.\n\n\"You're really quick, Nina,\" Theo said, catching his breath.\n\n\"And you're really clever, Theo,\" she replied. \"Maybe you can build me a tiny robot of my own sometime. And I can teach you how to catch a pop fly.\"\n\nThey both smiled. Theo knew that he liked quiet, careful things, and Nina liked fast, loud things — but he also knew that didn't matter nearly as much as he'd thought. What mattered was that Nina had noticed him, and had made him feel like he belonged. From that afternoon on, Theo and Nina ate lunch together almost every day, trading half a sandwich for a spare gear whenever they could.";
+  const themeQuestions=[
+  {
+    "prompt": "Which statement best explains the difference between a summary and a theme?",
+    "choices": [
+      "A summary retells the key events, while a theme states a universal message the events reveal",
+      "A summary explains the author's opinion, while a theme lists every event in exact order",
+      "A summary names one broad topic, while a theme describes only what the main character did",
+      "A summary and a theme both retell the same events, but a theme always uses fewer words"
+    ],
+    "answer": "A summary retells the key events, while a theme states a universal message the events reveal"
+  },
+  {
+    "prompt": "Which choice is the best summary of Theo and Nina?",
+    "choices": [
+      "Theo builds a robot alone, Nina invites him to play kickball, and their willingness to share their different strengths begins a friendship",
+      "Nina wins a kickball game, Theo completes a robot, and the two students receive prizes for being the best players at school",
+      "Theo refuses to speak to Nina, hides his robot from her, and decides that people with different interests cannot become friends",
+      "Nina asks Theo to repair the kickball equipment, but he leaves the garden before the other students finish their game"
+    ],
+    "answer": "Theo builds a robot alone, Nina invites him to play kickball, and their willingness to share their different strengths begins a friendship"
+  },
+  {
+    "prompt": "Which action by Nina most clearly helps Theo begin to feel that he belongs?",
+    "choices": [
+      "She notices Theo, invites him to join the game, and promises to stand beside him",
+      "She tells Theo that kickball is more important than building small robots",
+      "She takes Theo's unfinished robot and carries it onto the kickball field",
+      "She asks the other players to end the game before Theo reaches second base"
+    ],
+    "answer": "She notices Theo, invites him to join the game, and promises to stand beside him"
+  },
+  {
+    "prompt": "Which statement expresses a universal theme of Theo and Nina?",
+    "choices": [
+      "A small act of inclusion can help someone feel that they truly belong",
+      "Theo should practice catching a pop fly before returning to second base",
+      "Nina has grass stains because she slid into home plate during kickball",
+      "Building a tiny robot requires gears, wires, bottle caps, and a shoebox"
+    ],
+    "answer": "A small act of inclusion can help someone feel that they truly belong"
+  },
+  {
+    "prompt": "Which evidence best supports the theme that friendship can grow when people value one another's differences?",
+    "choices": [
+      "Theo praises Nina's speed, Nina praises Theo's cleverness, and they offer to teach each other",
+      "Theo keeps the half-finished robot inside a shoebox at the edge of the garden while the kickball game continues across the field",
+      "Nina has grass stains on both knees because she slid during the kickball game",
+      "The kickball flies past the bench while the other students laugh across the field"
+    ],
+    "answer": "Theo praises Nina's speed, Nina praises Theo's cleverness, and they offer to teach each other"
+  },
+  {
+    "prompt": "Why is the word belonging by itself not a complete theme statement?",
+    "choices": [
+      "It names a topic but does not communicate a universal message about that topic",
+      "It summarizes every important event but does not identify the main character",
+      "It gives too much evidence from the story and includes unnecessary dialogue",
+      "It can apply only to Theo and cannot be connected to any other person or story"
+    ],
+    "answer": "It names a topic but does not communicate a universal message about that topic"
+  },
+  {
+    "prompt": "Why is sharing with those who need it a theme rather than a summary of Robin Hood or Pip's actions?",
+    "choices": [
+      "It is a universal message that can apply beyond the characters and events in one story",
+      "It retells all the important actions in the exact order that they happened in the story",
+      "It identifies where Robin Hood lived and explains which character appeared in each scene",
+      "It describes only Pip's movements and does not communicate an idea about life or people"
+    ],
+    "answer": "It is a universal message that can apply beyond the characters and events in one story"
+  },
+  {
+    "prompt": "Which sentence is a theme rather than a summary?",
+    "choices": [
+      "People can build friendship by noticing others and making room for them",
+      "Nina walks from the kickball field to the bench and asks about Theo's robot",
+      "Theo sets down his shoebox, joins Nina at second base, and misses the first ball",
+      "After the game, Theo and Nina return to the bench and discuss their different skills"
+    ],
+    "answer": "People can build friendship by noticing others and making room for them"
+  }
+];
+  const themeLessonBase={
+    displayTitle:"Theme Detective: Summary vs. Theme",
+    requirement:"Theme Detective: Summary vs. Theme\n\nVideo:\nPip Hood and the Universal Message • Determining Theme\n\nReading:\nTheo and Nina\n\nVocabulary:\nTheme, Summary, Universal Message, Character, Generosity\n\nMission:\nWatch the lesson, read Theo and Nina, complete the theme check, and support a universal theme with evidence.",
+    resourceName:"Pip Hood and the Universal Message • Determining Theme",
+    resourceUrl:"https://pub-005ee88ce4da43c5a2afcbb4b730333c.r2.dev/Shared/ELA/D22%20-%20Pip%20Hood%20and%20the%20Universal%20Message%20Determining%20the%20Theme.mp4",
+    resourceType:"video",
+    videoDurationSeconds:175,
+    readingThemeMission:true,
+    readingPassage:theoNinaPassage,
+    sourceExcerpt:"Theo sits alone building a robot while other children play kickball, wishing he could join them. Nina notices him, asks about his robot, invites him to play, and promises to stand beside him. Theo joins even though he misses the first ball. Afterward, they praise each other's different strengths and agree to teach one another. Theo realizes their differences matter less than Nina making him feel that he belongs, and they begin eating lunch together almost every day.",
+    kidIntro:"Watch Pip show the difference between a summary and a theme. Then read Theo and Nina, trace what the characters do and learn, and turn those details into a universal message.",
+    lessonKeywords:["theme","summary","universal message","character","generosity","belonging","inclusion","friendship","evidence","dialogue"],
+    lessonContent:{
+      banner:"📚 THEME DETECTIVE • SUMMARY OR UNIVERSAL MESSAGE?",
+      keyIdea:"A summary tells the most important events in order. A theme states a universal message about life or people that the story's events, dialogue, and character changes reveal.",
+      vocabulary:[
+        {term:"Theme",definition:"The important message or lesson a story shows about life or people."},
+        {term:"Summary",definition:"A short retelling of the most important events in a story in order."},
+        {term:"Universal Message",definition:"A lesson from a story that can be true for many people, not just the characters."},
+        {term:"Character",definition:"A person or animal in a story."},
+        {term:"Generosity",definition:"The quality of being kind and willing to share what you have."}
+      ],
+      readingTitle:"Read: Theo and Nina",
+      readingPassage:theoNinaPassage,
+      exampleLabel:"Summary versus theme",
+      example:"Summary: Nina notices Theo sitting alone, invites him to play, and they become friends. Theme: Including someone who feels left out can help that person feel that they belong.",
+      rememberLabel:"Theme test",
+      remember:"A theme is not one word, a character's name, or a list of events. It is a complete message that the story supports and that could apply to people outside the story.",
+      challengeLabel:"Look for evidence",
+      challenge:"As you read, notice what Theo wants, what prevents him from joining in, what Nina does, and what Theo understands by the end.",
+      missionNote:"Watch → Read → Summarize → Determine the theme"
+    },
+    lessonQuestions:themeQuestions
+  };
+  const grade4Theme=data.items.find(item=>item.id==="I-HUM-D22-C1-A");
+  if(grade4Theme)Object.assign(grade4Theme,themeLessonBase,{
+    applicationPrompt:"In 3–4 complete sentences, state one theme of Theo and Nina. Use two specific actions or lines of dialogue as evidence, then explain how the theme could apply outside this story."
+  });
+  const grade5Theme=data.items.find(item=>item.id==="K-HUM-D22-C1-A");
+  if(grade5Theme)Object.assign(grade5Theme,themeLessonBase,{
+    applicationPrompt:"In 4–5 complete sentences, write a universal theme statement for Theo and Nina. Use two specific pieces of dialogue or character action, explain how they develop the theme, and distinguish your theme from a summary."
+  });
+
+  const plantLifeCycle=data.items.find(item=>item.id==="K-Science-D22-C3-A");
+  if(plantLifeCycle)Object.assign(plantLifeCycle,{
+    displayTitle:"Plant Growth & Life Cycle Challenge",
+    requirement:"Plant Growth & Life Cycle Challenge\n\nVideo:\nThe Amazing Plant Life Cycle • From Seed to Flower\n\nKey Ideas:\nGermination, plant structures, pollination, fertilization, photosynthesis, seed formation, and seed dispersal\n\nChallenge:\nWatch the full lesson, then use evidence from the video to complete the eight-question Plant Growth Challenge Quiz.",
+    resourceName:"The Amazing Plant Life Cycle • From Seed to Flower",
+    resourceUrl:"https://pub-005ee88ce4da43c5a2afcbb4b730333c.r2.dev/K%20-%205th/Science/D22%20-%20The%20Amazing%20Plant%20Life%20Cycle%20-%20From%20Seed%20to%20Flower.mp4",
+    resourceType:"video",
+    videoDurationSeconds:648,
+    kidIntro:"Follow a flowering plant from seed to flower. Watch for the conditions seeds need, the jobs of roots, stems, leaves, and flowers, and how pollination leads to new seeds.",
+    applicationPrompt:"Choose one stage in a flowering plant's life cycle. Explain what happens during that stage, what the plant needs, and how the stage helps the life cycle continue.",
+    lessonKeywords:["plant","seed","germination","seedling","roots","stem","leaves","flower","pollination","fertilization","photosynthesis","sunlight","dispersal"],
+    lessonContent:{
+      banner:"🌱 PLANT GROWTH CHALLENGE • FROM SEED TO FLOWER",
+      keyIdea:"A flowering plant's life cycle moves from seed to germination, seedling, adult plant, flower, fertilization, and new seed formation. Each structure has a job that helps the plant survive and reproduce.",
+      vocabulary:[
+        {term:"Germination",definition:"The process in which a seed begins to sprout and grow."},
+        {term:"Seedling",definition:"A young plant with developing roots, a stem, and small leaves."},
+        {term:"Pollination",definition:"The transfer of pollen to a flower's stigma."},
+        {term:"Fertilization",definition:"When a pollen cell joins with an egg so a new seed can begin forming."},
+        {term:"Photosynthesis",definition:"The process plants use to make food from sunlight, water, and carbon dioxide."},
+        {term:"Seed Dispersal",definition:"The movement of seeds away from the parent plant by wind, water, animals, or other methods."}
+      ],
+      exampleLabel:"Trace the process",
+      example:"A seed floats downstream and lands on a warm, moist bank. Water enters the seed coat, the embryo begins growing, the first root pushes downward, and a shoot grows upward. Dispersal happened first; germination happened after the seed reached suitable conditions.",
+      rememberLabel:"Do not mix these up",
+      remember:"Pollination moves pollen to the stigma. Fertilization happens later, when a cell from the pollen joins an egg inside an ovule. The fertilized ovule then develops into a seed, while the flower's ovary may develop into fruit.",
+      challengeLabel:"Make a prediction",
+      challenge:"A plant has healthy roots, stems, and leaves but receives very few insect visits. Predict which part of its life cycle will be affected most, and explain why it may produce fewer seeds.",
+      missionNote:"Watch → Trace each stage → Use evidence"
+    },
+    lessonQuestions:[
+      {prompt:"Four seeds are placed in different conditions. Which seed is most likely to germinate successfully?",choices:["A dry seed in a warm, brightly lit open container","A moist seed in a warm, dark, open container","A moist seed in a cold, open container","A moist seed in a warm, sealed container"],answer:"A moist seed in a warm, dark, open container"},
+      {prompt:"A plant's stem becomes blocked and can no longer perform its main function. What will most likely happen first?",choices:["Its flowers will immediately produce more pollen","Its roots will stop holding the plant in place","Its seeds will change from dicots into monocots","Its leaves will receive less water from the roots"],answer:"Its leaves will receive less water from the roots"},
+      {prompt:"Pollen reaches a flower's stigma but never joins with an egg. Which statement correctly describes what occurred?",choices:["Pollination occurred, but fertilization did not","Fertilization occurred, but pollination did not","Germination occurred before the pollen arrived","Seed dispersal occurred without fertilization"],answer:"Pollination occurred, but fertilization did not"},
+      {prompt:"What should happen directly after successful fertilization in a flower?",choices:["The seed immediately grows its first leaves","The plant changes into a non-flowering plant","A new seed begins forming inside the flower","Pollen moves from the stigma to the anther"],answer:"A new seed begins forming inside the flower"},
+      {prompt:"Two identical plants receive equal amounts of water and carbon dioxide. One plant's leaves are covered so that sunlight cannot reach them. What is the most likely result?",choices:["The covered plant will make additional pollen","The covered plant will germinate a second time","Both plants will make equal amounts of food","The covered plant will make less food than the other"],answer:"The covered plant will make less food than the other"},
+      {prompt:"A seed falls into a stream, floats several miles, and later begins growing along the bank. Which two processes occurred in order?",choices:["Water dispersal followed by germination","Fertilization followed by pollination","Photosynthesis followed by seed formation","Germination followed by animal dispersal"],answer:"Water dispersal followed by germination"},
+      {prompt:"A flowering plant normally depends on insects for pollination. If its colorful petals are removed, what is the most reasonable prediction?",choices:["Its roots will stop absorbing water from the soil","Its seeds will automatically travel through water","Fewer insects may visit, so fewer seeds may form","Its stem will begin producing pollen instead"],answer:"Fewer insects may visit, so fewer seeds may form"},
+      {prompt:"A student discovers a young plant with small leaves and developing roots but no flowers. Which conclusion is best supported?",choices:["It is already an adult flowering plant","It has germinated and is now a seedling","It is a seed waiting for enough oxygen","It has completed its entire life cycle"],answer:"It has germinated and is now a seedling"}
+    ]
+  });
 
   const collisions=data.items.find(item=>item.id==="I-Science-D21-C3-A");
   if(!collisions)return;
@@ -73,8 +273,10 @@
         {term:"Stationary Object",definition:"An object that is not moving."}
       ],
       example:"A moving bowling ball collides with stationary pins. At contact, energy transfers from the ball to the pins, causing the pins to move.",
+      exampleLabel:"Collision example",
       remember:"Faster or heavier moving objects can transfer more energy. During collisions, some energy may also become sound and heat.",
-      challenge:"Collision Detective: Identify the moving object, the object receiving energy, the moment of contact, and the evidence that energy transferred."
+      challenge:"Collision Detective: Identify the moving object, the object receiving energy, the moment of contact, and the evidence that energy transferred.",
+      missionNote:"Watch → Investigate → Explain the energy transfer"
     },
     lessonQuestions:[
       {prompt:"What is energy?",choices:["The ability to make things happen","The place where moving objects stop","The weight of a stationary object","The empty space between two objects"],answer:"The ability to make things happen"},

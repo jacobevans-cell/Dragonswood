@@ -258,6 +258,7 @@
   }
   function interactionSpec(x){
     if(!x)return null;
+    if(x.quickWriteDirect===true)return null;
     const kind=itemKind(x);
     if(kind==="fluency"||kind==="performance")return null; // already interactive performance
     if(kind==="morph")return morphologySpec(x);

@@ -427,7 +427,7 @@ module.exports=Object.freeze({
     "22": [
       {
         "id": "I-HUM-D22-C1-A",
-        "videoRequired": false
+        "videoRequired": true
       },
       {
         "id": "I-HUM-D22-C2-A",
@@ -1229,7 +1229,7 @@ module.exports=Object.freeze({
     "22": [
       {
         "id": "K-HUM-D22-C1-A",
-        "videoRequired": false
+        "videoRequired": true
       },
       {
         "id": "K-HUM-D22-C2-A",
@@ -1245,7 +1245,7 @@ module.exports=Object.freeze({
       },
       {
         "id": "K-Science-D22-C3-A",
-        "videoRequired": false
+        "videoRequired": true
       }
     ],
     "23": [

@@ -97,13 +97,16 @@ def main() -> None:
         masks = [alpha_mask(path) for path in sorted(frame_dir.glob("frame-*.png"))]
         if len(masks) != 4:
             continue
-        base = masks[0]
-        for index, mask in enumerate(masks[1:], 2):
-            union = np.count_nonzero(base | mask)
-            overlap = np.count_nonzero(base & mask)
-            iou = overlap / union if union else 0.0
-            if iou < 0.88:
-                failures.append(f"Dawnscale {tier} walk frame {index} changes anatomy (IoU {iou:.3f}).")
+        def iou(left: np.ndarray, right: np.ndarray) -> float:
+            union = np.count_nonzero(left | right)
+            return np.count_nonzero(left & right) / union if union else 0.0
+        guard_pair = iou(masks[0], masks[2])
+        step_pair = iou(masks[1], masks[3])
+        pose_change = iou(masks[0], masks[1])
+        if guard_pair < 0.74 or step_pair < 0.88:
+            failures.append(f"Dawnscale {tier} guarded walk poses are unstable ({guard_pair:.3f}/{step_pair:.3f}).")
+        if pose_change > 0.88:
+            failures.append(f"Dawnscale {tier} walk still reads as a single-pose idle bob (IoU {pose_change:.3f}).")
 
     moonshadow_heights = {}
     for tier in ("level-15", "level-20"):

@@ -37,6 +37,7 @@ for(const [classId,genders] of Object.entries(R.v5Families)){
         profiles++;
         if(!pack){failures.push(`No pack: ${classId}/${gender}/${affinity}/L${level}`);continue}
         if(R.characterClassId(profile)!==classId)failures.push(`Wrong class: ${pack.id}`);
+        if(pack.idleArt===pack.walkLeftArt||pack.idleArt===pack.walkRightArt)failures.push(`Idle/walk route collision: ${pack.id}`);
         for(const key of ['skinArt','idleArt','walkLeftArt','walkRightArt','attackArt','abilityArt','hurtArt','happyArt','celebrateArt']){
           const target=path.join(root,pack[key]);
           checkedFiles++;

@@ -4016,13 +4016,13 @@
       "files": {
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-dawnscale-starter/walk-left.webp",
-          "bytes": 65782,
-          "sha256": "7f4ab959cd564cfa065f50b7c9bb63f7e0072c5f4795a9c4636fbdc0e0e40305"
+          "bytes": 70936,
+          "sha256": "598c735f8a20070feb732ccac38c18f6a8fe94ccb32e7f6438f231e80adc9ba8"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-dawnscale-starter/walk-right.webp",
-          "bytes": 65622,
-          "sha256": "b0740f682ceac74f3b1e752c6fe4af696dc45863c61dea5858c0506c1575ca59"
+          "bytes": 70540,
+          "sha256": "12b949fa0cc34806004f44c53f8d9dfc212d4d1936365ecc61a77109a3987d50"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-dawnscale-starter/attack.webp",
@@ -4041,13 +4041,13 @@
         },
         "static": {
           "path": "rpg/v5/warrior/warrior-dawnscale-starter/static.webp",
-          "bytes": 18332,
-          "sha256": "bcd568baa1933d4a8d399b3afe5b3b60ef0802278ade587273c066bb566361dc"
+          "bytes": 18594,
+          "sha256": "f46c8b6a8772052f5ed2e46876782d26ac7de053098f7b731588649f0a434eaa"
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-dawnscale-starter/idle.webp",
-          "bytes": 72754,
-          "sha256": "edc010769c40bd12528a9270dac471d98e1e6a8fed11f37fd00e77c07de3097d"
+          "bytes": 72704,
+          "sha256": "e6b531861a5e841fb3983bba77099d06c50cef35c4010038c5811a14fdd29d00"
         }
       }
     },
@@ -4130,13 +4130,13 @@
       "files": {
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-10/walk-left.webp",
-          "bytes": 67620,
-          "sha256": "2127d85a5d9807d95355caaaa66d32a666dd4bfe0493cc4608833e7cf56e0e2e"
+          "bytes": 73698,
+          "sha256": "a7866404dc09a01a59a8d293a6a28d6acab9ccab766a9fa9dac0f6eb77f9e033"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-10/walk-right.webp",
-          "bytes": 68018,
-          "sha256": "a3f3187d0aba722f7b7a8ddc4066efe94232d63d6ef3049c218be503c84500fc"
+          "bytes": 74290,
+          "sha256": "28cc831d51496b0ca1030a3c4e78dfb9d6d02255cffbc5c286451a5018e3c434"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-10/attack.webp",
@@ -4155,13 +4155,13 @@
         },
         "static": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-10/static.webp",
-          "bytes": 19476,
-          "sha256": "29baf240dd7edda2a3157f0ed84206e4171b205889262843ff324baf104cfa80"
+          "bytes": 19570,
+          "sha256": "529d8784efb88d345ef5260d66a77b40c8e4f960bd8f63848cb99030831202e7"
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-10/idle.webp",
-          "bytes": 74042,
-          "sha256": "63117acbdf41765d9c2a12ba03f348b6573d09fe95abedd97b915a72def1ea85"
+          "bytes": 73974,
+          "sha256": "ddaa8911c2043d2255230b68e4f4835135ea4eeb113156413a582c23355a3680"
         }
       }
     },
@@ -4187,13 +4187,13 @@
       "files": {
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-15/walk-left.webp",
-          "bytes": 93194,
-          "sha256": "d29af6a70d1833860d15f7dfca6dbf50755eee51940024224be6926c4b5e2059"
+          "bytes": 91722,
+          "sha256": "b0f8daabed13c357121159c028a3b228bc4ba820012bfafcdeaf465e023313e1"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-15/walk-right.webp",
-          "bytes": 93140,
-          "sha256": "a24c919d2bbd4b44d4fc4dac4c397cc72e295d2764c51511e032f22493011cf7"
+          "bytes": 91584,
+          "sha256": "842332400eeb54e7155cecd55b8e5f464568f6495aa47089d12d5622c37e447f"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-15/attack.webp",
@@ -4212,13 +4212,13 @@
         },
         "static": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-15/static.webp",
-          "bytes": 26794,
-          "sha256": "7613e8618164649268115ea3376945997ef8ff9c7791a7a312b4f400a768a951"
+          "bytes": 26744,
+          "sha256": "9c150a7180e2750f9f952d98943037863acba2ef3d8bdb2e80e0fdab3059b42e"
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-15/idle.webp",
-          "bytes": 101386,
-          "sha256": "7563f56cb136c6aeff66384865399a3fbac81f51057e5f7265193b5c50bba0f4"
+          "bytes": 101260,
+          "sha256": "092c1d560d04814c9bcea2f79b0c7a306b4cc4a923524a2d7354321f45c1a301"
         }
       }
     },
@@ -4244,13 +4244,13 @@
       "files": {
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-20/walk-left.webp",
-          "bytes": 89986,
-          "sha256": "2c950714c50299483ab19f40233c669bf14d4e2a991b31015c9a6850836fb734"
+          "bytes": 88302,
+          "sha256": "2535f350d6f8952f44e8c9c5711b5c59639408ea1c2db12ae5b7b56aa965d44f"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-20/walk-right.webp",
-          "bytes": 90172,
-          "sha256": "1306f60b3fb1fb76019d4ed59ce7957cb80e895a6f0c318f956c00fbd0950b7c"
+          "bytes": 87990,
+          "sha256": "be3bd54ee2785c9a0e24970b3c7fb645fb46b9cbb5b6a0b684d3bbcd72130f8c"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-20/attack.webp",
@@ -4269,13 +4269,13 @@
         },
         "static": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-20/static.webp",
-          "bytes": 25854,
-          "sha256": "cd28ed022de4bd8bc197aea4be383da5899b484e910b88879e1b60cb9e3fde39"
+          "bytes": 25712,
+          "sha256": "6f646eac28d6b47b2aac144710f614602c1ac7820eb6b0d20bcb43672bbdf83f"
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-20/idle.webp",
           "bytes": 97192,
-          "sha256": "fc63022d3d3499d8a2fc67b22a01761b577b343b39f9b2546e72c28acf6274e7"
+          "sha256": "6a60c23b7f0494ba735e30d0c6853c85f479d4eb3f10a37e6b5c5e34b1ea374d"
         }
       }
     },

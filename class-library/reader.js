@@ -15,8 +15,9 @@ import {
   SUMMARY_PROMPT,
   allowNextSeriesBook,
   assignStudentBook,
+  forceStudentChapter,
   unlockStudentBook
-} from "./assessment-store.js?v=20260901-5";
+} from "./assessment-store.js?v=20260901-6";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL("./vendor/pdf.worker.mjs", import.meta.url).href;
 
@@ -330,11 +331,12 @@ function gateForTarget(targetPage, book = state.book) {
   const map = chapterMap(book);
   if (!map) return null;
   const target = Math.max(1, Math.round(Number(targetPage) || 1));
+  const forcedChapter = Math.max(0, Number(state.student.chapterOverrides?.[book.id]?.chapterNumber) || 0);
   for (let index = 1; index < map.chapters.length; index += 1) {
     const chapter = map.chapters[index - 1];
     const nextChapter = map.chapters[index];
     const test = testForChapter(chapter);
-    if (target >= nextChapter.startPage && test && !hasPassed(test.id)) {
+    if (target >= nextChapter.startPage && Number(nextChapter.number) > forcedChapter && test && !hasPassed(test.id)) {
       return { test, chapter, nextChapter, gatePage: nextChapter.startPage };
     }
   }
@@ -1596,10 +1598,14 @@ function renderTestEditor() {
       ${escapeHtml(row.book.title)} · Chapter ${row.chapter.number}${row.test?.status === "published" ? " · Published" : " · Draft"}
     </option>`).join("");
   const test = currentEditorTest();
+  const chapterOptions = BOOKS.flatMap(option => {
+    const map = chapterMap(option);
+    return map?.chapters?.map(chapter => `<option value="${escapeHtml(option.id)}::${Number(chapter.number)}">${escapeHtml(option.title)} · Chapter ${Number(chapter.number)} — ${escapeHtml(chapter.title || "")}</option>`) || [];
+  }).join("");
   const lockManager = state.teacherPlans.length ? `
     <section class="teacher-lock-manager">
       <h3>Student book assignments</h3>
-      <p>Force-assign any book, replace a current selection, or unlock an unfinished book.</p>
+      <p>Assign books, force a student directly to a chapter, or unlock an unfinished book. Forced chapters bypass earlier chapter checks without changing test scores.</p>
       ${state.teacherPlans.map(plan => {
         const book = bookById(plan.state.lockedBookId);
         const nextBook = nextSeriesBook(book);
@@ -1612,6 +1618,12 @@ function renderTestEditor() {
               ${BOOKS.map(option => `<option value="${escapeHtml(option.id)}" ${option.id === plan.state?.lockedBookId ? "selected" : ""}>${escapeHtml(option.title)}</option>`).join("")}
             </select>
             <button class="secondary-action" type="button" data-assign-student="${escapeHtml(plan.id)}">Force assign</button>
+            <label class="sr-only" for="force-chapter-${escapeHtml(plan.id)}">Chapter to force</label>
+            <select id="force-chapter-${escapeHtml(plan.id)}" data-force-chapter-select>
+              <option value="">Choose target chapter…</option>
+              ${chapterOptions}
+            </select>
+            <button class="secondary-action" type="button" data-force-chapter-student="${escapeHtml(plan.id)}">Force chapter</button>
             ${nextBook ? `<button class="secondary-action" type="button" data-allow-next-student="${escapeHtml(plan.id)}" data-next-series-book="${escapeHtml(nextBook.id)}">Allow ${escapeHtml(nextBook.title)}</button>` : ""}
             ${book ? `<button class="secondary-action" type="button" data-unlock-student="${escapeHtml(plan.id)}">Unlock</button>` : ""}
           </div>
@@ -1847,6 +1859,33 @@ elements.testSelect.addEventListener("change", () => {
 });
 elements.testEditorForm.addEventListener("submit", submitTestEditor);
 elements.testEditorFields.addEventListener("click", event => {
+  const forceChapter = event.target.closest("[data-force-chapter-student]");
+  if (forceChapter) {
+    const row = forceChapter.closest(".teacher-lock-row");
+    const selected = String($("[data-force-chapter-select]", row)?.value || "");
+    const separator = selected.lastIndexOf("::");
+    const selectedBook = bookById(separator > 0 ? selected.slice(0, separator) : "");
+    const chapterNumber = Number(separator > 0 ? selected.slice(separator + 2) : 0);
+    const chapter = chapterMap(selectedBook)?.chapters?.find(item => Number(item.number) === chapterNumber);
+    const plan = state.teacherPlans.find(item => item.id === forceChapter.dataset.forceChapterStudent);
+    if (!selectedBook || !chapter) {
+      toast("Choose a target chapter.");
+      return;
+    }
+    const studentName = plan?.studentName || plan?.studentEmail || "this student";
+    if (!window.confirm(`Move ${studentName} to ${selectedBook.title}, Chapter ${chapter.number}? Earlier chapter checks will be bypassed, but their scores will not change.`)) return;
+    forceChapter.disabled = true;
+    forceStudentChapter(forceChapter.dataset.forceChapterStudent, selectedBook.id, chapter.number, chapter.startPage).then(async saved => {
+      if (!saved) throw new Error("Account storage is unavailable in this tester.");
+      state.teacherPlans = await loadStudentPlans();
+      renderTestEditor();
+      toast(`${studentName} moved to Chapter ${chapter.number}.`);
+    }).catch(error => {
+      forceChapter.disabled = false;
+      toast(error?.message || "That chapter could not be forced.");
+    });
+    return;
+  }
   const assign = event.target.closest("[data-assign-student]");
   if (assign) {
     const row = assign.closest(".teacher-lock-row");

@@ -742,6 +742,12 @@ function standardCheckComplete(x,s=st(x.id)){
   if(!questions.length)return true;
   return questions.every((item,index)=>s.autoOverrideStatus?.[index]==="approved"||(Object.prototype.hasOwnProperty.call(answers,index)&&String(answers[index]??"").trim()!==""));
 }
+function visibleQuestionCounts(x,s=st(x.id)){
+  const questions=autoQuestionsFor(x),answers=s.autoAnswers||{};
+  let seen=0,correct=0;
+  questions.forEach((question,index)=>{if(String(answers[index]??"").trim()!==""){seen++;if(window.DWGrading?window.DWGrading.questionAnswerEquivalent(question,answers[index]):String(answers[index])===String(question.answer))correct++}});
+  return {seen,correct,total:questions.length};
+}
 function missionComplete(x,s=st(x.id)){
   const pendingBlocked=mediaPending(x)&&(!window.DWCurriculumLocalTester||!s.watched),videoOk=!vid(x)||s.watched||mediaPending(x);
   return videoOk&&standardCheckComplete(x,s)&&!!s.practiced&&(!missionNeedsTeacher(x)||!!s.verified)&&!pendingBlocked;
@@ -948,7 +954,7 @@ function missionMinutes(x){
 function compactMinutes(total){const n=Math.max(0,Math.round(total));if(n<60)return `${n} MIN`;const h=Math.floor(n/60),m=n%60;return `${h} HR${h===1?"":"S"}${m?` ${m} MIN`:""}`}
 function dayEstimate(list){const totals=list.reduce((sum,x)=>{const range=missionMinutes(x).range;sum[0]+=range[0];sum[1]+=range[1];return sum},[0,0]);return `EST. ${compactMinutes(totals[0])}–${compactMinutes(totals[1])} TOTAL`}
 function card(x){
-  const s=st(x.id),testerMode=curriculumVideoTesterEnabled(),hasVideo=vid(x),readyVideo=mediaReady(x),pendingVideo=mediaPending(x),effectivePending=pendingVideo&&!testerMode,canPractice=!hasVideo||s.watched||effectivePending,m=mediaFor(x),needsTeacher=missionNeedsTeacher(x),complete=missionComplete(x),workReady=(!hasVideo||s.watched)&&standardCheckComplete(x,s)&&s.practiced,checkCounts=questionCounts(x,s),checkScore=checkCounts.total?` Standard check score: ${checkCounts.correct}/${checkCounts.total}.`:"";
+  const s=st(x.id),testerMode=curriculumVideoTesterEnabled(),hasVideo=vid(x),readyVideo=mediaReady(x),pendingVideo=mediaPending(x),effectivePending=pendingVideo&&!testerMode,canPractice=!hasVideo||s.watched||effectivePending,m=mediaFor(x),needsTeacher=missionNeedsTeacher(x),complete=missionComplete(x),workReady=(!hasVideo||s.watched)&&standardCheckComplete(x,s)&&s.practiced,checkCounts=visibleQuestionCounts(x,s),checkScore=checkCounts.total?` Standard check score: ${checkCounts.correct}/${checkCounts.total}.`:"";
   const finalText=effectivePending?(s.practiced?"Activity saved. Final completion waits for the restored video.":"Complete the activity while video access is restored."):complete?`✅ Curriculum mission complete.${checkScore} Your submitted application is recorded.`:needsTeacher?(workReady?"Your work is ready for teacher verification.":"Finish the video, standard check, and written application first."):"Answer every standard-check question and submit the written application to complete this mission.";
   const verifyButton=isTeacher&&needsTeacher&&!effectivePending?`<div class="actions"><button class="stage verify ${workReady?"":"locked"}" ${workReady?"":"disabled"} onclick="teacherVerify('${x.id}')">${s.verified?"UNVERIFY":"TEACHER VERIFY"}</button></div>`:"";
   const testerVideoButton=testerMode&&hasVideo?`<button type="button" class="stage tester-override ${s.watched?"on":""}" onclick="setTesterVideoWatched('${x.id}',${s.watched?"false":"true"})">${s.watched?"TESTER: RESET VIDEO":"TESTER: UNLOCK VIDEO"}</button>`:"";

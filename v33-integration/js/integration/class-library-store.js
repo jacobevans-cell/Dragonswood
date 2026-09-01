@@ -87,6 +87,16 @@ function cleanStudentState(raw = {}) {
     .map(([id, version]) => [String(id).slice(0, 100), String(version || "").slice(0, 100)]));
   const passedTests = Object.fromEntries(Object.entries(raw.passedTests || {}).slice(0, 1000));
   const attempts = Object.fromEntries(Object.entries(raw.attempts || {}).slice(0, 1000));
+  const chapterOverrides = Object.fromEntries(Object.entries(raw.chapterOverrides || {})
+    .slice(0, 100)
+    .map(([id, override]) => {
+      const value = override && typeof override === "object" ? override : {};
+      return [String(id).slice(0, 100), {
+        chapterNumber: Math.max(1, Math.min(500, Math.round(Number(value.chapterNumber) || 1))),
+        startPage: Math.max(1, Math.min(5000, Math.round(Number(value.startPage) || 1))),
+        setAt: String(value.setAt || "").slice(0, 80)
+      }];
+    }));
   return {
     version: 2,
     lockedBookId: String(raw.lockedBookId || "").slice(0, 100),
@@ -95,6 +105,7 @@ function cleanStudentState(raw = {}) {
     pageVersions,
     passedTests,
     attempts,
+    chapterOverrides,
     completedBookIds: [...new Set(Array.isArray(raw.completedBookIds) ? raw.completedBookIds.map(String).slice(0, 100) : [])],
     seriesOverrideBookIds: [...new Set(Array.isArray(raw.seriesOverrideBookIds) ? raw.seriesOverrideBookIds.map(String).slice(0, 100) : [])]
   };
@@ -157,6 +168,10 @@ export async function saveReadingState(input) {
     const snapshot = await transaction.get(ref);
     const existing = cleanStudentState(snapshot.exists() ? snapshot.data().state || {} : {});
     const completedExistingBook = existing.lockedBookId && existing.completedBookIds.includes(existing.lockedBookId);
+    incoming.chapterOverrides = existing.chapterOverrides;
+    Object.entries(existing.chapterOverrides).forEach(([bookId, override]) => {
+      incoming.pages[bookId] = Math.max(Number(incoming.pages[bookId]) || 1, Number(override.startPage) || 1);
+    });
     if (existing.lockedBookId && incoming.lockedBookId !== existing.lockedBookId && !completedExistingBook) {
       throw new Error("Only a teacher can unlock an unfinished book.");
     }
@@ -239,6 +254,42 @@ export async function loadStudentPlans() {
     state: cleanStudentState(plan.state || {})
   });
   return rows.sort((a, b) => a.studentName.localeCompare(b.studentName));
+}
+
+export async function forceStudentChapter(studentId, selectedBookId, selectedChapterNumber, selectedStartPage) {
+  const { firestore, db } = await connection({ allowTeacher: true, requireTeacher: true });
+  const id = String(studentId || "").trim();
+  const bookId = String(selectedBookId || "").trim().slice(0, 100);
+  const chapterNumber = Math.max(1, Math.min(500, Math.round(Number(selectedChapterNumber) || 1)));
+  const startPage = Math.max(1, Math.min(5000, Math.round(Number(selectedStartPage) || 1)));
+  if (!id || !bookId) throw new Error("Choose a student, book, and chapter.");
+  const planRef = firestore.doc(db, "studentReadingPlans", id);
+  const studentRef = firestore.doc(db, "students", id);
+  await firestore.runTransaction(db, async transaction => {
+    const [studentSnapshot, planSnapshot] = await Promise.all([
+      transaction.get(studentRef),
+      transaction.get(planRef)
+    ]);
+    if (!studentSnapshot.exists()) throw new Error("That student is no longer in the class roster.");
+    const student = studentSnapshot.data() || {};
+    const plan = planSnapshot.exists() ? planSnapshot.data() || {} : {};
+    const state = cleanStudentState(plan.state || {});
+    state.lockedBookId = bookId;
+    state.lockedAt = new Date().toISOString();
+    state.pages[bookId] = startPage;
+    state.chapterOverrides[bookId] = {
+      chapterNumber,
+      startPage,
+      setAt: new Date().toISOString()
+    };
+    transaction.set(planRef, {
+      studentId: id,
+      studentEmail: String(plan.studentEmail || student.email || ""),
+      state,
+      updatedAt: firestore.serverTimestamp()
+    }, { merge: false });
+  });
+  return true;
 }
 
 export async function unlockStudentBook(studentId) {

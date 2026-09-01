@@ -65,6 +65,18 @@ def family_and_tier(character_id: str, class_id: str) -> tuple[str, str]:
     raise ValueError(f"Unknown tier in {character_id}")
 
 
+def make_idle_frames(base: Image.Image, size: int) -> list[Image.Image]:
+    """Create a quiet bottom-anchored breathing loop without reusing walk poses."""
+    frames = []
+    for scale in (1.0, 1.006, 1.01, 1.006):
+        scaled_size = max(size, round(size * scale))
+        scaled = base.resize((scaled_size, scaled_size), Image.Resampling.LANCZOS)
+        frame = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+        frame.alpha_composite(scaled, ((size - scaled_size) // 2, size - scaled_size))
+        frames.append(frame)
+    return frames
+
+
 def build_character(source_dir: Path, destination_root: Path, size: int) -> dict:
     manifest = json.loads((source_dir / "manifest.json").read_text(encoding="utf-8"))
     character_id = manifest["character_id"]
@@ -112,6 +124,25 @@ def build_character(source_dir: Path, destination_root: Path, size: int) -> dict
         "sha256": sha256(static_output),
     }
 
+    idle_frames = make_idle_frames(static_frame, size)
+    idle_output = output_dir / "idle.webp"
+    idle_frames[0].save(
+        idle_output,
+        format="WEBP",
+        save_all=True,
+        append_images=idle_frames[1:],
+        duration=[500, 350, 500, 350],
+        loop=0,
+        quality=88,
+        method=4,
+        exact=True,
+    )
+    files["idle"] = {
+        "path": idle_output.relative_to(destination_root.parent.parent).as_posix(),
+        "bytes": idle_output.stat().st_size,
+        "sha256": sha256(idle_output),
+    }
+
     return {
         "id": character_id,
         "classId": class_id,
@@ -123,7 +154,7 @@ def build_character(source_dir: Path, destination_root: Path, size: int) -> dict
         "tierName": tier_name,
         "levelMin": level_min,
         "levelMax": level_max,
-        "states": manifest["display_states"],
+        "states": ["idle", *manifest["display_states"]],
         "files": files,
     }
 
@@ -188,7 +219,7 @@ def main() -> None:
         "schemaVersion": 1,
         "characterSystem": "dragonswood-v5",
         "sourceCharacterCount": 80,
-        "productionAssetCount": 480,
+        "productionAssetCount": report["animatedFiles"] + report["staticFiles"],
         "characters": catalog,
         "validation": report,
     }

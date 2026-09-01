@@ -37,7 +37,7 @@ characterV5SelectedAt: timestamp | null
 | 15–19 | `level-15` | Champion |
 | 20 | `level-20` | Ascendant |
 
-Each of the 80 character/tier combinations includes four-frame `walk-left`, `walk-right`, class action (`attack` or `heal`), `hurt`, and `happy` animations. Production uses 400 animated WebP files plus 80 static WebP fallbacks. The 640px PNG/APNG/WebP/GIF masters remain in the full animation handoff.
+Each of the 80 character/tier combinations includes four-frame `walk-left`, `walk-right`, class action (`attack` or `heal`), `hurt`, and `happy` animations. Production also derives a quiet four-frame `idle` breathing loop from a guarded source pose, so idle never replays the walk cycle. Production uses 480 animated WebP files plus 80 static WebP fallbacks. The 640px PNG/APNG/WebP/GIF masters remain in the full animation handoff.
 
 ### V5.1 animation repair
 
@@ -78,7 +78,7 @@ Expected result:
   "profiles": 80,
   "checkedFiles": 720,
   "catalogCharacters": 80,
-  "productionAssets": 480,
+  "productionAssets": 560,
   "failures": []
 }
 ```

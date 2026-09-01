@@ -55,7 +55,7 @@ if(!R.v5SelectionRequired({email:R.v5Config.testerEmail,classId:'mage'},R.v5Conf
 const catalog=JSON.parse(fs.readFileSync(path.join(root,'assets/rpg/v5/catalog.json'),'utf8'));
 if(catalog.validation?.passed!==true)failures.push('Production catalog validation is not passing.');
 if(catalog.characters?.length!==80)failures.push(`Expected 80 catalog characters, got ${catalog.characters?.length}.`);
-if(catalog.productionAssetCount!==480)failures.push(`Expected 480 production files, got ${catalog.productionAssetCount}.`);
+if(catalog.productionAssetCount!==560)failures.push(`Expected 560 production files, got ${catalog.productionAssetCount}.`);
 for(const character of catalog.characters||[]){
   const expected=expectedFamilies[character.classId]?.[character.gender]?.[character.affinity];
   if(expected!==character.family)failures.push(`Catalog gender mismatch: ${character.id} is tagged ${character.gender}/${character.affinity}.`);

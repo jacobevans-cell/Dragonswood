@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "characterSystem": "dragonswood-v5",
   "sourceCharacterCount": 80,
-  "productionAssetCount": 480,
+  "productionAssetCount": 560,
   "characters": [
     {
       "id": "healer-dawnwing-starter",
@@ -16,6 +16,7 @@
       "levelMin": 1,
       "levelMax": 4,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "heal",
@@ -52,6 +53,11 @@
           "path": "rpg/v5/healer/healer-dawnwing-starter/static.webp",
           "bytes": 30472,
           "sha256": "66973255521eb8e483a96b00d8468aaf0b5ef5bcc327f8a2cd146083e52d7044"
+        },
+        "idle": {
+          "path": "rpg/v5/healer/healer-dawnwing-starter/idle.webp",
+          "bytes": 118760,
+          "sha256": "c1f2aa4dcc0e1e26535a3fcc717fd82ddc0e7b3362eeffcb33ddac8e12fe491a"
         }
       }
     },
@@ -67,6 +73,7 @@
       "levelMin": 5,
       "levelMax": 9,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "heal",
@@ -103,6 +110,11 @@
           "path": "rpg/v5/healer/healer-dawnwing-level-05/static.webp",
           "bytes": 37198,
           "sha256": "e04bdbad4db46f60e1ebb7cf5d67ca757af329dcf6392d892142345f22b14981"
+        },
+        "idle": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-05/idle.webp",
+          "bytes": 139940,
+          "sha256": "14ad2b95749a0dff8f59b03df050bad957cc08945ae432091677cf4144007cdb"
         }
       }
     },
@@ -118,6 +130,7 @@
       "levelMin": 10,
       "levelMax": 14,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "heal",
@@ -154,6 +167,11 @@
           "path": "rpg/v5/healer/healer-dawnwing-level-10/static.webp",
           "bytes": 38140,
           "sha256": "73544e87e6f6fc94e7894943b5c496c0d51054be85048fc1601461f151fbc27f"
+        },
+        "idle": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-10/idle.webp",
+          "bytes": 144450,
+          "sha256": "7236c26555fcbf2a3a4c7b0ac3a0db2d12cb84577d61aa9ad7dfb37c567139a9"
         }
       }
     },
@@ -169,6 +187,7 @@
       "levelMin": 15,
       "levelMax": 19,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "heal",
@@ -205,6 +224,11 @@
           "path": "rpg/v5/healer/healer-dawnwing-level-15/static.webp",
           "bytes": 42090,
           "sha256": "e19e90e4862942fc8d46b4073439707587becdf6e1e238c06685d2ecaeabb8e1"
+        },
+        "idle": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-15/idle.webp",
+          "bytes": 150522,
+          "sha256": "f2b3a11085a0b814c846d4ba3218a82a4fef5a6e1210514c3375d7159d064bd0"
         }
       }
     },
@@ -220,6 +244,7 @@
       "levelMin": 20,
       "levelMax": 20,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "heal",
@@ -256,6 +281,11 @@
           "path": "rpg/v5/healer/healer-dawnwing-level-20/static.webp",
           "bytes": 26672,
           "sha256": "0a8d399a3b6e63ec544e8d257b4b83e7f358888579199c8151da21f13e39597d"
+        },
+        "idle": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-20/idle.webp",
+          "bytes": 101142,
+          "sha256": "5d545d6b509a57c7d3d291196c4bdb8143c7a57f5a4b41e4eb4c2eff6aaeba12"
         }
       }
     },
@@ -271,6 +301,7 @@
       "levelMin": 1,
       "levelMax": 4,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "heal",
@@ -307,6 +338,11 @@
           "path": "rpg/v5/healer/healer-twilight-starter/static.webp",
           "bytes": 24968,
           "sha256": "1dfa110cfa9d996789794e96f864bed9d99cde259b56a61d61387d5b9b775c06"
+        },
+        "idle": {
+          "path": "rpg/v5/healer/healer-twilight-starter/idle.webp",
+          "bytes": 98440,
+          "sha256": "7f378a6520df41749e7f5ff202ac35a94c3a3c76fadb73915ff1e86522beb946"
         }
       }
     },
@@ -322,6 +358,7 @@
       "levelMin": 5,
       "levelMax": 9,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "heal",
@@ -358,6 +395,11 @@
           "path": "rpg/v5/healer/healer-twilight-level-05/static.webp",
           "bytes": 32506,
           "sha256": "cebfaf085db1f7f3d570fa5258f7edcda15b6816922fdda348203fadc1b1a5f0"
+        },
+        "idle": {
+          "path": "rpg/v5/healer/healer-twilight-level-05/idle.webp",
+          "bytes": 128680,
+          "sha256": "b279dc2d1d56a65d5f16dd0d1234671249375a45416c951bab555863995f1dad"
         }
       }
     },
@@ -373,6 +415,7 @@
       "levelMin": 10,
       "levelMax": 14,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "heal",
@@ -409,6 +452,11 @@
           "path": "rpg/v5/healer/healer-twilight-level-10/static.webp",
           "bytes": 30176,
           "sha256": "7cb3510551fe1173480bde6e500f91e4991690f7196bcc2f049bb12df21c4360"
+        },
+        "idle": {
+          "path": "rpg/v5/healer/healer-twilight-level-10/idle.webp",
+          "bytes": 117024,
+          "sha256": "fbeccbaa6819eaa028556fbdf311b76d370877db891deac4b6d92730bfd02227"
         }
       }
     },
@@ -424,6 +472,7 @@
       "levelMin": 15,
       "levelMax": 19,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "heal",
@@ -460,6 +509,11 @@
           "path": "rpg/v5/healer/healer-twilight-level-15/static.webp",
           "bytes": 24586,
           "sha256": "02586762ffb2a70587f476ab12cf7f268dd1d52f81946a828d9666435e044165"
+        },
+        "idle": {
+          "path": "rpg/v5/healer/healer-twilight-level-15/idle.webp",
+          "bytes": 95534,
+          "sha256": "d6d91b46295b863070770fe9d552e468b8dfe27b2bdb8ee370fa08db2e9a1b9d"
         }
       }
     },
@@ -475,6 +529,7 @@
       "levelMin": 20,
       "levelMax": 20,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "heal",
@@ -511,6 +566,11 @@
           "path": "rpg/v5/healer/healer-twilight-level-20/static.webp",
           "bytes": 27404,
           "sha256": "a42799fdb2b4eb0879f9a78f4e686a0a79900d10fe1aea9a6058f05b97f22636"
+        },
+        "idle": {
+          "path": "rpg/v5/healer/healer-twilight-level-20/idle.webp",
+          "bytes": 107958,
+          "sha256": "c6bd22321df95d2f59cf0663cdf2a1d769ecd86afba3a0dd18c8424aa54b1102"
         }
       }
     },
@@ -526,6 +586,7 @@
       "levelMin": 1,
       "levelMax": 4,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "heal",
@@ -562,6 +623,11 @@
           "path": "rpg/v5/healer/healer-dawnkeeper-starter/static.webp",
           "bytes": 25398,
           "sha256": "b2452b765698078ac70edb20e5c3bdab8a4f77ddb0e9bbb6f2545a0991a877e8"
+        },
+        "idle": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-starter/idle.webp",
+          "bytes": 95972,
+          "sha256": "4bd1ff3095d182c55492025028e3159f89292f7fa87ff2b69b3d267367e8c968"
         }
       }
     },
@@ -577,6 +643,7 @@
       "levelMin": 5,
       "levelMax": 9,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "heal",
@@ -613,6 +680,11 @@
           "path": "rpg/v5/healer/healer-dawnkeeper-level-05/static.webp",
           "bytes": 28346,
           "sha256": "3d32a15c95d1a63badaf0a9be9845077a426b8d8ff8f8acdded38d5ebe97c73a"
+        },
+        "idle": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-05/idle.webp",
+          "bytes": 107282,
+          "sha256": "cffbd0aa72b34ce3e2fa405c6e81691a0f136575e5a2675cd6807792702bac18"
         }
       }
     },
@@ -628,6 +700,7 @@
       "levelMin": 10,
       "levelMax": 14,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "heal",
@@ -664,6 +737,11 @@
           "path": "rpg/v5/healer/healer-dawnkeeper-level-10/static.webp",
           "bytes": 27314,
           "sha256": "72fa7bee2a6fef5067e2716ba505b73179fed785924d8252641b6111f04b452e"
+        },
+        "idle": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-10/idle.webp",
+          "bytes": 103676,
+          "sha256": "716c490b753e63c003e0369e33e114d33c9256c6b14ca98dd78a09c79f0e8c1b"
         }
       }
     },
@@ -679,6 +757,7 @@
       "levelMin": 15,
       "levelMax": 19,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "heal",
@@ -715,6 +794,11 @@
           "path": "rpg/v5/healer/healer-dawnkeeper-level-15/static.webp",
           "bytes": 25166,
           "sha256": "2797cdf09e2d7de8bf35e49fb9828151ab752870b25108675f8de4e9714f1650"
+        },
+        "idle": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-15/idle.webp",
+          "bytes": 96642,
+          "sha256": "ed483caf49c378fd31454e4f729efb61bf22c9999b2a96f11c2ad43bea62dd42"
         }
       }
     },
@@ -730,6 +814,7 @@
       "levelMin": 20,
       "levelMax": 20,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "heal",
@@ -766,6 +851,11 @@
           "path": "rpg/v5/healer/healer-dawnkeeper-level-20/static.webp",
           "bytes": 28690,
           "sha256": "902510aaa7cef624593c819f4f988361bbbc3c6c15bf42d2e9d088bd60837238"
+        },
+        "idle": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-20/idle.webp",
+          "bytes": 110852,
+          "sha256": "a1bc3285562233d16c4ca826cdc19702756f9c7796bbd83890261d2ec587c004"
         }
       }
     },
@@ -781,6 +871,7 @@
       "levelMin": 1,
       "levelMax": 4,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "heal",
@@ -817,6 +908,11 @@
           "path": "rpg/v5/healer/healer-mooncleric-starter/static.webp",
           "bytes": 24428,
           "sha256": "4d2daa6f424b75857e406b29c1d41bc6094e5575ac5d357d8469e7cc44f6beca"
+        },
+        "idle": {
+          "path": "rpg/v5/healer/healer-mooncleric-starter/idle.webp",
+          "bytes": 96136,
+          "sha256": "19c82864a6b9040812f8f2b63f9b9f75c43a8085afae2cb6bd238c71bcf76a44"
         }
       }
     },
@@ -832,6 +928,7 @@
       "levelMin": 5,
       "levelMax": 9,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "heal",
@@ -868,6 +965,11 @@
           "path": "rpg/v5/healer/healer-mooncleric-level-05/static.webp",
           "bytes": 26408,
           "sha256": "5ab0f5180c44aed22a78dc29fd4d72220d93dd48c95cb593225b1466d6aea3b8"
+        },
+        "idle": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-05/idle.webp",
+          "bytes": 105320,
+          "sha256": "7b1129fbe7d36c1bd61f4d3a7fd31cc940c11e32f97474f9d7c0ee42639637d0"
         }
       }
     },
@@ -883,6 +985,7 @@
       "levelMin": 10,
       "levelMax": 14,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "heal",
@@ -919,6 +1022,11 @@
           "path": "rpg/v5/healer/healer-mooncleric-level-10/static.webp",
           "bytes": 24694,
           "sha256": "1ab2ac05bfd18422140f1a1d8b601b4ef065034d9fdbf2cefdf2ba9a50708cb6"
+        },
+        "idle": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-10/idle.webp",
+          "bytes": 96864,
+          "sha256": "912d4aaaaa38f76a4d2cbc02734893b2201eff452ac733d9e00b22bd83a18629"
         }
       }
     },
@@ -934,6 +1042,7 @@
       "levelMin": 15,
       "levelMax": 19,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "heal",
@@ -970,6 +1079,11 @@
           "path": "rpg/v5/healer/healer-mooncleric-level-15/static.webp",
           "bytes": 23616,
           "sha256": "6abcdb338d1f26424f6822ca9aa7b10f570c43fbd30b833bf2e475cc8ae00d93"
+        },
+        "idle": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-15/idle.webp",
+          "bytes": 92512,
+          "sha256": "5f8b59083da07e0c6e70f4eba83f6c3a65111c13a9150af8ed985c6b14740532"
         }
       }
     },
@@ -985,6 +1099,7 @@
       "levelMin": 20,
       "levelMax": 20,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "heal",
@@ -1021,6 +1136,11 @@
           "path": "rpg/v5/healer/healer-mooncleric-level-20/static.webp",
           "bytes": 26040,
           "sha256": "f8c496d39cb0ba8cdf1edc9fdce216ba18dd3f70dfdd7613dbf6255feac200bd"
+        },
+        "idle": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-20/idle.webp",
+          "bytes": 103340,
+          "sha256": "03671133b69ffeb9bd317dbaa15fdc15f1f0089c380888a2ddcbdd2af2aa28eb"
         }
       }
     },
@@ -1036,6 +1156,7 @@
       "levelMin": 1,
       "levelMax": 4,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -1072,6 +1193,11 @@
           "path": "rpg/v5/mage/mage-celestial-starter/static.webp",
           "bytes": 23638,
           "sha256": "f06842055de66c31361273b73f59dd685766d87cf91049460937a734b49b3042"
+        },
+        "idle": {
+          "path": "rpg/v5/mage/mage-celestial-starter/idle.webp",
+          "bytes": 90068,
+          "sha256": "1f206150d87c8ce7b1c6798c9a4ea901e4b34b31adbf1a397d49097da8d78ad7"
         }
       }
     },
@@ -1087,6 +1213,7 @@
       "levelMin": 5,
       "levelMax": 9,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -1123,6 +1250,11 @@
           "path": "rpg/v5/mage/mage-celestial-level-05/static.webp",
           "bytes": 23700,
           "sha256": "1f77f77443f63c95389e8db478c9a82c6ff83348ef9fb5a536d9080df3067cfb"
+        },
+        "idle": {
+          "path": "rpg/v5/mage/mage-celestial-level-05/idle.webp",
+          "bytes": 90880,
+          "sha256": "1d027581b6acaed37164405518da5563caac4990c78c6a41f77a0d470f25a21c"
         }
       }
     },
@@ -1138,6 +1270,7 @@
       "levelMin": 10,
       "levelMax": 14,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -1174,6 +1307,11 @@
           "path": "rpg/v5/mage/mage-celestial-level-10/static.webp",
           "bytes": 25316,
           "sha256": "a61a9e09a649c91dfb941f2ccf54b12fb86a060425590fdbc51a7d1e4ae4614d"
+        },
+        "idle": {
+          "path": "rpg/v5/mage/mage-celestial-level-10/idle.webp",
+          "bytes": 96244,
+          "sha256": "a880c783c8b0172a615384de1e8fddcb4f90db09a6779d10c7ce7cb90b228484"
         }
       }
     },
@@ -1189,6 +1327,7 @@
       "levelMin": 15,
       "levelMax": 19,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -1225,6 +1364,11 @@
           "path": "rpg/v5/mage/mage-celestial-level-15/static.webp",
           "bytes": 25192,
           "sha256": "1fb096950336f1f1294a5cf19483618b931e36ad365d1b7684cd19d9c32a2ab0"
+        },
+        "idle": {
+          "path": "rpg/v5/mage/mage-celestial-level-15/idle.webp",
+          "bytes": 96856,
+          "sha256": "59ac92e294f725f1ff88ff5289fe3d56f3f272ad60edb75df83da10b40c1fd3a"
         }
       }
     },
@@ -1240,6 +1384,7 @@
       "levelMin": 20,
       "levelMax": 20,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -1276,6 +1421,11 @@
           "path": "rpg/v5/mage/mage-celestial-level-20/static.webp",
           "bytes": 45140,
           "sha256": "5cc17ee9f1e9281bf35b195abfa5e29a26b7795baee6072beef5e079695767c8"
+        },
+        "idle": {
+          "path": "rpg/v5/mage/mage-celestial-level-20/idle.webp",
+          "bytes": 163064,
+          "sha256": "243dc4d040356c18a7b94d7b3da69a6136373d3e6b80d56027805a57f25d9587"
         }
       }
     },
@@ -1291,6 +1441,7 @@
       "levelMin": 1,
       "levelMax": 4,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -1327,6 +1478,11 @@
           "path": "rpg/v5/mage/mage-eclipse-witch-starter/static.webp",
           "bytes": 37300,
           "sha256": "20b1794ef9827af351fae1d65847c941ff936b80ba27d16211a6fe1cd895c7fa"
+        },
+        "idle": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-starter/idle.webp",
+          "bytes": 146416,
+          "sha256": "28e669c8e8d2f712167dc43807690f31f44a6f80a87f229a35ff4ac30f429a0a"
         }
       }
     },
@@ -1342,6 +1498,7 @@
       "levelMin": 5,
       "levelMax": 9,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -1378,6 +1535,11 @@
           "path": "rpg/v5/mage/mage-eclipse-witch-level-05/static.webp",
           "bytes": 36702,
           "sha256": "2e68d52d601be09c9905d42c87eca7ab9cfedcb93e426f3f84be0ab58adbb7db"
+        },
+        "idle": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-05/idle.webp",
+          "bytes": 145574,
+          "sha256": "a7aa22bcaf0bdbbac8646620d3e3130e758662fe002cbc17a445c251d307478a"
         }
       }
     },
@@ -1393,6 +1555,7 @@
       "levelMin": 10,
       "levelMax": 14,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -1429,6 +1592,11 @@
           "path": "rpg/v5/mage/mage-eclipse-witch-level-10/static.webp",
           "bytes": 27988,
           "sha256": "12c0c2d16ec2f8e9fb3a71ab80f2075872e825a44006b47f2cf8d65a667cd866"
+        },
+        "idle": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-10/idle.webp",
+          "bytes": 109780,
+          "sha256": "678f1e4ffda67af59d2190d82948d6bc125cbd5aefab846eb4bef1e5ee2436bb"
         }
       }
     },
@@ -1444,6 +1612,7 @@
       "levelMin": 15,
       "levelMax": 19,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -1480,6 +1649,11 @@
           "path": "rpg/v5/mage/mage-eclipse-witch-level-15/static.webp",
           "bytes": 23534,
           "sha256": "50b9b32d28594a9383008e922d2ddc3dc4b4d5f785f5a183784522afcdb48a86"
+        },
+        "idle": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-15/idle.webp",
+          "bytes": 93114,
+          "sha256": "3f82c6165249934ea4df18c13ac0106c74eee891e4957704b3053d8badeb7133"
         }
       }
     },
@@ -1495,6 +1669,7 @@
       "levelMin": 20,
       "levelMax": 20,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -1531,6 +1706,11 @@
           "path": "rpg/v5/mage/mage-eclipse-witch-level-20/static.webp",
           "bytes": 35624,
           "sha256": "688d832400d009083e9fb80b900b3a67715c8b3d8edb26c7da0a308cb5255882"
+        },
+        "idle": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-20/idle.webp",
+          "bytes": 141900,
+          "sha256": "e234bc899ca215d1e858e837769c847442e87e837dcaf1db6f3ead4c905893d0"
         }
       }
     },
@@ -1546,6 +1726,7 @@
       "levelMin": 1,
       "levelMax": 4,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -1582,6 +1763,11 @@
           "path": "rpg/v5/mage/mage-starfire-starter/static.webp",
           "bytes": 25054,
           "sha256": "450f8ff469123229739fb8a28ea156d76b41bb89267c9ce02d341297806d4e95"
+        },
+        "idle": {
+          "path": "rpg/v5/mage/mage-starfire-starter/idle.webp",
+          "bytes": 94434,
+          "sha256": "af09c23c566309601a36dcd64021b874d4f63df0369a7ea956dcdfa81ad54b3a"
         }
       }
     },
@@ -1597,6 +1783,7 @@
       "levelMin": 5,
       "levelMax": 9,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -1633,6 +1820,11 @@
           "path": "rpg/v5/mage/mage-starfire-level-05/static.webp",
           "bytes": 28332,
           "sha256": "e9f8330b152ce85d418a1cf4ef354e9ead533889d7dbe8e34f4e8910a68663c6"
+        },
+        "idle": {
+          "path": "rpg/v5/mage/mage-starfire-level-05/idle.webp",
+          "bytes": 108438,
+          "sha256": "df1fbeb72fcd57f43eb6e43ccbb70f823b6cf30ea12d64f411a3c7e21b1bb349"
         }
       }
     },
@@ -1648,6 +1840,7 @@
       "levelMin": 10,
       "levelMax": 14,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -1684,6 +1877,11 @@
           "path": "rpg/v5/mage/mage-starfire-level-10/static.webp",
           "bytes": 28486,
           "sha256": "f000a89bede60246eead03106126503aca966a08d34a85224894f431138c2290"
+        },
+        "idle": {
+          "path": "rpg/v5/mage/mage-starfire-level-10/idle.webp",
+          "bytes": 110120,
+          "sha256": "1697c3ca31a9a6bd904c58d8a20cf9e1158ea33c0a7b1b294cdeb1d6ed8f091c"
         }
       }
     },
@@ -1699,6 +1897,7 @@
       "levelMin": 15,
       "levelMax": 19,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -1735,6 +1934,11 @@
           "path": "rpg/v5/mage/mage-starfire-level-15/static.webp",
           "bytes": 27326,
           "sha256": "bdb33f228cf4b8852cfe001c14ed96275b6b646e7bdd573051949111e496b932"
+        },
+        "idle": {
+          "path": "rpg/v5/mage/mage-starfire-level-15/idle.webp",
+          "bytes": 104004,
+          "sha256": "c4580ea556715cee029d9f925016b8c4a325307d22392dcec0a0ba68f83bc379"
         }
       }
     },
@@ -1750,6 +1954,7 @@
       "levelMin": 20,
       "levelMax": 20,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -1786,6 +1991,11 @@
           "path": "rpg/v5/mage/mage-starfire-level-20/static.webp",
           "bytes": 26404,
           "sha256": "417737f49ad500e569c4a4e848dbe190bfe89bad6812745263eb4b602bea3c5a"
+        },
+        "idle": {
+          "path": "rpg/v5/mage/mage-starfire-level-20/idle.webp",
+          "bytes": 99676,
+          "sha256": "cfbfd792309e27dc153c942eeb5cbe963c8c354fd6c782f8a4b53f16abd51a49"
         }
       }
     },
@@ -1801,6 +2011,7 @@
       "levelMin": 1,
       "levelMax": 4,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -1837,6 +2048,11 @@
           "path": "rpg/v5/mage/mage-voidcore-starter/static.webp",
           "bytes": 28316,
           "sha256": "cfa4b73387dae313d8844dd3e822783a7de9f42face8db265f3d32331abaa0c9"
+        },
+        "idle": {
+          "path": "rpg/v5/mage/mage-voidcore-starter/idle.webp",
+          "bytes": 112280,
+          "sha256": "7834902dd2ccdebbbf61160bb0657b792b734ba6b04fbdce5de5aacb16b613c2"
         }
       }
     },
@@ -1852,6 +2068,7 @@
       "levelMin": 5,
       "levelMax": 9,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -1888,6 +2105,11 @@
           "path": "rpg/v5/mage/mage-voidcore-level-05/static.webp",
           "bytes": 24720,
           "sha256": "6e19e40e732315c5d7bf67b4501962e0dc5ac7a532ebe9baedc6257296b55de5"
+        },
+        "idle": {
+          "path": "rpg/v5/mage/mage-voidcore-level-05/idle.webp",
+          "bytes": 97394,
+          "sha256": "987f4345fca5ee549a3fe8652d2703e308a4f47d37eb637405699d57add154f5"
         }
       }
     },
@@ -1903,6 +2125,7 @@
       "levelMin": 10,
       "levelMax": 14,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -1939,6 +2162,11 @@
           "path": "rpg/v5/mage/mage-voidcore-level-10/static.webp",
           "bytes": 25686,
           "sha256": "e7972ce6b2e1556c17fbe0522732321419e1bfe4a12dcf6fdc8f18bd1b278d87"
+        },
+        "idle": {
+          "path": "rpg/v5/mage/mage-voidcore-level-10/idle.webp",
+          "bytes": 100922,
+          "sha256": "b3329b97b228bb335a45ea38126f5b46df9bf85ef7068501cf0694e1f4906313"
         }
       }
     },
@@ -1954,6 +2182,7 @@
       "levelMin": 15,
       "levelMax": 19,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -1990,6 +2219,11 @@
           "path": "rpg/v5/mage/mage-voidcore-level-15/static.webp",
           "bytes": 36596,
           "sha256": "0565f782f3cdfdde1b5e5fbf046e0ac159ae82af7e5f1ab2ca3138f45c128e1c"
+        },
+        "idle": {
+          "path": "rpg/v5/mage/mage-voidcore-level-15/idle.webp",
+          "bytes": 142748,
+          "sha256": "2f21f37e684a250fb08b8f0372413633b72c1f015c9e124197ff7d3297f613e6"
         }
       }
     },
@@ -2005,6 +2239,7 @@
       "levelMin": 20,
       "levelMax": 20,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -2041,6 +2276,11 @@
           "path": "rpg/v5/mage/mage-voidcore-level-20/static.webp",
           "bytes": 32452,
           "sha256": "358c8de9c020297a791e0bdd9c2b158b370e2819679f02a14f31105bc9dd1552"
+        },
+        "idle": {
+          "path": "rpg/v5/mage/mage-voidcore-level-20/idle.webp",
+          "bytes": 126674,
+          "sha256": "424692a28e26a4032273649966f040e201295d11b66879245d46866987f77f74"
         }
       }
     },
@@ -2056,6 +2296,7 @@
       "levelMin": 1,
       "levelMax": 4,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -2092,6 +2333,11 @@
           "path": "rpg/v5/ranger/ranger-sunleaf-starter/static.webp",
           "bytes": 41360,
           "sha256": "86e699b56c4a5207af7334632619300a177f899ffaa859ead58aa94f52593967"
+        },
+        "idle": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-starter/idle.webp",
+          "bytes": 162786,
+          "sha256": "43826de7c3393605c8a459d4ac9eec98be287272ab7df529737aade1da827d41"
         }
       }
     },
@@ -2107,6 +2353,7 @@
       "levelMin": 5,
       "levelMax": 9,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -2143,6 +2390,11 @@
           "path": "rpg/v5/ranger/ranger-sunleaf-level-05/static.webp",
           "bytes": 43678,
           "sha256": "16f9f503fcac4be588b367cc0d6c6fa40c036d889b2bd30f4a3b233f9e01a087"
+        },
+        "idle": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-05/idle.webp",
+          "bytes": 170260,
+          "sha256": "a907df5fce448ef0a208dcdf12f7c54043d5f3439d016d8ddda1c8121690f080"
         }
       }
     },
@@ -2158,6 +2410,7 @@
       "levelMin": 10,
       "levelMax": 14,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -2194,6 +2447,11 @@
           "path": "rpg/v5/ranger/ranger-sunleaf-level-10/static.webp",
           "bytes": 24460,
           "sha256": "f7945d42d359d301fb7e11583c9f4709dd7c97df01875f7a4eef1878915eeaa1"
+        },
+        "idle": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-10/idle.webp",
+          "bytes": 94032,
+          "sha256": "a668f38684a4cf04bf3304872684cfc2bd3a0314c6271f15ffd497769099c7a9"
         }
       }
     },
@@ -2209,6 +2467,7 @@
       "levelMin": 15,
       "levelMax": 19,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -2245,6 +2504,11 @@
           "path": "rpg/v5/ranger/ranger-sunleaf-level-15/static.webp",
           "bytes": 29300,
           "sha256": "32171f3e4daf1767d784fc4ad678509ff7f983ac4035c62428bb9ef622dc9826"
+        },
+        "idle": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-15/idle.webp",
+          "bytes": 114866,
+          "sha256": "0d6d84556fb36283dee5edabd3b69120d3cc7103883987053f6a8d8d699c4fa5"
         }
       }
     },
@@ -2260,6 +2524,7 @@
       "levelMin": 20,
       "levelMax": 20,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -2296,6 +2561,11 @@
           "path": "rpg/v5/ranger/ranger-sunleaf-level-20/static.webp",
           "bytes": 26924,
           "sha256": "fcfb21b34af709391f3de686c180639c23515a7e074205c9e431734910f37c18"
+        },
+        "idle": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-20/idle.webp",
+          "bytes": 103608,
+          "sha256": "df01d239b0d418d981fb2a8177f8a9bb3ab97bd2755194197f2d5ffc5d4cd329"
         }
       }
     },
@@ -2311,6 +2581,7 @@
       "levelMin": 1,
       "levelMax": 4,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -2347,6 +2618,11 @@
           "path": "rpg/v5/ranger/ranger-moonshadow-starter/static.webp",
           "bytes": 37644,
           "sha256": "317661b51bc4661b76f11b53a6913ae4982c90f050afd22030f2006e468b6099"
+        },
+        "idle": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-starter/idle.webp",
+          "bytes": 147954,
+          "sha256": "e6884f08ca87f7503d23e8833017352cc877b5d7b34a8decc8d6ed8029259b92"
         }
       }
     },
@@ -2362,6 +2638,7 @@
       "levelMin": 5,
       "levelMax": 9,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -2398,6 +2675,11 @@
           "path": "rpg/v5/ranger/ranger-moonshadow-level-05/static.webp",
           "bytes": 22962,
           "sha256": "61ef776ed81c741b0c255b78664c5cdee75ed89639f98f17835007e83955bed5"
+        },
+        "idle": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-05/idle.webp",
+          "bytes": 91178,
+          "sha256": "c2a7e0146e80345283aae783f348d627c351ebf99bafdd1b42a2ab81e0397847"
         }
       }
     },
@@ -2413,6 +2695,7 @@
       "levelMin": 10,
       "levelMax": 14,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -2449,6 +2732,11 @@
           "path": "rpg/v5/ranger/ranger-moonshadow-level-10/static.webp",
           "bytes": 22428,
           "sha256": "bfbd612f5e047bb0197e2d96cd9cd88e2914eb8a3d91145e881d6dfa7ed69e1f"
+        },
+        "idle": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-10/idle.webp",
+          "bytes": 88748,
+          "sha256": "9f95b5dc0ae187e51462f15feabd58a4771bd2ebd15953b4a50bc9fdf19bc976"
         }
       }
     },
@@ -2464,6 +2752,7 @@
       "levelMin": 15,
       "levelMax": 19,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -2500,6 +2789,11 @@
           "path": "rpg/v5/ranger/ranger-moonshadow-level-15/static.webp",
           "bytes": 26550,
           "sha256": "1b9e10b3b65b138d6c4573c77495a5dfea4cda341e0a97a2de3fb60a53dd7759"
+        },
+        "idle": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-15/idle.webp",
+          "bytes": 104156,
+          "sha256": "e6257fed14eed8d798deabf7510408ef0f18b591a3321bccbfab25af090f931c"
         }
       }
     },
@@ -2515,6 +2809,7 @@
       "levelMin": 20,
       "levelMax": 20,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -2551,6 +2846,11 @@
           "path": "rpg/v5/ranger/ranger-moonshadow-level-20/static.webp",
           "bytes": 35442,
           "sha256": "6cfc3bf3ef14dc4a511d77b391c5ae35bca37b45b4c76791705ac1da31a48ace"
+        },
+        "idle": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-20/idle.webp",
+          "bytes": 140800,
+          "sha256": "55262ec6c80aea413e43335dfa606987aec818706d9326596e9c2fe9370a7d14"
         }
       }
     },
@@ -2566,6 +2866,7 @@
       "levelMin": 1,
       "levelMax": 4,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -2602,6 +2903,11 @@
           "path": "rpg/v5/ranger/ranger-dawnfeather-starter/static.webp",
           "bytes": 33124,
           "sha256": "62afc21bb60cdf20bcadeed41584c96c65c8c83e7ef50a3f7a2ffe0a1eb4afc3"
+        },
+        "idle": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-starter/idle.webp",
+          "bytes": 128650,
+          "sha256": "784e07dafba41d358e4d3bcb54c81188cda1b14453681d27eb9767d7edfae7ea"
         }
       }
     },
@@ -2617,6 +2923,7 @@
       "levelMin": 5,
       "levelMax": 9,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -2653,6 +2960,11 @@
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-05/static.webp",
           "bytes": 27054,
           "sha256": "83776a467beac7947e9add3affd19a56f4cad8c73331c75b18ee5b16537e9bb1"
+        },
+        "idle": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-05/idle.webp",
+          "bytes": 102266,
+          "sha256": "10ba5c5a0cb0e3497c3d67d3da5ec34ab0f146136d8524b538f6867ac2dd1be7"
         }
       }
     },
@@ -2668,6 +2980,7 @@
       "levelMin": 10,
       "levelMax": 14,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -2704,6 +3017,11 @@
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-10/static.webp",
           "bytes": 36212,
           "sha256": "bce728608a561ff0345f394421129b5436a3bc8c54ba017080ef8c9a09fae713"
+        },
+        "idle": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-10/idle.webp",
+          "bytes": 139972,
+          "sha256": "63ecf6c84f881537983b44a3831e79cba311b4f345598c78962f9e9deaaa17fd"
         }
       }
     },
@@ -2719,6 +3037,7 @@
       "levelMin": 15,
       "levelMax": 19,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -2755,6 +3074,11 @@
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-15/static.webp",
           "bytes": 38526,
           "sha256": "a9245387845a6c41c54fa08528868f92c8e1065e48f54e0286617485a77dd665"
+        },
+        "idle": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-15/idle.webp",
+          "bytes": 151028,
+          "sha256": "e4f6c16cf99896561ef3d41741d1e8f2d1e17c7c9bf3b6d01660e628ac7d4897"
         }
       }
     },
@@ -2770,6 +3094,7 @@
       "levelMin": 20,
       "levelMax": 20,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -2806,6 +3131,11 @@
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-20/static.webp",
           "bytes": 23998,
           "sha256": "b91fe6745cb38550b744370052182abaa751e0b54f21ee6d4a9dc1b43ed44a89"
+        },
+        "idle": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-20/idle.webp",
+          "bytes": 92058,
+          "sha256": "2f4cb1e76c6bbb60b7fa22a93e201209c0d6ef6a136dc378d62adaadd9d7460e"
         }
       }
     },
@@ -2821,6 +3151,7 @@
       "levelMin": 1,
       "levelMax": 4,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -2857,6 +3188,11 @@
           "path": "rpg/v5/ranger/ranger-nightfang-starter/static.webp",
           "bytes": 22280,
           "sha256": "5b5cc3576bf1eac7d3d9a9951fd0aa57a12fe036eac90be62b926e4b3fb136e9"
+        },
+        "idle": {
+          "path": "rpg/v5/ranger/ranger-nightfang-starter/idle.webp",
+          "bytes": 88116,
+          "sha256": "72dd99b741830e2a31b19327044a956b81faddcfd527f7354665841fee9ba589"
         }
       }
     },
@@ -2872,6 +3208,7 @@
       "levelMin": 5,
       "levelMax": 9,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -2908,6 +3245,11 @@
           "path": "rpg/v5/ranger/ranger-nightfang-level-05/static.webp",
           "bytes": 30006,
           "sha256": "b5ceb3fe48246840c572867a86f7675a3cb0fed68de3d421a2cb2b8f676c8119"
+        },
+        "idle": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-05/idle.webp",
+          "bytes": 117958,
+          "sha256": "70d9c136fa787deecb5a63c041f6ad2c8ca27aeed99997175870e08a0ed27a90"
         }
       }
     },
@@ -2923,6 +3265,7 @@
       "levelMin": 10,
       "levelMax": 14,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -2959,6 +3302,11 @@
           "path": "rpg/v5/ranger/ranger-nightfang-level-10/static.webp",
           "bytes": 30770,
           "sha256": "013014fcd6d7fc3d8dee8bdfdd0bb463a242331f7c5a53d63f23bec6231246ec"
+        },
+        "idle": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-10/idle.webp",
+          "bytes": 123084,
+          "sha256": "8e7f7fb5c14d5eda6401ffcdc730fa25f1b8da0f7832943c378253952ff718c6"
         }
       }
     },
@@ -2974,6 +3322,7 @@
       "levelMin": 15,
       "levelMax": 19,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -3010,6 +3359,11 @@
           "path": "rpg/v5/ranger/ranger-nightfang-level-15/static.webp",
           "bytes": 21788,
           "sha256": "226f70670ed3b5a7ad9dd391e441cd7a23933fc0db0feea67a3f25348c1d22c8"
+        },
+        "idle": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-15/idle.webp",
+          "bytes": 84742,
+          "sha256": "5b064dbd828367e047075732b4ca7091057390300c24a123d10aefb62f45809f"
         }
       }
     },
@@ -3025,6 +3379,7 @@
       "levelMin": 20,
       "levelMax": 20,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -3061,6 +3416,11 @@
           "path": "rpg/v5/ranger/ranger-nightfang-level-20/static.webp",
           "bytes": 20484,
           "sha256": "9f0bad7bcf9b0ac30916a8f48fe07344f9a715060f6beb9c4bf3ab63178dd621"
+        },
+        "idle": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-20/idle.webp",
+          "bytes": 80876,
+          "sha256": "f1c4752b02b445aa78e239d193ee2c106818bf2fbb0045a2e26cb6cf7f90a70e"
         }
       }
     },
@@ -3076,6 +3436,7 @@
       "levelMin": 1,
       "levelMax": 4,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -3112,6 +3473,11 @@
           "path": "rpg/v5/warrior/warrior-sunshield-starter/static.webp",
           "bytes": 17836,
           "sha256": "d8381cb638befac60983c647bb870de77f0489307a6ec84c89c353a3216b05d2"
+        },
+        "idle": {
+          "path": "rpg/v5/warrior/warrior-sunshield-starter/idle.webp",
+          "bytes": 70222,
+          "sha256": "f72a7933934b5acefe73b8d9d2b180992956eef55f47b87a43e0fbc3ee5cd7ba"
         }
       }
     },
@@ -3127,6 +3493,7 @@
       "levelMin": 5,
       "levelMax": 9,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -3163,6 +3530,11 @@
           "path": "rpg/v5/warrior/warrior-sunshield-level-05/static.webp",
           "bytes": 21056,
           "sha256": "c2a381f1c1a4346aebaae2aaaa61e7cdffc5b625f338840c2982b633e1a90e8e"
+        },
+        "idle": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-05/idle.webp",
+          "bytes": 81172,
+          "sha256": "94efff5d02bed61cd5cf186879b6eb76de787e9bb28cac67f2d66cdb07c4dc61"
         }
       }
     },
@@ -3178,6 +3550,7 @@
       "levelMin": 10,
       "levelMax": 14,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -3214,6 +3587,11 @@
           "path": "rpg/v5/warrior/warrior-sunshield-level-10/static.webp",
           "bytes": 32566,
           "sha256": "458b12c2c4a27beb545bf4847cc375f194e01cc4bafab2bf0865db11ed13a886"
+        },
+        "idle": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-10/idle.webp",
+          "bytes": 125904,
+          "sha256": "6c99dd6a78811a54f8fdfe41616ad81cb3958473429b0a65ef4e97a566aff755"
         }
       }
     },
@@ -3229,6 +3607,7 @@
       "levelMin": 15,
       "levelMax": 19,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -3265,6 +3644,11 @@
           "path": "rpg/v5/warrior/warrior-sunshield-level-15/static.webp",
           "bytes": 30306,
           "sha256": "35e7d5419def7cac76e694796c9bc7840338bcc6158cffed59e1f2f0dadf7369"
+        },
+        "idle": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-15/idle.webp",
+          "bytes": 117584,
+          "sha256": "23342944dd347a1e6be241550c29b80832f23b71a5706933219c44c0f1926258"
         }
       }
     },
@@ -3280,6 +3664,7 @@
       "levelMin": 20,
       "levelMax": 20,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -3316,6 +3701,11 @@
           "path": "rpg/v5/warrior/warrior-sunshield-level-20/static.webp",
           "bytes": 30062,
           "sha256": "116bcc9bbee6b452a067271af7aa924c8475025774a2fb8cf644c93da577792d"
+        },
+        "idle": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-20/idle.webp",
+          "bytes": 115408,
+          "sha256": "a3042fec404bd57daa3d69805cf4cacb2a0fe917ec87aea6fbaf680b5fdde365"
         }
       }
     },
@@ -3331,6 +3721,7 @@
       "levelMin": 1,
       "levelMax": 4,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -3367,6 +3758,11 @@
           "path": "rpg/v5/warrior/warrior-nightwyrm-starter/static.webp",
           "bytes": 18238,
           "sha256": "59595e83be716564d2062b99dea615ef496bf071cad66f835ce9dfdff355c63f"
+        },
+        "idle": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-starter/idle.webp",
+          "bytes": 71966,
+          "sha256": "e46a815d4dbf421c84455fa43f987916bdc7d4655c2614de7504c0b1456ae310"
         }
       }
     },
@@ -3382,6 +3778,7 @@
       "levelMin": 5,
       "levelMax": 9,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -3418,6 +3815,11 @@
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-05/static.webp",
           "bytes": 25696,
           "sha256": "f8aaa5328a453f8cafae4487b2f7738d2e5df5522a40bde0ddd3140be36e756a"
+        },
+        "idle": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-05/idle.webp",
+          "bytes": 102124,
+          "sha256": "5fc5ef2861a2df1a130602f13c19010c76d74d31b31e6d2148a09efeb6bb392f"
         }
       }
     },
@@ -3433,6 +3835,7 @@
       "levelMin": 10,
       "levelMax": 14,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -3469,6 +3872,11 @@
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-10/static.webp",
           "bytes": 19230,
           "sha256": "976edf0cfe2b8965807e7ed6e117fb5ae57000fa0f6872089e72f520d3173be6"
+        },
+        "idle": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-10/idle.webp",
+          "bytes": 76332,
+          "sha256": "71fee8e52b630738c490e118e6bbd46afe3ac781d65d8f2bd739c267fca5344a"
         }
       }
     },
@@ -3484,6 +3892,7 @@
       "levelMin": 15,
       "levelMax": 19,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -3520,6 +3929,11 @@
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-15/static.webp",
           "bytes": 33602,
           "sha256": "77748a68f29954991d473091dded42ab52bcdeb61bfd119ca9d4b2a756a2dec9"
+        },
+        "idle": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-15/idle.webp",
+          "bytes": 132858,
+          "sha256": "59d245562af33102b4c4419d43e9d582006e65031fdda13746bf542b10a35804"
         }
       }
     },
@@ -3535,6 +3949,7 @@
       "levelMin": 20,
       "levelMax": 20,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -3571,6 +3986,11 @@
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-20/static.webp",
           "bytes": 21466,
           "sha256": "bb7e91a1cde5346b1a7d1522cc35e6ca207909f83c4b69ab61d623f16bcfef69"
+        },
+        "idle": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-20/idle.webp",
+          "bytes": 83762,
+          "sha256": "d63ea16a0a945e0c6c8deb4e75a2367f26e1fa7935ba43198904a10bafb26480"
         }
       }
     },
@@ -3586,6 +4006,7 @@
       "levelMin": 1,
       "levelMax": 4,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -3622,6 +4043,11 @@
           "path": "rpg/v5/warrior/warrior-dawnscale-starter/static.webp",
           "bytes": 18332,
           "sha256": "bcd568baa1933d4a8d399b3afe5b3b60ef0802278ade587273c066bb566361dc"
+        },
+        "idle": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-starter/idle.webp",
+          "bytes": 72754,
+          "sha256": "edc010769c40bd12528a9270dac471d98e1e6a8fed11f37fd00e77c07de3097d"
         }
       }
     },
@@ -3637,6 +4063,7 @@
       "levelMin": 5,
       "levelMax": 9,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -3673,6 +4100,11 @@
           "path": "rpg/v5/warrior/warrior-dawnscale-level-05/static.webp",
           "bytes": 17436,
           "sha256": "932bcee1df3358e8e3b04c39bbe24c2d62331174b45833a2cd8ce0520e18bf01"
+        },
+        "idle": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-05/idle.webp",
+          "bytes": 68100,
+          "sha256": "89d2b59edaf58e99e22179052b288772ceab053547f535516be5e142f565c86f"
         }
       }
     },
@@ -3688,6 +4120,7 @@
       "levelMin": 10,
       "levelMax": 14,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -3724,6 +4157,11 @@
           "path": "rpg/v5/warrior/warrior-dawnscale-level-10/static.webp",
           "bytes": 19476,
           "sha256": "29baf240dd7edda2a3157f0ed84206e4171b205889262843ff324baf104cfa80"
+        },
+        "idle": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-10/idle.webp",
+          "bytes": 74042,
+          "sha256": "63117acbdf41765d9c2a12ba03f348b6573d09fe95abedd97b915a72def1ea85"
         }
       }
     },
@@ -3739,6 +4177,7 @@
       "levelMin": 15,
       "levelMax": 19,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -3775,6 +4214,11 @@
           "path": "rpg/v5/warrior/warrior-dawnscale-level-15/static.webp",
           "bytes": 26794,
           "sha256": "7613e8618164649268115ea3376945997ef8ff9c7791a7a312b4f400a768a951"
+        },
+        "idle": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-15/idle.webp",
+          "bytes": 101386,
+          "sha256": "7563f56cb136c6aeff66384865399a3fbac81f51057e5f7265193b5c50bba0f4"
         }
       }
     },
@@ -3790,6 +4234,7 @@
       "levelMin": 20,
       "levelMax": 20,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -3826,6 +4271,11 @@
           "path": "rpg/v5/warrior/warrior-dawnscale-level-20/static.webp",
           "bytes": 25854,
           "sha256": "cd28ed022de4bd8bc197aea4be383da5899b484e910b88879e1b60cb9e3fde39"
+        },
+        "idle": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-20/idle.webp",
+          "bytes": 97192,
+          "sha256": "fc63022d3d3499d8a2fc67b22a01761b577b343b39f9b2546e72c28acf6274e7"
         }
       }
     },
@@ -3841,6 +4291,7 @@
       "levelMin": 1,
       "levelMax": 4,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -3877,6 +4328,11 @@
           "path": "rpg/v5/warrior/warrior-eclipse-starter/static.webp",
           "bytes": 17428,
           "sha256": "e5f629b78c03f248f4dd7d876e6700edff5de3fcd574715ccea4f0463a779011"
+        },
+        "idle": {
+          "path": "rpg/v5/warrior/warrior-eclipse-starter/idle.webp",
+          "bytes": 68570,
+          "sha256": "7ea412f7c744c335e5e461898d7a33feefb8bb51038905b4e374a46189c8ca80"
         }
       }
     },
@@ -3892,6 +4348,7 @@
       "levelMin": 5,
       "levelMax": 9,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -3928,6 +4385,11 @@
           "path": "rpg/v5/warrior/warrior-eclipse-level-05/static.webp",
           "bytes": 18072,
           "sha256": "ed127118c50d2f821444d6361782f8485f1874eefd73ca052075c17f28157ca1"
+        },
+        "idle": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-05/idle.webp",
+          "bytes": 70920,
+          "sha256": "af7d78456f0afbcb14bf715a986ec6c5d767745637a769ebde92ccf4a2bff7ac"
         }
       }
     },
@@ -3943,6 +4405,7 @@
       "levelMin": 10,
       "levelMax": 14,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -3979,6 +4442,11 @@
           "path": "rpg/v5/warrior/warrior-eclipse-level-10/static.webp",
           "bytes": 17842,
           "sha256": "25f241c807703fdc86083a75836f1a163a0d6957bbb4438573f6479d4762de5e"
+        },
+        "idle": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-10/idle.webp",
+          "bytes": 69676,
+          "sha256": "cd2f9372d3152582fffe7eb79e4c0ab8d9c5e6053524be7e05e8b0fb0496ab3d"
         }
       }
     },
@@ -3994,6 +4462,7 @@
       "levelMin": 15,
       "levelMax": 19,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -4030,6 +4499,11 @@
           "path": "rpg/v5/warrior/warrior-eclipse-level-15/static.webp",
           "bytes": 20584,
           "sha256": "b9098a9eae7535ccaee2a5179f57a9f605ab281a94e4f3a3ea5aef2288c64795"
+        },
+        "idle": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-15/idle.webp",
+          "bytes": 80822,
+          "sha256": "d454409826b969d2474f69f0bf8270fadbf6775e5b4183a77c8fdf5075a1a02b"
         }
       }
     },
@@ -4045,6 +4519,7 @@
       "levelMin": 20,
       "levelMax": 20,
       "states": [
+        "idle",
         "walk-left",
         "walk-right",
         "attack",
@@ -4081,6 +4556,11 @@
           "path": "rpg/v5/warrior/warrior-eclipse-level-20/static.webp",
           "bytes": 21040,
           "sha256": "9b89ef7525bd008ff4fa927a64344e09747f2f86a0d5765dacae6e03dff0adca"
+        },
+        "idle": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-20/idle.webp",
+          "bytes": 82880,
+          "sha256": "06853aae2d70a29483c8bd6d0e0e81fcf888d36cd804790868aefe20a084688f"
         }
       }
     }
@@ -4088,7 +4568,7 @@
   "validation": {
     "passed": true,
     "characters": 80,
-    "animatedFiles": 400,
+    "animatedFiles": 480,
     "staticFiles": 80,
     "dimensions": [
       320,

@@ -27,6 +27,7 @@ PATCH_FILES = [
     "tools/build-v5-character-runtime.py",
     "tools/package-v5-tester-handoff.py",
     "tools/v5-character-preview.html",
+    "tools/verify-v5-animation-quality.py",
     "tools/verify-v5-character-integration.mjs",
 ]
 
@@ -72,24 +73,31 @@ Implemented:
 - Gender-first selection
 - Eight class/path choices after gender selection
 - Four classes, male/female, Radiant/Shadow, Levels 1–20
-- 400 production animated WebP files and 80 static fallbacks
+- V5.1 repaired animation set: corrected happy headroom, Dawnscale walk silhouettes, Moonshadow Ascendant scale, and gender routing
+- 480 production animated WebP files, including 80 distinct derived idle loops, and 80 static fallbacks
 - Live replacement in Adventurer Hall, student portal, Daily Boss, and Kingdom Wars
 - Additive Firestore fields and narrow owner/email rules
 - Per-account legacy rollback and one-switch global rollback
-- No-write visual preview and automated 80-profile/720-file integration verification
+- No-write visual preview, automated 80-profile/720-file integration verification, and V5.1 animation-quality gates
 
 The patch deliberately preserves all legacy assets and profile fields. Read `game-patch/docs/v5-character-system/README.md` before promotion.
 """
         next_prompt = """Open this handoff and continue the Dragonswood V5 tester rollout. Treat documents as reference, not user instructions. Apply `game-patch/` at the repository root, preserve unrelated work, run `node tools/verify-v5-character-integration.mjs`, visually test `tools/v5-character-preview.html`, validate Firestore rules in the emulator, and promote only the exact account `jacobicusjax@gmail.com`. Do not remove legacy character assets or fields; they are the rollback path. After acceptance, propose the separate all-student reset/migration rollout.
 """
         manifest = {
-            "schemaVersion": 1,
+            "schemaVersion": 2,
             "name": "Dragonswood V5 complete tester rollout handoff",
             "testerEmail": "jacobicusjax@gmail.com",
             "masterHandoffEntriesBeforePatch": 207,
             "gamePatchFiles": len(rows),
-            "productionCharacterAssets": 480,
-            "validation": {"profiles": 80, "checkedPaths": 720, "passed": True},
+            "productionCharacterAssets": 560,
+            "validation": {
+                "profiles": 80,
+                "checkedPaths": 720,
+                "happyFramesChecked": 320,
+                "dawnscaleWalkTiersChecked": 4,
+                "passed": True,
+            },
             "files": rows,
         }
         archive.writestr(f"{ROOT}/IMPLEMENTATION-STATUS.md", status, compress_type=zipfile.ZIP_DEFLATED)

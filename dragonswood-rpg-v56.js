@@ -208,12 +208,12 @@
     const level=Number(profile.level)||levelForXp(profile.xp),tier=v5TierForLevel(level),id=`${classId}-${family.id}-${tier.id}`,base=`assets/rpg/v5/${classId}/${id}`;
     const action=classId==="healer"?"heal":"attack";
     return {id,name:`${family.name} ${tier.name}`,classId,gender,affinity,familyId:family.id,familyName:family.name,tierId:tier.id,tierName:tier.name,levelMin:tier.min,levelMax:tier.max,appearance:true,v5:true,
-      art:`${base}/static.webp`,skinArt:`${base}/static.webp`,idleArt:`${base}/walk-right.webp`,playArt:`${base}/walk-right.webp`,walkLeftArt:`${base}/walk-left.webp`,walkRightArt:`${base}/walk-right.webp`,attackArt:`${base}/${action}.webp`,healArt:`${base}/${action}.webp`,abilityArt:`${base}/${action}.webp`,hurtArt:`${base}/hurt.webp`,happyArt:`${base}/happy.webp`,celebrateArt:`${base}/happy.webp`};
+      art:`${base}/static.webp`,skinArt:`${base}/static.webp`,idleArt:`${base}/idle.webp`,playArt:`${base}/happy.webp`,walkLeftArt:`${base}/walk-left.webp`,walkRightArt:`${base}/walk-right.webp`,attackArt:`${base}/${action}.webp`,healArt:`${base}/${action}.webp`,abilityArt:`${base}/${action}.webp`,hurtArt:`${base}/hurt.webp`,happyArt:`${base}/happy.webp`,celebrateArt:`${base}/happy.webp`};
   }
   function resolveAppearance(profile={}){const v5=resolveV5Character(profile);if(v5)return v5;const id=String(profile?.rpgEquipped?.appearance||"").trim();if(!id)return null;return items.find(item=>item.id===id&&item.appearance===true&&item.classId===String(profile.classId||""))||null}
   function resolveBackground(profile={}){const ids=new Set(["fairy-purple","fairy-bamboo","fairy-mushroom","crystal-cave","jungle","mountain-night","snow-aurora","snow-village"]),id=String(profile.homeBackgroundId||"fairy-purple");return ids.has(id)?{id,art:`assets/rpg/backgrounds/${id}.webp`}:null}
   function inventory(profile={}){return Array.isArray(profile.rpgInventory)?profile.rpgInventory.map(String):[]}
   function dailyXp(profile={}){return String(profile.dailyXpDate||"")===dateKey()?Math.max(0,Math.min(150,Number(profile.dailyXpEarned)||0)):0}
 
-  window.DWRPG={classes,pets,prestigePets,petRegistry,enemies,items,appearancePacks,v5Config,v5Families,v5Tiers,dateKey,levelForXp,hash,dailyEnemy,canonicalPetId,resolvePet,isV5Tester,hasV5Selection,v5SelectionRequired,characterClassId,v5TierForLevel,resolveV5Character,resolveAppearance,resolveBackground,inventory,dailyXp,version:"56.20-v5.1-tester"};
+  window.DWRPG={classes,pets,prestigePets,petRegistry,enemies,items,appearancePacks,v5Config,v5Families,v5Tiers,dateKey,levelForXp,hash,dailyEnemy,canonicalPetId,resolvePet,isV5Tester,hasV5Selection,v5SelectionRequired,characterClassId,v5TierForLevel,resolveV5Character,resolveAppearance,resolveBackground,inventory,dailyXp,version:"56.21-v5.1-tester"};
 })();

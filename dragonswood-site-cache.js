@@ -1,6 +1,8 @@
 (function(){
   "use strict";
 
+  if(window.top!==window)return;
+
   const script=document.currentScript;
   const scriptUrl=script?.src?new URL(script.src,location.href):null;
   const productionHost=location.hostname==="jacobevans-cell.github.io";
@@ -12,6 +14,7 @@
   const FIRST_CONTROL_KEY="dwSiteCacheFirstControlV1";
   const VERSION_KEY="dwSiteVersionSeenV1";
   const DISMISSED_KEY="dwSiteVersionDismissedV1";
+  const MUTED_UNTIL_KEY="dwSiteNotificationsMutedUntilV1";
   const versionUrl=script.dataset.versionUrl||(
     localTest
       ?new URL("tools/site-cache/browser-version.json",rootUrl).href
@@ -56,14 +59,14 @@
     banner.setAttribute("aria-live","polite");
     banner.style.cssText="position:fixed;z-index:2147483646;right:16px;bottom:16px;width:min(390px,calc(100vw - 32px));padding:14px;border:2px solid #f7cf62;border-radius:14px;background:#080923f5;color:#fff;box-shadow:0 16px 48px #000b;font:14px/1.4 Arial,sans-serif";
     banner.innerHTML='<strong style="display:block;color:#ffe58e;font:900 18px Georgia,serif">🐉 Dragonswood update ready</strong><span style="display:block;margin:6px 0 10px">New website changes are available. Your progress and settings will be kept.</span><div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" data-dw-update-later style="border:1px solid #8c83a8;border-radius:8px;background:#25213d;color:#fff;padding:8px 12px;font-weight:800">Later</button><button type="button" data-dw-update-now style="border:1px solid #f7cf62;border-radius:8px;background:#5633a8;color:#fff;padding:8px 12px;font-weight:900">Update now</button></div>';
-    banner.querySelector("[data-dw-update-later]").onclick=()=>{stored(sessionStorage,DISMISSED_KEY,version);banner.remove()};
+    banner.querySelector("[data-dw-update-later]").onclick=()=>{stored(localStorage,MUTED_UNTIL_KEY,String(Date.now()+3600000));stored(sessionStorage,DISMISSED_KEY,"");banner.remove()};
     banner.querySelector("[data-dw-update-now]").onclick=()=>{stored(localStorage,VERSION_KEY,version);stored(sessionStorage,DISMISSED_KEY,"");location.reload()};
     document.body.append(banner);
   }
 
   let versionCheck=null;
   async function checkVersion(){
-    if(document.visibilityState==="hidden"||versionCheck)return versionCheck;
+    if(document.visibilityState==="hidden"||versionCheck||Number(stored(localStorage,MUTED_UNTIL_KEY)||0)>Date.now())return versionCheck;
     versionCheck=(async()=>{
       try{
         const url=new URL(versionUrl);url.searchParams.set("dw",Date.now());

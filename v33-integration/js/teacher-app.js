@@ -560,6 +560,7 @@ let teacherInteractionUntil=0,teacherLiveRenderTimer=null;
 function noteTeacherInteraction(){teacherInteractionUntil=Date.now()+500}
 function scheduleTeacherLiveRender(){
  clearTimeout(teacherLiveRenderTimer);
+ if(state.page==='storyvault'&&app.querySelector('[data-storyvault-frame]'))return;
  const remaining=teacherInteractionUntil-Date.now();
  if(remaining>0){teacherLiveRenderTimer=setTimeout(scheduleTeacherLiveRender,remaining+40);return}
  render();

@@ -866,22 +866,25 @@ service cloud.firestore {
       allow read: if isTeacher()
                   || (isSignedIn() && request.auth.uid == studentId);
 
-      allow create: if isExploreStudent()
-                    && request.auth.uid == studentId
-                    && request.resource.data.keys().hasOnly([
-                      'studentId','studentEmail','state','updatedAt'
-                    ])
-                    && request.resource.data.studentId == request.auth.uid
-                    && request.resource.data.state is map
-                    && request.resource.data.state.lockedBookId is string
-                    && request.resource.data.state.pages is map
-                    && request.resource.data.state.pageVersions is map
-                    && request.resource.data.state.passedTests is map
-                    && request.resource.data.state.attempts is map
-                    && request.resource.data.state.completedBookIds is list
-                    && request.resource.data.state.seriesOverrideBookIds is list
-                    && request.resource.data.state.seriesOverrideBookIds.size() == 0
-                    && request.resource.data.updatedAt == request.time;
+      allow create: if isTeacher()
+                    || (
+                      isExploreStudent()
+                      && request.auth.uid == studentId
+                      && request.resource.data.keys().hasOnly([
+                        'studentId','studentEmail','state','updatedAt'
+                      ])
+                      && request.resource.data.studentId == request.auth.uid
+                      && request.resource.data.state is map
+                      && request.resource.data.state.lockedBookId is string
+                      && request.resource.data.state.pages is map
+                      && request.resource.data.state.pageVersions is map
+                      && request.resource.data.state.passedTests is map
+                      && request.resource.data.state.attempts is map
+                      && request.resource.data.state.completedBookIds is list
+                      && request.resource.data.state.seriesOverrideBookIds is list
+                      && request.resource.data.state.seriesOverrideBookIds.size() == 0
+                      && request.resource.data.updatedAt == request.time
+                    );
 
       allow update: if isTeacher()
                     || (

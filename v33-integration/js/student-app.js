@@ -658,6 +658,7 @@ async function handleClassLibraryRequest(event){
     else if(message.action==='load-student-plans')response.plans=await store.loadStudentPlans();
     else if(message.action==='unlock-student-book')response.saved=await store.unlockStudentBook(message.payload?.studentId);
     else if(message.action==='allow-next-series-book')response.saved=await store.allowNextSeriesBook(message.payload?.studentId,message.payload?.nextBookId);
+    else if(message.action==='assign-student-book')response.saved=await store.assignStudentBook(message.payload?.studentId,message.payload?.bookId);
     else throw new Error('Unknown class library request.');
     response.ok=true;
   }catch(err){response.error=String(err?.message||err||'Class library account storage is unavailable.').slice(0,500)}

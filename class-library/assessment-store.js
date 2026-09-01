@@ -28,7 +28,7 @@ function writeJson(key, value) {
   try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
 }
 
-function parentRequest(action, payload = {}, timeout = 650) {
+function parentRequest(action, payload = {}, timeout = 10000) {
   if (window.parent === window) return Promise.resolve(null);
   const requestId = `library-${Date.now()}-${Math.random().toString(36).slice(2)}`;
   return new Promise(resolve => {
@@ -99,7 +99,7 @@ export async function loadStudentState() {
     }
   }
   if (!accountState && !permissions) return local;
-  const account = normalizeStudentState({ ...(accountState || local), permissions, storageMode: accountState ? "account" : "device" });
+  const account = normalizeStudentState({ ...(accountState || local), permissions, storageMode: accountState || permissions ? "account" : "device" });
   writeJson(STUDENT_KEY, account);
   return account;
 }
@@ -107,7 +107,7 @@ export async function loadStudentState() {
 export async function saveStudentState(value) {
   const state = normalizeStudentState(value);
   writeJson(STUDENT_KEY, state);
-  const response = await parentRequest("save-reading-state", { state }, 1000);
+  const response = await parentRequest("save-reading-state", { state }, 10000);
   let savedToAccount = Boolean(response?.ok);
   if (!savedToAccount) {
     const store = await directStore();
@@ -139,7 +139,7 @@ export async function saveTest(test) {
   const overrides = readJson(TESTS_KEY, {});
   overrides[test.id] = clone(test);
   writeJson(TESTS_KEY, overrides);
-  const response = await parentRequest("save-chapter-test", { test }, 1000);
+  const response = await parentRequest("save-chapter-test", { test }, 10000);
   let savedToAccount = Boolean(response?.ok);
   if (!savedToAccount) {
     const store = await directStore();
@@ -230,7 +230,7 @@ export function gradeTest(test, answers) {
 }
 
 export async function loadStudentPlans() {
-  const response = await parentRequest("load-student-plans", {}, 1200);
+  const response = await parentRequest("load-student-plans", {}, 10000);
   if (response?.ok && Array.isArray(response.plans)) return response.plans;
   const store = await directStore();
   if (!store) return [];
@@ -238,7 +238,7 @@ export async function loadStudentPlans() {
 }
 
 export async function unlockStudentBook(studentId) {
-  const response = await parentRequest("unlock-student-book", { studentId }, 1200);
+  const response = await parentRequest("unlock-student-book", { studentId }, 10000);
   if (response?.ok) return true;
   const store = await directStore();
   if (!store) return false;
@@ -247,10 +247,19 @@ export async function unlockStudentBook(studentId) {
 }
 
 export async function allowNextSeriesBook(studentId, nextBookId) {
-  const response = await parentRequest("allow-next-series-book", { studentId, nextBookId }, 1200);
+  const response = await parentRequest("allow-next-series-book", { studentId, nextBookId }, 10000);
   if (response?.ok) return true;
   const store = await directStore();
   if (!store) return false;
   await store.allowNextSeriesBook(studentId, nextBookId);
+  return true;
+}
+
+export async function assignStudentBook(studentId, bookId) {
+  const response = await parentRequest("assign-student-book", { studentId, bookId }, 10000);
+  if (response?.ok) return true;
+  const store = await directStore();
+  if (!store) return false;
+  await store.assignStudentBook(studentId, bookId);
   return true;
 }

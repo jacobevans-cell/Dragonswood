@@ -216,8 +216,29 @@ export async function gradeLibrarySummary(input = {}) {
 
 export async function loadStudentPlans() {
   const { firestore, db } = await connection({ allowTeacher: true, requireTeacher: true });
-  const snapshot = await firestore.getDocs(firestore.collection(db, "studentReadingPlans"));
-  return snapshot.docs.map(document => ({ id: document.id, ...document.data() }));
+  const [planSnapshot, studentSnapshot] = await Promise.all([
+    firestore.getDocs(firestore.collection(db, "studentReadingPlans")),
+    firestore.getDocs(firestore.collection(db, "students"))
+  ]);
+  const plans = new Map(planSnapshot.docs.map(document => [document.id, document.data()]));
+  const rows = studentSnapshot.docs.map(document => {
+    const student = document.data() || {};
+    const plan = plans.get(document.id) || {};
+    plans.delete(document.id);
+    return {
+      id: document.id,
+      studentName: String(student.firstName || student.displayName || student.email || `Scholar ${document.id.slice(0, 5)}`),
+      studentEmail: String(plan.studentEmail || student.email || ""),
+      state: cleanStudentState(plan.state || {})
+    };
+  });
+  for (const [id, plan] of plans) rows.push({
+    id,
+    studentName: String(plan.studentEmail || `Scholar ${id.slice(0, 5)}`),
+    studentEmail: String(plan.studentEmail || ""),
+    state: cleanStudentState(plan.state || {})
+  });
+  return rows.sort((a, b) => a.studentName.localeCompare(b.studentName));
 }
 
 export async function unlockStudentBook(studentId) {
@@ -242,6 +263,34 @@ export async function allowNextSeriesBook(studentId, nextBookId) {
     "state.lockedAt": "",
     "state.seriesOverrideBookIds": firestore.arrayUnion(bookId),
     updatedAt: firestore.serverTimestamp()
+  });
+  return true;
+}
+
+export async function assignStudentBook(studentId, selectedBookId) {
+  const { firestore, db } = await connection({ allowTeacher: true, requireTeacher: true });
+  const id = String(studentId || "").trim();
+  const bookId = String(selectedBookId || "").trim().slice(0, 100);
+  if (!id || !bookId) throw new Error("Choose a student and a book.");
+  const planRef = firestore.doc(db, "studentReadingPlans", id);
+  const studentRef = firestore.doc(db, "students", id);
+  await firestore.runTransaction(db, async transaction => {
+    const [studentSnapshot, planSnapshot] = await Promise.all([
+      transaction.get(studentRef),
+      transaction.get(planRef)
+    ]);
+    if (!studentSnapshot.exists()) throw new Error("That student is no longer in the class roster.");
+    const student = studentSnapshot.data() || {};
+    const plan = planSnapshot.exists() ? planSnapshot.data() || {} : {};
+    const state = cleanStudentState(plan.state || {});
+    state.lockedBookId = bookId;
+    state.lockedAt = new Date().toISOString();
+    transaction.set(planRef, {
+      studentId: id,
+      studentEmail: String(plan.studentEmail || student.email || ""),
+      state,
+      updatedAt: firestore.serverTimestamp()
+    }, { merge: false });
   });
   return true;
 }

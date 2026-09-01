@@ -14,8 +14,9 @@ import {
   saveTest,
   SUMMARY_PROMPT,
   allowNextSeriesBook,
+  assignStudentBook,
   unlockStudentBook
-} from "./assessment-store.js?v=20260901-4";
+} from "./assessment-store.js?v=20260901-5";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL("./vendor/pdf.worker.mjs", import.meta.url).href;
 
@@ -1595,21 +1596,27 @@ function renderTestEditor() {
       ${escapeHtml(row.book.title)} · Chapter ${row.chapter.number}${row.test?.status === "published" ? " · Published" : " · Draft"}
     </option>`).join("");
   const test = currentEditorTest();
-  const lockedPlans = state.teacherPlans.filter(plan => plan.state?.lockedBookId);
   const lockManager = state.teacherPlans.length ? `
     <section class="teacher-lock-manager">
-      <h3>Student book locks</h3>
-      ${lockedPlans.length ? lockedPlans.map(plan => {
+      <h3>Student book assignments</h3>
+      <p>Force-assign any book, replace a current selection, or unlock an unfinished book.</p>
+      ${state.teacherPlans.map(plan => {
         const book = bookById(plan.state.lockedBookId);
         const nextBook = nextSeriesBook(book);
         return `<div class="teacher-lock-row">
-          <span><strong>${escapeHtml(plan.studentEmail || plan.id)}</strong><small>${escapeHtml(book?.title || plan.state.lockedBookId)}</small></span>
+          <span><strong>${escapeHtml(plan.studentName || plan.studentEmail || plan.id)}</strong><small>${book ? `Locked: ${escapeHtml(book.title)}` : "No book currently locked"}</small></span>
           <div class="teacher-lock-actions">
+            <label class="sr-only" for="assign-book-${escapeHtml(plan.id)}">Book to assign</label>
+            <select id="assign-book-${escapeHtml(plan.id)}" data-assign-book-select>
+              <option value="">Choose any book…</option>
+              ${BOOKS.map(option => `<option value="${escapeHtml(option.id)}" ${option.id === plan.state?.lockedBookId ? "selected" : ""}>${escapeHtml(option.title)}</option>`).join("")}
+            </select>
+            <button class="secondary-action" type="button" data-assign-student="${escapeHtml(plan.id)}">Force assign</button>
             ${nextBook ? `<button class="secondary-action" type="button" data-allow-next-student="${escapeHtml(plan.id)}" data-next-series-book="${escapeHtml(nextBook.id)}">Allow ${escapeHtml(nextBook.title)}</button>` : ""}
-            <button class="secondary-action" type="button" data-unlock-student="${escapeHtml(plan.id)}">Unlock</button>
+            ${book ? `<button class="secondary-action" type="button" data-unlock-student="${escapeHtml(plan.id)}">Unlock</button>` : ""}
           </div>
         </div>`;
-      }).join("") : "<p>No students currently have a locked book.</p>"}
+      }).join("")}
     </section>` : "";
   elements.testEditorFields.innerHTML = `
     ${lockManager}
@@ -1840,6 +1847,32 @@ elements.testSelect.addEventListener("change", () => {
 });
 elements.testEditorForm.addEventListener("submit", submitTestEditor);
 elements.testEditorFields.addEventListener("click", event => {
+  const assign = event.target.closest("[data-assign-student]");
+  if (assign) {
+    const row = assign.closest(".teacher-lock-row");
+    const selectedBook = bookById($("[data-assign-book-select]", row)?.value);
+    const plan = state.teacherPlans.find(item => item.id === assign.dataset.assignStudent);
+    if (!selectedBook) {
+      toast("Choose a book to assign.");
+      return;
+    }
+    const currentBook = bookById(plan?.state?.lockedBookId);
+    const prompt = currentBook && currentBook.id !== selectedBook.id
+      ? `Replace ${currentBook.title} with ${selectedBook.title} for this student?`
+      : `Force-assign ${selectedBook.title} to this student?`;
+    if (!window.confirm(prompt)) return;
+    assign.disabled = true;
+    assignStudentBook(assign.dataset.assignStudent, selectedBook.id).then(async saved => {
+      if (!saved) throw new Error("Account storage is unavailable in this tester.");
+      state.teacherPlans = await loadStudentPlans();
+      renderTestEditor();
+      toast(`${selectedBook.title} assigned.`);
+    }).catch(error => {
+      assign.disabled = false;
+      toast(error?.message || "That book could not be assigned.");
+    });
+    return;
+  }
   const allowNext = event.target.closest("[data-allow-next-student]");
   if (allowNext) {
     const nextBook = bookById(allowNext.dataset.nextSeriesBook);

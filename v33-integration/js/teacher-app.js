@@ -526,7 +526,7 @@ async function startVolumeMeter(){stopVolumeMeter();try{volumeStream=await navig
 function stopVolumeMeter(){if(volumeAnimation)cancelAnimationFrame(volumeAnimation);volumeAnimation=null;try{volumeStream?.getTracks().forEach(track=>track.stop());volumeStream?._dwContext?.close()}catch{}volumeStream=null;const fill=dialogRoot.querySelector('#volume-meter-fill');if(fill)fill.style.width='0'}
 function showReference(){const path=references[state.page];if(!path){openDialog('Reference discrepancy',`<p>The supplied teacher screenshot set does not contain a distinct visible Pass Control design. The file named <code>dragonswood-teacher-05-pass-control.jpg</code> visibly shows <b>Class Rewards & Goals</b>.</p><p>This Pass Control page therefore follows the Master Bible requirements and shared teacher visual system instead of inventing a fake “exact” source.</p>`);return}const overlay=document.createElement('div');overlay.className='reference-overlay';overlay.innerHTML=`<button class="btn btn-gold reference-close">Close reference</button><img src="${path}" alt="Approved reference screenshot for current teacher page">`;document.body.appendChild(overlay);overlay.querySelector('button').addEventListener('click',()=>overlay.remove())}
 function classLibraryStore(){
- classLibraryStorePromise ||= import('./integration/class-library-store.js');
+ classLibraryStorePromise ||= import('./integration/class-library-store.js?v=20260901-1');
  return classLibraryStorePromise;
 }
 async function handleClassLibraryRequest(event){

@@ -37,10 +37,17 @@ const references={
  'leaderboards':'assets/reference/teacher/dragonswood-teacher-09-leaderboards-final.jpg'
 };
 function showToast(message){toast.textContent=message;toast.classList.add('show');clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>toast.classList.remove('show'),2400)}
-let renderedViewportKey=location.hash,viewportRestoreToken=0;
+let renderedViewportKey=location.hash,viewportRestoreToken=0,viewportSettleTimer=null;
 function restoreViewportAfterRender(scrollX,scrollY,key){
- const token=++viewportRestoreToken,restore=()=>{if(token!==viewportRestoreToken||location.hash!==key)return;window.scrollTo({left:scrollX,top:scrollY,behavior:'instant'})};
- restore();requestAnimationFrame(()=>{restore();requestAnimationFrame(()=>{restore();app.style.minHeight=''})});
+ const token=++viewportRestoreToken;
+ clearTimeout(viewportSettleTimer);
+ document.documentElement.style.overflowAnchor='none';
+ document.body.style.overflowAnchor='none';
+ const restore=()=>{if(token!==viewportRestoreToken||location.hash!==key)return;window.scrollTo({left:scrollX,top:scrollY,behavior:'instant'})};
+ restore();
+ requestAnimationFrame(()=>{restore();requestAnimationFrame(restore)});
+ [80,200,450,900].forEach(delay=>setTimeout(restore,delay));
+ viewportSettleTimer=setTimeout(()=>{if(token!==viewportRestoreToken)return;app.style.minHeight='';document.documentElement.style.overflowAnchor='';document.body.style.overflowAnchor=''},1100);
 }
 function openDialog(title,body,actions=''){dialogRoot.innerHTML=`<div class="dialog-backdrop" data-dialog-backdrop><section class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title"><h2 id="dialog-title">${title}</h2>${body}<div class="dialog-actions">${actions||'<button class="btn btn-primary" data-close-dialog>Done</button>'}</div></section></div>`;dialogRoot.querySelector('[data-close-dialog]')?.addEventListener('click',closeDialog);dialogRoot.querySelector('[data-dialog-backdrop]')?.addEventListener('click',e=>{if(e.target===e.currentTarget)closeDialog()});dialogRoot.querySelector('button')?.focus()}
 function closeDialog(){const commandActive=!!dialogRoot.querySelector('#apply-student-command');dialogRoot.innerHTML='';if(commandActive&&state.pendingCommand){state.pendingCommand='';render()}}
@@ -251,7 +258,7 @@ function bind(){
  app.querySelectorAll('[data-arcade-class]').forEach(el=>el.addEventListener('click',()=>setArcadeClass(el.dataset.arcadeClass==='true')));
  app.querySelectorAll('[data-arcade-individual]').forEach(el=>el.addEventListener('click',()=>setArcadeIndividual(el.dataset.arcadeIndividual,el.dataset.enabled==='true')));
  enhanceLiveTeacherUi();
- if(state.focusPendingPasses&&state.page==='passes'){state.focusPendingPasses=false;requestAnimationFrame(()=>{const queue=app.querySelector('#pending-pass-queue');queue?.focus();queue?.scrollIntoView({block:'start',behavior:'smooth'})})}
+ if(state.focusPendingPasses&&state.page==='passes'){state.focusPendingPasses=false;requestAnimationFrame(()=>app.querySelector('#pending-pass-queue')?.focus({preventScroll:true}))}
 }
 function enhanceLiveTeacherUi(){
  installArcadeFreeControls();

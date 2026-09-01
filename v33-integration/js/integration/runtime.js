@@ -238,7 +238,7 @@
     emit(onUpdate,{status:'loading',message:'Loading secure teacher sign-in…'});
     let F;
     try{F=await createFirebase('teacher')}catch(err){emit(onUpdate,{status:'error',message:`Firebase could not load: ${err?.message||err}`});return {environment,signIn:async()=>{},signOut:async()=>{},dispose(){}}}
-    const {S,auth,db}=F;
+    const {S,auth,db,functions}=F;
     let currentUser=null,lastOperations=null,curriculumProgressStarted=false;
     const reconcilingBathroomSlots=new Set(),reconcilingCurriculumOverrides=new Set();
     const unsubs=[];

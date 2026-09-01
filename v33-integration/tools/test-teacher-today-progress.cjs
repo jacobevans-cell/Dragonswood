@@ -62,6 +62,10 @@ const legacyComplete=Academic.todayProgress([roster[0]],[],[
   {studentId:'a',itemId:'I-HUM-D21-C3-A',day:21,practiced:true,watched:false,questionsSeen:0,questionsCorrect:0},
 ],{...options,curriculumCatalog:legacyCatalog,videoMap:{'legacy-ready':{status:'ready'}}});
 assert.equal(legacyComplete.rows[0].curriculum.completed,2,'legacy rows without complete are derived from the same quiz, writing, and video gates');
+const legacyWrongButSubmitted=Academic.todayProgress([roster[0]],[],[
+  {studentId:'a',itemId:'I-HUM-D21-C1-L1',day:21,practiced:true,watched:true,complete:false,questionsTotal:6,questionsSeen:6,questionsCorrect:2},
+],{...options,curriculumCatalog:legacyCatalog,videoMap:{'legacy-ready':{status:'ready'}}});
+assert.equal(legacyWrongButSubmitted.rows[0].curriculum.completed,1,'all submitted answers complete the mission even when the preserved score is 2/6');
 const legacyIncomplete=Academic.todayProgress([roster[0]],[],[
   {studentId:'a',itemId:'I-HUM-D21-C1-L1',day:21,practiced:true,watched:true,questionsSeen:5,questionsCorrect:5},
 ],{...options,curriculumCatalog:legacyCatalog,videoMap:{'legacy-ready':{status:'ready'}}});

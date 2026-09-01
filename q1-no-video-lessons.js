@@ -431,7 +431,10 @@
 
   function saveMystery(id,record,reason){
     mysteryRecords[id]=record;
-    const s=window.st(id);s.dwMystery=record;window.save();
+    const s=window.st(id);s.dwMystery=record;
+    if(window.S&&window.S.items)window.S.items[id]=s;
+    else if(typeof window.saveCurriculumItemState==="function")window.saveCurriculumItemState(id,s);
+    window.save();
     if(reason)window.DWCurriculumRenderCoordinator?.request(reason);
   }
   window.dwNvStartInterview=function(id,characterId){

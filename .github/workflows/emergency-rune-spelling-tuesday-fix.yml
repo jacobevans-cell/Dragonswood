@@ -1,0 +1,85 @@
+name: Emergency Rune Spelling Tuesday Fix
+on:
+  push:
+    paths:
+      - .github/workflows/emergency-rune-spelling-tuesday-fix.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  patch-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply verified Tuesday fixes
+        shell: python
+        run: |
+          from pathlib import Path
+
+          runtime = Path("rune-spelling.html")
+          text = runtime.read_text(encoding="utf-8")
+          replacements = [
+              (
+                  '  window.DWNarrator?.play({id,text:clean,contentType:"ela",assessmentLanguage:"en",locale:"en-US",rate});',
+                  '''  const request={id,text:clean,contentType:"ela",assessmentLanguage:"en",locale:"en-US",rate};
+            if(typeof window.DWNarrator?.play==="function"){
+              try{window.DWNarrator.play(request);return}catch(error){console.warn("Dragonswood narrator unavailable; using device speech",error)}
+            }
+            // Rune Spelling can run as a standalone page or inside a portal frame where the
+            // site narrator is not injected. Keep every student-facing Hear button working
+            // on Chromebooks by falling back to the browser's built-in speech service.
+            if(typeof window.speechSynthesis?.speak!=="function"||typeof window.SpeechSynthesisUtterance!=="function")return;
+            window.speechSynthesis.cancel();
+            const utterance=new window.SpeechSynthesisUtterance(clean);
+            utterance.lang="en-US";
+            utterance.rate=Math.max(.5,Math.min(1.2,Number(rate)||.85));
+            utterance.pitch=1;
+            const voices=window.speechSynthesis.getVoices?.()||[];
+            utterance.voice=voices.find(voice=>voice.lang==="en-US"&&voice.localService)||voices.find(voice=>String(voice.lang||"").toLowerCase().startsWith("en-us"))||voices.find(voice=>String(voice.lang||"").toLowerCase().startsWith("en"))||null;
+            window.speechSynthesis.speak(utterance);''',
+              ),
+              (
+                  '''function mondayIds(){return words.slice(0,10).map(word=>word.contentId)}
+          function tuesdayIds(){return words.slice(10).map(word=>word.contentId)}''',
+                  '''function weeklyDiscoverySplitIndex(){return Math.ceil(words.length/2)}
+          function mondayIds(){return words.slice(0,weeklyDiscoverySplitIndex()).map(word=>word.contentId)}
+          function tuesdayIds(){return words.slice(weeklyDiscoverySplitIndex()).map(word=>word.contentId)}''',
+              ),
+              (
+                  "wordCount:10,contentIds:ids,studyEvidence:selectedStudyEvidence(ids)",
+                  "wordCount:ids.length,contentIds:ids,studyEvidence:selectedStudyEvidence(ids)",
+              ),
+          ]
+          for old, new in replacements:
+              if text.count(old) != 1:
+                  raise SystemExit(f"Expected exactly one runtime match, found {text.count(old)}")
+              text = text.replace(old, new)
+          runtime.write_text(text, encoding="utf-8")
+
+          preview = Path("rune-spelling-rebuild-preview.html")
+          text = preview.read_text(encoding="utf-8")
+          preview_replacements = replacements[1:]
+          for old, new in preview_replacements:
+              if text.count(old) != 1:
+                  raise SystemExit(f"Expected exactly one preview match, found {text.count(old)}")
+              text = text.replace(old, new)
+          preview.write_text(text, encoding="utf-8")
+
+          verifier = Path("tools/verify-rune-spelling-definitive-word-set.mjs")
+          text = verifier.read_text(encoding="utf-8")
+          old = '  assertions(text.includes("function tuesdayIds(){return words.slice(10)"), \`${name}: Tuesday does not use the actual remaining lesson words.\`);'
+          new = '  assertions(text.includes("function weeklyDiscoverySplitIndex(){return Math.ceil(words.length/2)}"), \`${name}: weekly words are not split evenly across Monday and Tuesday.\`);\n  assertions(text.includes("function tuesdayIds(){return words.slice(weeklyDiscoverySplitIndex())"), \`${name}: Tuesday does not use the second half of the weekly words.\`);'
+          if text.count(old) != 1:
+              raise SystemExit(f"Expected verifier match, found {text.count(old)}")
+          verifier.write_text(text.replace(old, new), encoding="utf-8")
+      - name: Verify runtime
+        run: |
+          node tools/verify-rune-spelling-definitive-word-set.mjs
+          git diff --check
+      - name: Publish fix
+        run: |
+          git config user.name "Dragonswood Emergency Fix"
+          git config user.email "actions@users.noreply.github.com"
+          git add rune-spelling.html rune-spelling-rebuild-preview.html tools/verify-rune-spelling-definitive-word-set.mjs
+          git commit -m "Fix Tuesday Rune Spelling audio and word split"
+          git push origin main

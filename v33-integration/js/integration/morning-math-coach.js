@@ -9,7 +9,7 @@
     doc.head.append(style);
     const launch=doc.createElement('button');launch.type='button';launch.className='dw-morning-coach-launch';launch.dataset.dwMorningMathCoach='1';launch.textContent='🧮 Math Coach';
     const backdrop=doc.createElement('div');backdrop.className='dw-morning-coach-backdrop';backdrop.innerHTML='<div class="dw-morning-coach-head"><span>Choose an operation • enter your problem • solve one coached step at a time</span><button class="dw-morning-coach-close" type="button">Close</button></div><iframe class="dw-morning-coach-frame" title="Math Operations Coach"></iframe>';
-    doc.body.append(launch,backdrop);
+    doc.body.append(launch,backdrop);doc.body.dataset.dwMorningActive='1';
     const coachFrame=backdrop.querySelector('iframe'),closeButton=backdrop.querySelector('button');
     const close=()=>{backdrop.classList.remove('show');launch.focus()};
     launch.addEventListener('click',()=>{backdrop.classList.add('show');if(!coachFrame.src)coachFrame.src=new URL('math-operations-quest.html?dw-morning-coach=1',doc.baseURI).href});

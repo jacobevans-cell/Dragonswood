@@ -249,6 +249,7 @@ function bind(){
  if(state.focusPendingPasses&&state.page==='passes'){state.focusPendingPasses=false;requestAnimationFrame(()=>{const queue=app.querySelector('#pending-pass-queue');queue?.focus();queue?.scrollIntoView({block:'start',behavior:'smooth'})})}
 }
 function enhanceLiveTeacherUi(){
+ installArcadeFreeControls();
  const summaryActions=[recognitionReview,manageDailyAccess,reviewCurriculumOverrides];
  app.querySelectorAll('.attention-strip .attention-item').forEach((card,index)=>{card.classList.add('clickable-summary');card.tabIndex=0;card.setAttribute('role','button');const open=event=>{if(event?.target?.closest('button'))return;summaryActions[index]?.()};card.addEventListener('click',open);card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();open(event)}})});
  app.querySelectorAll('.attention-strip .attention-score').forEach(card=>{card.classList.add('clickable-summary');card.tabIndex=0;card.setAttribute('role','button');card.addEventListener('click',showPointLedger);card.addEventListener('keydown',event=>{if(event.key==='Enter')showPointLedger()})});
@@ -264,6 +265,14 @@ function enhanceLiveTeacherUi(){
    app.querySelectorAll('.goal-card').forEach(card=>{card.classList.add('clickable-summary');card.tabIndex=0;const goalId=card.querySelector('[data-goal-id]')?.dataset.goalId;const open=event=>{if(event?.target?.closest('button'))return;showGoalEvidence(goalId)};card.addEventListener('click',open);card.addEventListener('keydown',event=>{if(event.key==='Enter'){open(event)}})});
  }
  if(state.page==='jobs')app.querySelectorAll('.metric-grid .metric').forEach((card,index)=>{card.classList.add('clickable-summary');card.tabIndex=0;card.addEventListener('click',()=>showJobMetric(index));card.addEventListener('keydown',event=>{if(event.key==='Enter')showJobMetric(index)})});
+}
+function installArcadeFreeControls(){
+ if(state.page!=='arcade'||app.querySelector('[data-arcade-free-controls]'))return;
+ const selected=students.filter(student=>state.selected.has(student.id)),panel=document.createElement('section');panel.className='panel teacher-form';panel.dataset.arcadeFreeControls='1';
+ panel.innerHTML=`<div class="eyebrow">ONE-HOUR OVERRIDE</div><h3>Free Arcade • bypass every lock</h3><p>Morning Work, Curriculum, Token, class, and individual Arcade locks are bypassed. No Tokens are charged.</p><div class="row mt-12"><button class="btn btn-primary" type="button" data-arcade-free-class>🕹️ Free Arcade for Everyone • 1 Hour</button><button class="btn btn-secondary" type="button" data-arcade-free-selected ${selected.length?'':'disabled'}>👤 Free Arcade for Selected • 1 Hour</button></div><p class="muted mt-12">${selected.length?escapeHtml(selected.map(student=>student.name).join(', ')):'Choose one or more scholars below for the individual override.'}</p>`;
+ app.querySelector('.teacher-content .teacher-form')?.before(panel);
+ panel.querySelector('[data-arcade-free-class]')?.addEventListener('click',()=>setArcadeFreeAccess('class'));
+ panel.querySelector('[data-arcade-free-selected]')?.addEventListener('click',()=>setArcadeFreeAccess('individual'));
 }
 async function runArcade(action,success){
  if(!arcadeTeacher?.enabled){showToast('Arcade controls are unavailable in this environment.');return}
@@ -286,6 +295,12 @@ function setArcadeClass(enabled){
  dialogRoot.querySelector('#confirm-arcade-class')?.addEventListener('click',async()=>{closeDialog();await runArcade(()=>arcadeTeacher.setAvailability(enabled),`Class Arcade Time ${enabled?'opened':'locked'}.`)});
 }
 async function setArcadeIndividual(uid,enabled){await runArcade(async()=>{await arcadeTeacher.setAvailability(enabled,uid);state.arcadeRows[uid]=await arcadeTeacher.getState(uid)},`Scholar Arcade access ${enabled?'opened':'locked'}.`)}
+function setArcadeFreeAccess(scope){
+ const selected=students.filter(student=>state.selected.has(student.id));if(scope==='individual'&&!selected.length){showToast('Choose at least one scholar first.');return}
+ const names=selected.map(student=>student.name).join(', '),label=scope==='class'?'everyone':names;
+ openDialog('Start free Arcade for one hour?',`<p><b>${escapeHtml(label)}</b> will bypass Morning Work, Curriculum, Token, class, and individual Arcade locks for exactly one hour.</p><p class="muted">No Tokens will be charged.</p>`,`<button class="btn btn-secondary" data-close-dialog>Cancel</button><button class="btn btn-primary" id="confirm-free-arcade">Start Free Hour</button>`);
+ dialogRoot.querySelector('#confirm-free-arcade')?.addEventListener('click',async()=>{closeDialog();await runArcade(async()=>{if(scope==='class')await arcadeTeacher.setFreeAccess('class');else await Promise.all(selected.map(student=>arcadeTeacher.setFreeAccess('individual',student.id)))},scope==='class'?'Free Arcade is open for everyone for one hour.':`Free Arcade is open for ${names} for one hour.`)});
+}
 function filterRoster(q){const target=document.querySelector('#roster-list');if(target)target.innerHTML=rosterRows(filteredRosterStudents(q));target?.querySelectorAll('[data-student]').forEach(el=>el.addEventListener('change',()=>{el.checked?state.selected.add(el.dataset.student):state.selected.delete(el.dataset.student);render()}))}
 function commandEffect(command){return ({'Ready & Working':'+15 XP and +3 Gold','Excellent Transition':'+10 XP and +2 Gold','Great Lunch Behavior':'+20 XP, +4 Gold, and +1 Class Pet point','Great Specials Behavior':'+20 XP, +4 Gold, and +1 Field Trip point','Outstanding Effort':'+30 XP and +6 Gold','Dragonswood Leadership':'+40 XP and +8 Gold','Reset Focus':'−10 XP, never below zero','Pause Access':'Pause optional destinations until a teacher unlocks them','Teacher Check-In':'Require a teacher check-in before optional destinations','Reflection Needed':'Require reflection before optional destinations','Unlock Daily Access':'Unlock today and clear optional-access holds','Pause Optional Area':'Pause optional destinations until a teacher unlocks them','Recognition Note':'Record a positive note in the scholar transaction history','Reset Class Choice':'Clear only classId and preserve pets, equipment, inventory, XP, and Gold','Teacher Flag':'Save a teacher-only follow-up marker'})[command]||'Apply the reviewed teacher command'}
 function reviewCommand(command){

@@ -815,7 +815,7 @@ function setArcadeBusy(trigger,busy){
 }
 
 function arcadeBlockedMessage(access){
-  if(access?.testerOverride===true||access?.afternoonSubstituteAccess===true)return '';
+  if(access?.testerOverride===true||access?.afternoonSubstituteAccess===true||access?.teacherFreeAccess===true)return '';
   if(access?.afternoonSubstituteActive===true){const requirements=access.afternoonRequirements||{},missing=[requirements.morningComplete!==true?'Morning Work':'',requirements.curriculumComplete!==true?'every Current Quest lesson':''].filter(Boolean);return `Finish ${missing.join(' and ')} to unlock free Afternoon Arcade Time.`}
   if(access?.teacherEnabled!==true)return 'Arcade Time is still locked by your teacher.';
   const tokens=Math.max(0,Math.min(3,Number(access?.tokens)||0));
@@ -828,11 +828,12 @@ async function enterArcade(trigger){
   arcadeEntering=true;setArcadeBusy(trigger,true);showToast('Counting your Arcade Tokens…');
   try{
     let access=await arcadePortal.getAccess();
+    if(access?.teacherFreeAccess!==true&&requiredWorkLocked('arcade')){showRequiredWorkDialog('arcade');throw new Error('Finish Dragon’s Path before using Arcade Time.')}
     if(access?.active!==true){const blocked=arcadeBlockedMessage(access);if(blocked)throw new Error(blocked)}
     showToast(access?.active===true?'Reopening your Arcade session…':'Turning the Arcade hourglass…');
     await arcadePortal.preflight?.();
     if(access?.active!==true){
-      showToast(access?.afternoonSubstituteAccess===true?'Starting free Afternoon Arcade Time—no Tokens used…':access?.testerOverride===true?'Starting your tester Arcade session…':'Using 3 Tokens and starting 30 minutes…');
+      showToast(access?.teacherFreeAccess===true?'Starting your free one-hour Arcade session—no Tokens used…':access?.afternoonSubstituteAccess===true?'Starting free Afternoon Arcade Time—no Tokens used…':access?.testerOverride===true?'Starting your tester Arcade session…':'Using 3 Tokens and starting 30 minutes…');
       access=await arcadePortal.startSession();
     }
     if(access?.active!==true)throw new Error('Arcade session did not start. Your Tokens were not intentionally spent by this page.');
@@ -846,8 +847,8 @@ async function enterArcade(trigger){
 function openPage(page,trigger=null){
   if(blockingPass()){showToast('Return your active pass before continuing Dragonswood.');location.hash='adventure';return}
   if(substituteBlocked(page)){location.hash='missions';showSubstituteModeDialog(page);return}
-  if(requiredWorkLocked(page)){location.hash='missions';showRequiredWorkDialog(page);return}
   if(String(page)==='arcade'){enterArcade(trigger);return}
+  if(requiredWorkLocked(page)){location.hash='missions';showRequiredWorkDialog(page);return}
   if(String(page)==='hall'&&state.page!=='hall')state.previousPortalPage=state.page||'adventure';
   location.hash=page;
 }

@@ -42,7 +42,7 @@ function petCandidates(p){
   return [...new Set(values.map(v=>firstAsset(v)).filter(Boolean))];
 }
 function heroCandidates(student){
-  const cls=student?.classId||'warrior',pack=RPG?.resolveAppearance?.(student)||null,c=RPG?.classes?.[cls];
+  const cls=RPG?.characterClassId?.(student)||student?.classId||'warrior',pack=RPG?.resolveAppearance?.(student)||null,c=RPG?.classes?.[cls];
   return [...new Set([
     pack?.idleArt,pack?.skinArt,pack?.art,
     c?.art,c?.artGirl,c?.artBoy,`assets/rpg/skin-${cls}-5.png`,`assets/rpg/skin-${cls}-4.png`,`assets/rpg/skin-${cls}.png`,CLASS_ART[cls],CLASS_ART.warrior
@@ -75,9 +75,15 @@ function damageRowsHtml(applied){
 class DemoBackend{
   constructor(session){
     const u=session.user||{},raw=session.student||{};
-    const classId=['warrior','ranger','mage','healer'].includes(raw.classId)?raw.classId:'ranger';
+    const rawProfile={...raw,email:u.email},resolvedClass=RPG?.characterClassId?.(rawProfile)||raw.classId;
+    const classId=['warrior','ranger','mage','healer'].includes(resolvedClass)?resolvedClass:'ranger';
     this.me={id:u.uid||'tester',student:{
+      email:u.email||raw.email||'',
       classId,
+      characterSystemVersion:raw.characterSystemVersion||'',
+      characterV5Gender:raw.characterV5Gender||'',
+      characterV5Affinity:raw.characterV5Affinity||'',
+      characterV5ClassId:raw.characterV5ClassId||'',
       xp:Number(raw.xp)||740,
       rpgInventory:Array.isArray(raw.rpgInventory)?raw.rpgInventory:['briarfox_bow'],
       rpgEquipped:raw.rpgEquipped&&typeof raw.rpgEquipped==='object'?raw.rpgEquipped:{weapon:'briarfox_bow'},

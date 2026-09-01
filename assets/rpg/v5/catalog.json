@@ -1,0 +1,4099 @@
+{
+  "schemaVersion": 1,
+  "characterSystem": "dragonswood-v5",
+  "sourceCharacterCount": 80,
+  "productionAssetCount": 480,
+  "characters": [
+    {
+      "id": "healer-dawnwing-starter",
+      "classId": "healer",
+      "family": "dawnwing",
+      "familyName": "Dawnwing",
+      "gender": "female",
+      "affinity": "radiant",
+      "tier": "starter",
+      "tierName": "Initiate",
+      "levelMin": 1,
+      "levelMax": 4,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "heal",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/healer/healer-dawnwing-starter/walk-left.webp",
+          "bytes": 97356,
+          "sha256": "5a9b9a791f71336e9676009fb3e62d894a9c6d2c971072ec8fa385a6a72416a0"
+        },
+        "walk-right": {
+          "path": "rpg/v5/healer/healer-dawnwing-starter/walk-right.webp",
+          "bytes": 97526,
+          "sha256": "87827e15ca2fdc96ca059fcbc5df4a678db08768c68402bb5879f254a8d14688"
+        },
+        "heal": {
+          "path": "rpg/v5/healer/healer-dawnwing-starter/heal.webp",
+          "bytes": 106680,
+          "sha256": "08d017358bd1331139c162d60d82cb0e70da89e6cf9e1d6da362ae9af0dff126"
+        },
+        "hurt": {
+          "path": "rpg/v5/healer/healer-dawnwing-starter/hurt.webp",
+          "bytes": 88514,
+          "sha256": "8b6dcc29d4de1c3793ba020075d6dbc98e02127e4140d9347bc079b9f6fdbea6"
+        },
+        "happy": {
+          "path": "rpg/v5/healer/healer-dawnwing-starter/happy.webp",
+          "bytes": 91684,
+          "sha256": "2a65749120fed5d10009df91f74f2935dc095bff014ddc92baaea64fe0dabf76"
+        },
+        "static": {
+          "path": "rpg/v5/healer/healer-dawnwing-starter/static.webp",
+          "bytes": 27716,
+          "sha256": "8ebf635640ea7734f9c3ba457802e9702bb30d1d8419cd072984b6e44b9c93b9"
+        }
+      }
+    },
+    {
+      "id": "healer-dawnwing-level-05",
+      "classId": "healer",
+      "family": "dawnwing",
+      "familyName": "Dawnwing",
+      "gender": "female",
+      "affinity": "radiant",
+      "tier": "level-05",
+      "tierName": "Adept",
+      "levelMin": 5,
+      "levelMax": 9,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "heal",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-05/walk-left.webp",
+          "bytes": 134690,
+          "sha256": "61df5b86e880f47178a12cbff3bfb806e7362466eb3ef6d675e84a36bc893fe8"
+        },
+        "walk-right": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-05/walk-right.webp",
+          "bytes": 135268,
+          "sha256": "01842cfdf890b4623af08466705e8f8b88d665d6aa72d5068b7e284b634c3792"
+        },
+        "heal": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-05/heal.webp",
+          "bytes": 157410,
+          "sha256": "3476493b541828b4179aa2bbb7ba621cdea2c6b08bbca83b14e1a48cd79ce822"
+        },
+        "hurt": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-05/hurt.webp",
+          "bytes": 128660,
+          "sha256": "15e1c2ac35b411794a99f2c036e126acedd35bc174ca828e6cb1e451a07c434c"
+        },
+        "happy": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-05/happy.webp",
+          "bytes": 132502,
+          "sha256": "e5263cbc4f13251377d80be5778a9b17400d42e3c552207e513a417ee17ed56c"
+        },
+        "static": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-05/static.webp",
+          "bytes": 37198,
+          "sha256": "e04bdbad4db46f60e1ebb7cf5d67ca757af329dcf6392d892142345f22b14981"
+        }
+      }
+    },
+    {
+      "id": "healer-dawnwing-level-10",
+      "classId": "healer",
+      "family": "dawnwing",
+      "familyName": "Dawnwing",
+      "gender": "female",
+      "affinity": "radiant",
+      "tier": "level-10",
+      "tierName": "Veteran",
+      "levelMin": 10,
+      "levelMax": 14,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "heal",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-10/walk-left.webp",
+          "bytes": 134602,
+          "sha256": "9eee0877426c745f3aea6bbb2195a456ba60fddde2b76efe8373e7ba1293b6ff"
+        },
+        "walk-right": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-10/walk-right.webp",
+          "bytes": 135352,
+          "sha256": "b11915a3456b41aa6973e13056b6891f300a1b31b35111dd9aedbcadd83bc975"
+        },
+        "heal": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-10/heal.webp",
+          "bytes": 165858,
+          "sha256": "212fa5dd0d485a29bf93f491f98b1eca0f09fb131f28f5e3a6a3749fd3ea693c"
+        },
+        "hurt": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-10/hurt.webp",
+          "bytes": 132394,
+          "sha256": "2947ad2b95674bf0014a9002e2c50df78df9743fb7e8ef8ae7f3a2cce26b7c4a"
+        },
+        "happy": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-10/happy.webp",
+          "bytes": 126426,
+          "sha256": "283fed5b08fb390c73e083ea4c93fba2c9388c6561cac16d04f74cedd20be40f"
+        },
+        "static": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-10/static.webp",
+          "bytes": 38140,
+          "sha256": "73544e87e6f6fc94e7894943b5c496c0d51054be85048fc1601461f151fbc27f"
+        }
+      }
+    },
+    {
+      "id": "healer-dawnwing-level-15",
+      "classId": "healer",
+      "family": "dawnwing",
+      "familyName": "Dawnwing",
+      "gender": "female",
+      "affinity": "radiant",
+      "tier": "level-15",
+      "tierName": "Champion",
+      "levelMin": 15,
+      "levelMax": 19,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "heal",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-15/walk-left.webp",
+          "bytes": 143510,
+          "sha256": "bdd74eddc4d8d7b4b701d76e4258ff56f3d426dd4f953c698c3566748fe736c3"
+        },
+        "walk-right": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-15/walk-right.webp",
+          "bytes": 144014,
+          "sha256": "948de6d21cfb0274b9a36c45975548a3814ea108279fc5c53cb510dbf71d7b1d"
+        },
+        "heal": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-15/heal.webp",
+          "bytes": 174408,
+          "sha256": "caace18abc7d28eeb1469b9bd630badb9a02205010872314a7c05d1b944eac4e"
+        },
+        "hurt": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-15/hurt.webp",
+          "bytes": 132968,
+          "sha256": "dbdf5e2206a20f4de49bb8f3edb94c2d2042ee40c761292b106996dcf028f5bd"
+        },
+        "happy": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-15/happy.webp",
+          "bytes": 130802,
+          "sha256": "1ebcfb8f77a6e720468e77e7064a1b5daaedfb4ad74603625e31c36f2a76c82b"
+        },
+        "static": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-15/static.webp",
+          "bytes": 42090,
+          "sha256": "e19e90e4862942fc8d46b4073439707587becdf6e1e238c06685d2ecaeabb8e1"
+        }
+      }
+    },
+    {
+      "id": "healer-dawnwing-level-20",
+      "classId": "healer",
+      "family": "dawnwing",
+      "familyName": "Dawnwing",
+      "gender": "female",
+      "affinity": "radiant",
+      "tier": "level-20",
+      "tierName": "Ascendant",
+      "levelMin": 20,
+      "levelMax": 20,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "heal",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-20/walk-left.webp",
+          "bytes": 80284,
+          "sha256": "74b1f79c956202b714f7844b48e96092c005f563be4c537c589311111ce8bcda"
+        },
+        "walk-right": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-20/walk-right.webp",
+          "bytes": 80516,
+          "sha256": "eec49259f85f5f920dab2df2a2372fde0ae3c9714f5d47b20cddf0beca93b79c"
+        },
+        "heal": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-20/heal.webp",
+          "bytes": 105186,
+          "sha256": "4a279c69bec0d6278e7db9bf3859e60a5553f0eef1f8ca23ff062531c5e759ee"
+        },
+        "hurt": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-20/hurt.webp",
+          "bytes": 74740,
+          "sha256": "4d2d9a8278b7759e6d884e5da95c2ad28d07f99b8c34ef47b71352710be513c3"
+        },
+        "happy": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-20/happy.webp",
+          "bytes": 80448,
+          "sha256": "bb2b4041c78976fc54d5099f591df9d05c83aa6562f8fae39b4b803e3df39b77"
+        },
+        "static": {
+          "path": "rpg/v5/healer/healer-dawnwing-level-20/static.webp",
+          "bytes": 23968,
+          "sha256": "8e5539437c5281448dc294842cf149ca44315c2972a11b46397b88bc65ddb8cd"
+        }
+      }
+    },
+    {
+      "id": "healer-twilight-starter",
+      "classId": "healer",
+      "family": "twilight",
+      "familyName": "Twilight",
+      "gender": "female",
+      "affinity": "shadow",
+      "tier": "starter",
+      "tierName": "Initiate",
+      "levelMin": 1,
+      "levelMax": 4,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "heal",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/healer/healer-twilight-starter/walk-left.webp",
+          "bytes": 86068,
+          "sha256": "a557711b6131a2371ff006500eba8eb926ec9331772cb55498a88bdb65152ee6"
+        },
+        "walk-right": {
+          "path": "rpg/v5/healer/healer-twilight-starter/walk-right.webp",
+          "bytes": 86878,
+          "sha256": "b2b7d1e56722e25938edef4ac9a4c71399341dfc754841a85995424cb66e5049"
+        },
+        "heal": {
+          "path": "rpg/v5/healer/healer-twilight-starter/heal.webp",
+          "bytes": 93098,
+          "sha256": "be6ecbe9bb0664fa7df29443790d9dd4eca5cf24844028c713526f6c7a97689f"
+        },
+        "hurt": {
+          "path": "rpg/v5/healer/healer-twilight-starter/hurt.webp",
+          "bytes": 79700,
+          "sha256": "262342b83c82a8fc09dfcde3904321021b6dfaf3d927f325e31e46ab9597d918"
+        },
+        "happy": {
+          "path": "rpg/v5/healer/healer-twilight-starter/happy.webp",
+          "bytes": 82438,
+          "sha256": "85a36a828ceb08892a3c0bafb972bff89184a5d5a136389eb27bc1c3cb131124"
+        },
+        "static": {
+          "path": "rpg/v5/healer/healer-twilight-starter/static.webp",
+          "bytes": 23928,
+          "sha256": "1d98107fc3d8c6237a09de06f18f6c0ccc0ac11810df859168b6d8a2082892f6"
+        }
+      }
+    },
+    {
+      "id": "healer-twilight-level-05",
+      "classId": "healer",
+      "family": "twilight",
+      "familyName": "Twilight",
+      "gender": "female",
+      "affinity": "shadow",
+      "tier": "level-05",
+      "tierName": "Adept",
+      "levelMin": 5,
+      "levelMax": 9,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "heal",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/healer/healer-twilight-level-05/walk-left.webp",
+          "bytes": 126022,
+          "sha256": "d55d1a0301db363175aac3f049eb925ccabf786918bae253cf45acc13651d4aa"
+        },
+        "walk-right": {
+          "path": "rpg/v5/healer/healer-twilight-level-05/walk-right.webp",
+          "bytes": 126428,
+          "sha256": "0ba53b8d1f6dd4812e2121d9e81114932ba440ea16700d42a4b1317f46a3a41a"
+        },
+        "heal": {
+          "path": "rpg/v5/healer/healer-twilight-level-05/heal.webp",
+          "bytes": 155706,
+          "sha256": "180d14bd04ca83de43ce80d2994b428d56ce50222238389ea8b1e05478062ae5"
+        },
+        "hurt": {
+          "path": "rpg/v5/healer/healer-twilight-level-05/hurt.webp",
+          "bytes": 119262,
+          "sha256": "063485677728a7a6c2723e344b359b5054ab6f5a2cde1eebbf497f531fb68500"
+        },
+        "happy": {
+          "path": "rpg/v5/healer/healer-twilight-level-05/happy.webp",
+          "bytes": 119820,
+          "sha256": "700b361e1cd0b40a59682415ec134484275998eae016f1a6fe607eb665895052"
+        },
+        "static": {
+          "path": "rpg/v5/healer/healer-twilight-level-05/static.webp",
+          "bytes": 32506,
+          "sha256": "cebfaf085db1f7f3d570fa5258f7edcda15b6816922fdda348203fadc1b1a5f0"
+        }
+      }
+    },
+    {
+      "id": "healer-twilight-level-10",
+      "classId": "healer",
+      "family": "twilight",
+      "familyName": "Twilight",
+      "gender": "female",
+      "affinity": "shadow",
+      "tier": "level-10",
+      "tierName": "Veteran",
+      "levelMin": 10,
+      "levelMax": 14,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "heal",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/healer/healer-twilight-level-10/walk-left.webp",
+          "bytes": 81220,
+          "sha256": "9be9a3ce76afb5c88bf66cbe03e7b8119a10214a2f2afe9b8dc3c72ab9007caa"
+        },
+        "walk-right": {
+          "path": "rpg/v5/healer/healer-twilight-level-10/walk-right.webp",
+          "bytes": 81714,
+          "sha256": "cdf366cf35bc3392c2b53267425d4ffc3d951f2e63cfbe3fce31514e557c2275"
+        },
+        "heal": {
+          "path": "rpg/v5/healer/healer-twilight-level-10/heal.webp",
+          "bytes": 109024,
+          "sha256": "98241a66f53071cd2ac502e2656dbcd9a18d312fd41562c423f3dbcd90b15ad9"
+        },
+        "hurt": {
+          "path": "rpg/v5/healer/healer-twilight-level-10/hurt.webp",
+          "bytes": 80820,
+          "sha256": "56c98caa1c49e4c7d75ceeae2576f67fe27f230666edb9496ceac5fe876ee24c"
+        },
+        "happy": {
+          "path": "rpg/v5/healer/healer-twilight-level-10/happy.webp",
+          "bytes": 78556,
+          "sha256": "7acee1853a3077ba00dd68eca90f3534a2c80013182eb8aa294304746d683c6e"
+        },
+        "static": {
+          "path": "rpg/v5/healer/healer-twilight-level-10/static.webp",
+          "bytes": 22262,
+          "sha256": "b3ebb1e576bb3d7f74bbc5f88db7c97112f7aa820d0d1da822943639b3d95415"
+        }
+      }
+    },
+    {
+      "id": "healer-twilight-level-15",
+      "classId": "healer",
+      "family": "twilight",
+      "familyName": "Twilight",
+      "gender": "female",
+      "affinity": "shadow",
+      "tier": "level-15",
+      "tierName": "Champion",
+      "levelMin": 15,
+      "levelMax": 19,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "heal",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/healer/healer-twilight-level-15/walk-left.webp",
+          "bytes": 87106,
+          "sha256": "a5c15421f19b65a94964d8dad00dfcce027e2641bdc35a2e2f1f4716d5d5bd72"
+        },
+        "walk-right": {
+          "path": "rpg/v5/healer/healer-twilight-level-15/walk-right.webp",
+          "bytes": 87440,
+          "sha256": "cad3d14c20e8a97e09a78ecc41b5ed4cb2bc3b51657bdc96167f476d2cb8b4a5"
+        },
+        "heal": {
+          "path": "rpg/v5/healer/healer-twilight-level-15/heal.webp",
+          "bytes": 97980,
+          "sha256": "742db18bf3eb2f40545316ac0c9981b2095f18a27b687c03415f3d082d147f8d"
+        },
+        "hurt": {
+          "path": "rpg/v5/healer/healer-twilight-level-15/hurt.webp",
+          "bytes": 77324,
+          "sha256": "5af49312061b57fa74c6786e8335e2be73b4ea61e44b8c2d3cad82783e387314"
+        },
+        "happy": {
+          "path": "rpg/v5/healer/healer-twilight-level-15/happy.webp",
+          "bytes": 83360,
+          "sha256": "024bd6afa8eea00a9cf6f1809a7a3ecb70beb21d20407afcc15c0429fc9f56ed"
+        },
+        "static": {
+          "path": "rpg/v5/healer/healer-twilight-level-15/static.webp",
+          "bytes": 24586,
+          "sha256": "02586762ffb2a70587f476ab12cf7f268dd1d52f81946a828d9666435e044165"
+        }
+      }
+    },
+    {
+      "id": "healer-twilight-level-20",
+      "classId": "healer",
+      "family": "twilight",
+      "familyName": "Twilight",
+      "gender": "female",
+      "affinity": "shadow",
+      "tier": "level-20",
+      "tierName": "Ascendant",
+      "levelMin": 20,
+      "levelMax": 20,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "heal",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/healer/healer-twilight-level-20/walk-left.webp",
+          "bytes": 76722,
+          "sha256": "64c9aa5ee45cb62cffb5e4a52783aa26799906b1e1a9beda3b48066ea22cc0be"
+        },
+        "walk-right": {
+          "path": "rpg/v5/healer/healer-twilight-level-20/walk-right.webp",
+          "bytes": 76988,
+          "sha256": "1305b92b44253b0d28604bc437fbbde0469e61ffec002b4275e7eb77d0d946b3"
+        },
+        "heal": {
+          "path": "rpg/v5/healer/healer-twilight-level-20/heal.webp",
+          "bytes": 109462,
+          "sha256": "56f253eb8f77e23567cb2247bf5eab87dea9ce08b069572f8d8ae7b697f0ce28"
+        },
+        "hurt": {
+          "path": "rpg/v5/healer/healer-twilight-level-20/hurt.webp",
+          "bytes": 78278,
+          "sha256": "333982da429183277dd221674de85276a69e0651734593766368ac02637ab779"
+        },
+        "happy": {
+          "path": "rpg/v5/healer/healer-twilight-level-20/happy.webp",
+          "bytes": 81688,
+          "sha256": "942e42e6c10ff56518697489aeb5aed098ad0e39c9c2fa927783ee49c9226b23"
+        },
+        "static": {
+          "path": "rpg/v5/healer/healer-twilight-level-20/static.webp",
+          "bytes": 19612,
+          "sha256": "8818da40d5c07506269fe0969257142b9787b4eaeae34b72169ca9086becee04"
+        }
+      }
+    },
+    {
+      "id": "healer-dawnkeeper-starter",
+      "classId": "healer",
+      "family": "dawnkeeper",
+      "familyName": "Dawnkeeper",
+      "gender": "male",
+      "affinity": "radiant",
+      "tier": "starter",
+      "tierName": "Initiate",
+      "levelMin": 1,
+      "levelMax": 4,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "heal",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-starter/walk-left.webp",
+          "bytes": 74444,
+          "sha256": "2218008200f853c860cc919b19bd4ca17d99096e257d1f8524efe0d7263c9eb7"
+        },
+        "walk-right": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-starter/walk-right.webp",
+          "bytes": 74116,
+          "sha256": "a03d433f737972a0a4c02a03bf9b252bc10a27efd5867682498fe0f9b82f4247"
+        },
+        "heal": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-starter/heal.webp",
+          "bytes": 96118,
+          "sha256": "36e03a3d49f405ae4e5307a2c04a2115f216fe0580fd80d5d0005f094e35d430"
+        },
+        "hurt": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-starter/hurt.webp",
+          "bytes": 75762,
+          "sha256": "2979a7597099768770153ef30c67fa24add7340840445954b829fe4e7f7e90a9"
+        },
+        "happy": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-starter/happy.webp",
+          "bytes": 78530,
+          "sha256": "2a0f11bfe1ebf796e91b7fa5714e78ac76cb4c2331ff9ed80450f8c76a363203"
+        },
+        "static": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-starter/static.webp",
+          "bytes": 21910,
+          "sha256": "369763e650b749593310c1f0fecbf90cdc444ab96170c0cb49acbe335dae5590"
+        }
+      }
+    },
+    {
+      "id": "healer-dawnkeeper-level-05",
+      "classId": "healer",
+      "family": "dawnkeeper",
+      "familyName": "Dawnkeeper",
+      "gender": "male",
+      "affinity": "radiant",
+      "tier": "level-05",
+      "tierName": "Adept",
+      "levelMin": 5,
+      "levelMax": 9,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "heal",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-05/walk-left.webp",
+          "bytes": 87566,
+          "sha256": "59ebb4a73f3df7086a60c1c20592da7596c5c4c7eec45b030d4a42398af800a1"
+        },
+        "walk-right": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-05/walk-right.webp",
+          "bytes": 87294,
+          "sha256": "83de066adeae2be7c11c5440d808ee150da33c23cfd8af80bba29c9ebcd400fb"
+        },
+        "heal": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-05/heal.webp",
+          "bytes": 107526,
+          "sha256": "b6104553fcd8e9bed9545a2e4dc05a5f8614b056bea7e1345e26c8de97ce2c06"
+        },
+        "hurt": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-05/hurt.webp",
+          "bytes": 84580,
+          "sha256": "c4085d36bc0466b09c135d6af2aa1e7f0babe8d5207ae61ecb84ca54fdb332aa"
+        },
+        "happy": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-05/happy.webp",
+          "bytes": 86058,
+          "sha256": "0d05fa78513bc18b6c0372e962da5297dd6e6273bc4cb64359aee158a0ab5b11"
+        },
+        "static": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-05/static.webp",
+          "bytes": 24684,
+          "sha256": "aedcee90a5d9ca79838932668d9fb51c95df4f45ea463aefe7bd219b84776c28"
+        }
+      }
+    },
+    {
+      "id": "healer-dawnkeeper-level-10",
+      "classId": "healer",
+      "family": "dawnkeeper",
+      "familyName": "Dawnkeeper",
+      "gender": "male",
+      "affinity": "radiant",
+      "tier": "level-10",
+      "tierName": "Veteran",
+      "levelMin": 10,
+      "levelMax": 14,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "heal",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-10/walk-left.webp",
+          "bytes": 87270,
+          "sha256": "e0de1a679b73a53c0e3e71211b8359cdd0f5f875c7ac80a248a57c5c635ebf4a"
+        },
+        "walk-right": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-10/walk-right.webp",
+          "bytes": 87226,
+          "sha256": "5dff58a9da51db0eb515b0d157f434dbd94532527f09ce95bedaae30f7a7c5f7"
+        },
+        "heal": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-10/heal.webp",
+          "bytes": 111604,
+          "sha256": "4473c591d7515a48905954a18ecd45cb0994c133dd3ce56c3030a01c5e471965"
+        },
+        "hurt": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-10/hurt.webp",
+          "bytes": 84686,
+          "sha256": "941676d44c56b67401a68366a4ce42e5625d898af93aee483518a41b2083b948"
+        },
+        "happy": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-10/happy.webp",
+          "bytes": 84640,
+          "sha256": "bf3f0a4f2f6ef65021a688a874c91b68824b45594d3ccdcab426593f58eb5d49"
+        },
+        "static": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-10/static.webp",
+          "bytes": 24082,
+          "sha256": "83799944bc48e3146ce7d09029892a0f94c23c51e12c8020ca810bb824dab905"
+        }
+      }
+    },
+    {
+      "id": "healer-dawnkeeper-level-15",
+      "classId": "healer",
+      "family": "dawnkeeper",
+      "familyName": "Dawnkeeper",
+      "gender": "male",
+      "affinity": "radiant",
+      "tier": "level-15",
+      "tierName": "Champion",
+      "levelMin": 15,
+      "levelMax": 19,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "heal",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-15/walk-left.webp",
+          "bytes": 87434,
+          "sha256": "7195b3308ce50f00a23cbc080cc2c44fe99dbe9b201eb452c01988f3b3b7c473"
+        },
+        "walk-right": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-15/walk-right.webp",
+          "bytes": 87342,
+          "sha256": "c2a115864a00d63b5559a717f4edb7aada49770f2dd58975bca987a40944b5a7"
+        },
+        "heal": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-15/heal.webp",
+          "bytes": 99702,
+          "sha256": "f57e98a36f70f8e53d56deb1aed1755365e51bc1176380a13e0444ad19810f45"
+        },
+        "hurt": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-15/hurt.webp",
+          "bytes": 78282,
+          "sha256": "029abcb952a9639f87b121fa5f7daa183b50de703411d8e75052f4e317168a7b"
+        },
+        "happy": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-15/happy.webp",
+          "bytes": 83490,
+          "sha256": "9ebdd84399eabc2446d24b2d9bc76fdf4cf725fb1d8388a5708533b68ea38fb4"
+        },
+        "static": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-15/static.webp",
+          "bytes": 22962,
+          "sha256": "ec50211b938e0ea847e66d9848ee7f78785cebe2a6d524769526fb8aa9cddf36"
+        }
+      }
+    },
+    {
+      "id": "healer-dawnkeeper-level-20",
+      "classId": "healer",
+      "family": "dawnkeeper",
+      "familyName": "Dawnkeeper",
+      "gender": "male",
+      "affinity": "radiant",
+      "tier": "level-20",
+      "tierName": "Ascendant",
+      "levelMin": 20,
+      "levelMax": 20,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "heal",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-20/walk-left.webp",
+          "bytes": 88870,
+          "sha256": "04593422a41d59c5479054c622a1058f82e396aae5728b0297559ceb131a78f1"
+        },
+        "walk-right": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-20/walk-right.webp",
+          "bytes": 88744,
+          "sha256": "c2ece854bbb7a49b1e69d9d6ebc32e55c0c31c3e83716f6265a219bc63810963"
+        },
+        "heal": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-20/heal.webp",
+          "bytes": 101844,
+          "sha256": "54f5d1cf76024fac91975300dffc44eddaeb4ebf4cf87228ee7566072dd1970e"
+        },
+        "hurt": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-20/hurt.webp",
+          "bytes": 71886,
+          "sha256": "dce7db42e88d372e15b01b87f47c2f50ca802392af6c72339804632dd1a614a4"
+        },
+        "happy": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-20/happy.webp",
+          "bytes": 78306,
+          "sha256": "4a71c7dfa3953aaba91bfa8b8dfe804f4d4c71a16236b399c27c49a6f06cc01b"
+        },
+        "static": {
+          "path": "rpg/v5/healer/healer-dawnkeeper-level-20/static.webp",
+          "bytes": 25838,
+          "sha256": "136a8684aa683a2bdc10c43f8c01413981133a483856176ebfacbd8e4c9e9021"
+        }
+      }
+    },
+    {
+      "id": "healer-mooncleric-starter",
+      "classId": "healer",
+      "family": "mooncleric",
+      "familyName": "Mooncleric",
+      "gender": "male",
+      "affinity": "shadow",
+      "tier": "starter",
+      "tierName": "Initiate",
+      "levelMin": 1,
+      "levelMax": 4,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "heal",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/healer/healer-mooncleric-starter/walk-left.webp",
+          "bytes": 76416,
+          "sha256": "320789d2adb0c9e9adef4e7769e050f601372c2b9924a022c33abf8d151ff8ab"
+        },
+        "walk-right": {
+          "path": "rpg/v5/healer/healer-mooncleric-starter/walk-right.webp",
+          "bytes": 76546,
+          "sha256": "ef33284ebfc9bc9f22bae8d812036f369676f700379031732639a337f3165d3a"
+        },
+        "heal": {
+          "path": "rpg/v5/healer/healer-mooncleric-starter/heal.webp",
+          "bytes": 95270,
+          "sha256": "6fac1efcfca2e4a8a3a38486900b7e03a8bf2eefc67452eda34011c3e846ad71"
+        },
+        "hurt": {
+          "path": "rpg/v5/healer/healer-mooncleric-starter/hurt.webp",
+          "bytes": 64128,
+          "sha256": "8ab17858267cf139b8d2bb890e549b066af3f906bb59b9efb5ed0b27b6ed5847"
+        },
+        "happy": {
+          "path": "rpg/v5/healer/healer-mooncleric-starter/happy.webp",
+          "bytes": 66734,
+          "sha256": "80f757524f22b993b5b643f147c48bf633d171dd66ce6ce0472dcc48f75b87d7"
+        },
+        "static": {
+          "path": "rpg/v5/healer/healer-mooncleric-starter/static.webp",
+          "bytes": 21274,
+          "sha256": "e863b831d99cfe6fedfa098292440a33424de1864f4829ce1ec41774c02a7a3e"
+        }
+      }
+    },
+    {
+      "id": "healer-mooncleric-level-05",
+      "classId": "healer",
+      "family": "mooncleric",
+      "familyName": "Mooncleric",
+      "gender": "male",
+      "affinity": "shadow",
+      "tier": "level-05",
+      "tierName": "Adept",
+      "levelMin": 5,
+      "levelMax": 9,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "heal",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-05/walk-left.webp",
+          "bytes": 83992,
+          "sha256": "78bfe117a8b8c17bd061a8b504fbae11adfce843dc512e90561e46d0a0543c29"
+        },
+        "walk-right": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-05/walk-right.webp",
+          "bytes": 84068,
+          "sha256": "3a907b2b6746d89bf52d9a47bd47843a07f21af4c40d70cc8a366900d91b5800"
+        },
+        "heal": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-05/heal.webp",
+          "bytes": 97660,
+          "sha256": "a08fe319d09aa7a1e8c97db88f4e391d9efa63c25a9ab5e6c43663dac2b215a1"
+        },
+        "hurt": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-05/hurt.webp",
+          "bytes": 72002,
+          "sha256": "ae144730706192600c9ec5d246029a8d5c292c7ec68a2ca467f1553114942afd"
+        },
+        "happy": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-05/happy.webp",
+          "bytes": 80432,
+          "sha256": "934358d0cd826089c41b17f6dda4beef9ef31e54dbd06298574082de349a528f"
+        },
+        "static": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-05/static.webp",
+          "bytes": 23684,
+          "sha256": "3dd6953f2f788999af211076bf0908a453694de3dbabc41f6cfa8248c1c88ebb"
+        }
+      }
+    },
+    {
+      "id": "healer-mooncleric-level-10",
+      "classId": "healer",
+      "family": "mooncleric",
+      "familyName": "Mooncleric",
+      "gender": "male",
+      "affinity": "shadow",
+      "tier": "level-10",
+      "tierName": "Veteran",
+      "levelMin": 10,
+      "levelMax": 14,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "heal",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-10/walk-left.webp",
+          "bytes": 83876,
+          "sha256": "f5728ba122dc706fc5e7bb204155f77a332029098bb22b0d941943a4adf8fec3"
+        },
+        "walk-right": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-10/walk-right.webp",
+          "bytes": 84526,
+          "sha256": "9459f2336a53ee1ff46e2be840924a09d603b20796c0ca193bf545854866ea83"
+        },
+        "heal": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-10/heal.webp",
+          "bytes": 101976,
+          "sha256": "e735112c75b8fdd5b6591b93cb0e4a3b8c171cd16f96a878617c1dcc5aa3edb2"
+        },
+        "hurt": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-10/hurt.webp",
+          "bytes": 79578,
+          "sha256": "35f6ea70f05b48ee83b46ad8ef094a730233d710a55947164a90e33a1869354d"
+        },
+        "happy": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-10/happy.webp",
+          "bytes": 77482,
+          "sha256": "00e792b12b207960a91dffc9805fc8a7900d62b94c312b7e0165231100c89976"
+        },
+        "static": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-10/static.webp",
+          "bytes": 22940,
+          "sha256": "1263eec25791c2e7146bf3c78c1c23f8beed8065f2c4812f15d797b683561f86"
+        }
+      }
+    },
+    {
+      "id": "healer-mooncleric-level-15",
+      "classId": "healer",
+      "family": "mooncleric",
+      "familyName": "Mooncleric",
+      "gender": "male",
+      "affinity": "shadow",
+      "tier": "level-15",
+      "tierName": "Champion",
+      "levelMin": 15,
+      "levelMax": 19,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "heal",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-15/walk-left.webp",
+          "bytes": 68710,
+          "sha256": "3110e039773c7687172af485da25650ea5b2d17312c7f86f3ba9b1472b61e5dc"
+        },
+        "walk-right": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-15/walk-right.webp",
+          "bytes": 69032,
+          "sha256": "20784cb51757f1be062b7cbd58e6937d6cd8c6fd8076e83a65a26221b380b1dd"
+        },
+        "heal": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-15/heal.webp",
+          "bytes": 117630,
+          "sha256": "58e896e06ad45741843f3999b9c763756900a379f002c0be10c04eb120b6b1d8"
+        },
+        "hurt": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-15/hurt.webp",
+          "bytes": 89072,
+          "sha256": "f2591c941d7b7ffc53c738315c3e21be5816774566629c799645e9495536f15e"
+        },
+        "happy": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-15/happy.webp",
+          "bytes": 91788,
+          "sha256": "e4d08315361ac1d0ed44a3818b5c3cfcfab69f9dd1269a2846a8251dd8e8f42a"
+        },
+        "static": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-15/static.webp",
+          "bytes": 18332,
+          "sha256": "e2f2e1f558bfe7a740b769487af191f490db6007d66625afbcdfcc9fcc9be2ac"
+        }
+      }
+    },
+    {
+      "id": "healer-mooncleric-level-20",
+      "classId": "healer",
+      "family": "mooncleric",
+      "familyName": "Mooncleric",
+      "gender": "male",
+      "affinity": "shadow",
+      "tier": "level-20",
+      "tierName": "Ascendant",
+      "levelMin": 20,
+      "levelMax": 20,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "heal",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-20/walk-left.webp",
+          "bytes": 85198,
+          "sha256": "83663a7f57e82c6f4c72c0dd704b5da5a2d8737a6edd1c4e9f8ae16bbdbb7c6d"
+        },
+        "walk-right": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-20/walk-right.webp",
+          "bytes": 85342,
+          "sha256": "6d24f799e1816b92cdc1d93aefdb573118c919df7fed000c9033cd4a27ece738"
+        },
+        "heal": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-20/heal.webp",
+          "bytes": 94274,
+          "sha256": "49ae7ca5f198b235a3c56d0f794f917fababf9dd433ed832075d800bc2d7781e"
+        },
+        "hurt": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-20/hurt.webp",
+          "bytes": 72506,
+          "sha256": "738973c49ba5bf0a30b9fb399ae5f8fc90553030f97c681d2a0651bf67937001"
+        },
+        "happy": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-20/happy.webp",
+          "bytes": 79004,
+          "sha256": "f2d49ae2fb67787fbc9ebc9822873077b4d26729c26733396ab977b7ceb68722"
+        },
+        "static": {
+          "path": "rpg/v5/healer/healer-mooncleric-level-20/static.webp",
+          "bytes": 23150,
+          "sha256": "5fd259f4f6286a46508c550be2a9f9836e463a167efabaabcbdcf2ddb0b57fcb"
+        }
+      }
+    },
+    {
+      "id": "mage-starfire-starter",
+      "classId": "mage",
+      "family": "starfire",
+      "familyName": "Starfire",
+      "gender": "female",
+      "affinity": "radiant",
+      "tier": "starter",
+      "tierName": "Initiate",
+      "levelMin": 1,
+      "levelMax": 4,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/mage/mage-starfire-starter/walk-left.webp",
+          "bytes": 67332,
+          "sha256": "ee9a38fca5f2f5a2596dc68c55d51fb41ed8c436e45fa6fd5733a01ff4526c7a"
+        },
+        "walk-right": {
+          "path": "rpg/v5/mage/mage-starfire-starter/walk-right.webp",
+          "bytes": 67634,
+          "sha256": "b985f665334c3c29c269c14381d0d66735a50d1006fbc86ec8836512cbe730f4"
+        },
+        "attack": {
+          "path": "rpg/v5/mage/mage-starfire-starter/attack.webp",
+          "bytes": 86254,
+          "sha256": "283b8ae63a5500786a1417b9bb79fe19abaa80539d47f1e1b0c793116951e898"
+        },
+        "hurt": {
+          "path": "rpg/v5/mage/mage-starfire-starter/hurt.webp",
+          "bytes": 71312,
+          "sha256": "ce6158dbed9f2b5dba01b38d56ced073a0349f59c9495b78f728832bee6b1827"
+        },
+        "happy": {
+          "path": "rpg/v5/mage/mage-starfire-starter/happy.webp",
+          "bytes": 73642,
+          "sha256": "e5cc9b35d7bcfba3548a245aaf37a5bad104f311e98f263d634f011623c3558f"
+        },
+        "static": {
+          "path": "rpg/v5/mage/mage-starfire-starter/static.webp",
+          "bytes": 19900,
+          "sha256": "d837bc5b4df5cdbc7678bc44e9f8f4bf2a0b5ecbcce1e32a366568ec62cbf9e4"
+        }
+      }
+    },
+    {
+      "id": "mage-starfire-level-05",
+      "classId": "mage",
+      "family": "starfire",
+      "familyName": "Starfire",
+      "gender": "female",
+      "affinity": "radiant",
+      "tier": "level-05",
+      "tierName": "Adept",
+      "levelMin": 5,
+      "levelMax": 9,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/mage/mage-starfire-level-05/walk-left.webp",
+          "bytes": 79952,
+          "sha256": "703e119701c104a6e1d9b91f1155016dcbca28d6817549a07e3bdd6f8ee47ac0"
+        },
+        "walk-right": {
+          "path": "rpg/v5/mage/mage-starfire-level-05/walk-right.webp",
+          "bytes": 79946,
+          "sha256": "f8a1b6e3b7d7273e9126b5625aed8c1914fe80fbe2a66ef44de6471911d8a933"
+        },
+        "attack": {
+          "path": "rpg/v5/mage/mage-starfire-level-05/attack.webp",
+          "bytes": 89338,
+          "sha256": "38293559f3d9e9e86fc5a872ca3080d61d5ef4859a30769e381bd9f68930f312"
+        },
+        "hurt": {
+          "path": "rpg/v5/mage/mage-starfire-level-05/hurt.webp",
+          "bytes": 73822,
+          "sha256": "9919f759a5dc926db2cd6330b89ec12e8a329da9990a234c764ba284647d673d"
+        },
+        "happy": {
+          "path": "rpg/v5/mage/mage-starfire-level-05/happy.webp",
+          "bytes": 75174,
+          "sha256": "be6b46e7f7835f3ba51ec7590dcdb1550b43d287347e4836944f2b6dba544112"
+        },
+        "static": {
+          "path": "rpg/v5/mage/mage-starfire-level-05/static.webp",
+          "bytes": 23406,
+          "sha256": "dd8ffd8bb77b6879955006411cdd79dfdeea1ddb8a1ce5fb7707274d0d55c9a7"
+        }
+      }
+    },
+    {
+      "id": "mage-starfire-level-10",
+      "classId": "mage",
+      "family": "starfire",
+      "familyName": "Starfire",
+      "gender": "female",
+      "affinity": "radiant",
+      "tier": "level-10",
+      "tierName": "Veteran",
+      "levelMin": 10,
+      "levelMax": 14,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/mage/mage-starfire-level-10/walk-left.webp",
+          "bytes": 80440,
+          "sha256": "cb990ad638355151f50fda51349fc386688d0e71aabe800dc9c128bbd041cac6"
+        },
+        "walk-right": {
+          "path": "rpg/v5/mage/mage-starfire-level-10/walk-right.webp",
+          "bytes": 80360,
+          "sha256": "d8a3b4d44da85b8f03c5ea42181fdfb169cce5ffa3b0ec791f24f04cf6e6e869"
+        },
+        "attack": {
+          "path": "rpg/v5/mage/mage-starfire-level-10/attack.webp",
+          "bytes": 88402,
+          "sha256": "b5bb2788e80728adc0553b808efe260ba629ffa675963e5163167b9cd6ead203"
+        },
+        "hurt": {
+          "path": "rpg/v5/mage/mage-starfire-level-10/hurt.webp",
+          "bytes": 78862,
+          "sha256": "06b6f6d97281c4e39696bb21cf344947a794fea49ff65edf0aeebf68ba946103"
+        },
+        "happy": {
+          "path": "rpg/v5/mage/mage-starfire-level-10/happy.webp",
+          "bytes": 77096,
+          "sha256": "d5d9645bdb2cb3d230f0ef0af3d6e5b7c4ef5fa0e234d7c8362aac3a44a54d5a"
+        },
+        "static": {
+          "path": "rpg/v5/mage/mage-starfire-level-10/static.webp",
+          "bytes": 23858,
+          "sha256": "025a5706dd453b3a5dbbbae09e8d07f77e9fc8c865f4f1a7106e79c77878acc6"
+        }
+      }
+    },
+    {
+      "id": "mage-starfire-level-15",
+      "classId": "mage",
+      "family": "starfire",
+      "familyName": "Starfire",
+      "gender": "female",
+      "affinity": "radiant",
+      "tier": "level-15",
+      "tierName": "Champion",
+      "levelMin": 15,
+      "levelMax": 19,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/mage/mage-starfire-level-15/walk-left.webp",
+          "bytes": 81686,
+          "sha256": "f225164e281e27fb2b4fc10642841e8768b288e97f99168273d810f26caf8116"
+        },
+        "walk-right": {
+          "path": "rpg/v5/mage/mage-starfire-level-15/walk-right.webp",
+          "bytes": 82148,
+          "sha256": "5d8069adcbfc6735760d2249e681d1aef848b0bbaf9e8e422e337ff5da6e4a34"
+        },
+        "attack": {
+          "path": "rpg/v5/mage/mage-starfire-level-15/attack.webp",
+          "bytes": 94532,
+          "sha256": "13f2262de741ef071425a2ac6bf722bf55da44cef1648f4dbd958dc709a237f9"
+        },
+        "hurt": {
+          "path": "rpg/v5/mage/mage-starfire-level-15/hurt.webp",
+          "bytes": 79204,
+          "sha256": "a40f76c63c16c38c5266922fe5828a6938af580b935522524d734d27da4d303e"
+        },
+        "happy": {
+          "path": "rpg/v5/mage/mage-starfire-level-15/happy.webp",
+          "bytes": 76686,
+          "sha256": "6c5a42ec6c49d03c11cfa24df99597aa8aef34f884ca2ec588e92d5c56ae6214"
+        },
+        "static": {
+          "path": "rpg/v5/mage/mage-starfire-level-15/static.webp",
+          "bytes": 23406,
+          "sha256": "92524819841a9f056281d4b78623d851fbbf452d83b23ac42330e415c379f690"
+        }
+      }
+    },
+    {
+      "id": "mage-starfire-level-20",
+      "classId": "mage",
+      "family": "starfire",
+      "familyName": "Starfire",
+      "gender": "female",
+      "affinity": "radiant",
+      "tier": "level-20",
+      "tierName": "Ascendant",
+      "levelMin": 20,
+      "levelMax": 20,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/mage/mage-starfire-level-20/walk-left.webp",
+          "bytes": 79692,
+          "sha256": "f33f729da6625644098b59ff0fa769c026f076abf6aaf904139e47888bad35fc"
+        },
+        "walk-right": {
+          "path": "rpg/v5/mage/mage-starfire-level-20/walk-right.webp",
+          "bytes": 80484,
+          "sha256": "f4def8ae44c0f7f92cbababb24ff214e0f2a7bc655f84c9a019bb3b7f0c8c5ba"
+        },
+        "attack": {
+          "path": "rpg/v5/mage/mage-starfire-level-20/attack.webp",
+          "bytes": 100820,
+          "sha256": "07730b4acb7a89248bb0dfcad47695c6ceba76e3b6aceb07e1c2a397c2938450"
+        },
+        "hurt": {
+          "path": "rpg/v5/mage/mage-starfire-level-20/hurt.webp",
+          "bytes": 85566,
+          "sha256": "9d19ad2be03dccac6a1f7b0051dba0377457281578d2503deb14a87a038a2e15"
+        },
+        "happy": {
+          "path": "rpg/v5/mage/mage-starfire-level-20/happy.webp",
+          "bytes": 83676,
+          "sha256": "f29d11ba2589d6bd69fe97a8fa7a0fd5a3c027a985659ce5bb8f7409118b11df"
+        },
+        "static": {
+          "path": "rpg/v5/mage/mage-starfire-level-20/static.webp",
+          "bytes": 23378,
+          "sha256": "6832385b17f225b3608f37a1a74f8ad168f4d0bfa074fda3793be21736e7e4cd"
+        }
+      }
+    },
+    {
+      "id": "mage-eclipse-witch-starter",
+      "classId": "mage",
+      "family": "eclipse-witch",
+      "familyName": "Eclipse Witch",
+      "gender": "female",
+      "affinity": "shadow",
+      "tier": "starter",
+      "tierName": "Initiate",
+      "levelMin": 1,
+      "levelMax": 4,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-starter/walk-left.webp",
+          "bytes": 132202,
+          "sha256": "013cbd7fee0187a231c23e9239f7a00ceef46241576f052b2a8506d5c5b6a171"
+        },
+        "walk-right": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-starter/walk-right.webp",
+          "bytes": 133640,
+          "sha256": "407a01a6bdcfeb830eb32434d00686a0501b956abcb501c03a677e2d795e5467"
+        },
+        "attack": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-starter/attack.webp",
+          "bytes": 183390,
+          "sha256": "420d281b62e2141bbe750bd62179a3e4c9ead360d8b58f2265c1df5747da3cb9"
+        },
+        "hurt": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-starter/hurt.webp",
+          "bytes": 153854,
+          "sha256": "82170bfbf50a590b14968d7c497b4f9e8afe5ed98825e6fc5b560e260ff074d4"
+        },
+        "happy": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-starter/happy.webp",
+          "bytes": 142188,
+          "sha256": "7c0a891ce9bdd0a570d33b1978dacafeb33d808b4b832d2cf009b52117dd5b25"
+        },
+        "static": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-starter/static.webp",
+          "bytes": 37300,
+          "sha256": "20b1794ef9827af351fae1d65847c941ff936b80ba27d16211a6fe1cd895c7fa"
+        }
+      }
+    },
+    {
+      "id": "mage-eclipse-witch-level-05",
+      "classId": "mage",
+      "family": "eclipse-witch",
+      "familyName": "Eclipse Witch",
+      "gender": "female",
+      "affinity": "shadow",
+      "tier": "level-05",
+      "tierName": "Adept",
+      "levelMin": 5,
+      "levelMax": 9,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-05/walk-left.webp",
+          "bytes": 131550,
+          "sha256": "a0857765954c2c9bf293845f05c314f30fc8d35ab263ddabde218d095c1c72b6"
+        },
+        "walk-right": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-05/walk-right.webp",
+          "bytes": 132614,
+          "sha256": "d07eef8795d56c07dbf6c24fa6ceaee7a23ee03b248fce10563195a67477c706"
+        },
+        "attack": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-05/attack.webp",
+          "bytes": 173794,
+          "sha256": "ad0f29c4972777892e09f52a7ca6f402036672a27951df9c9c9382d67b9ae6fb"
+        },
+        "hurt": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-05/hurt.webp",
+          "bytes": 146458,
+          "sha256": "4c33124edb347164a858785f3c8c9b4d5a50df7c0d5217c4e390d9ff62772f8c"
+        },
+        "happy": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-05/happy.webp",
+          "bytes": 140974,
+          "sha256": "d4aee068c528d8151fccc7fc793417fdb966ff2eaa59717cde3dbea4b7165cfa"
+        },
+        "static": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-05/static.webp",
+          "bytes": 36702,
+          "sha256": "2e68d52d601be09c9905d42c87eca7ab9cfedcb93e426f3f84be0ab58adbb7db"
+        }
+      }
+    },
+    {
+      "id": "mage-eclipse-witch-level-10",
+      "classId": "mage",
+      "family": "eclipse-witch",
+      "familyName": "Eclipse Witch",
+      "gender": "female",
+      "affinity": "shadow",
+      "tier": "level-10",
+      "tierName": "Veteran",
+      "levelMin": 10,
+      "levelMax": 14,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-10/walk-left.webp",
+          "bytes": 83694,
+          "sha256": "025a86e79947dfd1cd1243abb7283367e38c6c0a71b812e8d76a8e841daf790a"
+        },
+        "walk-right": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-10/walk-right.webp",
+          "bytes": 83974,
+          "sha256": "a29d4bcf65d51c2c851a00baf42f69fd2ec8b64aaf85985ea0b330f141b89fb0"
+        },
+        "attack": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-10/attack.webp",
+          "bytes": 91848,
+          "sha256": "49334cf3258708d2d7a109617d6ad6c554eabc9ce2cf584fd978bff8a2579425"
+        },
+        "hurt": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-10/hurt.webp",
+          "bytes": 80072,
+          "sha256": "ebdb6873c325d8b76df4c91e7f0596220cd147f4e7935da8a438a3a95f897540"
+        },
+        "happy": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-10/happy.webp",
+          "bytes": 77628,
+          "sha256": "2a9cba2d927317c1f943402362d3812ece4b63fb865057f4e719e390d36b8409"
+        },
+        "static": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-10/static.webp",
+          "bytes": 22610,
+          "sha256": "5b8c0a195dca8057334605a9c42ec506def17dcabbb11b6be7bdcb8e583e4f83"
+        }
+      }
+    },
+    {
+      "id": "mage-eclipse-witch-level-15",
+      "classId": "mage",
+      "family": "eclipse-witch",
+      "familyName": "Eclipse Witch",
+      "gender": "female",
+      "affinity": "shadow",
+      "tier": "level-15",
+      "tierName": "Champion",
+      "levelMin": 15,
+      "levelMax": 19,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-15/walk-left.webp",
+          "bytes": 75136,
+          "sha256": "3f8b2f806584d4176b818be9bb14d10ee273fa0a034df0720299bbbfc030e34d"
+        },
+        "walk-right": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-15/walk-right.webp",
+          "bytes": 75216,
+          "sha256": "1e98a575cf444046bf74791318851291b35defa89e015ae3a36ab7f90f1bb145"
+        },
+        "attack": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-15/attack.webp",
+          "bytes": 88032,
+          "sha256": "0562015bdae19ab84d24c7b14348f578e651feaed38aa910cd50944bf023e68a"
+        },
+        "hurt": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-15/hurt.webp",
+          "bytes": 76456,
+          "sha256": "18b553f5cfa8ac84751a10fe0293d2166cd3e7a87cbd7ba48cabed127835fcdf"
+        },
+        "happy": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-15/happy.webp",
+          "bytes": 65644,
+          "sha256": "26bfefc8e0f25cb2a58b5afef6e0618f0827f0b077ea10eaefdece3fe52062f8"
+        },
+        "static": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-15/static.webp",
+          "bytes": 20738,
+          "sha256": "519577257ced5107c934e3a357bb95d23941e5bfadc3ea43749b37daef4e75b1"
+        }
+      }
+    },
+    {
+      "id": "mage-eclipse-witch-level-20",
+      "classId": "mage",
+      "family": "eclipse-witch",
+      "familyName": "Eclipse Witch",
+      "gender": "female",
+      "affinity": "shadow",
+      "tier": "level-20",
+      "tierName": "Ascendant",
+      "levelMin": 20,
+      "levelMax": 20,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-20/walk-left.webp",
+          "bytes": 127730,
+          "sha256": "aaf51c8f0353cc1c8dbd79e4b53492cd597af07f9ce1345818e715466d3fca3c"
+        },
+        "walk-right": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-20/walk-right.webp",
+          "bytes": 129018,
+          "sha256": "2613d168c60aa151fa227c0da428828b64382e33816894213dae64ec51b482c0"
+        },
+        "attack": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-20/attack.webp",
+          "bytes": 163858,
+          "sha256": "05b216c51e8a1b25d69edfbb59e946628c4b30d7d2ebaf4ead8c5a287af60506"
+        },
+        "hurt": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-20/hurt.webp",
+          "bytes": 144978,
+          "sha256": "dfa6197ba3c78318a4ad62dc59f85cc1c800ebd4956cf93d7699998941a0d11f"
+        },
+        "happy": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-20/happy.webp",
+          "bytes": 136222,
+          "sha256": "d2d9193ffacf37a554b2c40dfd65def8f4826a99b7ee36df41735bbce7b1c771"
+        },
+        "static": {
+          "path": "rpg/v5/mage/mage-eclipse-witch-level-20/static.webp",
+          "bytes": 35614,
+          "sha256": "70c0927c68ec4afd33aef6e73690b0676ee9064fdd1a63b046f5b6c949855590"
+        }
+      }
+    },
+    {
+      "id": "mage-celestial-starter",
+      "classId": "mage",
+      "family": "celestial",
+      "familyName": "Celestial",
+      "gender": "male",
+      "affinity": "radiant",
+      "tier": "starter",
+      "tierName": "Initiate",
+      "levelMin": 1,
+      "levelMax": 4,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/mage/mage-celestial-starter/walk-left.webp",
+          "bytes": 75580,
+          "sha256": "75e268d7fb274513503043e37b30ea3f43663f20339ef9d676adb32e0f16e58c"
+        },
+        "walk-right": {
+          "path": "rpg/v5/mage/mage-celestial-starter/walk-right.webp",
+          "bytes": 75490,
+          "sha256": "c92a6e1fe2ccf5cf82ef9fe35173182c14606cf7f96cf1a642ec9701bac11e04"
+        },
+        "attack": {
+          "path": "rpg/v5/mage/mage-celestial-starter/attack.webp",
+          "bytes": 73166,
+          "sha256": "c92add097ca9813be4aa27c6c759ff38a9e8c6e5c137558a23fa3f346f2fa6fd"
+        },
+        "hurt": {
+          "path": "rpg/v5/mage/mage-celestial-starter/hurt.webp",
+          "bytes": 68570,
+          "sha256": "c0011c58b529470d7af62852fbb0f1c1d6164e42a942793daaa12e14ca8286dd"
+        },
+        "happy": {
+          "path": "rpg/v5/mage/mage-celestial-starter/happy.webp",
+          "bytes": 77008,
+          "sha256": "a96104d5a644852ae0be70aa2ff034376a554835dc14bbc1f7eaa37769f7649c"
+        },
+        "static": {
+          "path": "rpg/v5/mage/mage-celestial-starter/static.webp",
+          "bytes": 21822,
+          "sha256": "723afe1034b20724f6a224241f06c531f5006ababf492560ea861298c4e33e70"
+        }
+      }
+    },
+    {
+      "id": "mage-celestial-level-05",
+      "classId": "mage",
+      "family": "celestial",
+      "familyName": "Celestial",
+      "gender": "male",
+      "affinity": "radiant",
+      "tier": "level-05",
+      "tierName": "Adept",
+      "levelMin": 5,
+      "levelMax": 9,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/mage/mage-celestial-level-05/walk-left.webp",
+          "bytes": 78766,
+          "sha256": "84999cfdc8add2f42a358e572e644af8387215fd96cd0f36eb10a9597413a59c"
+        },
+        "walk-right": {
+          "path": "rpg/v5/mage/mage-celestial-level-05/walk-right.webp",
+          "bytes": 79060,
+          "sha256": "61cb170f80e2acd4a1c301e58d8ab2003abf2572ddb1c8a42ea5d1510cd7a147"
+        },
+        "attack": {
+          "path": "rpg/v5/mage/mage-celestial-level-05/attack.webp",
+          "bytes": 91084,
+          "sha256": "b1a12f57227c07266c76347d676db599491fb5bcdda10cc53888ad23aa654013"
+        },
+        "hurt": {
+          "path": "rpg/v5/mage/mage-celestial-level-05/hurt.webp",
+          "bytes": 76846,
+          "sha256": "4e81487172a565e721a7e32ea03b5586d2f173b1cc1015eab10755cf77bfafed"
+        },
+        "happy": {
+          "path": "rpg/v5/mage/mage-celestial-level-05/happy.webp",
+          "bytes": 79390,
+          "sha256": "e0321738ab6a896964bcf81fe024a22b851d910aefa3565c9b4630436e35b1e9"
+        },
+        "static": {
+          "path": "rpg/v5/mage/mage-celestial-level-05/static.webp",
+          "bytes": 21734,
+          "sha256": "c77cac570a324e678a256dc51bf06e6133eec7288428077d4fecab6d5d8f5b99"
+        }
+      }
+    },
+    {
+      "id": "mage-celestial-level-10",
+      "classId": "mage",
+      "family": "celestial",
+      "familyName": "Celestial",
+      "gender": "male",
+      "affinity": "radiant",
+      "tier": "level-10",
+      "tierName": "Veteran",
+      "levelMin": 10,
+      "levelMax": 14,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/mage/mage-celestial-level-10/walk-left.webp",
+          "bytes": 84460,
+          "sha256": "415c04b210f745a24f6ad9b5b8d41395d888b1f87deceaae3917ade852622c65"
+        },
+        "walk-right": {
+          "path": "rpg/v5/mage/mage-celestial-level-10/walk-right.webp",
+          "bytes": 84868,
+          "sha256": "3494bf68ace056b71d0f45dc6db4beeb94c27a79c97167c64d994f1d39141201"
+        },
+        "attack": {
+          "path": "rpg/v5/mage/mage-celestial-level-10/attack.webp",
+          "bytes": 92208,
+          "sha256": "3978a5eb0ad341e66f00db02941f03ce20e0e8615767fa0b1327dea5431ebd98"
+        },
+        "hurt": {
+          "path": "rpg/v5/mage/mage-celestial-level-10/hurt.webp",
+          "bytes": 73876,
+          "sha256": "dd790b7a949edc02493a65c6d7446add8175246884a04f06b9a8ae70e4d464e7"
+        },
+        "happy": {
+          "path": "rpg/v5/mage/mage-celestial-level-10/happy.webp",
+          "bytes": 83488,
+          "sha256": "a87900a834c876d3998a109d2b9f07250c1c268bc8a98968d7aea72a30230a75"
+        },
+        "static": {
+          "path": "rpg/v5/mage/mage-celestial-level-10/static.webp",
+          "bytes": 25030,
+          "sha256": "3cea0a9210a04e7f3fe10fb7981c3298cc30de06f02e12e0aae333f7f4dc800e"
+        }
+      }
+    },
+    {
+      "id": "mage-celestial-level-15",
+      "classId": "mage",
+      "family": "celestial",
+      "familyName": "Celestial",
+      "gender": "male",
+      "affinity": "radiant",
+      "tier": "level-15",
+      "tierName": "Champion",
+      "levelMin": 15,
+      "levelMax": 19,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/mage/mage-celestial-level-15/walk-left.webp",
+          "bytes": 85590,
+          "sha256": "fafa4d44793cfe55dd37780c196c8d2c33b62f925ee7150cae0a7c156c1a1011"
+        },
+        "walk-right": {
+          "path": "rpg/v5/mage/mage-celestial-level-15/walk-right.webp",
+          "bytes": 85728,
+          "sha256": "7cc05788f19598366c163fd3adab2525cd86f9cf6a8b56090fdfb856d40542d2"
+        },
+        "attack": {
+          "path": "rpg/v5/mage/mage-celestial-level-15/attack.webp",
+          "bytes": 92326,
+          "sha256": "ff2982549405caf58063f0661c60ce11692825a8294c79e48c36bd6586bf4e93"
+        },
+        "hurt": {
+          "path": "rpg/v5/mage/mage-celestial-level-15/hurt.webp",
+          "bytes": 74244,
+          "sha256": "8d1f7a1ae6c365998528681e10150c19789f8b9d550dd27a05f193edb4ce9965"
+        },
+        "happy": {
+          "path": "rpg/v5/mage/mage-celestial-level-15/happy.webp",
+          "bytes": 76032,
+          "sha256": "13f4c3293f88adb2246ae677f15bf0b1b2aaa76abf285249bcdf6a10351e282e"
+        },
+        "static": {
+          "path": "rpg/v5/mage/mage-celestial-level-15/static.webp",
+          "bytes": 25192,
+          "sha256": "1fb096950336f1f1294a5cf19483618b931e36ad365d1b7684cd19d9c32a2ab0"
+        }
+      }
+    },
+    {
+      "id": "mage-celestial-level-20",
+      "classId": "mage",
+      "family": "celestial",
+      "familyName": "Celestial",
+      "gender": "male",
+      "affinity": "radiant",
+      "tier": "level-20",
+      "tierName": "Ascendant",
+      "levelMin": 20,
+      "levelMax": 20,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/mage/mage-celestial-level-20/walk-left.webp",
+          "bytes": 149440,
+          "sha256": "3d1212f2fef9c27be6c3dc865a8dfa72cc02c3391d1012960eb1fd8c7d1eb07d"
+        },
+        "walk-right": {
+          "path": "rpg/v5/mage/mage-celestial-level-20/walk-right.webp",
+          "bytes": 150616,
+          "sha256": "80d31c88ed843db8c751eb6dc85647909792e0715f2118af8a1ecca3fa13371e"
+        },
+        "attack": {
+          "path": "rpg/v5/mage/mage-celestial-level-20/attack.webp",
+          "bytes": 166654,
+          "sha256": "1a1ca1cc39f343a04cd34ceaec118cd6452455a3daacca5424190bd31b1b70e4"
+        },
+        "hurt": {
+          "path": "rpg/v5/mage/mage-celestial-level-20/hurt.webp",
+          "bytes": 153844,
+          "sha256": "e44ba876dd3b4e5c082adac02aaf7126d4ab7bf09c8b1bdea3059e9319bee908"
+        },
+        "happy": {
+          "path": "rpg/v5/mage/mage-celestial-level-20/happy.webp",
+          "bytes": 146874,
+          "sha256": "746224ea22b3a4378bad07e8dfaf55f5ac30a4b537723afbe27e5cbd2118f3cd"
+        },
+        "static": {
+          "path": "rpg/v5/mage/mage-celestial-level-20/static.webp",
+          "bytes": 44378,
+          "sha256": "57bd370c1b8ce07bd1a69a2455b62d5f2c0da2f2f499584de03a7073cfab5111"
+        }
+      }
+    },
+    {
+      "id": "mage-voidcore-starter",
+      "classId": "mage",
+      "family": "voidcore",
+      "familyName": "Voidcore",
+      "gender": "male",
+      "affinity": "shadow",
+      "tier": "starter",
+      "tierName": "Initiate",
+      "levelMin": 1,
+      "levelMax": 4,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/mage/mage-voidcore-starter/walk-left.webp",
+          "bytes": 78994,
+          "sha256": "2d085f9f707d22c47a40dea6e49997c57a4ac476d852e7ec538da1b4bbde5104"
+        },
+        "walk-right": {
+          "path": "rpg/v5/mage/mage-voidcore-starter/walk-right.webp",
+          "bytes": 78902,
+          "sha256": "dbb663baf453765cc46d93a50247d2f45d5b50f2521f0dffe2ac52d7be296028"
+        },
+        "attack": {
+          "path": "rpg/v5/mage/mage-voidcore-starter/attack.webp",
+          "bytes": 90804,
+          "sha256": "396985f3ace03ddf45a2d8af4f1d0cf6d223817354aa8774e476683f32405d39"
+        },
+        "hurt": {
+          "path": "rpg/v5/mage/mage-voidcore-starter/hurt.webp",
+          "bytes": 70368,
+          "sha256": "ce1a1f4ae34a9e64bba266a00916cc1f5abb10daa9fee3fe8ca227e55090d777"
+        },
+        "happy": {
+          "path": "rpg/v5/mage/mage-voidcore-starter/happy.webp",
+          "bytes": 80614,
+          "sha256": "3b2b3e92dc3e8b05d46fd5d49a8e8af32bb3bf3408f53dd68423ae20f8e8dd04"
+        },
+        "static": {
+          "path": "rpg/v5/mage/mage-voidcore-starter/static.webp",
+          "bytes": 23410,
+          "sha256": "3625a8d1deea6f415c9197dc03ec6aa9f882d4ad5c5b11b0a9723c36f7e8f626"
+        }
+      }
+    },
+    {
+      "id": "mage-voidcore-level-05",
+      "classId": "mage",
+      "family": "voidcore",
+      "familyName": "Voidcore",
+      "gender": "male",
+      "affinity": "shadow",
+      "tier": "level-05",
+      "tierName": "Adept",
+      "levelMin": 5,
+      "levelMax": 9,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/mage/mage-voidcore-level-05/walk-left.webp",
+          "bytes": 70072,
+          "sha256": "dc94c3260e1509c6a8c44774da97501d8c1ab908f1bd4eeb020c2f0fc65b16cb"
+        },
+        "walk-right": {
+          "path": "rpg/v5/mage/mage-voidcore-level-05/walk-right.webp",
+          "bytes": 70224,
+          "sha256": "26b0cf33f5884071c322cf3e71d19ae5489b12e85c7c4212281048bb018a7b9c"
+        },
+        "attack": {
+          "path": "rpg/v5/mage/mage-voidcore-level-05/attack.webp",
+          "bytes": 90540,
+          "sha256": "4e2d8163f8b6217eb5e9b7f16ea7a147b37c7c570c53d7360e25bbb18790e15f"
+        },
+        "hurt": {
+          "path": "rpg/v5/mage/mage-voidcore-level-05/hurt.webp",
+          "bytes": 67030,
+          "sha256": "ece029fec28e9ffcf7b980feaf7f817e0bb1612aa106597d122eda2b3d2f0ee9"
+        },
+        "happy": {
+          "path": "rpg/v5/mage/mage-voidcore-level-05/happy.webp",
+          "bytes": 72608,
+          "sha256": "8d332440faabc8a141044385a5732282a5473dd679c530b0d63409b4436808a4"
+        },
+        "static": {
+          "path": "rpg/v5/mage/mage-voidcore-level-05/static.webp",
+          "bytes": 20236,
+          "sha256": "88add1dbe382979609e2260814ca05d1e9a299df7fe7622956b8cc1b5b792b28"
+        }
+      }
+    },
+    {
+      "id": "mage-voidcore-level-10",
+      "classId": "mage",
+      "family": "voidcore",
+      "familyName": "Voidcore",
+      "gender": "male",
+      "affinity": "shadow",
+      "tier": "level-10",
+      "tierName": "Veteran",
+      "levelMin": 10,
+      "levelMax": 14,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/mage/mage-voidcore-level-10/walk-left.webp",
+          "bytes": 64784,
+          "sha256": "6c2dcd3442ec842baee1ffcc2831f169e21e57776b6206c500a192af8c6d9fbb"
+        },
+        "walk-right": {
+          "path": "rpg/v5/mage/mage-voidcore-level-10/walk-right.webp",
+          "bytes": 65376,
+          "sha256": "803259b8ee368c4525d9ed4ede88d6d60608bd5d84f1db27d47c5594e95d1b10"
+        },
+        "attack": {
+          "path": "rpg/v5/mage/mage-voidcore-level-10/attack.webp",
+          "bytes": 79500,
+          "sha256": "cd6d9ad42bdd86692f85d54adffe54a0fd6079077c2e28e67615eafa80be9061"
+        },
+        "hurt": {
+          "path": "rpg/v5/mage/mage-voidcore-level-10/hurt.webp",
+          "bytes": 68918,
+          "sha256": "d44cb6b7d8a76351f9281bf7b41c4c310ad9f86eb965a29fd93c7bd3d2253724"
+        },
+        "happy": {
+          "path": "rpg/v5/mage/mage-voidcore-level-10/happy.webp",
+          "bytes": 66172,
+          "sha256": "a1f5ad43dd98bc9004e6c9f257c54c7dc74dacc368303bfbd41b3b48587c58bd"
+        },
+        "static": {
+          "path": "rpg/v5/mage/mage-voidcore-level-10/static.webp",
+          "bytes": 18614,
+          "sha256": "25d46789578d1d8437005f163632d345000957175a0dfdfda078bb545ba69f82"
+        }
+      }
+    },
+    {
+      "id": "mage-voidcore-level-15",
+      "classId": "mage",
+      "family": "voidcore",
+      "familyName": "Voidcore",
+      "gender": "male",
+      "affinity": "shadow",
+      "tier": "level-15",
+      "tierName": "Champion",
+      "levelMin": 15,
+      "levelMax": 19,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/mage/mage-voidcore-level-15/walk-left.webp",
+          "bytes": 125122,
+          "sha256": "ee59362d8cc87c6d45bcc03d74168225ce47d701a90fdadf3885186721f57f61"
+        },
+        "walk-right": {
+          "path": "rpg/v5/mage/mage-voidcore-level-15/walk-right.webp",
+          "bytes": 125298,
+          "sha256": "cdbcc046d222c53a1f404655e5acdc280bedec680891569ae24005ba900fb122"
+        },
+        "attack": {
+          "path": "rpg/v5/mage/mage-voidcore-level-15/attack.webp",
+          "bytes": 163864,
+          "sha256": "30b4580b4fee6b8c13b116a346b71c40f31d8341d4debb26515020a1150828f7"
+        },
+        "hurt": {
+          "path": "rpg/v5/mage/mage-voidcore-level-15/hurt.webp",
+          "bytes": 122604,
+          "sha256": "298ce7146bbf2e8b45acea16db504b3772d8de3c32eeb5f504d87c9e4c566010"
+        },
+        "happy": {
+          "path": "rpg/v5/mage/mage-voidcore-level-15/happy.webp",
+          "bytes": 133564,
+          "sha256": "5e53285af1f54584d4ebe8d1c5c502edc91c851e32da9618c132f3834e988383"
+        },
+        "static": {
+          "path": "rpg/v5/mage/mage-voidcore-level-15/static.webp",
+          "bytes": 36162,
+          "sha256": "c26e0ca89a55218dde5ca1d60c5a056326c288363ceceb5334c7dc1a729769f4"
+        }
+      }
+    },
+    {
+      "id": "mage-voidcore-level-20",
+      "classId": "mage",
+      "family": "voidcore",
+      "familyName": "Voidcore",
+      "gender": "male",
+      "affinity": "shadow",
+      "tier": "level-20",
+      "tierName": "Ascendant",
+      "levelMin": 20,
+      "levelMax": 20,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/mage/mage-voidcore-level-20/walk-left.webp",
+          "bytes": 116444,
+          "sha256": "ce334d6dd6cd6f5fd09eca11b5ba0707b2f5999a0506d459ee9811fc0c4a9d0a"
+        },
+        "walk-right": {
+          "path": "rpg/v5/mage/mage-voidcore-level-20/walk-right.webp",
+          "bytes": 116938,
+          "sha256": "b412c6e1051436d33320bfd8120498883880b5a8dd80c9f780a89f85c28b5f32"
+        },
+        "attack": {
+          "path": "rpg/v5/mage/mage-voidcore-level-20/attack.webp",
+          "bytes": 156744,
+          "sha256": "1121f98a6ec696a7413d3f67bcede62166d0a58879c6c3c297dc5fdf01030f3d"
+        },
+        "hurt": {
+          "path": "rpg/v5/mage/mage-voidcore-level-20/hurt.webp",
+          "bytes": 137932,
+          "sha256": "3a809081d0bd6378cf901d2fc27b6ed7cffc389d74499a7855bddac18723b710"
+        },
+        "happy": {
+          "path": "rpg/v5/mage/mage-voidcore-level-20/happy.webp",
+          "bytes": 138522,
+          "sha256": "da20f7e6ac16a8372eac1ffc072017e79d12189e3da32cef6f9c1aae6683975a"
+        },
+        "static": {
+          "path": "rpg/v5/mage/mage-voidcore-level-20/static.webp",
+          "bytes": 32452,
+          "sha256": "358c8de9c020297a791e0bdd9c2b158b370e2819679f02a14f31105bc9dd1552"
+        }
+      }
+    },
+    {
+      "id": "ranger-sunleaf-starter",
+      "classId": "ranger",
+      "family": "sunleaf",
+      "familyName": "Sunleaf",
+      "gender": "female",
+      "affinity": "radiant",
+      "tier": "starter",
+      "tierName": "Initiate",
+      "levelMin": 1,
+      "levelMax": 4,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-starter/walk-left.webp",
+          "bytes": 139872,
+          "sha256": "2f7b4bf5339aa49a3a196ec2f394db6879c426a504600b71b227528c2bed1d1d"
+        },
+        "walk-right": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-starter/walk-right.webp",
+          "bytes": 139562,
+          "sha256": "a4e4cf0e83e79edbf18ed3f3a4f81e95d33594ea811144596cae9b60a1b75b3b"
+        },
+        "attack": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-starter/attack.webp",
+          "bytes": 152302,
+          "sha256": "59c06717936c405766e32b4e4cc282b37b4a3eb7f7b587e0756cacbb23bdd889"
+        },
+        "hurt": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-starter/hurt.webp",
+          "bytes": 126122,
+          "sha256": "81727a944c7f1eda3d6da76a2ee25a17ff3e8867d3c7d397afb53e1aafc263f9"
+        },
+        "happy": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-starter/happy.webp",
+          "bytes": 125898,
+          "sha256": "094c66632bf92ef260001be41a9fb2a33dbe9db7530eddbc0b6c78c604781c9b"
+        },
+        "static": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-starter/static.webp",
+          "bytes": 38236,
+          "sha256": "d98f6b45288ceaee4b5c048bef62c8709ffc8bd63be7dab932834dc3d3ecca99"
+        }
+      }
+    },
+    {
+      "id": "ranger-sunleaf-level-05",
+      "classId": "ranger",
+      "family": "sunleaf",
+      "familyName": "Sunleaf",
+      "gender": "female",
+      "affinity": "radiant",
+      "tier": "level-05",
+      "tierName": "Adept",
+      "levelMin": 5,
+      "levelMax": 9,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-05/walk-left.webp",
+          "bytes": 149682,
+          "sha256": "85c14a1e3aab93498a26bca25c3d8bb7426c12e44d71aee0449911f520590317"
+        },
+        "walk-right": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-05/walk-right.webp",
+          "bytes": 150352,
+          "sha256": "bee355af5ef8cfd80cea1599bfaca8b2b626fb4a8c8ba3d3e394985a47ad7688"
+        },
+        "attack": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-05/attack.webp",
+          "bytes": 167252,
+          "sha256": "f282c9fde41f84162dd983c49e2d9518dc788aaad6e0b455b17d4cebad77ab84"
+        },
+        "hurt": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-05/hurt.webp",
+          "bytes": 144600,
+          "sha256": "4aaaf900d09b3365346af9f29d7f1a7bbf40fe4d48673a7e692caaddbd268a1b"
+        },
+        "happy": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-05/happy.webp",
+          "bytes": 144552,
+          "sha256": "c0cedcced1bed5f2ae9efeb7b7db99c3af28a2d97b0c4049e84cf56a47d9b58c"
+        },
+        "static": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-05/static.webp",
+          "bytes": 40772,
+          "sha256": "6adf0964d544334fa9bf79da8a3d9e5ff074846dd966206ce6df22df8bc90ab1"
+        }
+      }
+    },
+    {
+      "id": "ranger-sunleaf-level-10",
+      "classId": "ranger",
+      "family": "sunleaf",
+      "familyName": "Sunleaf",
+      "gender": "female",
+      "affinity": "radiant",
+      "tier": "level-10",
+      "tierName": "Veteran",
+      "levelMin": 10,
+      "levelMax": 14,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-10/walk-left.webp",
+          "bytes": 84280,
+          "sha256": "3248eb2a6f29e73dff5fca589f911189640188a148251e66acb34ddf5d2b404e"
+        },
+        "walk-right": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-10/walk-right.webp",
+          "bytes": 84174,
+          "sha256": "91d494a4ec0f178b3079f8fa1cf180ea8c1bc40b40164bd6b36deead1f74d0d3"
+        },
+        "attack": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-10/attack.webp",
+          "bytes": 96548,
+          "sha256": "5b3c174608ff8bc69d6231aa919c9809405d991e325eb26c5383efdd99469b36"
+        },
+        "hurt": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-10/hurt.webp",
+          "bytes": 72476,
+          "sha256": "43e62b8a69c8eb140c06c985347fb96cd888a5fa838aae86b1cddf63f4f6d691"
+        },
+        "happy": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-10/happy.webp",
+          "bytes": 74034,
+          "sha256": "87d5ef2c66ebb451cb6115b90a50f714bcde4d0bb027a3bec758dde651179f4a"
+        },
+        "static": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-10/static.webp",
+          "bytes": 23388,
+          "sha256": "0ed93aa383325ea8b2ad22a9835d29dd8126f5bcd8075ed1dd1d748d96a60698"
+        }
+      }
+    },
+    {
+      "id": "ranger-sunleaf-level-15",
+      "classId": "ranger",
+      "family": "sunleaf",
+      "familyName": "Sunleaf",
+      "gender": "female",
+      "affinity": "radiant",
+      "tier": "level-15",
+      "tierName": "Champion",
+      "levelMin": 15,
+      "levelMax": 19,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-15/walk-left.webp",
+          "bytes": 102876,
+          "sha256": "762c71325627c61a2d71f8c348815f9a3a0fa9a64823022535f1b82bccbdb0b8"
+        },
+        "walk-right": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-15/walk-right.webp",
+          "bytes": 102680,
+          "sha256": "ca1376912539df7ffe9515511f8620bad5cf31019e3b43311902884c5adae3b8"
+        },
+        "attack": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-15/attack.webp",
+          "bytes": 93384,
+          "sha256": "bff4f4fb2f9c4a8e5f15d221315cf025de528b27094f3f6af01e42e1118940da"
+        },
+        "hurt": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-15/hurt.webp",
+          "bytes": 77990,
+          "sha256": "e905a45e2abf094bdacbbc90db6aff7547352ce031a50dcd38d6d660704e7914"
+        },
+        "happy": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-15/happy.webp",
+          "bytes": 88402,
+          "sha256": "1348d4ce31ee164b59dae63afcdb6c48562a588236084da04f1cc534a8902455"
+        },
+        "static": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-15/static.webp",
+          "bytes": 29300,
+          "sha256": "32171f3e4daf1767d784fc4ad678509ff7f983ac4035c62428bb9ef622dc9826"
+        }
+      }
+    },
+    {
+      "id": "ranger-sunleaf-level-20",
+      "classId": "ranger",
+      "family": "sunleaf",
+      "familyName": "Sunleaf",
+      "gender": "female",
+      "affinity": "radiant",
+      "tier": "level-20",
+      "tierName": "Ascendant",
+      "levelMin": 20,
+      "levelMax": 20,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-20/walk-left.webp",
+          "bytes": 85204,
+          "sha256": "ec2d4944a910d85a799d16ff298b3bc6a0483b24806e15d0ba885b810210c48f"
+        },
+        "walk-right": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-20/walk-right.webp",
+          "bytes": 84826,
+          "sha256": "e21327ee14e25b005386f9dc566b8c26d974e202b7ce87ab6b0a243c1ca359e4"
+        },
+        "attack": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-20/attack.webp",
+          "bytes": 91868,
+          "sha256": "dfb62e5056cba53a225cdfc6ea70f5b73a71924e0b634cc314a1589051f8ce6d"
+        },
+        "hurt": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-20/hurt.webp",
+          "bytes": 74456,
+          "sha256": "05db1f59d2e6b1608d5c994e85932a8ebcd2eed6619809b6e736c4a33129d95a"
+        },
+        "happy": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-20/happy.webp",
+          "bytes": 83082,
+          "sha256": "9cbb71399220e1048f70023e5e954cf43d01e899733e5d276a801a6fd6276926"
+        },
+        "static": {
+          "path": "rpg/v5/ranger/ranger-sunleaf-level-20/static.webp",
+          "bytes": 24094,
+          "sha256": "450755f211750651f8d95d6ba8246aabd33ddd46231086b88bbe6f5b2e18e60c"
+        }
+      }
+    },
+    {
+      "id": "ranger-moonshadow-starter",
+      "classId": "ranger",
+      "family": "moonshadow",
+      "familyName": "Moonshadow",
+      "gender": "female",
+      "affinity": "shadow",
+      "tier": "starter",
+      "tierName": "Initiate",
+      "levelMin": 1,
+      "levelMax": 4,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-starter/walk-left.webp",
+          "bytes": 129784,
+          "sha256": "a53b8c5313250712dab0adb00f528ae0f84c411e34a8c8848c131e9e60e5d37c"
+        },
+        "walk-right": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-starter/walk-right.webp",
+          "bytes": 129396,
+          "sha256": "d595a40a36a769f1972ddd64b53d9e5685c0e14fb019e9c0360135f5132ee767"
+        },
+        "attack": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-starter/attack.webp",
+          "bytes": 147866,
+          "sha256": "98b190c7d25f050e7d2805c432e9c473d52ed693709cbf5476337ffd13e40abc"
+        },
+        "hurt": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-starter/hurt.webp",
+          "bytes": 128438,
+          "sha256": "48dda11cd8c05f9b4c3c0de16d2ae4bc4918e0a38f27aed4f72f32e8702a62a4"
+        },
+        "happy": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-starter/happy.webp",
+          "bytes": 127260,
+          "sha256": "cb34d6eb80164ade6f5f87d6289388a6db292edef0626934f956c32630fbe1b8"
+        },
+        "static": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-starter/static.webp",
+          "bytes": 35698,
+          "sha256": "80b655eebd980d30d90e54af41bad3789634bc8ebc680abe67010b3517e95fa6"
+        }
+      }
+    },
+    {
+      "id": "ranger-moonshadow-level-05",
+      "classId": "ranger",
+      "family": "moonshadow",
+      "familyName": "Moonshadow",
+      "gender": "female",
+      "affinity": "shadow",
+      "tier": "level-05",
+      "tierName": "Adept",
+      "levelMin": 5,
+      "levelMax": 9,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-05/walk-left.webp",
+          "bytes": 78292,
+          "sha256": "f230fffed253c21bcb96ad21f7a312695d9522ee12f512204933c3d297d55132"
+        },
+        "walk-right": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-05/walk-right.webp",
+          "bytes": 77998,
+          "sha256": "17f443992dd60a34137bd5856aefc5d5519aa0d0ae93ed4110eb96e06c91b681"
+        },
+        "attack": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-05/attack.webp",
+          "bytes": 78290,
+          "sha256": "9a9fd26eca4e1d526a03294bdbed8e412f24726083bae2e89db9cdaf444dae83"
+        },
+        "hurt": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-05/hurt.webp",
+          "bytes": 64402,
+          "sha256": "b0c6fe7628d52cce6bce662852a379a74c36274b234800db4fb8a12da5043610"
+        },
+        "happy": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-05/happy.webp",
+          "bytes": 71552,
+          "sha256": "31f9d36fba193d57c7516154b4841854c191ece52812b36920663e1f947c56e7"
+        },
+        "static": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-05/static.webp",
+          "bytes": 21710,
+          "sha256": "ffe7d8d451d3cb98ef21b381828695bde0d2c69049ac904fe4b77d03df190185"
+        }
+      }
+    },
+    {
+      "id": "ranger-moonshadow-level-10",
+      "classId": "ranger",
+      "family": "moonshadow",
+      "familyName": "Moonshadow",
+      "gender": "female",
+      "affinity": "shadow",
+      "tier": "level-10",
+      "tierName": "Veteran",
+      "levelMin": 10,
+      "levelMax": 14,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-10/walk-left.webp",
+          "bytes": 68384,
+          "sha256": "2b8edeb8c0bdfabd7e2a1bea329c62d7569251285512b50781e89d8e64ca9dbd"
+        },
+        "walk-right": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-10/walk-right.webp",
+          "bytes": 67886,
+          "sha256": "351c6094b53fe8a2d485d0ad74714341058fa221d34d88c0ed4680a9b2bdb1d2"
+        },
+        "attack": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-10/attack.webp",
+          "bytes": 74990,
+          "sha256": "fd4b69cca4db56420ea18d1c0e83b855d9810613ab5f32893d867eae154c5d3d"
+        },
+        "hurt": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-10/hurt.webp",
+          "bytes": 64104,
+          "sha256": "be29ad48934ca90bc008b5da1c03ad1ce5f816af6801ccecccb42b1f52a3fc9a"
+        },
+        "happy": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-10/happy.webp",
+          "bytes": 68272,
+          "sha256": "a2c3b5b8f15fd8b3eee293cde5a8fe2301a396b9bddee36eda072c0f9073fb2b"
+        },
+        "static": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-10/static.webp",
+          "bytes": 19166,
+          "sha256": "7b9b946048aa0651a2fd7ad4ecc5fede46b8224b56f70363631dc9dd329955b5"
+        }
+      }
+    },
+    {
+      "id": "ranger-moonshadow-level-15",
+      "classId": "ranger",
+      "family": "moonshadow",
+      "familyName": "Moonshadow",
+      "gender": "female",
+      "affinity": "shadow",
+      "tier": "level-15",
+      "tierName": "Champion",
+      "levelMin": 15,
+      "levelMax": 19,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-15/walk-left.webp",
+          "bytes": 92104,
+          "sha256": "f6b239f02251a5aa8f9eebe503846ef6d98a25636bc2abdacc658c7a94cf6c83"
+        },
+        "walk-right": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-15/walk-right.webp",
+          "bytes": 91668,
+          "sha256": "1ac56dffd0ce80a7a938771350bed97a16ba0bb2f46c17b07f1f7e5486701fdc"
+        },
+        "attack": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-15/attack.webp",
+          "bytes": 87774,
+          "sha256": "2b7c7fa2f17ee14145261f7666ca763fc2987dd6067046acf0372a48dbb0710f"
+        },
+        "hurt": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-15/hurt.webp",
+          "bytes": 70148,
+          "sha256": "ece1aa72ceacec5630d24e2c6624f0f756f6d30f656c44ed7372d060891e92b6"
+        },
+        "happy": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-15/happy.webp",
+          "bytes": 76618,
+          "sha256": "2e60af40cd69a9069279f62dd464cd69eb56858801a165bf20bcecf5bec6c29e"
+        },
+        "static": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-15/static.webp",
+          "bytes": 25990,
+          "sha256": "1ad1d50643aa03ac4e69fe01c643ae546bd2a39f335e7c3253fdecd7879aec6e"
+        }
+      }
+    },
+    {
+      "id": "ranger-moonshadow-level-20",
+      "classId": "ranger",
+      "family": "moonshadow",
+      "familyName": "Moonshadow",
+      "gender": "female",
+      "affinity": "shadow",
+      "tier": "level-20",
+      "tierName": "Ascendant",
+      "levelMin": 20,
+      "levelMax": 20,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-20/walk-left.webp",
+          "bytes": 83806,
+          "sha256": "a32f97b5888b0f40df99752e2971920c5965ae64bebe0a4e3a0647e81f80bdca"
+        },
+        "walk-right": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-20/walk-right.webp",
+          "bytes": 83630,
+          "sha256": "1de12699f9f690cb36bdf4cdda08b94de7ccb2f60a30c0c420f369b6bd4c89f0"
+        },
+        "attack": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-20/attack.webp",
+          "bytes": 107364,
+          "sha256": "a3c30041a535e503ba15a7f2f4cecb1d5bd94cc4d861461e268126ff90a83914"
+        },
+        "hurt": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-20/hurt.webp",
+          "bytes": 78888,
+          "sha256": "65041952a5ab2d94088612f4196b9991a6596d300a720282d704fc525200ad89"
+        },
+        "happy": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-20/happy.webp",
+          "bytes": 80206,
+          "sha256": "4f155111f71d23aebf124af5c33932473facf19db3c835bd5e37d6ed8cd4049e"
+        },
+        "static": {
+          "path": "rpg/v5/ranger/ranger-moonshadow-level-20/static.webp",
+          "bytes": 22086,
+          "sha256": "f8a261c649efa3e2a4395b71ef544cc6bbbf1c2b494a7d34fac85693f558b9f8"
+        }
+      }
+    },
+    {
+      "id": "ranger-dawnfeather-starter",
+      "classId": "ranger",
+      "family": "dawnfeather",
+      "familyName": "Dawnfeather",
+      "gender": "male",
+      "affinity": "radiant",
+      "tier": "starter",
+      "tierName": "Initiate",
+      "levelMin": 1,
+      "levelMax": 4,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-starter/walk-left.webp",
+          "bytes": 131244,
+          "sha256": "3e8f138e3858ba0ec9e6de2a766d2bf25abae960e493c4378dcbb55977b10632"
+        },
+        "walk-right": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-starter/walk-right.webp",
+          "bytes": 132200,
+          "sha256": "8e75da42aa9e9cde23076d7738c499704e0457a409816409cb7a03404e63503a"
+        },
+        "attack": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-starter/attack.webp",
+          "bytes": 162968,
+          "sha256": "6c3798d22b0c8e48798b26cf8e0f4dfe701015226023408bfd2fdccf7f17b435"
+        },
+        "hurt": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-starter/hurt.webp",
+          "bytes": 139680,
+          "sha256": "bac8af8c1793e39fd5f163eefa235380ee51563c4952d54474d28b03dc460170"
+        },
+        "happy": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-starter/happy.webp",
+          "bytes": 138198,
+          "sha256": "776695a02823a64267a980615a63e0f63f53143cdf37b63d83db6555717ddbfe"
+        },
+        "static": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-starter/static.webp",
+          "bytes": 33124,
+          "sha256": "62afc21bb60cdf20bcadeed41584c96c65c8c83e7ef50a3f7a2ffe0a1eb4afc3"
+        }
+      }
+    },
+    {
+      "id": "ranger-dawnfeather-level-05",
+      "classId": "ranger",
+      "family": "dawnfeather",
+      "familyName": "Dawnfeather",
+      "gender": "male",
+      "affinity": "radiant",
+      "tier": "level-05",
+      "tierName": "Adept",
+      "levelMin": 5,
+      "levelMax": 9,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-05/walk-left.webp",
+          "bytes": 77674,
+          "sha256": "4e649201d406f0d905c9fa823e5afae4359ea6b8e8dce965def43e9089b35292"
+        },
+        "walk-right": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-05/walk-right.webp",
+          "bytes": 77336,
+          "sha256": "be972c718a3678b5bec112d4600f89a656ac07b4225ac9098a5348a6e6001bc8"
+        },
+        "attack": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-05/attack.webp",
+          "bytes": 87964,
+          "sha256": "a9a0ac48ae2afde7bcf30ab9c2437cef5ce4dfcab4189935130e42806d998501"
+        },
+        "hurt": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-05/hurt.webp",
+          "bytes": 77764,
+          "sha256": "24249ebc295789cf2d11f22344615990be2cf686ead9ff2d8748356009f72448"
+        },
+        "happy": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-05/happy.webp",
+          "bytes": 81006,
+          "sha256": "a864606134a8d99ffb3ab7cc6914e4f7d939b100c2d103c8f3405779dbd12852"
+        },
+        "static": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-05/static.webp",
+          "bytes": 22256,
+          "sha256": "e0a38aeda20b007316c136d6339155ce9fc26f13544098849331ab1b20761c54"
+        }
+      }
+    },
+    {
+      "id": "ranger-dawnfeather-level-10",
+      "classId": "ranger",
+      "family": "dawnfeather",
+      "familyName": "Dawnfeather",
+      "gender": "male",
+      "affinity": "radiant",
+      "tier": "level-10",
+      "tierName": "Veteran",
+      "levelMin": 10,
+      "levelMax": 14,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-10/walk-left.webp",
+          "bytes": 132540,
+          "sha256": "0f37e879aee717f2fde2e2d29cc7ec1fde07e1515e439875dbbafc47e520805a"
+        },
+        "walk-right": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-10/walk-right.webp",
+          "bytes": 132650,
+          "sha256": "84a7d93fcb696d7877af99bb7cdc7a56e7300256c343de20c83c582e7666d270"
+        },
+        "attack": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-10/attack.webp",
+          "bytes": 156800,
+          "sha256": "baeef2f13cc162dbee5474ec1c47c6e8728f37d519b569b83742240ee677e205"
+        },
+        "hurt": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-10/hurt.webp",
+          "bytes": 138318,
+          "sha256": "38c14e3aebcbdfb5b740a197cdd8ae2c8f84c74e9b31f6a9808fe18be9447f97"
+        },
+        "happy": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-10/happy.webp",
+          "bytes": 139246,
+          "sha256": "b9305c04c7f4ffcbfa621b6cd818991b1b9bef57784954c737d203357aae8faa"
+        },
+        "static": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-10/static.webp",
+          "bytes": 36212,
+          "sha256": "bce728608a561ff0345f394421129b5436a3bc8c54ba017080ef8c9a09fae713"
+        }
+      }
+    },
+    {
+      "id": "ranger-dawnfeather-level-15",
+      "classId": "ranger",
+      "family": "dawnfeather",
+      "familyName": "Dawnfeather",
+      "gender": "male",
+      "affinity": "radiant",
+      "tier": "level-15",
+      "tierName": "Champion",
+      "levelMin": 15,
+      "levelMax": 19,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-15/walk-left.webp",
+          "bytes": 137192,
+          "sha256": "7f40855a8bb360470698d20a826c4da31a83528fdc70743fe4c1a07f6ae0e4e0"
+        },
+        "walk-right": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-15/walk-right.webp",
+          "bytes": 137856,
+          "sha256": "8dd693b599890f21977059e06e1c2477ce887883e04d34d8ac429d87961fab48"
+        },
+        "attack": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-15/attack.webp",
+          "bytes": 167982,
+          "sha256": "5df12065277a3f2d6ba56ab9403149b1ac8966cb5cd85bfb3468d20af4848caf"
+        },
+        "hurt": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-15/hurt.webp",
+          "bytes": 140798,
+          "sha256": "75ba4f7bf491a4b8d8230e9241bf6f6602351ca36f36b63c3c33ad8de1a735f1"
+        },
+        "happy": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-15/happy.webp",
+          "bytes": 144980,
+          "sha256": "96ef0319de3ac366f4ebb7a53e1420ea711d28b3d8abe3a2b374b528b9ade864"
+        },
+        "static": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-15/static.webp",
+          "bytes": 38526,
+          "sha256": "a9245387845a6c41c54fa08528868f92c8e1065e48f54e0286617485a77dd665"
+        }
+      }
+    },
+    {
+      "id": "ranger-dawnfeather-level-20",
+      "classId": "ranger",
+      "family": "dawnfeather",
+      "familyName": "Dawnfeather",
+      "gender": "male",
+      "affinity": "radiant",
+      "tier": "level-20",
+      "tierName": "Ascendant",
+      "levelMin": 20,
+      "levelMax": 20,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-20/walk-left.webp",
+          "bytes": 89968,
+          "sha256": "e70b1422aa9fc8a864bbec281b105210ac35654bafe1efb4e21c82df057bcaf1"
+        },
+        "walk-right": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-20/walk-right.webp",
+          "bytes": 90182,
+          "sha256": "6125feba7983bf75b7d0067c595dcc22c0c1e738b41df91db799afb7adf778e0"
+        },
+        "attack": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-20/attack.webp",
+          "bytes": 104616,
+          "sha256": "25865737f3dfccd9e0dbc48e380d6a9492a8762e19babd05856b9a04a95f9296"
+        },
+        "hurt": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-20/hurt.webp",
+          "bytes": 92618,
+          "sha256": "2d0f1589f91ede6412180b558beb78c77dce024cce3fb83575d7c1c1d2e42a5f"
+        },
+        "happy": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-20/happy.webp",
+          "bytes": 83184,
+          "sha256": "e6d588a14d1131d534deb15325425c6f52ccb7d720674b1f153fe2f24af7db71"
+        },
+        "static": {
+          "path": "rpg/v5/ranger/ranger-dawnfeather-level-20/static.webp",
+          "bytes": 24094,
+          "sha256": "75c176e4db1e70238811d5920b112fd3dc619b70527bb70b91e299fb3f5d42d8"
+        }
+      }
+    },
+    {
+      "id": "ranger-nightfang-starter",
+      "classId": "ranger",
+      "family": "nightfang",
+      "familyName": "Nightfang",
+      "gender": "male",
+      "affinity": "shadow",
+      "tier": "starter",
+      "tierName": "Initiate",
+      "levelMin": 1,
+      "levelMax": 4,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/ranger/ranger-nightfang-starter/walk-left.webp",
+          "bytes": 69766,
+          "sha256": "0a767d466ea90d4b3d221dca42ea962d122166d96078b55ff103ef66da374c2c"
+        },
+        "walk-right": {
+          "path": "rpg/v5/ranger/ranger-nightfang-starter/walk-right.webp",
+          "bytes": 69586,
+          "sha256": "9331761f6213edc1845411966c704da26245a5b4b2185ebc43e3b81b9722d9f0"
+        },
+        "attack": {
+          "path": "rpg/v5/ranger/ranger-nightfang-starter/attack.webp",
+          "bytes": 79206,
+          "sha256": "64d466a53c3e3edb04154b6b4d37b5ffe4d4b327481dd341be908c65263389be"
+        },
+        "hurt": {
+          "path": "rpg/v5/ranger/ranger-nightfang-starter/hurt.webp",
+          "bytes": 53882,
+          "sha256": "6494bde7bfd1fe5fc0ffb5c47001d151da6ee3f72bad291e606c5e86d8953e9c"
+        },
+        "happy": {
+          "path": "rpg/v5/ranger/ranger-nightfang-starter/happy.webp",
+          "bytes": 62476,
+          "sha256": "077970ac9f84a6b3dc291177aa7175180d514dab8c19c670160a318d02ffcdb7"
+        },
+        "static": {
+          "path": "rpg/v5/ranger/ranger-nightfang-starter/static.webp",
+          "bytes": 20186,
+          "sha256": "2d75e14cc4baed8a00335b1ee4d8c4b0d7aed52abef6dac268a360fdb38e67d0"
+        }
+      }
+    },
+    {
+      "id": "ranger-nightfang-level-05",
+      "classId": "ranger",
+      "family": "nightfang",
+      "familyName": "Nightfang",
+      "gender": "male",
+      "affinity": "shadow",
+      "tier": "level-05",
+      "tierName": "Adept",
+      "levelMin": 5,
+      "levelMax": 9,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-05/walk-left.webp",
+          "bytes": 108632,
+          "sha256": "391475d6b077de733776736d48db8f63885129af132d6f18e32341c1855f6c46"
+        },
+        "walk-right": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-05/walk-right.webp",
+          "bytes": 108300,
+          "sha256": "77825b0ab75c231146c420b7596493ba4cc7df24a51666356c5e2e496e81a697"
+        },
+        "attack": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-05/attack.webp",
+          "bytes": 114678,
+          "sha256": "760086f04fee0b2b2618e159f5db8783e019643bf7217744f0a8bff8fd9bfc48"
+        },
+        "hurt": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-05/hurt.webp",
+          "bytes": 87586,
+          "sha256": "ad85026d9929d4bdce6c94ac76eacb60e4bae4f18f000a8683b40b68513a395b"
+        },
+        "happy": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-05/happy.webp",
+          "bytes": 97790,
+          "sha256": "a9d85d57de219d1973c041adcd24fc6d90633d94e2510c792c9459bdba71cbc4"
+        },
+        "static": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-05/static.webp",
+          "bytes": 29596,
+          "sha256": "27bf4809920102b6cef30f76ee5d693e88d0cae585f3b9ed813602e662f611a8"
+        }
+      }
+    },
+    {
+      "id": "ranger-nightfang-level-10",
+      "classId": "ranger",
+      "family": "nightfang",
+      "familyName": "Nightfang",
+      "gender": "male",
+      "affinity": "shadow",
+      "tier": "level-10",
+      "tierName": "Veteran",
+      "levelMin": 10,
+      "levelMax": 14,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-10/walk-left.webp",
+          "bytes": 62292,
+          "sha256": "1231c03c95da147d897b318dd89d130f72533d1b50c963dc2c83ea3b1dab3152"
+        },
+        "walk-right": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-10/walk-right.webp",
+          "bytes": 61494,
+          "sha256": "64d22f4e01b0acb39cadfae1159870cc86edc5921c30e219241e111b4fea17f7"
+        },
+        "attack": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-10/attack.webp",
+          "bytes": 76692,
+          "sha256": "0ad68fe31f684e3d460d6804441f45ebdf0563b341d0708e05a3996621d760c4"
+        },
+        "hurt": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-10/hurt.webp",
+          "bytes": 55548,
+          "sha256": "63ca2e38e38a50ca042dd33a2392c6cc6656eaede4733ad237143ef2b438752c"
+        },
+        "happy": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-10/happy.webp",
+          "bytes": 59470,
+          "sha256": "1c79951cf6166675a36e292eb068091f4695420d48ea07b6bd2b7fb68d8b5748"
+        },
+        "static": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-10/static.webp",
+          "bytes": 16046,
+          "sha256": "180bfdc039464941ed697fe101851128ed8a1dfabb5b3f8b7a1c8ab8fb65874a"
+        }
+      }
+    },
+    {
+      "id": "ranger-nightfang-level-15",
+      "classId": "ranger",
+      "family": "nightfang",
+      "familyName": "Nightfang",
+      "gender": "male",
+      "affinity": "shadow",
+      "tier": "level-15",
+      "tierName": "Champion",
+      "levelMin": 15,
+      "levelMax": 19,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-15/walk-left.webp",
+          "bytes": 76242,
+          "sha256": "3607f1437c6bd1e76b82009ddf99c1b76b99e8f5a1b98c38e2739b6aaf8dba5a"
+        },
+        "walk-right": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-15/walk-right.webp",
+          "bytes": 75878,
+          "sha256": "3d7fcca28bfad567caf14e11b2050e37589d9d3a5b98132348a25a94a077b1ed"
+        },
+        "attack": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-15/attack.webp",
+          "bytes": 81378,
+          "sha256": "532fe217c2b6a3ef490724660fd88c2d1cc19b36d62434b17d25c2bd19478db0"
+        },
+        "hurt": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-15/hurt.webp",
+          "bytes": 55998,
+          "sha256": "7db29761d92348d9ccc6b56b6fd24bcf4fd94cd48eca58ab0a57dc0e91d00cc9"
+        },
+        "happy": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-15/happy.webp",
+          "bytes": 62504,
+          "sha256": "e40e932fd79f6d0d419814b60b4b2d3f25c2b4e8e8b825eed97830dc185c150f"
+        },
+        "static": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-15/static.webp",
+          "bytes": 21526,
+          "sha256": "ab9a8fcd8779550368581d054930710d843e62389b68cdabbc0d087100183d3f"
+        }
+      }
+    },
+    {
+      "id": "ranger-nightfang-level-20",
+      "classId": "ranger",
+      "family": "nightfang",
+      "familyName": "Nightfang",
+      "gender": "male",
+      "affinity": "shadow",
+      "tier": "level-20",
+      "tierName": "Ascendant",
+      "levelMin": 20,
+      "levelMax": 20,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-20/walk-left.webp",
+          "bytes": 69674,
+          "sha256": "82f37023f8df8a61302145f8090ebefd39b212df8187f4a0f53abf423fb6590b"
+        },
+        "walk-right": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-20/walk-right.webp",
+          "bytes": 68958,
+          "sha256": "1c0e95c28569890ecbb79cab66c62c26e89c8760aaf6f9247c05cfdedcf4d2ae"
+        },
+        "attack": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-20/attack.webp",
+          "bytes": 76346,
+          "sha256": "153885dd00793aca255c4db7177c5c0d1f97b513b8d91c6d31efcf5f228bbf1c"
+        },
+        "hurt": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-20/hurt.webp",
+          "bytes": 57644,
+          "sha256": "1c13f7558b3766152e652932d0ac24d0f85bf4811a974b2e5c9c18ffb6411a32"
+        },
+        "happy": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-20/happy.webp",
+          "bytes": 64406,
+          "sha256": "5006811d54d2cbd6d24bcf38bdeaad4b01c18fa6f3c2e4cf3a4b985463bcbc1b"
+        },
+        "static": {
+          "path": "rpg/v5/ranger/ranger-nightfang-level-20/static.webp",
+          "bytes": 19716,
+          "sha256": "382044676c8bc0de60127adda41cbc8de31e6cf6c9aadb2e497b347fee6b410b"
+        }
+      }
+    },
+    {
+      "id": "warrior-sunshield-starter",
+      "classId": "warrior",
+      "family": "sunshield",
+      "familyName": "Sunshield",
+      "gender": "female",
+      "affinity": "radiant",
+      "tier": "starter",
+      "tierName": "Initiate",
+      "levelMin": 1,
+      "levelMax": 4,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/warrior/warrior-sunshield-starter/walk-left.webp",
+          "bytes": 61438,
+          "sha256": "e9eb01077eb6778ef8f5ee3f65c7e7ab34c91f99c97964e3695a4cabea0b300d"
+        },
+        "walk-right": {
+          "path": "rpg/v5/warrior/warrior-sunshield-starter/walk-right.webp",
+          "bytes": 61554,
+          "sha256": "5560835f20152f1a0c571379ecec32c3a9999207bfb0957d30b78e36787b861e"
+        },
+        "attack": {
+          "path": "rpg/v5/warrior/warrior-sunshield-starter/attack.webp",
+          "bytes": 61772,
+          "sha256": "25da815736ce6bc668a9d1d76fb7b19d41f9463a6672801634a5e9d5ce7dae26"
+        },
+        "hurt": {
+          "path": "rpg/v5/warrior/warrior-sunshield-starter/hurt.webp",
+          "bytes": 52150,
+          "sha256": "7799ad82ef6ee7a91a58aa005ed84678551486d0b7e8bcfdfd3c291780d82f06"
+        },
+        "happy": {
+          "path": "rpg/v5/warrior/warrior-sunshield-starter/happy.webp",
+          "bytes": 56828,
+          "sha256": "566103d28e4fb70b9d2694323fe20339938038dd36fbe6a159cf8603671cac55"
+        },
+        "static": {
+          "path": "rpg/v5/warrior/warrior-sunshield-starter/static.webp",
+          "bytes": 17622,
+          "sha256": "0a70f4f48c28b4d5d201481cc07ea1445621c6850aa23f0592f0eff07a3d4c5c"
+        }
+      }
+    },
+    {
+      "id": "warrior-sunshield-level-05",
+      "classId": "warrior",
+      "family": "sunshield",
+      "familyName": "Sunshield",
+      "gender": "female",
+      "affinity": "radiant",
+      "tier": "level-05",
+      "tierName": "Adept",
+      "levelMin": 5,
+      "levelMax": 9,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-05/walk-left.webp",
+          "bytes": 67324,
+          "sha256": "9c3e1e34039e37e46eb3441db38ecdd3f08b8b44cd756f9ecd6bd7425b3386dc"
+        },
+        "walk-right": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-05/walk-right.webp",
+          "bytes": 67360,
+          "sha256": "ebaf4d9e3a9a5810cb009ee5fa33d2b90dbbf5727c5be56d5780a2632761ce84"
+        },
+        "attack": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-05/attack.webp",
+          "bytes": 68894,
+          "sha256": "cf9949b3cd7b926f41cced1ebf94b941987bd21e3303e4d8b52c3ea4bb10a5b0"
+        },
+        "hurt": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-05/hurt.webp",
+          "bytes": 60198,
+          "sha256": "ef76ee6031dbe60f5e72c515f28171e094eed360e831c374db44070f5fc195b4"
+        },
+        "happy": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-05/happy.webp",
+          "bytes": 68012,
+          "sha256": "a92bb4e1c5a4fa7ee022d17bdfd641b34aecc9dcdded4d68fef90d6fd0f0a132"
+        },
+        "static": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-05/static.webp",
+          "bytes": 19100,
+          "sha256": "04ce4966f4391061b1d5046e587e040077333f82f2e0c47252bb0fee9176bfde"
+        }
+      }
+    },
+    {
+      "id": "warrior-sunshield-level-10",
+      "classId": "warrior",
+      "family": "sunshield",
+      "familyName": "Sunshield",
+      "gender": "female",
+      "affinity": "radiant",
+      "tier": "level-10",
+      "tierName": "Veteran",
+      "levelMin": 10,
+      "levelMax": 14,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-10/walk-left.webp",
+          "bytes": 115518,
+          "sha256": "d5b2f59c0228f99ad9bd90c00d788f75b663248e1a2869c5816c0d56cee8127e"
+        },
+        "walk-right": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-10/walk-right.webp",
+          "bytes": 115256,
+          "sha256": "0dc2f60d13eaa4558222cef928785b26e5d18ee3e88b00375a3f760a4fa6baed"
+        },
+        "attack": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-10/attack.webp",
+          "bytes": 139852,
+          "sha256": "066ca5c3ee23a5e15fdd77bfd980609eb97f6206ed4b872282f04576f8f088c3"
+        },
+        "hurt": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-10/hurt.webp",
+          "bytes": 123652,
+          "sha256": "3c8f9cbc5080a2a7d63705ef9f8d72fa83cea6097b82deff8e400d203cb305c1"
+        },
+        "happy": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-10/happy.webp",
+          "bytes": 120830,
+          "sha256": "dbb16c6dd3583bf709975fd8ed3f55ddf7788fe93ec569fca28cdf340f5049c9"
+        },
+        "static": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-10/static.webp",
+          "bytes": 32566,
+          "sha256": "458b12c2c4a27beb545bf4847cc375f194e01cc4bafab2bf0865db11ed13a886"
+        }
+      }
+    },
+    {
+      "id": "warrior-sunshield-level-15",
+      "classId": "warrior",
+      "family": "sunshield",
+      "familyName": "Sunshield",
+      "gender": "female",
+      "affinity": "radiant",
+      "tier": "level-15",
+      "tierName": "Champion",
+      "levelMin": 15,
+      "levelMax": 19,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-15/walk-left.webp",
+          "bytes": 95918,
+          "sha256": "c608e6a0cf210d4c06814669026f691c5d606f891dd1f2b83d20dc7210b99208"
+        },
+        "walk-right": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-15/walk-right.webp",
+          "bytes": 95916,
+          "sha256": "5d08eb5b0f4452e1828471a3ba13f7f9011763bdd6cdbce51f4ae336d492d675"
+        },
+        "attack": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-15/attack.webp",
+          "bytes": 86870,
+          "sha256": "6007b97adff69f2b77982b642170fa89c377809c27e07bafcb1fe581853716da"
+        },
+        "hurt": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-15/hurt.webp",
+          "bytes": 82306,
+          "sha256": "89ff8e2c96717d5dbca6b9d0ebed20b86086952de329360c3b8fd3fef378b86c"
+        },
+        "happy": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-15/happy.webp",
+          "bytes": 86960,
+          "sha256": "8ce62e645765e06847b68a6146e8500847d554c2905da5cb21b9851a42848497"
+        },
+        "static": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-15/static.webp",
+          "bytes": 29708,
+          "sha256": "6b0c15f3093f97b2d178bb88d2889b569133ccc05a282fef81533e8352ab0335"
+        }
+      }
+    },
+    {
+      "id": "warrior-sunshield-level-20",
+      "classId": "warrior",
+      "family": "sunshield",
+      "familyName": "Sunshield",
+      "gender": "female",
+      "affinity": "radiant",
+      "tier": "level-20",
+      "tierName": "Ascendant",
+      "levelMin": 20,
+      "levelMax": 20,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-20/walk-left.webp",
+          "bytes": 89586,
+          "sha256": "18eb2a83092bfe9d69b050415d9773bf399d16830545ebaebfdedfa08e949526"
+        },
+        "walk-right": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-20/walk-right.webp",
+          "bytes": 89672,
+          "sha256": "621f97075df8a7eb59d1ac44c6e95ad4229df627f87a4d789e2ded897e119989"
+        },
+        "attack": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-20/attack.webp",
+          "bytes": 87752,
+          "sha256": "0a2153202e63c172efb995dd09f415d727794318b57797abc7c1761763dbe113"
+        },
+        "hurt": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-20/hurt.webp",
+          "bytes": 87368,
+          "sha256": "dd58a67b5bafd10fea903383176de49f5b52623a4e60c673e2a9925937d6aa7f"
+        },
+        "happy": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-20/happy.webp",
+          "bytes": 80042,
+          "sha256": "94b6eb4c04207d10f9c34eeefa9232e36a5f023bcd2cace21a0db67894d72aec"
+        },
+        "static": {
+          "path": "rpg/v5/warrior/warrior-sunshield-level-20/static.webp",
+          "bytes": 25090,
+          "sha256": "67e6b0caf3801d3b8a66c5a32763baaf450f2ef5d29d81dc570616f9a654b8ef"
+        }
+      }
+    },
+    {
+      "id": "warrior-eclipse-starter",
+      "classId": "warrior",
+      "family": "eclipse",
+      "familyName": "Eclipse",
+      "gender": "female",
+      "affinity": "shadow",
+      "tier": "starter",
+      "tierName": "Initiate",
+      "levelMin": 1,
+      "levelMax": 4,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/warrior/warrior-eclipse-starter/walk-left.webp",
+          "bytes": 50254,
+          "sha256": "266bb24d5da2ecb425f509a623572a2959da27ad584f229d0a4c7d89d2c77d4a"
+        },
+        "walk-right": {
+          "path": "rpg/v5/warrior/warrior-eclipse-starter/walk-right.webp",
+          "bytes": 50168,
+          "sha256": "ec4007c68c4b11ff4e3e977f096dfb5e90ef346dcd725711cb2336b4465c8365"
+        },
+        "attack": {
+          "path": "rpg/v5/warrior/warrior-eclipse-starter/attack.webp",
+          "bytes": 53838,
+          "sha256": "5176fd30db933c70ca35030f8a3da5352dc7154de7590017f91e7b086e12c4a4"
+        },
+        "hurt": {
+          "path": "rpg/v5/warrior/warrior-eclipse-starter/hurt.webp",
+          "bytes": 48134,
+          "sha256": "82466f4b13f04027acbd29ae5bcbf542daf96c3bd2855fd53de3b41c86fb57b0"
+        },
+        "happy": {
+          "path": "rpg/v5/warrior/warrior-eclipse-starter/happy.webp",
+          "bytes": 50162,
+          "sha256": "30e3131f0b8ec8be87ef374e8ee414dd07c66760caf26d698fafbf19e93a848b"
+        },
+        "static": {
+          "path": "rpg/v5/warrior/warrior-eclipse-starter/static.webp",
+          "bytes": 13984,
+          "sha256": "9c3f8621e25b701d131f2f7a540e3235a6a466ac47de770ffdfdf36b502b58a0"
+        }
+      }
+    },
+    {
+      "id": "warrior-eclipse-level-05",
+      "classId": "warrior",
+      "family": "eclipse",
+      "familyName": "Eclipse",
+      "gender": "female",
+      "affinity": "shadow",
+      "tier": "level-05",
+      "tierName": "Adept",
+      "levelMin": 5,
+      "levelMax": 9,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-05/walk-left.webp",
+          "bytes": 59438,
+          "sha256": "37ad661785d465f78386f362f05c3ce1d961372237a9588946eecd03011005d3"
+        },
+        "walk-right": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-05/walk-right.webp",
+          "bytes": 59104,
+          "sha256": "82f836b35d96e0981e4d920e63dbdea1701f3e49d106a662ae4bd36a59f3aec6"
+        },
+        "attack": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-05/attack.webp",
+          "bytes": 64884,
+          "sha256": "0c55ca7a10fec4c1c97e6e03d615914c5191ef15855fe5f871e143b417b448a4"
+        },
+        "hurt": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-05/hurt.webp",
+          "bytes": 60130,
+          "sha256": "1ba672a02c0cbe20200f3ae9aa17f696b5f85d3b564f1c9807585c978fbc7761"
+        },
+        "happy": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-05/happy.webp",
+          "bytes": 55308,
+          "sha256": "cfc8dacfea3604984a1e64a15a83ab5206b8a048a7924db1eabccd68d229667a"
+        },
+        "static": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-05/static.webp",
+          "bytes": 16400,
+          "sha256": "61f9f6c7d368eac730439403a3c8802ef9abe8035d0799059a8f84f7baa29170"
+        }
+      }
+    },
+    {
+      "id": "warrior-eclipse-level-10",
+      "classId": "warrior",
+      "family": "eclipse",
+      "familyName": "Eclipse",
+      "gender": "female",
+      "affinity": "shadow",
+      "tier": "level-10",
+      "tierName": "Veteran",
+      "levelMin": 10,
+      "levelMax": 14,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-10/walk-left.webp",
+          "bytes": 62558,
+          "sha256": "f5e4eca3ea9e9c2432f9457d5db293c7c509ad8cb5d6987b99afe91b6347e3f1"
+        },
+        "walk-right": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-10/walk-right.webp",
+          "bytes": 62314,
+          "sha256": "9925af2ba056e1f54304c7cfb4dbd8016b7dc7d13f1db90bee30525e19e72678"
+        },
+        "attack": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-10/attack.webp",
+          "bytes": 65646,
+          "sha256": "2ccbd5ed17a83c4f08b647f99c2ff2d43df9135c0e072a7153b09fb3998dabb7"
+        },
+        "hurt": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-10/hurt.webp",
+          "bytes": 58198,
+          "sha256": "810ee707a42c946114ebff13ebe38adb2caecc2e6761d9d5ebaa2955718885e0"
+        },
+        "happy": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-10/happy.webp",
+          "bytes": 58854,
+          "sha256": "9ba3e16ace76b9a9b4eb8cbd1b35aafe2bbbae8f77ea6b3e85f213b6b431c802"
+        },
+        "static": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-10/static.webp",
+          "bytes": 17842,
+          "sha256": "25f241c807703fdc86083a75836f1a163a0d6957bbb4438573f6479d4762de5e"
+        }
+      }
+    },
+    {
+      "id": "warrior-eclipse-level-15",
+      "classId": "warrior",
+      "family": "eclipse",
+      "familyName": "Eclipse",
+      "gender": "female",
+      "affinity": "shadow",
+      "tier": "level-15",
+      "tierName": "Champion",
+      "levelMin": 15,
+      "levelMax": 19,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-15/walk-left.webp",
+          "bytes": 69252,
+          "sha256": "12d4447d806050e00cd37e2880b6d2a868d70c5a1c07950820d61233ac8ee938"
+        },
+        "walk-right": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-15/walk-right.webp",
+          "bytes": 69962,
+          "sha256": "cf0411e506777d126b9e0835df31c051e476a00da2dc3f1f73569e73a62e215a"
+        },
+        "attack": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-15/attack.webp",
+          "bytes": 68416,
+          "sha256": "9549ae12f21035f175625c6d298c787d3a91b4c1211788662cadcca7bac80a66"
+        },
+        "hurt": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-15/hurt.webp",
+          "bytes": 51188,
+          "sha256": "08a1288ed48046717551bfee1008aaa47b243ac1d22be20a84c410879b0921d9"
+        },
+        "happy": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-15/happy.webp",
+          "bytes": 54568,
+          "sha256": "876859e7789d73ce364357f031fc1b6593658acedcd9cc786c2ec7c781d4d256"
+        },
+        "static": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-15/static.webp",
+          "bytes": 20584,
+          "sha256": "b9098a9eae7535ccaee2a5179f57a9f605ab281a94e4f3a3ea5aef2288c64795"
+        }
+      }
+    },
+    {
+      "id": "warrior-eclipse-level-20",
+      "classId": "warrior",
+      "family": "eclipse",
+      "familyName": "Eclipse",
+      "gender": "female",
+      "affinity": "shadow",
+      "tier": "level-20",
+      "tierName": "Ascendant",
+      "levelMin": 20,
+      "levelMax": 20,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-20/walk-left.webp",
+          "bytes": 71488,
+          "sha256": "e33115446cb117a9971a8026041164f0f29aa4406cdf21913dda313c6fe166a9"
+        },
+        "walk-right": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-20/walk-right.webp",
+          "bytes": 71404,
+          "sha256": "0acb7e2118c4e3a02d842079bf6ed92e48a19c26066fc2a31bb97b27778d1751"
+        },
+        "attack": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-20/attack.webp",
+          "bytes": 80450,
+          "sha256": "adc170aeaebee15a7cf01ec0361ce6cd4d43d9a060a39ae2dc90f09e85713e42"
+        },
+        "hurt": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-20/hurt.webp",
+          "bytes": 66068,
+          "sha256": "07dc7a621de9f6bd5a9b429a5ea37f0eff814530b1e5b72ef4c960e54350dc57"
+        },
+        "happy": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-20/happy.webp",
+          "bytes": 63738,
+          "sha256": "239ccfe9663a65134265e4d2d0d8b719a0b30f48fb6043804808f3c9c2c4d79f"
+        },
+        "static": {
+          "path": "rpg/v5/warrior/warrior-eclipse-level-20/static.webp",
+          "bytes": 20988,
+          "sha256": "d5415af127284f973ea010097b7adbb9d09db2834cd93d5ea7c43b1dcbd4ebee"
+        }
+      }
+    },
+    {
+      "id": "warrior-dawnscale-starter",
+      "classId": "warrior",
+      "family": "dawnscale",
+      "familyName": "Dawnscale",
+      "gender": "male",
+      "affinity": "radiant",
+      "tier": "starter",
+      "tierName": "Initiate",
+      "levelMin": 1,
+      "levelMax": 4,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-starter/walk-left.webp",
+          "bytes": 69416,
+          "sha256": "0f1af2dfec60b9e1d46713aaaad2444f6894fd1e1c3c639ce8df6ba8a862a5fa"
+        },
+        "walk-right": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-starter/walk-right.webp",
+          "bytes": 69216,
+          "sha256": "fbd1c37e5a4f1d3e5a891225de8ab500e318ca300513aee3b612a99fb9d9d22f"
+        },
+        "attack": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-starter/attack.webp",
+          "bytes": 70920,
+          "sha256": "7f62e6d3f288c43c7b25fc0bdb2e1a0da8a821ca042a1fe26fc85a2ddaed6266"
+        },
+        "hurt": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-starter/hurt.webp",
+          "bytes": 61992,
+          "sha256": "8cd85720b5c7c292d9fcafd3833b5847c35ea3bbec0e91a5ef1778648dc60153"
+        },
+        "happy": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-starter/happy.webp",
+          "bytes": 61502,
+          "sha256": "26f0b00fa2115e09814bcfcda9b2a98468be131208b4d786670a5d74487b7e47"
+        },
+        "static": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-starter/static.webp",
+          "bytes": 19940,
+          "sha256": "7cfd99beaa55674ffa85fb1bb755e101eb48b3465a16d6f72de847d0966b8fc9"
+        }
+      }
+    },
+    {
+      "id": "warrior-dawnscale-level-05",
+      "classId": "warrior",
+      "family": "dawnscale",
+      "familyName": "Dawnscale",
+      "gender": "male",
+      "affinity": "radiant",
+      "tier": "level-05",
+      "tierName": "Adept",
+      "levelMin": 5,
+      "levelMax": 9,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-05/walk-left.webp",
+          "bytes": 62412,
+          "sha256": "2c4b7ffa413e94ff4144d33ba23db8983c1342f8f298ea70a27c9bc0a4417de0"
+        },
+        "walk-right": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-05/walk-right.webp",
+          "bytes": 62368,
+          "sha256": "532a0f04049725ee7e7e140ba0b4730df8759e3c79a3cb6d043ac2c4acf75d3c"
+        },
+        "attack": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-05/attack.webp",
+          "bytes": 69328,
+          "sha256": "7028837a2113df00e7d91797e24c325596cc9309baa62342d3a5c95f92ee64b7"
+        },
+        "hurt": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-05/hurt.webp",
+          "bytes": 60832,
+          "sha256": "cc129565d7cc736f917085a8d75cfc319417a81841997e7ba3d15f3cf07da8a5"
+        },
+        "happy": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-05/happy.webp",
+          "bytes": 59180,
+          "sha256": "3fc8685e1eae1a3ca481ea322c9f45195c3ecc4e3901b4c24a6f93a67856868a"
+        },
+        "static": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-05/static.webp",
+          "bytes": 17436,
+          "sha256": "932bcee1df3358e8e3b04c39bbe24c2d62331174b45833a2cd8ce0520e18bf01"
+        }
+      }
+    },
+    {
+      "id": "warrior-dawnscale-level-10",
+      "classId": "warrior",
+      "family": "dawnscale",
+      "familyName": "Dawnscale",
+      "gender": "male",
+      "affinity": "radiant",
+      "tier": "level-10",
+      "tierName": "Veteran",
+      "levelMin": 10,
+      "levelMax": 14,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-10/walk-left.webp",
+          "bytes": 67382,
+          "sha256": "c265463d43447267dbe8edcbdb7a0973f30443afdaef4c0b95cd52e50a118c5d"
+        },
+        "walk-right": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-10/walk-right.webp",
+          "bytes": 66836,
+          "sha256": "90bc507d1632f14bd234d7029cebb780cd20b2507cf5aadc3978637293180661"
+        },
+        "attack": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-10/attack.webp",
+          "bytes": 71822,
+          "sha256": "d827b82ea7506faa51395d1e0664306490da135ca18c4f337f68a6403e99abb3"
+        },
+        "hurt": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-10/hurt.webp",
+          "bytes": 63312,
+          "sha256": "51771fa76e0e0d0e08bef02736b19268b417fab4b6668c7f05e508e37f5ed11d"
+        },
+        "happy": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-10/happy.webp",
+          "bytes": 60184,
+          "sha256": "d81e90c7ba430fc5a40190f6397eb343117e7fb7ed19fca5582cadcf6b177e64"
+        },
+        "static": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-10/static.webp",
+          "bytes": 20032,
+          "sha256": "7cffa4f2d13642bf85d2beb014a2c5ab766fd4b0f8729df68dc69f50b8852ffd"
+        }
+      }
+    },
+    {
+      "id": "warrior-dawnscale-level-15",
+      "classId": "warrior",
+      "family": "dawnscale",
+      "familyName": "Dawnscale",
+      "gender": "male",
+      "affinity": "radiant",
+      "tier": "level-15",
+      "tierName": "Champion",
+      "levelMin": 15,
+      "levelMax": 19,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-15/walk-left.webp",
+          "bytes": 82532,
+          "sha256": "4eb673f92fda8143f3e26589af971f9252bfa4a6a3c37fcd4ce6e8329320a1bf"
+        },
+        "walk-right": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-15/walk-right.webp",
+          "bytes": 82530,
+          "sha256": "23d2bc02725ef7d3eda8ae501c56565e62f85f40e5d765caa9b88baa2a358f10"
+        },
+        "attack": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-15/attack.webp",
+          "bytes": 86012,
+          "sha256": "6e4495d062fb418c5b5b2ea26f6d1301800d0181c558dedeb9a1de1201518751"
+        },
+        "hurt": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-15/hurt.webp",
+          "bytes": 78696,
+          "sha256": "f6ddce4991993b557e5c734a0411c4e2bb5a39b4df6ecdf3bbaed357828cc3b6"
+        },
+        "happy": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-15/happy.webp",
+          "bytes": 76654,
+          "sha256": "aed86dd364da68529fd034b2cc280156feb0165aba76b3c4b80f4c00cddc7577"
+        },
+        "static": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-15/static.webp",
+          "bytes": 24128,
+          "sha256": "2139c745a0b0b5c120388a8596fcfecef22e916f1c78d07558cd4c6662c0c13e"
+        }
+      }
+    },
+    {
+      "id": "warrior-dawnscale-level-20",
+      "classId": "warrior",
+      "family": "dawnscale",
+      "familyName": "Dawnscale",
+      "gender": "male",
+      "affinity": "radiant",
+      "tier": "level-20",
+      "tierName": "Ascendant",
+      "levelMin": 20,
+      "levelMax": 20,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-20/walk-left.webp",
+          "bytes": 84214,
+          "sha256": "db55d0965c3d9976f26ca91a0fd1abcb982fd964f6789ecbcf554e88910e370a"
+        },
+        "walk-right": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-20/walk-right.webp",
+          "bytes": 83986,
+          "sha256": "aebcfefb91132555b0346163cf8b4bed3706e9683c6154558b5403b1479df196"
+        },
+        "attack": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-20/attack.webp",
+          "bytes": 93836,
+          "sha256": "4c19cc876382fe761032277e553a8af35b2eea972059978bbd9a1d2515eba977"
+        },
+        "hurt": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-20/hurt.webp",
+          "bytes": 80810,
+          "sha256": "ae25a9cff0821e0d0da74e75338e3940f6d2bdd21ceac3e410d5e0f17ad4006b"
+        },
+        "happy": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-20/happy.webp",
+          "bytes": 80368,
+          "sha256": "c4273a4d9834b9908bfafb696a08f16daba244aa7a4ffb6a7e8fe935537372ff"
+        },
+        "static": {
+          "path": "rpg/v5/warrior/warrior-dawnscale-level-20/static.webp",
+          "bytes": 24670,
+          "sha256": "4e5d6b5e8fc601ed3ea8bcd8bf0dc6d7cb62c079e5a811202337ee154ec20fd2"
+        }
+      }
+    },
+    {
+      "id": "warrior-nightwyrm-starter",
+      "classId": "warrior",
+      "family": "nightwyrm",
+      "familyName": "Nightwyrm",
+      "gender": "male",
+      "affinity": "shadow",
+      "tier": "starter",
+      "tierName": "Initiate",
+      "levelMin": 1,
+      "levelMax": 4,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-starter/walk-left.webp",
+          "bytes": 53104,
+          "sha256": "818baf80645318bfc0eb54c9dad00f100eac827ccdb4974a09bb098932648ff9"
+        },
+        "walk-right": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-starter/walk-right.webp",
+          "bytes": 53274,
+          "sha256": "036385923c9673bd5f46077cd326fe3a635a4353630a945bcc93b556937340c2"
+        },
+        "attack": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-starter/attack.webp",
+          "bytes": 54798,
+          "sha256": "e8eb6c6fc179b25afd84cb7753decf7aaf42762971de8c37633ec2835dfc4c9b"
+        },
+        "hurt": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-starter/hurt.webp",
+          "bytes": 48596,
+          "sha256": "b0ba1423d23441f03385d14a9391f6ea553d6b4482aa5325f152869ef1fa3c05"
+        },
+        "happy": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-starter/happy.webp",
+          "bytes": 46648,
+          "sha256": "27325d30924c7599c792b11c663564b2f590a284227ecf60e7ba1926b09569f4"
+        },
+        "static": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-starter/static.webp",
+          "bytes": 15856,
+          "sha256": "a3a98b647288ae8535692a2ce33ca4ecd0f16ad03d6a2e5744fbb663137ccb23"
+        }
+      }
+    },
+    {
+      "id": "warrior-nightwyrm-level-05",
+      "classId": "warrior",
+      "family": "nightwyrm",
+      "familyName": "Nightwyrm",
+      "gender": "male",
+      "affinity": "shadow",
+      "tier": "level-05",
+      "tierName": "Adept",
+      "levelMin": 5,
+      "levelMax": 9,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-05/walk-left.webp",
+          "bytes": 93148,
+          "sha256": "9f20d92275cf15ec481f0981dc946e57925eab1327015a46022ddc9f2811da33"
+        },
+        "walk-right": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-05/walk-right.webp",
+          "bytes": 92996,
+          "sha256": "82ee2a054008431edb52345c0cf44afb35a30f3a802bf94f207e5d8437cc8607"
+        },
+        "attack": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-05/attack.webp",
+          "bytes": 110540,
+          "sha256": "6ad53fdd42796fc81f8d76b17e8660e5358cc3b68acb19bac6fabd192e855f63"
+        },
+        "hurt": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-05/hurt.webp",
+          "bytes": 91574,
+          "sha256": "71c27a86e8033661954bc8c47ed810df7a4b7ac1230b745eee7edd68c8a95679"
+        },
+        "happy": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-05/happy.webp",
+          "bytes": 86758,
+          "sha256": "c2dd15fa9bb9b67818c4ce4765ba795e7605d150e4af8a413d1be4c51c3ee108"
+        },
+        "static": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-05/static.webp",
+          "bytes": 25696,
+          "sha256": "f8aaa5328a453f8cafae4487b2f7738d2e5df5522a40bde0ddd3140be36e756a"
+        }
+      }
+    },
+    {
+      "id": "warrior-nightwyrm-level-10",
+      "classId": "warrior",
+      "family": "nightwyrm",
+      "familyName": "Nightwyrm",
+      "gender": "male",
+      "affinity": "shadow",
+      "tier": "level-10",
+      "tierName": "Veteran",
+      "levelMin": 10,
+      "levelMax": 14,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-10/walk-left.webp",
+          "bytes": 67064,
+          "sha256": "eeede7b4a18afa6f858057bfd567c306c560de34eca824edd290f0fb88c6deff"
+        },
+        "walk-right": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-10/walk-right.webp",
+          "bytes": 67224,
+          "sha256": "4be29178888505a822036be65e532879389f2fba5fc46129f3529815776abab5"
+        },
+        "attack": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-10/attack.webp",
+          "bytes": 72092,
+          "sha256": "a551dea9641e2ff5515aa5f7066194f2c3c553ab1fcc7eca41405b8f3fb0deaa"
+        },
+        "hurt": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-10/hurt.webp",
+          "bytes": 61650,
+          "sha256": "cbde2599d54a56e84a109d91aeccb945a7f8c2c618ddbf4aee4b19cce31bab17"
+        },
+        "happy": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-10/happy.webp",
+          "bytes": 58936,
+          "sha256": "e20b63f871f21b68b273e3f97b2f18b06b6fdbf48729a917859bcd6d6d28b57d"
+        },
+        "static": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-10/static.webp",
+          "bytes": 18574,
+          "sha256": "66848e7bff451781e3ebb975e7f2879b52ea2a4d065b2e62e2aac1065279151a"
+        }
+      }
+    },
+    {
+      "id": "warrior-nightwyrm-level-15",
+      "classId": "warrior",
+      "family": "nightwyrm",
+      "familyName": "Nightwyrm",
+      "gender": "male",
+      "affinity": "shadow",
+      "tier": "level-15",
+      "tierName": "Champion",
+      "levelMin": 15,
+      "levelMax": 19,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-15/walk-left.webp",
+          "bytes": 95568,
+          "sha256": "ec538805912f6a074832225274f6d5d5c79b080c6163e7a0cc96a33ef5d1de60"
+        },
+        "walk-right": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-15/walk-right.webp",
+          "bytes": 96040,
+          "sha256": "5343e498a196c45d6892b688233888636942351235faa28abc1482a019065cd1"
+        },
+        "attack": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-15/attack.webp",
+          "bytes": 125824,
+          "sha256": "bb28d79d1ef646c6d1af8e06a86367788be7cb7dfd8a1568156fbf410b01cafc"
+        },
+        "hurt": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-15/hurt.webp",
+          "bytes": 103356,
+          "sha256": "3213edf4cde323547a252a21ce2a524ac241b421d751bb87934816fa84530ead"
+        },
+        "happy": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-15/happy.webp",
+          "bytes": 95328,
+          "sha256": "34d9962b489ad76aa845a219ca62c629933c7928ec52d9f416e07a455a7a3084"
+        },
+        "static": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-15/static.webp",
+          "bytes": 27372,
+          "sha256": "fd7688a7ec1125dd1d097ab6b799d0d15856762a1b1fed3a96bf740a34c631f5"
+        }
+      }
+    },
+    {
+      "id": "warrior-nightwyrm-level-20",
+      "classId": "warrior",
+      "family": "nightwyrm",
+      "familyName": "Nightwyrm",
+      "gender": "male",
+      "affinity": "shadow",
+      "tier": "level-20",
+      "tierName": "Ascendant",
+      "levelMin": 20,
+      "levelMax": 20,
+      "states": [
+        "walk-left",
+        "walk-right",
+        "attack",
+        "hurt",
+        "happy"
+      ],
+      "files": {
+        "walk-left": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-20/walk-left.webp",
+          "bytes": 81734,
+          "sha256": "9777c985905ae43ff2f9f8229a84e67f784f87d6e090666fd301c6d76a0c779d"
+        },
+        "walk-right": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-20/walk-right.webp",
+          "bytes": 81656,
+          "sha256": "e5e678729921c4842597f4fe4110175ba40ca5d9c4cd00ecd6c2869efd87400d"
+        },
+        "attack": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-20/attack.webp",
+          "bytes": 90796,
+          "sha256": "ecd928c4c085a9a58eb40d78f46ac23fcdcbcd440dba3ae5bf7f83ce943344b1"
+        },
+        "hurt": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-20/hurt.webp",
+          "bytes": 79270,
+          "sha256": "1760de7411cd6e154cc422e5a2f8021348663372b984725857b5e763af9ca5cb"
+        },
+        "happy": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-20/happy.webp",
+          "bytes": 65938,
+          "sha256": "e9977c70c27c7cf175e49a3b1b97a48b55b3cdc9907253664e46059c4d8f2733"
+        },
+        "static": {
+          "path": "rpg/v5/warrior/warrior-nightwyrm-level-20/static.webp",
+          "bytes": 21466,
+          "sha256": "bb7e91a1cde5346b1a7d1522cc35e6ca207909f83c4b69ab61d623f16bcfef69"
+        }
+      }
+    }
+  ],
+  "validation": {
+    "passed": true,
+    "characters": 80,
+    "animatedFiles": 400,
+    "staticFiles": 80,
+    "dimensions": [
+      320,
+      320
+    ],
+    "failures": []
+  }
+}

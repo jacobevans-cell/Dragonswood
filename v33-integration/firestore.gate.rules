@@ -58,6 +58,19 @@ service cloud.firestore {
         (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['classId','classChosenAt','updatedAt'])
           && (!('classId' in resource.data) || resource.data.classId == '')
           && request.resource.data.classId in ['warrior','ranger','mage','healer'])
+        || (request.auth.token.email == 'jacobicusjax@gmail.com'
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['characterSystemVersion','characterV5Gender','characterV5Affinity','characterV5ClassId','characterV5SelectedAt','updatedAt'])
+          && request.resource.data.updatedAt == request.time
+          && ((request.resource.data.characterSystemVersion == 'v5'
+              && request.resource.data.characterV5Gender in ['male','female']
+              && request.resource.data.characterV5Affinity in ['radiant','shadow']
+              && request.resource.data.characterV5ClassId in ['warrior','ranger','mage','healer']
+              && request.resource.data.characterV5SelectedAt == request.time)
+            || (request.resource.data.characterSystemVersion in ['','legacy']
+              && request.resource.data.characterV5Gender == ''
+              && request.resource.data.characterV5Affinity == ''
+              && request.resource.data.characterV5ClassId == ''
+              && request.resource.data.characterV5SelectedAt == null)))
         || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['activePet','updatedAt'])
           && request.resource.data.activePet in request.resource.data.ownedPets)
         || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['rpgEquipped','updatedAt'])

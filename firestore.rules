@@ -371,6 +371,30 @@ service cloud.firestore {
                     && request.resource.data.classResetAt == request.time
                     && request.resource.data.updatedAt == request.time;
 
+      // V5 character beta: one explicitly named account may select, reselect,
+      // or roll back. Legacy class/equipment fields are intentionally excluded.
+      allow update: if isOwner(studentId)
+                    && request.auth.token.email == 'jacobicusjax@gmail.com'
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['characterSystemVersion','characterV5Gender','characterV5Affinity','characterV5ClassId','characterV5SelectedAt','updatedAt'])
+                    && request.resource.data.updatedAt == request.time
+                    && (
+                      (
+                        request.resource.data.characterSystemVersion == 'v5'
+                        && request.resource.data.characterV5Gender in ['male','female']
+                        && request.resource.data.characterV5Affinity in ['radiant','shadow']
+                        && request.resource.data.characterV5ClassId in ['warrior','ranger','mage','healer']
+                        && request.resource.data.characterV5SelectedAt == request.time
+                      )
+                      || (
+                        request.resource.data.characterSystemVersion in ['','legacy']
+                        && request.resource.data.characterV5Gender == ''
+                        && request.resource.data.characterV5Affinity == ''
+                        && request.resource.data.characterV5ClassId == ''
+                        && request.resource.data.characterV5SelectedAt == null
+                      )
+                    );
+
       // Buy from the Class Shop. Gold must actually go down; inventory grows by
       // at most one entry, and nothing already owned may disappear.
       allow update: if isOwner(studentId)

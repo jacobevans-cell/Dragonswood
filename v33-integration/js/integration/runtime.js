@@ -92,7 +92,7 @@
         isTester:tester.isTester,testerCapabilities:tester.capabilities,testerUnlocks,testerAccount:Object.freeze({email:tester.email,label:tester.label}),
         student:Core.normalizeStudent(currentUser,lastProfile,lastDaily,lastOverride,morningOverride),
         academic:Object.freeze({...Academic.studentAcademic(lastScribe,lastResponses,lastGames),reading:(()=>{const assignments=Academic.normalizeReadingAssignments(lastGradeSettings),dateKey=Core.phoenixDateKey();return Object.freeze({rows:Academic.normalizeReading(lastReading),targetMinutes:assignments.targetsByDate[dateKey]||assignments.defaultTarget,assignedDateKeys:assignments.dateKeys,targetsByDate:assignments.targetsByDate})})()}),
-        world:World.studentWorld(currentUser.uid,lastProfile,lastSchedule,lastJobs,lastEvents,lastJobWeek,lastScores,lastRewards,lastLoot,lastPrizes),
+        world:World.studentWorld(currentUser.uid,lastProfile,lastSchedule,lastJobs,lastEvents,lastJobWeek,lastScores,lastRewards,lastLoot,lastPrizes,new Date(),currentUser.email),
         passes:Passes.studentPasses(currentUser.uid,Core.phoenixDateKey(),{profile:lastProfile,statuses:lastPassStatuses,requests:lastPassRequests,slots:lastBathroomSlots,blackout:effectiveBlackout}),
         poll:(()=>{const model=Operations.pollModel(lastPoll,lastPollVotes),mine=lastPollVotes.find(row=>row.pollId===model.id&&row.studentId===currentUser.uid);return Object.freeze({...model,myChoice:mine?Number(mine.choiceIndex):null})})(),
         attention:Object.freeze({...attention,acknowledgedByMe:lastAttentionEvents.some(row=>row.attentionId===attention.id&&row.studentId===currentUser.uid&&row.type==='acknowledged')}),

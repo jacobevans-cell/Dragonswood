@@ -181,10 +181,39 @@
   function dailyEnemy(uid,day){return enemies[hash(`${uid}|${dateKey()}|${day}`)%enemies.length]}
   function canonicalPetId(value){const id=String(value||"").trim();return id.toLowerCase()==="nyx"?"pet-nyx":id}
   function resolvePet(profile={}){const id=canonicalPetId(profile.activePet);return id?[...pets,...prestigePets].find(p=>p.id===id)||null:null}
-  function resolveAppearance(profile={}){const id=String(profile?.rpgEquipped?.appearance||"").trim();if(!id)return null;return items.find(item=>item.id===id&&item.appearance===true&&item.classId===String(profile.classId||""))||null}
+  const v5Config=Object.freeze({enabled:true,testerEmail:"jacobicusjax@gmail.com",rollback:"Set enabled to false to restore every legacy character immediately."});
+  const v5Families=Object.freeze({
+    warrior:{male:{radiant:{id:"dawnscale",name:"Dawnscale"},shadow:{id:"nightwyrm",name:"Nightwyrm"}},female:{radiant:{id:"sunshield",name:"Sunshield"},shadow:{id:"eclipse",name:"Eclipse"}}},
+    ranger:{male:{radiant:{id:"dawnfeather",name:"Dawnfeather"},shadow:{id:"nightfang",name:"Nightfang"}},female:{radiant:{id:"sunleaf",name:"Sunleaf"},shadow:{id:"moonshadow",name:"Moonshadow"}}},
+    mage:{male:{radiant:{id:"celestial",name:"Celestial"},shadow:{id:"voidcore",name:"Voidcore"}},female:{radiant:{id:"starfire",name:"Starfire"},shadow:{id:"eclipse-witch",name:"Eclipse Witch"}}},
+    healer:{male:{radiant:{id:"dawnkeeper",name:"Dawnkeeper"},shadow:{id:"mooncleric",name:"Mooncleric"}},female:{radiant:{id:"dawnwing",name:"Dawnwing"},shadow:{id:"twilight",name:"Twilight"}}}
+  });
+  const v5Tiers=Object.freeze([
+    {id:"starter",name:"Initiate",min:1,max:4},
+    {id:"level-05",name:"Adept",min:5,max:9},
+    {id:"level-10",name:"Veteran",min:10,max:14},
+    {id:"level-15",name:"Champion",min:15,max:19},
+    {id:"level-20",name:"Ascendant",min:20,max:20}
+  ]);
+  function normalizedEmail(value){return String(value||"").trim().toLowerCase()}
+  function isV5Tester(profile={},email=""){return v5Config.enabled&&normalizedEmail(email||profile.email)===v5Config.testerEmail}
+  function hasV5Selection(profile={}){return profile.characterSystemVersion==="v5"&&["male","female"].includes(profile.characterV5Gender)&&["radiant","shadow"].includes(profile.characterV5Affinity)&&Object.hasOwn(classes,String(profile.characterV5ClassId||""))}
+  function v5SelectionRequired(profile={},email=""){return isV5Tester(profile,email)&&!hasV5Selection(profile)}
+  function characterClassId(profile={}){return v5Config.enabled&&hasV5Selection(profile)?String(profile.characterV5ClassId):String(profile.classId||"")}
+  function v5TierForLevel(value){const level=Math.max(1,Math.min(20,Number(value)||1));return v5Tiers.find(tier=>level>=tier.min&&level<=tier.max)||v5Tiers[0]}
+  function resolveV5Character(profile={}){
+    if(!v5Config.enabled||!hasV5Selection(profile))return null;
+    const classId=characterClassId(profile),gender=profile.characterV5Gender,affinity=profile.characterV5Affinity,family=v5Families[classId]?.[gender]?.[affinity];
+    if(!family)return null;
+    const level=Number(profile.level)||levelForXp(profile.xp),tier=v5TierForLevel(level),id=`${classId}-${family.id}-${tier.id}`,base=`assets/rpg/v5/${classId}/${id}`;
+    const action=classId==="healer"?"heal":"attack";
+    return {id,name:`${family.name} ${tier.name}`,classId,gender,affinity,familyId:family.id,familyName:family.name,tierId:tier.id,tierName:tier.name,levelMin:tier.min,levelMax:tier.max,appearance:true,v5:true,
+      art:`${base}/static.webp`,skinArt:`${base}/static.webp`,idleArt:`${base}/walk-right.webp`,playArt:`${base}/walk-right.webp`,walkLeftArt:`${base}/walk-left.webp`,walkRightArt:`${base}/walk-right.webp`,attackArt:`${base}/${action}.webp`,healArt:`${base}/${action}.webp`,abilityArt:`${base}/${action}.webp`,hurtArt:`${base}/hurt.webp`,happyArt:`${base}/happy.webp`,celebrateArt:`${base}/happy.webp`};
+  }
+  function resolveAppearance(profile={}){const v5=resolveV5Character(profile);if(v5)return v5;const id=String(profile?.rpgEquipped?.appearance||"").trim();if(!id)return null;return items.find(item=>item.id===id&&item.appearance===true&&item.classId===String(profile.classId||""))||null}
   function resolveBackground(profile={}){const ids=new Set(["fairy-purple","fairy-bamboo","fairy-mushroom","crystal-cave","jungle","mountain-night","snow-aurora","snow-village"]),id=String(profile.homeBackgroundId||"fairy-purple");return ids.has(id)?{id,art:`assets/rpg/backgrounds/${id}.webp`}:null}
   function inventory(profile={}){return Array.isArray(profile.rpgInventory)?profile.rpgInventory.map(String):[]}
   function dailyXp(profile={}){return String(profile.dailyXpDate||"")===dateKey()?Math.max(0,Math.min(150,Number(profile.dailyXpEarned)||0)):0}
 
-  window.DWRPG={classes,pets,prestigePets,petRegistry,enemies,items,appearancePacks,dateKey,levelForXp,hash,dailyEnemy,canonicalPetId,resolvePet,resolveAppearance,resolveBackground,inventory,dailyXp,version:"56.18"};
+  window.DWRPG={classes,pets,prestigePets,petRegistry,enemies,items,appearancePacks,v5Config,v5Families,v5Tiers,dateKey,levelForXp,hash,dailyEnemy,canonicalPetId,resolvePet,isV5Tester,hasV5Selection,v5SelectionRequired,characterClassId,v5TierForLevel,resolveV5Character,resolveAppearance,resolveBackground,inventory,dailyXp,version:"56.19-v5-tester"};
 })();

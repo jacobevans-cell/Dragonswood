@@ -65,13 +65,13 @@
     const you=rows.find(row=>row.isYou)||null;
     return Object.freeze({period:range,weekKey:monday,rows:Object.freeze(rows),you});
   }
-  function studentWorld(uid,profile,schedule,jobs,events,jobWeek,scores,rewards,bossLoot,prizes,date=new Date()){
+  function studentWorld(uid,profile,schedule,jobs,events,jobWeek,scores,rewards,bossLoot,prizes,date=new Date(),email=''){
     const parts=phoenixParts(date),dayIndex=['Monday','Tuesday','Wednesday','Thursday','Friday'].indexOf(parts.weekday);
     const ownedPets=Object.freeze(Array.isArray(profile?.ownedPets)?profile.ownedPets.map(String):[]);
     return Object.freeze({
       dateKey:Core.phoenixDateKey(date),weekKey:weekKey(date),dayName:parts.weekday||'Today',dayIndex,
       schedule:Object.freeze(scheduleRows(schedule,date)),job:assignedJob(uid,jobs,jobWeek),events:upcomingEvents(events,date),
-      hall:Object.freeze({classId:text(profile?.classId),activePet:text(profile?.activePet),ownedPets,equipped:Object.freeze({...profile?.rpgEquipped}),appearanceId:text(profile?.rpgEquipped?.appearance),homeBackgroundId:text(profile?.homeBackgroundId,'fairy-purple'),inventory:Object.freeze(Array.isArray(profile?.rpgInventory)?profile.rpgInventory.map(String):[]),eggs:number(profile?.eggInventory),petTokens:number(profile?.petTokens)}),
+      hall:Object.freeze({email:text(email||profile?.email),classId:text(profile?.classId),characterSystemVersion:text(profile?.characterSystemVersion),characterV5Gender:text(profile?.characterV5Gender),characterV5Affinity:text(profile?.characterV5Affinity),characterV5ClassId:text(profile?.characterV5ClassId),xp:number(profile?.xp),activePet:text(profile?.activePet),ownedPets,equipped:Object.freeze({...profile?.rpgEquipped}),appearanceId:text(profile?.rpgEquipped?.appearance),homeBackgroundId:text(profile?.homeBackgroundId,'fairy-purple'),inventory:Object.freeze(Array.isArray(profile?.rpgInventory)?profile.rpgInventory.map(String):[]),eggs:number(profile?.eggInventory),petTokens:number(profile?.petTokens)}),
       boss:Object.freeze({lastLoot:(Array.isArray(bossLoot)?bossLoot:[]).slice().sort((a,b)=>text(b.dateKey).localeCompare(text(a.dateKey)))[0]||null,prizes:Object.freeze(Array.isArray(prizes)?prizes.map(row=>Object.freeze({...row})):[])}),
       leaderboard:leaderboard(scores,rewards,uid,date)
     });

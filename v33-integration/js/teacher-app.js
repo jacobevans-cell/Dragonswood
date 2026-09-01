@@ -47,17 +47,12 @@ function captureTeacherScrollAreas(){
 function restoreViewportAfterRender(scrollX,scrollY,key,areas=[]){
  const token=++viewportRestoreToken;
  clearTimeout(viewportSettleTimer);
- document.documentElement.style.overflowAnchor='none';
- document.body.style.overflowAnchor='none';
  const restore=()=>{
   if(token!==viewportRestoreToken||location.hash!==key)return;
   if(scrollX>0||scrollY>0)window.scrollTo({left:scrollX,top:scrollY,behavior:'instant'});
   areas.forEach(area=>{if(area.top<=0&&area.left<=0)return;const el=app.querySelectorAll(area.selector)[area.index];if(el){if(area.top>0)el.scrollTop=area.top;if(area.left>0)el.scrollLeft=area.left}});
  };
- restore();
- requestAnimationFrame(()=>{restore();requestAnimationFrame(restore)});
- [80,200,450,900].forEach(delay=>setTimeout(restore,delay));
- viewportSettleTimer=setTimeout(()=>{if(token!==viewportRestoreToken)return;app.style.minHeight='';document.documentElement.style.overflowAnchor='';document.body.style.overflowAnchor=''},1100);
+ requestAnimationFrame(()=>{restore();app.style.minHeight=''});
 }
 function openDialog(title,body,actions=''){dialogRoot.innerHTML=`<div class="dialog-backdrop" data-dialog-backdrop><section class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title"><h2 id="dialog-title">${title}</h2>${body}<div class="dialog-actions">${actions||'<button class="btn btn-primary" data-close-dialog>Done</button>'}</div></section></div>`;dialogRoot.querySelector('[data-close-dialog]')?.addEventListener('click',closeDialog);dialogRoot.querySelector('[data-dialog-backdrop]')?.addEventListener('click',e=>{if(e.target===e.currentTarget)closeDialog()});dialogRoot.querySelector('button')?.focus()}
 function closeDialog(){const commandActive=!!dialogRoot.querySelector('#apply-student-command');dialogRoot.innerHTML='';if(commandActive&&state.pendingCommand){state.pendingCommand='';render()}}

@@ -47,7 +47,7 @@ pass("Curriculum imports Firebase Functions",curr.includes("firebase-functions.j
 pass("Curriculum checker async",curr.includes("async function checkActivity(id)"));
 pass("Curriculum reasoning rescue",curr.includes("async function curriculumAiRescue"));
 pass("Curriculum exposes safe item-state saving",curr.includes("function saveCurriculumItemState(id,itemState)"));
-pass("Curriculum cache-busts enhancement loader",curr.includes("q1-curriculum-enhancements.js?v=57.1.7"));
+pass("Curriculum cache-busts enhancement loader",curr.includes("q1-curriculum-enhancements.js?v=57.1.8"));
 pass("Curriculum displays response-specific AI advice",curr.includes("function curriculumAiAdvice")&&curr.includes("Almost there—your answer was saved"));
 pass("Curriculum always has response-aware AI fallback",curr.includes("function curriculumFallbackAdvice")&&curr.includes("morphologyAdvice?.(structured.response,spec.word)"));
 pass("Curriculum review waits for three changed answers",curr.includes("registerRevisionAttempt(s,answer,priorAnswer)")&&curr.includes("REVISE ${reviewGate.count}/${reviewGate.required} BEFORE REVIEW"));

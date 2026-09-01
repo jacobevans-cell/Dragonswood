@@ -349,10 +349,10 @@
     const id=escHtml(x.id),{record}=mysteryState(x.id),ready=(record.interviewed||[]).length===CHARACTER_CASE.characters.length,answers=record.answers||{};
     if(!ready)return `<div class="activity-feedback show">🔒 Interview all three witnesses to unlock the case questions.</div>`;
     const questions=CHARACTER_CASE.quiz.map((item,index)=>{
-      const answer=answers[index],locked=Number.isInteger(answer),correct=item.choices[item.correct];
-      return `<div class="dw-case-quiz"><div class="dw-case-qnum">Question ${index+1} of ${CHARACTER_CASE.quiz.length}</div><div class="dw-case-quizprompt">${escHtml(item.q)}</div><div class="dw-case-choices">${item.choices.map((choice,choiceIndex)=>{const picked=answer===choiceIndex,good=locked&&choiceIndex===item.correct,bad=locked&&picked&&!good;return `<button type="button" class="dw-case-choice${good?" correct":""}${bad?" wrong":""}" ${locked?"disabled":""} onclick="dwNvMysteryAnswer('${id}',${index},${choiceIndex})">${escHtml(choice)}</button>`}).join("")}</div>${locked?`<div class="dw-case-explain"><strong>${answer===item.correct?"✓ Correct":"Review the evidence"}:</strong> ${escHtml(item.explain)} <span class="dw-case-answer">Answer: ${escHtml(correct)}</span></div>`:""}</div>`;
+      const answer=answers[index],locked=answer===item.correct,answered=Number.isInteger(answer),correct=item.choices[item.correct];
+      return `<div class="dw-case-quiz"><div class="dw-case-qnum">Question ${index+1} of ${CHARACTER_CASE.quiz.length}</div><div class="dw-case-quizprompt">${escHtml(item.q)}</div><div class="dw-case-choices">${item.choices.map((choice,choiceIndex)=>{const picked=answer===choiceIndex,good=locked&&choiceIndex===item.correct,bad=answered&&picked&&!locked;return `<button type="button" class="dw-case-choice${good?" correct":""}${bad?" wrong":""}" ${locked?"disabled":""} onclick="dwNvMysteryAnswer('${id}',${index},${choiceIndex})">${escHtml(choice)}</button>`}).join("")}</div>${answered?`<div class="dw-case-explain"><strong>${locked?"✓ Correct":"Review the evidence"}:</strong> ${escHtml(item.explain)} <span class="dw-case-answer">Answer: ${escHtml(correct)}</span></div>`:""}</div>`;
     }).join("");
-    const complete=Object.keys(answers).length===CHARACTER_CASE.quiz.length;
+    const complete=CHARACTER_CASE.quiz.every((item,index)=>answers[index]===item.correct);
     return `<div class="dw-case-check"><div class="dw-interactive-head"><div class="dw-interactive-title">Case Evidence Check</div><span class="dw-interactive-badge">${complete?"✓ COMPLETE":"3 QUESTIONS"}</span></div>${questions}</div>`;
   }
   function writingProgressHtml(x){
@@ -470,13 +470,13 @@
   };
   window.dwNvMysteryAnswer=function(id,index,choice){
     const {record}=mysteryState(id);
-    if((record.interviewed||[]).length!==CHARACTER_CASE.characters.length||Number.isInteger(record.answers?.[index]))return;
+    if((record.interviewed||[]).length!==CHARACTER_CASE.characters.length||record.answers?.[index]===CHARACTER_CASE.quiz[index]?.correct)return;
     record.answers={...(record.answers||{}),[index]:choice};saveMystery(id,record,"character-case-answer");
   };
 
   let tries=0;
   function install(){
-    const required=["render","vid","friendlyTitle","miniLessonFor","renderMiniLesson","activityFor","kidIntro","card","grouped","autoQuestionsFor","renderAutoPractice","activitySpec","validateActivity","supportMetadataRow"];
+    const required=["render","vid","friendlyTitle","miniLessonFor","renderMiniLesson","activityFor","kidIntro","card","grouped","autoQuestionsFor","autoPassed","renderAutoPractice","activitySpec","validateActivity","supportMetadataRow"];
     if(required.some(k=>typeof window[k]!=="function")||!window.DWCurriculumRenderCoordinator){
       if(++tries<80)setTimeout(install,25);
       return;
@@ -493,6 +493,7 @@
       card:window.card,
       grouped:window.grouped,
       autoQuestionsFor:window.autoQuestionsFor,
+      autoPassed:window.autoPassed,
       renderAutoPractice:window.renderAutoPractice,
       activitySpec:window.activitySpec,
       validateActivity:window.validateActivity,
@@ -622,7 +623,9 @@
       if(!noVideo(x))return O.activitySpec(x);
       if(Array.isArray(x.quickWriteOptions))return O.activitySpec(x);
       const type=classify(x),prompt=window.activityFor(x);
-      if(type==="fluency")return {kind:"explain",title:"Your Case Theory",prompt,minWords:x.grade==="K"?16:12};
+      if(type==="fluency")return {kind:"explain",title:"Your Case Theory",prompt,minWords:x.grade==="K"?16:12,
+        expectedAnswer:"Priya moved the trophy off the podium to make room and forgot to put it back.",
+        sourceExcerpt:"Coach Reyes saw the trophy case open at 3:40. Mr. Okafor saw someone in a red hoodie enter the gym hallway around 3:30. Priya practiced beside the trophy case, wore her red debate hoodie, and admitted that she moved the trophy off the podium to make room and meant to put it back."};
       if(type==="word-progress")return {kind:"explain",title:"Word Meaning Proof",prompt,minWords:8};
       if(type==="writing-progress"){
         const review=writingReview(x).join(" ").toLowerCase();
@@ -646,13 +649,13 @@
       if(type==="fluency"){
         const {record}=mysteryState(id);
         if((record.interviewed||[]).length<CHARACTER_CASE.characters.length)return {ok:false,reviewable:false,msg:"Interview all three witnesses before submitting your case theory."};
-        if(Object.keys(record.answers||{}).length<CHARACTER_CASE.quiz.length)return {ok:false,reviewable:false,msg:"Complete all three Case Evidence Check questions first."};
+        if(!CHARACTER_CASE.quiz.every((item,index)=>record.answers?.[index]===item.correct))return {ok:false,code:"case_questions_incomplete",aiEligible:false,reviewable:false,msg:"Correct all three Case Evidence Check questions first."};
         const min=x.grade==="K"?16:12;
         if(words.length<min)return {ok:false,msg:`Explain your theory with at least ${min} words.`};
         if(!/\bpriya\b/i.test(written))return {ok:false,msg:"Name the person your evidence identifies."};
         const clues=[/red\s+(?:debate\s+)?hoodie/i,/mov(?:e|ed|ing)\s+(?:the\s+)?trophy|trophy.{0,30}podium|make room/i,/\b(?:gym|podium|trophy case)\b/i,/\bforgot\b|put (?:it|the trophy) back|\blibrary\b/i];
         if(clues.filter(pattern=>pattern.test(written)).length<2)return {ok:false,msg:"Use at least two different interview clues, such as a time, clothing, location, or action, to prove your theory."};
-        return {ok:true};
+        return {ok:false,code:"needs_case_evidence_grade",aiEligible:true,msg:"Dragonswood is checking whether your theory matches the witness evidence."};
       }
       if(type==="word-progress"){
         const review=recentWordStudy(x);
@@ -681,6 +684,12 @@
         return {ok:true};
       }
       return O.validateActivity(x);
+    };
+
+    window.autoPassed=function(x,s=window.st(x.id)){
+      if(!noVideo(x)||classify(x)!=="fluency")return O.autoPassed(x,s);
+      const answers=s.dwMystery?.answers||{};
+      return CHARACTER_CASE.quiz.every((item,index)=>answers[index]===item.correct);
     };
 
     window.card=function(x){

@@ -28,9 +28,18 @@ check('Writing Community classification runs before generic opinion',()=>assert.
 check('Math teacher-review requests are blocked with the branded notice',()=>{assert.match(page,/if\(x\.subject==="Math"\)\{await dwNotice\("Keep working the problem","Math is checked automatically/);assert.match(page,/Math is checked automatically\. Review the lesson, revise the answer, and try again/)});
 check('teacher requests carry validator and AI triage',()=>{assert.match(page,/validatorCode:String\(meta\.validatorCode/);assert.match(page,/strongRetryUsed:!!meta\.strongRetryUsed/)});
 check('reading excerpts force source-grounded semantic checking',()=>assert.match(page,/structural\.ok&&sourceExcerpt.*needs_source_check/));
-check('high-confidence rejection still requires three genuine revisions before review',()=>{assert.match(page,/registerRevisionAttempt\(s,answer,priorAnswer\)/);assert.match(page,/if\(!gate\.unlocked\)/)});
+check('teacher review is reserved for genuinely uncertain AI decisions',()=>{
+  const rejected=page.slice(page.indexOf('else if(aiResult.decision==="not_approved"&&aiResult.confidence==="high")'),page.indexOf('window.recordCurriculumAttempt'));
+  assert.match(rejected,/teacherReviewEligible=false/);assert.match(rejected,/clearRevisionGate\(s\)/);assert.doesNotMatch(rejected,/registerRevisionAttempt/);
+  assert.match(page,/if\(prior\.teacherReviewEligible!==true\)/);
+});
 check('copied directions remain blocked',()=>assert.match(page,/code:"copied_prompt",reviewable:false/));
 check('Word Forge semantic check uses lesson definition and existing AI',()=>{assert.match(page,/\"quickwrite\",\"morph\"/);assert.match(page,/spec\.kind===\"morph\"\?String\(spec\.meaning/);assert.match(page,/Do not approve merely because the word appears/) });
+check('AI pass receipt preserves and displays the actual model',()=>{assert.match(page,/lastApprovedAi=\{model:String\(aiResult\.model/);assert.match(page,/AI-approved by \$\{approvedModel/);assert.match(page,/if\(value\.includes\(\"luna\"\)\)return \"Luna\"/)});
+check('case theory AI receives trusted evidence and expected answer',()=>{assert.match(page,/spec\.sourceExcerpt\|\|x\.sourceExcerpt/);assert.match(page,/spec\.expectedAnswer\|\|concepts\.join/)});
+const noVideo=fs.readFileSync('q1-no-video-lessons.js','utf8');
+check('case evidence questions require correct answers and allow retries',()=>{assert.match(noVideo,/locked=answer===item\.correct/);assert.match(noVideo,/record\.answers\?\.\[index\]===CHARACTER_CASE\.quiz\[index\]\?\.correct/);assert.match(noVideo,/CHARACTER_CASE\.quiz\.every\(\(item,index\)=>answers\[index\]===item\.correct\)/)});
+check('case theory routes through AI instead of keyword-only approval',()=>{assert.match(noVideo,/code:\"needs_case_evidence_grade\",aiEligible:true/);assert.match(noVideo,/expectedAnswer:\"Priya moved the trophy/);assert.match(noVideo,/const answers=s\.dwMystery\?\.answers\|\|\{\}/)});
 check('Kataleya subtraction expected value is correct',()=>assert.equal(75281-17136,58145));
 const runtime=fs.readFileSync('v33-integration/js/integration/runtime.js','utf8');
 check('legacy Math requires a real answer before auto-resolution',()=>{assert.match(runtime,/!answer\|\|!expected/);assert.match(runtime,/interactive response submitted\|no answer recorded/)});

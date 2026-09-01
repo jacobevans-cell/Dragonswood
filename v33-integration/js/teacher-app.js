@@ -552,9 +552,20 @@ function handleTeacherModuleMessage(event){
  const frame=app.querySelector('[data-storyvault-frame]');
  if(frame&&event.source===frame.contentWindow)handleClassLibraryRequest(event);
 }
+let teacherInteractionUntil=0,teacherLiveRenderTimer=null;
+function noteTeacherInteraction(){teacherInteractionUntil=Date.now()+500}
+function scheduleTeacherLiveRender(){
+ clearTimeout(teacherLiveRenderTimer);
+ const remaining=teacherInteractionUntil-Date.now();
+ if(remaining>0){teacherLiveRenderTimer=setTimeout(scheduleTeacherLiveRender,remaining+40);return}
+ render();
+}
+window.addEventListener('scroll',noteTeacherInteraction,{capture:true,passive:true});
+window.addEventListener('wheel',noteTeacherInteraction,{capture:true,passive:true});
+window.addEventListener('touchmove',noteTeacherInteraction,{capture:true,passive:true});
 window.addEventListener('message',handleTeacherModuleMessage);
 window.addEventListener('hashchange',()=>{if(integrationSession.status==='authorized')render()});
 (async function bootstrapIntegration(){
  if(!window.DWV33Integration){integrationSession={status:'error',message:'Integration runtime did not load.'};render();return}
- integrationController=await window.DWV33Integration.startTeacher(session=>{integrationSession=session;if(session.status==='authorized')applyTeacherSession(session);render()});
+ integrationController=await window.DWV33Integration.startTeacher(session=>{integrationSession=session;if(session.status==='authorized')applyTeacherSession(session);if(session.status==='authorized'&&app.querySelector('.teacher-shell'))scheduleTeacherLiveRender();else render()});
 })();

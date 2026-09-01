@@ -1,0 +1,11 @@
+Wordset Dictionary
+https://github.com/wordset/wordset-dictionary
+
+Wordset is licensed under the Creative Commons Attribution-ShareAlike 4.0
+International License. It incorporates WordNet 3.0 data, distributed under
+the Princeton WordNet license. The complete license notices are included in
+LICENSE.txt beside this file.
+
+This class-library reader loads the original Wordset JSON data by first letter
+and displays a small number of definitions, examples, and synonyms at a time.
+Downloaded for this package on 2026-08-31.

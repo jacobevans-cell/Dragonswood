@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#11182a">
+  <title>Dragonswood Storyvault</title>
+  <link rel="stylesheet" href="class-library/reader.css?v=20260901-2">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <button class="brand" type="button" data-home aria-label="Return to the class library">
+        <span class="brand-mark" aria-hidden="true">DW</span>
+        <span><strong>Storyvault</strong><small>Dragonswood Reading Guild</small></span>
+      </button>
+      <div class="header-actions">
+        <button class="teacher-tools-button" type="button" data-teacher-tools hidden>✎ Edit tests</button>
+        <button class="icon-button" type="button" data-theme aria-label="Switch color theme" title="Switch color theme">◐</button>
+        <button class="icon-button" type="button" data-fullscreen aria-label="Enter full screen" title="Full screen">⛶</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="library-view" data-library-view>
+        <div class="welcome-panel">
+          <div>
+            <p class="eyebrow">DRAGONSWOOD STORYVAULT</p>
+            <h1>Pick a book. Find your place. Start reading.</h1>
+            <p data-storage-message>Your place is saved on this device, and every book opens right here.</p>
+          </div>
+          <label class="search-box">
+            <span aria-hidden="true">⌕</span>
+            <span class="sr-only">Search the class library</span>
+            <input type="search" data-search placeholder="Search title or author" autocomplete="off">
+          </label>
+        </div>
+
+        <section class="reading-plan" data-reading-plan aria-live="polite"></section>
+
+        <nav class="filter-row" aria-label="Book categories" data-filters></nav>
+        <div class="book-grid" data-book-grid></div>
+        <p class="empty-state" data-empty hidden>No books match that search.</p>
+      </section>
+
+      <section class="reader-view" data-reader-view hidden aria-label="Book reader">
+        <div class="reader-toolbar">
+          <button class="toolbar-button back-button" type="button" data-close-reader>
+            <span aria-hidden="true">←</span><span>Library</span>
+          </button>
+          <div class="book-identity">
+            <strong data-reader-title>Book title</strong>
+            <small data-reader-author>Author</small>
+          </div>
+          <div class="reader-tools">
+            <button class="toolbar-button lock-book-button" type="button" data-lock-book hidden>◆ Lock in</button>
+            <button class="toolbar-button dictionary-button" type="button" data-dictionary aria-label="Turn on page dictionary" title="Tap words on the page to define them" aria-pressed="false"><span aria-hidden="true">Aa</span><span class="dictionary-label"> Define</span></button>
+            <button class="toolbar-button" type="button" data-speech aria-label="Read this page aloud" title="Read aloud">▶ Read</button>
+            <button class="toolbar-button compact" type="button" data-zoom-out aria-label="Zoom out">−</button>
+            <button class="toolbar-button zoom-label" type="button" data-fit-page aria-label="Fit page" title="Fit page"><span data-zoom-label>100%</span></button>
+            <button class="toolbar-button compact" type="button" data-zoom-in aria-label="Zoom in">+</button>
+            <button class="toolbar-button layout-toggle" type="button" data-layout aria-label="Switch page layout" title="Switch page layout">▣</button>
+          </div>
+        </div>
+
+        <div class="loading-panel" data-loading>
+          <div class="loading-book" aria-hidden="true"><span></span><span></span></div>
+          <strong data-loading-title>Opening your book…</strong>
+          <div class="loading-track"><span data-loading-bar></span></div>
+          <small data-loading-detail>Preparing the first page</small>
+        </div>
+
+        <div class="reading-stage" data-stage hidden>
+          <button class="page-turn previous" type="button" data-previous aria-label="Previous page">‹</button>
+          <div class="page-spread" data-page-spread aria-live="polite">
+            <article class="page-shell page-left" data-page-shell="left">
+              <canvas data-page-canvas="left"></canvas>
+              <div class="page-text-layer" data-page-text-layer="left"></div>
+              <div class="reflow-page" data-reflow-page="left" hidden></div>
+              <span class="page-number" data-page-number="left"></span>
+            </article>
+            <article class="page-shell page-right" data-page-shell="right">
+              <canvas data-page-canvas="right"></canvas>
+              <div class="page-text-layer" data-page-text-layer="right"></div>
+              <div class="reflow-page" data-reflow-page="right" hidden></div>
+              <span class="page-number" data-page-number="right"></span>
+            </article>
+          </div>
+          <button class="page-turn next" type="button" data-next aria-label="Next page">›</button>
+        </div>
+
+        <footer class="reader-footer" data-reader-footer hidden>
+          <div class="page-jump">
+            <label for="pageInput">Page</label>
+            <input id="pageInput" data-page-input inputmode="numeric" pattern="[0-9]*" aria-label="Go to page">
+            <span>of <b data-page-total>—</b></span>
+          </div>
+          <input class="progress-slider" data-progress type="range" min="1" max="1" value="1" aria-label="Reading progress">
+          <span class="progress-label" data-progress-label>0%</span>
+        </footer>
+
+      </section>
+    </main>
+  </div>
+
+  <dialog class="dictionary-dialog" data-dictionary-dialog aria-labelledby="dictionaryTitle">
+    <div class="dictionary-heading">
+      <div>
+        <p>CLASSROOM DICTIONARY</p>
+        <h2 id="dictionaryTitle" data-dictionary-word>Dictionary</h2>
+      </div>
+      <button type="button" data-close-dictionary aria-label="Close dictionary">×</button>
+    </div>
+    <div class="dictionary-result" data-dictionary-result aria-live="polite">
+      <p>Press Aa Define, then tap a word directly on the page to see its meaning.</p>
+    </div>
+    <p class="dictionary-credit">Bundled Wordset/WordNet definitions with a classroom-friendly supplement. Available offline.</p>
+  </dialog>
+
+  <dialog class="assessment-dialog lock-dialog" data-lock-dialog aria-labelledby="lockDialogTitle">
+    <form method="dialog">
+      <button class="dialog-close" value="cancel" aria-label="Close">×</button>
+      <p class="eyebrow">YOUR READING QUEST</p>
+      <div class="lock-book-preview">
+        <img data-lock-cover alt="">
+        <div>
+          <h2 id="lockDialogTitle" data-lock-title>Lock in this book?</h2>
+          <p data-lock-author></p>
+        </div>
+      </div>
+      <div class="lock-teaser">
+        <strong>Why you might want to read it</strong>
+        <p data-lock-teaser></p>
+      </div>
+      <div class="lock-notice">
+        <strong>Choose carefully.</strong>
+        <p>Once you lock in, only your teacher can unlock this book before you finish it.</p>
+      </div>
+      <div class="dialog-actions">
+        <button class="secondary-action" value="cancel">Keep looking</button>
+        <button class="primary-action" type="button" data-confirm-lock>◆ Lock in my book</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="assessment-dialog quiz-dialog" data-quiz-dialog aria-labelledby="quizDialogTitle">
+    <form data-quiz-form>
+      <button class="dialog-close" type="button" data-close-quiz aria-label="Close chapter test">×</button>
+      <p class="eyebrow">CHAPTER CHECKPOINT</p>
+      <h2 id="quizDialogTitle" data-quiz-title>Chapter test</h2>
+      <p class="quiz-intro" data-quiz-intro></p>
+      <div class="quiz-progress" data-quiz-progress></div>
+      <div class="quiz-questions" data-quiz-questions></div>
+      <div class="quiz-result" data-quiz-result hidden></div>
+      <div class="dialog-actions" data-quiz-actions>
+        <button class="secondary-action" type="button" data-close-quiz>Reread chapter</button>
+        <button class="primary-action" type="submit">Grade my test</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="assessment-dialog teacher-test-dialog" data-test-editor aria-labelledby="testEditorTitle">
+    <form data-test-editor-form>
+      <button class="dialog-close" type="button" data-close-test-editor aria-label="Close test editor">×</button>
+      <p class="eyebrow">TEACHER TEST STUDIO</p>
+      <h2 id="testEditorTitle">Edit chapter tests</h2>
+      <p class="teacher-editor-intro">Changes save as a draft in this tester. In the classroom portal, published changes save to the teacher account.</p>
+      <label class="editor-field">Test
+        <select data-test-select></select>
+      </label>
+      <div data-test-editor-fields></div>
+      <div class="dialog-actions">
+        <button class="secondary-action" type="button" data-reset-test>Reset test</button>
+        <button class="primary-action" type="submit">Save test</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" data-toast role="status" aria-live="polite"></div>
+  <script type="module" src="class-library/reader.js?v=20260901-4"></script>
+</body>
+</html>

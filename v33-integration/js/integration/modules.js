@@ -23,7 +23,7 @@
     {id:'cosmic-architect',title:'Cosmic Architect',icon:'🌌',path:'cosmic-architect.html',returnPage:'games',morningGate:true},
     {id:'arcane-forge',title:'Arcane Forge',icon:'🔮',path:'arcane-forge.html',returnPage:'games',morningGate:true},
     {id:'deep-time-lab',title:'Deep Time Lab',icon:'🦴',path:'deep-time-lab.html',returnPage:'games',morningGate:true},
-    {id:'class-reader',title:'The Witches Class Reader',icon:'📖',path:'witches-reader.html',returnPage:'missions'}
+    {id:'class-reader',title:'Dragonswood Storyvault',icon:'📚',path:'class-library.html',returnPage:'missions'}
   ].map(Object.freeze));
   const byId=new Map(MODULES.map(mod=>[mod.id,mod]));
 
@@ -50,7 +50,7 @@
     if(mod.id==='curriculum-quest')url.searchParams.set('v',Date.now().toString(36));
     if(mod.id==='rune-spelling')url.searchParams.set('v','58.1.6');
     if(mod.id==='dragon-tongues'||mod.id==='deep-time-lab')url.searchParams.set('v','58.0.0');
-    if(mod.id==='class-reader')url.searchParams.set('v','57.1.5');
+    if(mod.id==='class-reader')url.searchParams.set('v','storyvault-2.1.0');
     const pageUrl=new URL(globalThis.location?.href||baseHref||url.href),previewDate=pageUrl.searchParams.get('previewDate'),testerDate=globalThis.DWV33TesterDateContext?.();
     if(mod.path==='daily-quest.html'&&['localhost','127.0.0.1'].includes(pageUrl.hostname)&&/^\d{4}-\d{2}-\d{2}$/.test(String(previewDate||'')))url.searchParams.set('date',previewDate);
     if(testerDate?.simulated===true&&/^\d{4}-\d{2}-\d{2}$/.test(String(testerDate.dateKey||''))){url.searchParams.set('date',testerDate.dateKey);url.searchParams.set('dw-safe-preview','1')}

@@ -78,7 +78,7 @@ service cloud.firestore {
       return data.firstPage is int
         && data.lastPage is int
         && data.firstPage >= 1
-        && data.lastPage <= 999
+        && data.lastPage <= 5000
         && data.firstPage <= data.lastPage
         && data.pages is list
         && data.pages.size() >= 1
@@ -765,7 +765,7 @@ service cloud.firestore {
       allow write: if false;
     }
 
-    // Assignment-bound active-time evidence from the embedded The Witches
+    // Assignment-bound active-time evidence from the embedded Storyvault
     // reader. Every record has one deterministic student/date ID, fixed
     // fields, server time, and a real-time gap between focused heartbeats.
     match /readingSessions/{sessionId} {
@@ -791,14 +791,20 @@ service cloud.firestore {
       allow create: if isExploreStudent()
                     && sessionId == request.auth.uid + '_' + request.resource.data.dateKey + '_witches'
                     && request.resource.data.keys().hasOnly([
-                      'studentId','studentName','bookId','bookTitle','dateKey',
+                      'studentId','studentName','bookId','bookTitle','sourceBookId','sourceBookTitle','dateKey',
                       'activeSeconds','firstPage','lastPage','pages','status',
                       'createdAt','updatedAt'
                     ])
                     && request.resource.data.studentId == request.auth.uid
                     && request.resource.data.studentName == get(/databases/$(database)/documents/students/$(request.auth.uid)).data.get('firstName', '')
                     && request.resource.data.bookId == "witches"
-                    && request.resource.data.bookTitle == "The Witches"
+                    && request.resource.data.bookTitle == "Dragonswood Storyvault"
+                    && request.resource.data.sourceBookId is string
+                    && request.resource.data.sourceBookId.size() >= 1
+                    && request.resource.data.sourceBookId.size() <= 100
+                    && request.resource.data.sourceBookTitle is string
+                    && request.resource.data.sourceBookTitle.size() >= 1
+                    && request.resource.data.sourceBookTitle.size() <= 300
                     && request.resource.data.dateKey is string
                     && request.resource.data.dateKey.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
                     && hasReadingAssignment(request.resource.data.dateKey)
@@ -813,19 +819,26 @@ service cloud.firestore {
       allow update: if isExploreStudent()
                     && sessionId == request.auth.uid + '_' + resource.data.dateKey + '_witches'
                     && request.resource.data.keys().hasOnly([
-                      'studentId','studentName','bookId','bookTitle','dateKey',
+                      'studentId','studentName','bookId','bookTitle','sourceBookId','sourceBookTitle','dateKey',
                       'activeSeconds','firstPage','lastPage','pages','status',
                       'createdAt','updatedAt'
                     ])
                     && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
                       'activeSeconds','firstPage','lastPage','pages','status','updatedAt',
+                      'bookTitle','sourceBookId','sourceBookTitle',
                       'targetMinutes','lastHeartbeatMs'
                     ])
                     && resource.data.studentId == request.auth.uid
                     && request.resource.data.studentId == resource.data.studentId
                     && request.resource.data.studentName == resource.data.studentName
                     && request.resource.data.bookId == resource.data.bookId
-                    && request.resource.data.bookTitle == resource.data.bookTitle
+                    && request.resource.data.bookTitle == "Dragonswood Storyvault"
+                    && request.resource.data.sourceBookId is string
+                    && request.resource.data.sourceBookId.size() >= 1
+                    && request.resource.data.sourceBookId.size() <= 100
+                    && request.resource.data.sourceBookTitle is string
+                    && request.resource.data.sourceBookTitle.size() >= 1
+                    && request.resource.data.sourceBookTitle.size() <= 300
                     && request.resource.data.dateKey == resource.data.dateKey
                     && request.resource.data.createdAt == resource.data.createdAt
                     && hasReadingAssignment(request.resource.data.dateKey)
@@ -834,14 +847,78 @@ service cloud.firestore {
                     && request.resource.data.activeSeconds <= resource.data.activeSeconds + 20
                     && request.resource.data.activeSeconds <= 28800
                     && validReadingPages(request.resource.data)
-                    && request.resource.data.firstPage <= resource.data.firstPage
-                    && request.resource.data.lastPage >= resource.data.lastPage
+                    && (
+                      request.resource.data.sourceBookId != resource.data.get('sourceBookId', '')
+                      || (
+                        request.resource.data.firstPage <= resource.data.firstPage
+                        && request.resource.data.lastPage >= resource.data.lastPage
+                      )
+                    )
                     && validReadingStatus(request.resource.data)
                     && request.resource.data.updatedAt == request.time
                     && resource.data.updatedAt is timestamp
                     && request.time >= resource.data.updatedAt + duration.value(10, 's');
 
       allow delete: if isTeacher();
+    }
+
+    match /studentReadingPlans/{studentId} {
+      allow read: if isTeacher()
+                  || (isSignedIn() && request.auth.uid == studentId);
+
+      allow create: if isExploreStudent()
+                    && request.auth.uid == studentId
+                    && request.resource.data.keys().hasOnly([
+                      'studentId','studentEmail','state','updatedAt'
+                    ])
+                    && request.resource.data.studentId == request.auth.uid
+                    && request.resource.data.state is map
+                    && request.resource.data.state.lockedBookId is string
+                    && request.resource.data.state.pages is map
+                    && request.resource.data.state.pageVersions is map
+                    && request.resource.data.state.passedTests is map
+                    && request.resource.data.state.attempts is map
+                    && request.resource.data.state.completedBookIds is list
+                    && request.resource.data.state.seriesOverrideBookIds is list
+                    && request.resource.data.state.seriesOverrideBookIds.size() == 0
+                    && request.resource.data.updatedAt == request.time;
+
+      allow update: if isTeacher()
+                    || (
+                      isExploreStudent()
+                      && request.auth.uid == studentId
+                      && request.resource.data.keys().hasOnly([
+                        'studentId','studentEmail','state','updatedAt'
+                      ])
+                      && request.resource.data.studentId == resource.data.studentId
+                      && request.resource.data.state is map
+                      && request.resource.data.state.lockedBookId is string
+                      && request.resource.data.state.pages is map
+                      && request.resource.data.state.pageVersions is map
+                      && request.resource.data.state.passedTests is map
+                      && request.resource.data.state.attempts is map
+                      && request.resource.data.state.completedBookIds is list
+                      && request.resource.data.state.seriesOverrideBookIds is list
+                      && request.resource.data.state.seriesOverrideBookIds == resource.data.state.get('seriesOverrideBookIds', [])
+                      && request.resource.data.updatedAt == request.time
+                      && (
+                        request.resource.data.state.lockedBookId == resource.data.state.lockedBookId
+                        || resource.data.state.lockedBookId == ''
+                        || (
+                          request.resource.data.state.lockedBookId == ''
+                          && request.resource.data.state.completedBookIds.hasAny([
+                            resource.data.state.lockedBookId
+                          ])
+                        )
+                      )
+                    );
+
+      allow delete: if isTeacher();
+    }
+
+    match /chapterTests/{testId} {
+      allow read: if isSignedIn();
+      allow write: if isTeacher();
     }
 
     match /games/{gameId} {

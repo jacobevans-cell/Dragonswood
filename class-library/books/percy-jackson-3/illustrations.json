@@ -1,0 +1,47 @@
+[
+  {
+    "id": "percy3-art-01",
+    "startPage": 1,
+    "endPage": 10,
+    "anchorPage": 10,
+    "src": "class-library/books/percy-jackson-3/illustrations/percy3-pages-001-010.jpg",
+    "alt": "Percy, Annabeth, and Thalia approach a remote Maine school through a winter storm.",
+    "credit": "Original classroom illustration created for Dragonswood."
+  },
+  {
+    "id": "percy3-art-02",
+    "startPage": 11,
+    "endPage": 20,
+    "anchorPage": 20,
+    "src": "class-library/books/percy-jackson-3/illustrations/percy3-pages-011-020.jpg",
+    "alt": "Percy protects Bianca and Nico when Dr. Thorn threatens them at the school dance.",
+    "credit": "Original classroom illustration created for Dragonswood."
+  },
+  {
+    "id": "percy3-art-03",
+    "startPage": 21,
+    "endPage": 30,
+    "anchorPage": 30,
+    "src": "class-library/books/percy-jackson-3/illustrations/percy3-pages-021-030.jpg",
+    "alt": "Percy and Thalia defend Bianca from a manticore on a snowy cliff.",
+    "credit": "Original classroom illustration created for Dragonswood."
+  },
+  {
+    "id": "percy3-art-04",
+    "startPage": 31,
+    "endPage": 40,
+    "anchorPage": 40,
+    "src": "class-library/books/percy-jackson-3/illustrations/percy3-pages-031-040.jpg",
+    "alt": "Zoe and the Hunters of Artemis arrive through the snow to stop the manticore.",
+    "credit": "Original classroom illustration created for Dragonswood."
+  },
+  {
+    "id": "percy3-art-05",
+    "startPage": 41,
+    "endPage": 50,
+    "anchorPage": 50,
+    "src": "class-library/books/percy-jackson-3/illustrations/percy3-pages-041-050.jpg",
+    "alt": "Percy finds Annabeths blue cap while Bianca considers joining the Hunters.",
+    "credit": "Original classroom illustration created for Dragonswood."
+  }
+]

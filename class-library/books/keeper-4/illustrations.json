@@ -1,0 +1,38 @@
+[
+  {
+    "id": "keeper-4-art-01",
+    "startPage": 1,
+    "endPage": 181,
+    "anchorPage": 181,
+    "src": "class-library/books/keeper-4/illustrations/keeper4-pages-001-181.jpg",
+    "alt": "Sophie, Fitz, and Keefe enter the Black Swan underground refuge.",
+    "credit": "Original classroom illustration created for Dragonswood."
+  },
+  {
+    "id": "keeper-4-art-02",
+    "startPage": 182,
+    "endPage": 363,
+    "anchorPage": 363,
+    "src": "class-library/books/keeper-4/illustrations/keeper4-pages-182-363.jpg",
+    "alt": "Sophie, Biana, and Dex train on a suspended crystal course at Exillium.",
+    "credit": "Original classroom illustration created for Dragonswood."
+  },
+  {
+    "id": "keeper-4-art-03",
+    "startPage": 364,
+    "endPage": 545,
+    "anchorPage": 545,
+    "src": "class-library/books/keeper-4/illustrations/keeper4-pages-364-545.jpg",
+    "alt": "Sophie, Biana, Dex, Tam, and Linh enter a shadowy crystal stronghold.",
+    "credit": "Original classroom illustration created for Dragonswood."
+  },
+  {
+    "id": "keeper-4-art-04",
+    "startPage": 546,
+    "endPage": 727,
+    "anchorPage": 727,
+    "src": "class-library/books/keeper-4/illustrations/keeper4-pages-546-727.jpg",
+    "alt": "Sophie reaches toward Keefe as he stands beside a glowing portal.",
+    "credit": "Original classroom illustration created for Dragonswood."
+  }
+]

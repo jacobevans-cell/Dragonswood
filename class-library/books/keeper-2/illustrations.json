@@ -1,0 +1,38 @@
+[
+  {
+    "id": "keeper-2-art-01",
+    "startPage": 1,
+    "endPage": 154,
+    "anchorPage": 154,
+    "src": "class-library/books/keeper-2/illustrations/keeper2-pages-001-154.jpg",
+    "alt": "Sophie befriends Silveny, a white winged alicorn, at Havenfield.",
+    "credit": "Original classroom illustration created for Dragonswood."
+  },
+  {
+    "id": "keeper-2-art-02",
+    "startPage": 155,
+    "endPage": 309,
+    "anchorPage": 309,
+    "src": "class-library/books/keeper-2/illustrations/keeper2-pages-155-309.jpg",
+    "alt": "Sophie and Fitz descend into the dark crystalline caverns of Exile.",
+    "credit": "Original classroom illustration created for Dragonswood."
+  },
+  {
+    "id": "keeper-2-art-03",
+    "startPage": 310,
+    "endPage": 464,
+    "anchorPage": 464,
+    "src": "class-library/books/keeper-2/illustrations/keeper2-pages-310-464.jpg",
+    "alt": "Sophie reforms golden memories while Fitz watches in a fractured mindscape.",
+    "credit": "Original classroom illustration created for Dragonswood."
+  },
+  {
+    "id": "keeper-2-art-04",
+    "startPage": 465,
+    "endPage": 619,
+    "anchorPage": 619,
+    "src": "class-library/books/keeper-2/illustrations/keeper2-pages-465-619.jpg",
+    "alt": "Sophie, Fitz, and Keefe protect Silveny during a mountain storm.",
+    "credit": "Original classroom illustration created for Dragonswood."
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "keeper-3-art-01",
+    "startPage": 1,
+    "endPage": 165,
+    "anchorPage": 165,
+    "src": "class-library/books/keeper-3/illustrations/keeper3-pages-001-165.jpg",
+    "alt": "Sophie and Fitz carefully explore fire-lit memories in a council chamber.",
+    "credit": "Original classroom illustration created for Dragonswood."
+  },
+  {
+    "id": "keeper-3-art-02",
+    "startPage": 166,
+    "endPage": 330,
+    "anchorPage": 330,
+    "src": "class-library/books/keeper-3/illustrations/keeper3-pages-166-330.jpg",
+    "alt": "Sophie and her friends guide others away from Everblaze near a crystal city.",
+    "credit": "Original classroom illustration created for Dragonswood."
+  },
+  {
+    "id": "keeper-3-art-03",
+    "startPage": 331,
+    "endPage": 495,
+    "anchorPage": 495,
+    "src": "class-library/books/keeper-3/illustrations/keeper3-pages-331-495.jpg",
+    "alt": "Sophie, Keefe, Dex, and Biana discover a hidden Black Swan laboratory.",
+    "credit": "Original classroom illustration created for Dragonswood."
+  },
+  {
+    "id": "keeper-3-art-04",
+    "startPage": 496,
+    "endPage": 661,
+    "anchorPage": 661,
+    "src": "class-library/books/keeper-3/illustrations/keeper3-pages-496-661.jpg",
+    "alt": "Sophie and her friends face the Neverseen across a moonlit mountain chasm.",
+    "credit": "Original classroom illustration created for Dragonswood."
+  }
+]

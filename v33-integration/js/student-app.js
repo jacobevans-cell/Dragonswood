@@ -13,6 +13,7 @@ function storedRecoverySummary(){try{const value=JSON.parse(storageGet('recovery
 const toast = document.querySelector('#toast');
 const dialogRoot = document.querySelector('#dialog-root');
 let integrationController=null,recoveryProbe=null,arcadeEntering=false,legacySpellingRecoveryPromise=null,legacySpellingRecoveryUid='',legacySpellingRecoveryLastAttempt=0;
+let classLibraryStorePromise=null;
 let integrationSession={status:'loading',message:'Opening the portal…'};
 let passSafetyInterval=null;
 const passFallbackStarts=new Map();
@@ -468,7 +469,7 @@ function missionsPage(){
     <div class="panel path-summary"><div class="path-count"><strong>${completeCount}</strong><small>of 3</small></div><div class="path-copy"><div class="eyebrow">TODAY’S PROGRESS</div><b>One mission at a time.</b><div>${accessSummary}</div></div><div class="path-lock">${accessLabel}</div></div>
     <div class="mission-list">${missions.map((m,i)=>missionRow(m,i)).join('')}</div>
     <div class="mission-list mt-12"><article class="panel mission-row ${languageLocked?'locked':'current'}"><div class="mission-num">✦</div><div class="mission-art">🗣️</div><div><div class="eyebrow">${languageSubstituteLocked?'SUBSTITUTE MODE':'OPTIONAL LANGUAGE PATH'}</div><h3>Dragon Tongues</h3><p>${languageSubstituteLocked?'Unavailable today. Ask your substitute teacher if you need help.':'Choose a language and learn freely at your own pace after Curriculum Quest.'}</p><div class="reward-line"><span>🌍 12 languages</span><span>${languageSubstituteLocked?'🛑 Closed today':'🐉 Free path'}</span></div></div><button class="btn ${languageLocked?'btn-secondary':'btn-primary'} btn-sm" type="button" data-module="dragon-tongues" ${languageLocked?'disabled':''}>${languageSubstituteLocked?'Unavailable today':'Explore languages →'}</button></article></div>
-    <div class="mission-extra"><article class="panel extra-card"><div class="extra-icon">✅</div><div><div class="extra-kicker">END OF DAY</div><h3>Exit Quest</h3><p>Return at the end of the day to show what you learned.</p></div><button class="btn btn-secondary btn-sm" data-module="daily-quest">${state.completedMissions.has('exit')?'Review exit quest':'Open exit quest'}</button></article><article class="panel extra-card"><div class="extra-icon">📖</div><div><div class="extra-kicker">${readingAssigned?'ASSIGNED CLASS READING':'CLASS READING'}</div><h3>The Witches</h3><p>${readingMinutes}/${readingTarget} verified active minutes${readingRow?.lastPage?` • last page ${readingRow.lastPage}`:''}. Time pauses when the reader is hidden or idle.</p></div><button class="btn btn-secondary btn-sm" data-module="class-reader">${readingAssigned&&readingMinutes<readingTarget?'Continue reading':'Open reader'}</button></article><article class="panel extra-card"><div class="extra-icon">⭐</div><div><div class="extra-kicker">BONUS CHALLENGE</div><h3>Level-Up Mission</h3><p>Ready for more? Try a mission one level above.</p></div><button class="btn btn-secondary btn-sm" data-module="level-up-challenge">Try the challenge</button></article></div>`;
+    <div class="mission-extra"><article class="panel extra-card"><div class="extra-icon">✅</div><div><div class="extra-kicker">END OF DAY</div><h3>Exit Quest</h3><p>Return at the end of the day to show what you learned.</p></div><button class="btn btn-secondary btn-sm" data-module="daily-quest">${state.completedMissions.has('exit')?'Review exit quest':'Open exit quest'}</button></article><article class="panel extra-card"><div class="extra-icon">📚</div><div><div class="extra-kicker">${readingAssigned?'STORYVAULT READING ASSIGNED':'DRAGONSWOOD STORYVAULT'}</div><h3>Dragonswood Storyvault</h3><p>${readingAssigned?`${readingMinutes}/${readingTarget} verified active Storyvault minutes${readingRow?.lastPage?` • last page ${readingRow.lastPage}`:''}.`:'Choose a book and continue from your saved page.'}</p></div><button class="btn btn-secondary btn-sm" data-module="class-reader">${readingAssigned&&readingMinutes<readingTarget?'Open Storyvault':'Browse books'}</button></article><article class="panel extra-card"><div class="extra-icon">⭐</div><div><div class="extra-kicker">BONUS CHALLENGE</div><h3>Level-Up Mission</h3><p>Ready for more? Try a mission one level above.</p></div><button class="btn btn-secondary btn-sm" data-module="level-up-challenge">Try the challenge</button></article></div>`;
 }
 function missionRow(m,i){
   const done=state.completedMissions.has(m.id);
@@ -641,10 +642,36 @@ function setMissionStatus(id,status){
   if(status==='complete')state.completedMissions.add(id);
   else state.completedMissions.delete(id);
 }
+function classLibraryStore(){
+  classLibraryStorePromise ||= import('./js/integration/class-library-store.js');
+  return classLibraryStorePromise;
+}
+async function handleClassLibraryRequest(event){
+  const message=event.data||{},response={type:'dw-class-library-account-response',requestId:message.requestId,ok:false};
+  try{
+    const store=await classLibraryStore();
+    if(message.action==='load-reading-state')response.state=await store.loadReadingState();
+    else if(message.action==='save-reading-state')response.state=await store.saveReadingState(message.payload?.state);
+    else if(message.action==='load-chapter-tests')response.tests=await store.loadChapterTests();
+    else if(message.action==='save-chapter-test')response.test=await store.saveChapterTest(message.payload?.test);
+    else if(message.action==='grade-library-summary')response.result=await store.gradeLibrarySummary(message.payload);
+    else if(message.action==='load-student-plans')response.plans=await store.loadStudentPlans();
+    else if(message.action==='unlock-student-book')response.saved=await store.unlockStudentBook(message.payload?.studentId);
+    else if(message.action==='allow-next-series-book')response.saved=await store.allowNextSeriesBook(message.payload?.studentId,message.payload?.nextBookId);
+    else throw new Error('Unknown class library request.');
+    response.ok=true;
+  }catch(err){response.error=String(err?.message||err||'Class library account storage is unavailable.').slice(0,500)}
+  event.source?.postMessage(response,event.origin);
+}
 function handleModuleState(event){
-  if(event.origin===location.origin&&event.data?.type==='dw-witches-reading-heartbeat'){
+  if(event.origin===location.origin&&event.data?.type==='dw-class-library-account-request'){
     const frame=app.querySelector('[data-module-frame]');
-    if(frame&&event.source===frame.contentWindow)integrationController?.recordReadingActivity?.(event.data).catch(err=>console.warn('[Witches reading time]',err));
+    if(frame&&event.source===frame.contentWindow)handleClassLibraryRequest(event);
+    return;
+  }
+  if(event.origin===location.origin&&['dw-storyvault-reading-heartbeat','dw-class-library-reading-heartbeat','dw-witches-reading-heartbeat'].includes(event.data?.type)){
+    const frame=app.querySelector('[data-module-frame]');
+    if(frame&&event.source===frame.contentWindow)integrationController?.recordReadingActivity?.(event.data).catch(err=>console.warn('[Storyvault reading time]',err));
     return;
   }
   if(event.origin!==location.origin||event.data?.channel!=='dw-v33-module')return;

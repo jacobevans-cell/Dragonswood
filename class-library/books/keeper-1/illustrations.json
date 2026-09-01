@@ -1,0 +1,38 @@
+[
+  {
+    "id": "keeper-1-art-01",
+    "startPage": 1,
+    "endPage": 132,
+    "anchorPage": 132,
+    "src": "class-library/books/keeper-1/illustrations/keeper1-pages-001-132.jpg",
+    "alt": "Sophie meets Fitz at a natural-history museum and sees his glowing crystal.",
+    "credit": "Original classroom illustration created for Dragonswood."
+  },
+  {
+    "id": "keeper-1-art-02",
+    "startPage": 133,
+    "endPage": 264,
+    "anchorPage": 264,
+    "src": "class-library/books/keeper-1/illustrations/keeper1-pages-133-264.jpg",
+    "alt": "Sophie and Fitz leap through a crystal gateway into the Lost Cities.",
+    "credit": "Original classroom illustration created for Dragonswood."
+  },
+  {
+    "id": "keeper-1-art-03",
+    "startPage": 265,
+    "endPage": 396,
+    "anchorPage": 396,
+    "src": "class-library/books/keeper-1/illustrations/keeper1-pages-265-396.jpg",
+    "alt": "Sophie stands with Fitz, Keefe, and Dex at Foxfire academy.",
+    "credit": "Original classroom illustration created for Dragonswood."
+  },
+  {
+    "id": "keeper-1-art-04",
+    "startPage": 397,
+    "endPage": 529,
+    "anchorPage": 529,
+    "src": "class-library/books/keeper-1/illustrations/keeper1-pages-397-529.jpg",
+    "alt": "Sophie and Dex escape a burning hideout through a crystal-lit forest.",
+    "credit": "Original classroom illustration created for Dragonswood."
+  }
+]

@@ -153,7 +153,7 @@
   root.DWImmersiveUI=Object.freeze({version:VERSION,alert,confirm,prompt,renderState,stateMarkup,skeletonMarkup,iconUrl});
   if(/\/daily-quest\.html$/.test(location.pathname)&&!root.DWMorningMathCoach?.install){
     const coach=document.createElement('script');
-    coach.src=new URL('v33-integration/js/integration/morning-math-coach.js?v=1.0.2',script?.src||location.href).href;
+    coach.src=new URL('v33-integration/js/integration/morning-math-coach.js?v=1.0.3',script?.src||location.href).href;
     coach.dataset.dwMorningMathCoachDirect='1';
     coach.onload=()=>root.DWMorningMathCoach?.install({contentDocument:document});
     document.head.append(coach);

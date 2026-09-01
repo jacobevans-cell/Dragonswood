@@ -21,7 +21,7 @@
   if(runtimeScript?.src&&!document.querySelector("script[data-dw-site-cache]")){
     const updater=document.createElement("script");
     updater.defer=true;updater.dataset.dwSiteCache="";
-    updater.src=new URL("dragonswood-site-cache.js?v=1.0.0",assetRoot).href;
+    updater.src=new URL("dragonswood-site-cache.js?v=1.0.1",assetRoot).href;
     document.head.append(updater);
   }
 

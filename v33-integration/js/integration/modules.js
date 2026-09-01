@@ -69,6 +69,12 @@
     if(!doc)return;
     doc.documentElement.classList.add('dw-v33-embedded');
     doc.body?.classList.add('dw-v33-embedded');
+    if(/\/daily-quest\.html$/.test(new URL(frame.src,document.baseURI).pathname)){
+      if(globalThis.DWMorningMathCoach?.install)globalThis.DWMorningMathCoach.install(frame);
+      else if(!document.querySelector('script[data-dw-morning-math-coach-loader]')){
+        const coach=document.createElement('script');coach.src=new URL('js/integration/morning-math-coach.js?v=1.0.0',document.baseURI).href;coach.dataset.dwMorningMathCoachLoader='1';coach.onload=()=>globalThis.DWMorningMathCoach?.install(frame);document.head?.append(coach);
+      }
+    }
     if(/\/rune-spelling\.html$/.test(new URL(frame.src,document.baseURI).pathname)&&!doc.querySelector('script[data-dw-rune-tuesday-hotfix]')){
       const hotfix=doc.createElement('script');
       hotfix.dataset.dwRuneTuesdayHotfix='58.1.7';

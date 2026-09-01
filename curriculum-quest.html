@@ -737,7 +737,8 @@ function autoPassed(x,s=st(x.id)){
 // for exception requests when Dragonswood cannot confidently accept an answer.
 function missionNeedsTeacher(x){return false}
 function standardCheckComplete(x,s=st(x.id)){
-  const questions=autoQuestionsFor(x),answers=s.autoAnswers||{};
+  const questions=autoQuestionsFor(x),answers=s.autoAnswers||{},savedTotal=Math.max(0,Number(s.questionsTotal)||0),savedSeen=Math.max(0,Number(s.questionsSeen)||0);
+  if(s.standardCheckSubmitted===true||(savedTotal>0&&savedSeen>=savedTotal))return true;
   if(!questions.length)return true;
   return questions.every((item,index)=>s.autoOverrideStatus?.[index]==="approved"||(Object.prototype.hasOwnProperty.call(answers,index)&&String(answers[index]??"").trim()!==""));
 }
@@ -1040,7 +1041,7 @@ function canonicalProgress(uid,item,state,forceUnverified=false){
     studentId:uid,itemId:item.id,grade:item.grade,day:Number(item.day),subject:item.subject,strand:item.strand||"",
     standardCode:(entry?.standards||[]).join(","),watched:!!state.watched,
     videoCoverage:Number(state.videoCoverage||0),videoReflection:String(state.videoReflection||""),
-    practiced:!!state.practiced,practiceEvidence:String(state.practiceEvidence||""),complete:missionComplete(item,state),
+    practiced:!!state.practiced,practiceEvidence:String(state.practiceEvidence||""),standardCheckSubmitted:standardCheckComplete(item,state),complete:missionComplete(item,state),
     quickWriteChoice:String(state.quickWriteChoice||""),quickWriteChoiceLocked:!!state.quickWriteChoiceLocked,
     dwInteraction:state.dwInteraction&&typeof state.dwInteraction==="object"?state.dwInteraction:null,
     questionsCorrect:counts.correct,questionsSeen:counts.seen,questionsTotal:counts.total,autoAnswers:state.autoAnswers||{},

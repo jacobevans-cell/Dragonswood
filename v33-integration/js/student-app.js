@@ -699,7 +699,16 @@ function authGate(){
   const loadingSkeleton=status==='loading'&&window.DWImmersiveUI?window.DWImmersiveUI.skeletonMarkup('portal'):'';
   return `<div class="portal student-shell" data-${IS_PRODUCTION?'release':'tester-build'}="v3.3"><main class="student-main" id="page-content"><div class="student-content"><section class="panel next-step"><div class="eyebrow">${IS_PRODUCTION?'SECURE STUDENT PORTAL':'SECURE INTEGRATION CANDIDATE'}</div><img class="auth-crest" src="assets/branding/dragonswood-mascot-crest.png" alt="Dragonswood mascot crest"><h2>${status==='unauthorized'?'The gate is sealed':status==='loading'?'Opening the portal…':'Dragonswood Sign In'}</h2><p>${escapeHtml(message)}</p>${loadingSkeleton}${canSignIn?'<button class="btn btn-primary w-full" type="button" data-signin>Enter with your school Google account</button>':''}${emulatorForm}<p class="center muted mt-12 text-11">${IS_PRODUCTION?'Explore Academy • secure student portal':`${escapeHtml(window.DWV33Integration?.environment||'loading')} • no production writes enabled`}</p></section></div></main>${IS_PRODUCTION?'':'<div class="tester-ribbon">V3.3 INTEGRATION • SAFE MODE</div>'}</div>`;
 }
+let renderedViewportKey=location.hash,viewportRestoreToken=0;
+function restoreViewportAfterRender(scrollX,scrollY,key){
+  const token=++viewportRestoreToken;
+  const restore=()=>{if(token!==viewportRestoreToken||location.hash!==key)return;window.scrollTo({left:scrollX,top:scrollY,behavior:'instant'})};
+  restore();
+  requestAnimationFrame(()=>{restore();requestAnimationFrame(()=>{restore();app.style.minHeight=''})});
+}
 function render(){
+  const key=location.hash,preserve=renderedViewportKey===key,scrollX=preserve?window.scrollX:0,scrollY=preserve?window.scrollY:0;
+  renderedViewportKey=key;
   if(integrationSession.status!=='authorized'){
     disposeAdventureIdentity();app.innerHTML=authGate();bindAuthGate();document.title=IS_PRODUCTION?'Dragonswood | Sign In':'[INTEGRATION] Dragonswood | Sign In';return;
   }
@@ -713,8 +722,10 @@ function render(){
   }
   state.page=currentPage();
   disposeAdventureIdentity();
+  if(preserve)app.style.minHeight=`${Math.max(app.offsetHeight,document.documentElement.scrollHeight)}px`;
   app.innerHTML=shell();
   bind();
+  restoreViewportAfterRender(scrollX,scrollY,key);
   const moduleId=currentModuleId();
   document.title=`${IS_PRODUCTION?'':'[TESTER] '}Dragonswood | ${moduleId?moduleHost.definition(moduleId).title:studentNavItems().find(n=>n[0]===state.page)[2]}`;
   if(pendingRequiredWorkNotice){

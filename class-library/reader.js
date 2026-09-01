@@ -326,7 +326,7 @@ function hasPassed(testId) {
 }
 
 function gateForTarget(targetPage, book = state.book) {
-  if (!book || state.student.lockedBookId !== book.id) return null;
+  if (!book || (!state.teacherMode && state.student.lockedBookId !== book.id)) return null;
   const map = chapterMap(book);
   if (!map) return null;
   const target = Math.max(1, Math.round(Number(targetPage) || 1));
@@ -343,7 +343,7 @@ function gateForTarget(targetPage, book = state.book) {
 
 function farthestUnlockedPage(book = state.book) {
   const map = chapterMap(book);
-  if (!map || state.student.lockedBookId !== book?.id) return book?.pages || state.total || 1;
+  if (!map || (!state.teacherMode && state.student.lockedBookId !== book?.id)) return book?.pages || state.total || 1;
   const gate = gateForTarget(book.pages || state.total || map.editionPages, book);
   return gate ? gate.gatePage - 1 : book.pages || state.total || map.editionPages;
 }

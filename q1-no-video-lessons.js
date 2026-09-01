@@ -479,7 +479,7 @@
 
   let tries=0;
   function install(){
-    const required=["render","vid","friendlyTitle","miniLessonFor","renderMiniLesson","activityFor","kidIntro","card","grouped","autoQuestionsFor","autoPassed","renderAutoPractice","activitySpec","validateActivity","supportMetadataRow"];
+    const required=["render","vid","friendlyTitle","miniLessonFor","renderMiniLesson","activityFor","kidIntro","card","grouped","autoQuestionsFor","autoPassed","renderAutoPractice","activitySpec","validateActivity","checkActivity","supportMetadataRow"];
     if(required.some(k=>typeof window[k]!=="function")||!window.DWCurriculumRenderCoordinator){
       if(++tries<80)setTimeout(install,25);
       return;
@@ -500,7 +500,36 @@
       renderAutoPractice:window.renderAutoPractice,
       activitySpec:window.activitySpec,
       validateActivity:window.validateActivity,
+      checkActivity:window.checkActivity,
       supportMetadataRow:window.supportMetadataRow
+    };
+
+    window.checkActivity=async function(id){
+      const x=D.items.find(item=>item.id===id);
+      if(!x||!noVideo(x)||classify(x)!=="fluency")return O.checkActivity(id);
+      const written=String(document.getElementById("actText-"+id)?.value||"").trim();
+      const {record}=mysteryState(id);
+      const allInterviews=(record.interviewed||[]).length>=CHARACTER_CASE.characters.length;
+      const allCaseQuestions=CHARACTER_CASE.quiz.every((item,index)=>Object.prototype.hasOwnProperty.call(record.answers||{},index)&&String(record.answers[index]??"").trim()!=="");
+      const finished=allInterviews&&allCaseQuestions&&written.length>0;
+      let outcome;
+      try{outcome=await O.checkActivity(id)}
+      finally{
+        if(finished){
+          const s=window.st(id);
+          s.caseCompletionLocked=true;
+          s.caseCompletedAt=s.caseCompletedAt||new Date().toISOString();
+          s.practiced=true;
+          s.practiceEvidence=written;
+          s.lastSubmittedCaseTheory=written;
+          delete s.activityDraftResponse;delete s.activityDraftChoice;
+          if(typeof window.saveCurriculumItemState==="function")window.saveCurriculumItemState(id,s);
+          else window.save();
+          window.clearCurriculumDraft?.(id);
+          window.DWCurriculumRenderCoordinator?.request("character-case-completion-locked");
+        }
+      }
+      return outcome;
     };
 
     if(!document.getElementById("dwNoVideoLayoutV56231")){

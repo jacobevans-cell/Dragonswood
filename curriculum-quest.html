@@ -770,6 +770,7 @@ function visibleQuestionCounts(x,s=st(x.id)){
   return {seen,correct,total:questions.length};
 }
 function missionComplete(x,s=st(x.id)){
+  if(s.caseCompletionLocked===true)return true;
   const pendingBlocked=mediaPending(x)&&(!window.DWCurriculumLocalTester||!s.watched),videoOk=!vid(x)||s.watched||mediaPending(x);
   return videoOk&&standardCheckComplete(x,s)&&!!s.practiced&&(!missionNeedsTeacher(x)||!!s.verified)&&!pendingBlocked;
 }

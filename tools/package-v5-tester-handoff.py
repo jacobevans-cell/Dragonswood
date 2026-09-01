@@ -56,6 +56,7 @@ def main() -> None:
     sources = [item for item in sources if item.is_file()]
     rows = []
     with zipfile.ZipFile(output, "a", allowZip64=True) as archive:
+        master_entries = len(archive.infolist())
         for source in sources:
             relative = source.relative_to(repo).as_posix()
             arcname = f"{ROOT}/game-patch/{relative}"
@@ -88,7 +89,7 @@ The patch deliberately preserves all legacy assets and profile fields. Read `gam
             "schemaVersion": 2,
             "name": "Dragonswood V5 complete tester rollout handoff",
             "testerEmail": "jacobicusjax@gmail.com",
-            "masterHandoffEntriesBeforePatch": 207,
+            "masterHandoffEntriesBeforePatch": master_entries,
             "gamePatchFiles": len(rows),
             "productionCharacterAssets": 560,
             "validation": {
@@ -96,6 +97,7 @@ The patch deliberately preserves all legacy assets and profile fields. Read `gam
                 "checkedPaths": 720,
                 "happyFramesChecked": 320,
                 "dawnscaleWalkTiersChecked": 4,
+                "idleLoopsChecked": 80,
                 "passed": True,
             },
             "files": rows,

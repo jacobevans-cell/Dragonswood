@@ -44,6 +44,18 @@ def family_from_id(character_id: str, class_id: str, tier: str) -> str:
     return character_id.removeprefix(f"{class_id}-").removesuffix(f"-{tier}")
 
 
+def animated_masks(path: Path) -> tuple[list[np.ndarray], list[bytes]]:
+    masks: list[np.ndarray] = []
+    pixels: list[bytes] = []
+    with Image.open(path) as image:
+        for index in range(getattr(image, "n_frames", 1)):
+            image.seek(index)
+            rgba = np.asarray(image.convert("RGBA"))
+            masks.append(rgba[:, :, 3] > 8)
+            pixels.append(rgba.tobytes())
+    return masks, pixels
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("source_build", type=Path)
@@ -106,12 +118,31 @@ def main() -> None:
         catalog = {"characters": []}
     else:
         catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+    idle_loops_checked = 0
     for character in catalog.get("characters", []):
         family = character["family"]
         expected = EXPECTED_FAMILIES.get((character["classId"], family))
         actual = (character["gender"], character["affinity"])
         if expected != actual:
             failures.append(f"Gender/affinity mismatch for {character['id']}: expected {expected}, got {actual}.")
+        idle_path = production / character["classId"] / character["id"] / "idle.webp"
+        if not idle_path.exists():
+            failures.append(f"Missing derived idle loop: {idle_path}.")
+            continue
+        masks, pixels = animated_masks(idle_path)
+        idle_loops_checked += 1
+        if len(masks) != 4:
+            failures.append(f"{character['id']} idle has {len(masks)} frames, expected 4.")
+            continue
+        if len(set(pixels)) < 3:
+            failures.append(f"{character['id']} idle is not visibly animated.")
+        base = masks[0]
+        for index, mask in enumerate(masks[1:], 2):
+            union = np.count_nonzero(base | mask)
+            overlap = np.count_nonzero(base & mask)
+            iou = overlap / union if union else 0.0
+            if iou < 0.90:
+                failures.append(f"{character['id']} idle frame {index} moves like a walk pose (IoU {iou:.3f}).")
 
     result = {
         "passed": not failures,
@@ -120,6 +151,7 @@ def main() -> None:
         "dawnscaleWalkTiersChecked": 4,
         "moonshadowWalkHeights": moonshadow_heights,
         "catalogCharacters": len(catalog.get("characters", [])),
+        "idleLoopsChecked": idle_loops_checked,
         "failures": failures,
     }
     print(json.dumps(result, indent=2))

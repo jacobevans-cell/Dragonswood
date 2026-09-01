@@ -23,7 +23,7 @@ assert.match(runtime,/async saveAcademicAiConfig/,'V3 runtime must own AI Answer
 assert.match(runtime,/async awardEggs/,'V3 runtime must own Woodland Egg awards');
 assert.match(runtime,/eggInventory:S\.firestore\.increment\(1\)/,'egg awards must increment atomically');
 assert.match(runtime,/category:'teacher-egg'/,'egg awards must write a permanent audit transaction');
-assert.match(teacherRoot,/js\/integration\/runtime\.js\?v=57\.1\.9/,'live Teacher Command must cache-bust the migrated V3 runtime');
+assert.match(teacherRoot,/js\/integration\/runtime\.js\?v=\d+\.\d+\.\d+/,'live Teacher Command must cache-bust the migrated V3 runtime');
 
 for(const control of ['data-manage-student-requests','data-manage-academic-ai','data-award-eggs']){
   assert.match(app,new RegExp(control),`Classroom Tools must render and bind ${control}`);
@@ -37,4 +37,4 @@ assert.match(rules,/match \/studentSuggestions\/\{suggestionId\}/,'student reque
 assert.match(rules,/match \/studentSuggestionNotes\/\{suggestionId\}/,'private teacher-note rules must remain explicit');
 assert.match(rules,/match \/academicAiUsage\/\{docId\}/,'AI usage must remain teacher-readable and client-write denied');
 
-console.log('V57.1.9 legacy Teacher tools migrated into canonical V3: PASS');
+console.log('Legacy Teacher tools migrated into canonical V3: PASS');

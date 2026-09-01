@@ -9,6 +9,7 @@ const {QUICKWRITE_SYSTEM,QUICKWRITE_SCHEMA,evaluateQuickwriteEvidence}=require("
 if(!admin.apps.length)admin.initializeApp();
 const db=admin.firestore(),FieldValue=admin.firestore.FieldValue;
 const OPENAI_API_KEY=defineSecret("OPENAI_API_KEY");
+const OPENAI_ADMIN_KEY=defineSecret("OPENAI_ADMIN_KEY");
 const AZURE_SPEECH_KEY=defineSecret("AZURE_SPEECH_KEY");
 const AZURE_SPEECH_REGION=defineSecret("AZURE_SPEECH_REGION");
 const POLICY_VERSION="academic-rescue-v3.0",PRIMARY_MODEL="gpt-5.6-luna",FOCUSED_MODEL="gpt-5.6-terra",EXCEPTIONAL_MODEL="gpt-5.6-sol",DEFAULT_MODEL=PRIMARY_MODEL;
@@ -85,18 +86,22 @@ async function reservePaidCall(uid,dateKey,cfg,stage="primary"){
 async function recordCacheHit(dateKey){
   try{await db.doc(`academicAiUsage/global_${dateKey}`).set({dateKey,cacheHits:FieldValue.increment(1),updatedAt:FieldValue.serverTimestamp()},{merge:true})}catch{}
 }
-async function recordUsage(dateKey,model,usage){
-  const input=Number(usage?.input_tokens||0),output=Number(usage?.output_tokens||0),details=usage?.input_tokens_details||{},cached=Math.max(0,Number(details.cached_tokens||0)),cacheWrite=Math.max(0,Number(details.cache_write_tokens||0));
-  const standard=Math.max(0,input-cached-cacheWrite),rate=PRICE[model]||{input:0,cached:0,cacheWrite:0,output:0};
-  const estimated=(standard*rate.input+cached*rate.cached+cacheWrite*rate.cacheWrite+output*rate.output)/1e6,monthKey=dateKey.slice(0,7),modelKey=String(model).replace(/[^a-z0-9]+/gi,"_");
-  const update={inputTokens:FieldValue.increment(input),cachedInputTokens:FieldValue.increment(cached),cacheWriteTokens:FieldValue.increment(cacheWrite),outputTokens:FieldValue.increment(output),
-    estimatedCostUsd:FieldValue.increment(estimated),[`${modelKey}Calls`]:FieldValue.increment(1),updatedAt:FieldValue.serverTimestamp()};
+function usageMetrics(model,usage){
+  const input=Number(usage?.input_tokens||0),output=Number(usage?.output_tokens||0),details=usage?.input_tokens_details||{},cachedInput=Math.max(0,Number(details.cached_tokens||0)),cacheWrite=Math.max(0,Number(details.cache_write_tokens||0)),reasoning=Math.max(0,Number(usage?.output_tokens_details?.reasoning_tokens||0));
+  const standard=Math.max(0,input-cachedInput-cacheWrite),rate=PRICE[model]||{input:0,cached:0,cacheWrite:0,output:0};
+  return {inputTokens:input,cachedInputTokens:cachedInput,cacheWriteTokens:cacheWrite,outputTokens:output,reasoningTokens:reasoning,estimatedCostUsd:(standard*rate.input+cachedInput*rate.cached+cacheWrite*rate.cacheWrite+output*rate.output)/1e6};
+}
+async function recordUsage(dateKey,model,usage,stage="primary",outcome="complete"){
+  const metrics=usageMetrics(model,usage),monthKey=dateKey.slice(0,7),modelKey=String(model||"unknown").replace(/[^a-z0-9]+/gi,"_"),stageKey=String(stage||"primary").replace(/[^a-z0-9_-]/gi,"_"),outcomeKey=String(outcome||"complete").replace(/[^a-z0-9_-]/gi,"_");
+  const increments={calls:FieldValue.increment(1),inputTokens:FieldValue.increment(metrics.inputTokens),cachedInputTokens:FieldValue.increment(metrics.cachedInputTokens),cacheWriteTokens:FieldValue.increment(metrics.cacheWriteTokens),outputTokens:FieldValue.increment(metrics.outputTokens),reasoningTokens:FieldValue.increment(metrics.reasoningTokens),estimatedCostUsd:FieldValue.increment(metrics.estimatedCostUsd)};
+  const update={inputTokens:FieldValue.increment(metrics.inputTokens),cachedInputTokens:FieldValue.increment(metrics.cachedInputTokens),cacheWriteTokens:FieldValue.increment(metrics.cacheWriteTokens),outputTokens:FieldValue.increment(metrics.outputTokens),reasoningTokens:FieldValue.increment(metrics.reasoningTokens),estimatedCostUsd:FieldValue.increment(metrics.estimatedCostUsd),[`${modelKey}Calls`]:FieldValue.increment(1),models:{[modelKey]:{model,...increments}},stages:{[stageKey]:{stage,...increments}},outcomes:{[outcomeKey]:{outcome,calls:FieldValue.increment(1)}},updatedAt:FieldValue.serverTimestamp()};
   try{await Promise.all([db.doc(`academicAiUsage/global_${dateKey}`).set({dateKey,...update},{merge:true}),db.doc(`academicAiUsage/global_month_${monthKey}`).set({monthKey,...update},{merge:true})])}catch{}
+  return metrics;
 }
 async function audit(uid,p,result,extra={}){
   try{await db.collection("academicAnswerAiAudit").add({uid,source:p.source,mode:p.mode,questionHash:hash(p.prompt),answerHash:hash(p.studentAnswer),
     decision:result.decision,confidence:result.confidence,reason:clip(result.reason,240),model:result.model||"",policyVersion:POLICY_VERSION,
-    taskType:clip(p.taskType||"",40),score:Number.isFinite(result.score)?result.score:null,stage:clip(extra.stage||"primary",20),cached:!!extra.cached,paidCall:!!extra.paidCall,createdAt:FieldValue.serverTimestamp()})}catch{}
+    taskType:clip(p.taskType||"",40),score:Number.isFinite(result.score)?result.score:null,stage:clip(extra.stage||"primary",20),cached:!!extra.cached,paidCall:!!extra.paidCall,inputTokens:Number(extra.inputTokens||0),cachedInputTokens:Number(extra.cachedInputTokens||0),cacheWriteTokens:Number(extra.cacheWriteTokens||0),outputTokens:Number(extra.outputTokens||0),reasoningTokens:Number(extra.reasoningTokens||0),estimatedCostUsd:Number(extra.estimatedCostUsd||0),escalationReason:clip(extra.escalationReason||"",240),createdAt:FieldValue.serverTimestamp()})}catch{}
 }
 
 const SYSTEM=`You are a narrow academic-answer rescue judge for grade 4-5 classroom work.
@@ -176,7 +181,8 @@ async function callAnswerJudge(uid,p,cfg,dateKey,stage="primary"){
   }
   if(confidence!=="high")decision="review";
   const result={decision,confidence,reason,score,cached:false,paidCall:true,model,policyVersion:POLICY_VERSION,retryEligible:decision==="review"&&stage!=="exceptional"};
-  await Promise.all([cacheRef.set({decision,confidence,reason,score,model,policyVersion:POLICY_VERSION,createdAt:FieldValue.serverTimestamp()}),recordUsage(dateKey,model,apiData?.usage||{}),audit(uid,p,result,{stage,cached:false,paidCall:true})]);
+  const metrics=usageMetrics(model,apiData?.usage||{});
+  await Promise.all([cacheRef.set({decision,confidence,reason,score,model,policyVersion:POLICY_VERSION,createdAt:FieldValue.serverTimestamp()}),recordUsage(dateKey,model,apiData?.usage||{},stage,decision),audit(uid,p,result,{stage,cached:false,paidCall:true,...metrics,escalationReason:decision==="review"?reason:""})]);
   return result;
 }
 
@@ -249,10 +255,29 @@ exports.gradeWriting=onCall({region:"us-central1",timeoutSeconds:25,memory:"256M
   if(!feedback.strength||!feedback.nextStep)throw new HttpsError("internal","Writing feedback did not pass validation.");
   await Promise.all([
     ref.set({aiFeedback:feedback,aiStatus:"complete",aiModel:cfg.model,aiPolicyVersion:POLICY_VERSION,aiGradedAt:FieldValue.serverTimestamp(),updatedAt:FieldValue.serverTimestamp()},{merge:true}),
-    db.collection("writingAiAudit").add({responseId,studentId:row.studentId||"",requestedBy:request.auth.uid,responseHash:hash(responseText),score:feedback.score,model:cfg.model,policyVersion:POLICY_VERSION,createdAt:FieldValue.serverTimestamp()}),
-    recordUsage(dateKey,cfg.model,apiData?.usage||{})
+    db.collection("writingAiAudit").add({responseId,studentId:row.studentId||"",requestedBy:request.auth.uid,responseHash:hash(responseText),score:feedback.score,model:cfg.model,policyVersion:POLICY_VERSION,...usageMetrics(cfg.model,apiData?.usage||{}),createdAt:FieldValue.serverTimestamp()}),
+    recordUsage(dateKey,cfg.model,apiData?.usage||{},"writing","complete")
   ]);
   return {feedback,cached:false,paidCall:true,model:cfg.model,policyVersion:POLICY_VERSION};
+});
+
+exports.syncOpenAiBilling=onCall({region:"us-central1",timeoutSeconds:30,memory:"256MiB",maxInstances:1,secrets:[OPENAI_ADMIN_KEY]},async request=>{
+  const email=String(request.auth?.token?.email||"").toLowerCase();
+  if(!request.auth||email!==TEACHER_EMAIL)throw new HttpsError("permission-denied","Teacher billing access only.");
+  const adminKey=OPENAI_ADMIN_KEY.value();
+  if(!adminKey)throw new HttpsError("failed-precondition","OPENAI_ADMIN_KEY is not configured for the billing sync.");
+  const dateKey=phoenixDateKey(),month=dateKey.slice(0,7),startTime=Math.floor(Date.parse(`${month}-01T00:00:00-07:00`)/1000),endTime=Math.floor(Date.now()/1000)+1;
+  let page="",officialCostUsd=0,currency="usd";const lineItems={};
+  do{
+    const params=new URLSearchParams({start_time:String(startTime),end_time:String(endTime),bucket_width:"1d",limit:"31",group_by:"line_item"});if(page)params.set("page",page);
+    const response=await fetch(`https://api.openai.com/v1/organization/costs?${params}`,{headers:{Authorization:`Bearer ${adminKey}`,"Content-Type":"application/json"}}),payload=await response.json();
+    if(!response.ok)throw new HttpsError("unavailable",`OpenAI billing sync failed (${response.status}): ${clip(payload?.error?.message||"request failed",240)}`);
+    for(const bucket of payload?.data||[])for(const row of bucket?.results||[]){const value=Number(row?.amount?.value||0),label=clip(row?.line_item||"Other",120);officialCostUsd+=value;currency=String(row?.amount?.currency||currency);lineItems[label]=(lineItems[label]||0)+value}
+    page=payload?.has_more&&payload?.next_page?String(payload.next_page):"";
+  }while(page);
+  const summary={month,officialCostUsd:Number(officialCostUsd.toFixed(8)),currency,lineItems,syncedAt:FieldValue.serverTimestamp(),syncedBy:request.auth.uid,source:"openai-organization-costs"};
+  await db.doc("classData/openAiBillingSummary").set(summary,{merge:true});
+  return {...summary,syncedAt:new Date().toISOString()};
 });
 
 exports.recordSpellingResult=onCall({region:"us-central1",timeoutSeconds:20,memory:"256MiB",maxInstances:20},async request=>{

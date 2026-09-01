@@ -643,7 +643,7 @@ function setMissionStatus(id,status){
   else state.completedMissions.delete(id);
 }
 function classLibraryStore(){
-  classLibraryStorePromise ||= import('./js/integration/class-library-store.js');
+  classLibraryStorePromise ||= import('./integration/class-library-store.js');
   return classLibraryStorePromise;
 }
 async function handleClassLibraryRequest(event){

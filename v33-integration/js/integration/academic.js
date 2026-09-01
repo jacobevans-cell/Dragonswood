@@ -310,11 +310,11 @@
       return [...byDate.entries()].sort(([a],[b])=>a.localeCompare(b)).map(([day,items])=>{
         const values={};
         for(const key of ['daily','curriculum','spelling','reading']){
-          const found=items.filter(item=>item.weightKey===key),scores=found.map(item=>item.score).filter(score=>score!==null&&score!==undefined);
+          const found=items.filter(item=>item.weightKey===key&&item.counted!==false),scores=found.map(item=>item.score).filter(score=>score!==null&&score!==undefined);
           values[key]=scores.length?round(mean(scores)):null;
         }
         const total=round(weightedAvailable([[values.daily,weights.daily],[values.curriculum,weights.curriculum],[values.spelling,weights.spelling],[values.reading,weights.reading]]));
-        const incomplete=items.filter(item=>!['complete','recorded'].includes(text(item.status))).length;
+        const incomplete=items.filter(item=>item.counted!==false&&!['complete','recorded','late'].includes(text(item.status))).length;
         return Object.freeze({dateKey:day,total,status:incomplete?'Provisional':'Complete evidence',incomplete,...values});
       });
     }
@@ -429,7 +429,10 @@
       const recoveryScored=key=>effectiveRecoveryAssignments.filter(item=>item.weightKey===key&&item.counted!==false&&hasNumber(item.score)).map(item=>number(item.score));
       const effectiveRecoveryDaily=hasTeacherOverrides?round(mean(recoveryScored('daily'))):recoveryDaily;
       const effectiveRecoveryCurriculum=hasTeacherOverrides?round(mean(recoveryScored('curriculum'))):recoveryCurriculum;
-      const effectiveRecoverySpelling=hasTeacherOverrides?round(mean(recoveryScored('spelling'))):recoverySpelling;
+      const recoverySpellingItems=effectiveRecoveryAssignments.filter(item=>item.weightKey==='spelling'&&item.counted!==false&&hasNumber(item.score));
+      const effectiveRecoverySpellingDaily=round(mean(recoverySpellingItems.filter(item=>!text(item.title).toLowerCase().includes('mastery')).map(item=>item.score)));
+      const effectiveRecoverySpellingMastery=round(mean(recoverySpellingItems.filter(item=>text(item.title).toLowerCase().includes('mastery')).map(item=>item.score)));
+      const effectiveRecoverySpelling=hasTeacherOverrides?round(weightedAvailable([[effectiveRecoverySpellingDaily,40],[effectiveRecoverySpellingMastery,60]])):recoverySpelling;
       const effectiveRecoveryReading=hasTeacherOverrides?round(mean(recoveryScored('reading'))):recoveryReading;
       const effectiveRecoveryTotal=hasTeacherOverrides?round(weightedAvailable([[effectiveRecoveryDaily,weights.daily],[effectiveRecoveryCurriculum,weights.curriculum],[effectiveRecoverySpelling,weights.spelling],[effectiveRecoveryReading,weights.reading]])):recoveryTotal;
       const recovery=Object.freeze({total:effectiveRecoveryTotal,daily:effectiveRecoveryDaily,curriculum:effectiveRecoveryCurriculum,spelling:effectiveRecoverySpelling,reading:effectiveRecoveryReading,count:effectiveRecoveryAssignments.length,assignments:Object.freeze(effectiveRecoveryAssignments.map(Object.freeze)),includedInCurrent:true});

@@ -17,6 +17,7 @@ const sessionRef=id=>db.doc(`arcadeSessions/${id}`);
 const testerRef=uid=>db.doc(`testerAccounts/${uid}`);
 const testerControlsRef=uid=>db.doc(`testerSelfControls/${uid}`);
 const substituteRef=()=>db.doc('classData/substituteMode');
+const freeArcadeRef=id=>db.doc(`arcadeFreeAccess/${id}`);
 const studentRef=uid=>db.doc(`students/${uid}`);
 const dailyQuery=uid=>db.collection('dailyQuestProgress').where('studentId','==',uid);
 const curriculumQuery=uid=>db.collection('curriculumProgress').where('studentId','==',uid);
@@ -56,32 +57,38 @@ async function readAfternoon(uid,now=Date.now(),get=ref=>ref.get()){
     dailyRows:rows(dailySnap),curriculumRows:rows(curriculumSnap),dateKey:C.phoenixDateKey(new Date(now)),now
   });
 }
+async function readTeacherFreeArcade(uid,now=Date.now(),get=ref=>ref.get()){
+  const [classSnap,studentSnap]=await Promise.all([get(freeArcadeRef('class')),get(freeArcadeRef(uid))]);
+  const classExpiresAt=classSnap.exists?A.toMillis(classSnap.data()?.expiresAt):0,studentExpiresAt=studentSnap.exists?A.toMillis(studentSnap.data()?.expiresAt):0;
+  const classActive=classExpiresAt>now,studentActive=studentExpiresAt>now,expiresAtMs=Math.max(classActive?classExpiresAt:0,studentActive?studentExpiresAt:0);
+  return {active:classActive||studentActive,scope:studentActive?'individual':classActive?'class':'',expiresAtMs};
+}
 async function readActiveAfternoonSession(now=Date.now()){
   const snapshot=await substituteRef().get(),mode=snapshot.exists?snapshot.data():{},dateKey=C.phoenixDateKey(new Date(now)),active=A.activeMode(mode,dateKey,now);
   const currentMode=A.modeName(mode),arcadeForAll=active&&currentMode==='arcade-free';
   return {active,eligible:active,mode:currentMode,arcadeForAll,morningComplete:active,curriculumComplete:active,completedCount:0,expectedCount:0,expiresAtMs:active?A.toMillis(mode.expiresAt):0};
 }
-function accessView(access,settings,session,now,testerOverride,afternoon){
-  const afternoonAccess=afternoon?.eligible===true,afternoonActive=afternoon?.active===true,freeAccess=testerOverride||afternoonAccess;
+function accessView(access,settings,session,now,testerOverride,afternoon,teacherFree={}){
+  const afternoonAccess=afternoon?.eligible===true,afternoonActive=afternoon?.active===true,teacherFreeAccess=teacherFree?.active===true,freeAccess=testerOverride||afternoonAccess||teacherFreeAccess;
   const effectiveSettings=freeAccess?{...settings,enabled:true}:afternoonActive?{...settings,enabled:false}:settings;
   const effectiveAccess=freeAccess?{...access,individualEnabled:true}:access;
   const testerRevoked=session?.testerSelfControl===true&&!testerOverride,afternoonRevoked=session?.afternoonSubstitute===true&&!afternoonAccess,effectiveSession=testerRevoked||afternoonRevoked?null:session;
   return {
     ...C.publicAccess(effectiveAccess,effectiveSettings,effectiveSession,now),testerOverride,
-    freeAccess,afternoonSubstituteActive:afternoonActive,afternoonSubstituteAccess:afternoonAccess,substituteArcadeForAll:afternoon?.arcadeForAll===true,substituteArcadeMode:C.text(afternoon?.mode),
+    freeAccess,teacherFreeAccess,teacherFreeScope:C.text(teacherFree?.scope),teacherFreeExpiresAtMillis:Number(teacherFree?.expiresAtMs)||0,afternoonSubstituteActive:afternoonActive,afternoonSubstituteAccess:afternoonAccess,substituteArcadeForAll:afternoon?.arcadeForAll===true,substituteArcadeMode:C.text(afternoon?.mode),
     afternoonRequirements:{morningComplete:afternoon?.morningComplete===true,curriculumComplete:afternoon?.curriculumComplete===true,completedCount:Number(afternoon?.completedCount)||0,expectedCount:Number(afternoon?.expectedCount)||0},
     afternoonExpiresAtMillis:Number(afternoon?.expiresAtMs)||0
   };
 }
 async function readPublic(uid,tester=undefined){
   const now=Date.now();
-  const [aSnap,sSnap]=await Promise.all([accessRef(uid).get(),settingsRef().get()]);
+  const [aSnap,sSnap,teacherFree]=await Promise.all([accessRef(uid).get(),settingsRef().get(),readTeacherFreeArcade(uid,now)]);
   const access=aSnap.exists?aSnap.data():{},settings=sSnap.exists?sSnap.data():{};
   const id=C.text(access.currentSessionId);let session=null;
   if(id){const snap=await sessionRef(id).get();if(snap.exists)session={id:snap.id,...snap.data()}}
   const afternoon=session?.afternoonSubstitute===true&&C.activeSession(session,now)?await readActiveAfternoonSession(now):await readAfternoon(uid,now);
   const resolved=tester||await readTester(uid),testerOverride=T.unlockEnabled(resolved.session,resolved.controls,'unlockArcade');
-  return accessView(access,settings,session,now,testerOverride,afternoon);
+  return accessView(access,settings,session,now,testerOverride,afternoon,teacherFree);
 }
 
 exports.getArcadeAccess=onCall(OPTIONS,async request=>{const auth=await requireStudent(request),tester=await readTester(auth.uid);return readPublic(targetUid(request),tester);});
@@ -113,14 +120,15 @@ exports.awardArcadeCriterion=onCall(OPTIONS,async request=>{
 exports.startArcadeSession=onCall(OPTIONS,async request=>{
   const auth=await requireStudent(request),uid=auth.uid,aRef=accessRef(uid),sRef=settingsRef(),newRef=db.collection('arcadeSessions').doc(),now=Date.now();
   const result=await db.runTransaction(async tx=>{
-    const [aSnap,settingsSnap,accountSnap,controlsSnap,afternoon]=await Promise.all([tx.get(aRef),tx.get(sRef),tx.get(testerRef(uid)),tx.get(testerControlsRef(uid)),readAfternoon(uid,now,ref=>tx.get(ref))]),access=aSnap.exists?aSnap.data():{},settings=settingsSnap.exists?settingsSnap.data():{};
+    const [aSnap,settingsSnap,accountSnap,controlsSnap,afternoon,teacherFree]=await Promise.all([tx.get(aRef),tx.get(sRef),tx.get(testerRef(uid)),tx.get(testerControlsRef(uid)),readAfternoon(uid,now,ref=>tx.get(ref)),readTeacherFreeArcade(uid,now,ref=>tx.get(ref))]),access=aSnap.exists?aSnap.data():{},settings=settingsSnap.exists?settingsSnap.data():{};
     const tester=testerState(uid,accountSnap,controlsSnap),email=C.normalizedEmail(auth.token?.email),ordinaryStudent=C.isTeacherEmail(email)||email.endsWith('@explore.academy');
     if(!ordinaryStudent&&!tester.session.isTester)throw new HttpsError('permission-denied','Authorized Dragonswood students only.');
-    const testerOverride=T.unlockEnabled(tester.session,tester.controls,'unlockArcade'),afternoonOverride=afternoon.eligible===true,freeAccess=testerOverride||afternoonOverride,effectiveSettings=freeAccess?{...settings,enabled:true}:afternoon.active?{...settings,enabled:false}:settings,effectiveAccess=freeAccess?{...access,individualEnabled:true}:access;
+    const testerOverride=T.unlockEnabled(tester.session,tester.controls,'unlockArcade'),afternoonOverride=afternoon.eligible===true,teacherFreeOverride=teacherFree.active===true,freeAccess=testerOverride||afternoonOverride||teacherFreeOverride,effectiveSettings=freeAccess?{...settings,enabled:true}:afternoon.active?{...settings,enabled:false}:settings,effectiveAccess=freeAccess?{...access,individualEnabled:true}:access;
     let prior=null,priorRef=null;
     if(C.text(access.currentSessionId)){priorRef=sessionRef(access.currentSessionId);const snap=await tx.get(priorRef);if(snap.exists)prior={id:snap.id,...snap.data()}}
     const revokedTesterSession=prior?.testerSelfControl===true&&!testerOverride,revokedAfternoonSession=prior?.afternoonSubstitute===true&&!afternoonOverride;
-    if(prior&&C.activeSession(prior,now)&&C.effectiveEnabled(effectiveAccess,effectiveSettings)&&!revokedTesterSession&&!revokedAfternoonSession)return {...accessView(access,settings,prior,now,testerOverride,afternoon),accessSource:C.text(prior.source),reused:true};
+    const revokedTeacherFreeSession=prior?.teacherFreeAccess===true&&!teacherFreeOverride;
+    if(prior&&C.activeSession(prior,now)&&C.effectiveEnabled(effectiveAccess,effectiveSettings)&&!revokedTesterSession&&!revokedAfternoonSession&&!revokedTeacherFreeSession)return {...accessView(access,settings,prior,now,testerOverride,afternoon,teacherFree),accessSource:C.text(prior.source),reused:true};
     if(revokedTesterSession){tx.set(priorRef,{status:'revoked',endReason:'tester-authorization-removed',endedAt:FieldValue.serverTimestamp()},{merge:true});tx.set(aRef,{currentSessionId:'',sessionStatus:'revoked',updatedAt:FieldValue.serverTimestamp()},{merge:true});return {revokedTesterSession:true}}
     if(!C.effectiveEnabled(effectiveAccess,effectiveSettings)){
       if(prior&&prior.status==='active')tx.set(priorRef,{status:'locked',endReason:'teacher-lock',endedAt:FieldValue.serverTimestamp()},{merge:true});
@@ -129,15 +137,25 @@ exports.startArcadeSession=onCall(OPTIONS,async request=>{
     const tokens=C.clampTokens(access.tokens),cost=freeAccess?0:C.SESSION_COST;
     if(tokens<cost)throw new HttpsError('failed-precondition','Three Arcade Tokens are required.');
     if(prior&&prior.status==='active')tx.set(priorRef,{status:'expired',endReason:'expired',endedAt:FieldValue.serverTimestamp()},{merge:true});
-    const source=afternoonOverride?(afternoon.arcadeForAll?'substitute-arcade-free':'afternoon-substitute'):testerOverride?'tester-self-control':'arcade-token-wallet',endAt=afternoonOverride?afternoon.expiresAtMs:now+C.SESSION_MS;
-    const session={uid,status:'active',cost,source,testerSelfControl:testerOverride,afternoonSubstitute:afternoonOverride,startAt:Timestamp.fromMillis(now),endAt:Timestamp.fromMillis(endAt),createdAt:FieldValue.serverTimestamp(),schemaVersion:1};
+    const source=teacherFreeOverride?`teacher-free-${teacherFree.scope}`:afternoonOverride?(afternoon.arcadeForAll?'substitute-arcade-free':'afternoon-substitute'):testerOverride?'tester-self-control':'arcade-token-wallet',endAt=teacherFreeOverride?teacherFree.expiresAtMs:afternoonOverride?afternoon.expiresAtMs:now+C.SESSION_MS;
+    const session={uid,status:'active',cost,source,testerSelfControl:testerOverride,afternoonSubstitute:afternoonOverride,teacherFreeAccess:teacherFreeOverride,startAt:Timestamp.fromMillis(now),endAt:Timestamp.fromMillis(endAt),createdAt:FieldValue.serverTimestamp(),schemaVersion:1};
     tx.create(newRef,session);
     tx.set(aRef,{uid,tokens:tokens-cost,currentSessionId:newRef.id,sessionStatus:'active',updatedAt:FieldValue.serverTimestamp()},{merge:true});
-    return {...accessView({...access,tokens:tokens-cost,currentSessionId:newRef.id},settings,{id:newRef.id,...session},now,testerOverride,afternoon),accessSource:source,reused:false};
+    return {...accessView({...access,tokens:tokens-cost,currentSessionId:newRef.id},settings,{id:newRef.id,...session},now,testerOverride,afternoon,teacherFree),accessSource:source,reused:false};
   });
   if(result.revokedTesterSession)throw new HttpsError('failed-precondition','Tester Arcade authorization was removed. Start again only if ordinary Arcade access is available.');
   await audit('session-start',auth.uid,uid,{sessionId:result.sessionId,reused:result.reused===true,source:result.accessSource||'arcade-token-wallet'});
   return result;
+});
+
+exports.setArcadeFreeAccess=onCall(OPTIONS,async request=>{
+  const teacher=requireTeacher(request),scope=C.text(request.data?.scope),uid=C.text(request.data?.uid),enabled=request.data?.enabled!==false;
+  if(!['class','individual'].includes(scope))throw new HttpsError('invalid-argument','Scope must be class or individual.');
+  if(scope==='individual'&&!uid)throw new HttpsError('invalid-argument','Choose a student first.');
+  const target=scope==='class'?'class':uid,expiresAt=enabled?Timestamp.fromMillis(Date.now()+60*60*1000):Timestamp.fromMillis(0);
+  await freeArcadeRef(target).set({scope,uid:scope==='individual'?uid:'',enabled,expiresAt,teacherUid:teacher.uid,updatedAt:FieldValue.serverTimestamp()},{merge:false});
+  await audit('free-access',teacher.uid,target,{enabled,scope,durationMinutes:enabled?60:0});
+  return {ok:true,enabled,scope,uid:scope==='individual'?uid:'',expiresAtMillis:enabled?expiresAt.toMillis():0};
 });
 
 exports.endArcadeSession=onCall(OPTIONS,async request=>{

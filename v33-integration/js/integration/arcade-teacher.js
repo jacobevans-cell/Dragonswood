@@ -35,6 +35,7 @@
     getState:uid=>call('getArcadeTeacherState',{uid}),
     award:(uid,criterion)=>call('awardArcadeCriterion',{uid,criterion}),
     setAvailability:(open,uid='')=>call('setArcadeAvailability',{enabled:open,uid}),
+    setFreeAccess:(scope,uid='',enabled=true)=>call('setArcadeFreeAccess',{scope,uid,enabled}),
     refund:(uid,sessionId,reason)=>call('refundArcadeSession',{uid,sessionId,reason})
   });
 })();

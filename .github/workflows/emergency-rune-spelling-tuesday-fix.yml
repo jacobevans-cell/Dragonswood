@@ -83,3 +83,5 @@ jobs:
           git add rune-spelling.html rune-spelling-rebuild-preview.html tools/verify-rune-spelling-definitive-word-set.mjs
           git commit -m "Fix Tuesday Rune Spelling audio and word split"
           git push origin main
+
+# Trigger emergency patch after workflow registration.

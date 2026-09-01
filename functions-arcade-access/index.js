@@ -63,6 +63,26 @@ async function readTeacherFreeArcade(uid,now=Date.now(),get=ref=>ref.get()){
   const classActive=classExpiresAt>now,studentActive=studentExpiresAt>now,expiresAtMs=Math.max(classActive?classExpiresAt:0,studentActive?studentExpiresAt:0);
   return {active:classActive||studentActive,scope:studentActive?'individual':classActive?'class':'',expiresAtMs};
 }
+async function revokeTeacherFreeSession(uid){
+  if(!uid)return false;
+  return db.runTransaction(async tx=>{
+    const aRef=accessRef(uid),aSnap=await tx.get(aRef),access=aSnap.exists?aSnap.data():{},id=C.text(access.currentSessionId);
+    if(!id)return false;
+    const sRef=sessionRef(id),sSnap=await tx.get(sRef);
+    if(!sSnap.exists)return false;
+    const session=sSnap.data();
+    if(session.status!=='active'||session.teacherFreeAccess!==true)return false;
+    tx.set(sRef,{status:'revoked',endReason:'teacher-free-access-restored',endedAt:FieldValue.serverTimestamp()},{merge:true});
+    tx.set(aRef,{currentSessionId:'',sessionStatus:'revoked',updatedAt:FieldValue.serverTimestamp()},{merge:true});
+    return true;
+  });
+}
+async function revokeAllTeacherFreeSessions(){
+  const snapshot=await db.collection('arcadeSessions').where('teacherFreeAccess','==',true).get();
+  const active=snapshot.docs.filter(doc=>doc.data()?.status==='active');
+  const results=await Promise.all(active.map(doc=>revokeTeacherFreeSession(C.text(doc.data()?.uid))));
+  return results.filter(Boolean).length;
+}
 async function readActiveAfternoonSession(now=Date.now()){
   const snapshot=await substituteRef().get(),mode=snapshot.exists?snapshot.data():{},dateKey=C.phoenixDateKey(new Date(now)),active=A.activeMode(mode,dateKey,now);
   const currentMode=A.modeName(mode),arcadeForAll=active&&currentMode==='arcade-free';
@@ -150,12 +170,21 @@ exports.startArcadeSession=onCall(OPTIONS,async request=>{
 
 exports.setArcadeFreeAccess=onCall(OPTIONS,async request=>{
   const teacher=requireTeacher(request),scope=C.text(request.data?.scope),uid=C.text(request.data?.uid),enabled=request.data?.enabled!==false;
-  if(!['class','individual'].includes(scope))throw new HttpsError('invalid-argument','Scope must be class or individual.');
+  if(!['class','individual','all'].includes(scope))throw new HttpsError('invalid-argument','Scope must be class, individual, or all.');
+  if(scope==='all'&&enabled)throw new HttpsError('invalid-argument','All is available only when restoring restrictions.');
   if(scope==='individual'&&!uid)throw new HttpsError('invalid-argument','Choose a student first.');
+  if(scope==='all'){
+    const grants=await db.collection('arcadeFreeAccess').get(),expiresAt=Timestamp.fromMillis(0);
+    await Promise.all(grants.docs.map(doc=>doc.ref.set({enabled:false,expiresAt,teacherUid:teacher.uid,updatedAt:FieldValue.serverTimestamp()},{merge:true})));
+    const revokedSessions=await revokeAllTeacherFreeSessions();
+    await audit('free-access-restore-all',teacher.uid,'all',{enabled:false,scope:'all',grantCount:grants.size,revokedSessions});
+    return {ok:true,enabled:false,scope:'all',uid:'',expiresAtMillis:0,grantCount:grants.size,revokedSessions};
+  }
   const target=scope==='class'?'class':uid,expiresAt=enabled?Timestamp.fromMillis(Date.now()+60*60*1000):Timestamp.fromMillis(0);
   await freeArcadeRef(target).set({scope,uid:scope==='individual'?uid:'',enabled,expiresAt,teacherUid:teacher.uid,updatedAt:FieldValue.serverTimestamp()},{merge:false});
+  const revokedSessions=!enabled&&scope==='individual'&&(await revokeTeacherFreeSession(uid))?1:0;
   await audit('free-access',teacher.uid,target,{enabled,scope,durationMinutes:enabled?60:0});
-  return {ok:true,enabled,scope,uid:scope==='individual'?uid:'',expiresAtMillis:enabled?expiresAt.toMillis():0};
+  return {ok:true,enabled,scope,uid:scope==='individual'?uid:'',expiresAtMillis:enabled?expiresAt.toMillis():0,revokedSessions};
 });
 
 exports.endArcadeSession=onCall(OPTIONS,async request=>{

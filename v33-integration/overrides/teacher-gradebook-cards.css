@@ -1,4 +1,4 @@
-/* V57.1.8 — approved V2-style gradebook presentation on the hardened V3 model. */
+/* V58.1.28 — approved V2-style gradebook presentation on the hardened V3 model. */
 .teacher-page-gradebook .gradebook-settings-strip {
   display: grid;
   grid-template-columns: minmax(150px, .55fr) minmax(420px, 1.65fr) auto auto;
@@ -222,6 +222,79 @@
 
 .teacher-page-gradebook .gradebook-detail-title small {
   color: #91a1ba;
+}
+
+.teacher-page-gradebook .grade-assignment-row {
+  grid-template-columns: minmax(220px, 1.25fr) minmax(170px, .85fr) minmax(190px, 1fr) auto;
+  align-items: center;
+  border: 1px solid rgba(84, 123, 176, .18);
+}
+
+.teacher-page-gradebook .grade-assignment-row > span,
+.teacher-page-gradebook .grade-assignment-name {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.teacher-page-gradebook .grade-assignment-row small {
+  display: block;
+  color: #91a1ba;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.teacher-page-gradebook .teacher-edited-grade {
+  border-color: rgba(255, 211, 102, .55);
+  background: linear-gradient(90deg, rgba(76, 47, 10, .45), rgba(8, 17, 46, .72));
+}
+
+.teacher-page-gradebook .teacher-grade-lock {
+  color: #ffe17a;
+  font-weight: 900;
+}
+
+.grade-editor-source {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(170px, 1fr));
+  gap: 10px;
+  margin: 4px 0 14px;
+}
+
+.grade-editor-source span {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid rgba(105, 144, 194, .35);
+  border-radius: 10px;
+  background: rgba(6, 18, 48, .75);
+}
+
+.grade-editor-source small {
+  color: #9dadc5;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.grade-editor-source b {
+  color: #ffe17a;
+  font-size: 24px;
+}
+
+.grade-count-toggle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 42px;
+  padding: 9px 11px;
+  border: 1px solid rgba(105, 144, 194, .35);
+  border-radius: 9px;
+  background: rgba(6, 18, 48, .62);
+}
+
+.grade-count-toggle input {
+  width: 18px;
+  height: 18px;
 }
 
 .teacher-page-gradebook .gradebook-card-empty {

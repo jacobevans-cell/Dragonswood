@@ -4234,3 +4234,43 @@
     .boss-arena{height:300px}
   }
 }
+
+
+/* STUDENT IDEA REVIEW WORKSPACE */
+.dialog.student-requests-workspace{
+  width:min(1380px,97vw);
+  height:min(920px,94vh);
+  max-height:94vh;
+  display:grid;
+  grid-template-rows:auto minmax(0,1fr) auto;
+  overflow:hidden;
+  padding:22px;
+}
+.dialog.student-requests-workspace>h2{margin:0 0 12px}
+.dialog.student-requests-workspace>.idea-workspace{min-height:0;overflow:auto;padding-right:8px;scrollbar-gutter:stable}
+.idea-workspace-intro{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:14px 16px;border:1px solid rgba(74,153,201,.24);border-radius:14px;background:rgba(4,17,47,.62)}
+.idea-workspace-intro p{margin:0;color:#c9dcf1}
+.idea-workspace-counts{display:flex;gap:8px;flex-wrap:wrap}
+.idea-workspace-counts span{padding:8px 11px;border-radius:999px;border:1px solid rgba(90,177,220,.28);background:#071a40;color:#cdeaff;white-space:nowrap}
+.idea-filter-block{margin-top:15px}
+.idea-filter-block>b{display:block;margin-bottom:7px;color:#ffe8a0;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em}
+.idea-filter-row{display:flex;gap:8px;flex-wrap:wrap}
+.idea-filter-button{border:1px solid #31567b;border-radius:999px;padding:9px 13px;background:#081a3d;color:#d9eaff;font-weight:900;cursor:pointer}
+.idea-filter-button span{display:inline-grid;place-items:center;min-width:22px;height:22px;margin-left:5px;padding:0 6px;border-radius:999px;background:rgba(255,255,255,.09)}
+.idea-filter-button.active{border-color:#54d7f3;background:linear-gradient(135deg,#6837ca,#148eae);color:#fff;box-shadow:0 0 0 2px rgba(84,215,243,.12)}
+.idea-review-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+.idea-review-card{display:flex;flex-direction:column;gap:13px;min-width:0;padding:17px;border:1px solid rgba(75,145,192,.34);border-radius:15px;background:linear-gradient(145deg,rgba(8,25,63,.9),rgba(4,14,42,.94))}
+.idea-review-heading{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+.idea-review-heading h3{margin:5px 0 4px;color:#fff}
+.idea-review-heading p{margin:0;color:#cbd8ec;line-height:1.45}
+.idea-type{display:inline-block;padding:4px 8px;border-radius:999px;background:#153b65;color:#8eeaff;font-size:.72rem;font-weight:1000;text-transform:uppercase}
+.idea-type-bug{background:#5a2036;color:#ffb2c3}.idea-type-change{background:#473719;color:#ffe09b}.idea-type-content{background:#233f29;color:#b8f4c3}
+.idea-review-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.idea-review-fields textarea{min-height:112px}
+.idea-review-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:auto}
+.idea-empty{grid-column:1/-1;min-height:220px}
+@media(max-width:900px){
+  .dialog.student-requests-workspace{width:98vw;height:96vh;max-height:96vh;padding:14px}
+  .idea-review-grid,.idea-review-fields{grid-template-columns:1fr}
+  .idea-workspace-intro{align-items:flex-start;flex-direction:column}
+}

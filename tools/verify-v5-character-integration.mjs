@@ -11,7 +11,22 @@ vm.runInContext(source,context,{filename:'dragonswood-rpg-v56.js'});
 const R=context.window.DWRPG;
 const failures=[];
 const levels=[1,5,10,15,20];
+const expectedFamilies={
+  warrior:{male:{radiant:'dawnscale',shadow:'eclipse'},female:{radiant:'sunshield',shadow:'nightwyrm'}},
+  ranger:{male:{radiant:'dawnfeather',shadow:'nightfang'},female:{radiant:'sunleaf',shadow:'moonshadow'}},
+  mage:{male:{radiant:'starfire',shadow:'voidcore'},female:{radiant:'celestial',shadow:'eclipse-witch'}},
+  healer:{male:{radiant:'dawnkeeper',shadow:'mooncleric'},female:{radiant:'dawnwing',shadow:'twilight'}},
+};
 let profiles=0,checkedFiles=0;
+
+for(const [classId,genders] of Object.entries(expectedFamilies)){
+  for(const [gender,affinities] of Object.entries(genders)){
+    for(const [affinity,expectedId] of Object.entries(affinities)){
+      const actual=R.v5Families[classId]?.[gender]?.[affinity]?.id;
+      if(actual!==expectedId)failures.push(`Gender mapping mismatch: ${classId}/${gender}/${affinity} expected ${expectedId}, got ${actual}.`);
+    }
+  }
+}
 
 for(const [classId,genders] of Object.entries(R.v5Families)){
   for(const [gender,affinities] of Object.entries(genders)){
@@ -41,6 +56,10 @@ const catalog=JSON.parse(fs.readFileSync(path.join(root,'assets/rpg/v5/catalog.j
 if(catalog.validation?.passed!==true)failures.push('Production catalog validation is not passing.');
 if(catalog.characters?.length!==80)failures.push(`Expected 80 catalog characters, got ${catalog.characters?.length}.`);
 if(catalog.productionAssetCount!==480)failures.push(`Expected 480 production files, got ${catalog.productionAssetCount}.`);
+for(const character of catalog.characters||[]){
+  const expected=expectedFamilies[character.classId]?.[character.gender]?.[character.affinity];
+  if(expected!==character.family)failures.push(`Catalog gender mismatch: ${character.id} is tagged ${character.gender}/${character.affinity}.`);
+}
 
 for(const [file,needle] of [['adventurer-hall.html','characterV5'],['boss-battle.html','characterClassId'],['v33-integration/js/student-app.js','characterV5'],['kingdom-wars/kingdom-wars-test-app.mjs','characterV5']]){
   const body=fs.readFileSync(path.join(root,file),'utf8');

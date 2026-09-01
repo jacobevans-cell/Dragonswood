@@ -16,8 +16,8 @@ FAMILY_META = {
     "warrior": {
         "dawnscale": ("male", "radiant", "Dawnscale"),
         "sunshield": ("female", "radiant", "Sunshield"),
-        "nightwyrm": ("male", "shadow", "Nightwyrm"),
-        "eclipse": ("female", "shadow", "Eclipse"),
+        "nightwyrm": ("female", "shadow", "Nightwyrm"),
+        "eclipse": ("male", "shadow", "Eclipse"),
     },
     "ranger": {
         "dawnfeather": ("male", "radiant", "Dawnfeather"),
@@ -26,8 +26,8 @@ FAMILY_META = {
         "moonshadow": ("female", "shadow", "Moonshadow"),
     },
     "mage": {
-        "celestial": ("male", "radiant", "Celestial"),
-        "starfire": ("female", "radiant", "Starfire"),
+        "celestial": ("female", "radiant", "Celestial"),
+        "starfire": ("male", "radiant", "Starfire"),
         "voidcore": ("male", "shadow", "Voidcore"),
         "eclipse-witch": ("female", "shadow", "Eclipse Witch"),
     },

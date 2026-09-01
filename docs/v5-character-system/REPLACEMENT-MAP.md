@@ -15,8 +15,7 @@
 
 | Class | Radiant male | Radiant female | Shadow male | Shadow female |
 | --- | --- | --- | --- | --- |
-| Warrior | Dawnscale | Sunshield | Nightwyrm | Eclipse |
+| Warrior | Dawnscale | Sunshield | Eclipse | Nightwyrm |
 | Ranger | Dawnfeather | Sunleaf | Nightfang | Moonshadow |
-| Mage | Celestial | Starfire | Voidcore | Eclipse Witch |
+| Mage | Starfire | Celestial | Voidcore | Eclipse Witch |
 | Healer | Dawnkeeper | Dawnwing | Mooncleric | Twilight |
-

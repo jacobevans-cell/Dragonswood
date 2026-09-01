@@ -183,9 +183,9 @@
   function resolvePet(profile={}){const id=canonicalPetId(profile.activePet);return id?[...pets,...prestigePets].find(p=>p.id===id)||null:null}
   const v5Config=Object.freeze({enabled:true,testerEmail:"jacobicusjax@gmail.com",rollback:"Set enabled to false to restore every legacy character immediately."});
   const v5Families=Object.freeze({
-    warrior:{male:{radiant:{id:"dawnscale",name:"Dawnscale"},shadow:{id:"nightwyrm",name:"Nightwyrm"}},female:{radiant:{id:"sunshield",name:"Sunshield"},shadow:{id:"eclipse",name:"Eclipse"}}},
+    warrior:{male:{radiant:{id:"dawnscale",name:"Dawnscale"},shadow:{id:"eclipse",name:"Eclipse"}},female:{radiant:{id:"sunshield",name:"Sunshield"},shadow:{id:"nightwyrm",name:"Nightwyrm"}}},
     ranger:{male:{radiant:{id:"dawnfeather",name:"Dawnfeather"},shadow:{id:"nightfang",name:"Nightfang"}},female:{radiant:{id:"sunleaf",name:"Sunleaf"},shadow:{id:"moonshadow",name:"Moonshadow"}}},
-    mage:{male:{radiant:{id:"celestial",name:"Celestial"},shadow:{id:"voidcore",name:"Voidcore"}},female:{radiant:{id:"starfire",name:"Starfire"},shadow:{id:"eclipse-witch",name:"Eclipse Witch"}}},
+    mage:{male:{radiant:{id:"starfire",name:"Starfire"},shadow:{id:"voidcore",name:"Voidcore"}},female:{radiant:{id:"celestial",name:"Celestial"},shadow:{id:"eclipse-witch",name:"Eclipse Witch"}}},
     healer:{male:{radiant:{id:"dawnkeeper",name:"Dawnkeeper"},shadow:{id:"mooncleric",name:"Mooncleric"}},female:{radiant:{id:"dawnwing",name:"Dawnwing"},shadow:{id:"twilight",name:"Twilight"}}}
   });
   const v5Tiers=Object.freeze([
@@ -215,5 +215,5 @@
   function inventory(profile={}){return Array.isArray(profile.rpgInventory)?profile.rpgInventory.map(String):[]}
   function dailyXp(profile={}){return String(profile.dailyXpDate||"")===dateKey()?Math.max(0,Math.min(150,Number(profile.dailyXpEarned)||0)):0}
 
-  window.DWRPG={classes,pets,prestigePets,petRegistry,enemies,items,appearancePacks,v5Config,v5Families,v5Tiers,dateKey,levelForXp,hash,dailyEnemy,canonicalPetId,resolvePet,isV5Tester,hasV5Selection,v5SelectionRequired,characterClassId,v5TierForLevel,resolveV5Character,resolveAppearance,resolveBackground,inventory,dailyXp,version:"56.19-v5-tester"};
+  window.DWRPG={classes,pets,prestigePets,petRegistry,enemies,items,appearancePacks,v5Config,v5Families,v5Tiers,dateKey,levelForXp,hash,dailyEnemy,canonicalPetId,resolvePet,isV5Tester,hasV5Selection,v5SelectionRequired,characterClassId,v5TierForLevel,resolveV5Character,resolveAppearance,resolveBackground,inventory,dailyXp,version:"56.20-v5.1-tester"};
 })();

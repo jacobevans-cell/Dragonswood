@@ -451,7 +451,11 @@ async function handleClassLibraryRequest(event){
  const message=event.data||{},response={type:'dw-class-library-account-response',requestId:message.requestId,ok:false};
  try{
   const store=await classLibraryStore();
-  if(message.action==='load-reading-state')response.state=await store.loadReadingState();
+  if(message.action==='load-reading-state'){
+   const access=await store.getAccess();
+   response.state=await store.loadReadingState();
+   response.permissions=access.teacher?{canManageLibrary:true}:null;
+  }
   else if(message.action==='save-reading-state')response.state=await store.saveReadingState(message.payload?.state);
   else if(message.action==='load-chapter-tests')response.tests=await store.loadChapterTests();
   else if(message.action==='save-chapter-test')response.test=await store.saveChapterTest(message.payload?.test);

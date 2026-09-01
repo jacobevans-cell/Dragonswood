@@ -15,7 +15,7 @@ import {
   SUMMARY_PROMPT,
   allowNextSeriesBook,
   unlockStudentBook
-} from "./assessment-store.js?v=20260901-3";
+} from "./assessment-store.js?v=20260901-4";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL("./vendor/pdf.worker.mjs", import.meta.url).href;
 

@@ -87,7 +87,7 @@ export async function loadStudentState() {
   const local = normalizeStudentState(readJson(STUDENT_KEY, emptyStudentState()));
   const response = await parentRequest("load-reading-state");
   let accountState = response?.ok ? response.state : null;
-  let permissions = null;
+  let permissions = response?.permissions && typeof response.permissions === "object" ? response.permissions : null;
   if (!response?.ok) {
     const store = await directStore();
     if (store) {

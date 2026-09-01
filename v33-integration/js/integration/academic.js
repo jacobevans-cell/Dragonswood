@@ -218,11 +218,12 @@
   }
   function curriculumProgressComplete(item={},progress={},videoMap={}){
     if(progress.complete===true)return true;
-    if(progress.complete===false||!progress.practiced)return false;
+    if(!progress.practiced)return false;
     if(curriculumVideoRequired(item,videoMap)&&progress.watched!==true)return false;
+    if(progress.standardCheckSubmitted===true)return true;
     const required=curriculumQuestionTotal(item,progress);
     if(required===0)return Array.isArray(item.quickWriteSentenceRange);
-    return number(progress.questionsSeen)>=required&&number(progress.questionsCorrect)>=required;
+    return number(progress.questionsSeen)>=required;
   }
   function latestRowsBy(source=[],keyFn){
     const rows=new Map(),times=new Map();

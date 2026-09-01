@@ -48,7 +48,7 @@
     // Daily curriculum changes frequently. A fresh iframe URL prevents the portal
     // from reopening a cached copy after a lesson publish.
     if(mod.id==='curriculum-quest')url.searchParams.set('v',Date.now().toString(36));
-    if(mod.id==='rune-spelling')url.searchParams.set('v','58.1.6');
+    if(mod.id==='rune-spelling')url.searchParams.set('v','58.1.7');
     if(mod.id==='dragon-tongues'||mod.id==='deep-time-lab')url.searchParams.set('v','58.0.0');
     if(mod.id==='class-reader')url.searchParams.set('v','storyvault-2.1.0');
     const pageUrl=new URL(globalThis.location?.href||baseHref||url.href),previewDate=pageUrl.searchParams.get('previewDate'),testerDate=globalThis.DWV33TesterDateContext?.();
@@ -69,6 +69,28 @@
     if(!doc)return;
     doc.documentElement.classList.add('dw-v33-embedded');
     doc.body?.classList.add('dw-v33-embedded');
+    if(/\/rune-spelling\.html$/.test(new URL(frame.src,document.baseURI).pathname)&&!doc.querySelector('script[data-dw-rune-tuesday-hotfix]')){
+      const hotfix=doc.createElement('script');
+      hotfix.dataset.dwRuneTuesdayHotfix='58.1.7';
+      hotfix.textContent=`(()=>{
+        speakText=function(text,rate=.85){
+          const clean=String(text||'').trim();if(!clean)return;
+          const id='spelling/'+clean.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+          const request={id,text:clean,contentType:'ela',assessmentLanguage:'en',locale:'en-US',rate};
+          if(typeof window.DWNarrator?.play==='function'){try{window.DWNarrator.play(request);return}catch(error){console.warn('Dragonswood narrator unavailable; using device speech',error)}}
+          if(typeof window.speechSynthesis?.speak!=='function'||typeof window.SpeechSynthesisUtterance!=='function')return;
+          window.speechSynthesis.cancel();
+          const utterance=new window.SpeechSynthesisUtterance(clean);utterance.lang='en-US';utterance.rate=Math.max(.5,Math.min(1.2,Number(rate)||.85));utterance.pitch=1;
+          const voices=window.speechSynthesis.getVoices?.()||[];
+          utterance.voice=voices.find(voice=>voice.lang==='en-US'&&voice.localService)||voices.find(voice=>String(voice.lang||'').toLowerCase().startsWith('en-us'))||voices.find(voice=>String(voice.lang||'').toLowerCase().startsWith('en'))||null;
+          window.speechSynthesis.speak(utterance);
+        };
+        weeklyDiscoverySplitIndex=function(){return Math.ceil(words.length/2)};
+        mondayIds=function(){return words.slice(0,weeklyDiscoverySplitIndex()).map(word=>word.contentId)};
+        tuesdayIds=function(){return words.slice(weeklyDiscoverySplitIndex()).map(word=>word.contentId)};
+      })();`;
+      doc.body?.append(hotfix);
+    }
     if(!doc.querySelector('link[data-dw-v11-visual]')){
       const link=doc.createElement('link');
       link.rel='stylesheet';

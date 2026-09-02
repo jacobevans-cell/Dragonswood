@@ -113,7 +113,7 @@ body>*{position:relative;z-index:1}
 @media(max-width:900px){#curriculumTabs,#curriculumTabs.teacher-tabs{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:760px){.recovery-day>summary{grid-template-columns:auto 1fr}.day-heading{text-align:left}.day-stats{grid-column:1/-1;justify-content:flex-start;flex-wrap:wrap;padding-left:22px}.day-total{white-space:normal}.mission-summary{grid-template-columns:1fr}.mission-time{text-align:left!important;margin-top:7px}}
 @media(max-width:520px){#curriculumTabs,#curriculumTabs.teacher-tabs{grid-template-columns:repeat(2,1fr)}}
-</style><link rel="stylesheet" href="v33-integration/css/direct-visual-v11.css?v=1.1"><script defer src="dragonswood-immersive-ui.js?v=1.0.0"></script></head>
+</style><style id="dw-achievement-styles">.dw-achievement-celebration{position:fixed;inset:0;z-index:100000;display:grid;place-items:center;padding:20px;background:rgba(2,3,18,.9);backdrop-filter:blur(8px)}.dw-achievement-card{width:min(520px,94vw);text-align:center;padding:30px;border:2px solid #ffe06d;border-radius:22px;background:radial-gradient(circle at 50% 10%,#52318a,#080923 68%);box-shadow:0 28px 100px #000;color:#fff}.dw-achievement-icon{font-size:88px;animation:dwBadgePop .65s ease both}.dw-achievement-card h2{font:900 36px Georgia;color:#fff0a0;margin:8px}.dw-achievement-card button{margin-top:12px}@keyframes dwBadgePop{0%{transform:scale(.25) rotate(-12deg);opacity:0}75%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}@media(prefers-reduced-motion:reduce){.dw-achievement-icon{animation:none}}</style><link rel="stylesheet" href="v33-integration/css/direct-visual-v11.css?v=1.1"><script defer src="dragonswood-immersive-ui.js?v=1.0.0"></script></head>
 <body>
 <header class="top"><div class="shell topin"><div class="brand"><img class="shield" src="v33-integration/assets/branding/dragonswood-mascot-crest.png" alt="Dragonswood volleyball dragon crest"><div><h1 style="color:#f7c94f;background:linear-gradient(180deg,#fff9d8 0%,#ffe99a 27%,#f8ca50 58%,#ffe99a 82%,#dfa12a 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 1px 0 rgba(116,67,8,.95)) drop-shadow(0 2px 1px rgba(22,5,34,.95)) drop-shadow(0 0 5px rgba(255,216,91,.16));letter-spacing:.3px">DRAGONSWOOD</h1><p>CURRICULUM QUEST • EXPLORE ACADEMY</p></div></div>
 <div class="controls">
@@ -813,7 +813,9 @@ async function requestAutoQuestionOverride(id,index){
 }
 
 function curriculumAiEligible(spec,result,answer){
-  if(result.ok||result.reviewable===false||result.aiEligible===false||!String(answer||"").trim())return false;
+  if(!String(answer||"").trim())return false;
+  if(spec.kind==="quickwrite")return result.ok===true||result.reviewable!==false;
+  if(result.ok||result.reviewable===false||result.aiEligible===false)return false;
   return ["explain","inference","writingCommunity","opinion","quickwrite","morph"].includes(spec.kind);
 }
 function activityHint(spec,result){if(spec.kind==="quickwrite"&&result?.code==="sentence_count")return "Continue your story until you reach the minimum sentence count.";return window.DWCurriculumValidation?.hintFor?.(spec.kind,result)||"Answer the question directly, add one specific detail, and explain how it supports your answer."}
@@ -841,6 +843,22 @@ function academicAiLabel(model){
   if(value.includes("terra"))return "Terra";
   if(value.includes("sol"))return "Sol";
   return String(model||"");
+}
+const ACHIEVEMENT_BADGES={
+  exceptional_scribe:{icon:"✨",name:"Exceptional Scribe",description:"Earned extra credit for an exceptional Quickwrite."},
+  evidence_detective:{icon:"🔎",name:"Evidence Detective",description:"Used strong, specific evidence in ELA or science."},
+  math_pathfinder:{icon:"🧭",name:"Math Pathfinder",description:"Completed a math mission accurately on the first check."},
+  quest_champion:{icon:"🏆",name:"Quest Champion",description:"Completed every Curriculum Quest activity for the day."}
+};
+async function awardAchievement(id,reason){
+  if(DW_LOCAL_TESTER||DW_SAFE_PREVIEW||!auth.currentUser||isTeacher||!ACHIEVEMENT_BADGES[id])return false;
+  const badge={...ACHIEVEMENT_BADGES[id],id,level:"Bronze",earnedAt:new Date().toISOString(),reason:String(reason||ACHIEVEMENT_BADGES[id].description).slice(0,300),revoked:false};
+  try{await setDoc(doc(db,"students",auth.currentUser.uid),{achievementBadges:{[id]:badge}},{merge:true});return true}catch(e){console.warn("Achievement badge",e);return false}
+}
+function showAchievementCelebration(badge,detail){
+  const key=`dw-achievement-shown:${auth.currentUser?.uid||"student"}:${badge.id}:${phoenixDateKey()}`;if(localStorage.getItem(key))return;
+  localStorage.setItem(key,"1");const overlay=document.createElement("div");overlay.className="dw-achievement-celebration";overlay.innerHTML=`<div class="dw-achievement-card"><div class="dw-achievement-icon">${badge.icon}</div><p class="meta">ACHIEVEMENT UNLOCKED</p><h2>${badge.name}</h2><p>${String(detail||badge.description).replace(/[<>]/g,"")}</p><button type="button">CONTINUE</button></div>`;overlay.querySelector("button").onclick=()=>overlay.remove();document.body.appendChild(overlay);
+  if(!matchMedia("(prefers-reduced-motion: reduce)").matches)try{const C=window.AudioContext||window.webkitAudioContext,c=new C(),o=c.createOscillator(),g=c.createGain();o.frequency.value=880;g.gain.setValueAtTime(.08,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.45);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.45)}catch{}
 }
 function updateCurriculumReviewGate(id,s){
   const button=document.getElementById("overrideBtn-"+id);if(!button)return;
@@ -904,7 +922,6 @@ async function checkActivity(id){
     }
   }
 
-  window.recordCurriculumAttempt?.(x,s,result.ok);
   f.className="activity-feedback show "+(result.ok?"good":"bad");
   if(result.ok){
     if(spec.kind==="quickwrite"){
@@ -913,7 +930,14 @@ async function checkActivity(id){
     }
     s.practiced=true;s.practiceEvidence=answer;delete s.activityDraftResponse;delete s.activityDraftChoice;s.overrideStatus="";s.teacherReviewEligible=false;s.lastValidatorCode="passed";s.lastValidatorMessage="";
     if(aiResult?.decision==="approve")s.lastApprovedAi={model:String(aiResult.model||""),score:aiResult.score!==null&&aiResult.score!==undefined&&Number.isFinite(Number(aiResult.score))?Number(aiResult.score):null,policyVersion:String(aiResult.policyVersion||""),strongRetryUsed:!!aiResult.strongRetryUsed,exceptionalCheckUsed:!!aiResult.exceptionalCheckUsed};else delete s.lastApprovedAi;
+    const exceptional=spec.kind==="quickwrite"&&aiResult?.decision==="approve"&&aiResult?.confidence==="high"&&Number(aiResult?.score||0)===10&&sentenceCount(structuredActivityParts(answer).response)>Number(spec.sentenceRange?.[0]||0);
+    s.extraCreditPoints=exceptional?1:0;s.extraCreditReason=exceptional?String(aiResult.reason||"Exceptional ideas, development, and writing quality beyond the requirement.").slice(0,300):"";
     delete s.lastAiTriage;window.DWAcademicAI.clearRevisionGate(s);S.items[id]=s;save();clearCurriculumDraft(id);
+    await window.recordCurriculumAttempt?.(x,s,result.ok);
+    if(exceptional){const badge=ACHIEVEMENT_BADGES.exceptional_scribe;await awardAchievement("exceptional_scribe",s.extraCreditReason);showAchievementCelebration(badge,`You earned +1 Quickwrite extra-credit point: ${s.extraCreditReason}`)}
+    if((spec.kind==="inference"||x.strand==="Reading"||x.subject==="Science")&&Number(aiResult?.score||0)>=9)await awardAchievement("evidence_detective","Used specific evidence and connected it clearly to the answer.");
+    if(x.subject==="Math"&&(s.activityAttempts||1)===1)await awardAchievement("math_pathfinder","Completed a math mission accurately on the first check.");
+    const todayItems=D.curriculum.filter(item=>item.grade===S.grade&&Number(item.day)===Number(S.day)&&!mediaPending(item));if(todayItems.length&&todayItems.every(missionComplete)){await awardAchievement("quest_champion","Completed every Curriculum Quest activity for the day.")}
     f.textContent=aiResult?.decision==="approve"?`✓ Quest complete. ${curriculumAiAdvice(aiResult,spec,result,answer)}`:result.msg?"✓ "+result.msg:"✓ Quest complete. Your answer passed the lesson check.";
     render();
   }else{
@@ -1175,7 +1199,8 @@ window.recordCurriculumAttempt=async(item,state,writtenPassed)=>{
   const total=Math.max(1,counts.seen),accuracy=Math.round(counts.correct/total*100),aiRaw=Number(state.lastApprovedAi?.score);
   const applicationScore=Number.isFinite(aiRaw)?Math.max(0,Math.min(100,aiRaw<=10?aiRaw*10:aiRaw)):(writtenPassed?100:0);
   const gradePercent=counts.seen===0?applicationScore:Math.round(accuracy*.7+applicationScore*.3);
-  try{await addDoc(collection(db,"curriculumAttempts"),{studentId:auth.currentUser.uid,itemId:item.id,grade:item.grade,day:Number(item.day),dateKey:phoenixDateKey(),subject:item.subject,strand:item.strand||"",lessonTitle:typeof friendlyTitle==="function"?friendlyTitle(item):String(item.displayTitle||item.requirement||item.id),attemptNumber,questionsCorrect:counts.correct,questionsSeen:total,autoQuestionsSeen:counts.seen,accuracy,writtenPassed:!!writtenPassed,applicationScore,gradePercent,pointsEarned:Math.round(gradePercent)/10,pointsPossible:10,createdAt:serverTimestamp()})}catch(e){console.warn("Curriculum attempt history",e)}
+  const quickwrite=activitySpec(item).kind==="quickwrite",extraCreditPoints=quickwrite&&gradePercent>=100?Math.max(0,Math.min(1,Number(state.extraCreditPoints)||0)):0;
+  try{await addDoc(collection(db,"curriculumAttempts"),{studentId:auth.currentUser.uid,itemId:item.id,grade:item.grade,day:Number(item.day),dateKey:phoenixDateKey(),subject:item.subject,strand:item.strand||"",lessonTitle:typeof friendlyTitle==="function"?friendlyTitle(item):String(item.displayTitle||item.requirement||item.id),attemptNumber,questionsCorrect:counts.correct,questionsSeen:total,autoQuestionsSeen:counts.seen,accuracy,writtenPassed:!!writtenPassed,applicationScore,gradePercent,pointsEarned:Math.round((gradePercent/100*5+extraCreditPoints)*100)/100,pointsPossible:5,extraCreditPoints,extraCreditReason:extraCreditPoints?String(state.extraCreditReason||"").slice(0,300):"",gradingPolicyVersion:"total-points-v1",createdAt:serverTimestamp()})}catch(e){console.warn("Curriculum attempt history",e)}
 };
 window.recordCharacterCaseAttempt=async(item,state,record,writtenPassed)=>{
   if(DW_LOCAL_TESTER||DW_SAFE_PREVIEW||!progressReady||!auth.currentUser||isTeacher)return;
@@ -1186,7 +1211,7 @@ window.recordCharacterCaseAttempt=async(item,state,record,writtenPassed)=>{
   const theoryScore=Number.isFinite(aiRaw)?Math.max(0,Math.min(100,aiRaw<=10?aiRaw*10:aiRaw)):(writtenPassed?100:0);
   const pointsEarned=Math.round((accuracy/100*6+theoryScore/100*4)*10)/10,gradePercent=Math.round(pointsEarned/10*100);
   const attemptId=`${auth.currentUser.uid}_${String(item.id).replace(/[^a-zA-Z0-9_-]/g,"_")}_character_case_v1`;
-  try{await setDoc(doc(db,"curriculumAttempts",attemptId),{studentId:auth.currentUser.uid,itemId:item.id,grade:item.grade,day:Number(item.day),dateKey:phoenixDateKey(),subject:item.subject,strand:item.strand||"Reading",lessonTitle:"Character Case Files",attemptNumber:Math.max(1,Number(state.activityAttempts||1)),questionsCorrect:correct,questionsSeen:Math.max(seen,quiz.length),autoQuestionsSeen:quiz.length,accuracy,writtenPassed:!!writtenPassed,applicationScore:theoryScore,gradePercent,pointsEarned,pointsPossible:10,completionStatus:"complete",gradingPolicyVersion:"character-case-10-point-v1",updatedAt:serverTimestamp(),createdAt:serverTimestamp()},{merge:true})}catch(e){console.warn("Character Case grade history",e)}
+  try{await setDoc(doc(db,"curriculumAttempts",attemptId),{studentId:auth.currentUser.uid,itemId:item.id,grade:item.grade,day:Number(item.day),dateKey:phoenixDateKey(),subject:item.subject,strand:item.strand||"Reading",lessonTitle:"Character Case Files",attemptNumber:Math.max(1,Number(state.activityAttempts||1)),questionsCorrect:correct,questionsSeen:Math.max(seen,quiz.length),autoQuestionsSeen:quiz.length,accuracy,writtenPassed:!!writtenPassed,applicationScore:theoryScore,gradePercent,pointsEarned:Math.round(gradePercent/100*5*100)/100,pointsPossible:5,completionStatus:"complete",gradingPolicyVersion:"total-points-v1",updatedAt:serverTimestamp(),createdAt:serverTimestamp()},{merge:true})}catch(e){console.warn("Character Case grade history",e)}
 };
 window.setCurriculumVerification=async(id,value)=>{
   if(DW_LOCAL_TESTER)return false;

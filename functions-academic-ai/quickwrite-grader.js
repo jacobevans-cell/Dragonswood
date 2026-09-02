@@ -86,7 +86,7 @@ function evaluateQuickwriteEvidence(studentWriting,parsed,requiredSentenceRange=
   const detailTypes=new Set(details.map(item=>item?.type).filter(Boolean));
   let detailsOrganization=!connected?0:(e.logicalSequence?.value===true?(details.length>=2&&detailTypes.size>=2?2:1):0);
   const sentenceCount=Math.max(0,Number(e.completeSentenceCount)||0),minimum=Math.max(1,Number(requiredSentenceRange?.[0])||3),maximum=Math.max(minimum,Number(requiredSentenceRange?.[1])||5);
-  let sentencesConventions=!understandable?0:(sentenceCount>=minimum&&sentenceCount<=maximum&&e.errorsObscureMeaning!==true?2:(sentenceCount>=2?1:0));
+  let sentencesConventions=!understandable?0:(sentenceCount>=minimum&&e.errorsObscureMeaning!==true?2:(sentenceCount>=2?1:0));
   let rawTotal=answersPrompt+storyDevelopment+detailsOrganization+sentencesConventions,finalScore=rawTotal;
   const capsApplied=[];
   if(!continues){answersPrompt=Math.min(answersPrompt,1);storyDevelopment=0;rawTotal=answersPrompt+storyDevelopment+detailsOrganization+sentencesConventions;finalScore=Math.min(rawTotal,4);capsApplied.push("no_continuation")}

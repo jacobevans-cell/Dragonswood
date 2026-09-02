@@ -415,17 +415,23 @@
       };
       const effectiveAssignments=assignments.map(applyGradeOverride),effectiveRecoveryAssignments=recoveryAssignments.map(applyGradeOverride);
       const hasTeacherOverrides=[...effectiveAssignments,...effectiveRecoveryAssignments].some(item=>item.teacherOverride);
-      const allEffective=[...effectiveRecoveryAssignments,...effectiveAssignments];
-      const scoredFor=key=>allEffective.filter(item=>item.weightKey===key&&item.counted!==false&&hasNumber(item.score)).map(item=>number(item.score));
-      const effectiveDaily=hasTeacherOverrides?round(mean(scoredFor('daily'))):daily;
-      const effectiveCurriculum=hasTeacherOverrides?round(mean(scoredFor('curriculum'))):curriculum;
-      const spellingItems=allEffective.filter(item=>item.weightKey==='spelling'&&item.counted!==false&&hasNumber(item.score));
-      const effectiveSpellingDaily=hasTeacherOverrides?round(mean(spellingItems.filter(item=>!text(item.title).toLowerCase().includes('mastery')).map(item=>item.score))):spellingDaily;
-      const effectiveSpellingMastery=hasTeacherOverrides?round(mean(spellingItems.filter(item=>text(item.title).toLowerCase().includes('mastery')).map(item=>item.score))):spellingMastery;
-      const effectiveSpelling=hasTeacherOverrides?round(weightedAvailable([[effectiveSpellingDaily,40],[effectiveSpellingMastery,60]])):spelling;
-      const effectiveReading=hasTeacherOverrides?round(mean(scoredFor('reading'))):reading;
-      const effectiveMissing=hasTeacherOverrides?effectiveAssignments.filter(item=>item.counted!==false&&['missing','incomplete'].includes(text(item.status))).length:missing;
-      const effectiveTotal=hasTeacherOverrides?round(weightedAvailable([[effectiveDaily,weights.daily],[effectiveCurriculum,weights.curriculum],[effectiveSpelling,weights.spelling],[effectiveReading,weights.reading]])):total;
+      const allEffective=[...effectiveRecoveryAssignments,...effectiveAssignments],gradeDateKey=text(todayOptions.dateKey);
+      const scoreForAverage=item=>{
+        if(item.counted===false)return null;
+        if(hasNumber(item.score))return number(item.score);
+        const status=text(item.status),pastDue=validDateKey(item.dateKey)&&validDateKey(gradeDateKey)&&item.dateKey<gradeDateKey;
+        return pastDue&&['missing','incomplete'].includes(status)?0:null;
+      };
+      const scoredFor=key=>allEffective.filter(item=>item.weightKey===key).map(scoreForAverage).filter(value=>value!==null);
+      const effectiveDaily=round(mean(scoredFor('daily')));
+      const effectiveCurriculum=round(mean(scoredFor('curriculum')));
+      const spellingItems=allEffective.filter(item=>item.weightKey==='spelling').map(item=>({item,score:scoreForAverage(item)})).filter(entry=>entry.score!==null);
+      const effectiveSpellingDaily=round(mean(spellingItems.filter(entry=>!text(entry.item.title).toLowerCase().includes('mastery')).map(entry=>entry.score)));
+      const effectiveSpellingMastery=round(mean(spellingItems.filter(entry=>text(entry.item.title).toLowerCase().includes('mastery')).map(entry=>entry.score)));
+      const effectiveSpelling=round(weightedAvailable([[effectiveSpellingDaily,40],[effectiveSpellingMastery,60]]));
+      const effectiveReading=round(mean(scoredFor('reading')));
+      const effectiveMissing=effectiveAssignments.filter(item=>item.counted!==false&&['missing','incomplete'].includes(text(item.status))).length;
+      const effectiveTotal=round(weightedAvailable([[effectiveDaily,weights.daily],[effectiveCurriculum,weights.curriculum],[effectiveSpelling,weights.spelling],[effectiveReading,weights.reading]]));
       const effectiveProvisional=effectiveMissing>0||readingEvidenceIssue||effectiveTotal===null;
       const effectiveTotalStatus=readingEvidenceIssue?'Evidence review required':effectiveProvisional?'Provisional':'Complete evidence';
       const recoveryScored=key=>effectiveRecoveryAssignments.filter(item=>item.weightKey===key&&item.counted!==false&&hasNumber(item.score)).map(item=>number(item.score));
@@ -438,7 +444,7 @@
       const effectiveRecoveryReading=hasTeacherOverrides?round(mean(recoveryScored('reading'))):recoveryReading;
       const effectiveRecoveryTotal=hasTeacherOverrides?round(weightedAvailable([[effectiveRecoveryDaily,weights.daily],[effectiveRecoveryCurriculum,weights.curriculum],[effectiveRecoverySpelling,weights.spelling],[effectiveRecoveryReading,weights.reading]])):recoveryTotal;
       const recovery=Object.freeze({total:effectiveRecoveryTotal,daily:effectiveRecoveryDaily,curriculum:effectiveRecoveryCurriculum,spelling:effectiveRecoverySpelling,reading:effectiveRecoveryReading,count:effectiveRecoveryAssignments.length,assignments:Object.freeze(effectiveRecoveryAssignments.map(Object.freeze)),includedInCurrent:true});
-      return Object.freeze({id:student.id,name:student.name,grade:student.grade,spellingGrade:student.spellingGrade||5,genderGroup:student.genderGroup,initial:(student.name[0]||'?').toUpperCase(),total:effectiveTotal,totalStatus:effectiveTotalStatus,daily:effectiveDaily,curriculum:effectiveCurriculum,spelling:effectiveSpelling,spellingDaily:effectiveSpellingDaily,spellingMastery:effectiveSpellingMastery,reading:effectiveReading,readingMinutes,readingAssigned,readingStatus:currentReadingAssigned?(readingIncomplete?'Incomplete':'Complete'):(recoveryReadingScores.length?'Historical evidence':currentUnassignedReadingRows.length?'Recorded':'Not assigned'),readingEvidenceIssue,provisional:effectiveProvisional,missing:effectiveMissing,assignments:Object.freeze(effectiveAssignments.map(Object.freeze)),dailyGrades:Object.freeze(makeDailyGrades([...effectiveRecoveryAssignments,...effectiveAssignments])),recovery,today:todayByStudent.get(student.id)});
+      return Object.freeze({id:student.id,name:student.name,grade:student.grade,spellingGrade:student.spellingGrade||5,genderGroup:student.genderGroup,initial:(student.name[0]||'?').toUpperCase(),total:effectiveTotal,totalStatus:effectiveTotalStatus,daily:effectiveDaily,curriculum:effectiveCurriculum,spelling:effectiveSpelling,spellingDaily:effectiveSpellingDaily,spellingMastery:effectiveSpellingMastery,reading:effectiveReading,readingMinutes,readingAssigned,readingStatus:currentReadingAssigned?(readingIncomplete?'Incomplete':'Complete'):(recoveryReadingScores.length?'Historical evidence':currentUnassignedReadingRows.length?'Recorded':'Not assigned'),readingEvidenceIssue,provisional:effectiveProvisional,missing:effectiveMissing,assignments:Object.freeze(effectiveAssignments.map(item=>Object.freeze({...item,countedScore:scoreForAverage(item)}))),dailyGrades:Object.freeze(makeDailyGrades([...effectiveRecoveryAssignments,...effectiveAssignments])),recovery,today:todayByStudent.get(student.id)});
     });
     const totals=rows.map(row=>row.total).filter(value=>value!==null),recoveryTotals=rows.map(row=>row.recovery.total).filter(value=>value!==null);
     const assignedWork=new Set([

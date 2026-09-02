@@ -174,7 +174,7 @@ const $=x=>document.querySelector(x), $$=x=>[...document.querySelectorAll(x)];
 const esc=(x="")=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 function dwNotice(title,message,details=""){return window.DWImmersiveUI?.alert({title,message,details,icon:details?"warning":"portal"})||Promise.resolve()}
 function dwConfirm(options){return window.DWImmersiveUI?.confirm(options)||Promise.resolve(false)}
-let isTeacher=false,currentStudent=null,activeVideoId=null,externalVideoMode=false,youtubeVideoMode=false,watchedRanges=[],lastVideoTime=0;
+let isTeacher=false,currentStudent=null,activeVideoId=null,externalVideoMode=false,youtubeVideoMode=false,watchedRanges=[],lastVideoTime=0,lastVideoProgressSave=0;
 let youtubePlayer=null,youtubePollTimer=0,youtubeApiPromise=null;
 let studentCurriculumAccess=false,accessMessage="Consulting today’s quest ledger…";
 let currentQuestOpen=false,curriculumStateReady=false;
@@ -422,7 +422,16 @@ function submitPractice(id){const ta=document.getElementById("practiceText-"+id)
 async function teacherVerify(id){if(!isTeacher||!window.setCurriculumVerification)return;const s=st(id);if(!s.watched||!s.practiced){await dwNotice("This quest is not ready to verify","The required video check and activity evidence still need to be completed.");return}const next=!s.verified;const ok=await window.setCurriculumVerification(id,next);if(!ok)return;s.verified=next;S.items[id]=s;localStorage.setItem(K,JSON.stringify(S));render()}
 function mergeRanges(ranges){if(!ranges.length)return[];const a=ranges.slice().sort((x,y)=>x[0]-y[0]),out=[a[0].slice()];for(let i=1;i<a.length;i++){const last=out[out.length-1],cur=a[i];if(cur[0]<=last[1]+1)last[1]=Math.max(last[1],cur[1]);else out.push(cur.slice())}return out}
 function watchedFraction(v){if(!v.duration||!isFinite(v.duration))return 0;return Math.min(1,mergeRanges(watchedRanges).reduce((n,r)=>n+Math.max(0,r[1]-r[0]),0)/v.duration)}
-function launchVideo(id,url,title){activeVideoId=id;watchedRanges=[];lastVideoTime=0;$("#videoModalTitle").textContent=title;$("#videoReflection").value=st(id).videoReflection||"";const v=$("#nativeVideo");v.src=url;v.currentTime=0;$("#videoModal").classList.add("show");$("#videoModal").setAttribute("aria-hidden","false");updateVideoTimer()}
+function storedVideoRanges(id){const ranges=st(id).videoWatchedRanges;return Array.isArray(ranges)?mergeRanges(ranges.filter(r=>Array.isArray(r)&&Number.isFinite(Number(r[0]))&&Number.isFinite(Number(r[1]))).map(r=>[Math.max(0,Number(r[0])),Math.max(0,Number(r[1]))])):[]}
+function persistVideoProgress(force=false,status=""){
+  if(!activeVideoId)return;
+  const now=Date.now();if(!force&&now-lastVideoProgressSave<4000)return;lastVideoProgressSave=now;
+  const state=st(activeVideoId),v=$("#nativeVideo"),duration=youtubeVideoMode?Number(youtubePlayer?.getDuration?.()||0):Number(v.duration||0),position=youtubeVideoMode?Number(youtubePlayer?.getCurrentTime?.()||0):Number(v.currentTime||0);
+  state.videoWatchedRanges=mergeRanges(watchedRanges).slice(-240).map(r=>[Math.round(r[0]*10)/10,Math.round(r[1]*10)/10]);
+  state.videoResumeTime=Math.max(0,Math.round(position*10)/10);state.videoCoverage=duration?Math.round(Math.min(1,state.videoWatchedRanges.reduce((sum,r)=>sum+Math.max(0,r[1]-r[0]),0)/duration)*100):Number(state.videoCoverage||0);
+  state.videoReflection=$("#videoReflection").value;state.videoTrackingStatus=status||state.videoTrackingStatus||"in-progress";state.videoLastActivityMs=now;S.items[activeVideoId]=state;save();
+}
+function launchVideo(id,url,title){activeVideoId=id;watchedRanges=storedVideoRanges(id);lastVideoTime=0;lastVideoProgressSave=0;$("#videoModalTitle").textContent=title;$("#videoReflection").value=st(id).videoReflection||"";const v=$("#nativeVideo");v.dataset.resumeTime=String(Number(st(id).videoResumeTime||0));v.src=url;$("#videoModal").classList.add("show");$("#videoModal").setAttribute("aria-hidden","false");updateVideoTimer()}
 function youtubeVideoId(url=""){const match=String(url).match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:[^#]*&)?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);return match?match[1]:""}
 function ensureYouTubeApi(){
   if(window.YT?.Player)return Promise.resolve(window.YT);
@@ -448,31 +457,34 @@ function pollYouTubeWatch(){
     const now=Number(youtubePlayer.getCurrentTime()||0),playing=youtubePlayer.getPlayerState()===window.YT.PlayerState.PLAYING,delta=now-lastVideoTime;
     if(delta>=2.5){youtubePlayer.seekTo(Math.max(0,lastVideoTime),true);return}
     if(playing&&delta>0)watchedRanges.push([lastVideoTime,now]);
-    lastVideoTime=now;updateYouTubeControl();updateVideoTimer();
+    lastVideoTime=now;updateYouTubeControl();updateVideoTimer();persistVideoProgress(false,playing?"watching":"paused");
   }catch(e){}
 }
 function launchYouTubeVideo(id,videoId,title){
-  activeVideoId=id;externalVideoMode=false;youtubeVideoMode=true;watchedRanges=[];lastVideoTime=0;$("#videoModalTitle").textContent=title;$("#videoReflection").value=st(id).videoReflection||"";
+  activeVideoId=id;externalVideoMode=false;youtubeVideoMode=true;watchedRanges=storedVideoRanges(id);lastVideoTime=0;lastVideoProgressSave=0;$("#videoModalTitle").textContent=title;$("#videoReflection").value=st(id).videoReflection||"";
   const native=$("#nativeVideo");native.pause();native.removeAttribute("src");native.load();native.style.display="none";
   $("#youtubePlayerShell").classList.add("show");$("#youtubeControls").classList.add("show");$("#youtubeProgress").textContent="Unrolling the lesson scroll…";$("#videoModal").classList.add("show");$("#videoModal").setAttribute("aria-hidden","false");
   clearInterval(youtubePollTimer);try{youtubePlayer?.destroy?.()}catch(e){}youtubePlayer=null;$("#youtubePlayerShell").innerHTML='<div id="youtubePlayerHost"></div>';
-  ensureYouTubeApi().then(()=>{youtubePlayer=new YT.Player("youtubePlayerHost",{videoId,width:"100%",height:"100%",playerVars:{controls:0,disablekb:1,fs:0,playsinline:1,rel:0,iv_load_policy:3,origin:location.origin},events:{onReady:event=>{lastVideoTime=Number(event.target.getCurrentTime()||0);$("#youtubeProgress").textContent="Seeking is disabled • press Play to begin";updateYouTubeControl();updateVideoTimer();youtubePollTimer=setInterval(pollYouTubeWatch,500)},onStateChange:()=>{updateYouTubeControl();pollYouTubeWatch()},onError:()=>{$("#youtubeProgress").textContent="This video could not be embedded. Check its YouTube embedding permission."}}})}).catch(()=>{$("#youtubeProgress").textContent="The YouTube player could not load."});
+  ensureYouTubeApi().then(()=>{youtubePlayer=new YT.Player("youtubePlayerHost",{videoId,width:"100%",height:"100%",playerVars:{controls:0,disablekb:1,fs:0,playsinline:1,rel:0,iv_load_policy:3,origin:location.origin},events:{onReady:event=>{const resume=Math.max(0,Number(st(id).videoResumeTime||0));if(resume>0)event.target.seekTo(resume,true);lastVideoTime=resume;$("#youtubeProgress").textContent="Lesson progress restored • press Play to continue";updateYouTubeControl();updateVideoTimer();youtubePollTimer=setInterval(pollYouTubeWatch,500)},onStateChange:()=>{updateYouTubeControl();pollYouTubeWatch()},onError:()=>{$("#youtubeProgress").textContent="This video could not be embedded. Check its YouTube embedding permission."}}})}).catch(()=>{$("#youtubeProgress").textContent="The YouTube player could not load."});
 }
 function toggleYouTubePlayback(){
   if(!youtubePlayer)return;try{youtubePlayer.getPlayerState()===YT.PlayerState.PLAYING?youtubePlayer.pauseVideo():youtubePlayer.playVideo()}catch(e){}
 }
 function launchExternalVideo(id,url,title){
-  activeVideoId=id;externalVideoMode=true;watchedRanges=[];lastVideoTime=0;$("#videoModalTitle").textContent=title;$("#videoReflection").value=st(id).videoReflection||"";
+  activeVideoId=id;externalVideoMode=true;watchedRanges=storedVideoRanges(id);lastVideoTime=0;lastVideoProgressSave=0;$("#videoModalTitle").textContent=title;$("#videoReflection").value=st(id).videoReflection||"";
   const v=$("#nativeVideo");v.pause();v.removeAttribute("src");v.load();v.style.display="none";
   $("#videoModal").classList.add("show");$("#videoModal").setAttribute("aria-hidden","false");updateVideoTimer();
 }
-$("#nativeVideo").addEventListener("loadedmetadata",()=>{lastVideoTime=$("#nativeVideo").currentTime||0;updateVideoTimer()});
-$("#nativeVideo").addEventListener("timeupdate",()=>{const v=$("#nativeVideo"),now=v.currentTime||0,delta=now-lastVideoTime;if(!v.paused&&delta>0&&delta<2.5)watchedRanges.push([lastVideoTime,now]);lastVideoTime=now;updateVideoTimer()});
+$("#nativeVideo").addEventListener("loadedmetadata",()=>{const v=$("#nativeVideo"),resume=Math.min(Math.max(0,Number(v.dataset.resumeTime||0)),Math.max(0,Number(v.duration||0)-1));if(resume>0)v.currentTime=resume;lastVideoTime=resume;updateVideoTimer()});
+$("#nativeVideo").addEventListener("timeupdate",()=>{const v=$("#nativeVideo"),now=v.currentTime||0,delta=now-lastVideoTime;if(!v.paused&&delta>0&&delta<2.5)watchedRanges.push([lastVideoTime,now]);lastVideoTime=now;updateVideoTimer();persistVideoProgress(false,v.paused?"paused":"watching")});
 $("#nativeVideo").addEventListener("seeked",()=>{lastVideoTime=$("#nativeVideo").currentTime||0;updateVideoTimer()});
-$("#videoReflection").addEventListener("input",updateVideoTimer);
-function updateVideoTimer(){if(!activeVideoId)return;const v=$("#nativeVideo"),fraction=youtubeVideoMode?youtubeWatchedFraction():externalVideoMode?1:watchedFraction(v),answer=$("#videoReflection").value.trim(),ready=fraction>=WATCH_REQUIRED_FRACTION&&answer.length>=15,percent=Math.round(fraction*100);$("#videoTimer").textContent=youtubeVideoMode?`Continuous watch progress: ${percent}% • seeking is disabled.`:externalVideoMode?"The lesson opened in a new tab. Watch it completely, return here, and explain one thing you learned.":fraction>=WATCH_REQUIRED_FRACTION?"Lesson viewed. Finish the Video Check below.":"Watch the lesson. Dragonswood tracks the parts you actually view.";if(youtubeVideoMode)$("#youtubeProgress").textContent=`${percent}% counted • ${percent>=90?"video requirement met":"keep watching"}`;$("#finishVideoBtn").disabled=!ready;$("#finishVideoBtn").classList.toggle("locked",!ready)}
-$("#finishVideoBtn").onclick=()=>{if(!activeVideoId)return;const v=$("#nativeVideo"),answer=$("#videoReflection").value.trim(),fraction=youtubeVideoMode?youtubeWatchedFraction():externalVideoMode?1:watchedFraction(v);if(fraction<WATCH_REQUIRED_FRACTION||answer.length<15)return;const s=st(activeVideoId);s.watched=true;s.videoReflection=answer;s.videoCoverage=Math.round(fraction*100);S.items[activeVideoId]=s;save();closeVideo();render()};
-function closeVideo(){activeVideoId=null;externalVideoMode=false;youtubeVideoMode=false;watchedRanges=[];clearInterval(youtubePollTimer);youtubePollTimer=0;try{youtubePlayer?.destroy?.()}catch(e){}youtubePlayer=null;$("#youtubePlayerShell").classList.remove("show");$("#youtubeControls").classList.remove("show");$("#youtubePlayerShell").innerHTML='<div id="youtubePlayerHost"></div>';const v=$("#nativeVideo");v.pause();v.removeAttribute("src");v.load();v.style.display="block";$("#videoModal").classList.remove("show");$("#videoModal").setAttribute("aria-hidden","true")}
+$("#nativeVideo").addEventListener("play",()=>persistVideoProgress(true,"watching"));$("#nativeVideo").addEventListener("pause",()=>persistVideoProgress(true,"paused"));
+$("#videoReflection").addEventListener("input",()=>{updateVideoTimer();persistVideoProgress(false)});
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")persistVideoProgress(true,"paused")});
+window.addEventListener("beforeunload",()=>persistVideoProgress(true,"paused"));
+function updateVideoTimer(){if(!activeVideoId)return;const v=$("#nativeVideo"),fraction=youtubeVideoMode?youtubeWatchedFraction():externalVideoMode?1:watchedFraction(v),answer=$("#videoReflection").value.trim(),ready=fraction>=WATCH_REQUIRED_FRACTION&&answer.length>=15,studentPercent=Math.min(100,Math.round(fraction/WATCH_REQUIRED_FRACTION*100));$("#videoTimer").textContent=externalVideoMode?"The lesson opened in a new tab. Watch it completely, return here, and explain one thing you learned.":studentPercent>=100?"100% • Video watched. Finish the Video Check below.":`Lesson progress: ${studentPercent}% • Watch the complete lesson to reach 100%.`;if(youtubeVideoMode)$("#youtubeProgress").textContent=studentPercent>=100?"100% • video watched":`${studentPercent}% • keep watching`;$("#finishVideoBtn").disabled=!ready;$("#finishVideoBtn").classList.toggle("locked",!ready)}
+$("#finishVideoBtn").onclick=()=>{if(!activeVideoId)return;const v=$("#nativeVideo"),answer=$("#videoReflection").value.trim(),fraction=youtubeVideoMode?youtubeWatchedFraction():externalVideoMode?1:watchedFraction(v);if(fraction<WATCH_REQUIRED_FRACTION||answer.length<15)return;const s=st(activeVideoId);s.watched=true;s.videoReflection=answer;s.videoCoverage=Math.round(fraction*100);s.videoWatchedRanges=mergeRanges(watchedRanges).slice(-240);s.videoResumeTime=youtubeVideoMode?Number(youtubePlayer?.getDuration?.()||0):Number(v.duration||0);s.videoTrackingStatus="complete";s.videoLastActivityMs=Date.now();S.items[activeVideoId]=s;save();closeVideo();render()};
+function closeVideo(){persistVideoProgress(true,"paused");activeVideoId=null;externalVideoMode=false;youtubeVideoMode=false;watchedRanges=[];clearInterval(youtubePollTimer);youtubePollTimer=0;try{youtubePlayer?.destroy?.()}catch(e){}youtubePlayer=null;$("#youtubePlayerShell").classList.remove("show");$("#youtubeControls").classList.remove("show");$("#youtubePlayerShell").innerHTML='<div id="youtubePlayerHost"></div>';const v=$("#nativeVideo");v.pause();v.removeAttribute("src");v.load();v.style.display="block";$("#videoModal").classList.remove("show");$("#videoModal").setAttribute("aria-hidden","true")}
 $("#closeVideoModal").onclick=closeVideo;
 $("#youtubePlayPauseBtn").onclick=toggleYouTubePlayback;
 
@@ -1069,7 +1081,7 @@ function canonicalProgress(uid,item,state,forceUnverified=false){
   return {
     studentId:uid,itemId:item.id,grade:item.grade,day:Number(item.day),subject:item.subject,strand:item.strand||"",
     standardCode:(entry?.standards||[]).join(","),watched:!!state.watched,
-    videoCoverage:Number(state.videoCoverage||0),videoReflection:String(state.videoReflection||""),
+    videoCoverage:Number(state.videoCoverage||0),videoReflection:String(state.videoReflection||""),videoWatchedRanges:Array.isArray(state.videoWatchedRanges)?state.videoWatchedRanges.slice(-240):[],videoResumeTime:Number(state.videoResumeTime||0),videoTrackingStatus:String(state.videoTrackingStatus||""),videoLastActivityMs:Number(state.videoLastActivityMs||0),
     practiced:!!state.practiced,practiceEvidence:String(state.practiceEvidence||""),standardCheckSubmitted:standardCheckComplete(item,state),complete:missionComplete(item,state),
     quickWriteChoice:String(state.quickWriteChoice||""),quickWriteChoiceLocked:!!state.quickWriteChoiceLocked,
     dwInteraction:state.dwInteraction&&typeof state.dwInteraction==="object"?state.dwInteraction:null,

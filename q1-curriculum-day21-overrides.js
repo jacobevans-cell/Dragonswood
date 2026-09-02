@@ -323,6 +323,7 @@
     resourceName:"Titanic Clues • Using Explicit Information and Inferences Video",
     resourceUrl:"",
     resourceType:"video",
+    videoRequired:true,
     videoDurationSeconds:188,
     kidIntro:"Read the journal clues as you watch. Decide what the writer states directly, what the clues allow you to infer, and which exact details support each conclusion.",
     lessonKeywords:["explicit","inference","text evidence","journal","passenger","luxurious","elegance","nervous","seasick","iceberg","Titanic"],

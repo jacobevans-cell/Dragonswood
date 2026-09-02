@@ -1027,8 +1027,10 @@ function postCurriculumMissionState(){
  const recovery=rows().filter(x=>Number(x.day)<Number(S.day)&&!missionComplete(x)&&!mediaPending(x)),groupedRecovery={};
  recovery.forEach(item=>{const day=Number(item.day)||0;if(day>0)groupedRecovery[day]=(groupedRecovery[day]||0)+1});
  const recoveryDays=Object.entries(groupedRecovery).map(([day,count])=>({day:Number(day),count})).sort((a,b)=>a.day-b.day);
- window.parent.postMessage({channel:"dw-v33-module",type:"curriculum-mission-state",day:Number(S.day||0),available:studentCurriculumAccess===true,currentOpen:currentQuestOpen===true,total:current.length,complete,currentComplete:currentQuestOpen===true&&current.length>0&&complete===current.length,recoveryCount:recovery.length,recoveryDays},location.origin);
+ window.parent.postMessage({channel:"dw-v33-module",type:"curriculum-mission-state",day:Number(S.day||0),available:studentCurriculumAccess===true,currentOpen:currentQuestOpen===true,total:current.length,complete,currentComplete:current.length>0&&complete===current.length,recoveryCount:recovery.length,recoveryDays},location.origin);
 }
+const curriculumMissionHeartbeat=new URLSearchParams(location.search).get("dwEmbed")==="1"?setInterval(postCurriculumMissionState,2000):null;
+window.addEventListener("beforeunload",()=>{if(curriculumMissionHeartbeat)clearInterval(curriculumMissionHeartbeat)});
 function renderCurriculumDom(){
 setTimeout(postCurriculumMissionState,0);
 const localTester=window.DWCurriculumLocalTester===true,accountPreview=window.DWCurriculumAccountPreview===true,videoTab=document.querySelector('[data-tab="videos"]'),tabs=document.getElementById("curriculumTabs");if(videoTab)videoTab.classList.toggle("hidden",(!isTeacher&&!accountPreview)||localTester);if(tabs)tabs.classList.toggle("teacher-tabs",(isTeacher||accountPreview)&&!localTester);

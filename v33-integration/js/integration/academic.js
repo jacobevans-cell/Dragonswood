@@ -217,7 +217,7 @@
     return 6;
   }
   function curriculumProgressComplete(item={},progress={},videoMap={}){
-    if(progress.complete===true)return true;
+    if(progress.complete===true||progress.caseCompletionLocked===true)return true;
     if(!progress.practiced)return false;
     if(curriculumVideoRequired(item,videoMap)&&progress.watched!==true)return false;
     if(progress.standardCheckSubmitted===true)return true;

@@ -11,7 +11,7 @@ let teacherAlertSignature='',teacherPassEventsReady=false,teacherPassTimerInterv
 const knownTeacherPassEvents=new Set();
 
 const navItems=[
- ['student-command','🪄','Student Command'],['gradebook','📊','Gradebook'],['scribe','📜','Scribe Command'],['rewards','🎯','Class Rewards'],['passes','🎟️','Pass Control'],['jobs','🧹','Guild Jobs'],['schedule','🕘','Schedule'],['tools','🧰','Classroom Tools'],['storyvault','📚','Storyvault'],['ai-usage','🤖','AI & Billing'],['seating','🪑','Seating Command'],['leaderboards','🏆','Leaderboards']
+ ['student-command','🪄','Student Command'],['live-progress','📡','Live Progress'],['gradebook','📊','Gradebook'],['scribe','📜','Scribe Command'],['rewards','🎯','Class Rewards'],['passes','🎟️','Pass Control'],['jobs','🧹','Guild Jobs'],['schedule','🕘','Schedule'],['tools','🧰','Classroom Tools'],['storyvault','📚','Storyvault'],['ai-usage','🤖','AI & Billing'],['seating','🪑','Seating Command'],['leaderboards','🏆','Leaderboards']
 ];
 const arcadeNav=['arcade','🕹️','Arcade Time'];
 function teacherNavItems(){return arcadeTeacher?.enabled?[...navItems,arcadeNav]:navItems}
@@ -89,7 +89,20 @@ function shell(){const visualFreeze=window.DWV33VisualFreeze===true;if(!visualFr
 function referenceButton(){return new URLSearchParams(location.search).get('reference')==='1'?`<button type="button" class="btn btn-gold btn-sm reference-button" data-reference>Reference</button>`:''}
 function pageBanner(icon,eyebrow,title,sub,action=''){return `<section class="teacher-page-banner"><div class="teacher-page-title"><div class="teacher-page-icon">${icon}</div><div><div class="eyebrow">${eyebrow}</div><h2>${title}</h2><p>${sub}</p></div></div>${action}</section>`}
 function metric(icon,label,value,sub){return `<article class="panel metric"><div class="metric-icon">${icon}</div><div><div class="eyebrow">${label}</div><strong>${value}</strong><small>${sub}</small></div></article>`}
-function pageMarkup(){switch(state.page){case'gradebook':return gradebookPage();case'scribe':return scribePage();case'rewards':return rewardsPage();case'passes':return passesPage();case'jobs':return jobsPage();case'schedule':return schedulePage();case'tools':return toolsPage();case'storyvault':return storyvaultPage();case'ai-usage':return aiUsagePage();case'seating':return seatingPage();case'leaderboards':return leaderboardsPage();case'arcade':return arcadePage();default:return studentCommandPage()}}
+function pageMarkup(){switch(state.page){case'live-progress':return liveProgressPage();case'gradebook':return gradebookPage();case'scribe':return scribePage();case'rewards':return rewardsPage();case'passes':return passesPage();case'jobs':return jobsPage();case'schedule':return schedulePage();case'tools':return toolsPage();case'storyvault':return storyvaultPage();case'ai-usage':return aiUsagePage();case'seating':return seatingPage();case'leaderboards':return leaderboardsPage();case'arcade':return arcadePage();default:return studentCommandPage()}}
+
+function liveProgressPage(){
+ const rows=state.gradebook?.rows||[],today=state.gradebook?.today||{},saved=state.curriculumVideoProgress||[],catalog=state.curriculumVideoCatalog||[],day=Number(state.curriculumDay||today.day||0);
+ const status=row=>row.today?.status==="complete"?"Done":row.today?.status==="in-progress"?"Working":row.today?.status==="not-started"?"Not started":"Not assigned";
+ const assigned=rows.filter(row=>row.today?.assigned),done=assigned.filter(row=>status(row)==="Done").length,working=assigned.filter(row=>status(row)==="Working").length,notStarted=assigned.filter(row=>status(row)==="Not started").length;
+ const cards=rows.map(row=>{
+  const live=row.today||{},morning=live.morning||{},curriculum=live.curriculum||{},gradeCode=Number(row.grade)===5?"K":"I";
+  const videos=catalog.filter(item=>item.grade===gradeCode&&Number(item.day)===day&&(item.videoRequired===true||/video/i.test(String(item.resourceName||""))||/\.mp4/i.test(String(item.resourceUrl||""))));
+  const videoHtml=videos.map(item=>{const record=saved.find(value=>String(value.studentId)===String(row.id)&&String(value.itemId)===String(item.id)),percent=record?.watched===true?100:Math.max(0,Math.min(100,Math.round(Number(record?.videoCoverage)||0))),active=record?.videoTrackingStatus==="watching"&&Date.now()-Number(record?.videoLastActivityMs||0)<20000,label=String(item.displayTitle||item.resourceName||"Required video").split("\n")[0];return `<div class="grade-assignment-row"><span><b>${escapeHtml(label)}</b><small>${active?"Watching now":percent===100?"Complete":percent?"Paused":"Not started"}</small></span><progress max="100" value="${percent}"></progress><strong>${percent}%</strong></div>`}).join("");
+  return `<article class="panel"><div class="row between"><div class="student-cell"><span class="roster-avatar">${escapeHtml(row.initial||row.name[0])}</span><span><b>${escapeHtml(row.name)}</b><small>Grade ${row.grade} • ${status(row)}</small></span></div><span class="selected-badge">${status(row)==="Done"?"✓ complete":(Number(live.remaining)||0)+" left"}</span></div><div class="grade-assignment-list"><div class="grade-assignment-row"><b>Morning Work</b><span>${Number(morning.completed)||0}/${Number(morning.total)||0} • ${Number(morning.percent)||0}%</span><progress max="100" value="${Number(morning.percent)||0}"></progress></div><div class="grade-assignment-row"><b>Curriculum Quest</b><span>${Number(curriculum.completed)||0}/${Number(curriculum.total)||0} • ${Number(curriculum.percent)||0}%</span><progress max="100" value="${Number(curriculum.percent)||0}"></progress></div></div><details><summary><b>Required videos • ${videos.length}</b></summary><div class="grade-assignment-list">${videoHtml||'<p class="muted">No required videos today.</p>'}</div></details><div class="row"><button class="btn btn-primary btn-sm" data-live-attention="${escapeHtml(row.id)}">🔔 Direct student</button><button class="btn btn-secondary btn-sm" data-live-gradebook="${escapeHtml(row.id)}">📊 Gradebook</button><button class="btn btn-quiet btn-sm" data-live-command="${escapeHtml(row.id)}">🪄 Controls</button></div></article>`;
+ }).join("");
+ return pageBanner("📡","Real-time classroom view","Live Student Progress","Current Morning Work, Curriculum Quest, and required-video progress with direct teacher controls.")+`<section class="metric-grid">${metric("✓","Done",done,assigned.length+" assigned")}${metric("▶","Working",working,"Activity detected")}${metric("○","Not started",notStarted,"Needs a start")}${metric("📅","Day",day,today.dateKey||"Phoenix time")}</section><section class="command-grid">${cards}</section>`;
+}
 
 function teacherAttentionPanel(){
  const ops=state.operations,attention=ops?.attention||{},progress=state.gradebook?.rows||[],today=state.gradebook?.today||{},events=attention.events||[],kingdom=ops?.kingdomAccess||{},substitute=ops?.substituteMode||{};
@@ -224,6 +237,9 @@ function applyTeacherSession(session){teacherName=session.teacherName||'Mr. Evan
 
 function bind(){
  app.querySelectorAll('[data-page]').forEach(el=>el.addEventListener('click',()=>location.hash=el.dataset.page));
+ app.querySelectorAll('[data-live-gradebook]').forEach(el=>el.addEventListener('click',()=>{state.expandedGradeStudent=el.dataset.liveGradebook;location.hash='gradebook'}));
+ app.querySelectorAll('[data-live-command]').forEach(el=>el.addEventListener('click',()=>{state.selected.clear();state.selected.add(el.dataset.liveCommand);location.hash='student-command'}));
+ app.querySelectorAll('[data-live-attention]').forEach(el=>el.addEventListener('click',()=>{state.selected.clear();state.selected.add(el.dataset.liveAttention);state.attentionAudience='selected';state.attentionOpen=true;render()}));
  app.querySelectorAll('[data-toast]').forEach(el=>el.addEventListener('click',()=>showToast(el.dataset.toast)));
  app.querySelector('[data-reference]')?.addEventListener('click',showReference);
  app.querySelector('.teacher-account')?.addEventListener('click',teacherAccountDialog);

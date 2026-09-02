@@ -247,6 +247,7 @@
   function todayProgress(roster=[],dailyRows=[],curriculumProgressRows=[],options={}){
     const today=text(options.dateKey),assignment=options.assignment&&typeof options.assignment==='object'?options.assignment:{},day=academicDay(assignment),assigned=validDateKey(today)&&day>0;
     const catalog=Array.isArray(options.curriculumCatalog)?options.curriculumCatalog:[],videoMap=options.videoMap&&typeof options.videoMap==='object'?options.videoMap:{};
+    const attempts=Array.isArray(options.curriculumAttempts)?options.curriculumAttempts:[],successfulAttemptKeys=new Set(attempts.filter(row=>row?.writtenPassed===true&&studentId(row)&&text(row.itemId)).map(row=>`${studentId(row)}|${text(row.itemId)}`));
     const dailyToday=dailyRows.filter(row=>studentId(row)&&dateKey(row)===today&&text(row.session)==='morning'&&text(row.mode)!=='levelup'&&!text(row.id).includes('_levelup_'));
     const morningByStudent=latestRowsBy(dailyToday,row=>studentId(row));
     const progressByStudentItem=latestRowsBy(curriculumProgressRows,row=>{const uid=studentId(row),item=text(row.itemId);return uid&&item?`${uid}|${item}`:''});
@@ -258,8 +259,9 @@
       let curriculumCompleted=0,curriculumStarted=0;
       for(const item of items){
         const progress=progressByStudentItem.get(`${student.id}|${text(item.id)}`);
-        if(progress)curriculumStarted++;
-        if(progress&&curriculumProgressComplete(item,progress,videoMap))curriculumCompleted++;
+        const recoveredFromAttempt=successfulAttemptKeys.has(`${student.id}|${text(item.id)}`);
+        if(progress||recoveredFromAttempt)curriculumStarted++;
+        if(recoveredFromAttempt||progress&&curriculumProgressComplete(item,progress,videoMap))curriculumCompleted++;
       }
       const curriculumTotal=items.length,curriculum=Object.freeze({completed:curriculumCompleted,total:curriculumTotal,percent:curriculumTotal?round(curriculumCompleted/curriculumTotal*100):0,started:curriculumStarted,status:curriculumTotal?(curriculumCompleted===curriculumTotal?'complete':curriculumStarted?'in-progress':'not-started'):(assigned?'none-assigned':'not-assigned')});
       const total=morningTotal+curriculumTotal,completed=morningCompleted+curriculumCompleted,remaining=Math.max(0,total-completed);

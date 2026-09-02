@@ -7,7 +7,7 @@
     {id:"boss-battle",title:"Daily Boss Battle",icon:"👹",path:"boss-battle.html",returnView:"home"},
     {id:"daily-quest",title:"Today's Daily Quest",icon:"📜",path:"daily-quest.html",returnView:"quests"},
     {id:"level-up-challenge",title:"Level-Up Challenge",icon:"⭐",path:"daily-quest.html",query:"levelup=1",returnView:"quests"},
-    {id:"curriculum-quest",title:"Curriculum & Recovery Quest",icon:"🐉",path:"curriculum-quest.html",returnView:"quests"},
+    {id:"curriculum-quest",title:"Curriculum & Recovery Quest",icon:"🐉",path:"curriculum-quest.html?v=20260902-3",returnView:"quests"},
     {id:"decimal-deception",title:"Decimal Deception",icon:"💎",path:"decimal-deception.html",returnView:"games",dailyGate:true},
     {id:"math-operations",title:"Math Operations Quest",icon:"➗",path:"math-operations-quest.html",returnView:"games",dailyGate:true},
     {id:"fraction-forge",title:"Fraction Forge",icon:"🔥",path:"fraction-forge.html",returnView:"games",dailyGate:true},

@@ -12,7 +12,9 @@
     ['arcane-forge','Science'],['deep-time-lab','Science'],['class-reader','ELA']
   ].map(([id,subject])=>Object.freeze({id,subject})));
   const GAME_IDS=new Set(GAME_CATALOG.map(game=>game.id));
-  const GRADE_INTEGRITY_VERSION=6;
+  const GRADE_INTEGRITY_VERSION=7;
+  const GRADEBOOK_START_DAY=15;
+  const DEFAULT_GRADEBOOK_START_DATE='2026-08-21';
   const DEFAULT_MINIMUM_ACADEMIC_DAY=21;
   const DEFAULT_CURRENT_GRADE_START_DATE='2026-08-31';
   const text=value=>String(value??'').trim();
@@ -282,10 +284,14 @@
       if(!gradeOverridesByStudent.has(id))gradeOverridesByStudent.set(id,new Map());
       gradeOverridesByStudent.get(id).set(text(override.assignmentId),override);
     }
-    const readingRecords=normalizeReading(readingRows);
+    const allReadingRecords=normalizeReading(readingRows);
     const validSpellingLevels=new Set(['foundation','grade4','grade5','challenge','master']);
-    const spellingRecords=spellingRows.filter(row=>studentId(row)&&validSpellingLevels.has(text(row.levelKey))&&['daily-mission','weekly-mastery'].includes(text(row.mode))&&(text(row.mode)!=='weekly-mastery'||row.officialAttempt!==false));
-    const readingAssignments=normalizeReadingAssignments(weightSettings),assignedDates=readingAssignments.dateKeys,defaultTarget=readingAssignments.defaultTarget,targetsByDate=readingAssignments.targetsByDate;
+    const allSpellingRecords=spellingRows.filter(row=>studentId(row)&&validSpellingLevels.has(text(row.levelKey))&&['daily-mission','weekly-mastery'].includes(text(row.mode))&&(text(row.mode)!=='weekly-mastery'||row.officialAttempt!==false));
+    const readingAssignments=normalizeReadingAssignments(weightSettings),defaultTarget=readingAssignments.defaultTarget,targetsByDate=readingAssignments.targetsByDate;
+    const dayFifteenDates=[...dailyRows,...curriculumRows,...allSpellingRecords].filter(row=>academicDay(row)===GRADEBOOK_START_DAY).map(evidenceDateKey).filter(validDateKey).sort();
+    const requestedGradebookStartDate=text(weightSettings.gradebookStartDate),gradebookStartDate=dayFifteenDates[0]||(validDateKey(requestedGradebookStartDate)?requestedGradebookStartDate:DEFAULT_GRADEBOOK_START_DATE);
+    const includedInGradebook=row=>{const day=academicDay(row);if(day>0)return day>=GRADEBOOK_START_DAY;const date=evidenceDateKey(row);return !!date&&date>=gradebookStartDate};
+    const gradebookDailyRows=dailyRows.filter(includedInGradebook),gradebookCurriculumRows=curriculumRows.filter(includedInGradebook),spellingRecords=allSpellingRecords.filter(includedInGradebook),readingRecords=allReadingRecords.filter(includedInGradebook),assignedDates=readingAssignments.dateKeys.filter(day=>day>=gradebookStartDate);
     const gradeByStudent=new Map(roster.map(student=>[student.id,text(student.grade)]));
     const rowGrade=row=>gradeByStudent.get(studentId(row))||'';
     const assignedDaily=row=>text(row.mode)!=='levelup'&&!text(row.id).includes('_levelup_');
@@ -297,10 +303,10 @@
     const latestByKey=(source,keyFn)=>{const map=new Map(),times=new Map();for(const row of source){const key=keyFn(row);if(!key)continue;const time=timestampMs(row.updatedAt||row.completedAt||row.createdAt||row.firstPassLockedAt);if(!map.has(key)||time>=times.get(key)){map.set(key,row);times.set(key,time)}}return map};
     const exemplar=(source,grade,keyFn,key)=>source.find(row=>rowGrade(row)===grade&&keyFn(row)===key)||{};
     const spellingExemplar=(source,level,key)=>source.find(row=>text(row.levelKey)===level&&spellingKey(row)===key)||{};
-    const currentDailyRows=dailyRows.filter(row=>assignedDaily(row)&&evidencePeriod(row,policy)==='current');
-    const recoveryDailyRows=dailyRows.filter(row=>assignedDaily(row)&&evidencePeriod(row,policy)==='recovery');
-    const currentCurriculumRows=curriculumRows.filter(row=>evidencePeriod(row,policy)==='current');
-    const recoveryCurriculumRows=curriculumRows.filter(row=>evidencePeriod(row,policy)==='recovery');
+    const currentDailyRows=gradebookDailyRows.filter(row=>assignedDaily(row)&&evidencePeriod(row,policy)==='current');
+    const recoveryDailyRows=gradebookDailyRows.filter(row=>assignedDaily(row)&&evidencePeriod(row,policy)==='recovery');
+    const currentCurriculumRows=gradebookCurriculumRows.filter(row=>evidencePeriod(row,policy)==='current');
+    const recoveryCurriculumRows=gradebookCurriculumRows.filter(row=>evidencePeriod(row,policy)==='recovery');
     const currentSpellingRows=spellingRecords.filter(row=>evidencePeriod(row,policy)==='current');
     const recoverySpellingRows=spellingRecords.filter(row=>evidencePeriod(row,policy)==='recovery');
     const currentAssignedDates=assignedDates.filter(day=>day>=policy.currentGradeStartDate),recoveryAssignedDates=assignedDates.filter(day=>day<policy.currentGradeStartDate);
@@ -457,7 +463,7 @@
       ...recoverySpellingRows.map(row=>`spelling:${text(row.levelKey)}:${spellingKey(row)}`),
       ...recoveryAssignedDates.map(day=>`witches:${day}`)
     ]).size;
-    return Object.freeze({rows,classAverage:round(mean(totals)),recoveryAverage:round(mean(recoveryTotals)),recoveryEvidence:rows.reduce((sum,row)=>sum+row.recovery.count,0),missing:rows.reduce((sum,row)=>sum+row.missing,0),studentsWithMissing:rows.filter(row=>row.missing>0).length,assignedWork,weights,policy,today:Object.freeze({dateKey:liveToday.dateKey,day:liveToday.day,assigned:liveToday.assigned,totalRequired:liveToday.totalRequired,totalCompleted:liveToday.totalCompleted,remaining:liveToday.remaining,studentsComplete:liveToday.studentsComplete}),spellingAssignedWeeks:Object.freeze(currentSpellingWeeks),readingTargetMinutes:defaultTarget,readingAssignedDateKeys:Object.freeze(currentAssignedDates),recoveryReadingAssignedDateKeys:Object.freeze(recoveryAssignedDates),readingTargetsByDate:targetsByDate,gradeIntegrityVersion:GRADE_INTEGRITY_VERSION,reportCardPercentageReady:rows.every(row=>!row.readingEvidenceIssue),readingSource:'Verified active time in the Dragonswood Storyvault reader'});
+    return Object.freeze({rows,classAverage:round(mean(totals)),recoveryAverage:round(mean(recoveryTotals)),recoveryEvidence:rows.reduce((sum,row)=>sum+row.recovery.count,0),missing:rows.reduce((sum,row)=>sum+row.missing,0),studentsWithMissing:rows.filter(row=>row.missing>0).length,assignedWork,weights,policy,today:Object.freeze({dateKey:liveToday.dateKey,day:liveToday.day,assigned:liveToday.assigned,totalRequired:liveToday.totalRequired,totalCompleted:liveToday.totalCompleted,remaining:liveToday.remaining,studentsComplete:liveToday.studentsComplete}),spellingAssignedWeeks:Object.freeze(currentSpellingWeeks),readingTargetMinutes:defaultTarget,readingAssignedDateKeys:Object.freeze(currentAssignedDates),recoveryReadingAssignedDateKeys:Object.freeze(recoveryAssignedDates),readingTargetsByDate:targetsByDate,gradeIntegrityVersion:GRADE_INTEGRITY_VERSION,reportCardPercentageReady:rows.every(row=>!row.readingEvidenceIssue),readingSource:'Verified active time in the Dragonswood Storyvault reader',gradebookStartDay:GRADEBOOK_START_DAY,gradebookStartDate});
   }
 
   function teacherAcademic(roster,activeSession,writingRows,dailyRows,curriculumRows,gameRows,readingRows=[],spellingRows=[],weightSettings={},todayOptions={},gradeOverrides=[]){
@@ -470,5 +476,5 @@
     return Object.freeze({gradebook:gradebook(roster,dailyRows,curriculumRows,readingRows,spellingRows,weightSettings,todayOptions,gradeOverrides),scribe:Object.freeze({session,responses,submitted,drafting,aiScored,avgWords})});
   }
 
-  return Object.freeze({GRADE_INTEGRITY_VERSION,DEFAULT_MINIMUM_ACADEMIC_DAY,DEFAULT_CURRENT_GRADE_START_DATE,GAME_CATALOG,writingMetrics,sessionResponseId,normalizeSession,normalizeResponse,normalizeReadingAssignments,normalizeGradePolicy,evidenceDateKey,academicDay,evidencePeriod,dailyAcademicScore,curriculumAcademicScore,spellingActivityScore,todayProgress,writingPortfolio,normalizeGameResults,normalizeReading,normalizeWeights,studentAcademic,gradebook,teacherAcademic});
+  return Object.freeze({GRADE_INTEGRITY_VERSION,GRADEBOOK_START_DAY,DEFAULT_GRADEBOOK_START_DATE,DEFAULT_MINIMUM_ACADEMIC_DAY,DEFAULT_CURRENT_GRADE_START_DATE,GAME_CATALOG,writingMetrics,sessionResponseId,normalizeSession,normalizeResponse,normalizeReadingAssignments,normalizeGradePolicy,evidenceDateKey,academicDay,evidencePeriod,dailyAcademicScore,curriculumAcademicScore,spellingActivityScore,todayProgress,writingPortfolio,normalizeGameResults,normalizeReading,normalizeWeights,studentAcademic,gradebook,teacherAcademic});
 });

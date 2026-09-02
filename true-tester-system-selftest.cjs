@@ -48,8 +48,12 @@ assert.equal(Tester.unlockEnabled(student,allUnlocks,'unlockMorning'),true);
 pass(4,'Morning Work self-unlock requires the canonical capability and control');
 
 assert.equal(Tester.unlockEnabled(student,allUnlocks,'unlockCurriculum'),true);
-assert.match(read('curriculum-quest.html'),/isTeacher\|\|testerCurriculumOverride\|\|day===first/);
-pass(5,'Curriculum Quest self-unlock reaches current and recovery sequencing gates');
+const curriculumQuest=read('curriculum-quest.html');
+assert.match(curriculumQuest,/isTeacher\|\|testerCurriculumOverride\|\|day===first/);
+assert.match(curriculumQuest,/window\.DWCurriculumAccountPreview=!!u&&String\(u\.email\|\|""\)\.toLowerCase\(\)===TEACHER\.toLowerCase\(\)/);
+assert.match(curriculumQuest,/if\(accountPreview\)\{[\s\S]*grade"\)\.disabled=false;[\s\S]*day"\)\.disabled=false;/);
+assert.match(curriculumQuest,/WATCH_REQUIRED_FRACTION=\.90/);
+pass(5,'Curriculum Quest self-unlock and Jacob account grade/day preview remain available');
 
 assert.equal(Tester.unlockEnabled(student,allUnlocks,'unlockArcade'),true);
 assert.match(read('functions-arcade-access/index.js'),/cost=testerOverride\?0:C\.SESSION_COST/);

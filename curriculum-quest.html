@@ -169,7 +169,7 @@ const Q1_SCHOOL_DAYS={"2026-08-03":1,"2026-08-04":2,"2026-08-05":3,"2026-08-06":
 function q1CalendarCursor(){const today=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Phoenix",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date()),dates=Object.keys(Q1_SCHOOL_DAYS).sort(),todayDay=Q1_SCHOOL_DAYS[today];if(todayDay)return todayDay;const next=dates.find(d=>d>today);if(next)return Q1_SCHOOL_DAYS[next];return 40}
 let K=BASE_K+"_pending",S={grade:"I",day:q1CalendarCursor(),items:{}},curriculumDraftScope="anonymous";
 function curriculumScope(scope){return String(scope||"anonymous").replace(/[^a-zA-Z0-9_-]/g,"_")}
-function loadScopedState(scope){curriculumDraftScope=curriculumScope(scope);K=BASE_K+"_"+curriculumDraftScope;try{S=JSON.parse(localStorage.getItem(K)||"{}")}catch(e){S={}}S.grade=S.grade||"I";S.day=q1CalendarCursor();S.items=S.items||{}}
+function loadScopedState(scope){curriculumDraftScope=curriculumScope(scope);K=BASE_K+"_"+curriculumDraftScope;try{S=JSON.parse(localStorage.getItem(K)||"{}")}catch(e){S={}}S.grade=S.grade||"I";S.day=window.DWCurriculumAccountPreview===true?Math.max(1,Math.min(40,Number(S.day)||q1CalendarCursor())):q1CalendarCursor();S.items=S.items||{}}
 const $=x=>document.querySelector(x), $$=x=>[...document.querySelectorAll(x)];
 const esc=(x="")=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 function dwNotice(title,message,details=""){return window.DWImmersiveUI?.alert({title,message,details,icon:details?"warning":"portal"})||Promise.resolve()}
@@ -1007,7 +1007,7 @@ function postCurriculumMissionState(){
 }
 function renderCurriculumDom(){
 setTimeout(postCurriculumMissionState,0);
-const localTester=window.DWCurriculumLocalTester===true,videoTab=document.querySelector('[data-tab="videos"]'),tabs=document.getElementById("curriculumTabs");if(videoTab)videoTab.classList.toggle("hidden",!isTeacher||localTester);if(tabs)tabs.classList.toggle("teacher-tabs",isTeacher&&!localTester);
+const localTester=window.DWCurriculumLocalTester===true,accountPreview=window.DWCurriculumAccountPreview===true,videoTab=document.querySelector('[data-tab="videos"]'),tabs=document.getElementById("curriculumTabs");if(videoTab)videoTab.classList.toggle("hidden",(!isTeacher&&!accountPreview)||localTester);if(tabs)tabs.classList.toggle("teacher-tabs",(isTeacher||accountPreview)&&!localTester);
 if(localTester){
   S.day=DW_LOCAL_TESTER_DAY;rows().filter(x=>Number(x.day)===DW_LOCAL_TESTER_DAY).forEach(x=>openMissionIds.add(x.id));
   $$("#curriculumTabs [data-tab]").forEach(button=>button.classList.toggle("hidden",button.dataset.tab!=="current"));
@@ -1020,11 +1020,11 @@ if(!isTeacher&&!studentCurriculumAccess){
   ["current","recovery","videos","standards","morph","audit"].forEach(id=>$("#"+id).innerHTML=locked);return;
 }
 let r=rows(),dayIsOpen=isTeacher||currentQuestOpen,due=r.filter(x=>x.day<S.day||(dayIsOpen&&x.day===S.day)),pendingSources=due.filter(mediaPending),eligibleDue=due.filter(x=>!mediaPending(x)),eligibleDone=eligibleDue.filter(missionComplete).length,p=eligibleDue.length?Math.round(eligibleDone/eligibleDue.length*100):0,back=r.filter(x=>x.day<S.day&&!missionComplete(x)&&!mediaPending(x));for(const item of r)if(Number(item.day)<Number(S.day)&&openMissionIds.has(item.id)&&missionComplete(item)&&!mediaPending(item)&&!back.includes(item))back.push(item);back.sort((a,b)=>a.day-b.day);let recoveryDays=[...new Set(back.map(x=>Number(x.day)))].sort((a,b)=>a-b),mv=due.filter(x=>vid(x)&&!mediaPending(x)&&!st(x.id).watched),todayRows=dayIsOpen?r.filter(x=>x.day===S.day):[];$("#grade").value=S.grade;$("#day").value=S.day;$("#hero").textContent=dayIsOpen?`${D.meta.gradeLabels[S.grade]} • Day ${S.day}`:`Recovery Open • Current Day ${S.day} Locked`;$("#pct").textContent=p+"%";$("#ring").style.background=`conic-gradient(var(--green) ${p*3.6}deg,#241936 0)`;$("#kpis").innerHTML=[[todayRows.length,dayIsOpen?"TODAY'S MISSIONS":"CURRENT MISSIONS OPEN"],[recoveryDays.length,"RECOVERY DAYS"],[mv.length,"PAST VIDEOS STILL NEEDED"],[pendingSources.length,"SOURCE VIDEOS PENDING"]].map(x=>`<div class="frame kpi"><b>${x[0]}</b><small>${x[1]}</small></div>`).join("");$("#current").innerHTML=dayIsOpen?grouped(`Day ${S.day} Current Quest`,`Watch the lesson, answer the standard check, then apply what you learned. ${dayEstimate(todayRows)}.`,todayRows):`<div class="frame empty"><h2>🔒 Current Quest is closed</h2><p>New curriculum opens on the next assigned school day. Recovery remains available.</p></div>`;$("#recovery").innerHTML=recoveryGrouped(back.sort((a,b)=>a.day-b.day));
-let vr=(isTeacher?r:due).filter(vid).sort((a,b)=>a.day-b.day);$("#videos").innerHTML=`<div class="title"><div><h2>🔮 Required Video Vault</h2><p>Students see only videos from today and earlier school days. Source-pending videos are held until school access returns.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Day</th><th>Subject</th><th>Mission</th><th>Media</th><th>Status</th><th>Watch</th></tr></thead><tbody>${vr.map(x=>{const m=mediaFor(x),pending=mediaPending(x),ready=mediaReady(x);return `<tr><td>${x.day}</td><td>${esc(x.subject)}</td><td>${esc(friendlyTitle(x))}</td><td>${pending?"⏳ SOURCE PENDING":ready?"R2 READY":"SOURCE LINK"}</td><td>${pending?"ON HOLD":st(x.id).watched?"✅ WATCHED":"NOT YET"}</td><td>${ready?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">WATCH ▶</button>`:pending?"Awaiting access":"—"}</td></tr>`}).join("")}</tbody></table></div>`;
+let vr=(isTeacher||window.DWCurriculumAccountPreview===true?r:due).filter(vid).sort((a,b)=>a.day-b.day);$("#videos").innerHTML=`<div class="title"><div><h2>🔮 Required Video Vault</h2><p>Students see only videos from today and earlier school days. Source-pending videos are held until school access returns.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Day</th><th>Subject</th><th>Mission</th><th>Media</th><th>Status</th><th>Watch</th></tr></thead><tbody>${vr.map(x=>{const m=mediaFor(x),pending=mediaPending(x),ready=mediaReady(x);return `<tr><td>${x.day}</td><td>${esc(x.subject)}</td><td>${esc(friendlyTitle(x))}</td><td>${pending?"⏳ SOURCE PENDING":ready?"R2 READY":"SOURCE LINK"}</td><td>${pending?"ON HOLD":st(x.id).watched?"✅ WATCHED":"NOT YET"}</td><td>${ready?`<button class="resource" onclick="launchVideo('${x.id}','${esc(m.url)}','${esc(friendlyTitle(x))}')">WATCH ▶</button>`:pending?"Awaiting access":"—"}</td></tr>`}).join("")}</tbody></table></div>`;
 let sr=D.standards.filter(x=>x.grade===S.grade);$("#standards").innerHTML=(window.DWCurriculumStandardsMasteryReport?.()||"")+`<div class="title"><div><h2>📚 Standards Codex</h2><p>Teacher-facing source map.</p></div></div><div class="frame tablewrap"><table><thead><tr><th>Subject</th><th>Code</th><th>Standard</th><th>Evidence of Proficiency</th><th>Assessment</th></tr></thead><tbody>${sr.map(x=>`<tr><td>${esc(x.subject)}</td><td>${esc(window.DWCurriculumStandardCode?.(x)||"")}</td><td>${esc(x.standard)}</td><td>${esc(x.proficiency)}</td><td>${esc(x.assessment)}</td></tr>`).join("")}</tbody></table></div>`;
 let mr=D.morphology.filter(x=>x.grade===S.grade&&(isTeacher||Number(x.week||0)<=Math.ceil(S.day/5))),wg={};mr.forEach(x=>(wg[x.week]??=[]).push(x));$("#morph").innerHTML=`<div class="title"><div><h2>⚒️ Wordsmith Tower</h2><p>Word roots and target words available through the current school day.</p></div></div>`+Object.entries(wg).map(([w,l])=>`<div class="group"><div class="grouphead"><h3>Week ${w} • ${esc(l[0].root)}</h3></div><div class="wordgrid">${l.map(x=>`<div class="frame word"><small>ROOT: ${esc(x.root)}</small><b>${esc(x.word)}</b><p>${esc(x.morphological||x.orthographic||"Learn how this word is built and what its parts mean.")}</p><p><strong>Your task:</strong> ${esc(x.application||"Use the word correctly in a complete sentence.")}</p></div>`).join("")}</div></div>`).join("");
 let miss=due.filter(x=>!missionComplete(x)&&!mediaPending(x));$("#audit").innerHTML=`<div class="title"><div><h2>🛡️ Curriculum Compliance Shield</h2><p>Completion requires the lesson, every standard-check question answered, and the application submitted. Scores still record correct and incorrect answers. Missions in this flow are auto-graded. If Dragonswood rejects a response you believe is correct, use Teacher Review so the exact question and answer can be checked..</p></div></div><div class="frame audit ${miss.length?"bad":"good"}"><h3>${miss.length} curriculum missions incomplete</h3><p>${miss.length?"Recovery Quest shows the unfinished available curriculum.":"Everything currently available and due is complete."}</p></div><div class="frame audit ${mv.length?"bad":"good"}"><h3>${mv.length} available required videos still need a completed video check</h3></div><div class="frame audit ${pendingSources.length?"bad":"good"}"><h3>${pendingSources.length} curriculum video sources awaiting school access</h3><p>${pendingSources.length?"These are held separately and do not count as student recovery failures. Activities can continue now.":"No curriculum source videos are pending access."}</p></div>`}
-$("#grade").onchange=e=>{if(currentStudent&&!isTeacher){e.target.value=S.grade;return}S.grade=e.target.value;if(window.DWCurriculumLocalTester){S.day=DW_LOCAL_TESTER_DAY;syncLocalTesterUrl()}save();render()};$("#day").onchange=e=>{if(window.DWCurriculumLocalTester){S.day=DW_LOCAL_TESTER_DAY;e.target.value=S.day;return}if(!isTeacher){e.target.value=S.day;return}S.day=Math.max(1,Math.min(40,+e.target.value||1));save();render()};$$(".tabs button").forEach(b=>b.onclick=()=>{$$(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");$$(".panel").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.tab).classList.add("active")});render();
+$("#grade").onchange=e=>{if(currentStudent&&!isTeacher&&window.DWCurriculumAccountPreview!==true){e.target.value=S.grade;return}S.grade=e.target.value;if(window.DWCurriculumLocalTester){S.day=DW_LOCAL_TESTER_DAY;syncLocalTesterUrl()}save();render()};$("#day").onchange=e=>{if(window.DWCurriculumLocalTester){S.day=DW_LOCAL_TESTER_DAY;e.target.value=S.day;return}if(!isTeacher&&window.DWCurriculumAccountPreview!==true){e.target.value=S.day;return}S.day=Math.max(1,Math.min(40,+e.target.value||1));save();render()};$$(".tabs button").forEach(b=>b.onclick=()=>{$$(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");$$(".panel").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.tab).classList.add("active")});render();
 </script>
 <script src="dragonswood-grading-core.js?v=56.21.0"></script>
 <script src="functions-arcade-access/tester-core.js?v=57.1.16"></script>
@@ -1226,6 +1226,7 @@ onAuthStateChanged(auth,async u=>{
   curriculumStateReady=false;
   const embedded=DW_V33_PARAMS.get("dwEmbed")==="1";
   isTeacher=!!u && String(u.email||"").toLowerCase()===TEACHER.toLowerCase()&&!embedded;
+  window.DWCurriculumAccountPreview=!!u&&String(u.email||"").toLowerCase()===TEACHER.toLowerCase();
   testerSession=Tester.normalizeTester(u?.uid||'',null);testerControls={};testerCurriculumOverride=false;
   window.DWCurriculumTesterVideoTools=false;
   if(u){
@@ -1245,10 +1246,12 @@ onAuthStateChanged(auth,async u=>{
   authStatus.textContent=u?"✓ Signed in":"Not signed in";
   authStatus.style.color=u?"#7fffd4":"#ff9daf";
   loadScopedState(isTeacher?"teacher":u?.uid||"anonymous");
-  studentCurriculumAccess=isTeacher||testerCurriculumOverride;
-  currentQuestOpen=isTeacher||testerCurriculumOverride;
+  studentCurriculumAccess=isTeacher||testerCurriculumOverride||window.DWCurriculumAccountPreview===true;
+  currentQuestOpen=isTeacher||testerCurriculumOverride||window.DWCurriculumAccountPreview===true;
   accessMessage=u?"Consulting today’s quest ledger…":"Open Curriculum Quest from your signed-in Dragonswood portal.";
-  document.getElementById("teacherBadge").style.display=isTeacher?"inline-block":"none";
+  const accountPreview=window.DWCurriculumAccountPreview===true,badge=document.getElementById("teacherBadge");
+  badge.style.display=isTeacher||accountPreview?"inline-block":"none";
+  badge.textContent=accountPreview&&!isTeacher?"🧪 TESTER PREVIEW • YOUR ACCOUNT ONLY":"🛡️ TEACHER VERIFIED";
   if(u){
     watchMyOverrides(u.uid);
     document.getElementById("studentIdentity").textContent=isTeacher?"Teacher account":(u.displayName||u.email||"Student");
@@ -1268,32 +1271,40 @@ onAuthStateChanged(auth,async u=>{
       }catch(e){console.warn("Curriculum cloud progress unavailable; local progress remains safe",e)}
       progressReady=true;
       window.queueCurriculumProgress(S);
-      try{
-        const snap=await getDoc(doc(db,"students",u.uid));
-        if(snap.exists()){
-          const g=String(snap.data().grade||"");
-          if(g==="4") S.grade="I";
-          if(g==="5") S.grade="K";
-          save();
-          document.getElementById("grade").disabled=true;
-        }
-      }catch(e){console.warn("Could not load grade profile",e)}
-      try{
-        const today=await getDoc(doc(db,"dailyQuests",phoenixDateKey()));
-        if(!today.exists())throw new Error("no-school-day");
-        const assignment=today.data();
-        S.day=Math.max(1,Math.min(40,Number(assignment.day||1)));
+      if(accountPreview){
+        document.getElementById("grade").disabled=false;
+        document.getElementById("day").disabled=false;
         studentCurriculumAccess=true;
         currentQuestOpen=true;
-        accessMessage=DW_SAFE_PREVIEW?`🧪 SAFE DATE PREVIEW • ${phoenixDateKey()} • progress and completion writes are disabled.`:"";
-        save();
-      }catch(e){
-        S.day=q1CalendarCursor();
-        studentCurriculumAccess=true;
-        currentQuestOpen=testerCurriculumOverride;
-        accessMessage=testerCurriculumOverride?"Tester self-unlock opened the current curriculum without changing completion evidence.":"Current curriculum is closed, but unfinished work from earlier school days remains available in Recovery.";
+        accessMessage=`🧪 TESTER PREVIEW • ${D.meta.gradeLabels[S.grade]} • Day ${S.day} • only your tester account is affected.`;
+      }else{
+        try{
+          const snap=await getDoc(doc(db,"students",u.uid));
+          if(snap.exists()){
+            const g=String(snap.data().grade||"");
+            if(g==="4") S.grade="I";
+            if(g==="5") S.grade="K";
+            save();
+            document.getElementById("grade").disabled=true;
+          }
+        }catch(e){console.warn("Could not load grade profile",e)}
+        try{
+          const today=await getDoc(doc(db,"dailyQuests",phoenixDateKey()));
+          if(!today.exists())throw new Error("no-school-day");
+          const assignment=today.data();
+          S.day=Math.max(1,Math.min(40,Number(assignment.day||1)));
+          studentCurriculumAccess=true;
+          currentQuestOpen=true;
+          accessMessage=DW_SAFE_PREVIEW?`🧪 SAFE DATE PREVIEW • ${phoenixDateKey()} • progress and completion writes are disabled.`:"";
+          save();
+        }catch(e){
+          S.day=q1CalendarCursor();
+          studentCurriculumAccess=true;
+          currentQuestOpen=testerCurriculumOverride;
+          accessMessage=testerCurriculumOverride?"Tester self-unlock opened the current curriculum without changing completion evidence.":"Current curriculum is closed, but unfinished work from earlier school days remains available in Recovery.";
+        }
+        document.getElementById("day").disabled=true;
       }
-      document.getElementById("day").disabled=true;
     }else{
       const picker=document.getElementById("teacherStudent");picker.style.display="inline-block";
       try{

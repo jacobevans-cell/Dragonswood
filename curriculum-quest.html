@@ -548,8 +548,8 @@ function quickWriteTopicMatches(value,keywords=[]){
   });
 }
 function quickWriteSentenceTarget(range){
-  const minimum=Number(range?.[0]||0),maximum=Number(range?.[1]||minimum);
-  return minimum===maximum?String(minimum):`${minimum}–${maximum}`;
+  const minimum=Number(range?.[0]||0);
+  return `at least ${minimum}`;
 }
 function activitySpec(x){
   const raw=((x.resourceName||"")+" "+(x.requirement||"")+" "+(x.strand||"")).toLowerCase();
@@ -647,8 +647,8 @@ function validateActivity(x){
   if(spec.kind==="quickwrite"){
     const selected=spec.options.find(option=>option.prompt===choice);
     if(!selected)return {ok:false,code:"missing_choice",aiEligible:false,msg:"Choose Quickwrite Option 1 or Option 2 first."};
-    const [minimum,maximum]=spec.sentenceRange,count=sentenceCount(written);
-    if(count<minimum||count>maximum)return {ok:false,code:"sentence_count",aiEligible:false,msg:`Write ${quickWriteSentenceTarget(spec.sentenceRange)} complete sentences. Dragonswood counted ${count}.`};
+    const minimum=Number(spec.sentenceRange?.[0]||0),count=sentenceCount(written);
+    if(count<minimum)return {ok:false,code:"sentence_count",aiEligible:false,msg:`Write at least ${minimum} complete sentences. Dragonswood counted ${count}.`};
     const quality=meaningfulText(written,Math.max(15,minimum*4));if(!quality.ok)return {...quality,aiEligible:false};
     const matches=quickWriteTopicMatches(written,selected.keywords);
     if(matches.length<2)return {ok:false,code:"off_topic",msg:"Connect your response more clearly to the Quickwrite prompt you selected."};
@@ -816,7 +816,7 @@ function curriculumAiEligible(spec,result,answer){
   if(result.ok||result.reviewable===false||result.aiEligible===false||!String(answer||"").trim())return false;
   return ["explain","inference","writingCommunity","opinion","quickwrite","morph"].includes(spec.kind);
 }
-function activityHint(spec,result){return window.DWCurriculumValidation?.hintFor?.(spec.kind,result)||"Answer the question directly, add one specific detail, and explain how it supports your answer."}
+function activityHint(spec,result){if(spec.kind==="quickwrite"&&result?.code==="sentence_count")return "Continue your story until you reach the minimum sentence count.";return window.DWCurriculumValidation?.hintFor?.(spec.kind,result)||"Answer the question directly, add one specific detail, and explain how it supports your answer."}
 function curriculumFallbackAdvice(spec,result,answer){
   const structured=structuredActivityParts(answer);
   if(spec.kind==="morph")return window.DWCurriculumValidation?.morphologyAdvice?.(structured.response,spec.word)||`Name who or what is affected and what “${spec.word}” is causing them to experience.`;

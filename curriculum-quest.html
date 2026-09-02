@@ -152,7 +152,7 @@ body>*{position:relative;z-index:1}
   </div>
 </div>
 <script src="q1-curriculum-data.js"></script>
-<script src="q1-curriculum-day21-overrides.js?v=11"></script>
+<script src="q1-curriculum-day21-overrides.js?v=12"></script>
 <script src="q1-curriculum-enhancements.js?v=57.1.9"></script>
 <script src="q1-video-map.js?v=57.1.6"></script>
 <script src="curriculum-question-engine.js"></script>
@@ -335,7 +335,7 @@ document.addEventListener("input",event=>saveCurriculumDraftControl(event.target
 
 function googleFileId(url=""){const m=String(url).match(/\/d\/([^/?]+)/);return m?m[1]:""}
 function mediaFor(x){const url=String(x.resourceUrl||"").trim(),id=googleFileId(url);if(id&&VM[id])return VM[id];if(/\.mp4(?:[?#].*)?$/i.test(url))return {status:"ready",url,durationSeconds:Number(x.videoDurationSeconds||0),owned:true};return null}
-function vid(x){return !!mediaFor(x)||!!(x.resourceUrl&&(x.resourceUrl.includes("google.com/videos")||/video/i.test(x.resourceName||"")))}
+function vid(x){return x?.videoRequired===true||!!mediaFor(x)||!!(x.resourceUrl&&(x.resourceUrl.includes("google.com/videos")||/video/i.test(x.resourceName||"")))}
 function mediaReady(x){const m=mediaFor(x);return !!m&&m.status==="ready"&&!!m.url}
 function mediaPending(x){const m=mediaFor(x);return !!m&&m.status==="pending"}
 const DW_HIDDEN_ITEM_IDS=new Set(["I-HUM-D1-C1-A","I-HUM-D1-C2-A","I-HUM-D1-C3-A","I-HUM-D1-C4-A","I-HUM-D2-C1-A","I-HUM-D2-C2-A","I-HUM-D2-C3-A","I-HUM-D2-C4-A","K-HUM-D1-C1-A","K-HUM-D1-C2-A","K-HUM-D1-C3-A","K-HUM-D1-C4-A","K-HUM-D2-C1-A","K-HUM-D2-C2-A","K-HUM-D2-C3-A","K-HUM-D2-C4-A","I-Math-D1-C1-A","I-Math-D1-C2-A","I-Math-D1-C3-A","I-Math-D2-C3-A","K-Math-D1-C1-A","K-Math-D1-C2-A","K-Math-D1-C3-A","K-Math-D2-C1-A","I-Science-D1-C1-A","I-Science-D1-C3-A","I-Science-D2-C1-A","I-Science-D2-C3-A","K-Science-D1-C1-A","K-Science-D1-C3-A","K-Science-D1-C4-A"]);

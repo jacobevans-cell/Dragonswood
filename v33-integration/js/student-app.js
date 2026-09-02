@@ -13,7 +13,7 @@ function setLocalTesterUnlocks(patch){const next={...localTesterUnlocks(),...pat
 function storedRecoverySummary(){try{const value=JSON.parse(storageGet('recovery-summary','{}'));return value&&typeof value==='object'?value:{}}catch{return {}}}
 const toast = document.querySelector('#toast');
 const dialogRoot = document.querySelector('#dialog-root');
-let integrationController=null,recoveryProbe=null,arcadeEntering=false,legacySpellingRecoveryPromise=null,legacySpellingRecoveryUid='',legacySpellingRecoveryLastAttempt=0;
+let integrationController=null,recoveryProbe=null,recoveryProbeRetryTimer=null,arcadeEntering=false,legacySpellingRecoveryPromise=null,legacySpellingRecoveryUid='',legacySpellingRecoveryLastAttempt=0;
 let classLibraryStorePromise=null;
 let integrationSession={status:'loading',message:'Opening the portal…'};
 let passSafetyInterval=null;
@@ -200,7 +200,7 @@ function ensureCombinedGameStyles(){
   `;document.head?.appendChild(style);
 }
 
-function recoverySummaryCurrent(){return state.recoverySummary?.checked===true&&state.recoverySummary?.dateKey===state.missionDate}
+function recoverySummaryCurrent(){const summary=state.recoverySummary||{},age=Date.now()-Number(summary.checkedAt||0);return summary.checked===true&&summary.dateKey===state.missionDate&&(state.completedMissions.has('curriculum')||age>=0&&age<5000)}
 function ensureRecoveryProbe(){
   if(recoverySummaryCurrent()||recoveryProbe||requestedModuleId()==='curriculum-quest'||!moduleHost?.href)return;
   const frame=document.createElement('iframe');frame.id='v33-recovery-progress-probe';frame.title='Recovery progress check';frame.tabIndex=-1;frame.setAttribute('aria-hidden','true');frame.setAttribute('style','position:fixed;width:1px;height:1px;left:-10000px;top:-10000px;border:0;opacity:0;pointer-events:none');frame.src=moduleHost.href('curriculum-quest',document.baseURI,window.DWV33Integration?.environment);document.body?.appendChild(frame);recoveryProbe=frame;
@@ -709,8 +709,10 @@ function handleModuleState(event){
     setMissionStatus('exit',message.exit);
   }else if(message.type==='curriculum-mission-state'){
     setMissionStatus('curriculum',message.currentComplete?'complete':'not_started');
-    state.recoverySummary={dateKey:effectiveDateKey()||state.missionDate,checked:true,count:Number(message.recoveryCount)||0,days:Array.isArray(message.recoveryDays)?message.recoveryDays.map(row=>({day:Number(row.day)||0,count:Number(row.count)||0})).filter(row=>row.day>0&&row.count>0):[]};
+    state.recoverySummary={dateKey:effectiveDateKey()||state.missionDate,checked:true,checkedAt:Date.now(),count:Number(message.recoveryCount)||0,days:Array.isArray(message.recoveryDays)?message.recoveryDays.map(row=>({day:Number(row.day)||0,count:Number(row.count)||0})).filter(row=>row.day>0&&row.count>0):[]};
     storageSet('recovery-summary',JSON.stringify(state.recoverySummary));
+    clearTimeout(recoveryProbeRetryTimer);recoveryProbeRetryTimer=null;
+    if(message.currentComplete!==true)recoveryProbeRetryTimer=setTimeout(()=>{state.recoverySummary.checked=false;if(!currentModuleId())render()},5000);
     if(fromRecoveryProbe){recoveryProbe.remove();recoveryProbe=null}
   }else return;
   if(!currentModuleId())render();

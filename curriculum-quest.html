@@ -1107,7 +1107,25 @@ function canonicalProgress(uid,item,state,forceUnverified=false){
 }
 function mergeProgressRows(local,rows){
   const out={grade:local.grade||"I",day:Number(local.day||14),items:{...(local.items||{})}};
-  rows.forEach(r=>{const a=out.items[r.itemId]||{};out.items[r.itemId]={...a,...r,autoAnswers:{...(a.autoAnswers||{}),...(r.autoAnswers||{})},verified:!!r.verified}});
+  rows.forEach(r=>{
+    const a=out.items[r.itemId]||{},merged={...a,...r,autoAnswers:{...(a.autoAnswers||{}),...(r.autoAnswers||{})},verified:!!r.verified};
+    merged.watched=a.watched===true||r.watched===true;
+    merged.practiced=a.practiced===true||r.practiced===true;
+    merged.complete=a.complete===true||r.complete===true||a.caseCompletionLocked===true||r.caseCompletionLocked===true;
+    merged.caseCompletionLocked=a.caseCompletionLocked===true||r.caseCompletionLocked===true;
+    merged.practiceEvidence=String(a.practiceEvidence||r.practiceEvidence||"");
+    merged.quickWriteChoice=String(a.quickWriteChoice||r.quickWriteChoice||"");
+    merged.quickWriteChoiceLocked=a.quickWriteChoiceLocked===true||r.quickWriteChoiceLocked===true||merged.practiced&&!!merged.quickWriteChoice;
+    out.items[r.itemId]=merged;
+  });
+  return out;
+}
+function recoverProgressFromAttempts(local,rows){
+  const out={grade:local.grade||"I",day:Number(local.day||14),items:{...(local.items||{})}};
+  rows.filter(row=>row&&row.writtenPassed===true&&row.itemId).forEach(row=>{
+    const a=out.items[row.itemId]||{};
+    out.items[row.itemId]={...a,practiced:true,complete:true,activityAttempts:Math.max(Number(a.activityAttempts||0),Number(row.attemptNumber||1))};
+  });
   return out;
 }
 function standardCode(std){
@@ -1286,8 +1304,12 @@ onAuthStateChanged(auth,async u=>{
         const mergedLegacy={grade:S.grade||legacy.grade||"I",day:Math.max(Number(S.day||1),Number(legacy.day||1)),items:{...(legacy.items||{}),...(S.items||{})}};
         Object.values(mergedLegacy.items).forEach(x=>{x.verified=false});
         if(!DW_SAFE_PREVIEW)await migrateLegacyProgress(u.uid,mergedLegacy);
-        const progressSnap=await getDocs(query(collection(db,"curriculumProgress"),where("studentId","==",u.uid)));
-        S=mergeProgressRows(mergedLegacy,progressSnap.docs.map(d=>d.data()));
+        const [progressSnap,attemptSnap]=await Promise.all([
+          getDocs(query(collection(db,"curriculumProgress"),where("studentId","==",u.uid))),
+          getDocs(query(collection(db,"curriculumAttempts"),where("studentId","==",u.uid)))
+        ]);
+        const recovered=recoverProgressFromAttempts(mergedLegacy,attemptSnap.docs.map(d=>d.data()));
+        S=mergeProgressRows(recovered,progressSnap.docs.map(d=>d.data()));
         if(!DW_SAFE_PREVIEW)localStorage.setItem(K,JSON.stringify(S));
       }catch(e){console.warn("Curriculum cloud progress unavailable; local progress remains safe",e)}
       progressReady=true;

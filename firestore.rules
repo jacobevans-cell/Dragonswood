@@ -659,12 +659,15 @@ service cloud.firestore {
                     && request.resource.data.itemId == resource.data.itemId
                     && request.resource.data.verified == resource.data.verified
                     && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-                      'watched','videoCoverage','videoReflection','practiced',
-                      'practiceEvidence','questionsCorrect','questionsSeen',
+                      'watched','videoCoverage','videoReflection','videoWatchedRanges',
+                      'videoResumeTime','videoTrackingStatus','videoLastActivityMs','practiced',
+                      'practiceEvidence','standardCheckSubmitted','questionsCorrect','questionsSeen',
                       'autoAnswers','autoAttempts','lastActivityAttempt',
                       'activityAttempts','overrideStatus','quickWriteChoice','complete','questionsTotal',
-                      'quickWriteChoiceLocked','dwInteraction','lastValidatorCode',
-                      'lastValidatorMessage','lastAiTriage','updatedAt'
+                      'quickWriteChoiceLocked','caseCompletionLocked','caseCompletedAt','dwInteraction',
+                      'reviewRevisionAttempts','reviewBaselineFingerprint','reviewAttemptFingerprints',
+                      'lastValidatorCode','lastValidatorMessage','lastAiTriage','lastApprovedAi',
+                      'teacherReviewEligible','updatedAt'
                     ])
                     && request.resource.data.questionsCorrect is number
                     && request.resource.data.questionsSeen is number

@@ -1093,20 +1093,15 @@ function canonicalProgress(uid,item,state,forceUnverified=false){
   return {
     studentId:uid,itemId:item.id,grade:item.grade,day:Number(item.day),subject:item.subject,strand:item.strand||"",
     standardCode:(entry?.standards||[]).join(","),watched:!!state.watched,
-    videoCoverage:Number(state.videoCoverage||0),videoReflection:String(state.videoReflection||""),videoWatchedRanges:Array.isArray(state.videoWatchedRanges)?state.videoWatchedRanges.slice(-240):[],videoResumeTime:Number(state.videoResumeTime||0),videoTrackingStatus:String(state.videoTrackingStatus||""),videoLastActivityMs:Number(state.videoLastActivityMs||0),
-    practiced:!!state.practiced,practiceEvidence:String(state.practiceEvidence||""),standardCheckSubmitted:standardCheckComplete(item,state),complete:missionComplete(item,state),
-    caseCompletionLocked:state.caseCompletionLocked===true,caseCompletedAt:String(state.caseCompletedAt||""),
+    videoCoverage:Number(state.videoCoverage||0),videoReflection:String(state.videoReflection||""),
+    practiced:!!state.practiced,practiceEvidence:String(state.practiceEvidence||""),complete:missionComplete(item,state),
     quickWriteChoice:String(state.quickWriteChoice||""),quickWriteChoiceLocked:!!state.quickWriteChoiceLocked,
     dwInteraction:state.dwInteraction&&typeof state.dwInteraction==="object"?state.dwInteraction:null,
     questionsCorrect:counts.correct,questionsSeen:counts.seen,questionsTotal:counts.total,autoAnswers:state.autoAnswers||{},
     autoAttempts:Number(state.autoAttempts||0),lastActivityAttempt:String(state.lastActivityAttempt||""),
     activityAttempts:Number(state.activityAttempts||0),overrideStatus:String(state.overrideStatus||""),
-    reviewRevisionAttempts:Number(state.reviewRevisionAttempts||0),reviewBaselineFingerprint:String(state.reviewBaselineFingerprint||""),
-    reviewAttemptFingerprints:Array.isArray(state.reviewAttemptFingerprints)?state.reviewAttemptFingerprints.slice(-12):[],
     lastValidatorCode:String(state.lastValidatorCode||""),lastValidatorMessage:String(state.lastValidatorMessage||""),
     lastAiTriage:state.lastAiTriage&&typeof state.lastAiTriage==="object"?state.lastAiTriage:null,
-    lastApprovedAi:state.lastApprovedAi&&typeof state.lastApprovedAi==="object"?state.lastApprovedAi:null,
-    teacherReviewEligible:state.teacherReviewEligible===true,
     verified:forceUnverified?false:!!state.verified,updatedAt:serverTimestamp()
   };
 }

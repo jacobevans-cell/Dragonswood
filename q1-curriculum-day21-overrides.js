@@ -311,3 +311,77 @@
     if(writing)Object.assign(writing,{requirement:"Quickwrite Choice",quickWriteDirect:true,quickWriteSentenceRange:[grade==="I"?5:7,grade==="I"?5:7],quickWriteOptions:grade==="I"?[{"label":"Option 1 • The Door Beneath the Playground","prompt":"During recess, Mateo found a metal door under the sandbox that had not been there that morning. When he brushed away the sand, someone knocked three times from below. Continue the story in exactly 5 complete sentences.","finalEvent":"Someone knocked three times from below the playground.","keywords":["mateo","metal door","playground","sandbox","sand","knocked","below","recess"]},{"label":"Option 2 • The Substitute from Tomorrow","prompt":"The new substitute teacher knew every student's name, every answer, and exactly what would happen five minutes before it occurred. Then she quietly told Lila, “You are the reason I came back.” Continue the story in exactly 5 complete sentences.","finalEvent":"The substitute told Lila, “You are the reason I came back.”","keywords":["substitute","tomorrow","teacher","students","lila","reason","came back","future"]}]:[{"label":"Option 1 • The Door Beneath the Playground","prompt":"During recess, Mateo found a metal door under the sandbox that had not been there that morning. When he brushed away the sand, someone knocked three times from below. Continue the story in exactly 7 complete sentences.","finalEvent":"Someone knocked three times from below the playground.","keywords":["mateo","metal door","playground","sandbox","sand","knocked","below","recess"]},{"label":"Option 2 • The Substitute from Tomorrow","prompt":"The new substitute teacher knew every student's name, every answer, and exactly what would happen five minutes before it occurred. Then she quietly told Lila, “You are the reason I came back.” Continue the story in exactly 7 complete sentences.","finalEvent":"The substitute told Lila, “You are the reason I came back.”","keywords":["substitute","tomorrow","teacher","students","lila","reason","came back","future"]}]});
   }
 })();
+
+
+/* Day 23 replacement: Titanic explicit information and inference video lesson. */
+(function installDay23TitanicLesson(){
+  const D=window.DRAGONSWOOD_DATA;if(!D?.items)return;
+  const segmentUrls=Array.from({length:10},(_,i)=>"assets/curriculum/video/titanic-day23.mp4.part"+String(i).padStart(2,"0"));
+  const shared={
+    displayTitle:"Titanic Clues: Explicit Information & Inferences",
+    requirement:"Titanic Clues: Explicit Information & Inferences\n\nVideo:\nTitanic Clues • Using Explicit Information and Inferences\n\nVocabulary:\nExplicit, Inference, Text Evidence, Passenger, Luxurious, Elegance, Nervous, Seasick, Iceberg, Journal\n\nMission:\nWatch the lesson, use details from the Titanic journal to answer the evidence check, then complete all three application levels.",
+    resourceName:"Titanic Clues • Using Explicit Information and Inferences Video",
+    resourceUrl:"",
+    resourceType:"video",
+    videoDurationSeconds:188,
+    kidIntro:"Read the journal clues as you watch. Decide what the writer states directly, what the clues allow you to infer, and which exact details support each conclusion.",
+    lessonKeywords:["explicit","inference","text evidence","journal","passenger","luxurious","elegance","nervous","seasick","iceberg","Titanic"],
+    lessonContent:{
+      banner:"🚢 TITANIC CLUES • WHAT IS STATED, AND WHAT CAN YOU INFER?",
+      keyIdea:"Explicit information is stated directly in a text. An inference combines text evidence with what a reader already knows to reach a supported conclusion.",
+      vocabulary:[
+        {term:"Explicit",definition:"Information that is clearly stated in the text; it says it right there."},
+        {term:"Inference",definition:"A conclusion made by combining clues from the text with what you already know."},
+        {term:"Text Evidence",definition:"Words, phrases, or sentences from the text used to support an answer or idea."},
+        {term:"Passenger",definition:"A person traveling in a car, ship, airplane, or another vehicle."},
+        {term:"Luxurious",definition:"Very fancy, comfortable, and expensive."},
+        {term:"Elegance",definition:"Beauty that is graceful and stylish."},
+        {term:"Nervous",definition:"Feeling worried or scared about what might happen."},
+        {term:"Seasick",definition:"Feeling sick because of a boat or ship's movement."},
+        {term:"Iceberg",definition:"A huge piece of ice floating in the ocean."},
+        {term:"Journal",definition:"A personal record of someone's thoughts, feelings, and experiences."}
+      ],
+      exampleLabel:"Explicit detail → supported inference",
+      example:"The journal explicitly says, “I wore my best shoes and smiled, but my hands wouldn’t stop shaking.” The shaking hands support the inference that the writer felt nervous even while trying to appear confident.",
+      rememberLabel:"Evidence rule",
+      remember:"An inference is not a random guess. Strong answers name the inference and point to a specific detail that makes it reasonable.",
+      challengeLabel:"Three levels",
+      challenge:"Level 1: identify explicit information and an example. Level 2: state an inference and its supporting evidence. Level 3: explain how separating stated facts from inferences improves the questions readers ask and answer.",
+      missionNote:"Watch → Identify explicit details → Infer → Cite evidence → Explain"
+    },
+    lessonQuestions:[
+      {prompt:"What is explicit information?",choices:["Information stated directly in the text","A prediction with no supporting clues","A reader's personal opinion about a character","A detail that the author deliberately leaves out"],answer:"Information stated directly in the text"},
+      {prompt:"What is an inference?",choices:["A conclusion supported by text clues and what the reader knows","A sentence copied without explaining its meaning","A list of every event in the text","Information the text states word for word"],answer:"A conclusion supported by text clues and what the reader knows"},
+      {prompt:"The writer says, “I wore my best shoes and smiled, but my hands wouldn’t stop shaking.” What is the best inference?",choices:["The writer felt nervous despite trying to look confident","The writer disliked the shoes and wanted to remove them","The writer was cold because the ship had no heat","The writer had already seen an iceberg"],answer:"The writer felt nervous despite trying to look confident"},
+      {prompt:"Which detail is the strongest evidence that the writer was nervous?",choices:["My hands wouldn’t stop shaking","I wore my best shoes","People talked quietly","The ship looked elegant"],answer:"My hands wouldn’t stop shaking"},
+      {prompt:"When the writer waves to a little brother while “holding back tears,” what can a reader infer?",choices:["The writer cares about the brother and feels sad about leaving","The writer is angry because the brother took the best shoes","The writer does not recognize the brother on the dock","The writer believes the brother is already aboard the ship"],answer:"The writer cares about the brother and feels sad about leaving"},
+      {prompt:"Passengers talked quietly about icebergs, but nobody seemed worried. What is the best inference?",choices:["They underestimated the danger the icebergs could cause","They had already decided to leave the ship","They believed the journal writer caused the danger","They could not see or hear one another"],answer:"They underestimated the danger the icebergs could cause"},
+      {prompt:"Which answer correctly separates an explicit detail from an inference?",choices:["Explicit: people discussed icebergs; inference: they did not take the danger seriously","Explicit: the passengers were doomed; inference: people spoke quietly","Explicit: the writer hated the ship; inference: the ship carried passengers","Explicit: an iceberg struck immediately; inference: the writer owned shoes"],answer:"Explicit: people discussed icebergs; inference: they did not take the danger seriously"},
+      {prompt:"Why should a reader ask for text evidence after making an inference?",choices:["Evidence shows that the conclusion is supported rather than guessed","Evidence makes every reader reach a different answer","Evidence replaces the need to understand the text","Evidence proves that all possible inferences are correct"],answer:"Evidence shows that the conclusion is supported rather than guessed"}
+    ]
+  };
+  for(const grade of ["I","K"]){
+    const item=D.items.find(row=>row.id===grade+"-HUM-D23-C1-A");
+    if(!item)continue;
+    Object.assign(item,shared,{
+      applicationPrompt:grade==="I"
+        ?"Complete all three levels in 5–6 sentences total. Level 1: Define explicit information and give one explicit example from the Titanic journal. Level 2: State one inference and quote or accurately describe the evidence supporting it. Level 3: Explain how knowing the difference helps a reader ask and answer better questions."
+        :"Complete all three levels in 6–8 sentences total. Level 1: Define explicit information and cite one explicit detail from the Titanic journal. Level 2: Make a supported inference and explain how specific evidence leads to it. Level 3: Explain how distinguishing stated facts from inferences improves the quality and accuracy of questions and answers."
+    });
+  }
+  window.DRAGONSWOOD_TITANIC_VIDEO_READY=Promise.all(segmentUrls.map(url=>fetch(url,{cache:"force-cache"}).then(response=>{
+    if(!response.ok)throw new Error("Titanic video segment unavailable: "+url);
+    return response.arrayBuffer();
+  }))).then(parts=>{
+    const blobUrl=URL.createObjectURL(new Blob(parts,{type:"video/mp4"}))+"#titanic-day23.mp4";
+    for(const grade of ["I","K"]){
+      const item=D.items.find(row=>row.id===grade+"-HUM-D23-C1-A");
+      if(item)item.resourceUrl=blobUrl;
+    }
+    window.dispatchEvent(new CustomEvent("dragonswood:curriculum-media-ready",{detail:{lesson:"titanic-day23"}}));
+    return blobUrl;
+  }).catch(error=>{
+    console.error("[Dragonswood] Titanic lesson video failed to load.",error);
+    return "";
+  });
+})();

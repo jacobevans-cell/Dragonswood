@@ -379,6 +379,8 @@
       if(item)item.resourceUrl=blobUrl;
     }
     window.dispatchEvent(new CustomEvent("dragonswood:curriculum-media-ready",{detail:{lesson:"titanic-day23"}}));
+    if(typeof window.requestCurriculumRefresh==="function")window.requestCurriculumRefresh("titanic-media-ready");
+    else if(typeof window.render==="function")window.render();
     return blobUrl;
   }).catch(error=>{
     console.error("[Dragonswood] Titanic lesson video failed to load.",error);

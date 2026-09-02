@@ -299,7 +299,7 @@
           curriculumProgressStarted=true;
           const assignedDay=Math.floor(Number(data.todayQuest.day)||0);
           if(assignedDay>0){
-            const source=S.firestore.query(S.firestore.collection(db,'curriculumProgress'),S.firestore.where('day','==',assignedDay));
+            const source=S.firestore.collection(db,'curriculumProgress');
             unsubs.push(S.firestore.onSnapshot(source,progressSnap=>{data.curriculumProgress=progressSnap.docs.map(d=>({id:d.id,...d.data()}));ready.curriculumProgress=true;push()},err=>emit(onUpdate,{status:'error',user,message:`Today curriculum progress read failed: ${err?.code||err?.message||err}`})));
           }else{data.curriculumProgress=[];ready.curriculumProgress=true}
         }

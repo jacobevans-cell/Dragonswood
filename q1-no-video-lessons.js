@@ -315,18 +315,19 @@
       {q:"Which clue connects Priya to the red-hoodie sighting?",choices:["She wore her red debate hoodie in the gym","She was outside the building all afternoon","She said that she did not own a hoodie","She stayed in the library for the entire day"],correct:0,explain:"Priya admitted that she wore her red debate hoodie while she practiced in the gym."}
     ]
   };
+  function characterCaseFor(id){return D.items.find(item=>item.id===id)?.characterCase||CHARACTER_CASE}
   const mysteryActive={};
   const mysteryTimers={};
   const mysteryRecords={};
   function mysteryState(id){
-    const s=window.st(id);let record=mysteryRecords[id]||s.dwMystery;
-    if(!record||record.caseId!==CHARACTER_CASE.id)record={caseId:CHARACTER_CASE.id,interviewed:[],answers:{},notebook:""};
+    const s=window.st(id),caseData=characterCaseFor(id);let record=mysteryRecords[id]||s.dwMystery;
+    if(!record||record.caseId!==caseData.id)record={caseId:caseData.id,interviewed:[],answers:{},notebook:""};
     mysteryRecords[id]=record;s.dwMystery=record;return {s,record};
   }
   function mysteryInitials(name){return String(name).split(/\s+/).map(word=>word[0]||"").join("").replace(/[^A-Z]/gi,"").slice(0,2).toUpperCase()}
   function fluencyHtml(x){
-    const id=escHtml(x.id),{record}=mysteryState(x.id),interviewed=new Set(record.interviewed||[]),active=mysteryActive[x.id]||"",activeCharacter=CHARACTER_CASE.characters.find(c=>c.id===active);
-    const tiles=CHARACTER_CASE.characters.map(c=>{
+    const id=escHtml(x.id),caseData=characterCaseFor(x.id),{record}=mysteryState(x.id),interviewed=new Set(record.interviewed||[]),active=mysteryActive[x.id]||"",activeCharacter=caseData.characters.find(c=>c.id===active);
+    const tiles=caseData.characters.map(c=>{
       const closed=interviewed.has(c.id),open=active===c.id,disabled=!!active&&!open;
       return `<div class="dw-case-witness${closed?" closed":""}${open?" open":""}${disabled?" disabled":""}">
         <div class="dw-case-avatar" style="background:${escHtml(c.color)}"><img src="${escHtml(c.image)}" alt="Cartoon portrait of ${escHtml(c.name)}"></div>
@@ -335,24 +336,24 @@
       </div>`;
     }).join("");
     return `<div class="self-lesson dw-case-file">
-      <div class="lesson-banner">🕵️ THE CHARACTER CASE FILES • CASE 01</div>
+      <div class="lesson-banner">🕵️ THE CHARACTER CASE FILES • ${escHtml(caseData.title||'NEW CASE')}</div>
       <div class="key-idea"><strong>Your mission:</strong> Read the case report, interview every witness, record useful clues, and decide what happened. Each statement closes after 60 seconds, so read for meaning and evidence.</div>
-      <div class="dw-case-report">${CHARACTER_CASE.report.map(line=>`<p>${escHtml(line)}</p>`).join("")}</div>
+      <div class="dw-case-report">${caseData.report.map(line=>`<p>${escHtml(line)}</p>`).join("")}</div>
       <div class="dw-case-heading">Interview the witnesses</div>
       <div class="dw-case-witnesses">${tiles}</div>
-      <div class="dw-case-progress">${interviewed.size} of ${CHARACTER_CASE.characters.length} interviews complete</div>
+      <div class="dw-case-progress">${interviewed.size} of ${caseData.characters.length} interviews complete</div>
       <label class="dw-case-notebook"><strong>Detective Notebook</strong><span>Record names, times, locations, actions, and statements that may matter.</span><textarea oninput="dwNvMysteryNotebook('${id}',this.value)" placeholder="Write your clues here…">${escHtml(record.notebook||"")}</textarea></label>
       <span class="mission-note">No video today • Read → Interview → Compare clues → Solve the case</span>
     </div>`;
   }
   function mysteryQuizHtml(x){
-    const id=escHtml(x.id),{record}=mysteryState(x.id),ready=(record.interviewed||[]).length===CHARACTER_CASE.characters.length,answers=record.answers||{};
-    if(!ready)return `<div class="activity-feedback show">🔒 Interview all three witnesses to unlock the case questions.</div>`;
-    const questions=CHARACTER_CASE.quiz.map((item,index)=>{
+    const id=escHtml(x.id),caseData=characterCaseFor(x.id),{record}=mysteryState(x.id),ready=(record.interviewed||[]).length===caseData.characters.length,answers=record.answers||{};
+    if(!ready)return `<div class="activity-feedback show">🔒 Interview all witnesses to unlock the case questions.</div>`;
+    const questions=caseData.quiz.map((item,index)=>{
       const answer=answers[index],locked=answer===item.correct,answered=Number.isInteger(answer),correct=item.choices[item.correct];
-      return `<div class="dw-case-quiz"><div class="dw-case-qnum">Question ${index+1} of ${CHARACTER_CASE.quiz.length}</div><div class="dw-case-quizprompt">${escHtml(item.q)}</div><div class="dw-case-choices">${item.choices.map((choice,choiceIndex)=>{const picked=answer===choiceIndex,good=locked&&choiceIndex===item.correct,bad=answered&&picked&&!locked;return `<button type="button" class="dw-case-choice${good?" correct":""}${bad?" wrong":""}" ${locked?"disabled":""} onclick="dwNvMysteryAnswer('${id}',${index},${choiceIndex})">${escHtml(choice)}</button>`}).join("")}</div>${answered?`<div class="dw-case-explain"><strong>${locked?"✓ Correct":"Review the evidence"}:</strong> ${escHtml(item.explain)} <span class="dw-case-answer">Answer: ${escHtml(correct)}</span></div>`:""}</div>`;
+      return `<div class="dw-case-quiz"><div class="dw-case-qnum">Question ${index+1} of ${caseData.quiz.length}</div><div class="dw-case-quizprompt">${escHtml(item.q)}</div><div class="dw-case-choices">${item.choices.map((choice,choiceIndex)=>{const picked=answer===choiceIndex,good=locked&&choiceIndex===item.correct,bad=answered&&picked&&!locked;return `<button type="button" class="dw-case-choice${good?" correct":""}${bad?" wrong":""}" ${locked?"disabled":""} onclick="dwNvMysteryAnswer('${id}',${index},${choiceIndex})">${escHtml(choice)}</button>`}).join("")}</div>${answered?`<div class="dw-case-explain"><strong>${locked?"✓ Correct":"Review the evidence"}:</strong> ${escHtml(item.explain)} <span class="dw-case-answer">Answer: ${escHtml(correct)}</span></div>`:""}</div>`;
     }).join("");
-    const complete=CHARACTER_CASE.quiz.every((item,index)=>answers[index]===item.correct);
+    const complete=caseData.quiz.every((item,index)=>answers[index]===item.correct);
     return `<div class="dw-case-check"><div class="dw-interactive-head"><div class="dw-interactive-title">Case Evidence Check</div><span class="dw-interactive-badge">${complete?"✓ COMPLETE":"3 QUESTIONS"}</span></div>${questions}</div>`;
   }
   function writingProgressHtml(x){
@@ -440,7 +441,7 @@
   window.dwNvStartInterview=function(id,characterId){
     const {record}=mysteryState(id);
     if(mysteryActive[id]||(record.interviewed||[]).includes(characterId))return;
-    const character=CHARACTER_CASE.characters.find(c=>c.id===characterId);if(!character)return;
+    const character=characterCaseFor(id).characters.find(c=>c.id===characterId);if(!character)return;
     mysteryActive[id]=characterId;
     clearInterval(mysteryTimers[id]);
     let remaining=60;
@@ -453,7 +454,7 @@
     },1000);
   };
   window.dwNvFinishInterview=function(id,characterId){
-    if(!CHARACTER_CASE.characters.some(character=>character.id===characterId))return;
+    if(!characterCaseFor(id).characters.some(character=>character.id===characterId))return;
     clearInterval(mysteryTimers[id]);delete mysteryTimers[id];delete mysteryActive[id];
     if("speechSynthesis" in window)window.speechSynthesis.cancel();
     const {record}=mysteryState(id);
@@ -463,7 +464,7 @@
     else window.DWCurriculumRenderCoordinator?.request("character-interview-finished");
   };
   window.dwNvReadWitness=function(id,characterId){
-    const character=CHARACTER_CASE.characters.find(c=>c.id===characterId);if(!character||!("speechSynthesis" in window))return;
+    const character=characterCaseFor(id).characters.find(c=>c.id===characterId);if(!character||!("speechSynthesis" in window))return;
     window.speechSynthesis.cancel();
     const speech=new SpeechSynthesisUtterance(character.questions.map(row=>`${row.q} ${row.a}`).join(" "));
     speech.rate=.92;window.speechSynthesis.speak(speech);
@@ -473,7 +474,7 @@
   };
   window.dwNvMysteryAnswer=function(id,index,choice){
     const {record}=mysteryState(id);
-    if((record.interviewed||[]).length!==CHARACTER_CASE.characters.length||record.answers?.[index]===CHARACTER_CASE.quiz[index]?.correct)return;
+    const caseData=characterCaseFor(id);if((record.interviewed||[]).length!==caseData.characters.length||record.answers?.[index]===caseData.quiz[index]?.correct)return;
     record.answers={...(record.answers||{}),[index]:choice};saveMystery(id,record,"character-case-answer");
   };
 
@@ -509,8 +510,8 @@
       if(!x||!noVideo(x)||classify(x)!=="fluency")return O.checkActivity(id);
       const written=String(document.getElementById("actText-"+id)?.value||"").trim();
       const {record}=mysteryState(id);
-      const allInterviews=(record.interviewed||[]).length>=CHARACTER_CASE.characters.length;
-      const allCaseQuestions=CHARACTER_CASE.quiz.every((item,index)=>Object.prototype.hasOwnProperty.call(record.answers||{},index)&&String(record.answers[index]??"").trim()!=="");
+      const caseData=characterCaseFor(id),allInterviews=(record.interviewed||[]).length>=caseData.characters.length;
+      const allCaseQuestions=caseData.quiz.every((item,index)=>Object.prototype.hasOwnProperty.call(record.answers||{},index)&&String(record.answers[index]??"").trim()!=="");
       const finished=allInterviews&&allCaseQuestions&&written.length>0;
       let outcome;
       try{outcome=await O.checkActivity(id)}
@@ -595,7 +596,7 @@
         const words=recentWordStudy(x).map(v=>v.word).filter(Boolean);
         return `Choose one reviewed word${words.length?` (${words.join(", ")})`:""} and explain how its root helps you understand its meaning. Then use the word correctly in a complete sentence.`;
       }
-      if(type==="fluency")return "Who moved the Golden Eagle Trophy, and which two clues from the witness interviews prove what happened? Explain your case theory in complete sentences.";
+      if(type==="fluency")return x.characterCase?.applicationPrompt||"Who moved the Golden Eagle Trophy, and which two clues from the witness interviews prove what happened? Explain your case theory in complete sentences.";
       if(type==="writing-progress"){
         const review=writingReview(x).join(" ").toLowerCase();
         if(/fanboys|compound sentence|compound sentences|conjunction/.test(review))return "Write one correct compound sentence using a comma plus a FANBOYS conjunction. Then add a second sentence that works as a clear conclusion or wrap-up.";
@@ -680,8 +681,8 @@
       const words=written.split(/\s+/).filter(Boolean);
       if(type==="fluency"){
         const {record}=mysteryState(id);
-        if((record.interviewed||[]).length<CHARACTER_CASE.characters.length)return {ok:false,reviewable:false,msg:"Interview all three witnesses before submitting your case theory."};
-        if(!CHARACTER_CASE.quiz.every((item,index)=>record.answers?.[index]===item.correct))return {ok:false,code:"case_questions_incomplete",aiEligible:false,reviewable:false,msg:"Correct all three Case Evidence Check questions first."};
+        const caseData=characterCaseFor(id);if((record.interviewed||[]).length<caseData.characters.length)return {ok:false,reviewable:false,msg:"Interview all witnesses before submitting your case theory."};
+        if(!caseData.quiz.every((item,index)=>record.answers?.[index]===item.correct))return {ok:false,code:"case_questions_incomplete",aiEligible:false,reviewable:false,msg:"Correct all three Case Evidence Check questions first."};
         const min=x.grade==="K"?16:12;
         if(words.length<min)return {ok:false,msg:`Explain your theory with at least ${min} words.`};
         if(!/\bpriya\b/i.test(written))return {ok:false,msg:"Name the person your evidence identifies."};
@@ -721,7 +722,7 @@
     window.autoPassed=function(x,s=window.st(x.id)){
       if(!noVideo(x)||classify(x)!=="fluency")return O.autoPassed(x,s);
       const answers=s.dwMystery?.answers||{};
-      return CHARACTER_CASE.quiz.every((item,index)=>answers[index]===item.correct);
+      return characterCaseFor(x.id).quiz.every((item,index)=>answers[index]===item.correct);
     };
 
     window.card=function(x){

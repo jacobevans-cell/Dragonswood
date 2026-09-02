@@ -55,6 +55,12 @@
     if(mod.path==='daily-quest.html'&&['localhost','127.0.0.1'].includes(pageUrl.hostname)&&/^\d{4}-\d{2}-\d{2}$/.test(String(previewDate||'')))url.searchParams.set('date',previewDate);
     if(testerDate?.simulated===true&&/^\d{4}-\d{2}-\d{2}$/.test(String(testerDate.dateKey||''))){url.searchParams.set('date',testerDate.dateKey);url.searchParams.set('dw-safe-preview','1')}
     if(mod.id==='boss-battle'&&testerDate?.isTester===true&&testerDate?.testerUnlocks?.unlockBoss===true&&['localhost','127.0.0.1'].includes(pageUrl.hostname))url.searchParams.set('dw-local-boss-preview','1');
+    const curriculumPreview=mod.id==='curriculum-quest'?globalThis.DWV33CurriculumTesterPreview?.():null;
+    if(curriculumPreview?.active===true){
+      url.searchParams.set('testerGrade',curriculumPreview.grade);
+      url.searchParams.set('testerDay',String(curriculumPreview.day));
+      url.searchParams.set('dw-safe-preview','1');
+    }
     url.searchParams.set('dwEmbed','1');
     const environment=requestedEnvironment||globalThis.DWV33Integration?.environment||'';
     if(environment==='emulator'||environment==='production-readonly'||environment==='production')url.searchParams.set('dw-env',environment);

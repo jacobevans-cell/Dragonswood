@@ -50,5 +50,8 @@ assert.match(teacher,/seating-command\/index[.]html/,'Seating Command must route
 assert.match(teacher,/function openQuickPoll/,'Quick Poll must have a teacher handler');
 assert.match(runtime,/async launchPoll\(question,choices\)/,'Quick Poll launch must write through the runtime');
 assert.match(runtime,/async closePoll\(\)/,'Quick Poll close must write through the runtime');
+assert.match(operations,/function pollModel\(activePoll=\{\},votes=\[\],students=\[\]\)/,'Quick Poll results accept the roster for voter names');
+assert.match(operations,/voters:Object\.freeze\(voters\)/,'Quick Poll exposes teacher voter groups');
+assert.match(teacher,/quick-poll-voters/,'Quick Poll live results show voter names');
 
 console.log('V3.3 consolidated reconnection wave contracts: PASS (student routes + teacher commands + passes + tools + poll)');

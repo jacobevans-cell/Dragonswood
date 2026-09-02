@@ -1033,7 +1033,7 @@ import {initializeApp,getApps,getApp} from "https://www.gstatic.com/firebasejs/1
 import {getAuth,onAuthStateChanged,connectAuthEmulator} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {getFirestore,doc,getDoc,getDocs,setDoc,updateDoc,addDoc,collection,serverTimestamp,onSnapshot,query,where,connectFirestoreEmulator} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 import {getFunctions,httpsCallable,connectFunctionsEmulator} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-functions.js";
-const DW_V33_PARAMS=new URLSearchParams(location.search),DW_V33_ENV=DW_V33_PARAMS.get("dw-env")||"production",DW_V33_EMULATOR=DW_V33_ENV==="emulator",DW_SAFE_PREVIEW=DW_V33_PARAMS.get("dw-safe-preview")==="1"&&/^\d{4}-\d{2}-\d{2}$/.test(String(DW_V33_PARAMS.get("date")||"")),DW_LOCAL_TESTER=window.DWCurriculumLocalTester===true,DW_LOCAL_TESTER_DAY_REQUESTED=Number(DW_V33_PARAMS.get("day")),DW_LOCAL_TESTER_DAY=Number.isInteger(DW_LOCAL_TESTER_DAY_REQUESTED)&&DW_LOCAL_TESTER_DAY_REQUESTED>=1&&DW_LOCAL_TESTER_DAY_REQUESTED<=40?DW_LOCAL_TESTER_DAY_REQUESTED:21;
+const DW_V33_PARAMS=new URLSearchParams(location.search),DW_V33_ENV=DW_V33_PARAMS.get("dw-env")||"production",DW_V33_EMULATOR=DW_V33_ENV==="emulator",DW_TESTER_PREVIEW_DAY=Number(DW_V33_PARAMS.get("testerDay")),DW_TESTER_PREVIEW_GRADE=String(DW_V33_PARAMS.get("testerGrade")||"").toUpperCase(),DW_TESTER_CURRICULUM_PREVIEW=DW_V33_PARAMS.get("dw-safe-preview")==="1"&&Number.isInteger(DW_TESTER_PREVIEW_DAY)&&DW_TESTER_PREVIEW_DAY>=1&&DW_TESTER_PREVIEW_DAY<=40&&["I","K"].includes(DW_TESTER_PREVIEW_GRADE),DW_SAFE_PREVIEW=DW_V33_PARAMS.get("dw-safe-preview")==="1"&&(/^\d{4}-\d{2}-\d{2}$/.test(String(DW_V33_PARAMS.get("date")||""))||DW_TESTER_CURRICULUM_PREVIEW),DW_LOCAL_TESTER=window.DWCurriculumLocalTester===true,DW_LOCAL_TESTER_DAY_REQUESTED=Number(DW_V33_PARAMS.get("day")),DW_LOCAL_TESTER_DAY=Number.isInteger(DW_LOCAL_TESTER_DAY_REQUESTED)&&DW_LOCAL_TESTER_DAY_REQUESTED>=1&&DW_LOCAL_TESTER_DAY_REQUESTED<=40?DW_LOCAL_TESTER_DAY_REQUESTED:21;
 window.DWCurriculumSafePreview=DW_SAFE_PREVIEW;
 const firebaseConfig=DW_V33_EMULATOR
   ? {apiKey:"demo-key",authDomain:"demo-dragonswood-v33.localhost",projectId:"demo-dragonswood-v33",storageBucket:"demo-dragonswood-v33.appspot.com",messagingSenderId:"000000000000",appId:"1:000000000000:web:demo-v33"}
@@ -1246,6 +1246,7 @@ onAuthStateChanged(auth,async u=>{
   authStatus.textContent=u?"✓ Signed in":"Not signed in";
   authStatus.style.color=u?"#7fffd4":"#ff9daf";
   loadScopedState(isTeacher?"teacher":u?.uid||"anonymous");
+  if(window.DWCurriculumAccountPreview===true&&DW_TESTER_CURRICULUM_PREVIEW){S.grade=DW_TESTER_PREVIEW_GRADE;S.day=DW_TESTER_PREVIEW_DAY;window.DWCurriculumSafePreview=true}
   studentCurriculumAccess=isTeacher||testerCurriculumOverride||window.DWCurriculumAccountPreview===true;
   currentQuestOpen=isTeacher||testerCurriculumOverride||window.DWCurriculumAccountPreview===true;
   accessMessage=u?"Consulting today’s quest ledger…":"Open Curriculum Quest from your signed-in Dragonswood portal.";

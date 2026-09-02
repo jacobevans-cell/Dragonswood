@@ -1095,6 +1095,7 @@ function canonicalProgress(uid,item,state,forceUnverified=false){
     standardCode:(entry?.standards||[]).join(","),watched:!!state.watched,
     videoCoverage:Number(state.videoCoverage||0),videoReflection:String(state.videoReflection||""),videoWatchedRanges:Array.isArray(state.videoWatchedRanges)?state.videoWatchedRanges.slice(-240):[],videoResumeTime:Number(state.videoResumeTime||0),videoTrackingStatus:String(state.videoTrackingStatus||""),videoLastActivityMs:Number(state.videoLastActivityMs||0),
     practiced:!!state.practiced,practiceEvidence:String(state.practiceEvidence||""),standardCheckSubmitted:standardCheckComplete(item,state),complete:missionComplete(item,state),
+    caseCompletionLocked:state.caseCompletionLocked===true,caseCompletedAt:String(state.caseCompletedAt||""),
     quickWriteChoice:String(state.quickWriteChoice||""),quickWriteChoiceLocked:!!state.quickWriteChoiceLocked,
     dwInteraction:state.dwInteraction&&typeof state.dwInteraction==="object"?state.dwInteraction:null,
     questionsCorrect:counts.correct,questionsSeen:counts.seen,questionsTotal:counts.total,autoAnswers:state.autoAnswers||{},

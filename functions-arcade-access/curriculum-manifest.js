@@ -449,7 +449,7 @@ module.exports=Object.freeze({
     "23": [
       {
         "id": "I-HUM-D23-C1-A",
-        "videoRequired": false
+        "videoRequired": true
       },
       {
         "id": "I-HUM-D23-C3-A",
@@ -1251,7 +1251,7 @@ module.exports=Object.freeze({
     "23": [
       {
         "id": "K-HUM-D23-C1-A",
-        "videoRequired": false
+        "videoRequired": true
       },
       {
         "id": "K-HUM-D23-C3-A",

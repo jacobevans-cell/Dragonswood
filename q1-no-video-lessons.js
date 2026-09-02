@@ -526,6 +526,7 @@
           delete s.activityDraftResponse;delete s.activityDraftChoice;
           if(typeof window.saveCurriculumItemState==="function")window.saveCurriculumItemState(id,s);
           else window.save();
+          await window.recordCharacterCaseAttempt?.(x,s,record,!!outcome?.ok);
           window.clearCurriculumDraft?.(id);
           window.DWCurriculumRenderCoordinator?.request("character-case-completion-locked");
         }

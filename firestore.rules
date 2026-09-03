@@ -611,6 +611,12 @@ service cloud.firestore {
       allow delete: if isTeacher();
     }
 
+    // Imported i-Ready placement records contain private student assessment data.
+    // Only teachers may read or write this collection.
+    match /iReadyResults/{resultId} {
+      allow read, create, update, delete: if isTeacher();
+    }
+
     // Detailed placement evidence is private teacher data. Students may submit
     // only their own completed report, but cannot read placement or deficit data.
     match /placementReports/{studentId} {

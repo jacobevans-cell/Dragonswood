@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Elementary VSAT Gradebook</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--ink:#172033;--muted:#6b7280;--line:#dbe1ea;--brand:#4f46e5;--brand2:#312e81;--good:#15803d;--warn:#b45309;--bad:#b91c1c;--shadow:0 8px 24px rgba(15,23,42,.08)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+button,input,select{font:inherit}.app{max-width:1600px;margin:auto;padding:16px}.topbar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px}.title{display:flex;align-items:center;gap:10px}.title h1{font-size:26px;margin:0}.pill{background:#ede9fe;color:#4338ca;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:800}.controls{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:#fff;color:var(--ink);padding:9px 12px;border-radius:10px;font-weight:750;cursor:pointer}.btn.primary{background:var(--brand);color:white;border-color:var(--brand)}.btn.dark{background:var(--brand2);color:white;border-color:var(--brand2)}.btn:hover{filter:brightness(.98)}
+.summary{display:grid;grid-template-columns:repeat(4,minmax(145px,1fr));gap:10px;margin-bottom:12px}.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow)}.stat b{display:block;font-size:22px;margin-top:2px}.stat span{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.sheet{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}.sheet-head{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}.sheet-head .left{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.team-tabs{display:flex;background:#eef2ff;border-radius:10px;padding:3px}.team-tab{border:0;background:transparent;padding:8px 12px;border-radius:8px;font-weight:800;color:#4b5563;cursor:pointer}.team-tab.active{background:white;color:#312e81;box-shadow:0 1px 5px rgba(0,0,0,.1)}
+.table-wrap{overflow:auto;max-height:70vh}.gradebook{border-collapse:separate;border-spacing:0;width:max-content;min-width:100%}.gradebook th,.gradebook td{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:7px;text-align:center;background:white}.gradebook th{position:sticky;top:0;z-index:3;background:#f8fafc;font-size:12px;letter-spacing:.02em}.gradebook th.player,.gradebook td.player{position:sticky;left:0;z-index:4;text-align:left;min-width:180px;max-width:220px}.gradebook th.player{background:#eef2ff}.gradebook td.player{background:#fff;font-weight:800;cursor:pointer}.gradebook td.player:hover{background:#f8fafc}.skill{min-width:92px}.score-btn{width:54px;height:42px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;font-size:18px;font-weight:900;cursor:pointer}.score-btn.unset{color:#94a3b8}.score-btn.s1{background:#fee2e2;color:#991b1b;border-color:#fecaca}.score-btn.s2{background:#ffedd5;color:#9a3412;border-color:#fed7aa}.score-btn.s3{background:#fef3c7;color:#92400e;border-color:#fde68a}.score-btn.s4{background:#dcfce7;color:#166534;border-color:#bbf7d0}.score-btn.s5{background:#dbeafe;color:#1e40af;border-color:#bfdbfe}.overall{font-weight:900;font-size:17px}.trend{font-size:12px;font-weight:800;color:var(--good)}
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}.modal.open{display:flex}.panel{background:white;width:min(900px,96vw);max-height:92vh;overflow:auto;border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.25)}.panel-head{display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid var(--line);position:sticky;top:0;background:white;z-index:2}.panel-body{padding:16px}.close{border:0;background:#f1f5f9;width:36px;height:36px;border-radius:10px;font-size:20px;cursor:pointer}.detail-grid{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:10px}.detail-card{border:1px solid var(--line);border-radius:12px;padding:12px}.detail-card strong{display:block;font-size:22px}.report-table{width:100%;border-collapse:collapse}.report-table th,.report-table td{border-bottom:1px solid var(--line);padding:8px;text-align:left}.report-table th{font-size:12px;text-transform:uppercase;color:var(--muted)}
+.score-picker{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.pick{height:64px;border:1px solid var(--line);border-radius:12px;background:white;font-size:24px;font-weight:900;cursor:pointer}.pick:hover{background:#eef2ff}.legend{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:8px}.legend span{padding:5px 8px;background:#f8fafc;border:1px solid var(--line);border-radius:999px}.empty{padding:28px;text-align:center;color:var(--muted)}
+@media(max-width:800px){.summary{grid-template-columns:repeat(2,1fr)}.detail-grid{grid-template-columns:repeat(2,1fr)}.app{padding:8px}.title h1{font-size:21px}.gradebook th.player,.gradebook td.player{min-width:140px}}
+@media print{body{background:white}.no-print,.topbar,.summary,.sheet-head{display:none!important}.app{max-width:none;padding:0}.sheet{box-shadow:none;border:0}.table-wrap{overflow:visible;max-height:none}.gradebook{width:100%;font-size:9px}.gradebook th,.gradebook td{position:static!important;padding:4px}.score-btn{border:0;background:white!important;color:#111!important;width:auto;height:auto}.modal.open{position:static;background:white;display:block;padding:0}.modal.open .panel{box-shadow:none;width:100%;max-height:none}.panel-head .close{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="title"><h1>🏐 Elementary VSAT Gradebook</h1><span class="pill">Fast Eval</span></div>
+    <div class="controls no-print">
+      <button class="btn" id="guideBtn">ⓘ Scoring Guide</button>
+      <button class="btn" id="reportsBtn">Reports</button>
+      <button class="btn primary" id="newBtn">New Assessment</button>
+    </div>
+  </div>
+
+  <div class="summary">
+    <div class="stat"><span>Team Average</span><b id="teamAvg">—</b></div>
+    <div class="stat"><span>Players Scored</span><b id="playersScored">0</b></div>
+    <div class="stat"><span>Highest Skill</span><b id="bestSkill">—</b></div>
+    <div class="stat"><span>Needs Work</span><b id="weakSkill">—</b></div>
+  </div>
+
+  <section class="sheet">
+    <div class="sheet-head no-print">
+      <div class="left">
+        <div class="team-tabs" id="teamTabs"></div>
+        <label><strong>Date</strong> <input type="date" id="dateInput" class="btn" /></label>
+      </div>
+      <div class="controls">
+        <button class="btn" id="clearBtn">Clear This Date</button>
+        <button class="btn dark" id="printBtn">Print / PDF</button>
+      </div>
+    </div>
+    <div class="table-wrap"><table class="gradebook" id="gradebook"></table></div>
+  </section>
+</div>
+
+<div class="modal" id="scoreModal"><div class="panel" style="max-width:520px"><div class="panel-head"><div><b id="scoreTitle">Score</b><div id="scoreSub" style="color:#6b7280;font-size:13px"></div></div><button class="close" data-close="scoreModal">×</button></div><div class="panel-body"><div class="score-picker" id="scorePicker"></div><div class="legend"><span>1 = Beginning</span><span>2 = Developing</span><span>3 = Functional</span><span>4 = Strong</span><span>5 = Advanced</span></div><button class="btn" id="unsetBtn" style="width:100%;margin-top:12px">Clear score</button></div></div></div>
+<div class="modal" id="playerModal"><div class="panel"><div class="panel-head"><div><b id="playerTitle">Player Report</b><div id="playerSub" style="color:#6b7280;font-size:13px"></div></div><button class="close" data-close="playerModal">×</button></div><div class="panel-body" id="playerBody"></div></div></div>
+<div class="modal" id="reportModal"><div class="panel"><div class="panel-head"><div><b>Team VSAT Report</b><div id="reportSub" style="color:#6b7280;font-size:13px"></div></div><button class="close" data-close="reportModal">×</button></div><div class="panel-body" id="reportBody"></div></div></div>
+<div class="modal" id="guideModal"><div class="panel"><div class="panel-head"><b>VSAT Scoring Guide</b><button class="close" data-close="guideModal">×</button></div><div class="panel-body"><table class="report-table"><tr><th>Score</th><th>Meaning</th></tr><tr><td><b>5</b></td><td>Advanced: repeatable under pressure, game-ready, makes high-level decisions.</td></tr><tr><td><b>4</b></td><td>Strong: consistent technique and good decisions with only minor errors.</td></tr><tr><td><b>3</b></td><td>Functional: can perform the skill in controlled and normal game situations.</td></tr><tr><td><b>2</b></td><td>Developing: shows the skill but lacks consistency, control, or timing.</td></tr><tr><td><b>1</b></td><td>Beginning: skill is not yet reliably demonstrated.</td></tr></table><h3>Skills</h3><p><b>Serve</b> control, consistency, legal contact, pressure. <b>Pass</b> platform, angle, target control. <b>Set</b> hands, location, consistency. <b>Attack</b> approach, contact, control. <b>Movement</b> ready position, transition, pursuit. <b>Court IQ</b> positioning, reading play, decisions. <b>Live Play</b> overall transfer of skills into scrimmage/game action.</p></div></div></div>
+<script>
+const skills=['Serve','Pass','Set','Attack','Movement','Court IQ','Live Play'];
+const rosters={
+  Varsity:['Rebelle','Ainslee','Gabrielle','Luxanna','Jeslynn','Avery','Sadie','Chelsea','Celestina'],
+  JV:['Nala','Whitney','Marli','Lilian','NiYane','Aliya','Krystal','Andi','Alaina','Kataleya','Abagail'],
+  Boys:['Kade','Stula','Alejandro','Brito','Tristan','Ruth']
+};
+let team=localStorage.vsatTeam||'Varsity';
+let date=new Date().toISOString().slice(0,10);
+let activeCell=null;
+const $=s=>document.querySelector(s);
+const key=()=>`vsat:${team}:${date}`;
+const read=()=>JSON.parse(localStorage.getItem(key())||'{}');
+const write=d=>{localStorage.setItem(key(),JSON.stringify(d));render();};
+const allKeys=()=>Object.keys(localStorage).filter(k=>k.startsWith(`vsat:${team}:`));
+const avg=a=>{const n=a.filter(v=>Number.isFinite(v));return n.length? n.reduce((x,y)=>x+y,0)/n.length:null};
+function playerAvg(obj,name){return avg(skills.map(s=>obj?.[name]?.[s]).filter(Number.isFinite));}
+function teamTabs(){const box=$('#teamTabs');box.innerHTML='';Object.keys(rosters).forEach(t=>{const b=document.createElement('button');b.className='team-tab'+(t===team?' active':'');b.textContent=t;b.onclick=()=>{team=t;localStorage.vsatTeam=t;teamTabs();render()};box.appendChild(b)});}
+function render(){date=$('#dateInput').value||date;const data=read();let html='<thead><tr><th class="player">Player</th>'+skills.map(s=>`<th class="skill">${s}</th>`).join('')+'<th class="skill">Overall</th></tr></thead><tbody>';
+rosters[team].forEach(name=>{html+=`<tr><td class="player" data-player="${name}">${name}</td>`;skills.forEach(s=>{const v=data?.[name]?.[s];html+=`<td><button class="score-btn ${v?'s'+v:'unset'}" data-player="${name}" data-skill="${s}">${v||'—'}</button></td>`});const oa=playerAvg(data,name);html+=`<td><span class="overall">${oa?oa.toFixed(1):'—'}</span></td></tr>`});html+='</tbody>';$('#gradebook').innerHTML=html;
+ document.querySelectorAll('.score-btn').forEach(b=>b.onclick=()=>openScore(b.dataset.player,b.dataset.skill));document.querySelectorAll('td.player').forEach(c=>c.onclick=()=>openPlayer(c.dataset.player));updateSummary(data);
+}
+function updateSummary(data){const pas=rosters[team].map(n=>playerAvg(data,n)).filter(v=>v!=null);$('#teamAvg').textContent=pas.length?avg(pas).toFixed(2):'—';$('#playersScored').textContent=pas.length;const skillAvgs=skills.map(s=>[s,avg(rosters[team].map(n=>data?.[n]?.[s]).filter(Number.isFinite))]).filter(x=>x[1]!=null).sort((a,b)=>b[1]-a[1]);$('#bestSkill').textContent=skillAvgs.length?`${skillAvgs[0][0]} ${skillAvgs[0][1].toFixed(1)}`:'—';$('#weakSkill').textContent=skillAvgs.length?`${skillAvgs.at(-1)[0]} ${skillAvgs.at(-1)[1].toFixed(1)}`:'—';}
+function openScore(player,skill){activeCell={player,skill};$('#scoreTitle').textContent=`${player} · ${skill}`;$('#scoreSub').textContent=`${team} · ${date}`;const box=$('#scorePicker');box.innerHTML='';for(let i=1;i<=5;i++){const b=document.createElement('button');b.className='pick s'+i;b.textContent=i;b.onclick=()=>setScore(i);box.appendChild(b)}$('#scoreModal').classList.add('open');}
+function setScore(v){const d=read();d[activeCell.player]=d[activeCell.player]||{};if(v==null)delete d[activeCell.player][activeCell.skill];else d[activeCell.player][activeCell.skill]=v;write(d);$('#scoreModal').classList.remove('open');}
+function historyFor(name){return allKeys().map(k=>{const d=k.split(':').slice(2).join(':');const obj=JSON.parse(localStorage.getItem(k)||'{}');return {date:d,obj,avg:playerAvg(obj,name)}}).filter(x=>x.avg!=null).sort((a,b)=>b.date.localeCompare(a.date));}
+function openPlayer(name){const data=read(),pa=playerAvg(data,name),hist=historyFor(name);$('#playerTitle').textContent=name;$('#playerSub').textContent=`${team} · Individual VSAT report`;const vals=skills.map(s=>[s,data?.[name]?.[s]]);const scored=vals.filter(x=>Number.isFinite(x[1])).sort((a,b)=>b[1]-a[1]);const strengths=scored.slice(0,2).map(x=>x[0]).join(', ')||'Not enough data';const growth=scored.slice(-2).map(x=>x[0]).join(', ')||'Not enough data';let body=`<div class="detail-grid"><div class="detail-card"><span>Overall</span><strong>${pa?pa.toFixed(2):'—'}</strong></div>${vals.map(([s,v])=>`<div class="detail-card"><span>${s}</span><strong>${v||'—'}</strong></div>`).join('')}</div><h3>Snapshot</h3><p><b>Strengths:</b> ${strengths}<br><b>Growth Areas:</b> ${growth}</p><h3>Assessment History</h3><table class="report-table"><tr><th>Date</th><th>Overall</th>${skills.map(s=>`<th>${s}</th>`).join('')}</tr>${hist.map(h=>`<tr><td>${h.date}</td><td><b>${h.avg.toFixed(2)}</b></td>${skills.map(s=>`<td>${h.obj?.[name]?.[s]||'—'}</td>`).join('')}</tr>`).join('')||'<tr><td colspan="9">No saved assessments yet.</td></tr>'}</table><div style="margin-top:14px"><button class="btn dark" onclick="window.print()">Print / Save PDF</button></div>`;$('#playerBody').innerHTML=body;$('#playerModal').classList.add('open');}
+function openReports(){const d=read();const ranked=rosters[team].map(n=>({n,a:playerAvg(d,n)})).sort((a,b)=>(b.a??-1)-(a.a??-1));const skillRows=skills.map(s=>({s,a:avg(rosters[team].map(n=>d?.[n]?.[s]).filter(Number.isFinite))}));$('#reportSub').textContent=`${team} · ${date}`;$('#reportBody').innerHTML=`<h3>Player Rankings</h3><table class="report-table"><tr><th>Rank</th><th>Player</th><th>Overall</th></tr>${ranked.map((r,i)=>`<tr><td>${r.a==null?'—':i+1}</td><td><b>${r.n}</b></td><td>${r.a==null?'—':r.a.toFixed(2)}</td></tr>`).join('')}</table><h3>Team Skill Averages</h3><table class="report-table"><tr><th>Skill</th><th>Average</th></tr>${skillRows.map(r=>`<tr><td>${r.s}</td><td>${r.a==null?'—':r.a.toFixed(2)}</td></tr>`).join('')}</table><div style="margin-top:14px"><button class="btn dark" onclick="window.print()">Print / Save PDF</button></div>`;$('#reportModal').classList.add('open');}
+function newAssessment(){const today=new Date().toISOString().slice(0,10);$('#dateInput').value=today;date=today;render();}
+$('#dateInput').value=date;$('#dateInput').onchange=()=>{date=$('#dateInput').value;render()};$('#reportsBtn').onclick=openReports;$('#guideBtn').onclick=()=>$('#guideModal').classList.add('open');$('#newBtn').onclick=newAssessment;$('#printBtn').onclick=()=>window.print();$('#unsetBtn').onclick=()=>setScore(null);$('#clearBtn').onclick=()=>{if(confirm(`Clear all ${team} VSAT scores for ${date}?`)){localStorage.removeItem(key());render()}};document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$('#'+b.dataset.close).classList.remove('open'));document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}));teamTabs();render();
+</script>
+</body>
+</html>

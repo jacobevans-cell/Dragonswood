@@ -82,7 +82,7 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
 .answer-bank-choice:hover,.answer-bank-choice.selected{outline:2px solid #65dfff;background:#25245a}
 @media(max-width:620px){.answer-bank-options{grid-template-columns:1fr}}
 </style>
-<script src="pet-registry-v5614.js"></script><script src="dragonswood-rpg-v56.js"></script><script src="pet-motion-controller.js"></script>
+<script src="pet-registry-v5614.js"></script><script src="dragonswood-rpg-v56.js"></script><script src="pet-motion-controller.js"></script><script src="q1-curriculum-data.js?v=59.1.0"></script>
 <link rel="stylesheet" href="v33-integration/css/direct-visual-v11.css?v=1.1"><script defer src="dragonswood-immersive-ui.js?v=1.0.0"></script></head><body>
 <div class="shell">
   <header class="glass top"><div><div class="brand"><img src="v33-integration/assets/branding/dragonswood-mascot-crest.png" alt="Dragonswood volleyball dragon crest" style="width:38px;height:38px;object-fit:contain;vertical-align:middle;margin-right:8px"><span style="color:#f7c94f;background:linear-gradient(180deg,#fff9d8 0%,#ffe99a 27%,#f8ca50 58%,#ffe99a 82%,#dfa12a 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 1px 0 rgba(116,67,8,.95)) drop-shadow(0 2px 1px rgba(22,5,34,.95)) drop-shadow(0 0 5px rgba(255,216,91,.16));letter-spacing:.3px">DRAGONSWOOD • DAILY QUEST</span></div><div class="sub" id="account">Opening the quest gate…</div></div><a class="back" href="index.html#quests">← DAILY MISSIONS</a></header>
@@ -106,7 +106,7 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
     <div><small>TODAY</small><b id="dqTodayComplete">Not complete yet</b><span>Assigned Morning Work or Level-Up Morning Work counts.</span></div>
   </section>
   <section class="sessions">
-    <article class="glass session" id="morningCard"><div class="chapter">🌅 UNIFIED MORNING WORK</div><h2>Morning Adventure</h2><div class="time">≈ 25 minutes • about 35 questions</div><p>All daily Math + ELA spiral practice in one session, with Visual Coach support.</p><button id="morningBtn">ENTER MORNING WORK</button></article>
+    <article class="glass session" id="morningCard"><div class="chapter">🌅 UNIFIED MORNING WORK</div><h2>Morning Adventure</h2><div class="time">≈ 25 minutes • 30 questions</div><p>Yesterday’s learning, spaced review, personalized support, and a small challenge—with Visual Coach help.</p><button id="morningBtn">ENTER MORNING WORK</button></article>
   </section>
   <section class="glass map"><b>🗺️ 180-DAY DRAGONSWOOD JOURNEY</b><div class="maptrack" id="maptrack"></div></section>
   <section class="glass calendar-countdowns"><b>⏳ SCHOOL-YEAR COUNTDOWNS</b><div class="countdown-grid" id="dqCountdowns"></div></section>
@@ -121,7 +121,7 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
 </section></div>
 
 <script src="foundation-track.js"></script>
-<script src="dragonswood-grading-core.js?v=56.21.0"></script>
+<script src="dragonswood-grading-core.js?v=59.1.0"></script>
 <script src="dragonswood-academic-ai-client.js?v=56.22.0"></script>
 <style id="dw-grading-hardening-styles">
 .dw-question-review{margin-top:14px;padding:10px 12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1px solid rgba(255,211,94,.42);border-radius:10px;background:rgba(11,10,35,.84)}
@@ -156,7 +156,7 @@ const TEACHER="jacobicusjax@gmail.com",DOMAIN="explore.academy",CAP=150;
 const Tester=globalThis.DWTesterAccess;
 const XP=[0,200,450,750,1100,1500,1950,2450,3000,3600,4250,4950,5700,6500,7350,8250,9200,10200,11100,12000];
 const $=id=>document.getElementById(id);
-let user=null,profile=null,lesson=null,sessionName="",questionPlan=[],tasks=[],taskIndex=0,qIndex=0,score=0,correct=0,attempts=0,sessionStart=0,currentQuestion=null,currentQuestionSeen=false,currentQuestionCorrect=false,localPreviewMode=false;
+let user=null,profile=null,lesson=null,sessionName="",questionPlan=[],tasks=[],sessionPlanFingerprint="",taskIndex=0,qIndex=0,score=0,correct=0,attempts=0,sessionStart=0,currentQuestion=null,currentQuestionSeen=false,currentQuestionCorrect=false,localPreviewMode=false;
 let testerSession=Tester.normalizeTester('',null),testerControls={},testerMorningOverride=false;
 let testerAccountUnsub=null,testerControlsUnsub=null;
 let dwDailyOverrideUnsub=null,dwDailyOverrideRows=[],dwLastStudentAnswer="",dwDailyReviewRevisionStates={};
@@ -1616,6 +1616,14 @@ rounding(r,p,i){
     return {prompt:`Round ${money(amt)} to the nearest dollar.`,answer:money(ans),
       choices:opts(r,money(ans),[money(ans+1),money(Math.max(0,ans-1)),money(Math.floor(amt)),money(Math.ceil(amt))])}
   }
+  if(p.mode==="decimal"){
+    const places=[[10,"tenth",1],[100,"hundredth",2],[1000,"thousandth",3]];
+    const [scale,name,digits]=bp(r,places,i);
+    const raw=ri(r,1001,99999),n=raw/1000,ans=Math.round(n*scale)/scale;
+    const answer=ans.toFixed(digits),step=1/scale;
+    return {prompt:`Round ${n.toFixed(3)} to the nearest ${name}.`,answer,
+      choices:opts(r,answer,[(ans+step).toFixed(digits),Math.max(0,ans-step).toFixed(digits),n.toFixed(3),Math.floor(n*scale)/scale])}
+  }
   const places=[[10,"ten"],[100,"hundred"],[1000,"thousand"],[10000,"ten thousand"]];
   const [to,name]=bp(r,places,i);
   const n=ri(r,to*2,to*90)+ri(r,1,to-1);
@@ -2161,8 +2169,14 @@ graphs(r,p,i){
     choices:opts(r,tot,[tot-vals[0],tot+10,Math.max(...vals)])}
 },
 wordproblem(r,p,i){
-  const modes=i%4;
+  const difficulty=String(p.difficulty||"practice"),grade=Math.max(0,Number(p.grade)||0);
+  const modes=(p.multiStep||grade>=4||difficulty==="challenge")?2+(i%2):i%4;
   const name=pick(r,["Maya","Leo","Priya","Sam","Ana","Kofi"]);
+  if(difficulty==="challenge"){
+    const teams=ri(r,3,8),per=ri(r,12,28),used=ri(r,15,45),bonus=ri(r,6,20),ans=teams*per-used+bonus;
+    return {prompt:`${teams} teams collect ${per} crystals each. They use ${used} crystals, then earn ${bonus} more. How many crystals do they have now?`,
+      answer:comma(ans),choices:opts(r,comma(ans),[comma(teams*per-used),comma(teams*(per-used)+bonus),comma(teams*per+used+bonus)])}
+  }
   if(modes===0){
     const packs=ri(r,4,12), per=ri(r,6,12);
     return {prompt:`${name} buys ${packs} packs of arrows with ${per} arrows in each pack. How many arrows in all?`,
@@ -2176,7 +2190,8 @@ wordproblem(r,p,i){
   }
   if(modes===2){
     const start=ri(r,200,900), spent=ri(r,50,190), found=ri(r,20,90);
-    return {prompt:`${name} has ${comma(start)} gold, spends ${comma(spent)}, then finds ${comma(found)} more. How much gold now?`,
+    const scaffold=difficulty==="support"?" First subtract what was spent; then add what was found.":"";
+    return {prompt:`${name} has ${comma(start)} gold, spends ${comma(spent)}, then finds ${comma(found)} more. How much gold now?${scaffold}`,
       answer:comma(start-spent+found),choices:opts(r,comma(start-spent+found),
         [comma(start-spent-found),comma(start+spent+found),comma(start-spent)])}
   }
@@ -3264,7 +3279,7 @@ subjpred(r,p,i){
       choices:shuffle(r,[s.completeSubject,s.completePredicate,s.simpleSubject,s.simplePredicate])};
   if(p.kind==="predicate")
     return {prompt:`What is the COMPLETE PREDICATE?\n“${s.text}”`,answer:s.completePredicate,
-      choices:shuffle(r,[s.completePredicate,s.completeSubject,s.simpleSubject,s.simplePredicate])};
+      choices:shuffle(r,[s.completePredicate,s.phrase,s.simplePredicate,`${s.simpleSubject} ${s.completePredicate}`])};
   if(p.kind==="simple"){
     const wantSubj=i%2===0;
     return {prompt:`What is the SIMPLE ${wantSubj?"SUBJECT":"PREDICATE"}?\n“${s.text}”`,
@@ -3349,7 +3364,7 @@ abbreviations(r,p,i){
     ["November","Nov."],["Road","Rd."],["Senior","Sr."],["Incorporated","Inc."]];
   const [full,ab]=bp(r,b,i);
   return {prompt:`What is the correct abbreviation for “${full}”?`,answer:ab,
-    choices:shuffle(r,[ab,ab.replace(".",""),full.slice(0,2).toUpperCase()+".",full.slice(0,4)+"."])}
+    choices:opts(r,ab,[ab.replace(".",""),full.slice(0,1)+".",full.slice(0,-1)+"."])}
 },
 commas(r,p,i){
   const x=bp(r,COMMAS,i);
@@ -3494,17 +3509,17 @@ composition(r,p,i){
   const k=p.kind;
   if(k==="topic"){
     const q=[["Dragons appear in stories from many different cultures.",
-      ["My favorite color is green.","I once saw a lizard.","Dragons are cool."]],
+      ["My favorite stories often use bright green dragons in exciting scenes.","A small lizard rested on a warm rock beside the garden path.","Some fantasy books include castles, wizards, and magical creatures."]],
      ["Learning to read a map is a valuable skill for any traveler.",
-      ["Maps are made of paper.","I like traveling.","North is up."]],
+      ["Many travelers carry folded paper maps inside a waterproof pack.","I enjoy traveling to places that have mountains, rivers, and forests.","North appears at the top of most maps used by travelers today."]],
      ["Keeping a daily journal helps writers improve in three important ways.",
-      ["I have a journal.","Journals have pages.","Writing is hard sometimes."]],
+      ["A journal can have a plain cover, lined pages, and a ribbon marker.","I keep my favorite journal beside a blue pen on my desk.","Writers sometimes find it difficult to decide what to write each day."]],
      ["Lanterns were essential tools for medieval travelers.",
-      ["Lanterns are old.","I saw a lantern once.","Fire is hot."]],
+      ["Old lanterns are displayed behind glass in many history museums.","I once carried a small lantern while walking through a dark cave.","A bright flame can produce both useful light and noticeable heat."]],
      ["Working as a team makes difficult tasks manageable.",
-      ["Teams have people.","I like my team.","Some tasks are hard."]],
+      ["A school team may include students with many different interests.","I like working beside my teammates during our afternoon practice.","Some difficult tasks require extra time, supplies, and careful planning."]],
      ["Rivers shaped where early villages were built.",
-      ["Rivers are wet.","I swam in a river.","Villages are small."]]];
+      ["Rivers carry moving water across many different kinds of landscapes.","I swam in a cold river during our family camping trip last summer.","Early villages included homes, paths, farms, and gathering places."]]];
     const x=bp(r,q,i);
     return {prompt:`Which sentence is the best TOPIC SENTENCE for a paragraph?`,answer:x[0],
       choices:shuffle(r,[x[0],...x[1]])}
@@ -3540,26 +3555,26 @@ composition(r,p,i){
   }
   if(k==="opinion"){
     const q=[["Recess should be longer because students focus better after physical activity.",
-      ["Recess should be longer.","Recess is at 10:30.","I like recess a lot."]],
+      ["Many schools schedule recess once during the morning class period.","The school schedule lists morning recess at exactly 10:30 each day.","I enjoy playing active games with my friends during recess."]],
      ["Students should learn a second language because it strengthens memory and opens career paths.",
-      ["Everyone should learn a language.","Spanish is a language.","I like languages."]],
+      ["Many students begin studying another language during elementary school.","Spanish is spoken by millions of people in countries around the world.","I enjoy learning new words and phrases in different languages."]],
      ["Libraries should stay open later because many students study after dinner.",
-      ["Libraries should stay open later.","The library has books.","I go to the library."]],
+      ["The town library closes at the same time every weekday evening.","The library has books, computers, tables, and several quiet rooms.","I often visit the library with my family on Saturday afternoons."]],
      ["Schools should serve breakfast because hungry students cannot concentrate.",
-      ["Breakfast is important.","Schools have cafeterias.","I eat breakfast."]]];
+      ["Many students arrive at school before the first class begins each day.","Schools often have cafeterias with tables, kitchens, and serving areas.","I usually eat breakfast with my family before leaving for school."]]];
     const x=bp(r,q,i);
     return {prompt:`Which sentence gives an OPINION supported by a REASON?`,answer:x[0],
       choices:shuffle(r,[x[0],...x[1]])}
   }
   if(k==="character"){
     const q=[["fear","Maya's hands trembled as she reached for the door, and she swallowed hard.",
-      ["Maya was afraid.","Maya felt scared.","Maya had fear."]],
+      ["Maya explained that the dark doorway made her feel very afraid.","Maya said she was scared to open the heavy wooden door.","Maya told her friends that she had a strong feeling of fear."]],
      ["excitement","Leo bounced on his toes and could not stop grinning.",
-      ["Leo was excited.","Leo felt excitement.","Leo had joy."]],
+      ["Leo announced that the upcoming journey made him feel excited.","Leo said he felt excitement when the new quest was announced.","Leo told the group that the good news filled him with joy."]],
      ["anger","Priya's jaw tightened and she slammed the ledger shut.",
-      ["Priya was angry.","Priya felt mad.","Priya had anger."]],
+      ["Priya explained that the unfair decision made her feel angry.","Priya said she was very mad about what happened at the meeting.","Priya told the council that she had a strong feeling of anger."]],
      ["exhaustion","Sam's shoulders sagged and each step landed heavier than the last.",
-      ["Sam was tired.","Sam felt exhausted.","Sam had fatigue."]]];
+      ["Sam explained that the long mountain climb made him feel tired.","Sam said he felt completely exhausted after traveling all day.","Sam told the group that he was experiencing serious fatigue."]]];
     const x=bp(r,q,i);
     return {prompt:`Which sentence SHOWS a character's ${x[0]} instead of just telling it?`,answer:x[1],
       choices:shuffle(r,[x[1],...x[2]])}
@@ -5668,8 +5683,8 @@ function dwLessonTerms(item){
 /* Morphology missions name the root and the target word. */
 function dwMorphParts(item){
   const t=String(item.requirement||"");
-  const root=(t.match(/M[o0]r?ph[o0]?eme\s*\n?\s*([^\n]+)/i)||[])[1];
-  const word=(t.match(/Word\s*\n?\s*([^\n]+)/i)||[])[1];
+  const root=(t.match(/M[o0]r?ph[o0]?emes?[^\S\r\n]*(?:\r?\n)+[^\S\r\n]*([^\r\n]+)/i)||[])[1];
+  const word=(t.match(/Word[^\S\r\n]*(?:\r?\n)+[^\S\r\n]*([^\r\n]+)/i)||[])[1];
   return {root:(root||"").trim(), word:(word||"").trim()};
 }
 
@@ -5947,45 +5962,74 @@ function dwPacingTopicSkills(item){
  return [...new Set((entry?.skills||[]).filter(id=>prefix.test(id)&&DW_SKILLS[id]))];
 }
 function dwPacingLabel(item){return String(item.resourceName||item.requirement||item.strand||"Pacing lesson").replace(/STEM[\s\S]*$/i,"").replace(/Video:[\s\S]*$/i,"").replace(/\s+/g," ").trim()}
-const DW_MORNING_VARIETY_FALLBACKS={
- Math:["math.add.multi","math.sub.multi","math.wordproblems","math.placevalue","math.compare.whole","math.rounding"],
- HUM:["ela.homophones","ela.synonyms","ela.antonyms"]
+const DW_MORNING_PLAN_VERSION="prior-learning-v1";
+const DW_MORNING_CATEGORY_PATTERN=["previous","past","previous","remedial","previous","past","previous","challenge","previous","past","previous","remedial","previous","past","previous"];
+const DW_MORNING_BASELINES={
+ I:{
+  Math:["math.placevalue","math.add.multi","math.sub.multi","math.wordproblems","math.frac.equiv"],
+  HUM:["ela.capitalization","ela.sent.three","ela.meaning","ela.homophones","ela.pov"]
+ },
+ K:{
+  Math:["math.dec.compare","math.frac.equiv","math.pk.evaluating_numerical_expressions","math.wordproblems","math.add.multi"],
+  HUM:["ela.meaning","ela.editing","ela.roots.match","ela.sent.compound","ela.pk.identifying_main_and_helping_verbs"]
+ }
 };
-function dwMorningVarietyPool(anchor,specs,day){
- const subject=anchor.item.subject,pool=[],seen=new Set();
- const add=(spec,reason)=>{if(!spec?.skillId||!DW_SKILLS[spec.skillId]||seen.has(spec.skillId))return;seen.add(spec.skillId);pool.push({...spec,substitutionReason:reason,sourceDate:String(spec.item?.date||`Day ${spec.item?.day||day}`)})};
- add(anchor,"current pacing target");
- for(const spec of specs)if(spec.item.subject===subject)add(spec,"same-day related target");
- for(const skillId of DW_MORNING_VARIETY_FALLBACKS[subject]||[]){
-  add({skillId,item:{...anchor.item,id:`${anchor.item.id}:spiral:${skillId}`,resourceName:dwLabelOf(skillId),requirement:`Spiral review: ${dwLabelOf(skillId)}`}},"variety fallback: spaced review");
- }
- if(pool.length<3)throw new Error(`Morning variety requires three verified ${subject} skills for day ${day}.`);
- return pool;
-}
-function dwBuildVariedMorning(specs,day,make){
- const rows=[];
- for(let block=0;block<7;block++){
-  const anchor=specs[block%specs.length],pool=dwMorningVarietyPool(anchor,specs,day),pattern=[0,1,2,3,4];
-  pattern.forEach((pick,slot)=>rows.push(make(pool[pick%pool.length],block*5+slot,1)));
- }
- return rows;
+function dwMorningSpecKey(spec){return `${spec?.skillId||""}|${JSON.stringify(spec?.questionParams||{})}`}
+function dwUniqueMorningSpecs(specs){const out=[],seen=new Set();for(const spec of specs||[]){const key=dwMorningSpecKey(spec);if(!spec?.skillId||!DW_SKILLS[spec.skillId]||seen.has(key))continue;seen.add(key);out.push(spec)}return out}
+function dwMorningBaselineSpecs(gradeCode,subject){
+ return (DW_MORNING_BASELINES[gradeCode]?.[subject]||[]).filter(id=>DW_SKILLS[id]).map(skillId=>({
+  skillId,questionParams:null,item:{id:`${gradeCode}-BASELINE-${subject}-${skillId}`,grade:gradeCode,day:0,subject,strand:"Grade-level prerequisite review",requirement:`Beginning-of-year grade-level review: ${dwLabelOf(skillId)}`,resourceName:dwLabelOf(skillId)}
+ }));
 }
 function dwPacingSpecs(day,gradeCode){
- const items=DW_CURRIC_ITEMS.filter(x=>x.grade===gradeCode&&Number(x.day)===day&&((x.subject==="Math"&&/Core Math/i.test(x.strand||""))||(x.subject==="HUM"&&/-L\d+$/.test(x.id)&&!dwObservationOnly(x))));
- const specs=[];for(const item of items){const mp=dwMorphParts(item),skills=mp.root?["curric.morph"]:dwPacingTopicSkills(item);for(const skillId of skills.slice(0,2))specs.push({item,skillId,questionParams:mp.root?{root:mp.root,word:mp.word}:null})}return specs;
+ const curriculumItems=Array.isArray(window.DRAGONSWOOD_DATA?.items)&&window.DRAGONSWOOD_DATA.items.length?window.DRAGONSWOOD_DATA.items:DW_CURRIC_ITEMS;
+ const items=curriculumItems.filter(x=>x.grade===gradeCode&&Number(x.day)===day&&((x.subject==="Math"&&/Core Math/i.test(x.strand||""))||(x.subject==="HUM"&&/-L\d+$/.test(x.id)&&!dwObservationOnly(x))));
+ const specs=[];for(const item of items){const mp=dwMorphParts(item),skills=mp.root?["curric.morph"]:dwPacingTopicSkills(item);for(const skillId of skills.slice(0,4))specs.push({item,skillId,questionParams:mp.root?{root:mp.root,word:mp.word}:null})}return dwUniqueMorningSpecs(specs);
+}
+function dwMorningPriorPools(day,gradeCode,subject){
+ const baseline=dwMorningBaselineSpecs(gradeCode,subject),byDay=[];
+ for(let d=1;d<day;d++){const specs=dwPacingSpecs(d,gradeCode).filter(x=>x.item.subject===subject);if(specs.length)byDay.push({day:d,specs})}
+ const latest=byDay.at(-1),previous=dwUniqueMorningSpecs([...(latest?.specs||[]),...(!latest?baseline:[])]);
+ const older=dwUniqueMorningSpecs([...byDay.slice(0,-1).reverse().flatMap(x=>x.specs),...baseline]);
+ const all=dwUniqueMorningSpecs([...byDay.slice().reverse().flatMap(x=>x.specs),...baseline]);
+ return {previous:previous.length?previous:baseline,past:older.length?older:baseline,all:all.length?all:baseline,previousDay:latest?.day||0};
+}
+function dwMorningRemediationSpecs(day,subject,allowed){
+ const bySkill=new Map();for(const spec of allowed)if(!bySkill.has(spec.skillId))bySkill.set(spec.skillId,spec);
+ const ids=[],seen=new Set(),add=id=>{id=String(id||"");if(!seen.has(id)&&bySkill.has(id)){seen.add(id);ids.push(id)}};
+ const history=[...(dqProgressRows||[])].filter(row=>row?.session==="morning"&&Number(row.day||0)<day).sort((a,b)=>Number(b.day||0)-Number(a.day||0));
+ for(const row of history){for(const id of row.needsReteach||[])add(id);for(const [id,stat] of Object.entries(row.skills||{})){const total=Number(stat?.seen||0),right=Number(stat?.correct||0);if(total>0&&right/total<.75)add(id)}}
+ return ids.map(id=>bySkill.get(id)).filter(spec=>(subject==="Math"?/^math\./:/^(ela|writing|morph|curric)\./).test(spec.skillId));
+}
+function dwMorningTask(spec,category,index,day,gradeCode,pool,remediationFallback=false){
+ const grade=gradeCode==="K"?5:4,sourceDay=Math.max(0,Number(spec.item?.day||0)),difficulty=category==="challenge"?"challenge":category==="remedial"?"support":"practice";
+ const params={...(spec.questionParams||{}),grade,difficulty};if(spec.skillId==="math.wordproblems"&&/multi-step|remainder/i.test(String(spec.item?.requirement||"")))params.multiStep=true;
+ const reason=category==="previous"?(sourceDay?"previous instructional target":"beginning-of-year baseline"):category==="past"?"spaced review of an earlier taught skill":category==="challenge"?"deeper thinking with previously taught material":remediationFallback?"no recorded skill gap; extra grade-level review":"personalized review from the student’s earlier attempts";
+ return {subject:spec.item.subject==="Math"?"MATH":"ELA",skillId:spec.skillId,skill:dwLabelOf(spec.skillId),engine:DW_PACING_ENGINES[(day+index)%DW_PACING_ENGINES.length],count:1,seed:day*100003+index*7919+grade*101,questionParams:params,pacingLocked:true,pacingItemId:spec.item.id,pacingRequirement:spec.item.requirement,pacingStrand:spec.item.strand,sourceDate:sourceDay?`Day ${sourceDay}`:"Beginning-of-year baseline",sourceDay,sourceKind:category,gradeLevel:grade,remediationStatus:category==="remedial"?(remediationFallback?"review-fallback":"personalized"):"none",substitutionReason:reason,alternateSkillIds:dwUniqueMorningSpecs(pool).map(x=>x.skillId).filter(id=>id!==spec.skillId&&id!=="curric.morph").slice(0,8)};
+}
+function dwBuildSubjectMorning(day,gradeCode,subject){
+ const pools=dwMorningPriorPools(day,gradeCode,subject),previousIds=new Set(pools.previous.map(x=>x.skillId)),differentPast=pools.past.filter(x=>!previousIds.has(x.skillId)),reviewPool=differentPast.length?differentPast:pools.past,remediation=dwMorningRemediationSpecs(day,subject,pools.all),counts={previous:0,past:0,remedial:0,challenge:0};
+ return DW_MORNING_CATEGORY_PATTERN.map((category,index)=>{
+  const usePersonal=category==="remedial"&&remediation.length>0,pool=category==="previous"||category==="challenge"?pools.previous:usePersonal?remediation:reviewPool;
+  const pickIndex=counts[category]++,offset=category==="past"?1:category==="challenge"?1:category==="remedial"&&!usePersonal?2:0,spec=pool[(pickIndex+offset)%pool.length];
+  return dwMorningTask(spec,category,index,day,gradeCode,pool,category==="remedial"&&!usePersonal);
+ });
 }
 function dwBuildPacingLesson(base){
  base=dwUnifiedLessonBase(base);
- const day=Math.max(1,Number(base.day||1)),gradeCode=String(profile?.grade||"4")==="5"?"K":"I",specs=dwPacingSpecs(day,gradeCode);
- if(!specs.length)throw new Error(`No verified pacing contract exists for grade ${gradeCode==="K"?5:4}, day ${day}.`);
- const make=(spec,i,count)=>({subject:spec.item.subject==="Math"?"MATH":"ELA",skillId:spec.skillId,skill:dwPacingLabel(spec.item)||dwLabelOf(spec.skillId),engine:DW_PACING_ENGINES[(day+i)%DW_PACING_ENGINES.length],count,seed:day*100003+i*7919,questionParams:spec.questionParams,pacingLocked:true,pacingItemId:spec.item.id,pacingRequirement:spec.item.requirement,pacingStrand:spec.item.strand,sourceDate:spec.sourceDate||String(base.date||`Day ${day}`),remediationStatus:"none",substitutionReason:spec.substitutionReason||"current pacing target"});
- // Morning already covers every same-day pacing target plus spaced review.
- // The retired Exit Quest used the same targets, so appending it would add duplicates.
- const morning=dwBuildVariedMorning(specs,day,make);
- const math=specs.find(s=>s.item.subject==="Math"),ela=specs.find(s=>s.item.subject==="HUM"),track=resolvedTrack(),trackName=track==="foundation"?"FOUNDATION SUPPORT":track==="challenge"?"⭐ PACING ENRICHMENT":gradeCode==="K"?"5TH GRADE":"4TH GRADE";
- return {...base,track,trackName,pacingGrade:gradeCode,pacingLocked:true,title:`${base.chapterIcon||"📜"} Day ${day}: ${dwPacingLabel(math?.item||ela?.item)}`,mathSkill:math?dwPacingLabel(math.item):"Pacing Guide",elaSkill:ela?dwPacingLabel(ela.item):"Pacing Guide",morning};
+ const day=Math.max(1,Number(base.day||1)),gradeCode=String(profile?.grade||"4")==="5"?"K":"I",math=dwBuildSubjectMorning(day,gradeCode,"Math"),ela=dwBuildSubjectMorning(day,gradeCode,"HUM"),morning=[];
+ for(let i=0;i<15;i++)morning.push(math[i],ela[i]);
+ const track=resolvedTrack(),trackName=track==="foundation"?"GRADE-LEVEL SUPPORT":track==="challenge"?"⭐ GRADE-LEVEL DEPTH":gradeCode==="K"?"5TH GRADE":"4TH GRADE",mathAnchor=math.find(x=>x.sourceKind==="previous"),elaAnchor=ela.find(x=>x.sourceKind==="previous"),fingerprint=hashNumSafe(morning.map(x=>`${x.subject}|${x.skillId}|${x.sourceDay}|${x.sourceKind}|${JSON.stringify(x.questionParams)}`).join("||"));
+ return {...base,track,trackName,pacingGrade:gradeCode,pacingLocked:true,morningPlanVersion:DW_MORNING_PLAN_VERSION,morningPlanFingerprint:`${DW_MORNING_PLAN_VERSION}-${fingerprint}`,title:`${base.chapterIcon||"📜"} Day ${day}: Prior Learning Practice`,mathSkill:mathAnchor?.skill||"Grade-level Math review",elaSkill:elaAnchor?.skill||"Grade-level ELA review",morning};
 }
-function dwValidatePacingLesson(L){const all=[...(L?.morning||[])];if(!L?.pacingLocked||!all.length)throw new Error("Daily work has no verified pacing contract.");for(const t of all){if(!t.pacingItemId||!t.skillId||!DW_SKILLS[t.skillId])throw new Error(`Unmapped pacing task: ${t.pacingItemId||t.skill||"unknown"}`);const q=makeQ(t,0);if(!q||q.source!=="registry"||!dwValidQuestion(q))throw new Error(`Ungradable pacing task: ${t.pacingItemId}`)}return L}
+function dwValidatePacingLesson(L){
+ const all=[...(L?.morning||[])],count=(field,value)=>all.filter(x=>x[field]===value).length;
+ if(!L?.pacingLocked||all.length!==30)throw new Error("Morning Work must contain exactly 30 verified questions.");
+ if(count("subject","MATH")!==15||count("subject","ELA")!==15)throw new Error("Morning Work must contain exactly 15 Math and 15 ELA questions.");
+ for(const [kind,expected] of [["previous",16],["past",8],["remedial",4],["challenge",2]])if(count("sourceKind",kind)!==expected)throw new Error(`Morning Work requires ${expected} ${kind} questions.`);
+ for(const t of all){if(!t.pacingItemId||!t.skillId||!DW_SKILLS[t.skillId])throw new Error(`Unmapped pacing task: ${t.pacingItemId||t.skill||"unknown"}`);if(Number(t.sourceDay||0)>=Number(L.day||1))throw new Error(`Future or same-day content blocked: ${t.pacingItemId}`);let q=null;for(let attempt=0;attempt<30&&!q;attempt++){const cand=makeQ({...t,seed:Number(t.seed||1)+attempt*9973},attempt*17);if(cand?.source==="registry"&&dwValidQuestion(cand))q=cand}if(!q)throw new Error(`Ungradable pacing task: ${t.pacingItemId}`)}
+ dwValidateMorningSequence(all);return L
+}
 function makeTrackLesson(base){
  if(isLevelUpMode()){const track=resolvedTrack();if(track==='4')return dwValidatePacingLesson(dwBuildPacingLesson(base));const elevated=dwTrackLesson(track,Math.max(1,Number(base.day||1)),base,DW_PACING_ENGINES);if(!elevated)throw new Error(`No level-up lesson is available for ${track}, day ${base.day}.`);return elevated}
  return dwValidatePacingLesson(dwBuildPacingLesson(base))
@@ -6022,7 +6066,7 @@ function renderMap(){
  const now=lesson?.day||1;let s="";
  const completedDays=new Set(
    dqProgressRows
-     .filter(x=>String(x.id||"").endsWith("_v48")&&x.mode!=="levelup"&&!String(x.id||"").includes("_levelup_")&&x.status==="complete"&&x.session==="morning")
+     .filter(x=>String(x.id||"").endsWith("_v49")&&x.mode!=="levelup"&&!String(x.id||"").includes("_levelup_")&&x.status==="complete"&&x.session==="morning")
      .map(x=>Number(x.day||0))
  );
  for(let i=1;i<=180;i++){
@@ -6036,7 +6080,7 @@ function renderMap(){
  $("maptrack").innerHTML=s;setTimeout(()=>document.querySelector(".node.today")?.scrollIntoView({inline:"center",block:"nearest"}),50)
 }
 
-const DAILY_QUEST_BUILD="v48";
+const DAILY_QUEST_BUILD="v49";
 const DW_LEGACY_COMPLETED_DAYS=12;
 function progressModeKey(){return isLevelUpMode()?"levelup":"assigned"}
 function progressId(session){return `${user.uid}_${lesson.date}_${lesson?.track||"4"}_${progressModeKey()}_${session}_${DAILY_QUEST_BUILD}`}
@@ -6064,7 +6108,7 @@ async function readProgress(session){
   }catch(e){console.warn("progress read",e)}
   const local=readLocalProgress(session);
   if(local)return local;
-  // v48 intentionally does not infer academic completion from older RPG claims; this resets Daily Quest work without re-awarding RPG loot.
+  // v49 starts the verified prior-learning plan without re-awarding previously claimed RPG loot.
   return null
 }
 function liveProgressCounts(){
@@ -6083,8 +6127,9 @@ async function saveProgress(extra={}){
     score:Number(score||0),correct:Number(correct||0),attempts:Math.min(60,Number(attempts||0)),
     mathSkill:String(lesson.mathSkill||""),elaSkill:String(lesson.elaSkill||""),
     skills:skillStats,needsReteach:[...needsReteach],activeSeconds:Number(activeSeconds||0),idleEvents:Number(idleEvents||0),perQuestionSeconds:perQuestionSeconds.slice(0,60),
+    planVersion:DW_MORNING_PLAN_VERSION,planFingerprint:sessionPlanFingerprint||lesson.morningPlanFingerprint,taskPlan:tasks.slice(0,60).map(t=>({...t})),
     reviewRevisionStates:dwDailyReviewRevisionStates,
-    sequenceAudit:tasks.slice(0,60).map(t=>({subject:String(t.subject||""),skillId:String(t.skillId||""),sourceDate:String(t.sourceDate||lesson.date||""),remediationStatus:String(t._isRetry?"retry":t.remediationStatus||"none"),substitutionReason:String(t._isRetry?"missed item; delayed differently structured retry":t.substitutionReason||"current pacing target"),interaction:String(t.engine||"choice")})),
+    sequenceAudit:tasks.slice(0,60).map(t=>({subject:String(t.subject||""),skillId:String(t.skillId||""),sourceDate:String(t.sourceDate||lesson.date||""),sourceDay:Number(t.sourceDay||0),sourceKind:String(t.sourceKind||""),gradeLevel:Number(t.gradeLevel||0),remediationStatus:String(t._isRetry?"retry":t.remediationStatus||"none"),substitutionReason:String(t._isRetry?"missed item; delayed differently structured retry":t.substitutionReason||"prior learning target"),interaction:String(t.engine||"choice")})),
     updatedAt:serverTimestamp(),...extra
   };
   // Save locally FIRST so refresh cannot erase the student's place while Firestore is writing.
@@ -6116,12 +6161,12 @@ function postDailyMissionState(available=true){
 function updateDailyQuestProgressSummary(){
  dqCompletedDates=new Set(
    dqProgressRows
-    .filter(x=>String(x.id||"").endsWith("_v48")&&x.status==="complete"&&x.session==="morning"&&x.dateKey)
+   .filter(x=>String(x.id||"").endsWith("_v49")&&x.status==="complete"&&x.session==="morning"&&x.dateKey)
     .map(x=>String(x.dateKey))
  );
  const newCompletedDays=new Set(
    dqProgressRows
-    .filter(x=>String(x.id||"").endsWith("_v48")&&x.status==="complete"&&x.session==="morning"&&Number(x.day||0)>DW_LEGACY_COMPLETED_DAYS)
+    .filter(x=>String(x.id||"").endsWith("_v49")&&x.status==="complete"&&x.session==="morning"&&Number(x.day||0)>DW_LEGACY_COMPLETED_DAYS)
     .map(x=>Number(x.day||0))
  );
  const count=Math.min(180,DW_LEGACY_COMPLETED_DAYS+newCompletedDays.size),
@@ -6145,7 +6190,7 @@ async function loadToday(){let key=dateKey();const isTeacher=String(user?.email|
 const lub=$("levelUpBanner");if(lub)lub.style.display=isLevelUpMode()?"block":"none";
 const td=$("trackDesc");if(td)td.textContent=isLevelUpMode()
   ? (lesson.track==="challenge"?"Optional enrichment • Early–Mid 6th Grade":lesson.track==="foundation"?"Optional fourth-grade level-up work":"Optional fifth-grade challenge work")
-  : (lesson.track==="challenge"?"Advanced enrichment • Early–Mid 6th Grade":lesson.track==="5"?"Fifth-grade spiral practice":lesson.track==="foundation"?"Foundation spiral practice • Grade 3 prerequisite skills":"Fourth-grade spiral practice");
+  : (lesson.track==="challenge"?"Grade-level review with a small deeper-thinking finish":lesson.track==="5"?"Fifth-grade prior-learning practice":lesson.track==="foundation"?"Grade-level practice with extra scaffolding":"Fourth-grade prior-learning practice");
 const mini=$("trackLabelMini");if(mini)mini.textContent=`TRACK: ${lesson.trackName}`;await refreshSessionCards();status(localPreviewMode?`🧪 SAFE DATE PREVIEW • Showing ${key} • Progress, scores, XP, and Gold will not be written.`:Number(profile.hp||0)<=0?"💀 You may complete today's academics, but knocked-out players earn no Player XP or Gold until revival.":"Today's quest is unlocked. Future quests remain sealed by Dragonswood server time.","good");}catch(err){console.error(err);status("Today’s quest is still sealed. Make sure you are signed in and today’s assignment is open.","bad");$("morningBtn").disabled=true;postDailyMissionState(false)}}
 onAuthStateChanged(auth,async u=>{
  testerAccountUnsub?.();testerControlsUnsub?.();testerAccountUnsub=testerControlsUnsub=null;
@@ -6166,12 +6211,22 @@ onAuthStateChanged(auth,async u=>{
   try{const s=await getDoc(doc(db,"students",u.uid));if(s.exists())profile=s.data();else if(testerSession.isTester)profile={firstName:u.displayName||"Tester",grade:"4",hp:10,gold:0,xp:0};window.DWVoicePreferences?.set?.(profile?.narrationVoice||"automatic");renderAccount();renderSchoolCountdowns();watchDailyQuestProgress();await loadToday();if(testerMorningOverride&&lesson)status("🧪 Tester Morning Work self-unlock is active. Completion evidence remains unchanged until you do the work.","good")}catch(e){console.warn('[Daily Quest profile]',e);status("Your adventurer record could not be opened. Return to the portal and try again.","bad")}
 });
 $("morningBtn").onclick=startSession;$("closePlay").onclick=async()=>{if(sessionName&&taskIndex<tasks.length)await saveProgress();$("playModal").classList.remove("show")};
+function dwValidFrozenMorningPlan(progress){
+ const plan=progress?.taskPlan,core=Array.isArray(plan)?plan.filter(t=>!t?._isRetry):[];
+ if(progress?.status!=="in_progress"||progress?.planVersion!==DW_MORNING_PLAN_VERSION||!Array.isArray(plan)||plan.length<30||plan.length>32||core.length!==30)return false;
+ if(core.filter(t=>t.subject==="MATH").length!==15||core.filter(t=>t.subject==="ELA").length!==15)return false;
+ if(core.some(t=>!DW_SKILLS[t.skillId]||Number(t.sourceDay||0)>=Number(lesson?.day||1)))return false;
+ try{dwValidateMorningSequence(core);return true}catch(_){return false}
+}
+function dwCloneTaskPlan(plan){return plan.map(t=>({...t,questionParams:t.questionParams?{...t.questionParams}:null,alternateSkillIds:Array.isArray(t.alternateSkillIds)?[...t.alternateSkillIds]:[]}))}
 async function startSession(){
   sessionName="morning";watchDailyQuestionOverrides(user?.uid);dwInstallDailyReviewUI();
-  tasks=lesson.morning;
-  dwValidateMorningSequence(tasks);
-  questionPlan=buildUniqueQuestionPlan(tasks);
   sessionProgress=await readProgress("morning");
+  const frozen=dwValidFrozenMorningPlan(sessionProgress);
+  tasks=frozen?dwCloneTaskPlan(sessionProgress.taskPlan):dwCloneTaskPlan(lesson.morning);
+  sessionPlanFingerprint=frozen?String(sessionProgress.planFingerprint||lesson.morningPlanFingerprint):String(lesson.morningPlanFingerprint||"");
+  dwValidateMorningSequence(tasks.filter(t=>!t._isRetry));
+  questionPlan=buildUniqueQuestionPlan(tasks);
   if(sessionProgress?.status==="complete"){taskIndex=0;qIndex=0;score=0;correct=0;attempts=0}
   else if(sessionProgress){
     taskIndex=Math.max(0,Number(sessionProgress.taskIndex||0));qIndex=Math.max(0,Number(sessionProgress.qIndex||0));
@@ -6332,7 +6387,10 @@ function questionVisual(q,t){
    let n=+m[1],d=Math.min(16,+m[2]); if(d>0){return `<div class="qvisual"><div class="visual-title">🍰 FRACTION MODEL</div><div class="frac-visual"><div><div style="text-align:center;font-weight:900;margin-bottom:6px">${n}/${m[2]}</div><div class="fracbar" style="grid-template-columns:repeat(${d},1fr)">${Array.from({length:d},(_,i)=>`<span class="fracpiece ${i<n?'fill':''}"></span>`).join('')}</div></div></div><div class="visual-note">Use the shaded pieces to compare the amount. The answer is still yours to figure out.</div></div>`}
  }
  if(skill.includes("place value") && (m=p.match(/In ([0-9,]+)/i))){const digs=m[1].replaceAll(',','').padStart(4,'0').slice(-4).split('');return `<div class="qvisual"><div class="visual-title">🏰 PLACE-VALUE TOWERS</div><div class="placechart">${['THOUSANDS','HUNDREDS','TENS','ONES'].map((x,i)=>`<div><small>${x}</small><b>${digs[i]}</b></div>`).join('')}</div><div class="visual-note">Find the column named in the question.</div></div>`}
- if(skill.includes("round") && (m=p.match(/Round ([0-9,]+)/i))){let n=+m[1].replaceAll(',',''),base=Math.floor(n/100)*100;return `<div class="qvisual"><div class="visual-title">🧭 NUMBER-LINE CLUE</div><div class="numberline">${[0,25,50,75,100].map((x,i)=>`<div class="tick" style="left:${x}%"><span>${base+i*25}</span></div>`).join('')}</div><div class="visual-note">Locate the number between its neighbors, then decide which benchmark it is closest to.</div></div>`}
+ if(skill.includes("round") && (m=p.match(/Round ([0-9,.]+)/i))){
+   if(m[1].includes('.'))return `<div class="qvisual"><div class="visual-title">🔎 DECIMAL ROUNDING COACH</div><div class="word-visual"><div class="word-card"><small>NUMBER</small><br>${m[1]}</div><div class="word-arrow">→</div><div class="word-card"><small>TARGET PLACE</small><br>${(p.match(/nearest (tenth|hundredth|thousandth)/i)||[])[1]||'named place'}</div></div><div class="visual-note">Underline the target digit. Check the digit immediately to its right: 5 or more rounds up; 4 or less keeps the target digit. Then remove digits to the right.</div></div>`;
+   let n=+m[1].replaceAll(',',''),base=Math.floor(n/100)*100;return `<div class="qvisual"><div class="visual-title">🧭 NUMBER-LINE CLUE</div><div class="numberline">${[0,25,50,75,100].map((x,i)=>`<div class="tick" style="left:${x}%"><span>${base+i*25}</span></div>`).join('')}</div><div class="visual-note">Locate the number between its neighbors, then decide which benchmark it is closest to.</div></div>`
+ }
  if(skill.includes("angle") && (m=p.match(/([0-9]+)°/))){let deg=+m[1],rot=-Math.min(170,deg);return `<div class="qvisual"><div class="visual-title">📐 ANGLE MODEL • ${deg}°</div><div class="anglevis"><div class="ray"></div><div class="ray b" style="transform:rotate(${rot}deg)"></div><div class="vertex"></div></div><div class="visual-note">Compare the opening to a square corner (90°).</div></div>`}
  if((skill.includes("multip")||/[0-9,]+\s*[×x*]\s*[0-9,]+/i.test(p)) && (m=p.match(/([0-9,]+)\s*[×x*]\s*([0-9,]+)/i)||(nums.length>=2?[nums[0],nums[1]]:null))){let a=+m[1].replaceAll(',',''),b=+m[2].replaceAll(',','');if(a<=15&&b<=10)return `<div class="qvisual"><div class="visual-title">🛡️ ARRAY MODEL • ${a} ROWS × ${b} IN EACH ROW</div><div class="array-grid" style="grid-template-columns:repeat(${b},24px)">${'<span class="array-cell"></span>'.repeat(a*b)}</div><div class="visual-note">Use equal rows to reason about the product. The answer stays yours.</div></div>`;return `<div class="qvisual"><div class="visual-title">✖️ MULTIPLICATION COACH</div><div class="word-visual"><div class="word-card"><small>EQUAL GROUPS</small><br>${m[1]}</div><div class="word-arrow">×</div><div class="word-card"><small>IN EACH GROUP</small><br>${m[2]}</div><div class="word-arrow">→</div><div class="word-card">?</div></div><div class="visual-note">Break one factor into place-value parts, make partial products, then combine them. The answer stays yours.</div></div>`}
  if(skill.includes("antonym")||skill.includes("synonym")||skill.includes("homophone")){m=p.match(/"([^"]+)"/);if(m){let rel=skill.includes('antonym')?'OPPOSITE MEANING':skill.includes('synonym')?'SAME OR SIMILAR MEANING':'SAME SOUND';return `<div class="qvisual"><div class="visual-title">📚 WORD RELATIONSHIP</div><div class="word-visual"><div class="word-card">${m[1]}</div><div class="word-arrow">⇄</div><div class="word-card">?</div></div><div class="visual-note">Look for a choice with ${rel.toLowerCase()}.</div></div>`}}
@@ -6370,28 +6428,31 @@ function dwValidateMorningSequence(taskList){
 }
 function buildUniqueQuestionPlan(taskList){
  const used=new Set(),plan=[];
- let forcedRepeats=0,flatIndex=0;const groupStats=new Map(),enforceMorning=sessionName==="morning";
+ let flatIndex=0;const groupStats=new Map(),enforceMorning=sessionName==="morning";
  taskList.forEach((t,ti)=>{
    const row=[];
    for(let qi=0;qi<t.count;qi++){
      const group=Math.floor(flatIndex/5),stats=groupStats.get(group)||{direct:0,answers:new Set()};
-     let q=null,sig="",best=null;
-     for(let tries=0;tries<120;tries++){
-       const cand=makeQ({...t,seed:Number(t.seed||1)+tries*9973},qi+tries*17);
-       if(!cand?.prompt||!Array.isArray(cand?.choices))continue;
-       best=best||cand;
-       const s=qSignature(cand);
-       if(enforceMorning&&dwDirectDefinitionPrompt(cand)&&stats.direct>=1)continue;
-       if(enforceMorning&&stats.answers.has(String(cand.answer||"").trim().toLowerCase()))continue;
-       if(!used.has(s)){q=cand;sig=s;break}
+     let q=null,sig="",chosenSkill=t.skillId;
+     const skillIds=[t.skillId,...(Array.isArray(t.alternateSkillIds)?t.alternateSkillIds:[])].filter((id,index,list)=>id&&DW_SKILLS[id]&&list.indexOf(id)===index);
+     for(let pass=0;pass<2&&!q;pass++)for(const skillId of skillIds){
+       const alternate=skillId!==t.skillId,params=alternate?{grade:t.questionParams?.grade,difficulty:t.questionParams?.difficulty}:t.questionParams;
+       for(let tries=0;tries<120;tries++){
+         const cand=makeQ({...t,skillId,skill:dwLabelOf(skillId),questionParams:params,seed:Number(t.seed||1)+tries*9973+skillIds.indexOf(skillId)*104729},qi+tries*17);
+         if(!cand?.prompt||!Array.isArray(cand?.choices))continue;
+         const s=qSignature(cand);if(used.has(s))continue;
+         if(pass===0&&enforceMorning&&dwDirectDefinitionPrompt(cand)&&stats.direct>=1)continue;
+         if(pass===0&&enforceMorning&&stats.answers.has(String(cand.answer||"").trim().toLowerCase()))continue;
+         q=cand;sig=s;chosenSkill=skillId;break;
+       }
+       if(q)break;
      }
-     if(!q&&enforceMorning)throw new Error(`Morning question variety bank exhausted at question ${flatIndex+1}.`);
-     if(!q){q=best;sig=qSignature(q);forcedRepeats++;}
+     if(!q)throw new Error(`Morning question variety bank exhausted at question ${flatIndex+1}.`);
+     if(chosenSkill!==t.skillId){t.skillId=chosenSkill;t.skill=dwLabelOf(chosenSkill);t.questionParams={grade:t.questionParams?.grade,difficulty:t.questionParams?.difficulty};t.pacingItemId=`${t.pacingItemId}:verified-alternate:${chosenSkill}`;t.substitutionReason=`${t.substitutionReason}; verified previously taught alternate used for question variety`}
      used.add(sig);row.push(q);if(enforceMorning){if(dwDirectDefinitionPrompt(q))stats.direct++;stats.answers.add(String(q.answer||"").trim().toLowerCase());groupStats.set(group,stats)}flatIndex++;
    }
    plan.push(row);
  });
- if(forcedRepeats) console.info("Dragonswood: "+forcedRepeats+" repeated question(s) this session (skill bank exhausted).");
  return plan;
 }
 function dwQuestionInputMode(q,t){
@@ -6474,7 +6535,8 @@ async function finishSession(){
     totalTasks:live.totalTasks,completedTasks:live.totalTasks,totalQuestions:live.totalQuestions,completedQuestions:live.totalQuestions,progressPercent:100,
     accuracy:Math.round(acc*100),seconds:elapsed,mathSkill:String(lesson.mathSkill||""),elaSkill:String(lesson.elaSkill||""),
     skills:skillStats,needsReteach:[...needsReteach],activeSeconds:Number(activeSeconds||0),idleEvents:Number(idleEvents||0),perQuestionSeconds:perQuestionSeconds.slice(0,60),
-    sequenceAudit:tasks.slice(0,60).map(t=>({subject:String(t.subject||""),skillId:String(t.skillId||""),sourceDate:String(t.sourceDate||lesson.date||""),remediationStatus:String(t._isRetry?"retry":t.remediationStatus||"none"),substitutionReason:String(t._isRetry?"missed item; delayed differently structured retry":t.substitutionReason||"current pacing target"),interaction:String(t.engine||"choice")})),
+    planVersion:DW_MORNING_PLAN_VERSION,planFingerprint:sessionPlanFingerprint||lesson.morningPlanFingerprint,taskPlan:tasks.slice(0,60).map(t=>({...t})),
+    sequenceAudit:tasks.slice(0,60).map(t=>({subject:String(t.subject||""),skillId:String(t.skillId||""),sourceDate:String(t.sourceDate||lesson.date||""),sourceDay:Number(t.sourceDay||0),sourceKind:String(t.sourceKind||""),gradeLevel:Number(t.gradeLevel||0),remediationStatus:String(t._isRetry?"retry":t.remediationStatus||"none"),substitutionReason:String(t._isRetry?"missed item; delayed differently structured retry":t.substitutionReason||"prior learning target"),interaction:String(t.engine||"choice")})),
     completedAt:serverTimestamp(),updatedAt:serverTimestamp()
   };
   saveLocalProgress(sessionName,{...completionProgress,completedAt:Date.now(),updatedAt:Date.now()});

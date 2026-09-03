@@ -1239,6 +1239,14 @@ rounding(r,p,i){
     return {prompt:`Round ${money(amt)} to the nearest dollar.`,answer:money(ans),
       choices:opts(r,money(ans),[money(ans+1),money(Math.max(0,ans-1)),money(Math.floor(amt)),money(Math.ceil(amt))])}
   }
+  if(p.mode==="decimal"){
+    const places=[[10,"tenth",1],[100,"hundredth",2],[1000,"thousandth",3]];
+    const [scale,name,digits]=bp(r,places,i);
+    const raw=ri(r,1001,99999),n=raw/1000,ans=Math.round(n*scale)/scale;
+    const answer=ans.toFixed(digits),step=1/scale;
+    return {prompt:`Round ${n.toFixed(3)} to the nearest ${name}.`,answer,
+      choices:opts(r,answer,[(ans+step).toFixed(digits),Math.max(0,ans-step).toFixed(digits),n.toFixed(3),Math.floor(n*scale)/scale])}
+  }
   const places=[[10,"ten"],[100,"hundred"],[1000,"thousand"],[10000,"ten thousand"]];
   const [to,name]=bp(r,places,i);
   const n=ri(r,to*2,to*90)+ri(r,1,to-1);
@@ -1784,8 +1792,14 @@ graphs(r,p,i){
     choices:opts(r,tot,[tot-vals[0],tot+10,Math.max(...vals)])}
 },
 wordproblem(r,p,i){
-  const modes=i%4;
+  const difficulty=String(p.difficulty||"practice"),grade=Math.max(0,Number(p.grade)||0);
+  const modes=(p.multiStep||grade>=4||difficulty==="challenge")?2+(i%2):i%4;
   const name=pick(r,["Maya","Leo","Priya","Sam","Ana","Kofi"]);
+  if(difficulty==="challenge"){
+    const teams=ri(r,3,8),per=ri(r,12,28),used=ri(r,15,45),bonus=ri(r,6,20),ans=teams*per-used+bonus;
+    return {prompt:`${teams} teams collect ${per} crystals each. They use ${used} crystals, then earn ${bonus} more. How many crystals do they have now?`,
+      answer:comma(ans),choices:opts(r,comma(ans),[comma(teams*per-used),comma(teams*(per-used)+bonus),comma(teams*per+used+bonus)])}
+  }
   if(modes===0){
     const packs=ri(r,4,12), per=ri(r,6,12);
     return {prompt:`${name} buys ${packs} packs of arrows with ${per} arrows in each pack. How many arrows in all?`,
@@ -1799,7 +1813,8 @@ wordproblem(r,p,i){
   }
   if(modes===2){
     const start=ri(r,200,900), spent=ri(r,50,190), found=ri(r,20,90);
-    return {prompt:`${name} has ${comma(start)} gold, spends ${comma(spent)}, then finds ${comma(found)} more. How much gold now?`,
+    const scaffold=difficulty==="support"?" First subtract what was spent; then add what was found.":"";
+    return {prompt:`${name} has ${comma(start)} gold, spends ${comma(spent)}, then finds ${comma(found)} more. How much gold now?${scaffold}`,
       answer:comma(start-spent+found),choices:opts(r,comma(start-spent+found),
         [comma(start-spent-found),comma(start+spent+found),comma(start-spent)])}
   }
@@ -2887,7 +2902,7 @@ subjpred(r,p,i){
       choices:shuffle(r,[s.completeSubject,s.completePredicate,s.simpleSubject,s.simplePredicate])};
   if(p.kind==="predicate")
     return {prompt:`What is the COMPLETE PREDICATE?\n“${s.text}”`,answer:s.completePredicate,
-      choices:shuffle(r,[s.completePredicate,s.completeSubject,s.simpleSubject,s.simplePredicate])};
+      choices:shuffle(r,[s.completePredicate,s.phrase,s.simplePredicate,`${s.simpleSubject} ${s.completePredicate}`])};
   if(p.kind==="simple"){
     const wantSubj=i%2===0;
     return {prompt:`What is the SIMPLE ${wantSubj?"SUBJECT":"PREDICATE"}?\n“${s.text}”`,
@@ -2972,7 +2987,7 @@ abbreviations(r,p,i){
     ["November","Nov."],["Road","Rd."],["Senior","Sr."],["Incorporated","Inc."]];
   const [full,ab]=bp(r,b,i);
   return {prompt:`What is the correct abbreviation for “${full}”?`,answer:ab,
-    choices:shuffle(r,[ab,ab.replace(".",""),full.slice(0,2).toUpperCase()+".",full.slice(0,4)+"."])}
+    choices:opts(r,ab,[ab.replace(".",""),full.slice(0,1)+".",full.slice(0,-1)+"."])}
 },
 commas(r,p,i){
   const x=bp(r,COMMAS,i);
@@ -3117,17 +3132,17 @@ composition(r,p,i){
   const k=p.kind;
   if(k==="topic"){
     const q=[["Dragons appear in stories from many different cultures.",
-      ["My favorite color is green.","I once saw a lizard.","Dragons are cool."]],
+      ["My favorite stories often use bright green dragons in exciting scenes.","A small lizard rested on a warm rock beside the garden path.","Some fantasy books include castles, wizards, and magical creatures."]],
      ["Learning to read a map is a valuable skill for any traveler.",
-      ["Maps are made of paper.","I like traveling.","North is up."]],
+      ["Many travelers carry folded paper maps inside a waterproof pack.","I enjoy traveling to places that have mountains, rivers, and forests.","North appears at the top of most maps used by travelers today."]],
      ["Keeping a daily journal helps writers improve in three important ways.",
-      ["I have a journal.","Journals have pages.","Writing is hard sometimes."]],
+      ["A journal can have a plain cover, lined pages, and a ribbon marker.","I keep my favorite journal beside a blue pen on my desk.","Writers sometimes find it difficult to decide what to write each day."]],
      ["Lanterns were essential tools for medieval travelers.",
-      ["Lanterns are old.","I saw a lantern once.","Fire is hot."]],
+      ["Old lanterns are displayed behind glass in many history museums.","I once carried a small lantern while walking through a dark cave.","A bright flame can produce both useful light and noticeable heat."]],
      ["Working as a team makes difficult tasks manageable.",
-      ["Teams have people.","I like my team.","Some tasks are hard."]],
+      ["A school team may include students with many different interests.","I like working beside my teammates during our afternoon practice.","Some difficult tasks require extra time, supplies, and careful planning."]],
      ["Rivers shaped where early villages were built.",
-      ["Rivers are wet.","I swam in a river.","Villages are small."]]];
+      ["Rivers carry moving water across many different kinds of landscapes.","I swam in a cold river during our family camping trip last summer.","Early villages included homes, paths, farms, and gathering places."]]];
     const x=bp(r,q,i);
     return {prompt:`Which sentence is the best TOPIC SENTENCE for a paragraph?`,answer:x[0],
       choices:shuffle(r,[x[0],...x[1]])}
@@ -3163,26 +3178,26 @@ composition(r,p,i){
   }
   if(k==="opinion"){
     const q=[["Recess should be longer because students focus better after physical activity.",
-      ["Recess should be longer.","Recess is at 10:30.","I like recess a lot."]],
+      ["Many schools schedule recess once during the morning class period.","The school schedule lists morning recess at exactly 10:30 each day.","I enjoy playing active games with my friends during recess."]],
      ["Students should learn a second language because it strengthens memory and opens career paths.",
-      ["Everyone should learn a language.","Spanish is a language.","I like languages."]],
+      ["Many students begin studying another language during elementary school.","Spanish is spoken by millions of people in countries around the world.","I enjoy learning new words and phrases in different languages."]],
      ["Libraries should stay open later because many students study after dinner.",
-      ["Libraries should stay open later.","The library has books.","I go to the library."]],
+      ["The town library closes at the same time every weekday evening.","The library has books, computers, tables, and several quiet rooms.","I often visit the library with my family on Saturday afternoons."]],
      ["Schools should serve breakfast because hungry students cannot concentrate.",
-      ["Breakfast is important.","Schools have cafeterias.","I eat breakfast."]]];
+      ["Many students arrive at school before the first class begins each day.","Schools often have cafeterias with tables, kitchens, and serving areas.","I usually eat breakfast with my family before leaving for school."]]];
     const x=bp(r,q,i);
     return {prompt:`Which sentence gives an OPINION supported by a REASON?`,answer:x[0],
       choices:shuffle(r,[x[0],...x[1]])}
   }
   if(k==="character"){
     const q=[["fear","Maya's hands trembled as she reached for the door, and she swallowed hard.",
-      ["Maya was afraid.","Maya felt scared.","Maya had fear."]],
+      ["Maya explained that the dark doorway made her feel very afraid.","Maya said she was scared to open the heavy wooden door.","Maya told her friends that she had a strong feeling of fear."]],
      ["excitement","Leo bounced on his toes and could not stop grinning.",
-      ["Leo was excited.","Leo felt excitement.","Leo had joy."]],
+      ["Leo announced that the upcoming journey made him feel excited.","Leo said he felt excitement when the new quest was announced.","Leo told the group that the good news filled him with joy."]],
      ["anger","Priya's jaw tightened and she slammed the ledger shut.",
-      ["Priya was angry.","Priya felt mad.","Priya had anger."]],
+      ["Priya explained that the unfair decision made her feel angry.","Priya said she was very mad about what happened at the meeting.","Priya told the council that she had a strong feeling of anger."]],
      ["exhaustion","Sam's shoulders sagged and each step landed heavier than the last.",
-      ["Sam was tired.","Sam felt exhausted.","Sam had fatigue."]]];
+      ["Sam explained that the long mountain climb made him feel tired.","Sam said he felt completely exhausted after traveling all day.","Sam told the group that he was experiencing serious fatigue."]]];
     const x=bp(r,q,i);
     return {prompt:`Which sentence SHOWS a character's ${x[0]} instead of just telling it?`,answer:x[1],
       choices:shuffle(r,[x[1],...x[2]])}
@@ -5297,8 +5312,8 @@ function dwLessonTerms(item){
 /* Morphology missions name the root and the target word. */
 function dwMorphParts(item){
   const t=String(item.requirement||"");
-  const root=(t.match(/M[o0]r?ph[o0]?eme\s*\n?\s*([^\n]+)/i)||[])[1];
-  const word=(t.match(/Word\s*\n?\s*([^\n]+)/i)||[])[1];
+  const root=(t.match(/M[o0]r?ph[o0]?emes?[^\S\r\n]*(?:\r?\n)+[^\S\r\n]*([^\r\n]+)/i)||[])[1];
+  const word=(t.match(/Word[^\S\r\n]*(?:\r?\n)+[^\S\r\n]*([^\r\n]+)/i)||[])[1];
   return {root:(root||"").trim(), word:(word||"").trim()};
 }
 function dwMorphLesson(item,parts){

@@ -430,7 +430,7 @@ function adventurePage(){
       </div>
     </article>
     <article class="panel next-step">
-      <div class="eyebrow">⭐ Your next step</div><div class="next-reward">+60 XP</div><div class="next-icon">📜</div><h2>Morning Work</h2><p>Complete today’s Math + ELA practice in one session. Visual Coach help is available.</p>
+      <div class="eyebrow">⭐ Your next step</div><div class="next-reward">+6 XP</div><div class="next-icon">📜</div><h2>Morning Work</h2><p>Practice yesterday’s learning, older review, personal support, and a small challenge. Visual Coach help is available.</p>
       <div class="step-pills"><div class="step-pill done">✓ Log in</div><div class="step-pill current">2 Start Morning Work</div><div class="step-pill">3 Continue your path</div></div>
       <button class="btn btn-primary w-full" type="button" data-page="missions">Start today’s mission →</button><p class="center muted mt-12 text-11">About 25 minutes • You can use read-aloud</p>
     </article>
@@ -461,7 +461,7 @@ function mountAdventureIdentity(){
 }
 
 const missions = [
-  {id:'morning',module:'daily-quest',n:'1',kicker:'DO THIS FIRST',icon:'🌅',title:'Morning Work',desc:'All of today’s Math + ELA spiral practice in one guided session.',time:'≈25 min',reward:'+60 XP',button:'Start Morning Work →'},
+  {id:'morning',module:'daily-quest',n:'1',kicker:'DO THIS FIRST',icon:'🌅',title:'Morning Work',desc:'30 questions: mostly yesterday, then older review, personal support, and a small challenge.',time:'≈25 min',reward:'+6 XP',button:'Start Morning Work →'},
   {id:'spelling',module:'rune-spelling',n:'2',kicker:'SPELLING PRACTICE',icon:'🔤',title:'Rune Spelling',desc:'Study and practice today’s teacher-assigned spelling words.',time:'10–15 min',reward:'Spelling grade',button:'Open spelling →'},
   {id:'curriculum',module:'curriculum-quest',n:'3',kicker:'CLASS MISSION',icon:'🐉',title:'Curriculum Quest',desc:'Watch the short lesson, try it, then ask for teacher verification.',time:'10–15 min',reward:'+50 XP',button:'Open quest →'}
 ];

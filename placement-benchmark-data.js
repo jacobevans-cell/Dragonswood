@@ -4,7 +4,7 @@
   const AZ_ELA="https://www.azed.gov/standards-practices/k-12standards/english-language-arts-standards";
   const q=(standard,skillId,placementLevel,questionParams=null)=>({standard,skillId,placementLevel,questionParams});
   window.DW_PLACEMENT_BENCHMARK={
-    version:"math-ela-placement-v1",
+    version:"math-ela-adaptive-placement-v2",
     title:"Math & ELA Skills Placement",
     questionsPerSubject:20,
     levels:["foundation","4","5","6"],

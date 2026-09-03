@@ -619,7 +619,7 @@ service cloud.firestore {
                             && isOwner(studentId)
                             && request.resource.data.studentId == studentId
                             && request.resource.data.studentVisible == false
-                            && request.resource.data.version == 'math-ela-placement-v1'
+                            && request.resource.data.version == 'math-ela-adaptive-placement-v2'
                             && request.resource.data.enrolledGrade in [4, 5]
                             && request.resource.data.math is map
                             && request.resource.data.ela is map

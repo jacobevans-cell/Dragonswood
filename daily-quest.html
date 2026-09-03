@@ -12,7 +12,7 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
 .status{padding:10px 13px;margin-bottom:10px}.status.good{border-color:#3a9861;color:#c6f6d6}.status.warn{border-color:#bf8839;color:#ffe1a2}.status.bad{border-color:#c24c67;color:#ffc2ce}
 .hero{padding:18px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;background:linear-gradient(100deg,rgba(72,19,126,.7),rgba(4,48,75,.62))}
 .hero h1{font:900 34px Georgia;margin:0;color:#fff2a9}.hero .chapter{color:#dba1ff;font-weight:900;letter-spacing:.8px}.daypill{padding:12px 18px;border:1px solid var(--gold);border-radius:999px;color:var(--gold2);font-weight:900;background:#130b33}
-.sessions{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}.session{padding:18px;position:relative;overflow:hidden}.session h2{margin:0;color:#fff0a4;font:900 25px Georgia}.session .time{font-weight:900;color:#9fe7ff}.session button{width:100%;margin-top:14px;padding:13px;border:0;border-radius:9px;color:white;font-weight:1000;cursor:pointer;background:linear-gradient(90deg,#7b2cd3,#048eb6)}.session.locked{filter:grayscale(.65);opacity:.65}.session.done{border-color:#3cad74}
+.sessions{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}.session{padding:18px;position:relative;overflow:hidden}.session h2{margin:0;color:#fff0a4;font:900 25px Georgia}.session .time{font-weight:900;color:#9fe7ff}.session button{width:100%;margin-top:14px;padding:13px;border:0;border-radius:9px;color:white;font-weight:1000;cursor:pointer;background:linear-gradient(90deg,#7b2cd3,#048eb6)}.benchmark-link{display:block;margin-top:10px;padding:10px 13px;border:1px solid #6b8fc7;border-radius:9px;color:#dff6ff;text-align:center;text-decoration:none;font-weight:900;background:#0b3158}.session.locked{filter:grayscale(.65);opacity:.65}.session.done{border-color:#3cad74}
 .map{margin-top:12px;padding:14px}.maptrack{display:flex;gap:7px;overflow:auto;padding:8px 2px}.node{min-width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#130d35;border:1px solid #493277;color:#8f84a8;font-size:10px;font-weight:900}.node.today{background:linear-gradient(145deg,#7529d0,#0787b2);border-color:#ffe17e;color:white;box-shadow:0 0 15px #9f4cff88}.node.past{background:#11302a;color:#85eab1;border-color:#378361}.node.future{filter:blur(.1px)}
 #playModal{position:fixed;inset:0;background:#000c;z-index:50;display:none;align-items:center;justify-content:center;padding:12px}#playModal.show{display:flex}.play{width:min(1080px,98vw);height:min(800px,96vh);padding:14px;overflow:auto;position:relative}.playhead{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border-bottom:1px solid #5d4289;padding-bottom:10px}.playhead h2{margin:0;color:var(--gold2);font-family:Georgia}.close{background:#4d2149;color:white;border:1px solid #a94c7b;border-radius:8px;padding:8px 11px;cursor:pointer}.progress{height:10px;background:#040516;border:1px solid #4f347c;border-radius:999px;overflow:hidden;margin:10px 0}.progress>div{height:100%;background:linear-gradient(90deg,#7d31d7,#00bde8);width:0}.taskmeta{display:flex;justify-content:space-between;gap:12px;color:#bdb2d0;font-size:11px;font-weight:900}.arena{min-height:470px;margin-top:12px;padding:18px;border:1px solid #493273;border-radius:13px;background:linear-gradient(180deg,rgba(8,9,37,.86),rgba(4,11,28,.9));position:relative;overflow:hidden}.prompt{font-size:22px;font-weight:900;text-align:center;margin:4px auto 18px;max-width:820px}.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:800px;margin:auto}.choice{padding:15px;border-radius:10px;border:1px solid #57408a;background:#171039;color:white;font-weight:900;cursor:pointer}.choice:hover{border-color:#37c8f3}.choice.good{background:#174b34;border-color:#63e69b}.choice.bad{background:#531b32;border-color:#ff7696}
 .feedback{text-align:center;min-height:30px;font-weight:900;margin-top:12px}.feedback.good{color:var(--good)}.feedback.bad{color:var(--bad)}
@@ -82,7 +82,7 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
 .answer-bank-choice:hover,.answer-bank-choice.selected{outline:2px solid #65dfff;background:#25245a}
 @media(max-width:620px){.answer-bank-options{grid-template-columns:1fr}}
 </style>
-<script src="pet-registry-v5614.js"></script><script src="dragonswood-rpg-v56.js"></script><script src="pet-motion-controller.js"></script><script src="q1-curriculum-data.js?v=59.1.0"></script>
+<script src="pet-registry-v5614.js"></script><script src="dragonswood-rpg-v56.js"></script><script src="pet-motion-controller.js"></script><script src="q1-curriculum-data.js?v=59.1.0"></script><script src="morning-benchmark-data.js?v=59.2.0"></script>
 <link rel="stylesheet" href="v33-integration/css/direct-visual-v11.css?v=1.1"><script defer src="dragonswood-immersive-ui.js?v=1.0.0"></script></head><body>
 <div class="shell">
   <header class="glass top"><div><div class="brand"><img src="v33-integration/assets/branding/dragonswood-mascot-crest.png" alt="Dragonswood volleyball dragon crest" style="width:38px;height:38px;object-fit:contain;vertical-align:middle;margin-right:8px"><span style="color:#f7c94f;background:linear-gradient(180deg,#fff9d8 0%,#ffe99a 27%,#f8ca50 58%,#ffe99a 82%,#dfa12a 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 1px 0 rgba(116,67,8,.95)) drop-shadow(0 2px 1px rgba(22,5,34,.95)) drop-shadow(0 0 5px rgba(255,216,91,.16));letter-spacing:.3px">DRAGONSWOOD • DAILY QUEST</span></div><div class="sub" id="account">Opening the quest gate…</div></div><a class="back" href="index.html#quests">← DAILY MISSIONS</a></header>
@@ -101,15 +101,15 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
   </section>
   <div class="levelup-mode" id="levelUpBanner" style="display:none">⭐ OPTIONAL LEVEL-UP CHALLENGE<small>This does not replace your assigned Daily Mission. It is extra practice one level higher.</small></div>
   <section class="quest-level" id="questLevelCard"><div><small>YOUR DAILY QUEST LEVEL</small><b id="trackLabel">TRACK: —</b></div><span id="trackDesc">Your teacher can change this level from Manage Student.</span></section>
-  <section class="glass dq-progress-summary">
+  <section class="glass dq-progress-summary" id="dailyProgressSummary">
     <div><small>✅ DAILY WORK DAYS COMPLETE</small><b><span id="dqDaysComplete">0</span> / 180</b></div>
     <div><small>TODAY</small><b id="dqTodayComplete">Not complete yet</b><span>Assigned Morning Work or Level-Up Morning Work counts.</span></div>
   </section>
   <section class="sessions">
-    <article class="glass session" id="morningCard"><div class="chapter">🌅 UNIFIED MORNING WORK</div><h2>Morning Adventure</h2><div class="time">≈ 25 minutes • 30 questions</div><p>Yesterday’s learning, spaced review, personalized support, and a small challenge—with Visual Coach help.</p><button id="morningBtn">ENTER MORNING WORK</button></article>
+    <article class="glass session" id="morningCard"><div class="chapter" id="morningCardChapter">🌅 UNIFIED MORNING WORK</div><h2 id="morningCardTitle">Morning Adventure</h2><div class="time" id="morningCardTime">≈ 25 minutes • 30 questions</div><p id="morningCardDesc">Yesterday’s learning, spaced review, personalized support, and a small challenge—with Visual Coach help.</p><button id="morningBtn">ENTER MORNING WORK</button><a class="benchmark-link" id="benchmarkLink" href="daily-quest.html?benchmark=q1">Q1 LEARNING BENCHMARK • 30 QUESTIONS</a></article>
   </section>
-  <section class="glass map"><b>🗺️ 180-DAY DRAGONSWOOD JOURNEY</b><div class="maptrack" id="maptrack"></div></section>
-  <section class="glass calendar-countdowns"><b>⏳ SCHOOL-YEAR COUNTDOWNS</b><div class="countdown-grid" id="dqCountdowns"></div></section>
+  <section class="glass map" id="journeyMap"><b>🗺️ 180-DAY DRAGONSWOOD JOURNEY</b><div class="maptrack" id="maptrack"></div></section>
+  <section class="glass calendar-countdowns" id="countdownPanel"><b>⏳ SCHOOL-YEAR COUNTDOWNS</b><div class="countdown-grid" id="dqCountdowns"></div></section>
 </div>
 
 <div id="playModal"><section class="glass play">
@@ -138,6 +138,7 @@ import {getAuth,onAuthStateChanged,connectAuthEmulator} from "https://www.gstati
 import {getFirestore,doc,getDoc,getDocs,setDoc,writeBatch,collection,serverTimestamp,query,where,onSnapshot,connectFirestoreEmulator} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 import {getFunctions,httpsCallable,connectFunctionsEmulator} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-functions.js";
 const DW_V33_PARAMS=new URLSearchParams(location.search),DW_V33_ENV=DW_V33_PARAMS.get("dw-env")||"production",DW_V33_EMULATOR=DW_V33_ENV==="emulator";
+const DW_BENCHMARK_MODE=DW_V33_PARAMS.get("benchmark")==="q1";
 const firebaseConfig=DW_V33_EMULATOR
   ? {apiKey:"demo-key",authDomain:"demo-dragonswood-v33.localhost",projectId:"demo-dragonswood-v33",storageBucket:"demo-dragonswood-v33.appspot.com",messagingSenderId:"000000000000",appId:"1:000000000000:web:demo-v33"}
   : {"apiKey":"AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE","authDomain":"dragonswood-9289e.firebaseapp.com","projectId":"dragonswood-9289e","storageBucket":"dragonswood-9289e.firebasestorage.app","messagingSenderId":"1064477064695","appId":"1:1064477064695:web:283e1016ee2303d39042f2","measurementId":"G-LPRLDGVBD2"};
@@ -162,7 +163,7 @@ let testerAccountUnsub=null,testerControlsUnsub=null;
 let dwDailyOverrideUnsub=null,dwDailyOverrideRows=[],dwLastStudentAnswer="",dwDailyReviewRevisionStates={};
 const dwRejectedQuestionKeys=new Set(),dwOverrideAppliedKeys=new Set();
 window.addEventListener("dw:narration-voice-change",async e=>{const voiceId=e.detail?.voiceId||"automatic";if(!user||profile?.narrationVoice===voiceId)return;profile={...(profile||{}),narrationVoice:voiceId};try{await setDoc(doc(db,"students",user.uid),{narrationVoice:voiceId,updatedAt:serverTimestamp()},{merge:true})}catch(err){console.warn("Could not sync narration preference",err)}});
-let activeSeconds=0,idleEvents=0,perQuestionSeconds=[],questionStartedAt=0,lastInteractionAt=0,idleAnnounced=false,activeTimer=null,skillStats={},needsReteach=new Set(),retryKeys=new Set();
+let activeSeconds=0,idleEvents=0,perQuestionSeconds=[],questionStartedAt=0,lastInteractionAt=0,idleAnnounced=false,activeTimer=null,skillStats={},standardStats={},needsReteach=new Set(),retryKeys=new Set();
 let sessionProgress=null,morningProgress=null,dqProgressRows=[],dqProgressUnsub=null,dqCompletedDates=new Set();
 function dateKey(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
 
@@ -5997,7 +5998,7 @@ function dwMorningPriorPools(day,gradeCode,subject){
 function dwMorningRemediationSpecs(day,subject,allowed){
  const bySkill=new Map();for(const spec of allowed)if(!bySkill.has(spec.skillId))bySkill.set(spec.skillId,spec);
  const ids=[],seen=new Set(),add=id=>{id=String(id||"");if(!seen.has(id)&&bySkill.has(id)){seen.add(id);ids.push(id)}};
- const history=[...(dqProgressRows||[])].filter(row=>row?.session==="morning"&&Number(row.day||0)<day).sort((a,b)=>Number(b.day||0)-Number(a.day||0));
+ const history=[...(dqProgressRows||[])].filter(row=>(row?.session==="morning"&&Number(row.day||0)<day)||(row?.session==="benchmark_q1"&&row?.status==="complete")).sort((a,b)=>Number(b.day||0)-Number(a.day||0));
  for(const row of history){for(const id of row.needsReteach||[])add(id);for(const [id,stat] of Object.entries(row.skills||{})){const total=Number(stat?.seen||0),right=Number(stat?.correct||0);if(total>0&&right/total<.75)add(id)}}
  return ids.map(id=>bySkill.get(id)).filter(spec=>(subject==="Math"?/^math\./:/^(ela|writing|morph|curric)\./).test(spec.skillId));
 }
@@ -6022,6 +6023,30 @@ function dwBuildPacingLesson(base){
  const track=resolvedTrack(),trackName=track==="foundation"?"GRADE-LEVEL SUPPORT":track==="challenge"?"⭐ GRADE-LEVEL DEPTH":gradeCode==="K"?"5TH GRADE":"4TH GRADE",mathAnchor=math.find(x=>x.sourceKind==="previous"),elaAnchor=ela.find(x=>x.sourceKind==="previous"),fingerprint=hashNumSafe(morning.map(x=>`${x.subject}|${x.skillId}|${x.sourceDay}|${x.sourceKind}|${JSON.stringify(x.questionParams)}`).join("||"));
  return {...base,track,trackName,pacingGrade:gradeCode,pacingLocked:true,morningPlanVersion:DW_MORNING_PLAN_VERSION,morningPlanFingerprint:`${DW_MORNING_PLAN_VERSION}-${fingerprint}`,title:`${base.chapterIcon||"📜"} Day ${day}: Prior Learning Practice`,mathSkill:mathAnchor?.skill||"Grade-level Math review",elaSkill:elaAnchor?.skill||"Grade-level ELA review",morning};
 }
+function dwBuildBenchmarkLesson(base){
+ const gradeCode=String(profile?.grade||"4")==="5"?"K":"I",form=window.DW_MORNING_BENCHMARKS?.forms?.[gradeCode];
+ if(!form)throw new Error(`No Q1 benchmark is available for grade ${gradeCode}.`);
+ const makeTask=(spec,subject,index,pool)=>({
+  subject,skillId:spec.skillId,skill:dwLabelOf(spec.skillId),standardId:spec.standard,sourceDocumentId:spec.sourceDocumentId,
+  firstTaughtDay:Number(spec.firstTaughtDay||0),sourceDay:Number(spec.firstTaughtDay||0),sourceKind:"benchmark",gradeLevel:Number(form.gradeLevel),
+  engine:DW_PACING_ENGINES[(index+(subject==="ELA"?2:0))%DW_PACING_ENGINES.length],count:1,seed:910003+Number(form.gradeLevel)*10007+index*7919,
+  questionParams:{...(spec.questionParams||{}),grade:Number(form.gradeLevel),difficulty:"benchmark"},pacingLocked:true,
+  pacingItemId:`BENCH-${gradeCode}-${subject}-${index+1}`,pacingRequirement:`${spec.standard} • ${dwLabelOf(spec.skillId)}`,pacingStrand:"Q1 Arizona standards benchmark",
+  remediationStatus:"benchmark",substitutionReason:"Q1 pacing-guide and Arizona standards benchmark",
+  alternateSkillIds:pool.map(x=>x.skillId).filter((id,i,a)=>id!==spec.skillId&&a.indexOf(id)===i).slice(0,8)
+ });
+ const math=form.math.map((x,i)=>makeTask(x,"MATH",i,form.math)),ela=form.ela.map((x,i)=>makeTask(x,"ELA",i,form.ela)),morning=[];
+ for(let i=0;i<15;i++)morning.push(math[i],ela[i]);
+ const version=window.DW_MORNING_BENCHMARKS.version,fingerprint=hashNumSafe(morning.map(x=>`${x.standardId}|${x.skillId}|${JSON.stringify(x.questionParams)}`).join("||"));
+ return {...base,chapter:"Q1 LEARNING BENCHMARK",chapterIcon:"📊",title:form.title,track:gradeCode,trackName:`GRADE ${form.gradeLevel} BENCHMARK`,pacingGrade:gradeCode,pacingLocked:true,
+  morningPlanVersion:version,morningPlanFingerprint:`${version}-${fingerprint}`,mathSkill:"Q1 Arizona Math standards",elaSkill:"Q1 Arizona ELA standards",morning};
+}
+function dwValidateBenchmarkLesson(L){
+ const all=[...(L?.morning||[])];
+ if(all.length!==30||all.filter(x=>x.subject==="MATH").length!==15||all.filter(x=>x.subject==="ELA").length!==15)throw new Error("The Q1 benchmark must contain 15 Math and 15 ELA questions.");
+ for(const t of all){if(!t.standardId||!DW_SKILLS[t.skillId])throw new Error(`Unmapped benchmark task: ${t.pacingItemId||"unknown"}`);let q=null;for(let attempt=0;attempt<30&&!q;attempt++){const cand=makeQ({...t,seed:Number(t.seed||1)+attempt*9973},attempt*17);if(cand?.source==="registry"&&dwValidQuestion(cand))q=cand}if(!q)throw new Error(`Ungradable benchmark task: ${t.standardId}`)}
+ dwValidateMorningSequence(all);return L;
+}
 function dwValidatePacingLesson(L){
  const all=[...(L?.morning||[])],count=(field,value)=>all.filter(x=>x[field]===value).length;
  if(!L?.pacingLocked||all.length!==30)throw new Error("Morning Work must contain exactly 30 verified questions.");
@@ -6031,6 +6056,7 @@ function dwValidatePacingLesson(L){
  dwValidateMorningSequence(all);return L
 }
 function makeTrackLesson(base){
+ if(DW_BENCHMARK_MODE)return dwValidateBenchmarkLesson(dwBuildBenchmarkLesson(base));
  if(isLevelUpMode()){const track=resolvedTrack();if(track==='4')return dwValidatePacingLesson(dwBuildPacingLesson(base));const elevated=dwTrackLesson(track,Math.max(1,Number(base.day||1)),base,DW_PACING_ENGINES);if(!elevated)throw new Error(`No level-up lesson is available for ${track}, day ${base.day}.`);return elevated}
  return dwValidatePacingLesson(dwBuildPacingLesson(base))
 }
@@ -6061,7 +6087,13 @@ function renderSchoolCountdowns(){
 }
 
 function renderAccount(){if(!profile)return;$("lvl").textContent=level(Number(profile.xp||0));$("pxp").textContent=Number(profile.xp||0).toLocaleString();$("hp").textContent=Number(profile.hp||0);$("gold").textContent=Number(profile.gold||0).toLocaleString();$("dxp").textContent=`${dailyXp(profile)} / ${CAP}`;$("account").innerHTML=`Connected as <b>${profile.firstName||user?.email||"Adventurer"}</b>${Number(profile.hp||0)<=0?" • 💀 KNOCKED OUT":""}`;}
-function renderLesson(){if(!lesson)return;$("journey").textContent=`${lesson.day} / 180`;$("chapter").textContent=`${lesson.chapterIcon} ${lesson.chapter.toUpperCase()}`;$("title").textContent=lesson.title;$("skills").textContent=`Math: ${dwCleanLabel(lesson.mathSkill)} • ELA: ${dwCleanLabel(lesson.elaSkill)}`;$("datepill").textContent=`DAY ${lesson.day} • ${lesson.date}`;renderMap();}
+function applyQuestModeCopy(){
+ if(!DW_BENCHMARK_MODE)return;
+ $("morningCardChapter").textContent="📊 PACING + ARIZONA STANDARDS";$("morningCardTitle").textContent="Q1 Learning Benchmark";$("morningCardTime").textContent="≈ 25 minutes • 30 questions";
+ $("morningCardDesc").textContent="15 Math and 15 ELA questions matched to the Grade 4 or Grade 5 Q1 pacing guide. Results personalize future Morning Work only after each skill has been taught.";
+ $("benchmarkLink").style.display="none";$("dailyProgressSummary").style.display="none";$("journeyMap").style.display="none";$("countdownPanel").style.display="none";
+}
+function renderLesson(){if(!lesson)return;$("journey").textContent=DW_BENCHMARK_MODE?`GRADE ${lesson.pacingGrade==="K"?5:4}`:`${lesson.day} / 180`;$("chapter").textContent=`${lesson.chapterIcon} ${lesson.chapter.toUpperCase()}`;$("title").textContent=lesson.title;$("skills").textContent=`Math: ${dwCleanLabel(lesson.mathSkill)} • ELA: ${dwCleanLabel(lesson.elaSkill)}`;$("datepill").textContent=DW_BENCHMARK_MODE?"Q1 • 30 QUESTIONS":`DAY ${lesson.day} • ${lesson.date}`;applyQuestModeCopy();if(!DW_BENCHMARK_MODE)renderMap();}
 function renderMap(){
  const now=lesson?.day||1;let s="";
  const completedDays=new Set(
@@ -6126,10 +6158,10 @@ async function saveProgress(extra={}){
     totalTasks:live.totalTasks,completedTasks:live.completedTasks,totalQuestions:live.totalQuestions,completedQuestions:live.completedQuestions,progressPercent:live.progressPercent,
     score:Number(score||0),correct:Number(correct||0),attempts:Math.min(60,Number(attempts||0)),
     mathSkill:String(lesson.mathSkill||""),elaSkill:String(lesson.elaSkill||""),
-    skills:skillStats,needsReteach:[...needsReteach],activeSeconds:Number(activeSeconds||0),idleEvents:Number(idleEvents||0),perQuestionSeconds:perQuestionSeconds.slice(0,60),
-    planVersion:DW_MORNING_PLAN_VERSION,planFingerprint:sessionPlanFingerprint||lesson.morningPlanFingerprint,taskPlan:tasks.slice(0,60).map(t=>({...t})),
+    skills:skillStats,standards:standardStats,needsReteach:[...needsReteach],activeSeconds:Number(activeSeconds||0),idleEvents:Number(idleEvents||0),perQuestionSeconds:perQuestionSeconds.slice(0,60),
+    planVersion:lesson.morningPlanVersion||DW_MORNING_PLAN_VERSION,planFingerprint:sessionPlanFingerprint||lesson.morningPlanFingerprint,taskPlan:tasks.slice(0,60).map(t=>({...t})),
     reviewRevisionStates:dwDailyReviewRevisionStates,
-    sequenceAudit:tasks.slice(0,60).map(t=>({subject:String(t.subject||""),skillId:String(t.skillId||""),sourceDate:String(t.sourceDate||lesson.date||""),sourceDay:Number(t.sourceDay||0),sourceKind:String(t.sourceKind||""),gradeLevel:Number(t.gradeLevel||0),remediationStatus:String(t._isRetry?"retry":t.remediationStatus||"none"),substitutionReason:String(t._isRetry?"missed item; delayed differently structured retry":t.substitutionReason||"prior learning target"),interaction:String(t.engine||"choice")})),
+    sequenceAudit:tasks.slice(0,60).map(t=>({subject:String(t.subject||""),skillId:String(t.skillId||""),standardId:String(t.standardId||""),sourceDocumentId:String(t.sourceDocumentId||""),firstTaughtDay:Number(t.firstTaughtDay||0),sourceDate:String(t.sourceDate||lesson.date||""),sourceDay:Number(t.sourceDay||0),sourceKind:String(t.sourceKind||""),gradeLevel:Number(t.gradeLevel||0),remediationStatus:String(t._isRetry?"retry":t.remediationStatus||"none"),substitutionReason:String(t._isRetry?"missed item; delayed differently structured retry":t.substitutionReason||"prior learning target"),interaction:String(t.engine||"choice")})),
     updatedAt:serverTimestamp(),...extra
   };
   // Save locally FIRST so refresh cannot erase the student's place while Firestore is writing.
@@ -6140,18 +6172,20 @@ async function saveProgress(extra={}){
 }
 async function refreshSessionCards(){
   if(!lesson||!user)return;
-  morningProgress=await readProgress("morning");
+  const progressSession=DW_BENCHMARK_MODE?"benchmark_q1":"morning";
+  morningProgress=await readProgress(progressSession);
   const decorate=(card,btn,p,label)=>{
     card.classList.remove("done");
     if(p?.status==="complete"){card.classList.add("done");btn.textContent=`REPLAY ${label} ✓`}
     else if(p&&(Number(p.taskIndex||0)>0||Number(p.qIndex||0)>0||Number(p.attempts||0)>0))btn.textContent=`RESUME ${label}`;
     else btn.textContent=`ENTER ${label}`;
   };
-  decorate($("morningCard"),$("morningBtn"),morningProgress,"MORNING WORK");
+  decorate($("morningCard"),$("morningBtn"),morningProgress,DW_BENCHMARK_MODE?"Q1 BENCHMARK":"MORNING WORK");
   postDailyMissionState();
 }
 
 function postDailyMissionState(available=true){
+ if(DW_BENCHMARK_MODE)return;
  if(DW_V33_PARAMS.get("dwEmbed")!=="1"||window.parent===window)return;
  const stateOf=p=>p?.status==="complete"?"complete":p?.status==="in_progress"?"in_progress":"not_started";
  window.parent.postMessage({channel:"dw-v33-module",type:"daily-mission-state",available,dateKey:lesson?.date||dateKey(),morning:stateOf(morningProgress)},location.origin);
@@ -6186,12 +6220,14 @@ function watchDailyQuestProgress(){
  );
 }
 function localPreviewQuest(key){const start=new Date("2026-08-24T12:00:00-07:00"),target=new Date(`${key}T12:00:00-07:00`);let day=0;for(let cursor=new Date(start);cursor<=target;cursor.setDate(cursor.getDate()+1)){const weekday=cursor.getDay();if(weekday>=1&&weekday<=5)day++}return {date:key,day:Math.max(1,day),chapter:"Local School-Day Preview",chapterIcon:"📜",morningXp:0,gold:0}}
-async function loadToday(){let key=dateKey();const isTeacher=String(user?.email||"").toLowerCase()===TEACHER,localHost=["localhost","127.0.0.1"].includes(location.hostname),params=new URLSearchParams(location.search);const q=params.get("date"),validPreviewDate=/^\d{4}-\d{2}-\d{2}$/.test(String(q||"")),safeTesterPreview=params.get("dw-safe-preview")==="1"&&testerSession.isTester===true;localPreviewMode=validPreviewDate&&(localHost||safeTesterPreview);if((isTeacher||localPreviewMode)&&validPreviewDate)key=q;try{try{const history=await getDocs(query(collection(db,"dailyQuestProgress"),where("studentId","==",user.uid)));dqProgressRows=history.docs.map(d=>({id:d.id,...d.data()}))}catch(e){console.warn("reteach history",e)}let snap;try{snap=await getDoc(doc(db,"dailyQuests",key))}catch(err){if(!localHost||!localPreviewMode)throw err;console.warn("Using bundled local school-day preview",err);snap={exists:()=>true,data:()=>localPreviewQuest(key)}}if(!snap.exists()){status("No student quest is scheduled for this date.","warn");$("morningCard").classList.add("locked");$("morningBtn").disabled=true;postDailyMissionState(false);return}lesson=makeTrackLesson(snap.data());renderLesson();$("trackLabel").textContent=(isLevelUpMode()?"LEVEL-UP: ":"TRACK: ")+lesson.trackName;
+async function loadToday(){let key=dateKey();const isTeacher=String(user?.email||"").toLowerCase()===TEACHER,localHost=["localhost","127.0.0.1"].includes(location.hostname),params=new URLSearchParams(location.search);const q=params.get("date"),validPreviewDate=/^\d{4}-\d{2}-\d{2}$/.test(String(q||"")),safeTesterPreview=params.get("dw-safe-preview")==="1"&&testerSession.isTester===true;localPreviewMode=validPreviewDate&&(localHost||safeTesterPreview);if((isTeacher||localPreviewMode)&&validPreviewDate)key=q;try{try{const history=await getDocs(query(collection(db,"dailyQuestProgress"),where("studentId","==",user.uid)));dqProgressRows=history.docs.map(d=>({id:d.id,...d.data()}))}catch(e){console.warn("reteach history",e)}let snap;try{snap=await getDoc(doc(db,"dailyQuests",key))}catch(err){if(!DW_BENCHMARK_MODE&&(!localHost||!localPreviewMode))throw err;console.warn("Using bundled quest shell",err);snap={exists:()=>true,data:()=>localPreviewQuest(key)}}if(!snap.exists()&&DW_BENCHMARK_MODE)snap={exists:()=>true,data:()=>localPreviewQuest(key)};if(!snap.exists()){status("No student quest is scheduled for this date.","warn");$("morningCard").classList.add("locked");$("morningBtn").disabled=true;postDailyMissionState(false);return}lesson=makeTrackLesson(snap.data());renderLesson();$("trackLabel").textContent=(isLevelUpMode()?"LEVEL-UP: ":"TRACK: ")+lesson.trackName;
 const lub=$("levelUpBanner");if(lub)lub.style.display=isLevelUpMode()?"block":"none";
-const td=$("trackDesc");if(td)td.textContent=isLevelUpMode()
+const td=$("trackDesc");if(td)td.textContent=DW_BENCHMARK_MODE
+  ? "Q1 pacing-guide benchmark • Arizona standards tagged • no RPG reward"
+  : isLevelUpMode()
   ? (lesson.track==="challenge"?"Optional enrichment • Early–Mid 6th Grade":lesson.track==="foundation"?"Optional fourth-grade level-up work":"Optional fifth-grade challenge work")
   : (lesson.track==="challenge"?"Grade-level review with a small deeper-thinking finish":lesson.track==="5"?"Fifth-grade prior-learning practice":lesson.track==="foundation"?"Grade-level practice with extra scaffolding":"Fourth-grade prior-learning practice");
-const mini=$("trackLabelMini");if(mini)mini.textContent=`TRACK: ${lesson.trackName}`;await refreshSessionCards();status(localPreviewMode?`🧪 SAFE DATE PREVIEW • Showing ${key} • Progress, scores, XP, and Gold will not be written.`:Number(profile.hp||0)<=0?"💀 You may complete today's academics, but knocked-out players earn no Player XP or Gold until revival.":"Today's quest is unlocked. Future quests remain sealed by Dragonswood server time.","good");}catch(err){console.error(err);status("Today’s quest is still sealed. Make sure you are signed in and today’s assignment is open.","bad");$("morningBtn").disabled=true;postDailyMissionState(false)}}
+const mini=$("trackLabelMini");if(mini)mini.textContent=`TRACK: ${lesson.trackName}`;await refreshSessionCards();status(DW_BENCHMARK_MODE?"Q1 benchmark ready. It records standards evidence and awards no XP or Gold.":localPreviewMode?`🧪 SAFE DATE PREVIEW • Showing ${key} • Progress, scores, XP, and Gold will not be written.`:Number(profile.hp||0)<=0?"💀 You may complete today's academics, but knocked-out players earn no Player XP or Gold until revival.":"Today's quest is unlocked. Future quests remain sealed by Dragonswood server time.","good");}catch(err){console.error(err);status(DW_BENCHMARK_MODE?"The Q1 benchmark could not be opened.":"Today’s quest is still sealed. Make sure you are signed in and today’s assignment is open.","bad");$("morningBtn").disabled=true;postDailyMissionState(false)}}
 onAuthStateChanged(auth,async u=>{
  testerAccountUnsub?.();testerControlsUnsub?.();testerAccountUnsub=testerControlsUnsub=null;
  user=u;testerSession=Tester.normalizeTester(u?.uid||'',null);testerControls={};testerMorningOverride=false;
@@ -6218,11 +6254,16 @@ function dwValidFrozenMorningPlan(progress){
  if(core.some(t=>!DW_SKILLS[t.skillId]||Number(t.sourceDay||0)>=Number(lesson?.day||1)))return false;
  try{dwValidateMorningSequence(core);return true}catch(_){return false}
 }
+function dwValidFrozenBenchmarkPlan(progress){
+ const plan=progress?.taskPlan,core=Array.isArray(plan)?plan.filter(t=>!t?._isRetry):[];
+ if(progress?.status!=="in_progress"||progress?.planVersion!==window.DW_MORNING_BENCHMARKS?.version||!Array.isArray(plan)||plan.length<30||plan.length>32||core.length!==30)return false;
+ return core.filter(t=>t.subject==="MATH").length===15&&core.filter(t=>t.subject==="ELA").length===15&&core.every(t=>t.standardId&&DW_SKILLS[t.skillId]);
+}
 function dwCloneTaskPlan(plan){return plan.map(t=>({...t,questionParams:t.questionParams?{...t.questionParams}:null,alternateSkillIds:Array.isArray(t.alternateSkillIds)?[...t.alternateSkillIds]:[]}))}
 async function startSession(){
-  sessionName="morning";watchDailyQuestionOverrides(user?.uid);dwInstallDailyReviewUI();
-  sessionProgress=await readProgress("morning");
-  const frozen=dwValidFrozenMorningPlan(sessionProgress);
+  sessionName=DW_BENCHMARK_MODE?"benchmark_q1":"morning";watchDailyQuestionOverrides(user?.uid);dwInstallDailyReviewUI();
+  sessionProgress=await readProgress(sessionName);
+  const frozen=DW_BENCHMARK_MODE?dwValidFrozenBenchmarkPlan(sessionProgress):dwValidFrozenMorningPlan(sessionProgress);
   tasks=frozen?dwCloneTaskPlan(sessionProgress.taskPlan):dwCloneTaskPlan(lesson.morning);
   sessionPlanFingerprint=frozen?String(sessionProgress.planFingerprint||lesson.morningPlanFingerprint):String(lesson.morningPlanFingerprint||"");
   dwValidateMorningSequence(tasks.filter(t=>!t._isRetry));
@@ -6232,11 +6273,11 @@ async function startSession(){
     taskIndex=Math.max(0,Number(sessionProgress.taskIndex||0));qIndex=Math.max(0,Number(sessionProgress.qIndex||0));
     score=Math.max(0,Number(sessionProgress.score||0));correct=Math.max(0,Number(sessionProgress.correct||0));attempts=Math.max(0,Number(sessionProgress.attempts||0));
   }else{taskIndex=0;qIndex=0;score=0;correct=0;attempts=0}
-  skillStats=sessionProgress?.skills||{};needsReteach=new Set(sessionProgress?.needsReteach||[]);activeSeconds=Number(sessionProgress?.activeSeconds||0);idleEvents=Number(sessionProgress?.idleEvents||0);perQuestionSeconds=Array.isArray(sessionProgress?.perQuestionSeconds)?sessionProgress.perQuestionSeconds:[];dwDailyReviewRevisionStates=sessionProgress?.reviewRevisionStates&&typeof sessionProgress.reviewRevisionStates==="object"?sessionProgress.reviewRevisionStates:{};retryKeys=new Set();
+  skillStats=sessionProgress?.skills||{};standardStats=sessionProgress?.standards||{};needsReteach=new Set(sessionProgress?.needsReteach||[]);activeSeconds=Number(sessionProgress?.activeSeconds||0);idleEvents=Number(sessionProgress?.idleEvents||0);perQuestionSeconds=Array.isArray(sessionProgress?.perQuestionSeconds)?sessionProgress.perQuestionSeconds:[];dwDailyReviewRevisionStates=sessionProgress?.reviewRevisionStates&&typeof sessionProgress.reviewRevisionStates==="object"?sessionProgress.reviewRevisionStates:{};retryKeys=new Set();
   sessionStart=Date.now();
   questionStartedAt=Date.now();startActiveTimer();
-  $("playTitle").textContent="🌅 Morning Adventure";
-  $("playSub").textContent=`Day ${lesson.day} • ${dwCleanLabel(lesson.mathSkill)} + ${dwCleanLabel(lesson.elaSkill)}`;
+  $("playTitle").textContent=DW_BENCHMARK_MODE?"📊 Q1 Learning Benchmark":"🌅 Morning Adventure";
+  $("playSub").textContent=DW_BENCHMARK_MODE?`Grade ${lesson.pacingGrade==="K"?5:4} • 15 Math + 15 ELA • Arizona standards`:`Day ${lesson.day} • ${dwCleanLabel(lesson.mathSkill)} + ${dwCleanLabel(lesson.elaSkill)}`;
   $("playModal").classList.add("show");
   await saveProgress({status:"in_progress",startedAt:serverTimestamp()});
   renderCurrent();
@@ -6341,9 +6382,10 @@ function watchDailyQuestionOverrides(uid){
 
 function totalQuestions(){return tasks.reduce((n,t)=>n+t.count,0)}
 function completedBefore(){let n=0;for(let i=0;i<taskIndex;i++)n+=tasks[i].count;return n+qIndex}
-function updateRun(){const done=completedBefore(),tot=totalQuestions();$("prog").style.width=`${Math.min(100,done/tot*100)}%`;$("runStats").textContent=`High Score ${score.toLocaleString()} • ${attempts?Math.round(correct/attempts*100):100}%`;const t=tasks[taskIndex];if(t)$("taskMeta").textContent=`${t.subject} • ${dwCleanLabel(currentQuestion?.label||t.skill)} • ${engineName(t.engine)} • ${qIndex+1}/${t.count}`}
+function updateRun(){const done=completedBefore(),tot=totalQuestions();$("prog").style.width=`${Math.min(100,done/tot*100)}%`;$("runStats").textContent=`High Score ${score.toLocaleString()} • ${attempts?Math.round(correct/attempts*100):100}%`;const t=tasks[taskIndex];if(t)$("taskMeta").textContent=`${t.subject} • ${t.standardId?`${t.standardId} • `:""}${dwCleanLabel(currentQuestion?.label||t.skill)} • ${engineName(t.engine)} • ${qIndex+1}/${t.count}`}
 function engineName(e){return ({choice:"Rune Choice",dragSort:"Drag & Drop",catcher:"Answer Catcher",tower:"Siege the Tower",ranger:"Ranger Shot",potion:"Potion Lab",bridge:"Bridge Builder",dragonGate:"Dragon Gates",rune:"Rune Lock",crystal:"Crystal Match",smash:"Smash the Wall"})[e]||e}
 function currentSkillId(){const t=tasks[taskIndex]||{};return String(currentQuestion?.skillId||t.skillId||(typeof dwSkillIdForLabel==="function"?dwSkillIdForLabel(t.skill):"")||t.skill||"unknown")}
+function currentStandardId(){return String(tasks[taskIndex]?.standardId||"")}
 function queueRetry(skillId){
  const t=tasks[taskIndex],key=skillId+"|"+qSignature(currentQuestion);if(!t||t._isRetry||retryKeys.has(key)||retryKeys.size>=2)return;
  retryKeys.add(key);const retry={...t,count:1,seed:Number(t.seed||1)+700001+retryKeys.size*9973,_isRetry:true,skillId,_retryForKey:key};
@@ -6353,10 +6395,10 @@ function queueRetry(skillId){
  tasks.splice(insertAt,0,retry);questionPlan.splice(insertAt,0,[q||makeQ(retry,91)]);
 }
 function award(ok){
- attempts++;markActive();const skillId=currentSkillId(),row=skillStats[skillId]||{seen:0,correct:0};if(!currentQuestionSeen){row.seen++;currentQuestionSeen=true}
- if(ok){correct++;if(!currentQuestionCorrect){row.correct++;currentQuestionCorrect=true}score+=100+Math.max(0,50-Math.floor((Date.now()-sessionStart)/10000));feedback("Correct! ✨","good");if(tasks[taskIndex]?._isRetry){for(let i=tasks.length-1;i>taskIndex;i--)if(tasks[i]?._isRetry&&String(tasks[i].skillId||"")===skillId){tasks.splice(i,1);questionPlan.splice(i,1)}}}
+ attempts++;markActive();const skillId=currentSkillId(),standardId=currentStandardId(),row=skillStats[skillId]||{seen:0,correct:0},standardRow=standardId?(standardStats[standardId]||{seen:0,correct:0}):null;if(!currentQuestionSeen){row.seen++;if(standardRow)standardRow.seen++;currentQuestionSeen=true}
+ if(ok){correct++;if(!currentQuestionCorrect){row.correct++;if(standardRow)standardRow.correct++;currentQuestionCorrect=true}score+=100+Math.max(0,50-Math.floor((Date.now()-sessionStart)/10000));feedback("Correct! ✨","good");if(tasks[taskIndex]?._isRetry){for(let i=tasks.length-1;i>taskIndex;i--)if(tasks[i]?._isRetry&&String(tasks[i].skillId||"")===skillId){tasks.splice(i,1);questionPlan.splice(i,1)}}}
   else{dwRejectedQuestionKeys.add(dwDailyQuestionKey());dwRegisterDailyReviewAttempt(dwLastStudentAnswer);score=Math.max(0,score-15);feedback("Not yet. Try again.","bad");const t=tasks[taskIndex];if(t?._isRetry)needsReteach.add(skillId);else queueRetry(skillId)}
- skillStats[skillId]=row;updateRun()
+ skillStats[skillId]=row;if(standardRow)standardStats[standardId]=standardRow;updateRun()
 }
 function feedback(t,c){$("feedback").textContent=t;$("feedback").className=`feedback ${c}`}
 async function advance(){perQuestionSeconds.push(Math.max(0,Math.round((Date.now()-questionStartedAt)/1000)));questionStartedAt=Date.now();currentQuestionSeen=false;currentQuestionCorrect=false;qIndex++;const t=tasks[taskIndex];if(qIndex>=t.count){taskIndex++;qIndex=0}if(taskIndex>=tasks.length){finishSession();return}await saveProgress();setTimeout(renderCurrent,350)}
@@ -6525,7 +6567,7 @@ async function finishSession(){
   const requested=Number(lesson.morningXp??4);
   const claimId=`${user.uid}_${isLevelUpMode()?"levelup":"dailyquest"}_${lesson.date}_${lesson.track||"4"}_${sessionName}`;
   $("prog").style.width="100%";
-  $("arena").innerHTML=`<div class="complete"><h2>QUEST COMPLETE!</h2><div id="questPetCelebration" style="height:190px;max-width:260px;margin:auto"></div><p id="questPetMessage"></p><p>Run Score: <b>${score.toLocaleString()}</b> • Accuracy: <b>${Math.round(acc*100)}%</b></p><div class="loot" id="loot">Inscribing today’s victory…</div><p>Your academic completion is saved even if your RPG character is knocked out.</p></div>`;
+  $("arena").innerHTML=`<div class="complete"><h2>${DW_BENCHMARK_MODE?"BENCHMARK COMPLETE!":"QUEST COMPLETE!"}</h2><div id="questPetCelebration" style="height:190px;max-width:260px;margin:auto"></div><p id="questPetMessage"></p><p>Run Score: <b>${score.toLocaleString()}</b> • Accuracy: <b>${Math.round(acc*100)}%</b></p><div class="loot" id="loot">${DW_BENCHMARK_MODE?"Saving standards evidence…":"Inscribing today’s victory…"}</div><p>${DW_BENCHMARK_MODE?"Your results will support future Morning Work after each skill is taught.":"Your academic completion is saved even if your RPG character is knocked out."}</p></div>`;
   const questPet=[...(window.DWRPG?.pets||[]),...(window.DWRPG?.prestigePets||[])].find(x=>x.id===profile?.activePet);
   if(questPet&&window.DWPetMotion){new DWPetMotion.PetActor($("questPetCelebration"),questPet,{caption:true}).play("celebrate",2600);$("questPetMessage").textContent=`${questPet.name} celebrates your completed quest!`}
 
@@ -6534,9 +6576,9 @@ async function finishSession(){
     mode:progressModeKey(),status:"complete",taskIndex:tasks.length,qIndex:0,score:Number(score||0),correct:Number(correct||0),attempts:Math.min(60,Number(attempts||0)),
     totalTasks:live.totalTasks,completedTasks:live.totalTasks,totalQuestions:live.totalQuestions,completedQuestions:live.totalQuestions,progressPercent:100,
     accuracy:Math.round(acc*100),seconds:elapsed,mathSkill:String(lesson.mathSkill||""),elaSkill:String(lesson.elaSkill||""),
-    skills:skillStats,needsReteach:[...needsReteach],activeSeconds:Number(activeSeconds||0),idleEvents:Number(idleEvents||0),perQuestionSeconds:perQuestionSeconds.slice(0,60),
-    planVersion:DW_MORNING_PLAN_VERSION,planFingerprint:sessionPlanFingerprint||lesson.morningPlanFingerprint,taskPlan:tasks.slice(0,60).map(t=>({...t})),
-    sequenceAudit:tasks.slice(0,60).map(t=>({subject:String(t.subject||""),skillId:String(t.skillId||""),sourceDate:String(t.sourceDate||lesson.date||""),sourceDay:Number(t.sourceDay||0),sourceKind:String(t.sourceKind||""),gradeLevel:Number(t.gradeLevel||0),remediationStatus:String(t._isRetry?"retry":t.remediationStatus||"none"),substitutionReason:String(t._isRetry?"missed item; delayed differently structured retry":t.substitutionReason||"prior learning target"),interaction:String(t.engine||"choice")})),
+    skills:skillStats,standards:standardStats,needsReteach:[...needsReteach],activeSeconds:Number(activeSeconds||0),idleEvents:Number(idleEvents||0),perQuestionSeconds:perQuestionSeconds.slice(0,60),
+    planVersion:lesson.morningPlanVersion||DW_MORNING_PLAN_VERSION,planFingerprint:sessionPlanFingerprint||lesson.morningPlanFingerprint,taskPlan:tasks.slice(0,60).map(t=>({...t})),
+    sequenceAudit:tasks.slice(0,60).map(t=>({subject:String(t.subject||""),skillId:String(t.skillId||""),standardId:String(t.standardId||""),sourceDocumentId:String(t.sourceDocumentId||""),firstTaughtDay:Number(t.firstTaughtDay||0),sourceDate:String(t.sourceDate||lesson.date||""),sourceDay:Number(t.sourceDay||0),sourceKind:String(t.sourceKind||""),gradeLevel:Number(t.gradeLevel||0),remediationStatus:String(t._isRetry?"retry":t.remediationStatus||"none"),substitutionReason:String(t._isRetry?"missed item; delayed differently structured retry":t.substitutionReason||"prior learning target"),interaction:String(t.engine||"choice")})),
     completedAt:serverTimestamp(),updatedAt:serverTimestamp()
   };
   saveLocalProgress(sessionName,{...completionProgress,completedAt:Date.now(),updatedAt:Date.now()});
@@ -6553,7 +6595,7 @@ async function finishSession(){
     game:"daily_quest",
     gameName:"Dragonswood Daily Quest",
     track:lesson.track||"4",trackName:lesson.trackName||"4TH GRADE",
-    activityName:isLevelUpMode()?"Level-Up Morning Challenge":"Morning Work",
+    activityName:DW_BENCHMARK_MODE?"Q1 Learning Benchmark":isLevelUpMode()?"Level-Up Morning Challenge":"Morning Work",
     subject:"Math + ELA",
     lesson:`${lesson.mathSkill} + ${lesson.elaSkill}`,
     scoreType:"points",
@@ -6567,6 +6609,7 @@ async function finishSession(){
     createdAt:serverTimestamp()
   })}catch(e){console.warn("score",e)}
 
+  if(DW_BENCHMARK_MODE){$("loot").textContent="✓ BENCHMARK SAVED • Standard-level strengths and support needs recorded • No XP or Gold awarded";await refreshSessionCards();return}
   try{const existing=await getDoc(doc(db,"gameResults",claimId));if(existing.exists()){$("loot").textContent="✓ ACADEMIC COMPLETION SAVED • RPG reward already claimed for this session.";await refreshSessionCards();return}}catch(e){console.warn("claim check",e)}
 
   const latest=await getDoc(doc(db,"students",user.uid));

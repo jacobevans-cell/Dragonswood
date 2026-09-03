@@ -67,7 +67,7 @@ vm.createContext(engineContext);
 vm.runInContext(
   fs.readFileSync('dragonswood-grading-core.js', 'utf8') + '\n' +
   fs.readFileSync('curriculum-question-engine.js', 'utf8') +
-  '\n;globalThis.__engine={dwQuestion,dwQuestionWithParams,dwValidQuestion};',
+  '\n;globalThis.__engine={dwQuestion,dwQuestionWithParams,dwValidQuestion,dwQuestionClarityIssues};',
   engineContext,
   {timeout: 30000}
 );
@@ -149,6 +149,7 @@ for (const [gradeCode, gradeLevel] of [['I', 4], ['K', 5]]) {
         if (candidate?.source === 'registry' && engine.dwValidQuestion(candidate)) q = candidate;
       }
       assert(q, `${gradeCode} day ${day} ${task.skillId} ${JSON.stringify(task.questionParams)} must generate`);
+      assert.equal(engine.dwQuestionClarityIssues(q).length, 0, `${gradeCode} day ${day} ${task.skillId} must be child-clear`);
     }
     if (day <= 40 || [41, 60, 100, 140, 180].includes(day)) {
       try { generateUniqueSession(tasks); }
@@ -172,5 +173,24 @@ for (let i = 0; i < 12; i++) {
   const multi = engine.dwQuestionWithParams('math.wordproblems', {grade: 4}, 2000 + i, i);
   assert(/then|plus/.test(multi.prompt), 'grade 4 word problems should require more than one step');
 }
+
+for (let i = 0; i < 80; i++) {
+  const pattern = engine.dwQuestionWithParams('math.pk.multiplication_patterns_over_increasing_place_', {grade: 5}, 3000 + i, i);
+  assert(!/ · /.test(pattern.prompt) && pattern.prompt.split('\n').length >= 7 && /\d,\d{3}/.test(pattern.prompt), 'place-value patterns must use readable rows and commas');
+  for (const id of ['math.symmetry', 'math.geom.polygons']) {
+    const shape = engine.dwQuestionWithParams(id, {grade: 4}, 4000 + i, i);
+    assert(!/\b(?:a equilateral|a isosceles|a octagon)\b/i.test(shape.prompt), `${id} must use a/an correctly`);
+  }
+  const pov = engine.dwQuestionWithParams('ela.pov', {grade: 4}, 5000 + i, i);
+  assert(['first person', 'third person'].includes(pov.answer), 'Grade 4 POV must stay on the taught first/third-person target');
+  const speed = engine.dwQuestionWithParams('sci.speed_energy', {grade: 4}, 6000 + i, i);
+  assert(!speed.choices.some(x => /\bthe other (?:bowling ball|thrown ball|sprinting student|racing bike)\b/i.test(String(x))), 'science distractors must identify the compared object clearly');
+  const helping = engine.dwQuestionWithParams('ela.pk.identifying_main_and_helping_verbs', {grade: 5}, 7000 + i, i);
+  assert(!/forthes\s*tudents|footb all/i.test([helping.prompt, ...helping.choices].join(' ')), 'helping-verb questions must not contain PDF extraction damage');
+}
+
+assert(daily.includes('.prompt{white-space:pre-line;line-height:1.45}'), 'student prompts must preserve generator line breaks');
+assert(daily.includes('Type your answer below.'), 'open-response directions must use child-friendly wording');
+assert(!daily.includes('This one is open response—produce the answer instead of choosing it.'), 'old open-response wording must be removed');
 
 console.log('morning-work prior-learning selftest: PASS (360 plans / 10,800 generator checks / 90 full unique sessions)');

@@ -17,7 +17,7 @@ vm.createContext(engineContext);
 vm.runInContext(
   fs.readFileSync('dragonswood-grading-core.js','utf8')+'\n'+
   fs.readFileSync('curriculum-question-engine.js','utf8')+
-  '\n;globalThis.__engine={DW_SKILLS,dwQuestionWithParams,dwValidQuestion};',
+  '\n;globalThis.__engine={DW_SKILLS,dwQuestionWithParams,dwValidQuestion,dwQuestionClarityIssues};',
   engineContext,{timeout:30000}
 );
 const engine=engineContext.__engine;
@@ -44,6 +44,7 @@ for(const [gradeCode,gradeLevel] of [['I',4],['K',5]]){
       if(candidate?.source==='registry'&&engine.dwValidQuestion(candidate)&&!used.has(signature(candidate)))q=candidate;
     }
     assert(q,`${gradeCode} ${task.standard} ${task.skillId} must generate a unique valid question`);
+    assert.equal(engine.dwQuestionClarityIssues(q).length,0,`${gradeCode} ${task.standard} ${task.skillId} must be child-clear`);
     used.add(signature(q));
   }
   assert.equal(used.size,30);

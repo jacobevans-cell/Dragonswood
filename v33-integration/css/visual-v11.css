@@ -174,6 +174,95 @@ label,
   filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .32));
 }
 
+/* Give Teacher Command the same illustrated, grouped navigation language as Student Adventure. */
+.teacher-sidebar {
+  padding: 14px 11px 18px;
+  overflow-x: hidden;
+  scrollbar-color: #6651c7 #05091f;
+  scrollbar-width: thin;
+}
+
+.teacher-brand {
+  padding: 2px 8px 14px;
+}
+
+.teacher-brand-row .teacher-command-crest {
+  width: 54px;
+  height: 54px;
+  flex: 0 0 54px;
+  border-radius: 14px;
+}
+
+.teacher-nav {
+  display: block;
+  margin-top: 7px;
+}
+
+.teacher-nav-group + .teacher-nav-group {
+  margin-top: 12px;
+}
+
+.teacher-nav .nav-group-title {
+  margin: 7px 8px 6px;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.teacher-nav-list {
+  display: grid;
+  gap: 6px;
+}
+
+.teacher-nav .nav-link {
+  min-height: 64px;
+  padding: 6px 9px;
+  grid-template-columns: 54px minmax(0, 1fr) auto;
+  gap: 8px;
+  border-radius: 13px;
+}
+
+.teacher-nav .nav-link.active {
+  border-radius: 13px;
+}
+
+.teacher-nav .nav-icon {
+  width: 54px;
+  height: 54px;
+}
+
+.teacher-nav .teacher-nav-icon {
+  display: block;
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  transform: scale(1.24);
+  filter: drop-shadow(0 5px 8px rgba(0, 0, 0, .42));
+}
+
+.teacher-nav .teacher-nav-icon[src*="/badges/"],
+.teacher-nav .teacher-nav-icon[src*="/navigation/"] {
+  transform: none;
+}
+
+.teacher-shell .teacher-nav .nav-main {
+  display: block;
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+.teacher-shell .teacher-nav .nav-sub {
+  display: block;
+  margin-top: 1px;
+  color: #cbd5e8;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.teacher-shell .teacher-nav .nav-link.active .nav-sub {
+  color: #eef3ff;
+}
+
 .teacher-shell .nav-main,
 .teacher-shell .btn,
 .teacher-shell button,
@@ -392,6 +481,66 @@ label,
 .teacher-shell .roster-name {
   font-size: 13px;
   line-height: 1.3;
+}
+
+@media (max-width: 1100px) and (min-width: 841px) {
+  .teacher-nav .nav-link {
+    grid-template-columns: 46px minmax(0, 1fr) auto;
+  }
+
+  .teacher-nav .nav-icon {
+    width: 46px;
+    height: 46px;
+  }
+
+  .teacher-nav .teacher-nav-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .teacher-shell .teacher-nav .nav-main {
+    font-size: 14px;
+  }
+
+  .teacher-shell .teacher-nav .nav-sub {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 840px) {
+  .teacher-nav {
+    display: flex;
+    gap: 6px;
+    margin-top: 0;
+    overflow-x: auto;
+  }
+
+  .teacher-nav-group,
+  .teacher-nav-list {
+    display: contents;
+  }
+
+  .teacher-nav .nav-link {
+    grid-template-columns: 40px minmax(0, 1fr);
+    min-width: max-content;
+    min-height: 52px;
+    padding: 6px 10px;
+  }
+
+  .teacher-nav .nav-icon,
+  .teacher-nav .teacher-nav-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .teacher-nav .teacher-nav-icon {
+    transform: scale(1.1);
+  }
+
+  .teacher-nav .teacher-nav-icon[src*="/badges/"],
+  .teacher-nav .teacher-nav-icon[src*="/navigation/"] {
+    transform: none;
+  }
 }
 
 @media (max-width: 620px) {

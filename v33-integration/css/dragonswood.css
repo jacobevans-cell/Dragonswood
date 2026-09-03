@@ -116,7 +116,7 @@
     --shadow:0 20px 55px rgba(0,0,0,.42),0 2px 16px rgba(35,55,145,.16);
     --glow:0 0 0 1px rgba(69,214,255,.04),0 12px 38px rgba(43,18,122,.17);
     --student-sidebar:236px;
-    --teacher-sidebar:216px;
+    --teacher-sidebar:236px;
     --student-topbar:82px;
     --teacher-topbar:100px;
     --content-max:1260px;
@@ -3209,7 +3209,7 @@
   @media (max-width:1100px) {
     :root{
       --student-sidebar:210px;
-      --teacher-sidebar:190px;
+      --teacher-sidebar:210px;
     }
     .student-content{
       padding-left:24px;

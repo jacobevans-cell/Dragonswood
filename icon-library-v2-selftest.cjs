@@ -7,7 +7,10 @@ const registry=JSON.parse(fs.readFileSync(path.join(assetRoot,'emoji-registry.js
 const summary=JSON.parse(fs.readFileSync(path.join(assetRoot,'library-summary.json'),'utf8'));
 const runtime=fs.readFileSync(path.join(root,'v33-integration','js','dragonswood-icons.js'),'utf8');
 const portal=fs.readFileSync(path.join(root,'index.html'),'utf8');
+const teacherPortal=fs.readFileSync(path.join(root,'teacher.html'),'utf8');
+const teacherApp=fs.readFileSync(path.join(root,'v33-integration','js','teacher-app.js'),'utf8');
 const modules=fs.readFileSync(path.join(root,'v33-integration','js','integration','modules.js'),'utf8');
+const teacherNavAssets=[...teacherApp.matchAll(/'(assets\/(?:mascot|navigation)\/[^']+\.(?:png|webp))'/g)].map(match=>match[1]);
 
 let failures=0;
 function check(condition,message){
@@ -33,6 +36,10 @@ for(const [symbol,entry] of iconRows){
 }
 check(missing.length===0,`every mapped icon has a production asset${missing.length?`: ${missing.join(', ')}`:''}`);
 check(portal.includes('js/dragonswood-icons.js?v=2.0.0'), 'student portal loads the icon runtime');
+check(teacherPortal.includes('js/dragonswood-icons.js?v=2.0.0'), 'teacher portal loads the icon runtime');
+check(teacherApp.includes('teacher-nav-group')&&teacherApp.includes('teacher-nav-icon'), 'teacher sidebar uses grouped mascot navigation');
+check(!teacherApp.includes("['student-command','🪄'"), 'teacher sidebar no longer uses the legacy emoji navigation');
+check(teacherNavAssets.length===14&&teacherNavAssets.every(asset=>fs.existsSync(path.join(root,'v33-integration',asset))), 'every teacher navigation item has mascot artwork');
 check(modules.includes("icons.dataset.dwIconRuntime='2'"), 'same-origin lesson and game frames receive the icon runtime');
 check(runtime.includes("script,style,textarea,input,select,option,code,pre"), 'runtime excludes interactive entry and code content');
 check(runtime.includes("image.addEventListener('error'"), 'missing images fall back to the original symbol');

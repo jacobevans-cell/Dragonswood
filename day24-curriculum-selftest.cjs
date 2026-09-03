@@ -30,7 +30,7 @@ for(const grade of ["I","K"]){
   reading?.applicationPrompt&&writing?.applicationPrompt?pass(`${grade} written applications`):fail(`${grade} written applications`);
 }
 const html=fs.readFileSync("curriculum-quest.html","utf8");
-html.includes('q1-curriculum-day24-overrides.js?v=1')?pass("Day 24 overrides loaded"):fail("Day 24 overrides not loaded");
+html.includes('q1-curriculum-day24-overrides.js?v=2')?pass("Day 24 overrides loaded with current cache version"):fail("Day 24 overrides not loaded with current cache version");
 html.includes('function allRequiredVideosWatched')&&html.includes('videoParts:state.videoParts')&&html.includes('part.videoReflection=answer')?pass("separate required-video tracking"):fail("separate required-video tracking");
 if(failed){console.error(`\n${failed} DAY 24 SELF-TEST(S) FAILED`);process.exit(1)}
 console.log("\nALL DAY 24 CURRICULUM SELF-TESTS PASSED");

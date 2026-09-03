@@ -29,6 +29,7 @@ check('Writing Community classification runs before generic opinion',()=>assert.
 check('Math teacher-review requests are blocked with the branded notice',()=>{assert.match(page,/if\(x\.subject==="Math"\)\{await dwNotice\("Keep working the problem","Math is checked automatically/);assert.match(page,/Math is checked automatically\. Review the lesson, revise the answer, and try again/)});
 check('teacher requests carry validator and AI triage',()=>{assert.match(page,/validatorCode:String\(meta\.validatorCode/);assert.match(page,/strongRetryUsed:!!meta\.strongRetryUsed/)});
 check('complete inference evidence auto-passes without an unnecessary AI gate',()=>{assert.match(page,/if\(spec\.kind==="inference"\)[\s\S]*return structural/);assert.doesNotMatch(page,/structural\.ok&&sourceExcerpt.*needs_source_check/)});
+check('approved work renders complete before remote grade history',()=>assert.ok(page.indexOf('render("activity-approved")')<page.indexOf('await window.recordCurriculumAttempt?.(x,s,result.ok)')));
 check('teacher review is reserved for genuinely uncertain AI decisions',()=>{
   const rejected=page.slice(page.indexOf('else if(aiResult.decision==="not_approved"&&aiResult.confidence==="high")'),page.indexOf('window.recordCurriculumAttempt'));
   assert.match(rejected,/teacherReviewEligible=false/);assert.match(rejected,/clearRevisionGate\(s\)/);assert.doesNotMatch(rejected,/registerRevisionAttempt/);

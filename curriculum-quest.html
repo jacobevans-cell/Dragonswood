@@ -965,13 +965,16 @@ async function checkActivity(id){
     const exceptional=spec.kind==="quickwrite"&&aiResult?.decision==="approve"&&aiResult?.confidence==="high"&&Number(aiResult?.score||0)===10&&sentenceCount(structuredActivityParts(answer).response)>Number(spec.sentenceRange?.[0]||0);
     s.extraCreditPoints=exceptional?1:0;s.extraCreditReason=exceptional?String(aiResult.reason||"Exceptional ideas, development, and writing quality beyond the requirement.").slice(0,300):"";
     delete s.lastAiTriage;window.DWAcademicAI.clearRevisionGate(s);S.items[id]=s;save();clearCurriculumDraft(id);
+    // Completion is a student-facing state change. Render it immediately;
+    // grade-history and achievement writes may be slow or temporarily offline.
+    f.textContent=aiResult?.decision==="approve"?`✓ Quest complete. ${curriculumAiAdvice(aiResult,spec,result,answer)}`:result.msg?"✓ "+result.msg:"✓ Quest complete. Your answer passed the lesson check.";
+    render("activity-approved");
     await window.recordCurriculumAttempt?.(x,s,result.ok);
     if(exceptional){const badge=ACHIEVEMENT_BADGES.exceptional_scribe;await awardAchievement("exceptional_scribe",s.extraCreditReason);showAchievementCelebration(badge,`You earned +1 Quickwrite extra-credit point: ${s.extraCreditReason}`)}
     if((spec.kind==="inference"||x.strand==="Reading"||x.subject==="Science")&&Number(aiResult?.score||0)>=9)await awardAchievement("evidence_detective","Used specific evidence and connected it clearly to the answer.");
     if(x.subject==="Math"&&(s.activityAttempts||1)===1)await awardAchievement("math_pathfinder","Completed a math mission accurately on the first check.");
     const todayItems=D.curriculum.filter(item=>item.grade===S.grade&&Number(item.day)===Number(S.day)&&!mediaPending(item));if(todayItems.length&&todayItems.every(missionComplete)){await awardAchievement("quest_champion","Completed every Curriculum Quest activity for the day.")}
-    f.textContent=aiResult?.decision==="approve"?`✓ Quest complete. ${curriculumAiAdvice(aiResult,spec,result,answer)}`:result.msg?"✓ "+result.msg:"✓ Quest complete. Your answer passed the lesson check.";
-    render();
+    requestCurriculumRefresh("activity-post-save");
   }else{
     const reviewButton=document.getElementById("overrideBtn-"+id);
     reviewButton?.classList.remove("approved");

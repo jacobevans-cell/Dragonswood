@@ -35,7 +35,9 @@ function initializer(source, name) {
 const q1Context = {window: {}};
 vm.createContext(q1Context);
 vm.runInContext(fs.readFileSync('q1-curriculum-data.js', 'utf8'), q1Context);
+vm.runInContext(fs.readFileSync('q1-exam-alignment-data.js', 'utf8'), q1Context);
 const canonicalItems = q1Context.window.DRAGONSWOOD_DATA.items;
+const examAlignment = q1Context.window.DW_Q1_EXAM_ALIGNMENT;
 
 const plannerStart = daily.indexOf('const DW_PACING_ENGINES=');
 const plannerEnd = daily.indexOf('function dwBuildPacingLesson', plannerStart);
@@ -47,19 +49,20 @@ const DW_CURRIC_PLAN=${initializer(daily, 'DW_CURRIC_PLAN')};
 const DW_CURRIC_ITEMS=${initializer(daily, 'DW_CURRIC_ITEMS')};
 const DW_TOPIC_RULES=${initializer(daily, 'DW_TOPIC_RULES')};
 function dwLabelOf(id){return (DW_SKILLS[id]&&DW_SKILLS[id][0])||id}
-function dwCurricEntry(item){return DW_CURRIC_PLAN[item.id]||null}
+function dwExamBridgeFor(item){if(!item||!/Core Science/i.test(String(item.strand||"")))return null;return window.DW_Q1_EXAM_ALIGNMENT?.pacingBridges?.[item.grade]?.[item.subject]?.[Number(item.day)]||null}
+function dwCurricEntry(item){const base=DW_CURRIC_PLAN[item.id]||null,bridge=dwExamBridgeFor(item);if(!bridge)return base;return {standards:[...new Set([...(base?.standards||[]),...(bridge.standards||[])])],skills:[...new Set([...(bridge.skills||[]),...(base?.skills||[])])],iCan:bridge.iCan||base?.iCan||"",examBridge:true}}
 function dwMorphParts(item){const t=String(item.requirement||"");const root=(t.match(/M[o0]r?ph[o0]?emes?[^\\S\\r\\n]*(?:\\r?\\n)+[^\\S\\r\\n]*([^\\r\\n]+)/i)||[])[1];const word=(t.match(/Word[^\\S\\r\\n]*(?:\\r?\\n)+[^\\S\\r\\n]*([^\\r\\n]+)/i)||[])[1];return {root:(root||"").trim(),word:(word||"").trim()}}
 function dwObservationOnly(item){const t=((item.requirement||"")+" "+(item.strand||"")).toLowerCase();return /progress monitor|fluency|partner read|listen to students|cursive:|dictation|anecdotal|check ?point|present and share/.test(t)}
 ${daily.slice(plannerStart, plannerEnd)}
 function dwValidateMorningSequence(taskList){for(let start=0;start<taskList.length;start+=5){const set=taskList.slice(start,start+5);if(set.length<5)continue;const counts=new Map();for(const t of set){const key=String(t.skillId||t.pacingItemId||t.skill||"");counts.set(key,(counts.get(key)||0)+1)}if(counts.size<3||Math.max(...counts.values())>2)throw new Error("Morning variety release blocked.");if(set.every(t=>String(t.engine||"")===String(set[0].engine||"")))throw new Error("Morning interaction variety release blocked.")}return true}
 globalThis.__planner={DW_SKILLS,DW_MORNING_PLAN_VERSION,dwPacingSpecs,dwMorningPriorPools,dwBuildSubjectMorning,dwValidateMorningSequence};`;
-const plannerContext = {window: {DRAGONSWOOD_DATA: {items: canonicalItems}}, dqProgressRows: []};
+const plannerContext = {window: {DRAGONSWOOD_DATA: {items: canonicalItems},DW_Q1_EXAM_ALIGNMENT:examAlignment}, dqProgressRows: []};
 vm.createContext(plannerContext);
 vm.runInContext(plannerSource, plannerContext, {timeout: 30000});
 const planner = plannerContext.__planner;
 
 const quietConsole = {...console, error() {}, warn() {}, info() {}};
-const engineContext = {console: quietConsole, window: {}};
+const engineContext = {console: quietConsole, window: {DW_Q1_EXAM_ALIGNMENT:examAlignment}};
 vm.createContext(engineContext);
 vm.runInContext(
   fs.readFileSync('dragonswood-grading-core.js', 'utf8') + '\n' +
@@ -113,40 +116,52 @@ for (const [gradeCode, gradeLevel] of [['I', 4], ['K', 5]]) {
     const mappedSpecs = planner.dwPacingSpecs(day, gradeCode);
     const expectedSubjects = new Set(canonicalItems.filter(x => day >= 3 && x.grade === gradeCode && Number(x.day) === day && !/assessment|reflection|review,? extension|make-?up/i.test(x.requirement || '') && (
       (x.subject === 'Math' && /Core Math/i.test(x.strand || '')) ||
+      (x.subject === 'Science' && /Core Science/i.test(x.strand || '')) ||
       (x.subject === 'HUM' && /-L\d+$/.test(x.id) && !/progress monitor|fluency|partner read|listen to students|cursive:|dictation|anecdotal|check ?point|present and share/i.test(`${x.requirement || ''} ${x.strand || ''}`))
     )).map(x => x.subject));
     for (const subject of expectedSubjects) assert(mappedSpecs.some(x => x.item.subject === subject), `${gradeCode} day ${day} ${subject} curriculum target must map to a verified skill`);
     const math = planner.dwBuildSubjectMorning(day, gradeCode, 'Math');
     const ela = planner.dwBuildSubjectMorning(day, gradeCode, 'HUM');
+    const science = planner.dwBuildSubjectMorning(day, gradeCode, 'Science');
     const tasks = [];
-    for (let i = 0; i < 15; i++) tasks.push(math[i], ela[i]);
+    for (let i = 0; i < 10; i++) tasks.push(math[i], ela[i], science[i]);
     assert.equal(tasks.length, 30);
-    assert.equal(tasks.filter(x => x.subject === 'MATH').length, 15);
-    assert.equal(tasks.filter(x => x.subject === 'ELA').length, 15);
+    assert.equal(tasks.filter(x => x.subject === 'MATH').length, 10);
+    assert.equal(tasks.filter(x => x.subject === 'ELA').length, 10);
+    assert.equal(tasks.filter(x => x.subject === 'SCIENCE').length, 10);
     for (const [kind, expected] of [['previous', 16], ['past', 8], ['remedial', 4], ['challenge', 2]]) {
       assert.equal(tasks.filter(x => x.sourceKind === kind).length, expected, `${gradeCode} day ${day} ${kind}`);
     }
     assert(tasks.every(x => x.gradeLevel === gradeLevel));
     assert(tasks.every(x => x.sourceDay < day), `${gradeCode} day ${day} must not use today or future content`);
+    assert(tasks.every(x => x.subject !== 'SS' && x.subject !== 'SOCIAL STUDIES'), `${gradeCode} day ${day} must exclude Social Studies`);
+    assert(tasks.every(x => ['exam','pacing'].includes(x.sourceAuthority)), `${gradeCode} day ${day} must identify its source authority`);
+    const examCount = tasks.filter(x => x.sourceAuthority === 'exam').length;
+    assert(examCount <= 18, `${gradeCode} day ${day} must never exceed the 60% exam-aligned ceiling`);
+    if (day >= 4) assert(examCount >= 12, `${gradeCode} day ${day} should use every eligible exam-aligned slot without introducing future content`);
     assert(tasks.every(x => planner.DW_SKILLS[x.skillId]), `${gradeCode} day ${day} skills must be registered`);
     try { planner.dwValidateMorningSequence(tasks); }
     catch (error) { throw new Error(`${gradeCode} day ${day}: ${error.message} :: ${tasks.map(x => x.skillId).join(', ')}`); }
     for (const task of tasks) {
       let q = null;
       for (let attempt = 0; attempt < 30 && !q; attempt++) {
-        const candidate = engine.dwQuestionWithParams(task.skillId, task.questionParams, task.seed + attempt * 9973, attempt * 17);
+        const candidate = engine.dwQuestionWithParams(task.skillId, task.questionParams, task.seed + attempt * 9973, Number(task.examPreferredIndex || 0) + attempt * 17);
         if (candidate?.source === 'registry' && engine.dwValidQuestion(candidate)) q = candidate;
       }
       assert(q, `${gradeCode} day ${day} ${task.skillId} ${JSON.stringify(task.questionParams)} must generate`);
     }
-    if (day <= 40 || [41, 60, 100, 140, 180].includes(day)) generateUniqueSession(tasks);
+    if (day <= 40 || [41, 60, 100, 140, 180].includes(day)) {
+      try { generateUniqueSession(tasks); }
+      catch (error) { throw new Error(`${gradeCode} day ${day}: ${error.message}`); }
+    }
   }
 }
 
 plannerContext.dqProgressRows = [{session: 'morning', day: 10, needsReteach: ['math.add.multi', 'ela.meaning'], skills: {}}];
 const personalized = [
   ...planner.dwBuildSubjectMorning(23, 'I', 'Math'),
-  ...planner.dwBuildSubjectMorning(23, 'I', 'HUM')
+  ...planner.dwBuildSubjectMorning(23, 'I', 'HUM'),
+  ...planner.dwBuildSubjectMorning(23, 'I', 'Science')
 ].filter(x => x.sourceKind === 'remedial');
 assert(personalized.some(x => x.skillId === 'math.add.multi' && x.remediationStatus === 'personalized'));
 assert(personalized.some(x => x.skillId === 'ela.meaning' && x.remediationStatus === 'personalized'));

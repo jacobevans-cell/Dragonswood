@@ -12,6 +12,11 @@ const seed = read('daily-quest-seed.html');
 
 assert(daily.includes('id="morningCard"'));
 assert(daily.includes('UNIFIED MORNING WORK'));
+assert(daily.includes('10 Math, 10 HUM/ELA, and 10 Science'));
+assert(daily.includes('q1-exam-alignment-data.js?v=60.0.0'));
+assert(daily.includes('DW_MORNING_AUTHORITY_PATTERN'));
+assert(daily.includes('sourceAuthority:examRow?"exam":"pacing"'));
+assert(!daily.includes('subject:"SOCIAL STUDIES"'));
 assert(!daily.includes('id="exitCard"'));
 assert(!daily.includes('id="exitBtn"'));
 assert(!daily.includes('startSession("exit")'));

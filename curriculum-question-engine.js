@@ -591,7 +591,13 @@ const DW_SKILLS={
  "sci.energy_transfer":["Energy Transfer (4-PS3-2)","energy_transfer",{}],
  "sci.fair_test":["Fair Testing and Refining (ETS1-3)","fair_test",{}],
  "sci.food_energy":["Energy in Food (5-PS3-1)","food_energy",{}],
+ "sci.density":["Density and Layering (5.P1U1.2)","density",{}],
+ "sci.mass_conservation":["Conservation of Matter (5.P1U1.2)","mass_conservation",{}],
  "sci.matter_movement":["Movement of Matter (5-LS2-1)","matter_movement",{}],
+ "sci.matter_properties":["Matter and Its Properties (5.P1U1.1)","matter_properties",{}],
+ "sci.noncontact_forces":["Contact and Noncontact Forces (5.P2U1.3)","noncontact_forces",{}],
+ "sci.observation_evidence":["Scientific Observation and Evidence","observation_evidence",{}],
+ "sci.physical_chemical_change":["Physical and Chemical Changes (5.P1U1.2)","physical_chemical_change",{}],
  "sci.plant_materials":["How Plants Get Materials (5-LS1-1)","plant_materials",{}],
  "sci.speed_energy":["Speed and Energy (4-PS3-1)","speed_energy",{}]
 };
@@ -3733,20 +3739,20 @@ collisions(r,p,i){
     return {prompt:`A cart moving at ${s} m/s collides with a cart sitting still. What will most likely happen?`,
       answer:`Energy transfers to the still cart and it starts to move`,
       choices:shuffle(r,["Energy transfers to the still cart and it starts to move",
-        "Both carts stop instantly and energy disappears","The still cart stays still and nothing changes",
-        "The moving cart speeds up after the collision"])}
+        "Both carts stop and all their motion energy disappears","The still cart stays still while the first cart keeps moving",
+        "The moving cart gains energy and travels even faster"])}
   }
   if(mode===1)
     return {prompt:`During a collision, what happens to energy?`,
       answer:"It transfers between the objects and into sound and heat",
       choices:shuffle(r,["It transfers between the objects and into sound and heat",
-        "It is destroyed completely","It turns into new matter","It stays only in the first object"])};
+        "It is destroyed completely when the objects collide","It changes entirely into a new kind of matter","It stays only in the first object after the collision"])};
   if(mode===2)
     return {prompt:`Two identical carts collide. One was moving fast, the other slowly.\nWhich collision would cause the LOUDER sound and MORE damage?`,
       answer:"the faster collision, because faster objects carry more energy",
       choices:shuffle(r,["the faster collision, because faster objects carry more energy",
-        "the slower collision, because slow objects push harder",
-        "both exactly the same","neither would make any sound"])};
+        "the slower collision, because slower objects always push harder",
+        "both collisions, because speed never changes energy or damage","neither collision, because moving carts cannot produce sound"])};
   if(mode===3){
     const v=pick(r,["collision","impact","momentum","outcome"]);
     const defs={collision:"when two objects crash into each other",
@@ -3758,8 +3764,8 @@ collisions(r,p,i){
   }
   return {prompt:`You roll a marble into a line of blocks and they scatter. What is the BEST evidence that energy transferred?`,
     answer:"the blocks moved and made noise after being hit",
-    choices:shuffle(r,["the blocks moved and made noise after being hit","the marble changed color",
-      "the blocks got heavier","the room got darker"])}
+    choices:shuffle(r,["the blocks moved and made noise after being hit","the marble changed color after it hit the blocks",
+      "the blocks became heavier after they scattered","the room became darker when the marble rolled"])}
 },
 
 /* ------------------------------------------- 4-PS3-4 energy conversion */
@@ -3884,6 +3890,62 @@ fair_test(r,p,i){
       "declare the design finished anyway","blame the materials and stop"])}
 },
 
+
+/* -------------------------------------- prior-grade science practices */
+observation_evidence(r,p,i){
+  const mode=i%4;
+  if(mode===0)return {prompt:`Which statement is a scientific OBSERVATION?`,answer:"The liquid changed from clear to cloudy",choices:shuffle(r,["The liquid changed from clear to cloudy","The liquid probably became dangerous","The liquid may freeze before tomorrow","The liquid seemed like the best sample"])};
+  if(mode===1)return {prompt:`Which choice is the BEST evidence for the claim that a toy car moved faster?`,answer:"It traveled the same distance in less time",choices:shuffle(r,["It traveled the same distance in less time","It traveled on a different table surface","It was painted a brighter shade of red","It made the student feel more excited"])};
+  if(mode===2)return {prompt:`A student repeats a test three times and records the same result. Why is that useful?`,answer:"Repeated results make the evidence more reliable",choices:shuffle(r,["Repeated results make the evidence more reliable","One result proves every future test will match","Repeated trials remove the need to record data","Repeating changes the question being studied"])};
+  return {prompt:`Which tool would give the BEST quantitative evidence about an object's mass?`,answer:"a balance that measures grams",choices:shuffle(r,["a balance that measures grams","a hand lens that enlarges the object","a color chart that compares several shades","a thermometer that measures degrees"])};
+},
+
+/* ------------------------------------------- 5.P1U1.1 matter properties */
+matter_properties(r,p,i){
+  const mode=i%6;
+  if(mode===0)return {prompt:`All substances are made of ___`,answer:"matter",choices:shuffle(r,["matter","cells","light","air only"])};
+  if(mode===1)return {prompt:`What is the BEST way to identify an unknown substance?`,answer:"compare its characteristic properties",choices:shuffle(r,["compare its characteristic properties","compare the label printed on its container","guess its identity from the substance's name","measure only the height of the sample"])};
+  if(mode===2)return {prompt:`Which measurement tells how much matter is in an object?`,answer:"mass",choices:shuffle(r,["mass","height","temperature","length"])};
+  if(mode===3)return {prompt:`Matter is made of particles that are ___`,answer:"too small to be seen without special tools",choices:shuffle(r,["too small to be seen without special tools","made only from the air around the object","visible as single particles to our eyes","larger than the object they form together"])};
+  if(mode===4)return {prompt:`Everything that has mass and takes up space is called ___`,answer:"matter",choices:shuffle(r,["matter","energy","speed","force"])};
+  return {prompt:`Mass, volume, and density are physical properties of ___`,answer:"matter",choices:shuffle(r,["matter","motion","heat","electricity"])};
+},
+
+/* ---------------------------------------- 5.P1U1.2 matter conservation */
+mass_conservation(r,p,i){
+  const mode=i%3,a=ri(r,6,18),b=ri(r,3,12);
+  if(mode===0)return {prompt:`A sealed container holds ${a} grams of one substance and ${b} grams of another. They are mixed and no material escapes. What should the total mass be?`,answer:`${a+b} grams`,choices:shuffle(r,[`${a+b} grams`,`${a} grams`,`${b} grams`,`${a+b+5} grams`])};
+  if(mode===1)return {prompt:`Two substances react inside a closed bag. What happens to the total amount of matter?`,answer:"It stays the same even if new substances form",choices:shuffle(r,["It stays the same even if new substances form","It doubles even though no matter enters the bag","It disappears as soon as the substances react","It changes completely into energy inside the bag"])};
+  return {prompt:`Which setup BEST tests whether matter is conserved during mixing?`,answer:"measure the sealed container before and after mixing",choices:shuffle(r,["measure the sealed container before and after mixing","open the container and compare its smell before and after","compare the colors before and after without measuring mass","weigh one ingredient before mixing and ignore the rest"])};
+},
+
+/* ---------------------------------------------------- 5.P1U1.2 density */
+density(r,p,i){
+  const mode=i%4;
+  if(mode===0)return {prompt:`A metal screw sinks through water while a cork floats. Which conclusion is BEST supported?`,answer:"The screw is denser than the water",choices:shuffle(r,["The screw is denser than the water","The cork has no mass","Water is denser than every solid","The screw is made of water"])};
+  if(mode===1)return {prompt:`In a density column, where will the MOST dense liquid settle?`,answer:"at the bottom",choices:shuffle(r,["at the bottom","at the top","outside the container","density does not affect position"])};
+  if(mode===2)return {prompt:`Two blocks have the same volume. Block A has more mass. Which block is denser?`,answer:"Block A",choices:shuffle(r,["Block A","Block B","They must have equal density","There is not enough information"])};
+  return {prompt:`Which pair of measurements is needed to calculate or compare density?`,answer:"mass and volume",choices:shuffle(r,["mass and volume","temperature and color","length and time","speed and force"])};
+},
+
+/* ---------------------------------- 5.P1U1.2 physical/chemical changes */
+physical_chemical_change(r,p,i){
+  const mode=i%4;
+  if(mode===0)return {prompt:`Burning a match is an example of a ___`,answer:"chemical change",choices:shuffle(r,["chemical change","physical change","change in location","measurement error"])};
+  if(mode===1)return {prompt:`Which observation is the BEST evidence that a chemical change occurred?`,answer:"a new substance formed and the change was difficult to reverse",choices:shuffle(r,["a new substance formed and the change was difficult to reverse","the object moved to a new place without changing materials","solid ice melted into liquid water and could freeze again","paper was cut into smaller pieces made of the same material"])};
+  if(mode===2)return {prompt:`Rust forming on iron is a ___`,answer:"chemical change",choices:shuffle(r,["chemical change","physical change","change of position","static change"])};
+  return {prompt:`Which event is a physical change?`,answer:"an ice cube melting",choices:shuffle(r,["an ice cube melting","a match burning into ash","iron rusting in damp air","bread baking in a hot oven"])};
+},
+
+/* ----------------------------------- 5.P2U1.3 contact/noncontact forces */
+noncontact_forces(r,p,i){
+  const mode=i%4;
+  if(mode===0)return {prompt:`Which statement about magnetic and electric forces is true?`,answer:"They can act across a short distance without touching",choices:shuffle(r,["They can act across a short distance without touching","They work only while the two objects are touching","They always pull objects toward Earth's center","They are simply different names for surface friction"])};
+  if(mode===1)return {prompt:`What is friction?`,answer:"a force that resists motion between surfaces",choices:shuffle(r,["a force that resists motion between surfaces","the direction in which a moving object travels","the pulling force caused only by Earth's gravity","a force that always increases an object's speed"])};
+  if(mode===2)return {prompt:`A paper clip jumps toward a nearby magnet. What causes the motion?`,answer:"a magnetic field",choices:shuffle(r,["a magnetic field","friction","a sound wave","thermal energy"])};
+  return {prompt:`Hair stands up after a balloon is rubbed on it. What force is responsible?`,answer:"static electricity",choices:shuffle(r,["static electricity","gravity","friction alone","a magnetic field"])};
+},
+
 /* ------------------------------------------- 5-PS3-1 energy in food */
 food_energy(r,p,i){
   const mode=i%4;
@@ -3903,8 +3965,8 @@ food_energy(r,p,i){
   return {prompt:`Why do scientists use MODELS to show energy moving through living things?`,
     answer:"a model makes an invisible process easier to see and explain",
     choices:shuffle(r,["a model makes an invisible process easier to see and explain",
-      "models are always exactly correct","a model replaces the need for evidence",
-      "models are quicker than thinking"])}
+      "scientific models are always exactly correct in every detail","a model completely replaces the need to collect evidence",
+      "drawing a model is faster than thinking about the system"])}
 },
 
 /* ------------------------------------------- 5-LS1-1 plant materials */
@@ -3916,18 +3978,18 @@ plant_materials(r,p,i){
         "from sunlight alone","from animals"])};
   if(mode===1)
     return {prompt:`Which gas do plants take in from the air to build their material?`,
-      answer:"carbon dioxide",choices:shuffle(r,["carbon dioxide","oxygen","nitrogen","helium"])};
+      answer:"the gas carbon dioxide",choices:shuffle(r,["the gas carbon dioxide","the gas called oxygen","the gas called nitrogen","the gas called helium"])};
   if(mode===2)
     return {prompt:`A plant grown in a pot gains many kilograms of mass, but the soil barely loses any.\nWhat does this evidence support?`,
       answer:"the plant's material came mostly from air and water, not soil",
       choices:shuffle(r,["the plant's material came mostly from air and water, not soil",
-        "the soil turned directly into the plant","the pot added mass to the plant",
-        "plants do not gain mass at all"])};
+        "most of the soil changed directly into new plant material","the pot supplied nearly all of the plant's added mass",
+        "plants do not gain real mass as they continue to grow"])};
   return {prompt:`What role does sunlight play for a plant?`,
     answer:"it provides the energy the plant uses to build its material",
     choices:shuffle(r,["it provides the energy the plant uses to build its material",
-      "it is the material the plant is made from","it keeps the soil from drying out",
-      "it has no effect on plants"])}
+      "sunlight becomes the solid material from which the plant is made","sunlight prevents all of the water in the soil from drying",
+      "sunlight has no important effect on how a plant grows"])}
 },
 
 /* ------------------------------------------- 5-LS2-1 movement of matter */
@@ -3937,8 +3999,8 @@ matter_movement(r,p,i){
     return {prompt:`What is the role of DECOMPOSERS in an ecosystem?`,
       answer:"they break down dead material and return matter to the environment",
       choices:shuffle(r,["they break down dead material and return matter to the environment",
-        "they make their own food from sunlight","they hunt and eat living animals",
-        "they stop matter from moving"])};
+        "they use sunlight, air, and water to make their own food","they hunt and consume living animals throughout the ecosystem",
+        "they prevent matter from moving between living and nonliving parts"])};
   if(mode===1)
     return {prompt:`In a food web, which organisms make their own food?`,
       answer:"producers, such as plants",choices:shuffle(r,["producers, such as plants",
@@ -3946,12 +4008,12 @@ matter_movement(r,p,i){
   if(mode===2)
     return {prompt:`A model shows arrows between plants, animals, decomposers and the environment.\nWhat do the arrows represent?`,
       answer:"the movement of matter and energy",
-      choices:shuffle(r,["the movement of matter and energy","the age of each organism",
-        "the size of each organism","the names of the species"])};
+      choices:shuffle(r,["the movement of matter and energy","the relative age of every organism in the ecosystem",
+        "the measured size of every organism in the ecosystem","the scientific names assigned to all of the species"])};
   return {prompt:`If all the decomposers in an ecosystem disappeared, what would most likely happen?`,
     answer:"dead material would build up and nutrients would stop cycling",
     choices:shuffle(r,["dead material would build up and nutrients would stop cycling",
-      "plants would grow much faster","nothing would change","the sun would provide less energy"])}
+      "plants would grow much faster because decay would completely stop","the ecosystem would remain the same with no important changes","the Sun would begin providing much less energy to producers"])}
 }
 
 };
@@ -5298,8 +5360,14 @@ const DW_CURRIC_ITEMS=[{"id":"I-HUM-D1-C1-A","grade":"I","day":1,"subject":"HUM"
 /* DW_CURRIC_PLAN maps every curriculum item id -> {standards, iCan, skills}.
    Emitted by curric-map.py from q1-curriculum-data.js. */
 
+function dwExamBridgeFor(item){
+  if(!item||!/Core Science/i.test(String(item.strand||"")))return null;
+  return window.DW_Q1_EXAM_ALIGNMENT?.pacingBridges?.[item.grade]?.[item.subject]?.[Number(item.day)]||null;
+}
 function dwCurricEntry(item){
-  return (typeof DW_CURRIC_PLAN!=="undefined" && DW_CURRIC_PLAN[item.id]) || null;
+  const base=(typeof DW_CURRIC_PLAN!=="undefined" && DW_CURRIC_PLAN[item.id]) || null,bridge=dwExamBridgeFor(item);
+  if(!bridge)return base;
+  return {standards:[...new Set([...(base?.standards||[]),...(bridge.standards||[])])],skills:[...new Set([...(bridge.skills||[]),...(base?.skills||[])])],iCan:bridge.iCan||base?.iCan||"",examBridge:true};
 }
 
 /* Vocabulary strands list the day's terms directly in the requirement text. */
@@ -5327,6 +5395,19 @@ function dwObservationOnly(item){
   return /progress monitor|fluency|partner read|listen to students|cursive:|dictation|anecdotal|check ?point|present and share/.test(t);
 }
 
+function dwExamSubjectKey(subject){return subject==="Math"?"MATH":subject==="HUM"?"HUM":subject==="Science"?"SCIENCE":""}
+function dwExamTargetsForItem(item,skills){
+  const key=dwExamSubjectKey(item?.subject),form=window.DW_Q1_EXAM_ALIGNMENT?.forms?.[item?.grade],allowed=new Set(skills||[]);
+  if(!key||!form)return [];
+  return (form[key]||[]).filter(row=>Number(row.firstTaughtDay||0)<=Number(item.day||0)&&(!allowed.size||allowed.has(row.skillId)));
+}
+function dwExamQuestion(row,seed,index){
+  if(!row?.skillId)return null;
+  const q=dwQuestionWithParams(row.skillId,{...(row.questionParams||{}),examAligned:true},seed,Number(row.preferredIndex||0)+index);
+  return q?{...q,sourceAuthority:"exam",examBlueprintId:row.id,examSource:row.sourceExam,examSourceQuestion:row.sourceQuestion,standardId:row.standard}:null;
+}
+window.DWExamTargetsForItem=item=>{const entry=dwCurricEntry(item),topic=dwTopicSkills(item),skills=topic.length?topic:(entry?.skills||[]).filter(skillId=>dwSkillMatchesSubject(item,skillId));return dwExamTargetsForItem(item,skills)};
+
 /* Teacher Verify is required only where a human has to judge the work. */
 function dwNeedsTeacherVerify(item){
   if(item.subject==="Science") return true;
@@ -5350,7 +5431,16 @@ function dwCurricPractice(item, count){
       if(!q || q.source!=="registry") continue;
       const sig=(q.prompt+"|"+[...q.choices].sort().join("|")).toLowerCase();
       if(seen.has(sig)) continue;
-      seen.add(sig); out.push(q);
+      seen.add(sig); out.push({...q,sourceAuthority:"pacing"});
+    }
+  };
+  const pushExam=(rows,n)=>{
+    for(let k=0;k<n*24&&out.filter(q=>q.sourceAuthority==="exam").length<n;k++){
+      const row=rows[k%rows.length],q=dwExamQuestion(row,seedBase+k*9973,k);
+      if(!q)continue;
+      const sig=(q.prompt+"|"+[...q.choices].sort().join("|")).toLowerCase();
+      if(seen.has(sig))continue;
+      seen.add(sig);out.push(q);
     }
   };
 
@@ -5376,6 +5466,8 @@ function dwCurricPractice(item, count){
   let skills=((entry&&entry.skills)||[]).filter(s=>dwSkillMatchesSubject(item,s));
   const topicSkills=dwTopicSkills(item);
   if(topicSkills.length) skills=topicSkills;
+  const examRows=dwExamTargetsForItem(item,skills),examTarget=Number(item.day||0)%2?4:3;
+  if(out.length<count&&examRows.length)pushExam(examRows,Math.min(examTarget,count-out.length));
   for(const s of skills){ if(out.length>=count) break; pushFrom(s, null, Math.ceil(count/Math.max(1,skills.length))+2); }
   // top up from the first skill if we are short
   if(out.length<count && skills.length) pushFrom(skills[0], null, count);

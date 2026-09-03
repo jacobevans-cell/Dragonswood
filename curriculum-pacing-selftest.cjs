@@ -3,7 +3,8 @@ let failed=0;
 const pass=x=>console.log("PASS",x);
 const fail=(x,detail="")=>{failed++;console.error("FAIL",x,detail)};
 
-const engine=fs.readFileSync("dragonswood-grading-core.js","utf8")+"\n"+
+const engine=fs.readFileSync("q1-exam-alignment-data.js","utf8")+"\n"+
+  fs.readFileSync("dragonswood-grading-core.js","utf8")+"\n"+
   fs.readFileSync("curriculum-question-engine.js","utf8")+
   "\n;globalThis.__pacingTest={DW_CURRIC_ITEMS,DW_SKILLS,dwTopicSkills,dwCurricPractice,dwValidQuestion,dwQuestionWithParams};";
 const context={console,window:{}};vm.createContext(context);vm.runInContext(engine,context,{timeout:30000});
@@ -12,6 +13,7 @@ const T=context.__pacingTest;
 let generated=0;
 for(const item of T.DW_CURRIC_ITEMS.filter(x=>Number(x.day)<=40&&(
   (x.subject==="Math"&&/Core Math/i.test(x.strand||""))||
+  (x.subject==="Science"&&/Core Science/i.test(x.strand||""))||
   (x.subject==="HUM"&&/-L\d+$/.test(x.id))
 ))){
   const questions=T.dwCurricPractice(item,6);
@@ -22,6 +24,12 @@ for(const item of T.DW_CURRIC_ITEMS.filter(x=>Number(x.day)<=40&&(
 }
 if(generated>=400)pass(`${generated} Q1 sample questions are registry-generated and gradable`);
 else fail("Q1 sample coverage",`only ${generated} questions generated`);
+
+for(const id of ["I-Math-D3-C3-L1","I-Science-D3-C3-L1","I-HUM-D3-C2-L1","K-Science-D3-C3-L1","K-HUM-D3-C2-L1"]){
+  const item=T.DW_CURRIC_ITEMS.find(x=>x.id===id),questions=T.dwCurricPractice(item,6),examCount=questions.filter(q=>q.sourceAuthority==="exam").length;
+  if(examCount===4&&questions.filter(q=>q.sourceAuthority==="pacing").length===2)pass(`${id} uses the odd-day 4/6 exam-aligned practice mix`);
+  else fail(`${id} exam-aligned practice mix`,questions.map(q=>`${q.sourceAuthority}:${q.skillId}`));
+}
 
 const day16=T.DW_CURRIC_ITEMS.find(x=>x.id==="I-Math-D16-C3-L1");
 const day17=T.DW_CURRIC_ITEMS.find(x=>x.id==="I-Math-D17-C3-L1");

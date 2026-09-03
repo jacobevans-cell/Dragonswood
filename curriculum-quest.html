@@ -814,7 +814,10 @@ function visibleQuestionCounts(x,s=st(x.id)){
   return {seen,correct,total:questions.length};
 }
 function missionComplete(x,s=st(x.id)){
-  if(s.caseCompletionLocked===true)return true;
+  // A completion already confirmed locally, remotely, or recovered from a
+  // graded written attempt is authoritative. Recomputing older prerequisites
+  // here could make an AI-approved and graded mission appear incomplete.
+  if(s.complete===true||s.caseCompletionLocked===true)return true;
   const pendingBlocked=mediaPending(x)&&(!window.DWCurriculumLocalTester||!allRequiredVideosWatched(x,s)),videoOk=!vid(x)||allRequiredVideosWatched(x,s)||mediaPending(x);
   return videoOk&&standardCheckComplete(x,s)&&!!s.practiced&&(!missionNeedsTeacher(x)||!!s.verified)&&!pendingBlocked;
 }

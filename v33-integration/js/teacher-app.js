@@ -171,6 +171,18 @@ function gradebookPage(){
     if(short.length>30)short=`${short.slice(0,29).replace(/\s+\S*$/,'')}…`;
     return short||'Assignment';
   };
+  const assignmentSubject=item=>{
+    const text=`${item?.title||''} ${item?.id||''} ${item?.category||''}`.toLowerCase();
+    if(text.includes('quickwrite')||text.includes('writing'))return 'Writing';
+    if(text.includes('vocab'))return 'Vocabulary';
+    if(text.includes('rune spelling')||text.includes('spelling'))return 'Spelling';
+    if(text.includes('storyvault')||text.includes('character case')||text.includes('titanic')||text.includes('theme detective')||text.includes('fluency')||text.includes('reading'))return 'Reading';
+    if(text.includes('science')||text.includes('plant growth'))return 'Science';
+    if(text.includes('social studies')||text.includes('humanities')||text.includes('-hum-'))return 'Social Studies';
+    if(text.includes('math')||text.includes('round to'))return 'Math';
+    if(text.includes('morning')||text.includes('exit quest'))return 'Morning';
+    return categoryShort(item?.category);
+  };
   const categoryShort=value=>({'Morning Work':'Morning','Curriculum Quest':'Curriculum','Rune Spelling':'Spelling','Storyvault Reading':'Reading'})[String(value||'')]||String(value||'Assignment');
   const catalogMap=new Map();
   for(const row of filtered)for(const item of row.assignments||[])if(item?.id&&!catalogMap.has(item.id))catalogMap.set(item.id,item);
@@ -183,7 +195,7 @@ function gradebookPage(){
     const cls=excluded?'excused':pending?'pending':item.status==='missing'?'missing':item.teacherOverride?'override':'scored';
     return `<td class="scoresheet-cell ${cls}"><button type="button" data-edit-grade-student="${escapeHtml(row.id)}" data-edit-grade-assignment="${escapeHtml(item.id)}" title="${escapeHtml(friendlyAssignmentTitle(item))} • ${escapeHtml(status)}${item.recoveredCompletion?' • Recovered from verified completion':''}">${item.teacherOverride?'🔒 ':''}${item.recoveredCompletion?'↺ ':''}${excluded||pending||score===null?escapeHtml(value):value}</button></td>`;
   };
-  const headers=assignments.map(item=>`<th class="scoresheet-assignment" title="${escapeHtml(friendlyAssignmentTitle(item))}"><span class="scoresheet-category">${escapeHtml(categoryShort(item.category))}</span><b>${escapeHtml(compactAssignmentTitle(item))}</b><small>${escapeHtml(formatGradeDate(item.dateKey))}</small></th>`).join('');
+  const headers=assignments.map(item=>`<th class="scoresheet-assignment" title="${escapeHtml(`${assignmentSubject(item)} · ${friendlyAssignmentTitle(item)}`)}"><span class="scoresheet-category">${escapeHtml(assignmentSubject(item))}</span><b>${escapeHtml(compactAssignmentTitle(item))}</b><small>${escapeHtml(formatGradeDate(item.dateKey))}</small></th>`).join('');
   const body=filtered.map(row=>{
     const byId=new Map((row.assignments||[]).map(item=>[item.id,item]));
     const total=row.total===null||row.total===undefined?'—':`${Math.round(row.total)}% • ${gradeLetter(row.total)}`;

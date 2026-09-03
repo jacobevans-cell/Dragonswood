@@ -14,6 +14,7 @@ const navItems=[
  ['student-command','assets/mascot/actions/boss.webp','Student Command','Rewards, support & controls','Command'],
  ['live-progress','assets/mascot/actions/attention.webp','Live Progress','Today’s learning at a glance','Command'],
  ['gradebook','assets/mascot/actions/achievement.webp','Gradebook','Scores, work & feedback','Command'],
+ ['placements','assets/mascot/badges/thinking.webp','Placement Reports','Math & ELA standards evidence','Command'],
  ['scribe','assets/mascot/actions/scribe.webp','Scribe Command','Writing tools & journals','Command'],
  ['rewards','assets/mascot/badges/reward.webp','Class Rewards','Goals, Gold & recognition','Classroom'],
  ['passes','assets/mascot/actions/pass.webp','Pass Control','Requests & student movement','Classroom'],
@@ -105,7 +106,9 @@ function shell(){const visualFreeze=window.DWV33VisualFreeze===true;if(!visualFr
 function referenceButton(){return new URLSearchParams(location.search).get('reference')==='1'?`<button type="button" class="btn btn-gold btn-sm reference-button" data-reference>Reference</button>`:''}
 function pageBanner(icon,eyebrow,title,sub,action=''){return `<section class="teacher-page-banner"><div class="teacher-page-title"><div class="teacher-page-icon">${icon}</div><div><div class="eyebrow">${eyebrow}</div><h2>${title}</h2><p>${sub}</p></div></div>${action}</section>`}
 function metric(icon,label,value,sub){return `<article class="panel metric"><div class="metric-icon">${icon}</div><div><div class="eyebrow">${label}</div><strong>${value}</strong><small>${sub}</small></div></article>`}
-function pageMarkup(){switch(state.page){case'live-progress':return liveProgressPage();case'gradebook':return gradebookPage();case'scribe':return scribePage();case'rewards':return rewardsPage();case'passes':return passesPage();case'jobs':return jobsPage();case'schedule':return schedulePage();case'tools':return toolsPage();case'storyvault':return storyvaultPage();case'ai-usage':return aiUsagePage();case'seating':return seatingPage();case'leaderboards':return leaderboardsPage();case'arcade':return arcadePage();default:return studentCommandPage()}}
+function pageMarkup(){switch(state.page){case'live-progress':return liveProgressPage();case'gradebook':return gradebookPage();case'placements':return placementReportsPage();case'scribe':return scribePage();case'rewards':return rewardsPage();case'passes':return passesPage();case'jobs':return jobsPage();case'schedule':return schedulePage();case'tools':return toolsPage();case'storyvault':return storyvaultPage();case'ai-usage':return aiUsagePage();case'seating':return seatingPage();case'leaderboards':return leaderboardsPage();case'arcade':return arcadePage();default:return studentCommandPage()}}
+
+function placementReportsPage(){return `${pageBanner('📊','Private assessment evidence','Math & ELA Placement Reports','See each scholar’s instructional placement and the exact standards demonstrated or needing support.','')}<article class="panel"><iframe title="Private placement reports" src="../placement-reports.html" style="width:100%;height:72vh;border:0;border-radius:12px;background:#050b21"></iframe></article>`}
 
 function liveProgressPage(){
  const rows=state.gradebook?.rows||[],today=state.gradebook?.today||{},saved=state.curriculumVideoProgress||[],catalog=state.curriculumVideoCatalog||[],spellingResults=state.spellingResults||[],day=Number(state.curriculumDay||today.day||0),dateKey=String(today.dateKey||"");

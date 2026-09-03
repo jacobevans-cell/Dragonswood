@@ -611,6 +611,22 @@ service cloud.firestore {
       allow delete: if isTeacher();
     }
 
+    // Detailed placement evidence is private teacher data. Students may submit
+    // only their own completed report, but cannot read placement or deficit data.
+    match /placementReports/{studentId} {
+      allow read, delete: if isTeacher();
+      allow create, update: if (isExploreStudent() || isTester())
+                            && isOwner(studentId)
+                            && request.resource.data.studentId == studentId
+                            && request.resource.data.studentVisible == false
+                            && request.resource.data.version == 'math-ela-placement-v1'
+                            && request.resource.data.enrolledGrade in [4, 5]
+                            && request.resource.data.math is map
+                            && request.resource.data.ela is map
+                            && request.resource.data.math.placement in ['foundation','4','5','6']
+                            && request.resource.data.ela.placement in ['foundation','4','5','6'];
+    }
+
     // Curriculum Quest is cached locally for immediate/offline use and mirrored
     // here so Chromebook or browser-profile resets do not erase academic work.
     match /curriculumQuestProgress/{studentId} {

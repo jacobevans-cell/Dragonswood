@@ -73,6 +73,7 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
 .countdown-card small{display:block;color:#bdb2d0;font-weight:900;letter-spacing:.6px}.countdown-card b{display:block;color:#fff0a4;font:900 22px Georgia;margin:4px 0}.countdown-card span{color:#d4e8ff;font-size:12px}
 @media(max-width:760px){.countdown-grid{grid-template-columns:1fr}}
 .dw-quest-loading .hero,.dw-quest-loading .quest-level,.dw-quest-loading .dq-progress-summary,.dw-quest-loading .sessions,.dw-quest-loading .map,.dw-quest-loading .calendar-countdowns{visibility:hidden}
+body[data-dw-placement-benchmark="1"] .dw-morning-coach-launch,body[data-dw-placement-benchmark="1"] .dw-morning-coach-backdrop{display:none!important}
 .dq-progress-summary{margin-top:12px;padding:13px 16px;display:grid;grid-template-columns:190px 1fr;gap:12px;align-items:center}.dq-progress-summary>div{padding:8px 11px;border:1px solid #46336f;border-radius:10px;background:#090b2ccc}.dq-progress-summary small{display:block;color:#c3b4d9;font-size:9px;font-weight:900;letter-spacing:.7px}.dq-progress-summary b{display:block;color:#fff0a2;font:900 22px Georgia;margin-top:3px}.dq-progress-summary span{font-size:11px;color:#cfe6f6}@media(max-width:650px){.dq-progress-summary{grid-template-columns:1fr}}
 .node.missed{background:#24152e;color:#ca9aaa;border-color:#70425e}
 </style>
@@ -146,6 +147,7 @@ const DW_V33_PARAMS=new URLSearchParams(location.search),DW_V33_ENV=DW_V33_PARAM
 const DW_PLACEMENT_DATE="2026-09-03";
 const DW_PLACEMENT_MODE=DW_V33_PARAMS.get("benchmark")==="placement"||(()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`===DW_PLACEMENT_DATE})();
 const DW_BENCHMARK_MODE=DW_PLACEMENT_MODE||DW_V33_PARAMS.get("benchmark")==="q1";
+if(DW_PLACEMENT_MODE)document.body.dataset.dwPlacementBenchmark="1";
 const firebaseConfig=DW_V33_EMULATOR
   ? {apiKey:"demo-key",authDomain:"demo-dragonswood-v33.localhost",projectId:"demo-dragonswood-v33",storageBucket:"demo-dragonswood-v33.appspot.com",messagingSenderId:"000000000000",appId:"1:000000000000:web:demo-v33"}
   : {"apiKey":"AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE","authDomain":"dragonswood-9289e.firebaseapp.com","projectId":"dragonswood-9289e","storageBucket":"dragonswood-9289e.firebasestorage.app","messagingSenderId":"1064477064695","appId":"1:1064477064695:web:283e1016ee2303d39042f2","measurementId":"G-LPRLDGVBD2"};

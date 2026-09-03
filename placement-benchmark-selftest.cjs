@@ -44,6 +44,7 @@ assert(daily.includes('if(!q&&placementFallback)'),'placement must continue with
 assert(daily.includes('async function startSessionUnsafe()'));
 assert(daily.includes('Benchmark":"Quest"} could not start:'),'startup failures must be visible instead of leaving a dead button');
 assert(daily.includes('<body class="dw-quest-loading">'),'ordinary Morning Work must not flash before benchmark mode is ready');
+assert(daily.includes('document.body.dataset.dwPlacementBenchmark="1"'),'placement must disable the Math Coach assistance button');
 assert(rules.includes('match /placementReports/{studentId}'));
 assert(rules.includes('allow read, delete: if isTeacher()'));
 console.log('placement benchmark selftest: PASS (30-question core / adaptive to 40–50 per subject / four bands / private teacher report)');

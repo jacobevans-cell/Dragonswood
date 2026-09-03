@@ -118,7 +118,7 @@
       if(matches.some(row=>row?.status==='in_progress'))return 'in_progress';
       return 'not_started';
     };
-    return Object.freeze({dateKey,morning:status('morning'),exit:status('exit')});
+    return Object.freeze({dateKey,morning:status('morning')});
   }
 
   function normalizeStudent(user,profile,dailyRows=[],dailyOverride={},selfUnlockMorning=false,now=new Date()){

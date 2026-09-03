@@ -128,7 +128,7 @@ async function attemptAuthenticatedWrite(account){
     await seed('testerAccounts',accounts.tester.uid,{active:true,label:'V3 gate tester',capabilities:{selfUnlockMorning:true,selfUnlockCurriculum:true,selfUnlockArcade:true,selfUnlockKingdom:true,selfUnlockBoss:true,selfAwardPoints:true}});
     await seed('dailyQuestProgress',`${accounts.grade4.uid}_2026-08-25_v48`,{studentId:accounts.grade4.uid,dateKey:'2026-08-25',session:'morning',status:'complete',score:100});
     await seed('dailyQuestProgress',`${accounts.grade4.uid}_2026-08-24_v48`,{studentId:accounts.grade4.uid,dateKey:'2026-08-24',session:'morning',status:'complete',score:100});
-    await seed('dailyQuests',today,{date:today,day:14,chapter:'The Crystal Crossing',chapterIcon:'💎',morningXp:4,exitXp:2,gold:1,unlockAt:dailyUnlockAt,lockAt:dailyLockAt});
+    await seed('dailyQuests',today,{date:today,day:14,chapter:'The Crystal Crossing',chapterIcon:'💎',morningXp:6,gold:1,unlockAt:dailyUnlockAt,lockAt:dailyLockAt});
     await seed('classData','dailyAccessOverride',{dateKey:today,all:false,studentIds:[]});
     await seed('classData','kingdomAccess',{dateKey:today,all:true,studentIds:[]});
     await seed('classData','activeWritingSession',{sessionId:'scribe-gate-1',status:'active',title:'Emulator Quickwrite',mode:'Quickwrite',writingType:'Narrative',targetSkill:'Sensory Details',prompt:'Describe the hidden gate using three sensory details.',hints:['Use a strong verb'],timeMinutes:5,minWords:5});
@@ -146,7 +146,6 @@ async function attemptAuthenticatedWrite(account){
     await seed('scores','grade4-math',{studentId:accounts.grade4.uid,displayName:'Fourth',avatarEmoji:'🛡️',assignmentId:'math-1',gameName:'Decimal Deception',subject:'Math',dateKey:today,score:80});
     await seed('scores','historic-browser-score',{studentId:'historic-browser',displayName:'Historic Scholar',assignmentId:'old-game',gameName:'Legacy Game',subject:'Math',dateKey:'2020-01-01',score:999});
     await seed('leaderboardRewards',`${today}_${accounts.grade5.uid}`,{studentId:accounts.grade5.uid,studentName:'Fifth',dateKey:today,weekKey:today,rank:1,goldAward:5,status:'issued'});
-    await seed('dailyQuestProgress',`${accounts.grade5.uid}_${today}_exit_seed`,{studentId:accounts.grade5.uid,dateKey:today,day:14,session:'exit',status:'complete',score:100,correct:1,attempts:1});
     await seed('writingSessions','scribe-gate-1',{status:'active',title:'Emulator Quickwrite',prompt:'Describe the hidden gate using three sensory details.',minWords:5});
     await seed('curriculumAttempts','attempt-grade4-1',{studentId:accounts.grade4.uid,itemId:'I-D14-MATH',attemptNumber:1,questionsCorrect:8,questionsSeen:10,accuracy:80});
     await seed('curriculumOverrideRequests','override-grade4',{studentId:accounts.grade4.uid,studentName:'Fourth',lessonId:'I-D14-MATH',studentAnswer:'I used place value evidence.',status:'pending'});

@@ -26,7 +26,6 @@
     closeButton.addEventListener('click',close);
     coachFrame.addEventListener('load',()=>{let child;try{child=coachFrame.contentDocument}catch{return}if(!child)return;child.getElementById('customModeBtn')?.click();child.querySelector('[data-difficulty="normal"]')?.click();const compact=child.createElement('style');compact.dataset.dwMorningCoachCompact='1';compact.textContent='.dw-account,.dw-status,.round-banner,.game-hero,.difficulty-row,.difficulty-note,.top,.mission-dashboard,.mission-complete,.mode-row:first-child{display:none!important}.mode-shell{margin-top:8px!important}.mode-row-spaced{margin-top:0!important}.layout{margin-top:10px!important}main{padding-top:4px!important}.op-btn[data-operation="mixed"]{display:none!important}';child.head?.append(compact);retryPopulate()});
     doc.getElementById('morningBtn')?.addEventListener('click',()=>{doc.body.dataset.dwMorningActive='1'});
-    doc.getElementById('exitBtn')?.addEventListener('click',()=>{delete doc.body.dataset.dwMorningActive;close()});
     doc.getElementById('closePlay')?.addEventListener('click',()=>{delete doc.body.dataset.dwMorningActive;close()});
     return true;
   }

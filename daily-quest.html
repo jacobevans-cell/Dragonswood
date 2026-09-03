@@ -12,7 +12,7 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
 .status{padding:10px 13px;margin-bottom:10px}.status.good{border-color:#3a9861;color:#c6f6d6}.status.warn{border-color:#bf8839;color:#ffe1a2}.status.bad{border-color:#c24c67;color:#ffc2ce}
 .hero{padding:18px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;background:linear-gradient(100deg,rgba(72,19,126,.7),rgba(4,48,75,.62))}
 .hero h1{font:900 34px Georgia;margin:0;color:#fff2a9}.hero .chapter{color:#dba1ff;font-weight:900;letter-spacing:.8px}.daypill{padding:12px 18px;border:1px solid var(--gold);border-radius:999px;color:var(--gold2);font-weight:900;background:#130b33}
-.sessions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.session{padding:18px;position:relative;overflow:hidden}.session h2{margin:0;color:#fff0a4;font:900 25px Georgia}.session .time{font-weight:900;color:#9fe7ff}.session button{width:100%;margin-top:14px;padding:13px;border:0;border-radius:9px;color:white;font-weight:1000;cursor:pointer;background:linear-gradient(90deg,#7b2cd3,#048eb6)}.session.locked{filter:grayscale(.65);opacity:.65}.session.done{border-color:#3cad74}
+.sessions{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}.session{padding:18px;position:relative;overflow:hidden}.session h2{margin:0;color:#fff0a4;font:900 25px Georgia}.session .time{font-weight:900;color:#9fe7ff}.session button{width:100%;margin-top:14px;padding:13px;border:0;border-radius:9px;color:white;font-weight:1000;cursor:pointer;background:linear-gradient(90deg,#7b2cd3,#048eb6)}.session.locked{filter:grayscale(.65);opacity:.65}.session.done{border-color:#3cad74}
 .map{margin-top:12px;padding:14px}.maptrack{display:flex;gap:7px;overflow:auto;padding:8px 2px}.node{min-width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#130d35;border:1px solid #493277;color:#8f84a8;font-size:10px;font-weight:900}.node.today{background:linear-gradient(145deg,#7529d0,#0787b2);border-color:#ffe17e;color:white;box-shadow:0 0 15px #9f4cff88}.node.past{background:#11302a;color:#85eab1;border-color:#378361}.node.future{filter:blur(.1px)}
 #playModal{position:fixed;inset:0;background:#000c;z-index:50;display:none;align-items:center;justify-content:center;padding:12px}#playModal.show{display:flex}.play{width:min(1080px,98vw);height:min(800px,96vh);padding:14px;overflow:auto;position:relative}.playhead{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border-bottom:1px solid #5d4289;padding-bottom:10px}.playhead h2{margin:0;color:var(--gold2);font-family:Georgia}.close{background:#4d2149;color:white;border:1px solid #a94c7b;border-radius:8px;padding:8px 11px;cursor:pointer}.progress{height:10px;background:#040516;border:1px solid #4f347c;border-radius:999px;overflow:hidden;margin:10px 0}.progress>div{height:100%;background:linear-gradient(90deg,#7d31d7,#00bde8);width:0}.taskmeta{display:flex;justify-content:space-between;gap:12px;color:#bdb2d0;font-size:11px;font-weight:900}.arena{min-height:470px;margin-top:12px;padding:18px;border:1px solid #493273;border-radius:13px;background:linear-gradient(180deg,rgba(8,9,37,.86),rgba(4,11,28,.9));position:relative;overflow:hidden}.prompt{font-size:22px;font-weight:900;text-align:center;margin:4px auto 18px;max-width:820px}.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:800px;margin:auto}.choice{padding:15px;border-radius:10px;border:1px solid #57408a;background:#171039;color:white;font-weight:900;cursor:pointer}.choice:hover{border-color:#37c8f3}.choice.good{background:#174b34;border-color:#63e69b}.choice.bad{background:#531b32;border-color:#ff7696}
 .feedback{text-align:center;min-height:30px;font-weight:900;margin-top:12px}.feedback.good{color:var(--good)}.feedback.bad{color:var(--bad)}
@@ -106,8 +106,7 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
     <div><small>TODAY</small><b id="dqTodayComplete">Not complete yet</b><span>Assigned Morning Work or Level-Up Morning Work counts.</span></div>
   </section>
   <section class="sessions">
-    <article class="glass session" id="morningCard"><div class="chapter">🌅 MORNING BELL WORK</div><h2>Morning Adventure</h2><div class="time">≈ 25 minutes • about 35 questions</div><p>Grade-matched Math + ELA spiral practice with Visual Coach support.</p><button id="morningBtn">ENTER MORNING QUEST</button></article>
-    <article class="glass session" id="exitCard"><div class="chapter">🌙 EXIT QUEST</div><h2>End-of-Day Challenge</h2><div class="time">≈ 15–20 minutes • 16 interactions</div><p>A full independent skill check with fresh problems and coaching available.</p><button id="exitBtn">ENTER EXIT QUEST</button></article>
+    <article class="glass session" id="morningCard"><div class="chapter">🌅 UNIFIED MORNING WORK</div><h2>Morning Adventure</h2><div class="time">≈ 25 minutes • about 35 questions</div><p>All daily Math + ELA spiral practice in one session, with Visual Coach support.</p><button id="morningBtn">ENTER MORNING WORK</button></article>
   </section>
   <section class="glass map"><b>🗺️ 180-DAY DRAGONSWOOD JOURNEY</b><div class="maptrack" id="maptrack"></div></section>
   <section class="glass calendar-countdowns"><b>⏳ SCHOOL-YEAR COUNTDOWNS</b><div class="countdown-grid" id="dqCountdowns"></div></section>
@@ -164,7 +163,7 @@ let dwDailyOverrideUnsub=null,dwDailyOverrideRows=[],dwLastStudentAnswer="",dwDa
 const dwRejectedQuestionKeys=new Set(),dwOverrideAppliedKeys=new Set();
 window.addEventListener("dw:narration-voice-change",async e=>{const voiceId=e.detail?.voiceId||"automatic";if(!user||profile?.narrationVoice===voiceId)return;profile={...(profile||{}),narrationVoice:voiceId};try{await setDoc(doc(db,"students",user.uid),{narrationVoice:voiceId,updatedAt:serverTimestamp()},{merge:true})}catch(err){console.warn("Could not sync narration preference",err)}});
 let activeSeconds=0,idleEvents=0,perQuestionSeconds=[],questionStartedAt=0,lastInteractionAt=0,idleAnnounced=false,activeTimer=null,skillStats={},needsReteach=new Set(),retryKeys=new Set();
-let sessionProgress=null,morningProgress=null,exitProgress=null,dqProgressRows=[],dqProgressUnsub=null,dqCompletedDates=new Set();
+let sessionProgress=null,morningProgress=null,dqProgressRows=[],dqProgressUnsub=null,dqCompletedDates=new Set();
 function dateKey(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
 
 const DW_DAILY_GOLD_CAP=30;
@@ -4869,7 +4868,12 @@ function dwLabelOf(id){return (DW_SKILLS[id]&&DW_SKILLS[id][0])||id}
 
 /* Rebuilds one day of the 5th-grade or Challenge track. Mirrors exactly what
    the build script produced, so the maps stay tiny. */
+function dwUnifiedLessonBase(base){
+  const {exit:_retiredExit,exitXp:retiredExitXp,...unified}=base||{};
+  return {...unified,morningXp:Number(unified.morningXp??4)+Number(retiredExitXp??0)};
+}
 function dwTrackLesson(track, day, base, ENGN){
+  base=dwUnifiedLessonBase(base);
   const t=(subject,id,ei,count,seed,skill,extra)=>Object.assign(
     {subject,skill:skill||dwLabelOf(id),skillId:id,engine:ENGN[((ei%ENGN.length)+ENGN.length)%ENGN.length],count,seed}, extra||{});
   if(track==="5"){
@@ -4879,9 +4883,7 @@ function dwTrackLesson(track, day, base, ENGN){
       mathSkill:dwLabelOf(ms),mathSkillId:ms,elaSkill:dwLabelOf(es),elaSkillId:es,
       title:`📘 Day ${day}: Fifth Grade Expedition`,sourcePacket:dwPacketFor(day),
       morning:[t("MATH",ms,day,4,50000+day*20),t("ELA",es,day+2,4,50001+day*20),
-               t("MATH",ms2,day+4,4,50002+day*20),t("ELA",es2,day+6,4,50003+day*20)],
-      exit:[t("MATH",ms,day+1,4,51000+day*20),t("ELA",es,day+3,4,51001+day*20),
-            t("MATH",ms2,day+5,4,51002+day*20),t("ELA",es2,day+7,4,51003+day*20)]});
+               t("MATH",ms2,day+4,4,50002+day*20),t("ELA",es2,day+6,4,50003+day*20)]});
   }
   const row=DW_CH_DAYS[day-1]; if(!row) return null;
   const [ms,es,ms2,ms3,es2]=row.map(k=>DW_CH_IDS[k]);
@@ -4890,12 +4892,11 @@ function dwTrackLesson(track, day, base, ENGN){
     mathSkill:dwLabelOf(ms),mathSkillId:ms,elaSkill:dwLabelOf(es),elaSkillId:es,
     challengeWord:word,challengeNumber:number,
     title:`⭐ Day ${day}: Challenge Expedition`,sourcePacket:"Dragonswood Early–Mid 6th Grade Enrichment",
-    morning:[t("MATH",ms,day,5,60000+day*30,`Number of the Day • ${dwLabelOf(ms)}`),
-             t("ELA",es,day+2,5,60001+day*30,`Word of the Day • ${word} • ${dwLabelOf(es)}`,{wordOfDay:word}),
-             t("MATH",ms2,day+4,6,60002+day*30,`Multi-step Challenge • ${dwLabelOf(ms2)}`)],
-    exit:[t("MATH",ms,day+1,5,61000+day*30,`Number Reasoning • ${dwLabelOf(ms)}`),
-          t("ELA",es2,day+3,5,61001+day*30,`Word Application • ${word} • ${dwLabelOf(es2)}`,{wordOfDay:word}),
-          t("MATH",ms3,day+5,6,61002+day*30,`Independent Challenge • ${dwLabelOf(ms3)}`)]});
+    morning:[t("MATH",ms,day,4,60000+day*30,`Number of the Day • ${dwLabelOf(ms)}`),
+             t("ELA",es,day+2,3,60001+day*30,`Word of the Day • ${word} • ${dwLabelOf(es)}`,{wordOfDay:word}),
+             t("MATH",ms2,day+4,3,60002+day*30,`Multi-step Challenge • ${dwLabelOf(ms2)}`),
+             t("ELA",es2,day+3,3,61001+day*30,`Word Application • ${word} • ${dwLabelOf(es2)}`,{wordOfDay:word}),
+             t("MATH",ms3,day+5,3,61002+day*30,`Independent Challenge • ${dwLabelOf(ms3)}`)]});
 }
 const DW_CURRIC_PLAN={
  "I-HUM-D1-C1-A":{"standards":["W4.1","W.4.5","W.4.9a","SL4.1","SL.4.2","RL.4.1","RL4.3","RL4.6","RL4.7","L.4.2","L4.3"],"iCan":"A. Introduce a topic or text clearly, state an opinion, and create an organizational structure in which related ideas are grouped to support the writer's purpose B. Provide reasons that are supported by facts and details. C. Link opinion and reasons using words and phrases (e.g., for instance, in order to, in addition). D. Provide a concluding statement or section related to the opinion presented.","skills":["ela.opinion","ela.topicsentence","ela.supporting","ela.writing","ela.pk.expanding_sentences","ela.meaning","ela.pk.identifying_the_purpose_of_a_text","ela.character","ela.pov","ela.pk.text_structures","ela.capitalization","ela.commas","ela.dialogue","ela.shades","ela.transitions","ela.pk.combining_sentences"]},
@@ -5974,14 +5975,17 @@ function dwPacingSpecs(day,gradeCode){
  const specs=[];for(const item of items){const mp=dwMorphParts(item),skills=mp.root?["curric.morph"]:dwPacingTopicSkills(item);for(const skillId of skills.slice(0,2))specs.push({item,skillId,questionParams:mp.root?{root:mp.root,word:mp.word}:null})}return specs;
 }
 function dwBuildPacingLesson(base){
+ base=dwUnifiedLessonBase(base);
  const day=Math.max(1,Number(base.day||1)),gradeCode=String(profile?.grade||"4")==="5"?"K":"I",specs=dwPacingSpecs(day,gradeCode);
  if(!specs.length)throw new Error(`No verified pacing contract exists for grade ${gradeCode==="K"?5:4}, day ${day}.`);
  const make=(spec,i,count)=>({subject:spec.item.subject==="Math"?"MATH":"ELA",skillId:spec.skillId,skill:dwPacingLabel(spec.item)||dwLabelOf(spec.skillId),engine:DW_PACING_ENGINES[(day+i)%DW_PACING_ENGINES.length],count,seed:day*100003+i*7919,questionParams:spec.questionParams,pacingLocked:true,pacingItemId:spec.item.id,pacingRequirement:spec.item.requirement,pacingStrand:spec.item.strand,sourceDate:spec.sourceDate||String(base.date||`Day ${day}`),remediationStatus:"none",substitutionReason:spec.substitutionReason||"current pacing target"});
- const morning=dwBuildVariedMorning(specs,day,make),exit=specs.slice(0,Math.min(4,specs.length)).map((s,i)=>make(s,i+35,4));
+ // Morning already covers every same-day pacing target plus spaced review.
+ // The retired Exit Quest used the same targets, so appending it would add duplicates.
+ const morning=dwBuildVariedMorning(specs,day,make);
  const math=specs.find(s=>s.item.subject==="Math"),ela=specs.find(s=>s.item.subject==="HUM"),track=resolvedTrack(),trackName=track==="foundation"?"FOUNDATION SUPPORT":track==="challenge"?"⭐ PACING ENRICHMENT":gradeCode==="K"?"5TH GRADE":"4TH GRADE";
- return {...base,track,trackName,pacingGrade:gradeCode,pacingLocked:true,title:`${base.chapterIcon||"📜"} Day ${day}: ${dwPacingLabel(math?.item||ela?.item)}`,mathSkill:math?dwPacingLabel(math.item):"Pacing Guide",elaSkill:ela?dwPacingLabel(ela.item):"Pacing Guide",morning,exit};
+ return {...base,track,trackName,pacingGrade:gradeCode,pacingLocked:true,title:`${base.chapterIcon||"📜"} Day ${day}: ${dwPacingLabel(math?.item||ela?.item)}`,mathSkill:math?dwPacingLabel(math.item):"Pacing Guide",elaSkill:ela?dwPacingLabel(ela.item):"Pacing Guide",morning};
 }
-function dwValidatePacingLesson(L){const all=[...(L?.morning||[]),...(L?.exit||[])];if(!L?.pacingLocked||!all.length)throw new Error("Daily work has no verified pacing contract.");for(const t of all){if(!t.pacingItemId||!t.skillId||!DW_SKILLS[t.skillId])throw new Error(`Unmapped pacing task: ${t.pacingItemId||t.skill||"unknown"}`);const q=makeQ(t,0);if(!q||q.source!=="registry"||!dwValidQuestion(q))throw new Error(`Ungradable pacing task: ${t.pacingItemId}`)}return L}
+function dwValidatePacingLesson(L){const all=[...(L?.morning||[])];if(!L?.pacingLocked||!all.length)throw new Error("Daily work has no verified pacing contract.");for(const t of all){if(!t.pacingItemId||!t.skillId||!DW_SKILLS[t.skillId])throw new Error(`Unmapped pacing task: ${t.pacingItemId||t.skill||"unknown"}`);const q=makeQ(t,0);if(!q||q.source!=="registry"||!dwValidQuestion(q))throw new Error(`Ungradable pacing task: ${t.pacingItemId}`)}return L}
 function makeTrackLesson(base){
  if(isLevelUpMode()){const track=resolvedTrack();if(track==='4')return dwValidatePacingLesson(dwBuildPacingLesson(base));const elevated=dwTrackLesson(track,Math.max(1,Number(base.day||1)),base,DW_PACING_ENGINES);if(!elevated)throw new Error(`No level-up lesson is available for ${track}, day ${base.day}.`);return elevated}
  return dwValidatePacingLesson(dwBuildPacingLesson(base))
@@ -6091,22 +6095,21 @@ async function saveProgress(extra={}){
 }
 async function refreshSessionCards(){
   if(!lesson||!user)return;
-  morningProgress=await readProgress("morning");exitProgress=await readProgress("exit");
+  morningProgress=await readProgress("morning");
   const decorate=(card,btn,p,label)=>{
     card.classList.remove("done");
     if(p?.status==="complete"){card.classList.add("done");btn.textContent=`REPLAY ${label} ✓`}
     else if(p&&(Number(p.taskIndex||0)>0||Number(p.qIndex||0)>0||Number(p.attempts||0)>0))btn.textContent=`RESUME ${label}`;
     else btn.textContent=`ENTER ${label}`;
   };
-  decorate($("morningCard"),$("morningBtn"),morningProgress,"MORNING QUEST");
-  decorate($("exitCard"),$("exitBtn"),exitProgress,"EXIT QUEST");
+  decorate($("morningCard"),$("morningBtn"),morningProgress,"MORNING WORK");
   postDailyMissionState();
 }
 
 function postDailyMissionState(available=true){
  if(DW_V33_PARAMS.get("dwEmbed")!=="1"||window.parent===window)return;
  const stateOf=p=>p?.status==="complete"?"complete":p?.status==="in_progress"?"in_progress":"not_started";
- window.parent.postMessage({channel:"dw-v33-module",type:"daily-mission-state",available,dateKey:lesson?.date||dateKey(),morning:stateOf(morningProgress),exit:stateOf(exitProgress)},location.origin);
+ window.parent.postMessage({channel:"dw-v33-module",type:"daily-mission-state",available,dateKey:lesson?.date||dateKey(),morning:stateOf(morningProgress)},location.origin);
 }
 
 
@@ -6137,13 +6140,13 @@ function watchDailyQuestProgress(){
    err=>console.warn("daily quest history",err)
  );
 }
-function localPreviewQuest(key){const start=new Date("2026-08-24T12:00:00-07:00"),target=new Date(`${key}T12:00:00-07:00`);let day=0;for(let cursor=new Date(start);cursor<=target;cursor.setDate(cursor.getDate()+1)){const weekday=cursor.getDay();if(weekday>=1&&weekday<=5)day++}return {date:key,day:Math.max(1,day),chapter:"Local School-Day Preview",chapterIcon:"📜",morningXp:0,exitXp:0,gold:0}}
-async function loadToday(){let key=dateKey();const isTeacher=String(user?.email||"").toLowerCase()===TEACHER,localHost=["localhost","127.0.0.1"].includes(location.hostname),params=new URLSearchParams(location.search);const q=params.get("date"),validPreviewDate=/^\d{4}-\d{2}-\d{2}$/.test(String(q||"")),safeTesterPreview=params.get("dw-safe-preview")==="1"&&testerSession.isTester===true;localPreviewMode=validPreviewDate&&(localHost||safeTesterPreview);if((isTeacher||localPreviewMode)&&validPreviewDate)key=q;try{try{const history=await getDocs(query(collection(db,"dailyQuestProgress"),where("studentId","==",user.uid)));dqProgressRows=history.docs.map(d=>({id:d.id,...d.data()}))}catch(e){console.warn("reteach history",e)}let snap;try{snap=await getDoc(doc(db,"dailyQuests",key))}catch(err){if(!localHost||!localPreviewMode)throw err;console.warn("Using bundled local school-day preview",err);snap={exists:()=>true,data:()=>localPreviewQuest(key)}}if(!snap.exists()){status("No student quest is scheduled for this date.","warn");$("morningCard").classList.add("locked");$("exitCard").classList.add("locked");$("morningBtn").disabled=$("exitBtn").disabled=true;postDailyMissionState(false);return}lesson=makeTrackLesson(snap.data());renderLesson();$("trackLabel").textContent=(isLevelUpMode()?"LEVEL-UP: ":"TRACK: ")+lesson.trackName;
+function localPreviewQuest(key){const start=new Date("2026-08-24T12:00:00-07:00"),target=new Date(`${key}T12:00:00-07:00`);let day=0;for(let cursor=new Date(start);cursor<=target;cursor.setDate(cursor.getDate()+1)){const weekday=cursor.getDay();if(weekday>=1&&weekday<=5)day++}return {date:key,day:Math.max(1,day),chapter:"Local School-Day Preview",chapterIcon:"📜",morningXp:0,gold:0}}
+async function loadToday(){let key=dateKey();const isTeacher=String(user?.email||"").toLowerCase()===TEACHER,localHost=["localhost","127.0.0.1"].includes(location.hostname),params=new URLSearchParams(location.search);const q=params.get("date"),validPreviewDate=/^\d{4}-\d{2}-\d{2}$/.test(String(q||"")),safeTesterPreview=params.get("dw-safe-preview")==="1"&&testerSession.isTester===true;localPreviewMode=validPreviewDate&&(localHost||safeTesterPreview);if((isTeacher||localPreviewMode)&&validPreviewDate)key=q;try{try{const history=await getDocs(query(collection(db,"dailyQuestProgress"),where("studentId","==",user.uid)));dqProgressRows=history.docs.map(d=>({id:d.id,...d.data()}))}catch(e){console.warn("reteach history",e)}let snap;try{snap=await getDoc(doc(db,"dailyQuests",key))}catch(err){if(!localHost||!localPreviewMode)throw err;console.warn("Using bundled local school-day preview",err);snap={exists:()=>true,data:()=>localPreviewQuest(key)}}if(!snap.exists()){status("No student quest is scheduled for this date.","warn");$("morningCard").classList.add("locked");$("morningBtn").disabled=true;postDailyMissionState(false);return}lesson=makeTrackLesson(snap.data());renderLesson();$("trackLabel").textContent=(isLevelUpMode()?"LEVEL-UP: ":"TRACK: ")+lesson.trackName;
 const lub=$("levelUpBanner");if(lub)lub.style.display=isLevelUpMode()?"block":"none";
 const td=$("trackDesc");if(td)td.textContent=isLevelUpMode()
   ? (lesson.track==="challenge"?"Optional enrichment • Early–Mid 6th Grade":lesson.track==="foundation"?"Optional fourth-grade level-up work":"Optional fifth-grade challenge work")
   : (lesson.track==="challenge"?"Advanced enrichment • Early–Mid 6th Grade":lesson.track==="5"?"Fifth-grade spiral practice":lesson.track==="foundation"?"Foundation spiral practice • Grade 3 prerequisite skills":"Fourth-grade spiral practice");
-const mini=$("trackLabelMini");if(mini)mini.textContent=`TRACK: ${lesson.trackName}`;await refreshSessionCards();status(localPreviewMode?`🧪 SAFE DATE PREVIEW • Showing ${key} • Progress, scores, XP, and Gold will not be written.`:Number(profile.hp||0)<=0?"💀 You may complete today's academics, but knocked-out players earn no Player XP or Gold until revival.":"Today's quest is unlocked. Future quests remain sealed by Dragonswood server time.","good");}catch(err){console.error(err);status("Today’s quest is still sealed. Make sure you are signed in and today’s assignment is open.","bad");$("morningBtn").disabled=$("exitBtn").disabled=true;postDailyMissionState(false)}}
+const mini=$("trackLabelMini");if(mini)mini.textContent=`TRACK: ${lesson.trackName}`;await refreshSessionCards();status(localPreviewMode?`🧪 SAFE DATE PREVIEW • Showing ${key} • Progress, scores, XP, and Gold will not be written.`:Number(profile.hp||0)<=0?"💀 You may complete today's academics, but knocked-out players earn no Player XP or Gold until revival.":"Today's quest is unlocked. Future quests remain sealed by Dragonswood server time.","good");}catch(err){console.error(err);status("Today’s quest is still sealed. Make sure you are signed in and today’s assignment is open.","bad");$("morningBtn").disabled=true;postDailyMissionState(false)}}
 onAuthStateChanged(auth,async u=>{
  testerAccountUnsub?.();testerControlsUnsub?.();testerAccountUnsub=testerControlsUnsub=null;
  user=u;testerSession=Tester.normalizeTester(u?.uid||'',null);testerControls={};testerMorningOverride=false;
@@ -6162,13 +6165,13 @@ onAuthStateChanged(auth,async u=>{
  if(!email.endsWith("@"+DOMAIN)&&email!==TEACHER&&!testerSession.isTester){status("Daily Quest requires an Explore Academy or approved tester account.","bad");return}
   try{const s=await getDoc(doc(db,"students",u.uid));if(s.exists())profile=s.data();else if(testerSession.isTester)profile={firstName:u.displayName||"Tester",grade:"4",hp:10,gold:0,xp:0};window.DWVoicePreferences?.set?.(profile?.narrationVoice||"automatic");renderAccount();renderSchoolCountdowns();watchDailyQuestProgress();await loadToday();if(testerMorningOverride&&lesson)status("🧪 Tester Morning Work self-unlock is active. Completion evidence remains unchanged until you do the work.","good")}catch(e){console.warn('[Daily Quest profile]',e);status("Your adventurer record could not be opened. Return to the portal and try again.","bad")}
 });
-$("morningBtn").onclick=()=>startSession("morning");$("exitBtn").onclick=()=>startSession("exit");$("closePlay").onclick=async()=>{if(sessionName&&taskIndex<tasks.length)await saveProgress();$("playModal").classList.remove("show")};
-async function startSession(name){
-  sessionName=name;watchDailyQuestionOverrides(user?.uid);dwInstallDailyReviewUI();
-  tasks=name==="morning"?lesson.morning:lesson.exit;
-  if(name==="morning")dwValidateMorningSequence(tasks);
+$("morningBtn").onclick=startSession;$("closePlay").onclick=async()=>{if(sessionName&&taskIndex<tasks.length)await saveProgress();$("playModal").classList.remove("show")};
+async function startSession(){
+  sessionName="morning";watchDailyQuestionOverrides(user?.uid);dwInstallDailyReviewUI();
+  tasks=lesson.morning;
+  dwValidateMorningSequence(tasks);
   questionPlan=buildUniqueQuestionPlan(tasks);
-  sessionProgress=await readProgress(name);
+  sessionProgress=await readProgress("morning");
   if(sessionProgress?.status==="complete"){taskIndex=0;qIndex=0;score=0;correct=0;attempts=0}
   else if(sessionProgress){
     taskIndex=Math.max(0,Number(sessionProgress.taskIndex||0));qIndex=Math.max(0,Number(sessionProgress.qIndex||0));
@@ -6177,7 +6180,7 @@ async function startSession(name){
   skillStats=sessionProgress?.skills||{};needsReteach=new Set(sessionProgress?.needsReteach||[]);activeSeconds=Number(sessionProgress?.activeSeconds||0);idleEvents=Number(sessionProgress?.idleEvents||0);perQuestionSeconds=Array.isArray(sessionProgress?.perQuestionSeconds)?sessionProgress.perQuestionSeconds:[];dwDailyReviewRevisionStates=sessionProgress?.reviewRevisionStates&&typeof sessionProgress.reviewRevisionStates==="object"?sessionProgress.reviewRevisionStates:{};retryKeys=new Set();
   sessionStart=Date.now();
   questionStartedAt=Date.now();startActiveTimer();
-  $("playTitle").textContent=name==="morning"?"🌅 Morning Adventure":"🌙 Exit Quest";
+  $("playTitle").textContent="🌅 Morning Adventure";
   $("playSub").textContent=`Day ${lesson.day} • ${dwCleanLabel(lesson.mathSkill)} + ${dwCleanLabel(lesson.elaSkill)}`;
   $("playModal").classList.add("show");
   await saveProgress({status:"in_progress",startedAt:serverTimestamp()});
@@ -6253,7 +6256,7 @@ async function requestDailyQuestionReview(){
    source:"daily",overrideType:"daily-question",questionKey:key,
    studentId:user.uid,studentName:profile?.firstName||user.displayName||user.email||"Student",studentEmail:user.email||"",
    lessonId:`daily:${dateKey()}:${sessionName}:${key}`,
-   lessonTitle:`${sessionName==="morning"?"Morning Daily Work":"Exit Quest"} • ${dwCleanLabel(currentQuestion?.label||t.skill||currentSkillId())}`,
+   lessonTitle:`Morning Daily Work • ${dwCleanLabel(currentQuestion?.label||t.skill||currentSkillId())}`,
    grade:String(profile?.grade||""),day:Number(lesson?.day||0),subject:String(t.subject||"Daily Work"),strand:String(t.pacingStrand||t.skill||""),
    pacingItemId:String(t.pacingItemId||""),pacingRequirement:String(t.pacingRequirement||""),engine:engineName(t.engine),
    questionPrompt:String(currentQuestion.prompt||"").slice(0,5000),expectedAnswer:String(currentQuestion.answer||"").slice(0,1000),
@@ -6458,7 +6461,7 @@ function smashEngine(q,t){$("arena").innerHTML=`${promptBlock(q,t)}<div class="v
 async function finishSession(){
   if(activeTimer){clearInterval(activeTimer);activeTimer=null}
   const acc=attempts?correct/attempts:1,elapsed=Math.max(1,Math.round((Date.now()-sessionStart)/1000));
-  const requested=sessionName==="morning"?Number(lesson.morningXp||4):Number(lesson.exitXp||2);
+  const requested=Number(lesson.morningXp??4);
   const claimId=`${user.uid}_${isLevelUpMode()?"levelup":"dailyquest"}_${lesson.date}_${lesson.track||"4"}_${sessionName}`;
   $("prog").style.width="100%";
   $("arena").innerHTML=`<div class="complete"><h2>QUEST COMPLETE!</h2><div id="questPetCelebration" style="height:190px;max-width:260px;margin:auto"></div><p id="questPetMessage"></p><p>Run Score: <b>${score.toLocaleString()}</b> • Accuracy: <b>${Math.round(acc*100)}%</b></p><div class="loot" id="loot">Inscribing today’s victory…</div><p>Your academic completion is saved even if your RPG character is knocked out.</p></div>`;
@@ -6488,9 +6491,7 @@ async function finishSession(){
     game:"daily_quest",
     gameName:"Dragonswood Daily Quest",
     track:lesson.track||"4",trackName:lesson.trackName||"4TH GRADE",
-    activityName:isLevelUpMode()
-      ? (sessionName==="morning"?"Level-Up Morning Challenge":"Level-Up Exit Challenge")
-      : (sessionName==="morning"?"Morning Bell Work":"Exit Quest"),
+    activityName:isLevelUpMode()?"Level-Up Morning Challenge":"Morning Work",
     subject:"Math + ELA",
     lesson:`${lesson.mathSkill} + ${lesson.elaSkill}`,
     scoreType:"points",
@@ -6509,14 +6510,14 @@ async function finishSession(){
   const latest=await getDoc(doc(db,"students",user.uid));
   if(!latest.exists()){$("loot").textContent="✓ Academic completion saved • Student RPG profile unavailable.";await refreshSessionCards();return}
   const p=latest.data(),knockedOut=Number(p.hp||0)<=0,actualBefore=dailyXp(p),goldWindow=dwGoldWindow(p);
-  const actualGrant=knockedOut?0:Math.min(requested,Math.max(0,CAP-actualBefore)),requestedGold=knockedOut?0:Number(lesson.gold||1),goldAward=Math.min(requestedGold,Math.max(0,DW_DAILY_GOLD_CAP-goldWindow.earned));
+  const actualGrant=knockedOut?0:Math.min(requested,Math.max(0,CAP-actualBefore)),requestedGold=knockedOut?0:Number(lesson.gold??1)*2,goldAward=Math.min(requestedGold,Math.max(0,DW_DAILY_GOLD_CAP-goldWindow.earned));
   try{
     const batch=writeBatch(db);
     batch.set(doc(db,"gameResults",claimId),{
       studentId:user.uid,studentEmail:user.email||"",displayName:profile?.firstName||String(user.email||"").split("@")[0]||"Player",gameId:"daily_quest",gameName:"Dragonswood Daily Quest",status:"complete",
       dateKey:lesson.date,day:Number(lesson.day||0),track:lesson.track||"4",trackName:lesson.trackName||"4TH GRADE",session:sessionName,score:Number(score||0),accuracy:Math.round(acc*100),seconds:elapsed,
       mathSkill:String(lesson.mathSkill||""),elaSkill:String(lesson.elaSkill||""),
-      summary:`Day ${lesson.day} • ${sessionName==="morning"?"Morning":"Exit"} • ${lesson.mathSkill} + ${lesson.elaSkill} • ${elapsed}s`,
+      summary:`Day ${lesson.day} • Morning Work • ${lesson.mathSkill} + ${lesson.elaSkill} • ${elapsed}s`,
       xpAward:actualGrant,goldAward,knockedOut,createdAt:serverTimestamp()
     });
     if(!knockedOut)batch.update(doc(db,"students",user.uid),{xp:Number(p.xp||0)+actualGrant,gold:Number(p.gold||0)+goldAward,dailyXpDate:dateKey(),dailyXpEarned:actualBefore+actualGrant,dailyGoldEarned:goldWindow.earned+goldAward,dailyGoldWindowStartedAt:goldWindow.reset?serverTimestamp():p.dailyGoldWindowStartedAt,lastGameClaimId:claimId,updatedAt:serverTimestamp()});

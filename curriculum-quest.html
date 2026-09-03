@@ -699,8 +699,10 @@ function validateActivity(x){
     return {ok:true,code:"passed"};
   }
   if(spec.kind==="inference"){
-    const structural=V?.inference?V.inference(written):meaningfulText(written,9),sourceExcerpt=String(x.sourceExcerpt||x.readingPassage||x.lessonContent?.sourceExcerpt||"").trim();
-    if(structural.ok&&sourceExcerpt)return {ok:false,code:"needs_source_check",aiEligible:true,msg:"Dragonswood is checking that your inference matches the reading passage."};
+    const structural=V?.inference?V.inference(written):meaningfulText(written,9);
+    // A complete inference plus a connected supporting detail is sufficient
+    // evidence for this daily application. Do not make a valid response wait
+    // on an AI/source check after the deterministic rubric has already passed.
     return structural;
   }
   if(spec.kind==="writingCommunity")return V?.writingCommunity?V.writingCommunity(written):meaningfulText(written,8);

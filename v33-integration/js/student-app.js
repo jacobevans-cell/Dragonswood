@@ -706,7 +706,13 @@ function handleModuleState(event){
     if(message.dateKey!==effectiveDateKey())return;
     setMissionStatus('morning',message.morning);
   }else if(message.type==='curriculum-mission-state'){
-    setMissionStatus('curriculum',message.currentComplete?'complete':'not_started');
+    // Completion is authoritative for the current school day. A slower hidden
+    // recovery probe can still report its pre-hydration "not started" state
+    // after the visible Curriculum Quest has confirmed every mission complete.
+    // Never let that stale heartbeat uncheck a completed Dragon's Path item;
+    // the normal mission-date change above clears it on the next school day.
+    if(message.currentComplete===true)setMissionStatus('curriculum','complete');
+    else if(!state.completedMissions.has('curriculum'))setMissionStatus('curriculum','not_started');
     state.recoverySummary={dateKey:effectiveDateKey()||state.missionDate,checked:true,checkedAt:Date.now(),count:Number(message.recoveryCount)||0,days:Array.isArray(message.recoveryDays)?message.recoveryDays.map(row=>({day:Number(row.day)||0,count:Number(row.count)||0})).filter(row=>row.day>0&&row.count>0):[]};
     storageSet('recovery-summary',JSON.stringify(state.recoverySummary));
     clearTimeout(recoveryProbeRetryTimer);recoveryProbeRetryTimer=null;

@@ -10,8 +10,7 @@ if(!admin.apps.length)admin.initializeApp();
 const db=admin.firestore(),FieldValue=admin.firestore.FieldValue;
 const OPENAI_API_KEY=defineSecret("OPENAI_API_KEY");
 const OPENAI_ADMIN_KEY=defineSecret("OPENAI_ADMIN_KEY");
-const AZURE_SPEECH_KEY=defineSecret("AZURE_SPEECH_KEY");
-const AZURE_SPEECH_REGION=defineSecret("AZURE_SPEECH_REGION");
+const DEPLOY_GRADING_ONLY=process.env.DRAGONSWOOD_GRADING_ONLY==="1";
 const POLICY_VERSION="academic-rescue-v3.0",PRIMARY_MODEL="gpt-5.6-luna",FOCUSED_MODEL="gpt-5.6-terra",EXCEPTIONAL_MODEL="gpt-5.6-sol",DEFAULT_MODEL=PRIMARY_MODEL;
 const DEFAULT_AI_LIMITS=Object.freeze({
   perStudentDailyCallCap:40,
@@ -302,6 +301,10 @@ exports.recordSpellingResult=onCall({region:"us-central1",timeoutSeconds:20,memo
   return {acknowledged:true,idempotent:!created,resultId,dateKey,week,spellingGrade:grade};
 });
 
+if(!DEPLOY_GRADING_ONLY){
+const AZURE_SPEECH_KEY=defineSecret("AZURE_SPEECH_KEY");
+const AZURE_SPEECH_REGION=defineSecret("AZURE_SPEECH_REGION");
+
 // Sitewide Brian narration. Stable books should normally use the checked-in
 // MP3 manifest; this callable covers authenticated lesson text that changes.
 // The text hash makes identical wording reuse the same private Storage object.
@@ -359,3 +362,4 @@ exports.synthesizeBrianNarration=onCall({region:"us-central1",timeoutSeconds:60,
     return {audioBase64:audio.toString("base64"),contentType:"audio/mpeg",cacheHit:false,cacheHash,voiceName:BRIAN_VOICE,locale};
   }catch(error){console.error("Brian narration synthesis failed",error?.message||error);throw new HttpsError("unavailable","Brian narration is temporarily unavailable.")}
 });
+}

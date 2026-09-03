@@ -643,9 +643,11 @@ function applyStudentModel(model,academic,world,passes,poll,attention,kingdomAcc
   state.attention=attention||null;
   if(!accessWasUnlocked&&state.dailyAccessUnlocked&&dialogRoot?.dataset.dialogKind==='required-work')closeDialog();
   if(model.dailyMissions&&!state.simulatedDate){
-    if(state.missionDate&&state.missionDate!==model.dailyMissions.dateKey){state.completedMissions.delete('curriculum');state.recoverySummary={dateKey:'',checked:false,count:0,days:[]}}
+    const missionDateChanged=state.missionDate&&state.missionDate!==model.dailyMissions.dateKey;
+    if(missionDateChanged){state.completedMissions.delete('morning');state.completedMissions.delete('curriculum');state.recoverySummary={dateKey:'',checked:false,count:0,days:[]}}
     state.missionDate=model.dailyMissions.dateKey||'';
-    setMissionStatus('morning',model.dailyMissions.morning);
+    if(model.dailyMissions.morning==='complete')setMissionStatus('morning','complete');
+    else if(!state.completedMissions.has('morning'))setMissionStatus('morning',model.dailyMissions.morning);
   }else if(state.simulatedDate){
     state.missionDate=effectiveDateKey();setMissionStatus('morning','not_started');setMissionStatus('curriculum','not_started');
   }
@@ -704,7 +706,11 @@ function handleModuleState(event){
   const message=event.data;
   if(message.type==='daily-mission-state'){
     if(message.dateKey!==effectiveDateKey())return;
-    setMissionStatus('morning',message.morning);
+    // A completed placement benchmark counts as Morning Work. Once its live
+    // module confirms completion, an older Firestore roster snapshot must not
+    // remove the check during the same school day.
+    if(message.morning==='complete')setMissionStatus('morning','complete');
+    else if(!state.completedMissions.has('morning'))setMissionStatus('morning',message.morning);
   }else if(message.type==='curriculum-mission-state'){
     // Completion is authoritative for the current school day. A slower hidden
     // recovery probe can still report its pre-hydration "not started" state

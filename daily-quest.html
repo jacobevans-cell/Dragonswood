@@ -6695,29 +6695,30 @@ function dwValidateMorningSequence(taskList){
  return true;
 }
 function buildUniqueQuestionPlan(taskList){
- const used=new Set(),plan=[];
+ const used=new Set(),usage=new Map(),plan=[];
  let flatIndex=0;const groupStats=new Map(),enforceMorning=sessionName==="morning"&&!DW_PLACEMENT_MODE;
  taskList.forEach((t,ti)=>{
    const row=[];
    for(let qi=0;qi<t.count;qi++){
      const group=Math.floor(flatIndex/5),stats=groupStats.get(group)||{direct:0,answers:new Set()};
-     let q=null,sig="",chosenSkill=t.skillId;
+     let q=null,sig="",chosenSkill=t.skillId,placementFallback=null,placementFallbackCount=Infinity;
      const skillIds=[t.skillId,...(Array.isArray(t.alternateSkillIds)?t.alternateSkillIds:[])].filter((id,index,list)=>id&&DW_SKILLS[id]&&list.indexOf(id)===index);
      for(let pass=0;pass<2&&!q;pass++)for(const skillId of skillIds){
        const alternate=skillId!==t.skillId,params=alternate?{grade:t.questionParams?.grade,difficulty:t.questionParams?.difficulty}:t.questionParams;
        for(let tries=0;tries<120;tries++){
          const cand=makeQ({...t,skillId,skill:dwLabelOf(skillId),questionParams:params,seed:Number(t.seed||1)+tries*9973+skillIds.indexOf(skillId)*104729},qi+tries*17);
          if(!cand?.prompt||!Array.isArray(cand?.choices))continue;
-         const s=qSignature(cand);if(used.has(s))continue;
+         const s=qSignature(cand);if(used.has(s)){const seen=usage.get(s)||1;if(DW_PLACEMENT_MODE&&seen<placementFallbackCount){placementFallback={q:cand,sig:s,skillId};placementFallbackCount=seen}continue}
          if(pass===0&&enforceMorning&&dwDirectDefinitionPrompt(cand)&&stats.direct>=1)continue;
          if(pass===0&&enforceMorning&&stats.answers.has(String(cand.answer||"").trim().toLowerCase()))continue;
          q=cand;sig=s;chosenSkill=skillId;break;
        }
        if(q)break;
      }
-     if(!q)throw new Error(`Morning question variety bank exhausted at question ${flatIndex+1}.`);
+     if(!q&&placementFallback){q=placementFallback.q;sig=placementFallback.sig;chosenSkill=placementFallback.skillId}
+     if(!q)throw new Error(`${DW_PLACEMENT_MODE?"Placement":"Morning"} question variety bank exhausted at question ${flatIndex+1}.`);
      if(chosenSkill!==t.skillId){t.skillId=chosenSkill;t.skill=dwLabelOf(chosenSkill);t.questionParams={grade:t.questionParams?.grade,difficulty:t.questionParams?.difficulty};t.pacingItemId=`${t.pacingItemId}:verified-alternate:${chosenSkill}`;t.substitutionReason=`${t.substitutionReason}; verified previously taught alternate used for question variety`;t.sourceAuthority="pacing";t.authorityWeight="40% pacing";t.standardId=null;t.examBlueprintId=null;t.examSource=null;t.examSourceQuestion=null;t.examPreferredIndex=0}
-     used.add(sig);row.push(q);if(enforceMorning){if(dwDirectDefinitionPrompt(q))stats.direct++;stats.answers.add(String(q.answer||"").trim().toLowerCase());groupStats.set(group,stats)}flatIndex++;
+     used.add(sig);usage.set(sig,(usage.get(sig)||0)+1);row.push(q);if(enforceMorning){if(dwDirectDefinitionPrompt(q))stats.direct++;stats.answers.add(String(q.answer||"").trim().toLowerCase());groupStats.set(group,stats)}flatIndex++;
    }
    plan.push(row);
  });

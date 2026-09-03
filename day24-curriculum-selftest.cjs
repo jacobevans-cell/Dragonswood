@@ -23,11 +23,14 @@ for(const grade of ["I","K"]){
   reading?.resourceUrl.endsWith("D24%20-%20Characters%20-%20Character%20Traits%20and%20Analysis.mp4")?pass(`${grade} Characters R2 video`):fail(`${grade} Characters video`,reading?.resourceUrl);
   writing?.resourceUrl.endsWith("D24%20-%20Conjunctions.mp4")?pass(`${grade} Conjunctions R2 video`):fail(`${grade} Conjunctions video`,writing?.resourceUrl);
   reading?.lessonQuestions?.length===8&&reading.lessonQuestions.every(q=>q.choices.includes(q.answer))?pass(`${grade} Characters questions`):fail(`${grade} Characters questions`);
-  writing?.lessonQuestions?.length===8&&writing.lessonQuestions.every(q=>q.choices.includes(q.answer))?pass(`${grade} Conjunctions questions`):fail(`${grade} Conjunctions questions`);
+  writing?.lessonQuestions?.length===12&&writing.lessonQuestions.every(q=>q.choices.includes(q.answer))?pass(`${grade} Conjunctions and sentence-structure questions`):fail(`${grade} Conjunctions and sentence-structure questions`);
+  const second=writing?.additionalVideos?.find(video=>video.id==="sentence-structures");
+  second?.url.endsWith("D24%20-%20Simple%20Compound%20and%20Complex%20Sentences.mp4")&&second.durationSeconds===272?pass(`${grade} sentence-structures R2 video`):fail(`${grade} sentence-structures video`,second);
   [...(reading?.lessonQuestions||[]),...(writing?.lessonQuestions||[])].every(q=>context.window.DWGrading.auditQuestion(q).length===0)?pass(`${grade} question fairness audit`):fail(`${grade} question fairness audit`);
   reading?.applicationPrompt&&writing?.applicationPrompt?pass(`${grade} written applications`):fail(`${grade} written applications`);
 }
 const html=fs.readFileSync("curriculum-quest.html","utf8");
 html.includes('q1-curriculum-day24-overrides.js?v=1')?pass("Day 24 overrides loaded"):fail("Day 24 overrides not loaded");
+html.includes('function allRequiredVideosWatched')&&html.includes('videoParts:state.videoParts')&&html.includes('part.videoReflection=answer')?pass("separate required-video tracking"):fail("separate required-video tracking");
 if(failed){console.error(`\n${failed} DAY 24 SELF-TEST(S) FAILED`);process.exit(1)}
 console.log("\nALL DAY 24 CURRICULUM SELF-TESTS PASSED");

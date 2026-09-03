@@ -6,6 +6,7 @@
   const mediaBase="https://pub-005ee88ce4da43c5a2afcbb4b730333c.r2.dev/Shared/ELA/";
   const characterVideo=mediaBase+"D24%20-%20Characters%20-%20Character%20Traits%20and%20Analysis.mp4";
   const conjunctionVideo=mediaBase+"D24%20-%20Conjunctions.mp4";
+  const sentenceStructuresVideo=mediaBase+"D24%20-%20Simple%20Compound%20and%20Complex%20Sentences.mp4";
 
   const characterQuestions=[
     {prompt:"What is a character trait?",choices:["A word that describes what a character is like","The time and place in which a story happens","A problem that is solved at the end of a story","The exact words spoken by the narrator"],answer:"A word that describes what a character is like"},
@@ -56,7 +57,11 @@
     {prompt:"Which sentence correctly joins two complete ideas?",choices:["The dragon slept, because quietly beside the gate all night.","The dragon slept near the gate, and beside the stone wall.","The dragon slept near the gate, but the guards stayed alert.","The dragon near the gate, and the guards watched from towers."],answer:"The dragon slept near the gate, but the guards stayed alert."},
     {prompt:"In “Maya packed a flashlight and a map,” what does and join?",choices:["Two complete independent clauses","Two words naming items","A dependent clause and a title","Two unrelated paragraphs"],answer:"Two words naming items"},
     {prompt:"Which sentence uses a comma correctly with a coordinating conjunction?",choices:["I wanted to explore but, the gate was locked.","I wanted, to explore but the gate was locked.","I wanted to explore, but the gate was locked.","I wanted to explore but the gate, was locked."],answer:"I wanted to explore, but the gate was locked."},
-    {prompt:"Why is a comma needed in “The lantern flickered, yet it did not go out”?",choices:["Yet joins two complete independent clauses","Every conjunction must always have a comma","The comma separates a noun from its adjective","Yet begins a list of three or more items"],answer:"Yet joins two complete independent clauses"}
+    {prompt:"Why is a comma needed in “The lantern flickered, yet it did not go out”?",choices:["Yet joins two complete independent clauses","Every conjunction must always have a comma","The comma separates a noun from its adjective","Yet begins a list of three or more items"],answer:"Yet joins two complete independent clauses"},
+    {prompt:"Which sentence is simple?",choices:["Karl knew a great deal about monkeys.","Karl studied monkeys, and Mia studied birds.","Although Karl studied monkeys, he also liked birds.","Karl studied monkeys because they fascinated him."],answer:"Karl knew a great deal about monkeys."},
+    {prompt:"Which description correctly defines a complex sentence?",choices:["Two independent clauses with no joining word","One independent clause and at least one dependent clause","One independent clause with a compound subject only","A dependent clause that stands alone as a complete thought"],answer:"One independent clause and at least one dependent clause"},
+    {prompt:"Which sentence is compound?",choices:["Before the rain began, we packed the tent.","The hikers on the narrow trail moved carefully.","We packed the tent, and we hurried toward camp.","Running quickly toward the shelter near camp."],answer:"We packed the tent, and we hurried toward camp."},
+    {prompt:"Which complex sentence uses its comma correctly?",choices:["When the bell rang the students packed their books.","The students, packed their books when the bell rang.","The students packed, their books when the bell rang.","When the bell rang, the students packed their books."],answer:"When the bell rang, the students packed their books."}
   ];
   const conjunctionLesson={
     displayTitle:"Writing • Conjunctions & Compound Sentences",
@@ -66,25 +71,29 @@
     resourceType:"video",
     videoRequired:true,
     videoDurationSeconds:176,
-    kidIntro:"Meet the FANBOYS conjunctions and learn the relationship each one creates. Then join complete ideas with meaning and correct punctuation.",
-    lessonKeywords:["conjunction","coordinating conjunction","FANBOYS","compound sentence","independent clause","comma","addition","contrast","choice","reason","result"],
+    additionalVideos:[{id:"sentence-structures",title:"Video 2 • Simple, Compound & Complex Sentences",url:sentenceStructuresVideo,durationSeconds:272}],
+    kidIntro:"Watch both lessons. First meet the FANBOYS conjunctions; then compare simple, compound, and complex sentence structures. Use both lessons to build clear, varied sentences.",
+    lessonKeywords:["conjunction","coordinating conjunction","FANBOYS","simple sentence","compound sentence","complex sentence","independent clause","dependent clause","comma","addition","contrast","choice","reason","result"],
     lessonContent:{
       banner:"🔨 SENTENCE FORGE • CONNECT IDEAS WITH FANBOYS",
-      keyIdea:"Conjunctions connect ideas. FANBOYS—For, And, Nor, But, Or, Yet, So—are coordinating conjunctions. When one joins two independent clauses, place a comma before it.",
+      keyIdea:"Conjunctions connect ideas. A simple sentence has one independent clause, a compound sentence joins two independent clauses, and a complex sentence combines an independent clause with a dependent clause. FANBOYS—For, And, Nor, But, Or, Yet, So—join equal ideas.",
       vocabulary:[
         {term:"Conjunction",definition:"A word used to connect words, phrases, or clauses."},
         {term:"Coordinating Conjunction",definition:"A conjunction joining grammatical parts of equal importance."},
         {term:"FANBOYS",definition:"A memory tool for for, and, nor, but, or, yet, and so."},
         {term:"Independent Clause",definition:"A group of words with a subject and verb that expresses a complete thought."},
-        {term:"Compound Sentence",definition:"Two independent clauses joined correctly with a comma and coordinating conjunction."}
+        {term:"Dependent Clause",definition:"A group with a subject and verb that does not express a complete thought by itself."},
+        {term:"Simple Sentence",definition:"A sentence containing one independent clause, even if its subject or verb has more than one part."},
+        {term:"Compound Sentence",definition:"Two independent clauses joined correctly with a comma and coordinating conjunction."},
+        {term:"Complex Sentence",definition:"An independent clause combined with at least one dependent clause."}
       ],
       exampleLabel:"Two complete ideas",
       example:"The gates were closing, so the travelers hurried. “So” shows a result, and both sides can stand alone as sentences.",
       rememberLabel:"Comma test",
       remember:"Use a comma before FANBOYS when both sides are complete ideas. Do not automatically add a comma when the conjunction joins only two words or phrases.",
       challengeLabel:"Choose by meaning",
-      challenge:"Do not select a conjunction only because it fits grammatically. Decide whether the relationship is addition, contrast, choice, reason, negative choice, or result.",
-      missionNote:"Watch → Name the relationship → Check both clauses → Join and punctuate"
+      challenge:"Do not judge a sentence by length. Count complete and incomplete clauses, identify how they connect, and then classify the structure.",
+      missionNote:"Watch Video 1 → Watch Video 2 → Identify clauses → Connect and punctuate"
     },
     lessonQuestions:conjunctionQuestions
   };

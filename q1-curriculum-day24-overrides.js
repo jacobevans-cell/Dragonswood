@@ -98,6 +98,61 @@
     lessonQuestions:conjunctionQuestions
   };
 
+  const lanternHallCase={
+    id:"lantern-hall-starlight-compass-v1",
+    title:"THE LANTERN HALL MYSTERIES • CASE 01: THE STARLIGHT COMPASS",
+    report:[
+      "At 2:49 p.m., the antique Starlight Compass was missing from its display in Lantern Hall. A photograph proves it was still there at 2:41.",
+      "The display latch was not forced. Water had begun dripping from the skylight frame above the case, but no official removal note was posted.",
+      "A black camera cap, a yellow archive cart, a padded box, and four overlapping timelines may matter. Decide which clues prove what happened and which clue is only a distraction."
+    ],
+    characters:[
+      {id:"mira",name:"Dr. Mira Vale",role:"Science Teacher",color:"#287f86",image:"assets/character-case/dr-mira-vale.jpg",questions:[
+        {q:"When did you last see the compass?",a:"I photographed it in the display at 2:41 for tomorrow's astronomy lesson. The time is saved in the photo information."},
+        {q:"Where did you go next?",a:"I entered the science lab at 2:44. The electronic door log shows I stayed there until 2:56."},
+        {q:"Did you leave anything near the display?",a:"No. I noticed a black camera cap near the case, but it was already there when I took my photograph."}
+      ]},
+      {id:"eli",name:"Eli Chen",role:"Student Photographer",color:"#314d8f",image:"assets/character-case/eli-chen.jpg",questions:[
+        {q:"Does the camera cap belong to you?",a:"Yes, but I lost it while photographing Lantern Hall yesterday. Dr. Vale messaged me about finding it before the compass disappeared."},
+        {q:"What did you observe today?",a:"At 2:49 I photographed the empty display. The yellow archive cart is visible beside it in the background."},
+        {q:"Did you see anyone with the cart?",a:"At about 2:48, I saw Ms. Brooks push it toward the archive room. A padded storage box was on the top shelf."}
+      ]},
+      {id:"nia",name:"Nia Brooks",role:"Library Media Specialist",color:"#7b365f",image:"assets/character-case/nia-brooks.jpg",questions:[
+        {q:"When did you learn about the leak?",a:"Omar warned me at 2:47 that drops were landing close to the compass case. I brought the yellow archive cart immediately."},
+        {q:"What did you do with the compass?",a:"I placed it in a padded box and locked it in archive drawer B to protect it from water. I planned to tell Dr. Vale as soon as I found a warning sign."},
+        {q:"Why was there no removal note?",a:"I wrote one, but it must have slipped from the cart. Omar later found a damp note beneath one of its wheels. I should have told the office before leaving the display."}
+      ]},
+      {id:"omar",name:"Omar Haddad",role:"Student Council Treasurer",color:"#8a3f44",image:"assets/character-case/omar-haddad.jpg",questions:[
+        {q:"What first caught your attention?",a:"At 2:46, I saw two drops land on the shelf beside the case. The compass was still inside then."},
+        {q:"Whom did you tell?",a:"I found Ms. Brooks at 2:47 and warned her. Then I signed in at the front office at 2:50 to report the leak."},
+        {q:"Did you find anything else?",a:"Afterward I found a damp handwritten note under a wheel of the yellow archive cart. It said the compass was safe in drawer B."}
+      ]}
+    ],
+    quiz:[
+      {q:"Which evidence proves the compass was still displayed at 2:41?",choices:["Dr. Vale's time-stamped photograph","Eli's camera cap from the previous day","The damp note under the cart","Omar's front-office sign-in"],correct:0,explain:"The time information attached to Dr. Vale's photograph directly places the compass in the display at 2:41."},
+      {q:"Why is Eli's camera cap probably a distraction?",choices:["It was lost the previous day and noticed before the compass disappeared","It was locked inside archive drawer B with the compass","It proves Eli opened the display at 2:48","It contains a written confession from Eli"],correct:0,explain:"The cap explains why Eli had been near Lantern Hall, but its earlier loss does not connect him to moving the compass today."},
+      {q:"Who moved the Starlight Compass?",choices:["Dr. Mira Vale","Eli Chen","Nia Brooks","Omar Haddad"],correct:2,explain:"Nia states that she placed the compass in a padded box, and independent clues trace her cart and box toward the archive room."},
+      {q:"Which pair provides the strongest independent support for Nia's account?",choices:["Eli saw Nia pushing the cart with a padded box, and Omar found her note naming drawer B","Dr. Vale wore a celestial blouse, and Eli owned a black camera cap","Omar serves on student council, and Dr. Vale teaches science","The display had a latch, and Lantern Hall contains an archive room"],correct:0,explain:"Eli and Omar independently connect Nia, the cart, the padded box, and the compass's new location."},
+      {q:"Which trait is best supported by Nia's actions?",choices:["Protective but too hasty to communicate clearly","Careless because she wanted the compass damaged","Dishonest because she sold the compass","Jealous because she wanted Dr. Vale's lesson cancelled"],correct:0,explain:"Nia acted quickly to protect the compass, but leaving without confirming that others knew where it went caused confusion."}
+    ],
+    applicationPrompt:"Who moved the Starlight Compass, and why? Use two independent clues to prove your conclusion. Then identify one trait Nia's actions reveal and explain why the camera cap is a distraction."
+  };
+
+  const quickwriteOptions=[
+    {
+      label:"Option 1 • The Warning in Tomorrow's Book",
+      prompt:"Soren opened a library book and discovered that its final page described everything that would happen at school tomorrow. The last sentence read, “Whatever you do, do not open the west stairwell.” Continue the story.",
+      finalEvent:"The book warned Soren not to open the west stairwell.",
+      keywords:["soren","library","book","final page","tomorrow","warning","west stairwell","stairwell","school"]
+    },
+    {
+      label:"Option 2 • The Stormglass Egg",
+      prompt:"During a thunderstorm, Imani's glass egg science project began glowing from the inside. A tiny creature tapped on the shell and pointed toward the dark clouds above the school. Continue the story.",
+      finalEvent:"A tiny creature inside Imani's glowing glass egg pointed toward the storm clouds.",
+      keywords:["imani","glass egg","science project","glowing","creature","shell","storm","thunderstorm","clouds","school"]
+    }
+  ];
+
   for(const grade of ["I","K"]){
     const reading=data.items.find(item=>item.id===`${grade}-HUM-D24-PACING-VIDEO`);
     if(reading)Object.assign(reading,characterLesson,{
@@ -110,6 +165,16 @@
       applicationPrompt:grade==="I"
         ?"Write 4 original compound sentences. Use a different FANBOYS conjunction in each sentence. Underline or capitalize each conjunction, and use a comma before it."
         :"Write 5 original compound sentences using at least four different FANBOYS conjunctions. Each side must be an independent clause. Then choose one sentence and explain the relationship its conjunction creates."
+    });
+    const caseId=`${grade}-HUM-D24-C2-A`;
+    if(!data.items.some(item=>item.id===caseId))data.items.push({
+      id:caseId,grade,day:24,subject:"HUM",strand:"Reading",requirement:"Fluency: Character Case File evidence and character analysis investigation",resourceName:"",resourceUrl:"",resourceType:"activity",displayTitle:"The Character Case Files • Lantern Hall Mysteries",characterCase:lanternHallCase
+    });
+    const quickwriteId=`${grade}-HUM-D24-C4-A`;
+    if(!data.items.some(item=>item.id===quickwriteId))data.items.push({
+      id:quickwriteId,grade,day:24,subject:"HUM",strand:"Writing",requirement:"Quickwrite Choice",resourceName:"",resourceUrl:"",resourceType:"activity",displayTitle:"Writing • Quickwrite Choice",quickWriteDirect:true,
+      quickWriteSentenceRange:[grade==="I"?5:7,grade==="I"?5:7],
+      quickWriteOptions:quickwriteOptions.map(option=>({...option,prompt:`${option.prompt} Write exactly ${grade==="I"?5:7} complete sentences.`}))
     });
   }
 })();

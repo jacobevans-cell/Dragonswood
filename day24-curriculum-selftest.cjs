@@ -20,6 +20,8 @@ for(const [id,want] of Object.entries(expected)){
 for(const grade of ["I","K"]){
   const reading=items.find(row=>row.id===`${grade}-HUM-D24-PACING-VIDEO`);
   const writing=items.find(row=>row.id===`${grade}-HUM-D24-C3-A`);
+  const mystery=items.find(row=>row.id===`${grade}-HUM-D24-C2-A`);
+  const quickwrite=items.find(row=>row.id===`${grade}-HUM-D24-C4-A`);
   reading?.resourceUrl.endsWith("D24%20-%20Characters%20-%20Character%20Traits%20and%20Analysis.mp4")?pass(`${grade} Characters R2 video`):fail(`${grade} Characters video`,reading?.resourceUrl);
   writing?.resourceUrl.endsWith("D24%20-%20Conjunctions.mp4")?pass(`${grade} Conjunctions R2 video`):fail(`${grade} Conjunctions video`,writing?.resourceUrl);
   reading?.lessonQuestions?.length===8&&reading.lessonQuestions.every(q=>q.choices.includes(q.answer))?pass(`${grade} Characters questions`):fail(`${grade} Characters questions`);
@@ -28,9 +30,13 @@ for(const grade of ["I","K"]){
   second?.url.endsWith("D24%20-%20Simple%20Compound%20and%20Complex%20Sentences.mp4")&&second.durationSeconds===272?pass(`${grade} sentence-structures R2 video`):fail(`${grade} sentence-structures video`,second);
   [...(reading?.lessonQuestions||[]),...(writing?.lessonQuestions||[])].every(q=>context.window.DWGrading.auditQuestion(q).length===0)?pass(`${grade} question fairness audit`):fail(`${grade} question fairness audit`);
   reading?.applicationPrompt&&writing?.applicationPrompt?pass(`${grade} written applications`):fail(`${grade} written applications`);
+  mystery?.characterCase?.id==="lantern-hall-starlight-compass-v1"&&mystery.characterCase.characters.length===4&&mystery.characterCase.quiz.length===5?pass(`${grade} Lantern Hall mystery`):fail(`${grade} Lantern Hall mystery`);
+  mystery?.characterCase?.characters.every(character=>fs.existsSync(character.image))?pass(`${grade} new witness portraits`):fail(`${grade} new witness portraits`);
+  quickwrite?.quickWriteDirect===true&&quickwrite.quickWriteOptions?.length===2&&quickwrite.quickWriteSentenceRange?.[0]===(grade==="I"?5:7)?pass(`${grade} new Quickwrite choices`):fail(`${grade} new Quickwrite choices`);
+  items.filter(row=>row.grade===grade&&Number(row.day)===24&&row.subject==="HUM").length===5?pass(`${grade} five Day 24 ELA missions`):fail(`${grade} five Day 24 ELA missions`);
 }
 const html=fs.readFileSync("curriculum-quest.html","utf8");
-html.includes('q1-curriculum-day24-overrides.js?v=2')?pass("Day 24 overrides loaded with current cache version"):fail("Day 24 overrides not loaded with current cache version");
+html.includes('q1-curriculum-day24-overrides.js?v=3')?pass("Day 24 overrides loaded with current cache version"):fail("Day 24 overrides not loaded with current cache version");
 html.includes('function allRequiredVideosWatched')&&html.includes('videoParts:state.videoParts')&&html.includes('part.videoReflection=answer')?pass("separate required-video tracking"):fail("separate required-video tracking");
 if(failed){console.error(`\n${failed} DAY 24 SELF-TEST(S) FAILED`);process.exit(1)}
 console.log("\nALL DAY 24 CURRICULUM SELF-TESTS PASSED");

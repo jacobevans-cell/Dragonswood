@@ -72,6 +72,7 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
 .countdown-card{border:1px solid #4c397d;border-radius:12px;padding:12px;background:rgba(6,8,32,.76);min-height:78px}
 .countdown-card small{display:block;color:#bdb2d0;font-weight:900;letter-spacing:.6px}.countdown-card b{display:block;color:#fff0a4;font:900 22px Georgia;margin:4px 0}.countdown-card span{color:#d4e8ff;font-size:12px}
 @media(max-width:760px){.countdown-grid{grid-template-columns:1fr}}
+.dw-quest-loading .hero,.dw-quest-loading .quest-level,.dw-quest-loading .dq-progress-summary,.dw-quest-loading .sessions,.dw-quest-loading .map,.dw-quest-loading .calendar-countdowns{visibility:hidden}
 .dq-progress-summary{margin-top:12px;padding:13px 16px;display:grid;grid-template-columns:190px 1fr;gap:12px;align-items:center}.dq-progress-summary>div{padding:8px 11px;border:1px solid #46336f;border-radius:10px;background:#090b2ccc}.dq-progress-summary small{display:block;color:#c3b4d9;font-size:9px;font-weight:900;letter-spacing:.7px}.dq-progress-summary b{display:block;color:#fff0a2;font:900 22px Georgia;margin-top:3px}.dq-progress-summary span{font-size:11px;color:#cfe6f6}@media(max-width:650px){.dq-progress-summary{grid-template-columns:1fr}}
 .node.missed{background:#24152e;color:#ca9aaa;border-color:#70425e}
 </style>
@@ -87,7 +88,7 @@ button{font:inherit}.shell{max-width:1220px;margin:auto;padding:14px}.glass{back
 .choice,.answer-bank-choice{line-height:1.4}
 </style>
 <script src="pet-registry-v5614.js"></script><script src="dragonswood-rpg-v56.js"></script><script src="pet-motion-controller.js"></script><script src="q1-curriculum-data.js?v=59.1.0"></script><script src="q1-exam-alignment-data.js?v=60.0.0"></script><script src="morning-benchmark-data.js?v=60.0.0"></script><script src="placement-benchmark-data.js?v=61.0.0"></script>
-<link rel="stylesheet" href="v33-integration/css/direct-visual-v11.css?v=1.1"><script defer src="dragonswood-immersive-ui.js?v=1.0.0"></script></head><body>
+<link rel="stylesheet" href="v33-integration/css/direct-visual-v11.css?v=1.1"><script defer src="dragonswood-immersive-ui.js?v=1.0.0"></script></head><body class="dw-quest-loading">
 <div class="shell">
   <header class="glass top"><div><div class="brand"><img src="v33-integration/assets/branding/dragonswood-mascot-crest.png" alt="Dragonswood volleyball dragon crest" style="width:38px;height:38px;object-fit:contain;vertical-align:middle;margin-right:8px"><span style="color:#f7c94f;background:linear-gradient(180deg,#fff9d8 0%,#ffe99a 27%,#f8ca50 58%,#ffe99a 82%,#dfa12a 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 1px 0 rgba(116,67,8,.95)) drop-shadow(0 2px 1px rgba(22,5,34,.95)) drop-shadow(0 0 5px rgba(255,216,91,.16));letter-spacing:.3px">DRAGONSWOOD • DAILY QUEST</span></div><div class="sub" id="account">Opening the quest gate…</div></div><a class="back" href="index.html#quests">← DAILY MISSIONS</a></header>
   <section class="hud">
@@ -6232,7 +6233,7 @@ function dwValidatePlacementLesson(L){
  if(all.length!==60||all.filter(x=>x.subject==="MATH").length!==30||all.filter(x=>x.subject==="ELA").length!==30||all.some(x=>x.subject==="SCIENCE"))throw new Error("Placement requires a 30-question adaptive core for Math and ELA.");
  for(const subject of ["MATH","ELA"])for(const level of levels)if(all.filter(x=>x.subject===subject&&x.placementLevel===level).length<7)throw new Error(`Placement core lacks ${subject} ${level} evidence.`);
  for(const t of all){if(!t.standardId||!DW_SKILLS[t.skillId])throw new Error(`Unmapped placement task: ${t.pacingItemId||"unknown"}`);let q=null;for(let attempt=0;attempt<30&&!q;attempt++){const cand=makeQ({...t,seed:Number(t.seed||1)+attempt*9973},attempt*17);if(cand?.source==="registry"&&dwValidQuestion(cand))q=cand}if(!q)throw new Error(`Ungradable placement task: ${t.standardId}`)}
- dwValidateMorningSequence(all);return L;
+ return L;
 }
 function dwMakePlacementTask(spec,subject,index,adaptiveRound=0){const level=String(spec.placementLevel),grade=level==="foundation"?3:Number(level);return {subject,skillId:spec.skillId,skill:dwLabelOf(spec.skillId),standardId:spec.standard,placementLevel:level,gradeLevel:grade,adaptiveRound,sourceAuthority:"standards",sourceKind:adaptiveRound?"adaptive-placement":"placement-benchmark",engine:"choice",count:1,seed:930003+index*7919+(subject==="ELA"?40009:0)+adaptiveRound*104729,questionParams:{...(spec.questionParams||{}),grade,difficulty:"benchmark"},pacingLocked:true,pacingItemId:`PLACEMENT-${subject}-${level}-${adaptiveRound}-${index+1}`,pacingRequirement:`${spec.standard} • ${dwLabelOf(spec.skillId)}`,pacingStrand:"Arizona standards placement benchmark",remediationStatus:"placement",substitutionReason:adaptiveRound?"adaptive follow-up at the uncertain placement boundary":"Math and ELA diagnostic core"}}
 function dwValidatePacingLesson(L){
@@ -6282,7 +6283,7 @@ function applyQuestModeCopy(){
  $("morningCardDesc").textContent=DW_PLACEMENT_MODE?"The question path changes after each diagnostic block. Strong, struggling, and borderline results receive different follow-up questions. Finishing both subjects counts as today's Morning Work.":"10 Math, 10 HUM/ELA, and 10 Science questions. The blueprint is 60% familiar Q1 exam structure and 40% pacing-guide coverage.";
  $("benchmarkLink").style.display="none";$("dailyProgressSummary").style.display="none";$("journeyMap").style.display="none";$("countdownPanel").style.display="none";
 }
-function renderLesson(){if(!lesson)return;$("journey").textContent=DW_PLACEMENT_MODE?"2 SUBJECTS":DW_BENCHMARK_MODE?`GRADE ${lesson.pacingGrade==="K"?5:4}`:`${lesson.day} / 180`;$("chapter").textContent=`${lesson.chapterIcon} ${lesson.chapter.toUpperCase()}`;$("title").textContent=lesson.title;$("skills").textContent=DW_PLACEMENT_MODE?"Math placement • ELA placement • Foundation, Grade 4, Grade 5, or Grade 6":`Math: ${dwCleanLabel(lesson.mathSkill)} • HUM/ELA: ${dwCleanLabel(lesson.elaSkill)} • Science: ${dwCleanLabel(lesson.scienceSkill)}`;$("datepill").textContent=DW_PLACEMENT_MODE?"REQUIRED • COUNTS AS MORNING WORK":DW_BENCHMARK_MODE?"Q1 • 30 QUESTIONS":`DAY ${lesson.day} • ${lesson.date}`;applyQuestModeCopy();if(!DW_BENCHMARK_MODE)renderMap();}
+function renderLesson(){if(!lesson)return;$("journey").textContent=DW_PLACEMENT_MODE?"2 SUBJECTS":DW_BENCHMARK_MODE?`GRADE ${lesson.pacingGrade==="K"?5:4}`:`${lesson.day} / 180`;$("chapter").textContent=`${lesson.chapterIcon} ${lesson.chapter.toUpperCase()}`;$("title").textContent=lesson.title;$("skills").textContent=DW_PLACEMENT_MODE?"Math placement • ELA placement • Foundation, Grade 4, Grade 5, or Grade 6":`Math: ${dwCleanLabel(lesson.mathSkill)} • HUM/ELA: ${dwCleanLabel(lesson.elaSkill)} • Science: ${dwCleanLabel(lesson.scienceSkill)}`;$("datepill").textContent=DW_PLACEMENT_MODE?"REQUIRED • COUNTS AS MORNING WORK":DW_BENCHMARK_MODE?"Q1 • 30 QUESTIONS":`DAY ${lesson.day} • ${lesson.date}`;applyQuestModeCopy();if(!DW_BENCHMARK_MODE)renderMap();document.body.classList.remove("dw-quest-loading");}
 function renderMap(){
  const now=lesson?.day||1;let s="";
  const completedDays=new Set(
@@ -6455,13 +6456,13 @@ function dwValidFrozenPlacementPlan(progress){
  const mc=core.filter(t=>t.subject==="MATH").length,ec=core.filter(t=>t.subject==="ELA").length;return mc>=30&&mc<=50&&ec>=30&&ec<=50&&core.every(t=>t.standardId&&t.placementLevel&&DW_SKILLS[t.skillId]);
 }
 function dwCloneTaskPlan(plan){return plan.map(t=>({...t,questionParams:t.questionParams?{...t.questionParams}:null,alternateSkillIds:Array.isArray(t.alternateSkillIds)?[...t.alternateSkillIds]:[]}))}
-async function startSession(){
+async function startSessionUnsafe(){
   sessionName=DW_PLACEMENT_MODE?"morning":DW_BENCHMARK_MODE?"benchmark_q1":"morning";watchDailyQuestionOverrides(user?.uid);dwInstallDailyReviewUI();
   sessionProgress=await readProgress(sessionName);
   const frozen=DW_PLACEMENT_MODE?dwValidFrozenPlacementPlan(sessionProgress):DW_BENCHMARK_MODE?dwValidFrozenBenchmarkPlan(sessionProgress):dwValidFrozenMorningPlan(sessionProgress);
   tasks=frozen?dwCloneTaskPlan(sessionProgress.taskPlan):dwCloneTaskPlan(lesson.morning);
   sessionPlanFingerprint=frozen?String(sessionProgress.planFingerprint||lesson.morningPlanFingerprint):String(lesson.morningPlanFingerprint||"");
-  dwValidateMorningSequence(tasks.filter(t=>!t._isRetry));
+  if(!DW_PLACEMENT_MODE)dwValidateMorningSequence(tasks.filter(t=>!t._isRetry));
   questionPlan=buildUniqueQuestionPlan(tasks);
   if(sessionProgress?.status==="complete"){taskIndex=0;qIndex=0;score=0;correct=0;attempts=0}
   else if(sessionProgress){
@@ -6476,6 +6477,13 @@ async function startSession(){
   $("playModal").classList.add("show");
   await saveProgress({status:"in_progress",startedAt:serverTimestamp()});
   renderCurrent();
+}
+
+async function startSession(){
+ const btn=$("morningBtn"),label=btn.textContent;btn.disabled=true;btn.textContent=DW_PLACEMENT_MODE?"BUILDING YOUR ADAPTIVE BENCHMARK…":"OPENING…";status(DW_PLACEMENT_MODE?"Preparing the first Math diagnostic block…":"Opening your quest…");
+ try{await startSessionUnsafe()}
+ catch(err){console.error("Quest start failed",err);status(`${DW_PLACEMENT_MODE?"Benchmark":"Quest"} could not start: ${String(err?.message||err||"unknown error")}. Please try again.`,"bad");feedback("The benchmark did not begin. No answers were lost.","bad")}
+ finally{btn.disabled=false;btn.textContent=label}
 }
 
 function dwReviewHash(value){let h=2166136261;for(const ch of String(value||"")){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return(h>>>0).toString(36)}
@@ -6688,7 +6696,7 @@ function dwValidateMorningSequence(taskList){
 }
 function buildUniqueQuestionPlan(taskList){
  const used=new Set(),plan=[];
- let flatIndex=0;const groupStats=new Map(),enforceMorning=sessionName==="morning";
+ let flatIndex=0;const groupStats=new Map(),enforceMorning=sessionName==="morning"&&!DW_PLACEMENT_MODE;
  taskList.forEach((t,ti)=>{
    const row=[];
    for(let qi=0;qi<t.count;qi++){

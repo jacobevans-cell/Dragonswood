@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - ".github/workflows/firebase-deploy.yml"
+      - ".github/firebase-deploy-request.json"
   workflow_dispatch:
     inputs:
       deploy_target:
@@ -38,6 +39,7 @@ jobs:
     timeout-minutes: 30
     env:
       FIREBASE_PROJECT_ID: dragonswood-9289e
+      DEPLOY_REQUEST_FILE: .github/firebase-deploy-request.json
       REQUESTED_TARGET: ${{ inputs.deploy_target }}
       DEPLOY_CONFIRMATION: ${{ inputs.confirmation }}
 
@@ -55,10 +57,38 @@ jobs:
         run: |
           set -euo pipefail
           if [ "$GITHUB_EVENT_NAME" = "push" ]; then
-            selected_target="verify"
-          else
-            selected_target="$REQUESTED_TARGET"
+            node - "$DEPLOY_REQUEST_FILE" "$FIREBASE_PROJECT_ID" "$GITHUB_ENV" <<'NODE'
+            const fs = require("node:fs");
+            const [requestPath, expectedProject, githubEnvPath] = process.argv.slice(2);
+            const allowed = new Set([
+              "verify",
+              "firestore-rules",
+              "grade-academic-answer",
+              "academic-ai-all",
+              "firestore-and-academic-ai"
+            ]);
+            let request;
+            try {
+              request = JSON.parse(fs.readFileSync(requestPath, "utf8"));
+            } catch {
+              console.error("Firebase deployment request is not valid JSON.");
+              process.exit(1);
+            }
+            if (request.schemaVersion !== 1 || request.projectId !== expectedProject || !allowed.has(request.target)) {
+              console.error("Firebase deployment request is invalid or targets the wrong project.");
+              process.exit(1);
+            }
+            if (request.target !== "verify" && request.confirmation !== "DEPLOY") {
+              console.error("Live deployment blocked. The request file must explicitly contain DEPLOY.");
+              process.exit(1);
+            }
+            fs.appendFileSync(githubEnvPath, `SELECTED_TARGET=${request.target}\n`);
+            console.log(`Approved Firebase action: ${request.target}`);
+            NODE
+            exit 0
           fi
+
+          selected_target="$REQUESTED_TARGET"
 
           case "$selected_target" in
             verify|firestore-rules|grade-academic-answer|academic-ai-all|firestore-and-academic-ai) ;;

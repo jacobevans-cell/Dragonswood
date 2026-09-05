@@ -55,6 +55,23 @@ if(!R.v5SelectionRequired({email:R.v5Config.testerEmail,classId:'mage'},R.v5Conf
 const outsider={email:'another-student@example.com',classId:'mage',characterSystemVersion:'v5',characterV5Gender:'male',characterV5Affinity:'radiant',characterV5ClassId:'warrior',level:20};
 if(R.resolveV5Character(outsider)!==null)failures.push('A non-tester account resolved a V5 character.');
 if(R.characterClassId(outsider)!=='mage')failures.push('A non-tester account escaped its legacy class through V5 fields.');
+if(!R.isV5Tester({email:' JACOBICUSJAX@GMAIL.COM '}))failures.push('Tester email normalization failed.');
+if(R.isV5Tester({email:'jacobicusjax@gmail.com.example'}))failures.push('Tester email matching was not exact.');
+
+const disabledContext={window:{DRAGONSWOOD_PET_REGISTRY:[]},Intl,Date,Math,Number,String,Array,Object,Set,Map};
+vm.createContext(disabledContext);
+vm.runInContext(source.replace('enabled:true,testerEmail:', 'enabled:false,testerEmail:'),disabledContext,{filename:'dragonswood-rpg-v56-disabled.js'});
+const disabledR=disabledContext.window.DWRPG;
+const rollbackProfile={email:R.v5Config.testerEmail,classId:'mage',characterSystemVersion:'v5',characterV5Gender:'male',characterV5Affinity:'radiant',characterV5ClassId:'warrior',level:20};
+if(disabledR.resolveV5Character(rollbackProfile)!==null||disabledR.characterClassId(rollbackProfile)!=='mage')failures.push('Global V5 rollback switch did not restore the legacy character class.');
+
+for(const rulesPath of ['firestore.rules','v33-integration/firestore.gate.rules']){
+  const rules=fs.readFileSync(path.join(root,rulesPath),'utf8');
+  if(!rules.includes("request.auth.token.email == 'jacobicusjax@gmail.com'"))failures.push(`${rulesPath} is missing the exact tester-email write gate.`);
+  for(const field of ['characterSystemVersion','characterV5Gender','characterV5Affinity','characterV5ClassId','characterV5SelectedAt']){
+    if(!rules.includes(field))failures.push(`${rulesPath} is missing the ${field} rule.`);
+  }
+}
 
 const catalog=JSON.parse(fs.readFileSync(path.join(root,'assets/rpg/v5/catalog.json'),'utf8'));
 if(catalog.validation?.passed!==true)failures.push('Production catalog validation is not passing.');

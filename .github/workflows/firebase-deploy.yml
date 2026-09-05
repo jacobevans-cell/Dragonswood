@@ -1,0 +1,169 @@
+name: Deploy Dragonswood Firebase Backend
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/firebase-deploy.yml"
+  workflow_dispatch:
+    inputs:
+      deploy_target:
+        description: Choose exactly what Firebase should deploy
+        required: true
+        type: choice
+        default: verify
+        options:
+          - verify
+          - firestore-rules
+          - grade-academic-answer
+          - academic-ai-all
+          - firestore-and-academic-ai
+      confirmation:
+        description: Type DEPLOY for a live deployment; leave blank for verify
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dragonswood-firebase-production
+  cancel-in-progress: false
+
+jobs:
+  firebase:
+    name: Verify access or deploy selected backend
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      FIREBASE_PROJECT_ID: dragonswood-9289e
+      REQUESTED_TARGET: ${{ inputs.deploy_target }}
+      DEPLOY_CONFIRMATION: ${{ inputs.confirmation }}
+
+    steps:
+      - name: Check out Dragonswood
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 20
+
+      - name: Select safe action
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            selected_target="verify"
+          else
+            selected_target="$REQUESTED_TARGET"
+          fi
+
+          case "$selected_target" in
+            verify|firestore-rules|grade-academic-answer|academic-ai-all|firestore-and-academic-ai) ;;
+            *)
+              echo "Unsupported deployment target: $selected_target"
+              exit 1
+              ;;
+          esac
+
+          if [ "$selected_target" != "verify" ] && [ "$DEPLOY_CONFIRMATION" != "DEPLOY" ]; then
+            echo "Live deployment blocked. Enter DEPLOY in the confirmation field."
+            exit 1
+          fi
+
+          echo "SELECTED_TARGET=$selected_target" >> "$GITHUB_ENV"
+
+      - name: Prepare Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT_JSON" ]; then
+            echo "Missing repository secret FIREBASE_SERVICE_ACCOUNT_JSON."
+            exit 1
+          fi
+
+          credentials="$RUNNER_TEMP/dragonswood-firebase-service-account.json"
+          umask 077
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT_JSON" > "$credentials"
+
+          node - "$credentials" "$FIREBASE_PROJECT_ID" <<'NODE'
+          const fs = require("node:fs");
+          const [credentialsPath, expectedProject] = process.argv.slice(2);
+          let credentials;
+          try {
+            credentials = JSON.parse(fs.readFileSync(credentialsPath, "utf8"));
+          } catch {
+            console.error("FIREBASE_SERVICE_ACCOUNT_JSON is not valid JSON.");
+            process.exit(1);
+          }
+          if (credentials.type !== "service_account" || credentials.project_id !== expectedProject || !credentials.private_key) {
+            console.error(`The Firebase credential is not the expected ${expectedProject} service account.`);
+            process.exit(1);
+          }
+          console.log(`Credential validated for ${expectedProject}.`);
+          NODE
+
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$credentials" >> "$GITHUB_ENV"
+
+      - name: Install Firebase CLI
+        run: npm install --global firebase-tools
+
+      - name: Verify project access
+        shell: bash
+        run: |
+          set -euo pipefail
+          projects_file="$RUNNER_TEMP/firebase-projects.json"
+          firebase projects:list --json > "$projects_file"
+          node - "$projects_file" "$FIREBASE_PROJECT_ID" <<'NODE'
+          const fs = require("node:fs");
+          const [projectsPath, expectedProject] = process.argv.slice(2);
+          const payload = JSON.parse(fs.readFileSync(projectsPath, "utf8"));
+          const projects = Array.isArray(payload) ? payload : payload.result;
+          if (!Array.isArray(projects) || !projects.some(project => project.projectId === expectedProject)) {
+            console.error(`Service account cannot access ${expectedProject}.`);
+            process.exit(1);
+          }
+          console.log(`Firebase access verified for ${expectedProject}.`);
+          NODE
+
+      - name: Deploy selected Firebase target
+        if: env.SELECTED_TARGET != 'verify'
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "$SELECTED_TARGET" in
+            firestore-rules)
+              firebase deploy --project "$FIREBASE_PROJECT_ID" --config firebase.json --only firestore:rules --non-interactive
+              ;;
+            grade-academic-answer)
+              firebase deploy --project "$FIREBASE_PROJECT_ID" --config firebase.academic-ai.json --only functions:academic-ai:gradeAcademicAnswer --non-interactive
+              ;;
+            academic-ai-all)
+              firebase deploy --project "$FIREBASE_PROJECT_ID" --config firebase.academic-ai.json --only functions:academic-ai --non-interactive
+              ;;
+            firestore-and-academic-ai)
+              firebase deploy --project "$FIREBASE_PROJECT_ID" --config firebase.json --only firestore:rules --non-interactive
+              firebase deploy --project "$FIREBASE_PROJECT_ID" --config firebase.academic-ai.json --only functions:academic-ai --non-interactive
+              ;;
+          esac
+
+      - name: Record result
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## Dragonswood Firebase"
+            echo
+            echo "- Project: \`$FIREBASE_PROJECT_ID\`"
+            echo "- Requested target: \`${SELECTED_TARGET:-not-selected}\`"
+            echo "- Workflow conclusion: \`${{ job.status }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Remove temporary credential file
+        if: always()
+        shell: bash
+        run: rm -f "$RUNNER_TEMP/dragonswood-firebase-service-account.json"

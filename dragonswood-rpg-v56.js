@@ -199,10 +199,10 @@
   function isV5Tester(profile={},email=""){return v5Config.enabled&&normalizedEmail(email||profile.email)===v5Config.testerEmail}
   function hasV5Selection(profile={}){return profile.characterSystemVersion==="v5"&&["male","female"].includes(profile.characterV5Gender)&&["radiant","shadow"].includes(profile.characterV5Affinity)&&Object.hasOwn(classes,String(profile.characterV5ClassId||""))}
   function v5SelectionRequired(profile={},email=""){return isV5Tester(profile,email)&&!hasV5Selection(profile)}
-  function characterClassId(profile={}){return v5Config.enabled&&hasV5Selection(profile)?String(profile.characterV5ClassId):String(profile.classId||"")}
+  function characterClassId(profile={}){return isV5Tester(profile)&&hasV5Selection(profile)?String(profile.characterV5ClassId):String(profile.classId||"")}
   function v5TierForLevel(value){const level=Math.max(1,Math.min(20,Number(value)||1));return v5Tiers.find(tier=>level>=tier.min&&level<=tier.max)||v5Tiers[0]}
   function resolveV5Character(profile={}){
-    if(!v5Config.enabled||!hasV5Selection(profile))return null;
+    if(!isV5Tester(profile)||!hasV5Selection(profile))return null;
     const classId=characterClassId(profile),gender=profile.characterV5Gender,affinity=profile.characterV5Affinity,family=v5Families[classId]?.[gender]?.[affinity];
     if(!family)return null;
     const level=Number(profile.level)||levelForXp(profile.xp),tier=v5TierForLevel(level),id=`${classId}-${family.id}-${tier.id}`,base=`assets/rpg/v5/${classId}/${id}`;

@@ -52,6 +52,9 @@ const legacy={classId:'mage',rpgEquipped:{appearance:'mage_appearance_10'},chara
 if(R.characterClassId(legacy)!=='mage')failures.push('Legacy rollback class did not resolve.');
 if(R.resolveAppearance(legacy)?.id!=='mage_appearance_10')failures.push('Legacy rollback appearance did not resolve.');
 if(!R.v5SelectionRequired({email:R.v5Config.testerEmail,classId:'mage'},R.v5Config.testerEmail))failures.push('Tester reset gate did not require V5 selection.');
+const outsider={email:'another-student@example.com',classId:'mage',characterSystemVersion:'v5',characterV5Gender:'male',characterV5Affinity:'radiant',characterV5ClassId:'warrior',level:20};
+if(R.resolveV5Character(outsider)!==null)failures.push('A non-tester account resolved a V5 character.');
+if(R.characterClassId(outsider)!=='mage')failures.push('A non-tester account escaped its legacy class through V5 fields.');
 
 const catalog=JSON.parse(fs.readFileSync(path.join(root,'assets/rpg/v5/catalog.json'),'utf8'));
 if(catalog.validation?.passed!==true)failures.push('Production catalog validation is not passing.');

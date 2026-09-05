@@ -32,6 +32,7 @@ PATCH_FILES = [
     "tools/package-v5-tester-handoff.py",
     "tools/render-v52-character-qa.py",
     "tools/rebuild-v52-family-layers.py",
+    "tools/rebuild-v53-attacks.py",
     "tools/v5-character-preview.html",
     "tools/verify-v5-animation-quality.py",
     "tools/verify-v5-character-integration.mjs",
@@ -94,7 +95,8 @@ Implemented:
 - V5.3 rebuilt animation set: separate idle/walk/happy/celebrate routes, clean headroom, restrained motion, and correct gender routing
 - 560 production animated WebP files plus 80 static fallbacks and 1,280 synchronized appearance layers
 - Single-canvas renderer with one shared frame clock, so the base, skin, and hair cannot drift apart
-- Scalp-anchored hair masks, full long-hair coverage, preserved source shading, and no equipment tint spill
+- Class-specific warrior slash, ranger arrow, mage spell, and healer cast animations
+- Scalp-anchored hair masks, explicit armored-face anchors, full long-hair coverage, preserved source shading, and no equipment tint spill
 - Three skin tones and three hair colors, selected after gender and class/path
 - Live replacement in Adventurer Hall, student portal, Daily Boss, and Kingdom Wars
 - Additive Firestore fields and narrow owner/email rules

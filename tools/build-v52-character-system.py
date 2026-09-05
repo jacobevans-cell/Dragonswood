@@ -38,9 +38,9 @@ FAMILIES = {
         "nightwyrm": ("Nightwyrm", "female", "shadow", "brown-long-wide-nightwyrm"),
     },
     "ranger": {
-        "dawnfeather": ("Dawnfeather", "male", "radiant", "dark"),
+        "dawnfeather": ("Dawnfeather", "male", "radiant", "silver"),
         "nightfang": ("Nightfang", "male", "shadow", "dark"),
-        "sunleaf": ("Sunleaf", "female", "radiant", "brown-long-right"),
+        "sunleaf": ("Sunleaf", "female", "radiant", "brown-long-right-sunleaf"),
         "moonshadow": ("Moonshadow", "female", "shadow", "silver-long-right"),
     },
     "mage": {
@@ -58,15 +58,15 @@ FAMILIES = {
 }
 
 SKIN_COLORS = {
-    "light": (244, 188, 153),
-    "medium": (190, 108, 70),
-    "deep": (128, 72, 54),
+    "light": (232, 174, 139),
+    "medium": (176, 103, 70),
+    "deep": (105, 63, 52),
 }
 
 HAIR_COLORS = {
-    "dark": (40, 30, 45),
-    "brown": (115, 64, 38),
-    "silver": (215, 220, 235),
+    "dark": (34, 29, 43),
+    "brown": (91, 55, 38),
+    "silver": (185, 194, 210),
 }
 
 AFFINITY_COLORS = {"radiant": (255, 211, 89, 225), "shadow": (147, 92, 255, 225)}
@@ -85,6 +85,15 @@ STATE_NAMES = ("static", "idle", "walk-left", "walk-right", "attack", "hurt", "h
 HIDDEN_HAIR_TIERS = {
     ("warrior", "dawnscale"): {"level-10", "level-15", "level-20"},
     ("warrior", "eclipse"): {"level-05", "level-10", "level-15", "level-20"},
+}
+
+# Some late-tier helmets contain warm ivory/gold ornaments that look enough
+# like skin to beat the automatic face detector.  Keep the automatic detector
+# for ordinary characters, but pin known armored faces to a small, explicit
+# ellipse so recoloring can never tint a crest, feather, or helmet plate.
+# Coordinates are in the normalized 640x640 prepared source space.
+FACE_ANCHORS = {
+    "warrior-dawnscale-level-20": (278.0, 292.0, 48.0, 48.0),
 }
 
 
@@ -250,7 +259,11 @@ def motion_specs(state: str, class_id: str) -> tuple[list[dict[str, float | bool
     if state == "attack":
         if class_id == "healer":
             return ([{"dy": 1}, {"dy": -5, "scale": 1.006}, {"dy": -10, "scale": 1.014}, {"dy": -5, "scale": 1.008}, {"dy": 0}], [160, 130, 170, 180, 240])
-        return ([{"dx": -2}, {"dx": -7, "angle": -1.2}, {"dx": 9, "dy": -3, "scale": 1.01, "angle": 1.8}, {"dx": 4, "angle": .7}, {"dx": 0}], [160, 110, 130, 170, 240])
+        if class_id == "warrior":
+            return ([{}, {"dx": -8, "dy": 1, "angle": -1.4}, {"dx": 15, "dy": -4, "scale": 1.018, "angle": 3.4}, {"dx": 8, "dy": -2, "scale": 1.008, "angle": 1.2}, {}], [150, 105, 125, 165, 260])
+        if class_id == "ranger":
+            return ([{}, {"dx": -6, "angle": -.8}, {"dx": 8, "dy": -2, "scale": 1.01, "angle": 1.2}, {"dx": 4, "angle": .4}, {}], [150, 120, 115, 160, 260])
+        return ([{}, {"dy": -4, "scale": 1.006}, {"dx": 5, "dy": -8, "scale": 1.018}, {"dx": 2, "dy": -3, "scale": 1.008}, {}], [150, 120, 150, 170, 240])
     if state == "hurt":
         return ([{}, {"dx": 10, "dy": 3, "angle": 1.5}, {"dx": -4, "dy": 1, "angle": -.8}, {}], [160, 190, 170, 300])
     if state == "happy":
@@ -277,13 +290,36 @@ def add_effects(frame: Image.Image, state: str, index: int, total: int, class_id
     phase = index / max(1, total - 1)
     if state == "attack":
         if class_id == "healer":
-            radius = 95 + int(phase * 95)
-            draw.ellipse((320 - radius, 360 - radius // 3, 320 + radius, 360 + radius // 3), outline=path, width=9)
-            draw.ellipse((320 - radius // 2, 360 - radius // 6, 320 + radius // 2, 360 + radius // 6), outline=accent, width=6)
-        else:
-            start = 70 + index * 18
-            draw.arc((start, 90, 610, 565), 286, 76, fill=path, width=14)
-            draw.arc((start + 20, 110, 590, 545), 292, 68, fill=accent, width=6)
+            if index in (1, 2, 3):
+                radius = 72 + (index - 1) * 42
+                draw.ellipse((320 - radius, 350 - radius // 3, 320 + radius, 350 + radius // 3), outline=path, width=8)
+                draw.ellipse((320 - radius // 2, 350 - radius // 6, 320 + radius // 2, 350 + radius // 6), outline=accent, width=5)
+                star(draw, 320, 235 - index * 7, 14 + index * 3, path)
+        elif class_id == "warrior" and index in (1, 2, 3):
+            # A compact diagonal sword trail crosses the weapon/body instead of
+            # floating as a disconnected semicircle beside the character.
+            shift = (index - 2) * 16
+            slash = [(560 + shift, 440), (525 + shift, 395), (490 + shift, 355), (455 + shift, 320), (420 + shift, 285)]
+            draw.line(slash, fill=(*path[:3], 105), width=28, joint="curve")
+            draw.line(slash, fill=path, width=12, joint="curve")
+            draw.line([(x - 12, y + 18) for x, y in slash], fill=accent, width=5, joint="curve")
+            if index == 2:
+                star(draw, slash[-1][0], slash[-1][1], 18, path)
+        elif class_id == "ranger" and index in (1, 2, 3):
+            # Fast arrow streak with a clear release/impact beat.
+            x0 = 350 + (index - 1) * 34
+            y0 = 276 - (index - 1) * 18
+            draw.line((x0 - 92, y0 + 22, x0 + 92, y0 - 22), fill=(*path[:3], 95), width=20)
+            draw.line((x0 - 82, y0 + 19, x0 + 92, y0 - 22), fill=path, width=7)
+            draw.polygon(((x0 + 106, y0 - 25), (x0 + 76, y0 - 34), (x0 + 86, y0 - 8)), fill=accent)
+        elif class_id == "mage" and index in (1, 2, 3):
+            radius = 28 + index * 13
+            cx, cy = 426 + (index - 2) * 20, 248 - (index - 2) * 10
+            draw.ellipse((cx - radius, cy - radius, cx + radius, cy + radius), fill=(*path[:3], 72), outline=path, width=8)
+            draw.ellipse((cx - radius // 2, cy - radius // 2, cx + radius // 2, cy + radius // 2), outline=accent, width=6)
+            for angle in range(0, 360, 60):
+                radians = math.radians(angle)
+                star(draw, cx + math.cos(radians) * (radius + 18), cy + math.sin(radians) * (radius + 18), 8, path)
     elif state == "hurt" and index in (1, 2):
         flash = Image.new("RGBA", result.size, (255, 72, 85, 0))
         flash.putalpha(result.getchannel("A").point(lambda a: int(a * .32)))
@@ -328,9 +364,10 @@ def connected_components(mask: np.ndarray) -> list[tuple[np.ndarray, np.ndarray]
 
 
 def soften_mask(mask: np.ndarray, source_alpha: np.ndarray) -> np.ndarray:
-    layer = Image.fromarray((mask.astype(np.uint8) * 255), "L")
-    layer = layer.filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.GaussianBlur(.7))
-    return np.minimum(np.asarray(layer, dtype=np.uint8), source_alpha)
+    # Do not dilate semantic masks. Expanding by even one source pixel painted
+    # skin across hairlines and hair across helmets after the 640→320 resize,
+    # producing the gray glow/colored shadow reported by the tester.
+    return np.where(mask, source_alpha, 0).astype(np.uint8)
 
 
 def select_seeded_components(candidate: np.ndarray, anchor: np.ndarray, bridge_size: int = 5) -> np.ndarray:
@@ -350,7 +387,13 @@ def select_seeded_components(candidate: np.ndarray, anchor: np.ndarray, bridge_s
     return candidate & selected
 
 
-def appearance_masks(base: Image.Image, hair_kind: str, *, hide_hair: bool = False) -> tuple[Image.Image, Image.Image]:
+def appearance_masks(
+    base: Image.Image,
+    hair_kind: str,
+    *,
+    hide_hair: bool = False,
+    character_id: str = "",
+) -> tuple[Image.Image, Image.Image]:
     arr = np.asarray(base.convert("RGBA"), dtype=np.uint8)
     rgb = arr[:, :, :3].astype(np.float32)
     alpha = arr[:, :, 3]
@@ -380,18 +423,15 @@ def appearance_masks(base: Image.Image, hair_kind: str, *, hide_hair: bool = Fal
             score -= int(abs(cx - base.width / 2) * .25)
             if score > best_score:
                 best_score, face_cx, face_cy = score, float(cx), float(cy)
-    face_region = ((xx - face_cx) / 58) ** 2 + ((yy - face_cy) / 52) ** 2 <= 1
-    # Build the final face mask from chroma distance to the detected face,
-    # rather than the initial strict detector alone. This includes shaded
-    # cheeks and foreheads so deep tones do not look like a pasted-on beard.
+    face_rx, face_ry = 58.0, 52.0
+    face_override = FACE_ANCHORS.get(character_id)
+    if face_override:
+        face_cx, face_cy, face_rx, face_ry = face_override
+    face_region = ((xx - face_cx) / face_rx) ** 2 + ((yy - face_cy) / face_ry) ** 2 <= 1
+    # Seed from the actual skin-color detector. A broad chroma-distance flood
+    # also captured hair highlights and pale helmet pieces around the face.
     face_probe = skin_like & (((xx - face_cx) / 34) ** 2 + ((yy - face_cy) / 34) ** 2 <= 1)
-    if np.any(face_probe):
-        face_cb = float(np.median(cb[face_probe]))
-        face_cr = float(np.median(cr[face_probe]))
-        chroma_distance = np.sqrt((cb - face_cb) ** 2 + (cr - face_cr) ** 2)
-        skin_candidate = opaque & face_region & (chroma_distance <= 24)
-    else:
-        skin_candidate = skin_like & face_region
+    skin_candidate = skin_like & face_region
     face_anchor = skin_candidate & (((xx - face_cx) / 34) ** 2 + ((yy - face_cy) / 34) ** 2 <= 1)
     skin_mask = select_seeded_components(skin_candidate, face_anchor, 3)
     if np.count_nonzero(skin_mask) < 120:
@@ -417,7 +457,9 @@ def appearance_masks(base: Image.Image, hair_kind: str, *, hide_hair: bool = Fal
         # Near-black pixels are outlines and armor shadows, not brown hair.
         # Keeping them out preserves the original linework and stops connected
         # helmet contours from becoming a recolorable hair region.
-        if "nightwyrm" in hair_kind:
+        if "sunleaf" in hair_kind:
+            hair_color = ((hue <= 68) | (hue >= 335)) & (sat > .04) & (value >= 8) & (value < 215)
+        elif "nightwyrm" in hair_kind:
             hair_color = ((hue <= 70) | (hue >= 335)) & (sat > .02) & (value >= 3) & (value < 210)
         elif "sunshield" in hair_kind:
             hair_color = ((hue <= 38) | (hue >= 350)) & (sat > .12) & (value >= 18) & (value < 182)
@@ -433,15 +475,29 @@ def appearance_masks(base: Image.Image, hair_kind: str, *, hide_hair: bool = Fal
     hair_seed = select_seeded_components(head_candidate, scalp_anchor, 5)
     hair_mask = hair_seed
     if "-long" in hair_kind:
-        side_region = (yy >= face_cy - 82) & (yy <= face_cy + 155) & (np.abs(xx - face_cx) <= 165) & ((np.abs(xx - face_cx) >= 42) | (yy < face_cy - 18))
-        if hair_kind.endswith("-right"):
+        side_span = 235 if "sunleaf" in hair_kind else 165
+        side_bottom = 210 if "sunleaf" in hair_kind else 155
+        side_region = (yy >= face_cy - 82) & (yy <= face_cy + side_bottom) & (np.abs(xx - face_cx) <= side_span) & ((np.abs(xx - face_cx) >= 42) | (yy < face_cy - 18))
+        if "-right" in hair_kind:
             side_region &= xx >= face_cx + 36
-        elif hair_kind.endswith("-left"):
+        elif "-left" in hair_kind:
             side_region &= xx <= face_cx - 36
         if helmeted_long_hair:
             side_region &= yy <= face_cy + 115
         candidate = opaque & side_region & hair_color & ~hair_exclusion & ~central_face
-        hair_mask = hair_seed | (candidate if "-wide" in hair_kind else select_seeded_components(candidate, hair_seed, 7))
+        # Long-hair masks must remain connected to the detected scalp. Taking
+        # every color match in the side region recolored bows, staffs, armor,
+        # capes, and headdresses in the same palette.
+        hair_mask = hair_seed | select_seeded_components(candidate, hair_seed, 5)
+        if "sunleaf" in hair_kind:
+            # The Ascendant curls contain very dark internal strand pixels that
+            # have unreliable hue. Fill only small gaps touching a trusted hair
+            # pixel, clipped to the opaque semantic hair region, so silver does
+            # not leave brown islands and never bleeds into the background.
+            expanded_hair = np.asarray(
+                Image.fromarray((hair_mask.astype(np.uint8) * 255), "L").filter(ImageFilter.MaxFilter(5))
+            ) > 0
+            hair_mask |= expanded_hair & opaque & (head_region | side_region) & ~skin_like & ~central_face
     if hide_hair or np.count_nonzero(hair_mask) < 100:
         hair_mask = np.zeros_like(hair_mask)
     skin_alpha = soften_mask(skin_mask, alpha)
@@ -557,6 +613,7 @@ def build(args: argparse.Namespace) -> None:
                     base,
                     hair_kind,
                     hide_hair=tier_id in HIDDEN_HAIR_TIERS.get((class_id, family), set()),
+                    character_id=char_id,
                 )
                 action_name = "heal" if class_id == "healer" else "attack"
                 files = {}

@@ -19,7 +19,7 @@ const expectedFamilies={
 };
 const expectedTimelines={
   static:[1000],idle:[360,360,360,360],walkLeft:[120,120,120,120,120,120],walkRight:[120,120,120,120,120,120],
-  attack:[160,110,130,170,240],heal:[160,130,170,180,240],hurt:[160,190,170,300],
+  attack:{warrior:[150,105,125,165,260],ranger:[150,120,115,160,260],mage:[150,120,150,170,240]},heal:[160,130,170,180,240],hurt:[160,190,170,300],
   happy:[160,130,170,130,180,260],celebrate:[130,110,140,190,140,110,160,280],
 };
 let profiles=0,checkedFiles=0;
@@ -45,9 +45,10 @@ for(const [classId,genders] of Object.entries(R.v5Families)){
         if(R.characterClassId(profile)!==classId)failures.push(`Wrong class: ${pack.id}`);
         if(pack.idleArt===pack.walkLeftArt||pack.idleArt===pack.walkRightArt)failures.push(`Idle/walk route collision: ${pack.id}`);
         if(pack.happyArt===pack.celebrateArt)failures.push(`Happy/celebrate route collision: ${pack.id}`);
-        for(const [state,expected] of Object.entries(expectedTimelines)){
+        for(const [state,timeline] of Object.entries(expectedTimelines)){
           if(state==='heal'&&classId!=='healer')continue;
           if(state==='attack'&&classId==='healer')continue;
+          const expected=state==='attack'?timeline[classId]:timeline;
           const actual=R.v5MotionTimeline(pack,state);
           if(JSON.stringify(actual)!==JSON.stringify(expected))failures.push(`Timeline mismatch: ${pack.id}/${state} got ${JSON.stringify(actual)}.`);
         }

@@ -202,7 +202,7 @@ function render(){
   const heroName=d.adventurer?.displayName||'Adventurer';
   $('heroLabel').textContent=heroName;
   const student=backend.me.student,heroPack=RPG?.resolveAppearance?.(student);let heroArt=$('heroArt');
-  if(heroPack?.v5){if(heroArt?.tagName==='IMG'){const stage=document.createElement('div');stage.id='heroArt';stage.className='scene-hero';heroArt.replaceWith(stage);heroArt=stage}RPG.renderV5Character(heroArt,heroPack,'idle',{version:'56.28-v5.3.4',alt:`${heroName}'s adventurer`})}else setImageWithFallback(heroArt,heroCandidates(student));
+  if(heroPack?.v5){if(heroArt?.tagName==='IMG'){const stage=document.createElement('div');stage.id='heroArt';stage.className='scene-hero';heroArt.replaceWith(stage);heroArt=stage}RPG.renderV5Character(heroArt,heroPack,'idle',{version:'56.32-v5.3.8',alt:`${heroName}'s adventurer`})}else setImageWithFallback(heroArt,heroCandidates(student));
   const petId=d.adventurer?.activePet,pd=petData(petId),pc=petCandidates(pd),petStage=$('petStage');
   petStage.classList.toggle('hidden',!petId||!pc.length);
   if(petId&&pc.length){$('petLabel').textContent=pd?.name||petId;$('petArt').alt=`Active pet: ${pd?.name||petId}`;setImageWithFallback($('petArt'),pc,{hideOnFail:true})}

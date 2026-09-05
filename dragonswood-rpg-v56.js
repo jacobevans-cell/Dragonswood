@@ -197,8 +197,8 @@
   ]);
   function normalizedEmail(value){return String(value||"").trim().toLowerCase()}
   function isV5Tester(profile={},email=""){return v5Config.enabled&&normalizedEmail(email||profile.email)===v5Config.testerEmail}
-  const v5SkinTones=Object.freeze({light:{name:"Light",color:"#f4bc99"},medium:{name:"Medium",color:"#be6c46"},deep:{name:"Deep",color:"#804836"}});
-  const v5HairColors=Object.freeze({dark:{name:"Dark",color:"#281e2d"},brown:{name:"Brown",color:"#734026"},silver:{name:"Silver",color:"#d7dceb"}});
+  const v5SkinTones=Object.freeze({light:{name:"Light",color:"#e8ae8b"},medium:{name:"Medium",color:"#b06746"},deep:{name:"Deep",color:"#693f34"}});
+  const v5HairColors=Object.freeze({dark:{name:"Dark",color:"#221d2b"},brown:{name:"Brown",color:"#5b3726"},silver:{name:"Silver",color:"#b9c2d2"}});
   function v5SkinTone(profile={}){return Object.hasOwn(v5SkinTones,String(profile.characterV5SkinTone||""))?String(profile.characterV5SkinTone):"medium"}
   function v5HairColor(profile={}){return Object.hasOwn(v5HairColors,String(profile.characterV5HairColor||""))?String(profile.characterV5HairColor):"dark"}
   function hasV5Selection(profile={}){return profile.characterSystemVersion==="v5"&&["male","female"].includes(profile.characterV5Gender)&&["radiant","shadow"].includes(profile.characterV5Affinity)&&Object.hasOwn(classes,String(profile.characterV5ClassId||""))}
@@ -237,7 +237,10 @@
     if(file==="idle")return[360,360,360,360];
     if(file==="walk-left"||file==="walk-right")return[120,120,120,120,120,120];
     if(file==="heal")return[160,130,170,180,240];
-    if(file==="attack")return[160,110,130,170,240];
+    if(file==="attack"&&pack?.classId==="warrior")return[150,105,125,165,260];
+    if(file==="attack"&&pack?.classId==="ranger")return[150,120,115,160,260];
+    if(file==="attack"&&pack?.classId==="mage")return[150,120,150,170,240];
+    if(file==="attack")return[150,120,150,170,240];
     if(file==="hurt")return[160,190,170,300];
     if(file==="happy")return[160,130,170,130,180,260];
     if(file==="celebrate")return[130,110,140,190,140,110,160,280];
@@ -259,7 +262,7 @@
     const key=`${url}|${color}|${kind}`;if(v5TintCache.has(key))return v5TintCache.get(key);
     const promise=(async()=>{const rgb=v5Rgb(color),source=await v5DecodeFrames(url),frames=[];
       for(const bitmap of source){const canvas=document.createElement("canvas");canvas.width=bitmap.width;canvas.height=bitmap.height;const context=canvas.getContext("2d",{willReadFrequently:true});context.drawImage(bitmap,0,0);const pixels=context.getImageData(0,0,canvas.width,canvas.height),data=pixels.data;
-        for(let i=0;i<data.length;i+=4){if(!data[i+3])continue;const shade=data[i]/255,factor=kind==="skin"?.72+.42*shade:.48+.66*shade;data[i]=Math.min(255,Math.round(rgb[0]*factor));data[i+1]=Math.min(255,Math.round(rgb[1]*factor));data[i+2]=Math.min(255,Math.round(rgb[2]*factor))}
+        for(let i=0;i<data.length;i+=4){if(!data[i+3])continue;const shade=data[i]/255,factor=kind==="skin"?.76+.34*shade:.58+.50*shade;data[i]=Math.min(255,Math.round(rgb[0]*factor));data[i+1]=Math.min(255,Math.round(rgb[1]*factor));data[i+2]=Math.min(255,Math.round(rgb[2]*factor))}
         context.putImageData(pixels,0,0);frames.push(await createImageBitmap(canvas))}
       return frames;
     })();v5TintCache.set(key,promise);return promise;
@@ -289,5 +292,5 @@
   function inventory(profile={}){return Array.isArray(profile.rpgInventory)?profile.rpgInventory.map(String):[]}
   function dailyXp(profile={}){return String(profile.dailyXpDate||"")===dateKey()?Math.max(0,Math.min(150,Number(profile.dailyXpEarned)||0)):0}
 
-  window.DWRPG={classes,pets,prestigePets,petRegistry,enemies,items,appearancePacks,v5Config,v5Families,v5Tiers,v5SkinTones,v5HairColors,v5SkinTone,v5HairColor,dateKey,levelForXp,hash,dailyEnemy,canonicalPetId,resolvePet,isV5Tester,hasV5Selection,v5SelectionRequired,characterClassId,v5TierForLevel,resolveV5Character,v5StatePaths,v5MotionTimeline,v5Markup,renderV5Character,ensureV5Renderer,resolveAppearance,resolveBackground,inventory,dailyXp,version:"56.28-v5.3.4-tester"};
+  window.DWRPG={classes,pets,prestigePets,petRegistry,enemies,items,appearancePacks,v5Config,v5Families,v5Tiers,v5SkinTones,v5HairColors,v5SkinTone,v5HairColor,dateKey,levelForXp,hash,dailyEnemy,canonicalPetId,resolvePet,isV5Tester,hasV5Selection,v5SelectionRequired,characterClassId,v5TierForLevel,resolveV5Character,v5StatePaths,v5MotionTimeline,v5Markup,renderV5Character,ensureV5Renderer,resolveAppearance,resolveBackground,inventory,dailyXp,version:"56.32-v5.3.8-tester"};
 })();

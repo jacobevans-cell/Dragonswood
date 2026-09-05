@@ -118,6 +118,8 @@ def main() -> None:
                         failures.append(f"{char_id}/{state}-{layer}/{index} extends outside the character body.")
         if state_hashes.get("idle") == state_hashes.get("walk-left") or state_hashes.get("idle") == state_hashes.get("walk-right"):
             failures.append(f"{char_id} idle and walk are identical.")
+        if state_hashes.get(action) in {state_hashes.get("static"), state_hashes.get("idle"), state_hashes.get("happy")}:
+            failures.append(f"{char_id} {action} is not a distinct action animation.")
         if state_hashes.get("happy") == state_hashes.get("celebrate"):
             failures.append(f"{char_id} happy and celebrate are identical.")
         by_family.setdefault((class_id, character["family"]), {})[character["tier"]] = char_dir / "static.webp"
@@ -135,6 +137,23 @@ def main() -> None:
     nightwyrm = base_root / "warrior" / "warrior-nightwyrm-level-20"
     if digest(frames(nightwyrm / "happy.webp")) == digest(frames(nightwyrm / "celebrate.webp")):
         failures.append("Nightwyrm Ascendant Celebrate still duplicates Happy.")
+
+    # Regression guard for the warm Dawnscale helmet crest that the automatic
+    # color detector once misidentified as his face.  Skin pixels must remain
+    # inside the visible face opening in the normalized 320px sprite.
+    dawnscale_skin = frames(
+        appearance_root
+        / "layers"
+        / "warrior"
+        / "warrior-dawnscale-level-20"
+        / "static-skin.webp"
+    )[0][:, :, 3]
+    guard_y, guard_x = np.indices(dawnscale_skin.shape)
+    outside_face = (dawnscale_skin > 24) & (
+        (guard_x < 105) | (guard_x > 165) | (guard_y < 105) | (guard_y > 180)
+    )
+    if np.count_nonzero(outside_face) > 8:
+        failures.append("Dawnscale Ascendant skin mask still reaches the helmet crest.")
 
     result = {
         "passed": not failures,

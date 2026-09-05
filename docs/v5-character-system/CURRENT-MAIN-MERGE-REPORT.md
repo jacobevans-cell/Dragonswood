@@ -24,7 +24,7 @@ The source archive was checkpointed before any integration work. The V5 changes 
 - Adventurer Hall, student portal, Daily Boss, and Kingdom Wars routing
 - Per-account legacy rollback and global emergency rollback
 
-The integration adds 568 files and modifies ten files relative to the current-main checkpoint. Nine modifications are the V5 runtime surfaces; the tenth updates a stale test assertion so it accepts the newer `58.2.3` runtime version already present in current main.
+The integration adds 569 files and modifies ten files relative to the current-main checkpoint. Nine modifications are the V5 runtime surfaces; the tenth updates a stale test assertion so it accepts the newer `58.2.3` runtime version already present in current main. The added files include this merge report, the V5 tools and documentation, and the complete V5 production asset set.
 
 ## Conflict resolution
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Append the tested game patch to the full V5 animation handoff archive."""
+"""Package the full V5 animation handoff plus the tested game patch."""
 
 from __future__ import annotations
 
@@ -55,11 +55,21 @@ def main() -> None:
     parser.add_argument("repo", type=Path)
     parser.add_argument("output", type=Path)
     parser.add_argument("--art-masters", type=Path, help="Optional V5.3 progression-master folder to include")
+    parser.add_argument("--deployed-commit", default="unknown", help="Exact deployed Git commit")
+    parser.add_argument("--rollback-tag", default="unknown", help="Published pre-repair rollback tag")
     args = parser.parse_args()
     repo = args.repo.resolve()
     output = args.output.resolve()
     output.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(args.master_handoff.resolve(), output)
+    master_handoff = args.master_handoff.resolve()
+    if master_handoff.is_dir():
+        with zipfile.ZipFile(output, "w", allowZip64=True) as archive:
+            for source in sorted(item for item in master_handoff.rglob("*") if item.is_file()):
+                relative = source.relative_to(master_handoff).as_posix()
+                compression = zipfile.ZIP_STORED if source.suffix.lower() in {".webp", ".png", ".jpg", ".zip"} else zipfile.ZIP_DEFLATED
+                archive.write(source, f"{ROOT}/{relative}", compress_type=compression)
+    else:
+        shutil.copyfile(master_handoff, output)
 
     sources = [repo / item for item in PATCH_FILES]
     sources += sorted((repo / "assets/rpg/v5").rglob("*"))
@@ -82,9 +92,15 @@ def main() -> None:
                 archive.write(source, f"{ROOT}/source-art-masters/{relative}", compress_type=zipfile.ZIP_STORED)
                 master_rows.append({"path": relative, "bytes": source.stat().st_size, "sha256": digest(source)})
 
-        status = """# Tester rollout implementation status
+        status = f"""# Tester rollout implementation status
 
 This archive now contains both the complete 640px animation-master handoff and the tested game patch under `game-patch/`.
+
+Deployed commit: `{args.deployed_commit}`
+
+Rollback tag: `{args.rollback_tag}`
+
+Tester account: `jacobicusjax@gmail.com`
 
 Implemented:
 
@@ -111,6 +127,9 @@ The patch deliberately preserves all legacy assets and profile fields. Read `gam
             "schemaVersion": 2,
             "name": "Dragonswood V5.3 synchronized tester rollout handoff",
             "testerEmail": "jacobicusjax@gmail.com",
+            "deployedCommit": args.deployed_commit,
+            "rollbackTag": args.rollback_tag,
+            "runtimeVersion": "56.32-v5.3.8-tester",
             "masterHandoffEntriesBeforePatch": master_entries,
             "gamePatchFiles": len(rows),
             "sourceArtMasters": len(master_rows),

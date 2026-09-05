@@ -7,3 +7,8 @@ tools/narration/tmp/
 *.onnx_data
 narration-generation-report.json
 *.part
+
+# Local Google/Firebase service-account credentials
+*service-account*.json
+*firebase-adminsdk*.json
+dragonswood-9289e-*.json

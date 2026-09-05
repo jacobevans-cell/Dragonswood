@@ -197,6 +197,10 @@
   ]);
   function normalizedEmail(value){return String(value||"").trim().toLowerCase()}
   function isV5Tester(profile={},email=""){return v5Config.enabled&&normalizedEmail(email||profile.email)===v5Config.testerEmail}
+  const v5SkinTones=Object.freeze({light:{name:"Light",color:"#f4bc99"},medium:{name:"Medium",color:"#be6c46"},deep:{name:"Deep",color:"#804836"}});
+  const v5HairColors=Object.freeze({dark:{name:"Dark",color:"#281e2d"},brown:{name:"Brown",color:"#734026"},silver:{name:"Silver",color:"#d7dceb"}});
+  function v5SkinTone(profile={}){return Object.hasOwn(v5SkinTones,String(profile.characterV5SkinTone||""))?String(profile.characterV5SkinTone):"medium"}
+  function v5HairColor(profile={}){return Object.hasOwn(v5HairColors,String(profile.characterV5HairColor||""))?String(profile.characterV5HairColor):"dark"}
   function hasV5Selection(profile={}){return profile.characterSystemVersion==="v5"&&["male","female"].includes(profile.characterV5Gender)&&["radiant","shadow"].includes(profile.characterV5Affinity)&&Object.hasOwn(classes,String(profile.characterV5ClassId||""))}
   function v5SelectionRequired(profile={},email=""){return isV5Tester(profile,email)&&!hasV5Selection(profile)}
   function characterClassId(profile={}){return isV5Tester(profile)&&hasV5Selection(profile)?String(profile.characterV5ClassId):String(profile.classId||"")}
@@ -205,15 +209,43 @@
     if(!isV5Tester(profile)||!hasV5Selection(profile))return null;
     const classId=characterClassId(profile),gender=profile.characterV5Gender,affinity=profile.characterV5Affinity,family=v5Families[classId]?.[gender]?.[affinity];
     if(!family)return null;
-    const level=Number(profile.level)||levelForXp(profile.xp),tier=v5TierForLevel(level),id=`${classId}-${family.id}-${tier.id}`,base=`assets/rpg/v5/${classId}/${id}`;
+    const level=Number(profile.level)||levelForXp(profile.xp),tier=v5TierForLevel(level),id=`${classId}-${family.id}-${tier.id}`,skinTone=v5SkinTone(profile),hairColor=v5HairColor(profile),base=`assets/rpg/v5/${classId}/${id}`,layers=`assets/rpg/v5-appearance/layers/${classId}/${id}`;
     const action=classId==="healer"?"heal":"attack";
-    return {id,name:`${family.name} ${tier.name}`,classId,gender,affinity,familyId:family.id,familyName:family.name,tierId:tier.id,tierName:tier.name,levelMin:tier.min,levelMax:tier.max,appearance:true,v5:true,
-      art:`${base}/static.webp`,skinArt:`${base}/static.webp`,idleArt:`${base}/idle.webp`,playArt:`${base}/happy.webp`,walkLeftArt:`${base}/walk-left.webp`,walkRightArt:`${base}/walk-right.webp`,attackArt:`${base}/${action}.webp`,healArt:`${base}/${action}.webp`,abilityArt:`${base}/${action}.webp`,hurtArt:`${base}/hurt.webp`,happyArt:`${base}/happy.webp`,celebrateArt:`${base}/happy.webp`};
+    return {id,name:`${family.name} ${tier.name}`,classId,gender,affinity,skinTone,hairColor,familyId:family.id,familyName:family.name,tierId:tier.id,tierName:tier.name,levelMin:tier.min,levelMax:tier.max,appearance:true,v5:true,v5Base:base,v5LayerBase:layers,
+      art:`${base}/static.webp`,skinArt:`${base}/static.webp`,idleArt:`${base}/idle.webp`,playArt:`${base}/happy.webp`,walkLeftArt:`${base}/walk-left.webp`,walkRightArt:`${base}/walk-right.webp`,attackArt:`${base}/${action}.webp`,healArt:`${base}/${action}.webp`,abilityArt:`${base}/${action}.webp`,hurtArt:`${base}/hurt.webp`,happyArt:`${base}/happy.webp`,celebrateArt:`${base}/celebrate.webp`};
   }
+  function v5StateFile(pack,state="idle"){
+    let key=String(state||"idle").replace(/Art$/i,"");
+    const names={art:"static",skin:"static",static:"static",idle:"idle",play:"happy",walkLeft:"walk-left",walkRight:"walk-right",attack:pack?.classId==="healer"?"heal":"attack",heal:pack?.classId==="healer"?"heal":"attack",ability:pack?.classId==="healer"?"heal":"attack",hurt:"hurt",happy:"happy",celebrate:"celebrate"};
+    return names[key]||"idle";
+  }
+  function v5Path(path,prefix="",version=""){
+    const value=String(path||"");
+    const resolved=/^(?:https?:|data:|blob:|\/)/i.test(value)?value:`${prefix||""}${value}`;
+    return version?`${resolved}${resolved.includes("?")?"&":"?"}v=${encodeURIComponent(version)}`:resolved;
+  }
+  function v5StatePaths(pack,state="idle",options={}){
+    if(!pack?.v5)return null;
+    const file=v5StateFile(pack,state),prefix=String(options.prefix||""),version=String(options.version||"");
+    return {base:v5Path(`${pack.v5Base}/${file}.webp`,prefix,version),skin:v5Path(`${pack.v5LayerBase}/${file}-skin.webp`,prefix,version),hair:v5Path(`${pack.v5LayerBase}/${file}-hair.webp`,prefix,version)};
+  }
+  function v5Attr(value){return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]))}
+  function ensureV5Renderer(doc=window.document){
+    if(!doc||doc.getElementById("dw-v5-renderer-style"))return;
+    const style=doc.createElement("style");style.id="dw-v5-renderer-style";style.textContent='.dw-v5-character{display:block;position:relative;width:100%;height:100%;min-height:0;line-height:0}.dw-v5-character>img{position:absolute;inset:0;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain!important}.dw-v5-character>.dw-v5-tint{pointer-events:none}.class-card>.dw-v5-character{height:200px}.shop-intro>.dw-v5-character{height:190px}.hero-v5-art{width:100%;height:270px}@media(max-width:900px){.hero-v5-art{height:190px}}';(doc.head||doc.documentElement).appendChild(style);
+    const filters=doc.createElementNS("http://www.w3.org/2000/svg","svg");filters.id="dw-v5-renderer-filters";filters.setAttribute("aria-hidden","true");filters.setAttribute("width","0");filters.setAttribute("height","0");filters.style.cssText="position:absolute;width:0;height:0;overflow:hidden";
+    const matrices={"skin-light":[244,188,153],"skin-medium":[190,108,70],"skin-deep":[128,72,54],"hair-dark":[40,30,45],"hair-brown":[115,64,38],"hair-silver":[215,220,235]};
+    filters.innerHTML=`<defs>${Object.entries(matrices).map(([id,c])=>`<filter id="dw-v5-${id}" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="${(c[0]/255).toFixed(4)} 0 0 0 0  0 ${(c[1]/255).toFixed(4)} 0 0 0  0 0 ${(c[2]/255).toFixed(4)} 0 0  0 0 0 1 0"/></filter>`).join("")}</defs>`;(doc.body||doc.documentElement).appendChild(filters);
+  }
+  function v5Markup(pack,state="idle",options={}){
+    if(!pack?.v5)return "";ensureV5Renderer(options.document||window.document);const paths=v5StatePaths(pack,state,options),label=v5Attr(options.alt||pack.name||"V5 adventurer"),skin=Object.hasOwn(v5SkinTones,pack.skinTone)?pack.skinTone:"medium",hair=Object.hasOwn(v5HairColors,pack.hairColor)?pack.hairColor:"dark",extra=v5Attr(options.className||"");
+    return `<span class="dw-v5-character${extra?` ${extra}`:""}" role="img" aria-label="${label}"><img class="dw-v5-base" src="${v5Attr(paths.base)}" alt="" decoding="async"><img class="dw-v5-tint dw-v5-skin" src="${v5Attr(paths.skin)}" alt="" decoding="async" style="filter:url(#dw-v5-skin-${skin})"><img class="dw-v5-tint dw-v5-hair" src="${v5Attr(paths.hair)}" alt="" decoding="async" style="filter:url(#dw-v5-hair-${hair})"></span>`;
+  }
+  function renderV5Character(host,pack,state="idle",options={}){if(!host||!pack?.v5)return false;host.innerHTML=v5Markup(pack,state,options);return true}
   function resolveAppearance(profile={}){const v5=resolveV5Character(profile);if(v5)return v5;const id=String(profile?.rpgEquipped?.appearance||"").trim();if(!id)return null;return items.find(item=>item.id===id&&item.appearance===true&&item.classId===String(profile.classId||""))||null}
   function resolveBackground(profile={}){const ids=new Set(["fairy-purple","fairy-bamboo","fairy-mushroom","crystal-cave","jungle","mountain-night","snow-aurora","snow-village"]),id=String(profile.homeBackgroundId||"fairy-purple");return ids.has(id)?{id,art:`assets/rpg/backgrounds/${id}.webp`}:null}
   function inventory(profile={}){return Array.isArray(profile.rpgInventory)?profile.rpgInventory.map(String):[]}
   function dailyXp(profile={}){return String(profile.dailyXpDate||"")===dateKey()?Math.max(0,Math.min(150,Number(profile.dailyXpEarned)||0)):0}
 
-  window.DWRPG={classes,pets,prestigePets,petRegistry,enemies,items,appearancePacks,v5Config,v5Families,v5Tiers,dateKey,levelForXp,hash,dailyEnemy,canonicalPetId,resolvePet,isV5Tester,hasV5Selection,v5SelectionRequired,characterClassId,v5TierForLevel,resolveV5Character,resolveAppearance,resolveBackground,inventory,dailyXp,version:"56.22-v5.1-tester"};
+  window.DWRPG={classes,pets,prestigePets,petRegistry,enemies,items,appearancePacks,v5Config,v5Families,v5Tiers,v5SkinTones,v5HairColors,v5SkinTone,v5HairColor,dateKey,levelForXp,hash,dailyEnemy,canonicalPetId,resolvePet,isV5Tester,hasV5Selection,v5SelectionRequired,characterClassId,v5TierForLevel,resolveV5Character,v5StatePaths,v5Markup,renderV5Character,ensureV5Renderer,resolveAppearance,resolveBackground,inventory,dailyXp,version:"56.23-v5.2-tester"};
 })();

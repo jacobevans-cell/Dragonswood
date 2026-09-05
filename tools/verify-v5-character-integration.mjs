@@ -32,17 +32,20 @@ for(const [classId,genders] of Object.entries(R.v5Families)){
   for(const [gender,affinities] of Object.entries(genders)){
     for(const affinity of Object.keys(affinities)){
       for(const level of levels){
-        const profile={email:R.v5Config.testerEmail,characterSystemVersion:'v5',characterV5Gender:gender,characterV5Affinity:affinity,characterV5ClassId:classId,level};
+       for(const skinTone of Object.keys(R.v5SkinTones))for(const hairColor of Object.keys(R.v5HairColors)){
+        const profile={email:R.v5Config.testerEmail,characterSystemVersion:'v5',characterV5Gender:gender,characterV5Affinity:affinity,characterV5ClassId:classId,characterV5SkinTone:skinTone,characterV5HairColor:hairColor,level};
         const pack=R.resolveV5Character(profile);
         profiles++;
         if(!pack){failures.push(`No pack: ${classId}/${gender}/${affinity}/L${level}`);continue}
         if(R.characterClassId(profile)!==classId)failures.push(`Wrong class: ${pack.id}`);
         if(pack.idleArt===pack.walkLeftArt||pack.idleArt===pack.walkRightArt)failures.push(`Idle/walk route collision: ${pack.id}`);
+        if(pack.happyArt===pack.celebrateArt)failures.push(`Happy/celebrate route collision: ${pack.id}`);
         for(const key of ['skinArt','idleArt','walkLeftArt','walkRightArt','attackArt','abilityArt','hurtArt','happyArt','celebrateArt']){
           const target=path.join(root,pack[key]);
           checkedFiles++;
           if(!fs.existsSync(target))failures.push(`Missing ${key}: ${pack[key]}`);
         }
+       }
       }
     }
   }
@@ -68,7 +71,7 @@ if(disabledR.resolveV5Character(rollbackProfile)!==null||disabledR.characterClas
 for(const rulesPath of ['firestore.rules','v33-integration/firestore.gate.rules']){
   const rules=fs.readFileSync(path.join(root,rulesPath),'utf8');
   if(!rules.includes("request.auth.token.email == 'jacobicusjax@gmail.com'"))failures.push(`${rulesPath} is missing the exact tester-email write gate.`);
-  for(const field of ['characterSystemVersion','characterV5Gender','characterV5Affinity','characterV5ClassId','characterV5SelectedAt']){
+  for(const field of ['characterSystemVersion','characterV5Gender','characterV5Affinity','characterV5ClassId','characterV5SkinTone','characterV5HairColor','characterV5SelectedAt']){
     if(!rules.includes(field))failures.push(`${rulesPath} is missing the ${field} rule.`);
   }
 }
@@ -76,13 +79,16 @@ for(const rulesPath of ['firestore.rules','v33-integration/firestore.gate.rules'
 const catalog=JSON.parse(fs.readFileSync(path.join(root,'assets/rpg/v5/catalog.json'),'utf8'));
 if(catalog.validation?.passed!==true)failures.push('Production catalog validation is not passing.');
 if(catalog.characters?.length!==80)failures.push(`Expected 80 catalog characters, got ${catalog.characters?.length}.`);
-if(catalog.productionAssetCount!==560)failures.push(`Expected 560 production files, got ${catalog.productionAssetCount}.`);
+if(catalog.productionAssetCount!==640)failures.push(`Expected 640 base production files, got ${catalog.productionAssetCount}.`);
+if(catalog.appearance?.layerAssetCount!==1280)failures.push(`Expected 1280 appearance layers, got ${catalog.appearance?.layerAssetCount}.`);
+if(catalog.appearance?.wrapperAssetCount!==0)failures.push(`Obsolete SVG wrappers remain in the catalog: ${catalog.appearance?.wrapperAssetCount}.`);
+if(!source.includes('function renderV5Character')||!source.includes('function v5StatePaths'))failures.push('The shared layered WebP renderer is missing.');
 for(const character of catalog.characters||[]){
   const expected=expectedFamilies[character.classId]?.[character.gender]?.[character.affinity];
   if(expected!==character.family)failures.push(`Catalog gender mismatch: ${character.id} is tagged ${character.gender}/${character.affinity}.`);
 }
 
-for(const [file,needle] of [['adventurer-hall.html','characterV5'],['boss-battle.html','characterClassId'],['v33-integration/js/student-app.js','characterV5'],['kingdom-wars/kingdom-wars-test-app.mjs','characterV5']]){
+for(const [file,needle] of [['adventurer-hall.html','renderV5Classes'],['boss-battle.html','renderV5Character'],['v33-integration/js/student-app.js','renderV5Character'],['kingdom-wars/kingdom-wars-test-app.mjs','renderV5Character']]){
   const body=fs.readFileSync(path.join(root,file),'utf8');
   if(!body.includes(needle))failures.push(`${file} is not wired to V5 profile fields.`);
 }

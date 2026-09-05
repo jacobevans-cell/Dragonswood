@@ -376,7 +376,7 @@ service cloud.firestore {
       allow update: if isOwner(studentId)
                     && request.auth.token.email == 'jacobicusjax@gmail.com'
                     && request.resource.data.diff(resource.data).affectedKeys()
-                       .hasOnly(['characterSystemVersion','characterV5Gender','characterV5Affinity','characterV5ClassId','characterV5SelectedAt','updatedAt'])
+                       .hasOnly(['characterSystemVersion','characterV5Gender','characterV5Affinity','characterV5ClassId','characterV5SkinTone','characterV5HairColor','characterV5SelectedAt','updatedAt'])
                     && request.resource.data.updatedAt == request.time
                     && (
                       (
@@ -384,6 +384,8 @@ service cloud.firestore {
                         && request.resource.data.characterV5Gender in ['male','female']
                         && request.resource.data.characterV5Affinity in ['radiant','shadow']
                         && request.resource.data.characterV5ClassId in ['warrior','ranger','mage','healer']
+                        && request.resource.data.characterV5SkinTone in ['light','medium','deep']
+                        && request.resource.data.characterV5HairColor in ['dark','brown','silver']
                         && request.resource.data.characterV5SelectedAt == request.time
                       )
                       || (
@@ -391,6 +393,8 @@ service cloud.firestore {
                         && request.resource.data.characterV5Gender == ''
                         && request.resource.data.characterV5Affinity == ''
                         && request.resource.data.characterV5ClassId == ''
+                        && request.resource.data.characterV5SkinTone == ''
+                        && request.resource.data.characterV5HairColor == ''
                         && request.resource.data.characterV5SelectedAt == null
                       )
                     );

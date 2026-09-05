@@ -1,8 +1,9 @@
 "use strict";
 
-const CODE_CACHE="dragonswood-site-code-v1";
-const MEDIA_CACHE="dragonswood-site-media-v1";
+const CODE_CACHE="dragonswood-site-code-v2";
+const MEDIA_CACHE="dragonswood-site-media-v2";
 const CODE_PREFIX="dragonswood-site-code-";
+const MEDIA_PREFIX="dragonswood-site-media-";
 
 self.addEventListener("install",event=>{
   event.waitUntil(self.skipWaiting());
@@ -11,7 +12,7 @@ self.addEventListener("install",event=>{
 self.addEventListener("activate",event=>{
   event.waitUntil((async()=>{
     const keys=await caches.keys();
-    await Promise.all(keys.filter(key=>key.startsWith(CODE_PREFIX)&&key!==CODE_CACHE).map(key=>caches.delete(key)));
+    await Promise.all(keys.filter(key=>(key.startsWith(CODE_PREFIX)&&key!==CODE_CACHE)||(key.startsWith(MEDIA_PREFIX)&&key!==MEDIA_CACHE)).map(key=>caches.delete(key)));
     await self.clients.claim();
   })());
 });

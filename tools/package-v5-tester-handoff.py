@@ -24,11 +24,17 @@ PATCH_FILES = [
     "v33-integration/js/student-app.js",
     "docs/v5-character-system/README.md",
     "docs/v5-character-system/REPLACEMENT-MAP.md",
+    "docs/v5-character-system/V5.2-TESTER-RELEASE.md",
     "tools/build-v5-character-runtime.py",
+    "tools/build-v52-character-system.py",
     "tools/package-v5-tester-handoff.py",
+    "tools/render-v52-character-qa.py",
+    "tools/rebuild-v52-family-layers.py",
     "tools/v5-character-preview.html",
     "tools/verify-v5-animation-quality.py",
     "tools/verify-v5-character-integration.mjs",
+    "tools/verify-v5-html-modules.mjs",
+    "tools/verify-v52-character-quality.py",
 ]
 
 
@@ -45,6 +51,7 @@ def main() -> None:
     parser.add_argument("master_handoff", type=Path)
     parser.add_argument("repo", type=Path)
     parser.add_argument("output", type=Path)
+    parser.add_argument("--art-masters", type=Path, help="Optional V5.2 progression-master folder to include")
     args = parser.parse_args()
     repo = args.repo.resolve()
     output = args.output.resolve()
@@ -53,8 +60,10 @@ def main() -> None:
 
     sources = [repo / item for item in PATCH_FILES]
     sources += sorted((repo / "assets/rpg/v5").rglob("*"))
+    sources += sorted((repo / "assets/rpg/v5-appearance").rglob("*"))
     sources = [item for item in sources if item.is_file()]
     rows = []
+    master_rows = []
     with zipfile.ZipFile(output, "a", allowZip64=True) as archive:
         master_entries = len(archive.infolist())
         for source in sources:
@@ -63,6 +72,12 @@ def main() -> None:
             compression = zipfile.ZIP_STORED if source.suffix.lower() == ".webp" else zipfile.ZIP_DEFLATED
             archive.write(source, arcname, compress_type=compression)
             rows.append({"path": relative, "bytes": source.stat().st_size, "sha256": digest(source)})
+        if args.art_masters:
+            art_root = args.art_masters.resolve()
+            for source in sorted(item for item in art_root.rglob("*") if item.is_file()):
+                relative = source.relative_to(art_root).as_posix()
+                archive.write(source, f"{ROOT}/source-art-masters/{relative}", compress_type=zipfile.ZIP_STORED)
+                master_rows.append({"path": relative, "bytes": source.stat().st_size, "sha256": digest(source)})
 
         status = """# Tester rollout implementation status
 
@@ -74,12 +89,14 @@ Implemented:
 - Gender-first selection
 - Eight class/path choices after gender selection
 - Four classes, male/female, Radiant/Shadow, Levels 1–20
-- V5.1 repaired animation set: corrected happy headroom, Dawnscale walk silhouettes, Moonshadow Ascendant scale, and gender routing
-- 480 production animated WebP files, including 80 distinct derived idle loops, and 80 static fallbacks
+- V5.2 rebuilt animation set: separate idle/walk/happy/celebrate routes, clean headroom, stable walk silhouettes, and correct gender routing
+- 560 production animated WebP files plus 80 static fallbacks and 1,280 synchronized appearance layers
+- Shared browser renderer for all nine skin/hair combinations, with no blank external-SVG wrappers
+- Three skin tones and three hair colors, selected after gender and class/path
 - Live replacement in Adventurer Hall, student portal, Daily Boss, and Kingdom Wars
 - Additive Firestore fields and narrow owner/email rules
 - Per-account legacy rollback and one-switch global rollback
-- No-write visual preview, automated 80-profile/720-file integration verification, and V5.1 animation-quality gates
+- No-write visual preview, automated 720-profile appearance integration verification, and V5.2 visual-quality gates
 
 The patch deliberately preserves all legacy assets and profile fields. Read `game-patch/docs/v5-character-system/README.md` before promotion.
 """
@@ -91,16 +108,21 @@ The patch deliberately preserves all legacy assets and profile fields. Read `gam
             "testerEmail": "jacobicusjax@gmail.com",
             "masterHandoffEntriesBeforePatch": master_entries,
             "gamePatchFiles": len(rows),
-            "productionCharacterAssets": 560,
+            "sourceArtMasters": len(master_rows),
+            "productionCharacterAssets": 640,
+            "appearanceLayerAssets": 1280,
+            "appearanceWrappers": 0,
+            "appearanceRenderer": "DWRPG.renderV5Character",
             "validation": {
-                "profiles": 80,
-                "checkedPaths": 720,
+                "profiles": 720,
+                "checkedPaths": 6480,
                 "happyFramesChecked": 320,
                 "dawnscaleWalkTiersChecked": 4,
                 "idleLoopsChecked": 80,
                 "passed": True,
             },
             "files": rows,
+            "artMasterFiles": master_rows,
         }
         archive.writestr(f"{ROOT}/IMPLEMENTATION-STATUS.md", status, compress_type=zipfile.ZIP_DEFLATED)
         archive.writestr(f"{ROOT}/NEXT-THREAD-IMPLEMENTATION-PROMPT.md", next_prompt, compress_type=zipfile.ZIP_DEFLATED)

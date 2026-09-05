@@ -1,7 +1,7 @@
 import * as pdfjsLib from "./vendor/pdf.mjs";
-import { BOOKS } from "./catalog.js?v=20260901-1";
+import { BOOKS } from "./catalog.js?v=20260905-5";
 import { CLASSROOM_DICTIONARY } from "./dictionary/classroom.js?v=20260831-16";
-import { CHAPTER_MAPS } from "./assessment-data.js?v=20260901-1";
+import { CHAPTER_MAPS } from "./assessment-data.js?v=20260905-5";
 import {
   emptyStudentState,
   gradeSummary,
@@ -17,7 +17,7 @@ import {
   assignStudentBook,
   forceStudentChapter,
   unlockStudentBook
-} from "./assessment-store.js?v=20260901-6";
+} from "./assessment-store.js?v=20260905-5";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL("./vendor/pdf.worker.mjs", import.meta.url).href;
 
@@ -339,6 +339,12 @@ function gateForTarget(targetPage, book = state.book) {
     if (target >= nextChapter.startPage && Number(nextChapter.number) > forcedChapter && test && !hasPassed(test.id)) {
       return { test, chapter, nextChapter, gatePage: nextChapter.startPage };
     }
+  }
+  const lastChapter = map.chapters.at(-1);
+  const finalTest = testForChapter(lastChapter);
+  const chapterEndPage = Number(lastChapter?.endPage || book.pages || state.total || map.editionPages) || 1;
+  if (target > chapterEndPage && Number(lastChapter?.number) > forcedChapter && finalTest && !hasPassed(finalTest.id)) {
+    return { test: finalTest, chapter: lastChapter, nextChapter: null, gatePage: chapterEndPage + 1, completesBook: true };
   }
   return null;
 }
@@ -931,8 +937,11 @@ async function markBookCompleteIfFinished(lastShownPage) {
 function updateControls() {
   const shown = pagesForView();
   const last = shown[shown.length - 1];
+  const finalGate = last >= state.total ? gateForTarget(state.total + 1) : null;
   elements.previous.disabled = state.page <= 1;
-  elements.next.disabled = last >= state.total;
+  elements.next.disabled = last >= state.total && !finalGate;
+  elements.next.setAttribute("aria-label", finalGate ? "Take final chapter test" : "Next page");
+  elements.next.title = finalGate ? "Take final chapter test" : "Next page";
   elements.pageInput.value = state.page;
   elements.progress.value = state.page;
   const percent = Math.round(((last - 1) / Math.max(1, state.total - 1)) * 100);
@@ -976,7 +985,11 @@ function goTo(page) {
 function nextPage() {
   const shown = pagesForView();
   const last = shown[shown.length - 1];
-  if (last >= state.total) return;
+  if (last >= state.total) {
+    const finalGate = gateForTarget(state.total + 1);
+    if (finalGate) openChapterTest(finalGate, state.total + 1);
+    return;
+  }
   goTo(useSpread() && state.page === 1 ? 2 : state.page + (useSpread() ? 2 : 1));
 }
 
@@ -1393,7 +1406,9 @@ function openChapterTest(gate, targetPage = gate.gatePage) {
   state.activeGatePage = targetPage;
   const attempts = state.student.attempts?.[gate.test.id]?.count || 0;
   elements.quizTitle.textContent = gate.test.title || `Chapter ${gate.chapter.number} Check`;
-  elements.quizIntro.textContent = `Complete all seven questions and pass the required five-sentence summary to open Chapter ${gate.nextChapter.number}: ${gate.nextChapter.title}.`;
+  elements.quizIntro.textContent = gate.completesBook
+    ? `Complete all seven questions and pass the required five-sentence summary to finish ${state.book.title}.`
+    : `Complete all seven questions and pass the required five-sentence summary to open Chapter ${gate.nextChapter.number}: ${gate.nextChapter.title}.`;
   elements.quizProgress.textContent = attempts ? `Attempts so far: ${attempts}` : "7 questions + 1 required summary";
   elements.quizQuestions.innerHTML = `${gate.test.questions.map(quizQuestionMarkup).join("")}
     <section class="quiz-summary">
@@ -1488,17 +1503,24 @@ async function submitChapterTest(event) {
     </section>`;
   $$(`input`, elements.quizQuestions).forEach(input => { input.disabled = true; });
   elements.quizActions.innerHTML = passed
-    ? `<button class="primary-action" type="button" data-continue-quiz>Continue to Chapter ${gate.nextChapter.number} →</button>`
+    ? `<button class="primary-action" type="button" data-continue-quiz>${gate.completesBook ? "Finish book ✓" : `Continue to Chapter ${gate.nextChapter.number} →`}</button>`
     : `<button class="secondary-action" type="button" data-close-quiz>Reread chapter</button>
        <button class="primary-action" type="button" data-retry-quiz>Try again</button>`;
   elements.quizResult.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-function continueAfterQuiz() {
+async function continueAfterQuiz() {
   const gate = state.activeTest;
-  const target = state.activeGatePage || gate?.nextChapter.startPage;
+  const target = state.activeGatePage || gate?.nextChapter?.startPage;
   closeQuiz();
-  if (gate) goTo(Math.max(gate.nextChapter.startPage, target));
+  if (!gate) return;
+  if (gate.completesBook) {
+    await markBookCompleteIfFinished(state.total);
+    renderShelf();
+    showLibrary();
+    return;
+  }
+  goTo(Math.max(gate.nextChapter.startPage, target));
 }
 
 function teacherTestRows() {

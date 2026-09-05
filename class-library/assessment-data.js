@@ -4,13 +4,48 @@ import { HOLES_META } from "./books/holes/meta.js?v=1";
 import { PERCY1_META } from "./books/percy-jackson-1/meta.js?v=1";
 import { PERCY2_META } from "./books/percy-jackson-2/meta.js?v=1";
 import { PERCY3_META } from "./books/percy-jackson-3/meta.js?v=1";
+import { PERCY4_META } from "./books/percy-jackson-4/meta.js?v=1";
+import { PERCY5_META } from "./books/percy-jackson-5/meta.js?v=1";
 import { KEEPER1_META } from "./books/keeper-1/meta.js?v=1";
 import { KEEPER2_META } from "./books/keeper-2/meta.js?v=1";
 import { KEEPER3_META } from "./books/keeper-3/meta.js?v=1";
 import { KEEPER4_META } from "./books/keeper-4/meta.js?v=1";
+import { HARRY_POTTER_META } from "./books/harry-potter/meta.js?v=1";
+import { WONDER_META } from "./books/wonder/meta.js?v=1";
+import { WILD_ROBOT_1_META } from "./books/wild-robot-1/meta.js?v=1";
 import { GENERATED_TESTS } from "./assessment-tests.generated.js?v=20260901-1";
+import { HARRY_POTTER_TESTS } from "./assessment-tests-harry-potter.generated.js?v=1";
+import { PERCY4_TESTS } from "./assessment-tests-percy-jackson-4.generated.js?v=1";
+import { PERCY5_TESTS } from "./assessment-tests-percy-jackson-5.generated.js?v=1";
+import { WONDER_TESTS } from "./assessment-tests-wonder.generated.js?v=1";
+import { WILD_ROBOT_1_TESTS } from "./assessment-tests-wild-robot-1.generated.js?v=1";
 
 export const CHAPTER_MAPS = {
+  "wild-robot-1": {
+    editionPages: WILD_ROBOT_1_META.pages,
+    verified: true,
+    chapters: WILD_ROBOT_1_META.chapters
+  },
+  "wonder": {
+    editionPages: WONDER_META.pages,
+    verified: true,
+    chapters: WONDER_META.chapters
+  },
+  "harry-potter-1": {
+    editionPages: HARRY_POTTER_META.pages,
+    verified: true,
+    chapters: HARRY_POTTER_META.chapters
+  },
+  "percy-jackson-4": {
+    editionPages: PERCY4_META.pages,
+    verified: true,
+    chapters: PERCY4_META.chapters
+  },
+  "percy-jackson-5": {
+    editionPages: PERCY5_META.pages,
+    verified: true,
+    chapters: PERCY5_META.chapters
+  },
   "witches": {
     editionPages: WITCHES_META.pages,
     verified: true,
@@ -275,5 +310,10 @@ const LEGACY_STARTER_TESTS = {
 
 export const STARTER_TESTS = {
   ...LEGACY_STARTER_TESTS,
-  ...GENERATED_TESTS
+  ...GENERATED_TESTS,
+  ...HARRY_POTTER_TESTS,
+  ...PERCY4_TESTS,
+  ...PERCY5_TESTS,
+  ...WONDER_TESTS,
+  ...WILD_ROBOT_1_TESTS
 };

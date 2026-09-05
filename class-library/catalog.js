@@ -4,10 +4,15 @@ import { HOLES_META } from "./books/holes/meta.js?v=1";
 import { PERCY1_META } from "./books/percy-jackson-1/meta.js?v=1";
 import { PERCY2_META } from "./books/percy-jackson-2/meta.js?v=1";
 import { PERCY3_META } from "./books/percy-jackson-3/meta.js?v=1";
+import { PERCY4_META } from "./books/percy-jackson-4/meta.js?v=1";
+import { PERCY5_META } from "./books/percy-jackson-5/meta.js?v=1";
 import { KEEPER1_META } from "./books/keeper-1/meta.js?v=1";
 import { KEEPER2_META } from "./books/keeper-2/meta.js?v=1";
 import { KEEPER3_META } from "./books/keeper-3/meta.js?v=1";
 import { KEEPER4_META } from "./books/keeper-4/meta.js?v=1";
+import { HARRY_POTTER_META } from "./books/harry-potter/meta.js?v=1";
+import { WONDER_META } from "./books/wonder/meta.js?v=1";
+import { WILD_ROBOT_1_META } from "./books/wild-robot-1/meta.js?v=1";
 
 export const BOOKS = [
   {
@@ -31,7 +36,7 @@ export const BOOKS = [
     author: "J. K. Rowling",
     category: "Fantasy",
     teaser: "Harry has spent his life being treated like he does not belong. Then a letter reveals a hidden world of magic, a school full of secrets, and a past nobody explained to him. Pick this if you like mysteries, loyal friends, strange creatures, and discovering that an ordinary-looking kid may be anything but ordinary.",
-    pages: 370,
+    pages: HARRY_POTTER_META.pages,
     cover: "class-library/covers/classroom/harry-potter-classroom.jpg",
     kind: "images",
     imagePattern: "class-library/books/harry-potter/pages/page-{page}.jpg",
@@ -98,7 +103,7 @@ export const BOOKS = [
     author: "Rick Riordan",
     category: "Fantasy",
     teaser: "An underground maze is spreading beneath the world, and every path inside it can change. Percy and his friends must navigate traps, enemies, and choices that are harder than any map can solve. Start here after The Titan's Curse.",
-    pages: 222,
+    pages: PERCY4_META.pages,
     cover: "class-library/covers/classroom/percy-jackson-4-classroom.jpg",
     file: "class-library/books/percy-jackson-4-battle-of-the-labyrinth.pdf",
     badge: "Percy Jackson · 4"
@@ -112,7 +117,7 @@ export const BOOKS = [
     author: "Rick Riordan",
     category: "Fantasy",
     teaser: "The conflict Percy has been preparing for finally reaches New York. The battles are larger, but the hardest choices are about loyalty, sacrifice, and what kind of hero Percy wants to be. Start here after The Battle of the Labyrinth.",
-    pages: 244,
+    pages: PERCY5_META.pages,
     cover: "class-library/covers/classroom/percy-jackson-5-classroom.jpg",
     file: "class-library/books/percy-jackson-5-last-olympian.pdf",
     badge: "Percy Jackson · 5"
@@ -187,9 +192,13 @@ export const BOOKS = [
     author: "R. J. Palacio",
     category: "Realistic",
     teaser: "Auggie is starting school after years of learning at home, and he knows people will notice his face before they know him. The story follows several students as first impressions turn into friendship, mistakes, and difficult choices. It is honest about fitting in without pretending kindness is always easy.",
-    pages: 220,
+    pages: WONDER_META.pages,
     cover: "class-library/covers/classroom/wonder-classroom.jpg",
-    file: "class-library/books/wonder.pdf"
+    kind: "reflow",
+    contentFile: "class-library/books/wonder/book.json?v=1",
+    previousPages: 220,
+    progressVersion: "wonder-reflow-1",
+    badge: "123 chapters · Reflow"
   },
   {
     id: "bridge-to-terabithia",
@@ -243,10 +252,13 @@ export const BOOKS = [
   {
     id: "wild-robot-1",
     title: "The Wild Robot",
+    series: "The Wild Robot · Book 1",
+    seriesId: "wild-robot",
+    seriesNumber: 1,
     author: "Peter Brown",
     category: "Adventure",
     teaser: "Roz wakes on a wild island with no instructions for surviving there. To live among the animals, she has to observe, adapt, and learn what it means to care for someone else. The chapters are short, but the questions about nature, family, and belonging are much bigger.",
-    pages: 241,
+    pages: WILD_ROBOT_1_META.pages,
     cover: "class-library/covers/classroom/wild-robot-1-classroom.jpg",
     file: "class-library/books/wild-robot-1.pdf",
     badge: "Wild Robot · 1"
@@ -254,6 +266,9 @@ export const BOOKS = [
   {
     id: "wild-robot-2",
     title: "The Wild Robot Escapes",
+    series: "The Wild Robot · Book 2",
+    seriesId: "wild-robot",
+    seriesNumber: 2,
     author: "Peter Brown",
     category: "Adventure",
     teaser: "Roz has been taken away from the island and placed on a farm where people expect her to behave like an ordinary machine. She must understand her new home while quietly searching for a way back to the family she chose. Start here after The Wild Robot.",
@@ -265,6 +280,9 @@ export const BOOKS = [
   {
     id: "wild-robot-3",
     title: "The Wild Robot Protects",
+    series: "The Wild Robot · Book 3",
+    seriesId: "wild-robot",
+    seriesNumber: 3,
     author: "Peter Brown",
     category: "Adventure",
     teaser: "A threat spreading through the ocean reaches Roz's island and puts many kinds of animals in danger. Solving it will require travel, cooperation, and choices no single creature can make alone. Start here after The Wild Robot Escapes.",

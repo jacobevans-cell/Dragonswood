@@ -1,4 +1,4 @@
-import { STARTER_TESTS } from "./assessment-data.js?v=20260901-1";
+import { STARTER_TESTS } from "./assessment-data.js?v=20260905-5";
 
 const STUDENT_KEY = "dw-class-library-student-state:v2";
 const TESTS_KEY = "dw-class-library-test-overrides:v2";

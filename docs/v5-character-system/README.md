@@ -9,7 +9,7 @@ The tester flow is:
 1. Existing V5 choice is treated as reset.
 2. Choose `male` or `female` first.
 3. Compare eight characters: Radiant and Shadow versions of Warrior, Ranger, Mage, and Healer.
-4. Confirm one character.
+4. Choose one of three skin tones and one of three hair colors, then confirm.
 5. The chosen class and animated character replace the legacy visual in Adventurer Hall, the student portal, Daily Boss, and Kingdom Wars.
 6. The character automatically changes visual tier at Levels 5, 10, 15, and 20.
 
@@ -22,6 +22,8 @@ characterSystemVersion: "v5" | "legacy" | ""
 characterV5Gender: "male" | "female" | ""
 characterV5Affinity: "radiant" | "shadow" | ""
 characterV5ClassId: "warrior" | "ranger" | "mage" | "healer" | ""
+characterV5SkinTone: "light" | "medium" | "deep" | ""
+characterV5HairColor: "dark" | "brown" | "silver" | ""
 characterV5SelectedAt: timestamp | null
 ```
 
@@ -37,7 +39,7 @@ characterV5SelectedAt: timestamp | null
 | 15–19 | `level-15` | Champion |
 | 20 | `level-20` | Ascendant |
 
-Each of the 80 character/tier combinations includes four-frame `walk-left`, `walk-right`, class action (`attack` or `heal`), `hurt`, and `happy` animations. Production also derives a quiet four-frame `idle` breathing loop from a guarded source pose, so idle never replays the walk cycle. Production uses 480 animated WebP files plus 80 static WebP fallbacks. The 640px PNG/APNG/WebP/GIF masters remain in the full animation handoff.
+Each of the 80 character/tier combinations includes separate `idle`, `walk-left`, `walk-right`, class action (`attack` or `heal`), `hurt`, `happy`, and `celebrate` animations plus a static fallback. Production uses 640 base WebP files and 1,280 synchronized skin/hair layer WebPs. Idle never replays the walk cycle.
 
 ### V5.1 animation repair
 
@@ -45,6 +47,15 @@ Each of the 80 character/tier combinations includes four-frame `walk-left`, `wal
 - Animation states scale from their own silhouettes, so a long attack effect cannot shrink every state in a tier. This corrects Moonshadow Ascendant's apparent level regression.
 - Dawnscale starter, Veteran, Champion, and Ascendant use a guarded four-frame stride without the original leg crossover.
 - Visual gender assignment is based on the actual art: Warrior Shadow uses Eclipse for male and Nightwyrm for female; Mage Radiant uses Starfire for male and Celestial for female.
+
+### V5.3 synchronization and shading repair
+
+- Base, skin, and hair frames are decoded and drawn by one canvas renderer on one shared timeline. The layers can no longer start or loop out of phase.
+- Whole-character movement is restrained and bottom-anchored, removing the loose-head/bobble effect seen in the tester recordings.
+- Hair masks are connected to a detected scalp anchor, so staffs, bows, armor, and robes cannot be recolored as hair.
+- Long-hair paths recolor the full visible style. Fully enclosed helmet tiers intentionally use an empty hair layer.
+- Skin shading keeps source luminance and detail instead of applying a flat color block.
+- A base-only fallback is used if animated frame decoding is unavailable; independent animated tint images are never used.
 
 ## Rollback
 
@@ -75,10 +86,10 @@ Expected result:
 ```json
 {
   "passed": true,
-  "profiles": 80,
-  "checkedFiles": 720,
+  "profiles": 720,
+  "checkedFiles": 6480,
   "catalogCharacters": 80,
-  "productionAssets": 560,
+  "productionAssets": 640,
   "failures": []
 }
 ```

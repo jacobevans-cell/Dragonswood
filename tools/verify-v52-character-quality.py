@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Evidence-based QA for V5.2 progression, animation separation, and colors."""
+"""Evidence-based QA for V5.3 progression, animation separation, and colors."""
 
 from __future__ import annotations
 
@@ -16,6 +16,15 @@ EXPECTED_FRAMES = {"static": 1, "idle": 4, "walk-left": 6, "walk-right": 6, "att
 TIERS = ("starter", "level-05", "level-10", "level-15", "level-20")
 SKINS = ("light", "medium", "deep")
 HAIRS = ("dark", "brown", "silver")
+HIDDEN_HAIR_IDS = {
+    "warrior-dawnscale-level-10",
+    "warrior-dawnscale-level-15",
+    "warrior-dawnscale-level-20",
+    "warrior-eclipse-level-05",
+    "warrior-eclipse-level-10",
+    "warrior-eclipse-level-15",
+    "warrior-eclipse-level-20",
+}
 
 
 def frames(path: Path) -> list[np.ndarray]:
@@ -94,10 +103,19 @@ def main() -> None:
                     continue
                 layer_frames = frames(layer_path)
                 checked_layers += 1
-                if len(layer_frames) != len(image_frames):
+                hidden_hair = layer == "hair" and char_id in HIDDEN_HAIR_IDS
+                if len(layer_frames) != len(image_frames) and not (hidden_hair and len(layer_frames) == 1):
                     failures.append(f"{char_id}/{state}-{layer} frame count does not match the base.")
-                if sum(np.count_nonzero(frame[:, :, 3] > 8) for frame in layer_frames) < 25:
+                layer_pixels = sum(np.count_nonzero(frame[:, :, 3] > 8) for frame in layer_frames)
+                if hidden_hair:
+                    if layer_pixels:
+                        failures.append(f"{char_id}/{state}-hair tints a fully enclosed helmet.")
+                elif layer_pixels < 25:
                     failures.append(f"{char_id}/{state}-{layer} mask is empty or too small.")
+                for index, (base_frame, layer_frame) in enumerate(zip(image_frames, layer_frames)):
+                    outside = (layer_frame[:, :, 3] > 24) & (base_frame[:, :, 3] <= 2)
+                    if np.count_nonzero(outside) > 24:
+                        failures.append(f"{char_id}/{state}-{layer}/{index} extends outside the character body.")
         if state_hashes.get("idle") == state_hashes.get("walk-left") or state_hashes.get("idle") == state_hashes.get("walk-right"):
             failures.append(f"{char_id} idle and walk are identical.")
         if state_hashes.get("happy") == state_hashes.get("celebrate"):

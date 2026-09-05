@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regenerate V5.2 skin/hair animation layers for one prepared family."""
+"""Regenerate V5.3 skin/hair animation layers for one prepared family."""
 
 from __future__ import annotations
 
@@ -34,8 +34,14 @@ def main() -> None:
     generated = 0
     for tier_id, _, _, _ in builder.TIERS:
         source = args.prepared.resolve() / args.class_id / args.family / f"{tier_id}.png"
-        base = builder.normalize_character(Image.open(source).convert("RGBA"))
-        skin_mask, hair_mask = builder.appearance_masks(base, hair_kind)
+        # Prepared sources are already normalized. Normalizing them again makes
+        # the appearance layers a different scale from the production base.
+        base = Image.open(source).convert("RGBA")
+        skin_mask, hair_mask = builder.appearance_masks(
+            base,
+            hair_kind,
+            hide_hair=tier_id in builder.HIDDEN_HAIR_TIERS.get((args.class_id, args.family), set()),
+        )
         char_id = f"{args.class_id}-{args.family}-{tier_id}"
         for logical_state in builder.STATE_NAMES:
             filename_state = action_name if logical_state == "attack" else logical_state

@@ -230,22 +230,64 @@
     return {base:v5Path(`${pack.v5Base}/${file}.webp`,prefix,version),skin:v5Path(`${pack.v5LayerBase}/${file}-skin.webp`,prefix,version),hair:v5Path(`${pack.v5LayerBase}/${file}-hair.webp`,prefix,version)};
   }
   function v5Attr(value){return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]))}
+  const v5FrameCache=new Map(),v5TintCache=new Map(),v5CanvasRuns=new WeakMap();
+  function v5MotionTimeline(pack,state="idle"){
+    const file=v5StateFile(pack,state);
+    if(file==="static")return[1000];
+    if(file==="idle")return[360,360,360,360];
+    if(file==="walk-left"||file==="walk-right")return[120,120,120,120,120,120];
+    if(file==="heal")return[160,130,170,180,240];
+    if(file==="attack")return[160,110,130,170,240];
+    if(file==="hurt")return[160,190,170,300];
+    if(file==="happy")return[160,130,170,130,180,260];
+    if(file==="celebrate")return[130,110,140,190,140,110,160,280];
+    return[250];
+  }
+  function v5Rgb(value){const hex=String(value||"").replace("#","");return hex.length===6?[parseInt(hex.slice(0,2),16),parseInt(hex.slice(2,4),16),parseInt(hex.slice(4,6),16)]:[255,255,255]}
+  async function v5DecodeFrames(url){
+    if(v5FrameCache.has(url))return v5FrameCache.get(url);
+    const promise=(async()=>{
+      if(!window.ImageDecoder||!window.createImageBitmap)throw Error("Animated canvas decoding is unavailable");
+      const response=await fetch(url,{cache:"force-cache"});if(!response.ok)throw Error(`V5 art ${response.status}: ${url}`);
+      const decoder=new ImageDecoder({data:new Uint8Array(await response.arrayBuffer()),type:"image/webp",preferAnimation:true});
+      await decoder.tracks.ready;const count=Math.max(1,Number(decoder.tracks.selectedTrack?.frameCount)||1),frames=[];
+      for(let index=0;index<count;index++){const result=await decoder.decode({frameIndex:index,completeFramesOnly:true}),bitmap=await createImageBitmap(result.image);result.image.close();frames.push(bitmap)}
+      decoder.close();return frames;
+    })();v5FrameCache.set(url,promise);return promise;
+  }
+  async function v5TintFrames(url,color,kind){
+    const key=`${url}|${color}|${kind}`;if(v5TintCache.has(key))return v5TintCache.get(key);
+    const promise=(async()=>{const rgb=v5Rgb(color),source=await v5DecodeFrames(url),frames=[];
+      for(const bitmap of source){const canvas=document.createElement("canvas");canvas.width=bitmap.width;canvas.height=bitmap.height;const context=canvas.getContext("2d",{willReadFrequently:true});context.drawImage(bitmap,0,0);const pixels=context.getImageData(0,0,canvas.width,canvas.height),data=pixels.data;
+        for(let i=0;i<data.length;i+=4){if(!data[i+3])continue;const shade=data[i]/255,factor=kind==="skin"?.72+.42*shade:.48+.66*shade;data[i]=Math.min(255,Math.round(rgb[0]*factor));data[i+1]=Math.min(255,Math.round(rgb[1]*factor));data[i+2]=Math.min(255,Math.round(rgb[2]*factor))}
+        context.putImageData(pixels,0,0);frames.push(await createImageBitmap(canvas))}
+      return frames;
+    })();v5TintCache.set(key,promise);return promise;
+  }
+  function v5DrawCanvas(canvas,base,skin,hair,index){const context=canvas.getContext("2d");context.clearRect(0,0,canvas.width,canvas.height);context.drawImage(base[index%base.length],0,0,canvas.width,canvas.height);context.drawImage(skin[index%skin.length],0,0,canvas.width,canvas.height);context.drawImage(hair[index%hair.length],0,0,canvas.width,canvas.height)}
+  function v5FallbackCanvas(canvas){canvas.hidden=true;const image=document.createElement("img");image.className="dw-v5-fallback";image.src=canvas.dataset.base;image.alt="";image.decoding="async";canvas.after(image)}
+  async function v5HydrateCanvas(canvas){
+    if(!canvas||canvas.dataset.ready||v5CanvasRuns.has(canvas))return;v5CanvasRuns.set(canvas,true);
+    try{const [base,skin,hair]=await Promise.all([v5DecodeFrames(canvas.dataset.base),v5TintFrames(canvas.dataset.skin,canvas.dataset.skinColor,"skin"),v5TintFrames(canvas.dataset.hair,canvas.dataset.hairColor,"hair")]);if(!canvas.isConnected)return;
+      const timeline=String(canvas.dataset.timeline||"1000").split(",").map(Number).filter(x=>x>0),duration=timeline.reduce((sum,value)=>sum+value,0)||1000,cumulative=[];timeline.reduce((sum,value,index)=>(cumulative[index]=sum+value,sum+value),0);let last=-1,start=performance.now();canvas.dataset.ready="true";
+      const tick=now=>{if(!canvas.isConnected)return;const elapsed=(now-start)%duration,index=Math.max(0,cumulative.findIndex(end=>elapsed<end)),frame=index<0?0:index;if(frame!==last){v5DrawCanvas(canvas,base,skin,hair,frame);last=frame}requestAnimationFrame(tick)};requestAnimationFrame(tick);
+    }catch(error){console.warn("[Dragonswood V5 synchronized renderer]",error);if(canvas.isConnected)v5FallbackCanvas(canvas)}
+  }
+  function v5HydrateRoot(root){if(!root)return;if(root.matches?.("canvas.dw-v5-canvas"))v5HydrateCanvas(root);root.querySelectorAll?.("canvas.dw-v5-canvas").forEach(v5HydrateCanvas)}
   function ensureV5Renderer(doc=window.document){
     if(!doc||doc.getElementById("dw-v5-renderer-style"))return;
-    const style=doc.createElement("style");style.id="dw-v5-renderer-style";style.textContent='.dw-v5-character{display:block;position:relative;width:100%;height:100%;min-height:0;line-height:0}.dw-v5-character>img{position:absolute;inset:0;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain!important}.dw-v5-character>.dw-v5-tint{pointer-events:none}.class-card>.dw-v5-character{height:200px}.shop-intro>.dw-v5-character{height:190px}.hero-v5-art{width:100%;height:270px}@media(max-width:900px){.hero-v5-art{height:190px}}';(doc.head||doc.documentElement).appendChild(style);
-    const filters=doc.createElementNS("http://www.w3.org/2000/svg","svg");filters.id="dw-v5-renderer-filters";filters.setAttribute("aria-hidden","true");filters.setAttribute("width","0");filters.setAttribute("height","0");filters.style.cssText="position:absolute;width:0;height:0;overflow:hidden";
-    const matrices={"skin-light":[244,188,153],"skin-medium":[190,108,70],"skin-deep":[128,72,54],"hair-dark":[40,30,45],"hair-brown":[115,64,38],"hair-silver":[215,220,235]};
-    filters.innerHTML=`<defs>${Object.entries(matrices).map(([id,c])=>`<filter id="dw-v5-${id}" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="${(c[0]/255).toFixed(4)} 0 0 0 0  0 ${(c[1]/255).toFixed(4)} 0 0 0  0 0 ${(c[2]/255).toFixed(4)} 0 0  0 0 0 1 0"/></filter>`).join("")}</defs>`;(doc.body||doc.documentElement).appendChild(filters);
+    const style=doc.createElement("style");style.id="dw-v5-renderer-style";style.textContent='.dw-v5-character{display:block;position:relative;width:100%;height:100%;min-height:0;line-height:0}.dw-v5-character>.dw-v5-canvas,.dw-v5-character>.dw-v5-fallback{position:absolute;inset:0;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain!important;filter:drop-shadow(0 10px 7px #0008)}.class-card>.dw-v5-character{height:200px}.shop-intro>.dw-v5-character{height:190px}.hero-v5-art{width:100%;height:270px}@media(max-width:900px){.hero-v5-art{height:190px}}';(doc.head||doc.documentElement).appendChild(style);
+    const observer=new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(node=>{if(node.nodeType===1)v5HydrateRoot(node)})));observer.observe(doc.documentElement,{childList:true,subtree:true});v5HydrateRoot(doc);
   }
   function v5Markup(pack,state="idle",options={}){
-    if(!pack?.v5)return "";ensureV5Renderer(options.document||window.document);const paths=v5StatePaths(pack,state,options),label=v5Attr(options.alt||pack.name||"V5 adventurer"),skin=Object.hasOwn(v5SkinTones,pack.skinTone)?pack.skinTone:"medium",hair=Object.hasOwn(v5HairColors,pack.hairColor)?pack.hairColor:"dark",extra=v5Attr(options.className||"");
-    return `<span class="dw-v5-character${extra?` ${extra}`:""}" role="img" aria-label="${label}"><img class="dw-v5-base" src="${v5Attr(paths.base)}" alt="" decoding="async"><img class="dw-v5-tint dw-v5-skin" src="${v5Attr(paths.skin)}" alt="" decoding="async" style="filter:url(#dw-v5-skin-${skin})"><img class="dw-v5-tint dw-v5-hair" src="${v5Attr(paths.hair)}" alt="" decoding="async" style="filter:url(#dw-v5-hair-${hair})"></span>`;
+    if(!pack?.v5)return "";ensureV5Renderer(options.document||window.document);const paths=v5StatePaths(pack,state,options),label=v5Attr(options.alt||pack.name||"V5 adventurer"),skin=Object.hasOwn(v5SkinTones,pack.skinTone)?pack.skinTone:"medium",hair=Object.hasOwn(v5HairColors,pack.hairColor)?pack.hairColor:"dark",extra=v5Attr(options.className||""),timeline=v5MotionTimeline(pack,state).join(",");
+    return `<span class="dw-v5-character${extra?` ${extra}`:""}" role="img" aria-label="${label}"><canvas class="dw-v5-canvas" width="320" height="320" aria-hidden="true" data-base="${v5Attr(paths.base)}" data-skin="${v5Attr(paths.skin)}" data-hair="${v5Attr(paths.hair)}" data-skin-color="${v5Attr(v5SkinTones[skin].color)}" data-hair-color="${v5Attr(v5HairColors[hair].color)}" data-timeline="${timeline}"></canvas></span>`;
   }
-  function renderV5Character(host,pack,state="idle",options={}){if(!host||!pack?.v5)return false;host.innerHTML=v5Markup(pack,state,options);return true}
+  function renderV5Character(host,pack,state="idle",options={}){if(!host||!pack?.v5)return false;host.innerHTML=v5Markup(pack,state,options);v5HydrateRoot(host);return true}
   function resolveAppearance(profile={}){const v5=resolveV5Character(profile);if(v5)return v5;const id=String(profile?.rpgEquipped?.appearance||"").trim();if(!id)return null;return items.find(item=>item.id===id&&item.appearance===true&&item.classId===String(profile.classId||""))||null}
   function resolveBackground(profile={}){const ids=new Set(["fairy-purple","fairy-bamboo","fairy-mushroom","crystal-cave","jungle","mountain-night","snow-aurora","snow-village"]),id=String(profile.homeBackgroundId||"fairy-purple");return ids.has(id)?{id,art:`assets/rpg/backgrounds/${id}.webp`}:null}
   function inventory(profile={}){return Array.isArray(profile.rpgInventory)?profile.rpgInventory.map(String):[]}
   function dailyXp(profile={}){return String(profile.dailyXpDate||"")===dateKey()?Math.max(0,Math.min(150,Number(profile.dailyXpEarned)||0)):0}
 
-  window.DWRPG={classes,pets,prestigePets,petRegistry,enemies,items,appearancePacks,v5Config,v5Families,v5Tiers,v5SkinTones,v5HairColors,v5SkinTone,v5HairColor,dateKey,levelForXp,hash,dailyEnemy,canonicalPetId,resolvePet,isV5Tester,hasV5Selection,v5SelectionRequired,characterClassId,v5TierForLevel,resolveV5Character,v5StatePaths,v5Markup,renderV5Character,ensureV5Renderer,resolveAppearance,resolveBackground,inventory,dailyXp,version:"56.23-v5.2-tester"};
+  window.DWRPG={classes,pets,prestigePets,petRegistry,enemies,items,appearancePacks,v5Config,v5Families,v5Tiers,v5SkinTones,v5HairColors,v5SkinTone,v5HairColor,dateKey,levelForXp,hash,dailyEnemy,canonicalPetId,resolvePet,isV5Tester,hasV5Selection,v5SelectionRequired,characterClassId,v5TierForLevel,resolveV5Character,v5StatePaths,v5MotionTimeline,v5Markup,renderV5Character,ensureV5Renderer,resolveAppearance,resolveBackground,inventory,dailyXp,version:"56.28-v5.3.4-tester"};
 })();

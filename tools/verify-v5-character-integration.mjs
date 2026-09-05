@@ -17,6 +17,11 @@ const expectedFamilies={
   mage:{male:{radiant:'starfire',shadow:'voidcore'},female:{radiant:'celestial',shadow:'eclipse-witch'}},
   healer:{male:{radiant:'dawnkeeper',shadow:'mooncleric'},female:{radiant:'dawnwing',shadow:'twilight'}},
 };
+const expectedTimelines={
+  static:[1000],idle:[360,360,360,360],walkLeft:[120,120,120,120,120,120],walkRight:[120,120,120,120,120,120],
+  attack:[160,110,130,170,240],heal:[160,130,170,180,240],hurt:[160,190,170,300],
+  happy:[160,130,170,130,180,260],celebrate:[130,110,140,190,140,110,160,280],
+};
 let profiles=0,checkedFiles=0;
 
 for(const [classId,genders] of Object.entries(expectedFamilies)){
@@ -40,6 +45,12 @@ for(const [classId,genders] of Object.entries(R.v5Families)){
         if(R.characterClassId(profile)!==classId)failures.push(`Wrong class: ${pack.id}`);
         if(pack.idleArt===pack.walkLeftArt||pack.idleArt===pack.walkRightArt)failures.push(`Idle/walk route collision: ${pack.id}`);
         if(pack.happyArt===pack.celebrateArt)failures.push(`Happy/celebrate route collision: ${pack.id}`);
+        for(const [state,expected] of Object.entries(expectedTimelines)){
+          if(state==='heal'&&classId!=='healer')continue;
+          if(state==='attack'&&classId==='healer')continue;
+          const actual=R.v5MotionTimeline(pack,state);
+          if(JSON.stringify(actual)!==JSON.stringify(expected))failures.push(`Timeline mismatch: ${pack.id}/${state} got ${JSON.stringify(actual)}.`);
+        }
         for(const key of ['skinArt','idleArt','walkLeftArt','walkRightArt','attackArt','abilityArt','hurtArt','happyArt','celebrateArt']){
           const target=path.join(root,pack[key]);
           checkedFiles++;
@@ -82,7 +93,10 @@ if(catalog.characters?.length!==80)failures.push(`Expected 80 catalog characters
 if(catalog.productionAssetCount!==640)failures.push(`Expected 640 base production files, got ${catalog.productionAssetCount}.`);
 if(catalog.appearance?.layerAssetCount!==1280)failures.push(`Expected 1280 appearance layers, got ${catalog.appearance?.layerAssetCount}.`);
 if(catalog.appearance?.wrapperAssetCount!==0)failures.push(`Obsolete SVG wrappers remain in the catalog: ${catalog.appearance?.wrapperAssetCount}.`);
-if(!source.includes('function renderV5Character')||!source.includes('function v5StatePaths'))failures.push('The shared layered WebP renderer is missing.');
+if(!source.includes('function renderV5Character')||!source.includes('function v5StatePaths'))failures.push('The shared V5 renderer is missing.');
+if(!source.includes('canvas class="dw-v5-canvas"')||!source.includes('function v5HydrateCanvas')||!source.includes('new ImageDecoder('))failures.push('The synchronized single-clock canvas renderer is missing.');
+if(source.includes('<img class="dw-v5-tint'))failures.push('Independent animated tint images remain and can desynchronize from the body.');
+if(!source.includes('Promise.all([v5DecodeFrames(canvas.dataset.base),v5TintFrames(canvas.dataset.skin'))failures.push('Base, skin, and hair layers are not loaded together before playback.');
 for(const character of catalog.characters||[]){
   const expected=expectedFamilies[character.classId]?.[character.gender]?.[character.affinity];
   if(expected!==character.family)failures.push(`Catalog gender mismatch: ${character.id} is tagged ${character.gender}/${character.affinity}.`);

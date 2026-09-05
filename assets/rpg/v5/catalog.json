@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "characterSystem": "dragonswood-v5.2",
+  "characterSystem": "dragonswood-v5.3",
   "sourceCharacterCount": 80,
   "productionAssetCount": 640,
   "appearance": {
@@ -52,38 +52,38 @@
         },
         "idle": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-05/idle.webp",
-          "bytes": 104824,
-          "sha256": "24f1b0cfac924812c5038a35c975e3bfdda8a19af074e80cc4bb990cef3b811e"
+          "bytes": 104596,
+          "sha256": "423d61f6701aadcccffe9e89d404c5d491ffee2d515822d130e5f60ec3d961a5"
         },
         "walk-left": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-05/walk-left.webp",
-          "bytes": 160638,
-          "sha256": "7309f82ac3920e491549f5a8aecd52331c26a72931f359efb81e41b22f84dbb5"
+          "bytes": 160214,
+          "sha256": "5f72a552c58b03311504e6bb2fb08d0afa02605c9f2cbb9f1e4a9b9496daa65f"
         },
         "walk-right": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-05/walk-right.webp",
-          "bytes": 162550,
-          "sha256": "d504dc5667fe491eeecef4ffcc7bd810a10777fb7d5635e6d836b0c5c35cc4e9"
+          "bytes": 161952,
+          "sha256": "161481b3d5d3837c2896b7390b6a8ee7f3cb9043c85fb0643f76b02e159ef3dd"
         },
         "heal": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-05/heal.webp",
-          "bytes": 149034,
-          "sha256": "2d65cd7b9d8eb372f47dde4d5343050baff4230bfa07ec33695dbfcbcc3e7eb4"
+          "bytes": 147366,
+          "sha256": "d5a5cb7d22bc870482b1921cd9ccb6737ab601d9139a00e46fc888c11aac9ed5"
         },
         "hurt": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-05/hurt.webp",
-          "bytes": 101024,
-          "sha256": "b8a11bf5002ad174814527da2fed4f422953661e2762f114db5ccf64f1a32182"
+          "bytes": 101348,
+          "sha256": "bfb61a3904a97a1e9e54a7abf84d2d00434eb16e98d7266e6ecd00c09a46d521"
         },
         "happy": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-05/happy.webp",
-          "bytes": 162730,
-          "sha256": "4b74146e6f69a42f948433473650ba3fdcfe513e7adbbdbd6f2aaba5c66b20eb"
+          "bytes": 161478,
+          "sha256": "8750118f3af326ad0f55f52d9367b1a1948db36322d7be5e1dd70530dd7e9c28"
         },
         "celebrate": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-05/celebrate.webp",
-          "bytes": 267518,
-          "sha256": "6ea2ac3a04800e72eb6861d89cb20d96c3ebbfbd9e4ff829916bae78c65d4e1c"
+          "bytes": 264812,
+          "sha256": "407a728681905102c178bf9c804d5ff067e50e81f5870fbc58222fdc2cc3add6"
         }
       }
     },
@@ -115,38 +115,38 @@
         },
         "idle": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-10/idle.webp",
-          "bytes": 98124,
-          "sha256": "9acf4b327ff2f1a3fbac7776cbed485b4f7a3538fa1a0888b174c391657b4a4e"
+          "bytes": 97734,
+          "sha256": "8e04f0978866674cddbe2a325cfe324cfae06282690f7a0f2417dcc5e3d48be9"
         },
         "walk-left": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-10/walk-left.webp",
-          "bytes": 151688,
-          "sha256": "2b8800ee579cefee15fb04a643d377fa7b12f452af5a943337d499f7040cd2b7"
+          "bytes": 150322,
+          "sha256": "3a7d5786409237eb1d28f4eb26f442d307d31a51c58f7daf1cbed78ba73bfa89"
         },
         "walk-right": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-10/walk-right.webp",
-          "bytes": 153652,
-          "sha256": "2a30cf8969a5bb48f8806f4fb48e776977050f3d0911baeca4856aaedbdab8bb"
+          "bytes": 152606,
+          "sha256": "f73f1525bf38a3739b2ec594c5896abcb41075204b089217564a7b5ccc66c45c"
         },
         "heal": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-10/heal.webp",
-          "bytes": 138558,
-          "sha256": "b4dfd42b96b11db3bac0101abcbb63d7fdd33ab07ff937223f192c83608a5659"
+          "bytes": 137600,
+          "sha256": "e0b28c3c825e5e2a10ce18cad51e4d9e803c90352f208c7ad4be95f2f1233710"
         },
         "hurt": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-10/hurt.webp",
-          "bytes": 95870,
-          "sha256": "7fa7d729bb47deef6c755ef79ee29feeaa00e86a6011dcb11a548437a15aa7dc"
+          "bytes": 95446,
+          "sha256": "b9f109cf89458a255236b75e0d21b569af772dc26d4bf08fbe1fc81d71cc0cdf"
         },
         "happy": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-10/happy.webp",
-          "bytes": 153264,
-          "sha256": "a00b2e6562435645c1034f71c2c9b2233fd46b25c37ebc2d18aa75e1058f5b89"
+          "bytes": 152678,
+          "sha256": "58362de58fe7a84826dd664f910732091dab3c662fd0fa40cae3547e5d17a217"
         },
         "celebrate": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-10/celebrate.webp",
-          "bytes": 256178,
-          "sha256": "9d5e7d06aee214abfe583a363cab464be80e940095c32c37baed29c132233b2a"
+          "bytes": 254218,
+          "sha256": "dd486920f73f4b3e5697872fd334d700b814a806596d7fcb52685bd0e6a6feb6"
         }
       }
     },
@@ -178,38 +178,38 @@
         },
         "idle": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-15/idle.webp",
-          "bytes": 107038,
-          "sha256": "9178d7c565d6b0ec232ec0ac081de0d020b850e300a0274e43da540586cdc6ed"
+          "bytes": 107788,
+          "sha256": "0490f30fb6157f53470ffd95c152afa7cb234e9a08c63398fd8cc7eb447ab836"
         },
         "walk-left": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-15/walk-left.webp",
-          "bytes": 166784,
-          "sha256": "78b3d322eab3b1aad3b7e98de6eb12b42260d08294bb6c57acb46bd1c0398328"
+          "bytes": 164858,
+          "sha256": "62e23f66b4d5e830932465fd07e9785a4ec1752cb4536737d20ffb7623ef5c21"
         },
         "walk-right": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-15/walk-right.webp",
-          "bytes": 168486,
-          "sha256": "6fbbfe3ba028bdd77f825755843fa51d4b3ad6538ff9896ba432b212dc31034b"
+          "bytes": 167256,
+          "sha256": "37323828efe35ea56aca32d6a2e05517d168c89f7916ab7ea510979d7ae95c47"
         },
         "heal": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-15/heal.webp",
-          "bytes": 152074,
-          "sha256": "eb5d30496decec4d56c8e67224cc35240c0c442fc2d33520decf77480e256444"
+          "bytes": 150072,
+          "sha256": "126f229e5527e610c207b97b9eaf8e24b527b1ed56ccfbec46cf05a4aecf1b65"
         },
         "hurt": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-15/hurt.webp",
-          "bytes": 105262,
-          "sha256": "6c3078359fc8a332058feb4baedb07b1ec03a279be60d831a4a36f414c25418e"
+          "bytes": 104802,
+          "sha256": "f0cb18b971d453652e7c671a3a414fc1a967669953eee1fd361eb5e73dd75426"
         },
         "happy": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-15/happy.webp",
-          "bytes": 167014,
-          "sha256": "3b7c2cd699180c3521ca8694552cb708b9a532a3b2dcafc4db9ba5e35da8acc7"
+          "bytes": 166396,
+          "sha256": "97910a783682e3b92ec1c7b6891b6318c28b8323f7f97d0b01cb25d78387a086"
         },
         "celebrate": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-15/celebrate.webp",
-          "bytes": 275790,
-          "sha256": "a83cc1ee991e079746e24d7ebc59327b68ee922b79eebaa847981eac76a6b146"
+          "bytes": 272476,
+          "sha256": "673b80ad74ae10af7e91398903506d26c17af05b9351fa0c27877740e022502e"
         }
       }
     },
@@ -241,38 +241,38 @@
         },
         "idle": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-20/idle.webp",
-          "bytes": 144390,
-          "sha256": "84f1d110e8d8c2e0306e6da79729878cf2f21c1b454e311e22dd4c6d2b780824"
+          "bytes": 144502,
+          "sha256": "d7534ac81280f661bddaf1a4d1ef422e7369523c956f72059469ab8c9004d9af"
         },
         "walk-left": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-20/walk-left.webp",
-          "bytes": 219910,
-          "sha256": "d9bdbd89f3352eca24df1661c1cae07394595afce3e69b1b17114b4a1319ae25"
+          "bytes": 219140,
+          "sha256": "dae09ee79d2060984666534fd57ccd52b32cbabacf7736c4d805641f4b792137"
         },
         "walk-right": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-20/walk-right.webp",
-          "bytes": 219962,
-          "sha256": "75a3f5e70d6b234b48ba440820475a243bc485f9cacb491473e78bf59094fa4b"
+          "bytes": 218570,
+          "sha256": "92165384dbc54e00c7e04ef2b80c569fb29d3737b3b7ab6b0a00919aa824b8cc"
         },
         "heal": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-20/heal.webp",
-          "bytes": 190918,
-          "sha256": "f8b517aa354d5bead86748b5d67c4efcfe880ff9a7a5a8f7b76aefa2d2164c3a"
+          "bytes": 188570,
+          "sha256": "6a33782d4477dbfaa38b1287ffb360ffa853add0cb7f97f8b79a0e62b635d9f2"
         },
         "hurt": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-20/hurt.webp",
-          "bytes": 138350,
-          "sha256": "27633b4bb9f73a98b8dac315e4685b7f63a01040e6324a782f660e112b4db090"
+          "bytes": 138416,
+          "sha256": "e192a97c9c39ca5bf1deef39bcf77fbcf40af5cf7696f69979802e27fd339759"
         },
         "happy": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-20/happy.webp",
-          "bytes": 218850,
-          "sha256": "ecd30e0e78a7969d3b5a73cf892dc2bbd14ebc53b57d13448a02c1bdf02b0672"
+          "bytes": 218616,
+          "sha256": "8a520d128110f50a32bd11930eeb99d0d31bc9307c4fa8360daa326295d65381"
         },
         "celebrate": {
           "path": "rpg/v5/healer/healer-dawnkeeper-level-20/celebrate.webp",
-          "bytes": 334128,
-          "sha256": "6fc6a7da5834e2a1e48a7a8613a72ab5a4dd59e3dcc35c2c0d5af66e878c5ab5"
+          "bytes": 330480,
+          "sha256": "46a559cac2c7d51239154b69ae1a5e9498f9b9bc1278f655c39d4e019b3680d4"
         }
       }
     },
@@ -304,38 +304,38 @@
         },
         "idle": {
           "path": "rpg/v5/healer/healer-dawnkeeper-starter/idle.webp",
-          "bytes": 104274,
-          "sha256": "045ec066c974828cb7395a1c25340d223318dc27026589a84256a1dfe50605ed"
+          "bytes": 104184,
+          "sha256": "45e46ecccfd5ad3f0c14a22c23964580903a979cd537ebd590a2480fc4f31eb5"
         },
         "walk-left": {
           "path": "rpg/v5/healer/healer-dawnkeeper-starter/walk-left.webp",
-          "bytes": 159162,
-          "sha256": "f55107c74bf7c67138f471253138311abde9cbb2351b7bbcc78af764641bd124"
+          "bytes": 159530,
+          "sha256": "db989651abdb1de8c27136effd0c985d1c1b5728075b205efb1e2fc38c618c4b"
         },
         "walk-right": {
           "path": "rpg/v5/healer/healer-dawnkeeper-starter/walk-right.webp",
-          "bytes": 160372,
-          "sha256": "c6b586596835c0d0045e6eec112c99edcf1e0baeb7431909b4ab8c12ec77e8be"
+          "bytes": 160696,
+          "sha256": "5fd5661ac88b2c914e8ca69db257b55a397b97929211ff74de45f6bb315951ef"
         },
         "heal": {
           "path": "rpg/v5/healer/healer-dawnkeeper-starter/heal.webp",
-          "bytes": 146258,
-          "sha256": "02f71fa4e4a8a4296024907d77f220a115c79e4784dc5f0aad81766fca489207"
+          "bytes": 144198,
+          "sha256": "3ff811d44fcfb838f775407fe0b80f5f92e7b25c81febbe255776337cbef56e0"
         },
         "hurt": {
           "path": "rpg/v5/healer/healer-dawnkeeper-starter/hurt.webp",
-          "bytes": 101546,
-          "sha256": "6bf75189c8e26756ed737f1ff9ac30030bf6233b7bb710cae4188ca35facaabf"
+          "bytes": 101246,
+          "sha256": "dd07f5e35d3ab935d2b59c125c429f1b2a91d9552397ee47becc6e6f0f32806f"
         },
         "happy": {
           "path": "rpg/v5/healer/healer-dawnkeeper-starter/happy.webp",
-          "bytes": 161602,
-          "sha256": "c7f7f76627a0468e520cdf462c3153852b25c958bf9e3f93e2abfebfae125407"
+          "bytes": 161284,
+          "sha256": "8fe09c2cfe0f6ae3c3102689de0f7e65c17d8283d94273b8da7a8afd1cbb140a"
         },
         "celebrate": {
           "path": "rpg/v5/healer/healer-dawnkeeper-starter/celebrate.webp",
-          "bytes": 266110,
-          "sha256": "90ca9c5fac1cb74af39dc7f2fd1e5abc8b4602352a9f26d7996c76d12641a20f"
+          "bytes": 264292,
+          "sha256": "4be59736a3ca7b01938063142fcab3357fb2c5dbd8f5589d808f0211f4e926fa"
         }
       }
     },
@@ -367,38 +367,38 @@
         },
         "idle": {
           "path": "rpg/v5/healer/healer-dawnwing-level-05/idle.webp",
-          "bytes": 113140,
-          "sha256": "04546cf148fdb7f1d76bc3f625f8798299e7871ef1b2fe31a86900dfb84d305f"
+          "bytes": 113146,
+          "sha256": "514fb0405ca72fe6768d12ae9143dee3eb536d5fdec917c2070259acacbf5866"
         },
         "walk-left": {
           "path": "rpg/v5/healer/healer-dawnwing-level-05/walk-left.webp",
-          "bytes": 171526,
-          "sha256": "22362dd61cea8117387a3478879442a2679f6e9145bef913cb1ddfa5aca872e7"
+          "bytes": 171660,
+          "sha256": "9b41ca80c8f783e94fa5764184a31a794bc06f33691f86110f6e6ef7c0c9854a"
         },
         "walk-right": {
           "path": "rpg/v5/healer/healer-dawnwing-level-05/walk-right.webp",
-          "bytes": 171356,
-          "sha256": "ba60320376595f254030560bd1c8f4234a640828903b31277220b8109ca26fe9"
+          "bytes": 171612,
+          "sha256": "ce40648e65721225dfeefa0b8cc0eccfde10e65b9b9140ca8573f89fb24b00c7"
         },
         "heal": {
           "path": "rpg/v5/healer/healer-dawnwing-level-05/heal.webp",
-          "bytes": 157282,
-          "sha256": "cb87019fdcfda826f45f896470940db3f5c050cd3d3918dbd727b03b6b2aa6ad"
+          "bytes": 155540,
+          "sha256": "12da1fcdecf80e19cbd9de29fd4f846482028f64895f828c5b3745cc43d050b4"
         },
         "hurt": {
           "path": "rpg/v5/healer/healer-dawnwing-level-05/hurt.webp",
-          "bytes": 108034,
-          "sha256": "485958ccdd29b27f435f172652a97c02f365a4c7fc26faffc87d9b77415b5463"
+          "bytes": 108296,
+          "sha256": "76b1cc371db15cf55aac6b1efebf53d5b920a5b44d73b7a8aa2e226a8a926c70"
         },
         "happy": {
           "path": "rpg/v5/healer/healer-dawnwing-level-05/happy.webp",
-          "bytes": 173454,
-          "sha256": "9e367732dfd9af83b6c6a250215fa33146ba8bafe911b735fe77c2cb33ff4517"
+          "bytes": 173380,
+          "sha256": "2b1cb809f0d2c0bc439b6ef324dfa3751cbb1c730346ca8306973a73a86168ab"
         },
         "celebrate": {
           "path": "rpg/v5/healer/healer-dawnwing-level-05/celebrate.webp",
-          "bytes": 278684,
-          "sha256": "5e744d9c169002faa7802eafddacc246d335819249f1f1c1194640a48c4ff1d1"
+          "bytes": 276624,
+          "sha256": "2bdc344e33152335953c2e34299eaa79a45106e38f84d80fd6212557286eabc7"
         }
       }
     },
@@ -430,38 +430,38 @@
         },
         "idle": {
           "path": "rpg/v5/healer/healer-dawnwing-level-10/idle.webp",
-          "bytes": 108008,
-          "sha256": "a16f7651410da80977bc1c4220c350259d92f42b63c194fed783f69d2696c67f"
+          "bytes": 108314,
+          "sha256": "1e086049d0a954a0a4461c32bf09d464f789810c2fdea90355f5da93451c1b12"
         },
         "walk-left": {
           "path": "rpg/v5/healer/healer-dawnwing-level-10/walk-left.webp",
-          "bytes": 165692,
-          "sha256": "2bcd8eb0328108b7a37573a49b4d7e858b29acb07b08d8fb83b6d9320dc4c0fd"
+          "bytes": 165110,
+          "sha256": "74e29e00438a1e7955ff256af0abe2d9e0aa31b82c1789441efc7f8a90341f6b"
         },
         "walk-right": {
           "path": "rpg/v5/healer/healer-dawnwing-level-10/walk-right.webp",
-          "bytes": 166862,
-          "sha256": "d537e8163b7c182e98da38a3e23005f5ae2c1de29ae5e919fde610ea5f0a8ce9"
+          "bytes": 167176,
+          "sha256": "240ae0d832f95ef8c58927cad4b8947c7ea61de834bfa318065b90069e7c2395"
         },
         "heal": {
           "path": "rpg/v5/healer/healer-dawnwing-level-10/heal.webp",
-          "bytes": 150624,
-          "sha256": "ee87175d4b505074eda5d75607ea3707f28b31f7837f012bcb8367f7720e03af"
+          "bytes": 148188,
+          "sha256": "ee8d8ca4f006e4b22ec35a988f1350500f39235e3347ed4e880678a36ffe3187"
         },
         "hurt": {
           "path": "rpg/v5/healer/healer-dawnwing-level-10/hurt.webp",
-          "bytes": 104952,
-          "sha256": "b41a7de46cc76518656414163ca9f50e7d0f15fc623fac520fe2802af5b2743e"
+          "bytes": 104870,
+          "sha256": "37a1aaebb262445a482021c93cf72bcabfbe9e77d25269515baf8c67e2e8a418"
         },
         "happy": {
           "path": "rpg/v5/healer/healer-dawnwing-level-10/happy.webp",
-          "bytes": 167008,
-          "sha256": "709c9f1d55dccdf573a00cc4510de96a44925d3e22b5689b941f6e40b6015a4e"
+          "bytes": 166638,
+          "sha256": "bfea9efb71eb1e686d8aa63601eb2ba528b2568292b3ae749fb8a958040db59f"
         },
         "celebrate": {
           "path": "rpg/v5/healer/healer-dawnwing-level-10/celebrate.webp",
-          "bytes": 271150,
-          "sha256": "dc08cb44f67232249cc60860d714553b1ad63de657197eae764fb0aaf1c84142"
+          "bytes": 268894,
+          "sha256": "fdf89a162e17a63bfe71d5b50f49302df257f041f24e57daded971d25bb90d11"
         }
       }
     },
@@ -493,38 +493,38 @@
         },
         "idle": {
           "path": "rpg/v5/healer/healer-dawnwing-level-15/idle.webp",
-          "bytes": 129284,
-          "sha256": "cb9430ead02a9dbcb22363c12baba28faa06e514caa69275474d989796b5e024"
+          "bytes": 129306,
+          "sha256": "ed775b1a583f772aafdfa785f037b0a7a1718f24bce8d961ee899420c150e475"
         },
         "walk-left": {
           "path": "rpg/v5/healer/healer-dawnwing-level-15/walk-left.webp",
-          "bytes": 197970,
-          "sha256": "02a49199d4e4ae69ea77da41d59b57db49f40e6455bb87ecd15bf72439f57238"
+          "bytes": 196940,
+          "sha256": "57a79838f8f16f4abd44a6b187b66dd40acb3a1d94f9455a800a432ad3f15e14"
         },
         "walk-right": {
           "path": "rpg/v5/healer/healer-dawnwing-level-15/walk-right.webp",
-          "bytes": 198790,
-          "sha256": "290ac149af1fb9d837c4c4cb3507ff0a512bb06954a46394bf16bd670dd757ae"
+          "bytes": 198348,
+          "sha256": "cb943eb472db2f9c82d8d11be9cc68ae7738785bfcc723d8c5df6902223f4970"
         },
         "heal": {
           "path": "rpg/v5/healer/healer-dawnwing-level-15/heal.webp",
-          "bytes": 175576,
-          "sha256": "7e5ac7a31426b9901f2d84e18366e4d91e7ade38df54aee89602b6796441a19f"
+          "bytes": 172742,
+          "sha256": "e18c5561901e1d32e6af7450ac1ad5a63d4db6359577e45b25b080ac895a74f7"
         },
         "hurt": {
           "path": "rpg/v5/healer/healer-dawnwing-level-15/hurt.webp",
-          "bytes": 125552,
-          "sha256": "aeb742a1fda418017acd62538f7db7d65d800c13cd75b11089d3be4ab53f7582"
+          "bytes": 125066,
+          "sha256": "57987fc726b01fa2480bdbc72d6467f8b604f9c2decada53a73fbbce29fc3e2c"
         },
         "happy": {
           "path": "rpg/v5/healer/healer-dawnwing-level-15/happy.webp",
-          "bytes": 198250,
-          "sha256": "82b4fc3b84e7657f2df464617ebb2c4c459f2b66aee0d806b24264360a959cd3"
+          "bytes": 198036,
+          "sha256": "0d2121e508d1864c2b66f8f63348ba3e1555b58f3feaeab657a9acc08a8170a8"
         },
         "celebrate": {
           "path": "rpg/v5/healer/healer-dawnwing-level-15/celebrate.webp",
-          "bytes": 308362,
-          "sha256": "88d318040867957335bf0f7d930edddf7cea4ac1bb8a3163b71b0ff5f9356e94"
+          "bytes": 305058,
+          "sha256": "7ad3c06c886c9e5bcba60c95877f6691d446e32e3367126b1abaf6f7d42e25ed"
         }
       }
     },
@@ -556,38 +556,38 @@
         },
         "idle": {
           "path": "rpg/v5/healer/healer-dawnwing-level-20/idle.webp",
-          "bytes": 148002,
-          "sha256": "5ac7c87203f3d3d0675ad8a799cf48910ec657eb5a16ff3724e973bc2a821a11"
+          "bytes": 148080,
+          "sha256": "3cd639e5ec456f4eebe9d5f30ca190e71ad67f13fbe5d0e3628e990f1310b636"
         },
         "walk-left": {
           "path": "rpg/v5/healer/healer-dawnwing-level-20/walk-left.webp",
-          "bytes": 226276,
-          "sha256": "621af2ce061dbfee8dc61d96be87d995040115f55b586095851b8e83ae6310d4"
+          "bytes": 225144,
+          "sha256": "ca22d7bbf21bb58554eb82255b21e234334e2485b406f8bfc26290de2e47becb"
         },
         "walk-right": {
           "path": "rpg/v5/healer/healer-dawnwing-level-20/walk-right.webp",
-          "bytes": 226006,
-          "sha256": "09f6fb13ed7de9101f70f7367bbeef783e06588585527526d10cd97733f9d015"
+          "bytes": 226968,
+          "sha256": "011ab7df1d6ba04edef55f51912c8062c6f12d001b29a8df64e5685e365bb39b"
         },
         "heal": {
           "path": "rpg/v5/healer/healer-dawnwing-level-20/heal.webp",
-          "bytes": 195384,
-          "sha256": "6355380535ab4d3b4b8aa44dd2791df46e08f1b52d4c06fb4604aeef7f22e8fc"
+          "bytes": 192792,
+          "sha256": "81b181708f2567af7e424e50791ab1f2688c45822d304091e95caceee226620f"
         },
         "hurt": {
           "path": "rpg/v5/healer/healer-dawnwing-level-20/hurt.webp",
-          "bytes": 141968,
-          "sha256": "3f12c990f7d2815314b2aa2475bfa49ab22e0aa26aff092d3a489e36cd2d1b70"
+          "bytes": 141468,
+          "sha256": "6261752f0b2102427c96d0bb665cb9b30106f1cbd50b77e5b9a556a5ea856c75"
         },
         "happy": {
           "path": "rpg/v5/healer/healer-dawnwing-level-20/happy.webp",
-          "bytes": 225206,
-          "sha256": "4a28579055f0295934632f3a4edb59debf4c9552a1c00196bd8af52239d30eb5"
+          "bytes": 224272,
+          "sha256": "a5d9acb7d28abdda3e00e39d863e07d1e9f6701bb1544e637d99de1fa5ef6066"
         },
         "celebrate": {
           "path": "rpg/v5/healer/healer-dawnwing-level-20/celebrate.webp",
-          "bytes": 336842,
-          "sha256": "922f19d20c6f2770fcbbaa03292f50b10bbcd842fe8083f9f5f48cb600afe3a1"
+          "bytes": 333178,
+          "sha256": "e37974e33e90c7200bd984b72ed9286baa665e20ebac73ce9c3ffcf962fd25a6"
         }
       }
     },
@@ -619,38 +619,38 @@
         },
         "idle": {
           "path": "rpg/v5/healer/healer-dawnwing-starter/idle.webp",
-          "bytes": 106580,
-          "sha256": "285a1f67a458ab9048af93ece0a2f4a06561daab79004088f8654059a369dbbc"
+          "bytes": 106014,
+          "sha256": "6c4ef996d1404d5fd8c72cbdbbc888894e7b7d1d9b62cf5dca6036b5e46ed15b"
         },
         "walk-left": {
           "path": "rpg/v5/healer/healer-dawnwing-starter/walk-left.webp",
-          "bytes": 161698,
-          "sha256": "1014139b73e79250623b7476fe27e067a192ad49d8e30dd3e9d0c1701413fde0"
+          "bytes": 161398,
+          "sha256": "c74f30dd0c5d388411367ec93faf865aef7d18ea3c07fa9b0a26ecfdf64e18c9"
         },
         "walk-right": {
           "path": "rpg/v5/healer/healer-dawnwing-starter/walk-right.webp",
-          "bytes": 163508,
-          "sha256": "538eed317eac6b5457b68df4b69881feac0ff541780732fa1a7ffa66bbbadf04"
+          "bytes": 163612,
+          "sha256": "69c6818820d8b050945f3495fda33aadcc917fac5636a80692c33f86f2b957e4"
         },
         "heal": {
           "path": "rpg/v5/healer/healer-dawnwing-starter/heal.webp",
-          "bytes": 147044,
-          "sha256": "ae4886f5717e78a03e29ac3442a11b8398a4406b1db95d446dda3659f9947e32"
+          "bytes": 144850,
+          "sha256": "27d9fc85eb6fa81603e7867ae7f6f0a78117fe846044798d195dc9b4caf41aba"
         },
         "hurt": {
           "path": "rpg/v5/healer/healer-dawnwing-starter/hurt.webp",
-          "bytes": 102058,
-          "sha256": "73ddd4aee3c981de3c26367d04b343037a074022cf3d794ea4735b4d7c0aecea"
+          "bytes": 101688,
+          "sha256": "8cd423905cd7578beffa1ac45327b6232bf882a389964a6b7f52767b7070c0d2"
         },
         "happy": {
           "path": "rpg/v5/healer/healer-dawnwing-starter/happy.webp",
-          "bytes": 162028,
-          "sha256": "1a14b7a3ce2ca3fb84a4bd9fb69f9ce1b1320317a77be9aea25adeac2d67cf8f"
+          "bytes": 161818,
+          "sha256": "3d86bb9c138a7cba8af74b130ebd04e9ba7286e956e5d4ae1079325616d8598d"
         },
         "celebrate": {
           "path": "rpg/v5/healer/healer-dawnwing-starter/celebrate.webp",
-          "bytes": 265796,
-          "sha256": "bee72b62508c43f9cf3f99cb73aa048a1051586e8380b24bc06fb1f57ab259fe"
+          "bytes": 264360,
+          "sha256": "7d5aaa8fb127c19e0c180fcf1718949fe98d3ddadd1ff6b994e2a777dc77ee12"
         }
       }
     },
@@ -682,38 +682,38 @@
         },
         "idle": {
           "path": "rpg/v5/healer/healer-mooncleric-level-05/idle.webp",
-          "bytes": 82120,
-          "sha256": "f2049531830ae3925161a11ded9696a8a3be99344a6dd6bb4e71a2f3dc7b76c7"
+          "bytes": 81948,
+          "sha256": "ab27c50d227f63c2bc046c923ff2dcd1c07ee2ec645835796e458192d4a921be"
         },
         "walk-left": {
           "path": "rpg/v5/healer/healer-mooncleric-level-05/walk-left.webp",
-          "bytes": 124790,
-          "sha256": "6fc7282a3248e74326d4da276483efb76d25e183c25050fb30ba06498a98324b"
+          "bytes": 124080,
+          "sha256": "1cb7b65f139fcfcf69898d382deef221be9e2294dbc424131a0d889a12db8bb1"
         },
         "walk-right": {
           "path": "rpg/v5/healer/healer-mooncleric-level-05/walk-right.webp",
-          "bytes": 124626,
-          "sha256": "f9d36aefedc7f0f3d3ffd491f1855ff63daaa1a35b5cbcbfa6eb276378dd170a"
+          "bytes": 124638,
+          "sha256": "2c7360c0aa230b87f38296c65d1dcab2e086c43fd855049a5df4a4b7a0374e77"
         },
         "heal": {
           "path": "rpg/v5/healer/healer-mooncleric-level-05/heal.webp",
-          "bytes": 120458,
-          "sha256": "f2e6870a497ace883ab6561ebf470a3dcc561f7fc333a973ea9731ce8fee3da5"
+          "bytes": 118924,
+          "sha256": "2b51526b43f5190507f34ef5993bd41e1f3dc56223ee4f456326d2039f5343bf"
         },
         "hurt": {
           "path": "rpg/v5/healer/healer-mooncleric-level-05/hurt.webp",
-          "bytes": 81144,
-          "sha256": "f4851830a3cf33bd19a765ae50a9c6741c708c76e49527e7f70cbcf6e737b86e"
+          "bytes": 81124,
+          "sha256": "33360c67a2a32b5a0cfaeec702e1dffd7ed5dcb84cacf2b6d3c8b097b7b194a2"
         },
         "happy": {
           "path": "rpg/v5/healer/healer-mooncleric-level-05/happy.webp",
-          "bytes": 128328,
-          "sha256": "1a32aa488ca94d887937b7edcf1309a90c14eba8ee037ddaf13e51ae198d8698"
+          "bytes": 127696,
+          "sha256": "4c98c8193d75ac3bd9beabd2f61105fd866f05ae846b8f0320134d25c92a6f15"
         },
         "celebrate": {
           "path": "rpg/v5/healer/healer-mooncleric-level-05/celebrate.webp",
-          "bytes": 223340,
-          "sha256": "a00ff84aa87beca88c87dc55572c47c79db4d98eaedb313bba398fee28733be8"
+          "bytes": 221886,
+          "sha256": "7aebae285b9f4f3c296b09e4853272d64c6ee828e998b2c537998514c0e84e9a"
         }
       }
     },
@@ -745,38 +745,38 @@
         },
         "idle": {
           "path": "rpg/v5/healer/healer-mooncleric-level-10/idle.webp",
-          "bytes": 95338,
-          "sha256": "0ada3c2e03a9d46394615c1516862737bfe8e4bba5be936092fc53e43c41c49e"
+          "bytes": 95572,
+          "sha256": "6fa2f2cb7481bab35bb5525df306554f5b143ea5d4d92bdc2288851101fbebbf"
         },
         "walk-left": {
           "path": "rpg/v5/healer/healer-mooncleric-level-10/walk-left.webp",
-          "bytes": 144650,
-          "sha256": "3eb7ceea184e622244f01fc143161e8cb1c150fb805edd26183e81ee84741860"
+          "bytes": 144078,
+          "sha256": "d625584bd46fb1f9dd79f11ec7f939d85248287d0d2ff5c98d8e52e7a048226e"
         },
         "walk-right": {
           "path": "rpg/v5/healer/healer-mooncleric-level-10/walk-right.webp",
-          "bytes": 145186,
-          "sha256": "10ada72f8039ae366f2bb98d6f0c698ea75000b20e23cd21b4a1e8673e7532fd"
+          "bytes": 144526,
+          "sha256": "93ef5f7007ad975685e96d965847b65d2e423d04c34c4a76d87c275bc6a869c1"
         },
         "heal": {
           "path": "rpg/v5/healer/healer-mooncleric-level-10/heal.webp",
-          "bytes": 136154,
-          "sha256": "0977aed62e08fa0e825a6c603d16d545acc9165a001812016d056d589d687547"
+          "bytes": 134296,
+          "sha256": "288e84358daebfd1d66e23b0c3bc46962c577d464205f424706f44cc20414c67"
         },
         "hurt": {
           "path": "rpg/v5/healer/healer-mooncleric-level-10/hurt.webp",
-          "bytes": 93978,
-          "sha256": "64930d2e8cac16a02289c537d7705909d0cde6a72f335af56e012a23b99fbd05"
+          "bytes": 94028,
+          "sha256": "147726297fea1cc9c09c504ef145c66bebfbd55302bda0935e0b070faf297e46"
         },
         "happy": {
           "path": "rpg/v5/healer/healer-mooncleric-level-10/happy.webp",
-          "bytes": 148272,
-          "sha256": "4356bdf2e133bc894704aa509045509e9cd383b1d6abfce8977e376d7280e8bb"
+          "bytes": 147936,
+          "sha256": "de4b6ce41ce1b090783253cba643e05dfba3428ad51f11d5a2f991942199b759"
         },
         "celebrate": {
           "path": "rpg/v5/healer/healer-mooncleric-level-10/celebrate.webp",
-          "bytes": 250318,
-          "sha256": "b03ef453d9ee49d7daff03621e011996ab0353ac05c54e8ec0492bc96c16346f"
+          "bytes": 248244,
+          "sha256": "d708ca9e8620ecb829108bade56eaba7999cb57c4dc566b40f5f5a7879063417"
         }
       }
     },
@@ -808,38 +808,38 @@
         },
         "idle": {
           "path": "rpg/v5/healer/healer-mooncleric-level-15/idle.webp",
-          "bytes": 99966,
-          "sha256": "ab49a1340dbd74a32403c3384514f6ef1d3fd037f669d244aed41a7d774db140"
+          "bytes": 99702,
+          "sha256": "0ca2ce3049e5e95f516803a627312f5c15809574a07fdc9a6d12005533d8c07d"
         },
         "walk-left": {
           "path": "rpg/v5/healer/healer-mooncleric-level-15/walk-left.webp",
-          "bytes": 152330,
-          "sha256": "b99893f46453c83654f833edca8fe6ee77a6fa2d2a415a859c7694697cc79e49"
+          "bytes": 152150,
+          "sha256": "eb1a2266e9b95f9dce2364200e8161ee34bc4cca6134072401bfc779e423da59"
         },
         "walk-right": {
           "path": "rpg/v5/healer/healer-mooncleric-level-15/walk-right.webp",
-          "bytes": 152400,
-          "sha256": "d16d7c7e65bedb23595bca8d8a3c87ae9a60c9f068c8f0caec8ef7750441ebc8"
+          "bytes": 151768,
+          "sha256": "c96857fdc281e2455a2227ac066ae9afc5981b04041a75a09ae6aba486124db9"
         },
         "heal": {
           "path": "rpg/v5/healer/healer-mooncleric-level-15/heal.webp",
-          "bytes": 142970,
-          "sha256": "a6646d097482e589d7196d4f8094151500b5ecbc1960298922760d75a48e29d8"
+          "bytes": 140970,
+          "sha256": "eda740573ce497b0e8176634c1365840434eb3843079f409db68f9e201e7d402"
         },
         "hurt": {
           "path": "rpg/v5/healer/healer-mooncleric-level-15/hurt.webp",
-          "bytes": 97916,
-          "sha256": "9b7adf65edd9ffaaea94f3beaa75de7d863f3997ff239045da7108e898a8e08d"
+          "bytes": 98386,
+          "sha256": "1b05abd731f5ea70f003e1d8342226c19d2c1219ced1ce20a3822fa3a922c7b2"
         },
         "happy": {
           "path": "rpg/v5/healer/healer-mooncleric-level-15/happy.webp",
-          "bytes": 154358,
-          "sha256": "667aea3afe823d5813f8e436793ee423c37b08ce581c82a1972f44718434e36e"
+          "bytes": 153806,
+          "sha256": "4a8b580b8e454f2371bcbd4af27d4f15ee8dc03f2167d9d62d6decc5ed9d21ea"
         },
         "celebrate": {
           "path": "rpg/v5/healer/healer-mooncleric-level-15/celebrate.webp",
-          "bytes": 257370,
-          "sha256": "ea2e0e0c395d106b40b13bdf41ef9c5697641f901c2dfd42102fb3494d8f7b29"
+          "bytes": 254692,
+          "sha256": "71456977dadfcfc167ca64026402ccabf5cd044906681a3a4dab6e357e7a29ee"
         }
       }
     },
@@ -871,38 +871,38 @@
         },
         "idle": {
           "path": "rpg/v5/healer/healer-mooncleric-level-20/idle.webp",
-          "bytes": 105792,
-          "sha256": "6ce982d427190fb11bf2265991af0a158cda5fa32777f3bec3ed4fae7c524abe"
+          "bytes": 105600,
+          "sha256": "3c28702aa19705664eac531c931ebcb1adf0eedc1f37d6a0501d0f0ad36aabde"
         },
         "walk-left": {
           "path": "rpg/v5/healer/healer-mooncleric-level-20/walk-left.webp",
-          "bytes": 161896,
-          "sha256": "e8db5f016f51ded441361e5968a68b5292a5d42f202154fc3f2b5ef8348d9d4b"
+          "bytes": 160692,
+          "sha256": "0e24eeda65ecc7f3ca9bec974ef984facaac42552863fd81b891dfeaa99e33cd"
         },
         "walk-right": {
           "path": "rpg/v5/healer/healer-mooncleric-level-20/walk-right.webp",
-          "bytes": 161988,
-          "sha256": "f3d38afb09c9e1209a46728313d45df5ff33f9c762f3d39a06ead29c0b3c1525"
+          "bytes": 162220,
+          "sha256": "230b00243b19474ebbea56310f39d5a05cac0c66429338638a4b0f9dde844169"
         },
         "heal": {
           "path": "rpg/v5/healer/healer-mooncleric-level-20/heal.webp",
-          "bytes": 147568,
-          "sha256": "b4a9818db4da6919858ce97d892ece490ab985a5a25bd809c325146e640a3dcd"
+          "bytes": 145968,
+          "sha256": "e70b7ede69a69f818562e0d5e144dd651e6d4a769dd7b8a1c8f94c12512914de"
         },
         "hurt": {
           "path": "rpg/v5/healer/healer-mooncleric-level-20/hurt.webp",
-          "bytes": 104718,
-          "sha256": "a653814af63e5571e59b285ca868bbe791801611ea5fffa878732f444ee7a428"
+          "bytes": 104558,
+          "sha256": "7d1197412c3062ebab5b1d1c08fd2ba724a99f0db3c1fea9cea8ce0e56889fea"
         },
         "happy": {
           "path": "rpg/v5/healer/healer-mooncleric-level-20/happy.webp",
-          "bytes": 163086,
-          "sha256": "38e8f36ce1d5c7ff8c938aade69da8aa484a40bc45c1f178e699330bc3d34f43"
+          "bytes": 162480,
+          "sha256": "4a6586f0b7c9d3f74a9b56e4ecae7daba732b48a9a8636ddb1ec350ccc19e8f4"
         },
         "celebrate": {
           "path": "rpg/v5/healer/healer-mooncleric-level-20/celebrate.webp",
-          "bytes": 265320,
-          "sha256": "2816bea0f4c3efd43c5c952e1d03c256f2832ee484ce57254cec1c78a9839c59"
+          "bytes": 263312,
+          "sha256": "860cd37ec8685e2db28f8c45c27c31c12489f0c3840019b138c43879a0b632cf"
         }
       }
     },
@@ -934,38 +934,38 @@
         },
         "idle": {
           "path": "rpg/v5/healer/healer-mooncleric-starter/idle.webp",
-          "bytes": 69812,
-          "sha256": "551f4bced793290760140f47279015ab0a9e099dd6faca173021ba19bac9f322"
+          "bytes": 69710,
+          "sha256": "55959db113b12b6f3e76f5cad0054a500f03b74c357b83c6916d1eccc80d50aa"
         },
         "walk-left": {
           "path": "rpg/v5/healer/healer-mooncleric-starter/walk-left.webp",
-          "bytes": 105798,
-          "sha256": "0948162747ae73471140a06bd8dd57c3c479f71e22dcf2be86f8903171501070"
+          "bytes": 106598,
+          "sha256": "dd8696aab1991b624b3a14a2d68318933562a0ed2675c8b8f66572a69a5275ad"
         },
         "walk-right": {
           "path": "rpg/v5/healer/healer-mooncleric-starter/walk-right.webp",
-          "bytes": 105612,
-          "sha256": "db57c9a135c39c69fddb003928d386fd53b110069913d2d3fb8630cd08ee82a3"
+          "bytes": 105932,
+          "sha256": "e975bcf02d739cb1788be5e2aa25e217f9d13f73efe79de71148ebd099369af3"
         },
         "heal": {
           "path": "rpg/v5/healer/healer-mooncleric-starter/heal.webp",
-          "bytes": 105200,
-          "sha256": "e7b16c7dcb7e301f21e0a56a5b420a5a8fbd60fbe7e4900c3db072bf7e2e4285"
+          "bytes": 103952,
+          "sha256": "a3a26658ed3978102c6ac3def7b4473b93e016297708ec333fbff7138ea5d568"
         },
         "hurt": {
           "path": "rpg/v5/healer/healer-mooncleric-starter/hurt.webp",
-          "bytes": 69256,
-          "sha256": "fd4335ab2d017ef9dad6007166a0a7ce7579a40d3683944c89896e42d65d7c32"
+          "bytes": 69160,
+          "sha256": "cef14c79999a704f38ec00d6a27ef941279fcaa1a6a392c0b87bfaf514c4911d"
         },
         "happy": {
           "path": "rpg/v5/healer/healer-mooncleric-starter/happy.webp",
-          "bytes": 110844,
-          "sha256": "ad0005d1bed556f22589dba7d501b0ae3a064440b25f887847e3ea4d047df56c"
+          "bytes": 110244,
+          "sha256": "950dc8f3666d6a0923d5e81b0470c1f2709195a7fc07a3ef625a691cbee9f512"
         },
         "celebrate": {
           "path": "rpg/v5/healer/healer-mooncleric-starter/celebrate.webp",
-          "bytes": 202274,
-          "sha256": "42f0903cbb49a60e6aea5d45b899801928d70b1fd354bee4b4eeb1ebd20a883b"
+          "bytes": 200764,
+          "sha256": "4f1dc1fe870e115dfc9698b123b065a21a26944f7c3fbc09ca3675c9431e1f72"
         }
       }
     },
@@ -997,38 +997,38 @@
         },
         "idle": {
           "path": "rpg/v5/healer/healer-twilight-level-05/idle.webp",
-          "bytes": 100944,
-          "sha256": "8de23793d52907ab53f2673ce787ebaef89ef94f345d2bc3b8225292b293a1ea"
+          "bytes": 100470,
+          "sha256": "1a4ec3622bd6e09f21df05245d47344bd576f413f7912f6099cb31a6d07f33a2"
         },
         "walk-left": {
           "path": "rpg/v5/healer/healer-twilight-level-05/walk-left.webp",
-          "bytes": 152344,
-          "sha256": "0772842e1baf15a4bffe8ea14e2fa6b33562b2ac8b3cca5173e311045929e104"
+          "bytes": 152562,
+          "sha256": "5327904b46331eee795164bcd6345690c8c245bda0de312f2a80ff6a6d7d962d"
         },
         "walk-right": {
           "path": "rpg/v5/healer/healer-twilight-level-05/walk-right.webp",
-          "bytes": 152112,
-          "sha256": "f28613a41c83b75ded97d73580e8a37bad1d1e4d06e4e04a820e1c8f60749ee3"
+          "bytes": 152308,
+          "sha256": "cdbfe062bc56eab61736290f86cbb3d45cf9c78b77123c38b480f973046e4b28"
         },
         "heal": {
           "path": "rpg/v5/healer/healer-twilight-level-05/heal.webp",
-          "bytes": 142258,
-          "sha256": "919de5babcca2da1e0433ab60dbcc58c870a63716d6230f9c573753c53d81fbe"
+          "bytes": 140652,
+          "sha256": "7c0a260094ec16dbf191608f395c5779e5f1f4728b7cdbd520b128f066b17c9c"
         },
         "hurt": {
           "path": "rpg/v5/healer/healer-twilight-level-05/hurt.webp",
-          "bytes": 99122,
-          "sha256": "5dfb3432c86a3fc1b1ff7e3805abc7db8b70d5a6d2026353f247695de7b23892"
+          "bytes": 99252,
+          "sha256": "2f2e8c84e937098ca4d1736483abc8115a68a7a69335a98bd6147cb86608a848"
         },
         "happy": {
           "path": "rpg/v5/healer/healer-twilight-level-05/happy.webp",
-          "bytes": 155658,
-          "sha256": "536ba24d2cfdca6ee9452fc2b4a0d2e0b9b2ab29e1024911de645769584f94cf"
+          "bytes": 155128,
+          "sha256": "47857aa4f7f48afb0740e9de565dc51ba6dd0e83767f69bd934f5f8fda6282fc"
         },
         "celebrate": {
           "path": "rpg/v5/healer/healer-twilight-level-05/celebrate.webp",
-          "bytes": 252870,
-          "sha256": "5529a0b4a968965a94ab678fa3281337ba44666e0accfbb6e4ea85fee8f98773"
+          "bytes": 249708,
+          "sha256": "87a3d2222ff4ad209dd3b74c56c45b3f7a4c2196de829a8b99efa3db2adca14c"
         }
       }
     },
@@ -1060,38 +1060,38 @@
         },
         "idle": {
           "path": "rpg/v5/healer/healer-twilight-level-10/idle.webp",
-          "bytes": 98758,
-          "sha256": "ff8a6c6600ccd5925b43269baf3931857ed1a7c63d9df5fb3ffc28fb16c6dbc4"
+          "bytes": 98322,
+          "sha256": "705ef804a2cb946041d1a591d8697f583fc1df14d7f32e443a9e5481b0e3cd4e"
         },
         "walk-left": {
           "path": "rpg/v5/healer/healer-twilight-level-10/walk-left.webp",
-          "bytes": 148226,
-          "sha256": "8cc843cf04b5466328372cffba8650389c4ebd1404424ba0a01abc236d9a4b84"
+          "bytes": 147380,
+          "sha256": "1c26b23faf5c9f830d3b5c509172812891198e91fe6a4494308699473e0df877"
         },
         "walk-right": {
           "path": "rpg/v5/healer/healer-twilight-level-10/walk-right.webp",
-          "bytes": 148070,
-          "sha256": "b3767ed75b9c5ef3967da4e6172a8627808b30cce3349d828b9354851d401cf2"
+          "bytes": 147818,
+          "sha256": "ec159464b2d2dcaac0e4734b91bc324a038c95508f17f6991e50e70543d13542"
         },
         "heal": {
           "path": "rpg/v5/healer/healer-twilight-level-10/heal.webp",
-          "bytes": 138484,
-          "sha256": "bc0dabffaf77c66f425a6c622c09f0283f71e1852e4cd5fc8ff393032d7abd8a"
+          "bytes": 137520,
+          "sha256": "5700d80a01ea69bded757701a4a3f2a331580716dd62476ce5166d9fca6d937a"
         },
         "hurt": {
           "path": "rpg/v5/healer/healer-twilight-level-10/hurt.webp",
-          "bytes": 95948,
-          "sha256": "e72ba0f8d22878132e1fd5035c5ec4309fc41cf0caf5221e5017bdae6abeea81"
+          "bytes": 96148,
+          "sha256": "d1e168c41fdba60ada9ef455e6c30ea3bc352ae28e8a77e3e5fba9bd5ac11664"
         },
         "happy": {
           "path": "rpg/v5/healer/healer-twilight-level-10/happy.webp",
-          "bytes": 152258,
-          "sha256": "aff402fe99f52e26f687f29dde7b9972b785617aab0232128191b9496686cd59"
+          "bytes": 151830,
+          "sha256": "6ab2958aba7c3207cb8c45304694fcd3c2caff83b0b2ec1b5673a62fe0bcffc9"
         },
         "celebrate": {
           "path": "rpg/v5/healer/healer-twilight-level-10/celebrate.webp",
-          "bytes": 248502,
-          "sha256": "fa16b3f9d4faf9871b90194a52abd90929fb517da829feec840b65227728e039"
+          "bytes": 246658,
+          "sha256": "ff70913501e8d0c6a1017f21e2bb4777b138bc6ce6f200d53d4645b956986759"
         }
       }
     },
@@ -1123,38 +1123,38 @@
         },
         "idle": {
           "path": "rpg/v5/healer/healer-twilight-level-15/idle.webp",
-          "bytes": 93890,
-          "sha256": "c81c409b7450219587a23bfb790cd7dcab1d69f50dcdf808888770646eb3992e"
+          "bytes": 93862,
+          "sha256": "2d4e59799406b86f2a4c4d9f5870d2eaabb60275e845eb94e7484594147ad66a"
         },
         "walk-left": {
           "path": "rpg/v5/healer/healer-twilight-level-15/walk-left.webp",
-          "bytes": 144648,
-          "sha256": "07bb29889fc9424dec4db7496b42e9e3f8f44959e37fa40887e8ce2f82b03ffa"
+          "bytes": 143654,
+          "sha256": "dd038e312a146bfb615458bf380f005e2e955fdd3b9f2b22b112b5d591655aba"
         },
         "walk-right": {
           "path": "rpg/v5/healer/healer-twilight-level-15/walk-right.webp",
-          "bytes": 144498,
-          "sha256": "13a249ef7618265487a289319f7c7fb4a94c1d19db969412a6ef5e2b06b0dae5"
+          "bytes": 143398,
+          "sha256": "390f3a3a827a5d2f1ada2737692b316aa388d429579795953561946680c6a2a8"
         },
         "heal": {
           "path": "rpg/v5/healer/healer-twilight-level-15/heal.webp",
-          "bytes": 134146,
-          "sha256": "f5125c39a78b3473e6fe4d4950024bdfd927a675e1bc6a69c0f5587526a3ae6d"
+          "bytes": 132920,
+          "sha256": "04d04eae154d57a26c4ed24bc06b9dc2c3bfa185a0694fc6d5b6ece3081d9920"
         },
         "hurt": {
           "path": "rpg/v5/healer/healer-twilight-level-15/hurt.webp",
-          "bytes": 92040,
-          "sha256": "007a6c29e39e0db77d8b2a231aaeee82fca83f2fa4d895765842f584413f9228"
+          "bytes": 91876,
+          "sha256": "3369184c9a2729c66edfe3458f8ba8751b320f3d22e8917bfc93354aa4ce7591"
         },
         "happy": {
           "path": "rpg/v5/healer/healer-twilight-level-15/happy.webp",
-          "bytes": 145796,
-          "sha256": "c04d2a82e35099b0759634f0348651152078363ab15674fd92e2353856d8f9c0"
+          "bytes": 145674,
+          "sha256": "5db266a470d54379e783be5efd00d212c43806d8a71dc71f6447ce6a45bb9925"
         },
         "celebrate": {
           "path": "rpg/v5/healer/healer-twilight-level-15/celebrate.webp",
-          "bytes": 246280,
-          "sha256": "0910bf967e75e689a2b02e985ce5b2cd111b196bbc8ebda297abb9913f95c66e"
+          "bytes": 244354,
+          "sha256": "4d45a4acf88653184a2cec55809a14d3fbc7d7681d13e5c02f947b25c5475613"
         }
       }
     },
@@ -1186,38 +1186,38 @@
         },
         "idle": {
           "path": "rpg/v5/healer/healer-twilight-level-20/idle.webp",
-          "bytes": 98546,
-          "sha256": "295b1e80771fad940a9e4bfe833516a39cc9daa7aa19284bc6f154d7fc2089d1"
+          "bytes": 98910,
+          "sha256": "35f5d04bc316b2f2eb0275a1e4442c9155d102beaa26d81832ffd33678399613"
         },
         "walk-left": {
           "path": "rpg/v5/healer/healer-twilight-level-20/walk-left.webp",
-          "bytes": 151088,
-          "sha256": "89e19a4db11bb5dc7e0bb47d9296bb410e8c593548f55bae13476e3efcf81480"
+          "bytes": 151146,
+          "sha256": "e33e9c30e95506fb38583ef42fab0194bc6cfbc9d965c3f8d5c8fcce63b68d32"
         },
         "walk-right": {
           "path": "rpg/v5/healer/healer-twilight-level-20/walk-right.webp",
-          "bytes": 151156,
-          "sha256": "2b6c1f779336fd29dea7a6e43f59ecfd51301a3f9779913aff1f6176e20e5545"
+          "bytes": 151290,
+          "sha256": "26f8aae13ae9763474f466efd5fe501e68eff2c39f1d346d23397d0a0e551763"
         },
         "heal": {
           "path": "rpg/v5/healer/healer-twilight-level-20/heal.webp",
-          "bytes": 139154,
-          "sha256": "c88eeadcf787ea1f393201b294f0eecd8e0406afbb376662f386229421d06929"
+          "bytes": 137252,
+          "sha256": "0a33b0e6c4b676da5f85751b38e284201ba587da98e3244fb187d458b42f14f1"
         },
         "hurt": {
           "path": "rpg/v5/healer/healer-twilight-level-20/hurt.webp",
-          "bytes": 96462,
-          "sha256": "84c81dc33456826acf00df455bc754b78289649a6fe92389e946990be6d87195"
+          "bytes": 96648,
+          "sha256": "e55bafc8bd8160779988f0ab8a335e52c9f0dd419195a54a3d5d1af381ec83ee"
         },
         "happy": {
           "path": "rpg/v5/healer/healer-twilight-level-20/happy.webp",
-          "bytes": 153470,
-          "sha256": "1c78ab19350c0c497393621e39817536839867be79ecc0f9c41bca0a3c90af37"
+          "bytes": 152230,
+          "sha256": "43b4af3101c0b3df9608bf561f3c2d440e632c0851d128a9d92b7b8dca4e3fb6"
         },
         "celebrate": {
           "path": "rpg/v5/healer/healer-twilight-level-20/celebrate.webp",
-          "bytes": 251810,
-          "sha256": "6eaa65c1aefc9516ea7a38a0ac9afa9b3bb73d0dea1dea482575a1b85cca78d8"
+          "bytes": 249006,
+          "sha256": "6eea8e6ec9991b78cbccac60ae06955fa92077e38dd6b2e31f8c41eafd2699ed"
         }
       }
     },
@@ -1249,38 +1249,38 @@
         },
         "idle": {
           "path": "rpg/v5/healer/healer-twilight-starter/idle.webp",
-          "bytes": 95124,
-          "sha256": "1826c133b2185059bb2d57110b39fb8322a6f6b0d50431e3ef78bea43f4e4bd7"
+          "bytes": 94608,
+          "sha256": "4e83a2ced40c151e7ac4116924d806525fc9f6ad0cefedabfbbad9e9ded37744"
         },
         "walk-left": {
           "path": "rpg/v5/healer/healer-twilight-starter/walk-left.webp",
-          "bytes": 143190,
-          "sha256": "01125a5f0bd971aa8bb95374912c417c8a669b1c50952eab4f834c0188ae0ae5"
+          "bytes": 142758,
+          "sha256": "ffb280a741e9181cd4783575906d27ce0a490b96f5d8feac40f8a4dc216098eb"
         },
         "walk-right": {
           "path": "rpg/v5/healer/healer-twilight-starter/walk-right.webp",
-          "bytes": 142746,
-          "sha256": "a308ec29669e876323a85068d3e61aaa3dfd01b3ee1960b050ee797165c58da7"
+          "bytes": 143484,
+          "sha256": "ddd97ea32cc612d2ed697ea12cbf010d45085072437f05637f24592b9d910006"
         },
         "heal": {
           "path": "rpg/v5/healer/healer-twilight-starter/heal.webp",
-          "bytes": 134748,
-          "sha256": "c5cd3c0c1560c29388cca65ebe5ca3bea25867faf2d28a2945ab5ea7e0d23834"
+          "bytes": 133244,
+          "sha256": "cc30a17385f8993712bdb583d469424845786a7c3c2b38cd6d8555eed0f077f2"
         },
         "hurt": {
           "path": "rpg/v5/healer/healer-twilight-starter/hurt.webp",
-          "bytes": 93730,
-          "sha256": "c5116ccad4f450811d41b2a49d082c484efa745d242598332b8f6fe25477d7ef"
+          "bytes": 93204,
+          "sha256": "5fec69249a992c8b8435b48bdcb174e4e513a5761703d09978c5d62059ba9508"
         },
         "happy": {
           "path": "rpg/v5/healer/healer-twilight-starter/happy.webp",
-          "bytes": 146934,
-          "sha256": "8291a3b20bef61963a3bb75c123f9ee3f55c149ab9347bdadb2a46c711f7514b"
+          "bytes": 146484,
+          "sha256": "4f4688b074f134d3a382f738524e54c87f872219a461fa25dcae8f404cd6ad1c"
         },
         "celebrate": {
           "path": "rpg/v5/healer/healer-twilight-starter/celebrate.webp",
-          "bytes": 238754,
-          "sha256": "de2a4edcee5eef80085c05310f012b80ba746dfe2cfbf35c492c02e9b7a39f4b"
+          "bytes": 236364,
+          "sha256": "3a6cea4610743745d96dc144f28f14634049610cd198c2b6e002bce098a8161c"
         }
       }
     },
@@ -1312,38 +1312,38 @@
         },
         "idle": {
           "path": "rpg/v5/mage/mage-celestial-level-05/idle.webp",
-          "bytes": 104842,
-          "sha256": "81552003d9b2a29584ffbb283028934b796902624b29051745593ad391d09ed1"
+          "bytes": 104516,
+          "sha256": "e8be4b67f7836fa1fa2e84c1a1e2fa1c1189a55fc703d7cd5ffdc865cc5321f7"
         },
         "walk-left": {
           "path": "rpg/v5/mage/mage-celestial-level-05/walk-left.webp",
-          "bytes": 157940,
-          "sha256": "dd32c431b60a32d5133a6a177affa6b2ee7ea059c565d6a6e753a8a149bf91fe"
+          "bytes": 157398,
+          "sha256": "77b417ae909b827ad08face39917a0bb41a636df93a5cc3a6ccb1245ac99a6c8"
         },
         "walk-right": {
           "path": "rpg/v5/mage/mage-celestial-level-05/walk-right.webp",
-          "bytes": 157626,
-          "sha256": "a100ede695ed99300443139aa403250c46b14cb776d9961e295de06d0e957e04"
+          "bytes": 157534,
+          "sha256": "57c94d62d763e3c64c04276d4ccf7defe25675f37dc87c8b389fdb8aafccf9c2"
         },
         "attack": {
           "path": "rpg/v5/mage/mage-celestial-level-05/attack.webp",
-          "bytes": 165694,
-          "sha256": "be7a9825d44a475053d9598a85f7271205cc9e73c325d33397c2b8d5b02b3437"
+          "bytes": 164754,
+          "sha256": "00c1ecd41b729067512ed0261a44b365429fbad07ca581ffd5e5bc6dca2fb82e"
         },
         "hurt": {
           "path": "rpg/v5/mage/mage-celestial-level-05/hurt.webp",
-          "bytes": 102910,
-          "sha256": "fb4b29eb1498571b0c3b8fdedb6a5f6b4a948ec1e26ba05e5ee33b0a6f3dbb19"
+          "bytes": 102610,
+          "sha256": "5b8930334cd114a77b9cf919cb150c7415e165acf729d1c9d0100e08b058d771"
         },
         "happy": {
           "path": "rpg/v5/mage/mage-celestial-level-05/happy.webp",
-          "bytes": 161822,
-          "sha256": "f3fa6f2542a92cce8a422f001ffe4b3f6c0dce797fde14a171ac11c8bf91d023"
+          "bytes": 161058,
+          "sha256": "50e1002cac2eebf845cb3c5721bcae67cb728380a8f4bed746ac4b403eefd370"
         },
         "celebrate": {
           "path": "rpg/v5/mage/mage-celestial-level-05/celebrate.webp",
-          "bytes": 257092,
-          "sha256": "9c83576887b7095e1f7902369056d6a3ee9841554c5cc708eeb7716c25e9541a"
+          "bytes": 254540,
+          "sha256": "e4cd6119c8d8cfc95d07b62cd2af0754099702cd00a474752db016388221412e"
         }
       }
     },
@@ -1375,38 +1375,38 @@
         },
         "idle": {
           "path": "rpg/v5/mage/mage-celestial-level-10/idle.webp",
-          "bytes": 106870,
-          "sha256": "b9fde9287fb5dad4263835af72015da6e7fad18dbdee329ea7c6406a4a81d02b"
+          "bytes": 106396,
+          "sha256": "ec164b8930b8daa45fc0b1bf12f5dee3daa7dd140cd8961cf653edf9782ff2bf"
         },
         "walk-left": {
           "path": "rpg/v5/mage/mage-celestial-level-10/walk-left.webp",
-          "bytes": 163736,
-          "sha256": "9cbaed3ce419cb547f0248bf33815bef277bde42ec2970c874d53b24d993aae0"
+          "bytes": 162542,
+          "sha256": "97057c3680323923af4283eab87e16d2cf4e903d58ce8ee39bca9e066a8643a1"
         },
         "walk-right": {
           "path": "rpg/v5/mage/mage-celestial-level-10/walk-right.webp",
-          "bytes": 164202,
-          "sha256": "3a3139c87e65117636123cbb30420ac1d8126eaffc9c4328534fccb0e6500a39"
+          "bytes": 163450,
+          "sha256": "f697a492ecaa5f2eb17d2eb2c5ec09c44a84ce7b2928526073c1f77b9069d447"
         },
         "attack": {
           "path": "rpg/v5/mage/mage-celestial-level-10/attack.webp",
-          "bytes": 169308,
-          "sha256": "f7d9e7f8e286f51e311f036e19425b389782ef0e5d48c935fbb813f995c77bf6"
+          "bytes": 168862,
+          "sha256": "7258177658c564af3db6a09bdceeadbb389bb15d03ac460375823d112f2d1b7f"
         },
         "hurt": {
           "path": "rpg/v5/mage/mage-celestial-level-10/hurt.webp",
-          "bytes": 105256,
-          "sha256": "d3894fdcc2604a48b4a898ba1cf9f33fc1131ab599cf9a82f85a212f914ec6e6"
+          "bytes": 104664,
+          "sha256": "f9fcfdad3f33f2ee1b81cf530459f7a6a29336289e0ca5fb12ff61e1380df59d"
         },
         "happy": {
           "path": "rpg/v5/mage/mage-celestial-level-10/happy.webp",
-          "bytes": 166560,
-          "sha256": "3f9780bec9bce7ba906d73f3ac5e228afe19565b1dde0f588861b53d7adb2585"
+          "bytes": 165132,
+          "sha256": "d15aefb9ea31a7a36870b5e7d1493a42b965c7c39b96458117d740dfc14a17c2"
         },
         "celebrate": {
           "path": "rpg/v5/mage/mage-celestial-level-10/celebrate.webp",
-          "bytes": 263724,
-          "sha256": "b235eec5a19e4be0072778b23b76edfe7f0c7e7be80056995c4146f1edbea6bf"
+          "bytes": 261366,
+          "sha256": "0e301b5d71c997619ebe8c0f2085a2dc99894427f0c617f37435744035ba4dee"
         }
       }
     },
@@ -1438,38 +1438,38 @@
         },
         "idle": {
           "path": "rpg/v5/mage/mage-celestial-level-15/idle.webp",
-          "bytes": 91562,
-          "sha256": "f58e180d61500d382424d8e0d691178a5026ebc8d6877932a9897afde9ab94fb"
+          "bytes": 90956,
+          "sha256": "b2af90047413193757230ee74192ac6065f1f216e0f670b548068e5fad50e3c4"
         },
         "walk-left": {
           "path": "rpg/v5/mage/mage-celestial-level-15/walk-left.webp",
-          "bytes": 142304,
-          "sha256": "dd8b15d4a3dff57eea44ac83856810531c6dd4b003599ca6089985f62e84f66b"
+          "bytes": 140692,
+          "sha256": "972ea53bead390f08d557a028cbea0664f9aa3078921851ca49aa2974f7e34ae"
         },
         "walk-right": {
           "path": "rpg/v5/mage/mage-celestial-level-15/walk-right.webp",
-          "bytes": 141682,
-          "sha256": "57b77fec28dfa284bc8533cd218b4f182cd5db3cb8e59d0099f216dcdd9d62a3"
+          "bytes": 141488,
+          "sha256": "6e2b9408658f5a1388dcc5eb731adcb0054f106647a2fdbb8155b076e35ed842"
         },
         "attack": {
           "path": "rpg/v5/mage/mage-celestial-level-15/attack.webp",
-          "bytes": 153708,
-          "sha256": "4567d4fa87e2cadf4843c395d08e81fbef62f977c1c9adf8f8e3d03c5f8ecd70"
+          "bytes": 152468,
+          "sha256": "a23498b7d9bc412a9ef899f6250b03ce7db56ef988e8424aa46b8ba5683b8464"
         },
         "hurt": {
           "path": "rpg/v5/mage/mage-celestial-level-15/hurt.webp",
-          "bytes": 89922,
-          "sha256": "e8fc3710c8e42b01651af40a541e0e9c21283f07210145128b24a576d01ac938"
+          "bytes": 90024,
+          "sha256": "a7537b48cb874ebb22e69fc3b36cb6991b5206f4a8b675bf3890abd3b30e3534"
         },
         "happy": {
           "path": "rpg/v5/mage/mage-celestial-level-15/happy.webp",
-          "bytes": 144232,
-          "sha256": "9b73304b27d08c66f49bf2515c46cf127677a320c33f00b7976310e260e1c476"
+          "bytes": 142918,
+          "sha256": "94975243dfa54691db8ebdc7759fb6e95cfa12979ada6563f5b758d354944c93"
         },
         "celebrate": {
           "path": "rpg/v5/mage/mage-celestial-level-15/celebrate.webp",
-          "bytes": 240028,
-          "sha256": "52b9388a8d966ceb282fcca6dbcc2291bf369f2a7d8fb25a5fd19b3d3b194617"
+          "bytes": 237950,
+          "sha256": "446317ca6b748a06dbb741dfbcba5b12e003bc9a5288f945c162ab6f41ad7ff1"
         }
       }
     },
@@ -1501,38 +1501,38 @@
         },
         "idle": {
           "path": "rpg/v5/mage/mage-celestial-level-20/idle.webp",
-          "bytes": 115666,
-          "sha256": "d855714b5be8507f9fe1294ebc3e4da91e64870e2fdb1b2cc459096f3ec80ac3"
+          "bytes": 115358,
+          "sha256": "a7b6e9a1c7f4419571322b04329cf9e9903ff13826c4aa9936bee6c924c4f930"
         },
         "walk-left": {
           "path": "rpg/v5/mage/mage-celestial-level-20/walk-left.webp",
-          "bytes": 177356,
-          "sha256": "2b0a152625e795406f42ea092e42ec483324a2253d7cfff7b7a7320152572fee"
+          "bytes": 176648,
+          "sha256": "b3629f3e29a113d1b2378a7ef9241895b10ca5dd3c21c61d7b27e5a4d4ac10f3"
         },
         "walk-right": {
           "path": "rpg/v5/mage/mage-celestial-level-20/walk-right.webp",
-          "bytes": 177018,
-          "sha256": "0b8bcb7c7cc7fb740e51631361a78b42504e33b6b04feb266e8a0ccfb7c4eddb"
+          "bytes": 176692,
+          "sha256": "a0639d2d3502caf3a59cf0249900d4bb6cd8a1578ebf52ba983e8acf781397ec"
         },
         "attack": {
           "path": "rpg/v5/mage/mage-celestial-level-20/attack.webp",
-          "bytes": 185860,
-          "sha256": "1e8912caee0125aec776b5b3f68ad052080983ff3a64f8fbd78fcd841dc8a3c3"
+          "bytes": 185058,
+          "sha256": "24d0b92927cb253dd204d74ece5bef8e43e9480a355d05dc8287191f721078ad"
         },
         "hurt": {
           "path": "rpg/v5/mage/mage-celestial-level-20/hurt.webp",
-          "bytes": 114208,
-          "sha256": "505cf8de3719054405de9eac46ba2c79e7844b59739c92a3b80296898cd74378"
+          "bytes": 113490,
+          "sha256": "7cb38807e9b9c585568ee66f98c0496971011cd6efabc77897e36a654689f568"
         },
         "happy": {
           "path": "rpg/v5/mage/mage-celestial-level-20/happy.webp",
-          "bytes": 179466,
-          "sha256": "3520a0a07357a5028dd1a3d63685616e25552d315917d65cb1e783bd895e50af"
+          "bytes": 178536,
+          "sha256": "8fbec0e63b4724e7c0c629f65e4872a79bd927e564b067f045c2849048481857"
         },
         "celebrate": {
           "path": "rpg/v5/mage/mage-celestial-level-20/celebrate.webp",
-          "bytes": 281272,
-          "sha256": "dcc2ba29d82d9928c94832735c5a76dd9e7fdb5c98f5e4ed6fc8c5344e1c7c8b"
+          "bytes": 277568,
+          "sha256": "9767fd18a3d91d58ff6d2eb81ab4477a2fb4a782f8acf1aad5ba2936ef9eaa8b"
         }
       }
     },
@@ -1564,38 +1564,38 @@
         },
         "idle": {
           "path": "rpg/v5/mage/mage-celestial-starter/idle.webp",
-          "bytes": 98204,
-          "sha256": "b2792687b5b705a8cf325512918431b7070db9ac15de8b22cb9f4d5422f0b6f5"
+          "bytes": 98392,
+          "sha256": "06d3493e5ca276833f8ae672b401ca0b8b785d4a6069e2206538cb65b2288504"
         },
         "walk-left": {
           "path": "rpg/v5/mage/mage-celestial-starter/walk-left.webp",
-          "bytes": 149014,
-          "sha256": "fab65cfa2c9b4a21c40a115e710a4b0b7876a2c002854e287242cb8a526829f3"
+          "bytes": 148076,
+          "sha256": "e75eaf28345d73b9f2b5dcee30fa1b26fd3815979eeb84ee9fe9c42961f0a149"
         },
         "walk-right": {
           "path": "rpg/v5/mage/mage-celestial-starter/walk-right.webp",
-          "bytes": 148476,
-          "sha256": "5ad427ad75ea669d0d00a7751736a16f534cb82395ba5d941289e72256facb27"
+          "bytes": 148538,
+          "sha256": "14ebe1846934ba6b36904d6c8b4470b26c6f2e89c669f086300fee7b51596e72"
         },
         "attack": {
           "path": "rpg/v5/mage/mage-celestial-starter/attack.webp",
-          "bytes": 159230,
-          "sha256": "f94082411592efc9d0258c078135195cb78013a636a66653e041be254827236a"
+          "bytes": 159364,
+          "sha256": "d9a3c4d53b192aca810f9fa8f0ae6fa01f99e361c220b390f6b8c6ad90cdd039"
         },
         "hurt": {
           "path": "rpg/v5/mage/mage-celestial-starter/hurt.webp",
-          "bytes": 97440,
-          "sha256": "a9633badf2d8dd1c9adb1184a873be562805d7a762214dd9eab893b99382896d"
+          "bytes": 97466,
+          "sha256": "89e744096ec64901172f8d83a9d6be848040e34c27e3749d8d36c4d989bcb528"
         },
         "happy": {
           "path": "rpg/v5/mage/mage-celestial-starter/happy.webp",
-          "bytes": 151702,
-          "sha256": "7e58a75d1a70961ecdc49fab46769db4865c51c867ba546c994ce16d8fbfecd1"
+          "bytes": 150812,
+          "sha256": "f67968c54da9c5a2728b21259eb00693059b8d2ae517a4cb3f720ec818270389"
         },
         "celebrate": {
           "path": "rpg/v5/mage/mage-celestial-starter/celebrate.webp",
-          "bytes": 244146,
-          "sha256": "0079d5b8aef2581196c8b2599ef174741618f2d22d66ef85e3fc87947b94b9b1"
+          "bytes": 242958,
+          "sha256": "0cec97792e07d22725982b65d7553841e2aeef6bdbcac2bce71a9fc4f14651e9"
         }
       }
     },
@@ -1627,38 +1627,38 @@
         },
         "idle": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-05/idle.webp",
-          "bytes": 102172,
-          "sha256": "684c18cce903a1faca56e028acc70db8712fde6fb017ded39c8426d8a373d8d1"
+          "bytes": 102524,
+          "sha256": "ad736764b5d6482fd38e838c677c0683d53c31ae301bc3d77d84d6df1a0ce430"
         },
         "walk-left": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-05/walk-left.webp",
-          "bytes": 154368,
-          "sha256": "1be49482af6e48dc5fbae12cd9c469f2ebae872a413b42d1d223a32876310c44"
+          "bytes": 155122,
+          "sha256": "59e54ef06f72e7bc204d0cb13b2f6e06153e211dacd1b8b5a78eef38f23aae57"
         },
         "walk-right": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-05/walk-right.webp",
-          "bytes": 153596,
-          "sha256": "d974437ca22311bbecc2bcf76fc558568494ad9beea7dcabacae8bb109202125"
+          "bytes": 153778,
+          "sha256": "997be69dd111045774366bb20bfad8d898f146e5e3af2d870e534c9b6fbe7f39"
         },
         "attack": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-05/attack.webp",
-          "bytes": 164444,
-          "sha256": "f1bec5d2630a5b17eb3e4459f958e78eead4dd201efe9dd5c13d3ef123f5ae7d"
+          "bytes": 163680,
+          "sha256": "f24c388c210df55c5f1fe0a78ad7497ab5ccb7b7d2e57e9e3b467113ec307ba7"
         },
         "hurt": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-05/hurt.webp",
           "bytes": 99302,
-          "sha256": "c1344023525d421964fb8590248f9f8b964aa08797fe7fef05bebd7ab02906e8"
+          "sha256": "a920235c8dcb64eb43fd6f38c246abb7bdf49c856c6cf6787682515b04119cf3"
         },
         "happy": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-05/happy.webp",
-          "bytes": 158078,
-          "sha256": "ad5779194593da47c902bbd12e57ba2b13df7fb140ad8d671f010ad6c9595ef3"
+          "bytes": 158718,
+          "sha256": "5445938697165a0c162c8c75d67a13d67a3b7cec2ba0eeafd6a0320e60f08e73"
         },
         "celebrate": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-05/celebrate.webp",
-          "bytes": 253534,
-          "sha256": "a08d41b697318999c717e22cbbd7faa94246606e8979b99a94441636fb360778"
+          "bytes": 250350,
+          "sha256": "3cb7f51b59b2cd17b2fa428fdfd32cc5ceda1e5ebfb5ae2682e4c1eec5568e25"
         }
       }
     },
@@ -1690,38 +1690,38 @@
         },
         "idle": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-10/idle.webp",
-          "bytes": 123046,
-          "sha256": "e3c7ec219f48da9c9aeac33d05d80a0abb4fd2f672f0a4a04a39aa7038de72e2"
+          "bytes": 122910,
+          "sha256": "1dd49f6e8919aa2ce2ef3bd23729c5b9d0523432f20dccfc15494bbf868042d8"
         },
         "walk-left": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-10/walk-left.webp",
-          "bytes": 184718,
-          "sha256": "855f30ca3fb38fa7a2536aa7583855e6a5bb6b9b1f39413b18cb34426af504dc"
+          "bytes": 184438,
+          "sha256": "5d647d302bd9524c8a45fedc51c4e844b9a84f35202980d8043e838639a9c615"
         },
         "walk-right": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-10/walk-right.webp",
-          "bytes": 183748,
-          "sha256": "8bef976f301382c678cb4fd0661da3c54d132716c39a054202404b19be588b10"
+          "bytes": 183792,
+          "sha256": "8d418bcd4086fe9bbce671eba393bbdc11ab611ff56c4e63c007f35c60c4f302"
         },
         "attack": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-10/attack.webp",
-          "bytes": 187042,
-          "sha256": "f33cca34409984cefdf239d134e6460ee656b6e27c24a8c0ba658208a60571e6"
+          "bytes": 185802,
+          "sha256": "ba8706e979f14d3417ec530351634f0074847e16ea43b5ac5bf04f61fe29589f"
         },
         "hurt": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-10/hurt.webp",
-          "bytes": 120110,
-          "sha256": "05511ce97371e136b2fa35ad2499087ed16c16333c67855e5cd0a8f5b269d09d"
+          "bytes": 119832,
+          "sha256": "9451a3926aa55f8c05514f5f370bd987b60769124d346c308c9a0b0268b7f196"
         },
         "happy": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-10/happy.webp",
-          "bytes": 188752,
-          "sha256": "bb2ce1384dd56899c9d1cc841c70f83f3522213eb0097248ba744b914588c381"
+          "bytes": 188556,
+          "sha256": "91fa42e4fb4c14a093862ff9e6c9ecd1da3822c329a5fef909ed3121f435c8c3"
         },
         "celebrate": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-10/celebrate.webp",
-          "bytes": 289720,
-          "sha256": "25e433e48f6824facbd02449b7358df1205ce085be3c09556627dfc23df1bfd4"
+          "bytes": 286588,
+          "sha256": "e14a5fb27443739adeaea583f3b0df4380f429d13925d9e5b8026e61bb2ffbc5"
         }
       }
     },
@@ -1753,38 +1753,38 @@
         },
         "idle": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-15/idle.webp",
-          "bytes": 108854,
-          "sha256": "ff9e8b914072ca829c68a1928a86d8457ecc32dfa5e2d9db63c1ca5a20a16a81"
+          "bytes": 108972,
+          "sha256": "6fb91fc277e3eae41abe42244f59b508b2d1ff937dec6cb432c0b6b59f77e38d"
         },
         "walk-left": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-15/walk-left.webp",
-          "bytes": 165710,
-          "sha256": "720b92b6e40be394d3fa8c9a15626325fd053c73a09b9b380e5474cb222644cb"
+          "bytes": 165282,
+          "sha256": "15e714af07c83619d0790e9785ea3baaf74998afdc9d7668b285478841196e79"
         },
         "walk-right": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-15/walk-right.webp",
-          "bytes": 164810,
-          "sha256": "9f3318af480d8b987989ba272301c1d1208871c5e9b3b5367ee75e96efef2727"
+          "bytes": 164690,
+          "sha256": "d72c312fbc77a30438ecb735736df5980bc44c7f12646731e8f9a2fa80e80073"
         },
         "attack": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-15/attack.webp",
-          "bytes": 173220,
-          "sha256": "6fa6e8fc2cc510fd9c6cb9ff4b2f54c7dd06f4edd0f1af8aa53e548c0009a06f"
+          "bytes": 172440,
+          "sha256": "d4f11428b908fa128ab84fc9a9522243f93d8da0557a50c180c3da4be91ab8f9"
         },
         "hurt": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-15/hurt.webp",
-          "bytes": 106680,
-          "sha256": "e5287aaad33a61edefa7f909f25e8aeb0b838be2785525deb5096cf1837d0973"
+          "bytes": 106954,
+          "sha256": "c72c933e67ae7891cd7d33967bcac6e05704ebf541d5ff0720353c4f10694918"
         },
         "happy": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-15/happy.webp",
-          "bytes": 169148,
-          "sha256": "60178575f8df0f2fd13798500d9f4bc6f1923504442c9ee21df0de8c204c8b7c"
+          "bytes": 168836,
+          "sha256": "73bb107b945bfdb0eb01c9c1eb6b70de7f1c100201ca8c3e2dc4a3b47bf6646e"
         },
         "celebrate": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-15/celebrate.webp",
-          "bytes": 270832,
-          "sha256": "6f153799b8eefa35a94d54a3e5d727b5496a161a1f9c67ebccd6dfb49c32e711"
+          "bytes": 267210,
+          "sha256": "6e08e5d842d8f97409864b4a11782ff5a7e94b5e9387d79f8ea5a3d276fa2dd3"
         }
       }
     },
@@ -1816,38 +1816,38 @@
         },
         "idle": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-20/idle.webp",
-          "bytes": 124804,
-          "sha256": "dae99560ef7e953b4f2628e0e4c706293d94c88e78ebb06f4b61bf5990112e56"
+          "bytes": 124444,
+          "sha256": "6f136b713db9b7fb8397e03f49db59a544ff8f98a801a93eb0d4d7af6b7751bd"
         },
         "walk-left": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-20/walk-left.webp",
-          "bytes": 191004,
-          "sha256": "5e874526667778c957e3b1105da4e5d49648f1915e2f48e75bbea7dfb1c0284d"
+          "bytes": 190656,
+          "sha256": "a0bbf4bfc853248d3d7179f92c58197ff3429aadf146c356ad485420b8abe64b"
         },
         "walk-right": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-20/walk-right.webp",
-          "bytes": 190990,
-          "sha256": "2f7bb3e1ab080fdafa1261c58bab3f264601bdad3497240d81ea0dde834d400b"
+          "bytes": 190574,
+          "sha256": "4e58b828fd542e9e42d778bf36aa959b1af466729a891a83a9f4ac90eeb19c8a"
         },
         "attack": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-20/attack.webp",
-          "bytes": 189328,
-          "sha256": "2b3c0a97fa8c8336ed2d763b4e46c47ababe47f1083f1dd5a2af4c3049502a08"
+          "bytes": 188252,
+          "sha256": "ef25bf1e63b4f71db7afd0022a0d824ea79b8ad35b2f80b246cc6b0b174ee055"
         },
         "hurt": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-20/hurt.webp",
-          "bytes": 122514,
-          "sha256": "7190069889c447af29d617572813074a7931480f6302d276fa02b67f68b60397"
+          "bytes": 121900,
+          "sha256": "420e57a26507bf742f8a9aaf586714eed4a68163b76f005cea6254edd47da585"
         },
         "happy": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-20/happy.webp",
-          "bytes": 193306,
-          "sha256": "8ba171f6931fb503cd1681eeb745b9a5b32a782a9c0e0949b0ed3a437b49fc0d"
+          "bytes": 192680,
+          "sha256": "3d52f4bae0d526437a1e2a8e20d2a691f9f522c39a235db5d6afd6069c627974"
         },
         "celebrate": {
           "path": "rpg/v5/mage/mage-eclipse-witch-level-20/celebrate.webp",
-          "bytes": 296210,
-          "sha256": "dce191155af83eb46c2cd46ab6c8c71109473b9b643894942a86d977bee0f6b9"
+          "bytes": 294472,
+          "sha256": "0718f8c0821a82b74599e3116f14aad2cdfd323fbc5bb8e2750710fad039d018"
         }
       }
     },
@@ -1879,38 +1879,38 @@
         },
         "idle": {
           "path": "rpg/v5/mage/mage-eclipse-witch-starter/idle.webp",
-          "bytes": 93202,
-          "sha256": "d37a6e355f8b37f15207844fbd102b1747c7932ee30558660c422ef2f2287c2c"
+          "bytes": 93258,
+          "sha256": "e87c3f3508eb3a677c51dba24c9b0f98348c1cee817a2eaf730ad60de7bca794"
         },
         "walk-left": {
           "path": "rpg/v5/mage/mage-eclipse-witch-starter/walk-left.webp",
-          "bytes": 140284,
-          "sha256": "002431dcd659dedba09311f56a8f296257c94a1fefbf4ce08f0d5028ba79e85c"
+          "bytes": 140430,
+          "sha256": "7cd24e18f892cee0b4e6fe199690ddf7cde74102e91df511ea87a8d6e77a26b7"
         },
         "walk-right": {
           "path": "rpg/v5/mage/mage-eclipse-witch-starter/walk-right.webp",
-          "bytes": 139652,
-          "sha256": "f69e94946d950aad4f3099dfc7ac5169491543708fb4d0b277361e82386f0a14"
+          "bytes": 139316,
+          "sha256": "364867b42e24f805fc1bdb60ecd2813c65c010f5a585f370ad7bcdfcc10e4270"
         },
         "attack": {
           "path": "rpg/v5/mage/mage-eclipse-witch-starter/attack.webp",
-          "bytes": 153726,
-          "sha256": "c2aaafa97c47c70ef0fd1ab79728c3f5d4e908b6ce1098024a439c36e181a22d"
+          "bytes": 153548,
+          "sha256": "266396b81788ba021b10a63e99bab5ad24dc897d4d75f0d4a00d58c45d80017c"
         },
         "hurt": {
           "path": "rpg/v5/mage/mage-eclipse-witch-starter/hurt.webp",
-          "bytes": 90808,
-          "sha256": "d938348b7a661bdef09acfa11468afe1d27a0ec303635c260d8b3e6477a5186a"
+          "bytes": 90860,
+          "sha256": "7abf4672d5b506b6e922b7f7a1dc4f8fdfb441c80c9c8e9f9758ca820114b9dd"
         },
         "happy": {
           "path": "rpg/v5/mage/mage-eclipse-witch-starter/happy.webp",
-          "bytes": 143954,
-          "sha256": "cb1950f2244d8bd19d09f227f221d56e2ff3b5d1e7041123219b29412dc9a965"
+          "bytes": 143658,
+          "sha256": "0fd6465d42117901697ed90406f1836c41dac02a6d7a71fcce38660d88c0e72e"
         },
         "celebrate": {
           "path": "rpg/v5/mage/mage-eclipse-witch-starter/celebrate.webp",
-          "bytes": 234908,
-          "sha256": "f64e60e35ee194bfde7606c14d8e9d8b81e7805c82efec7f69fef072190059fb"
+          "bytes": 231656,
+          "sha256": "32e86df90bff07e694c96f7eb23f727350aa1dd49b81cd9d4d84e5ec4b97b001"
         }
       }
     },
@@ -1942,38 +1942,38 @@
         },
         "idle": {
           "path": "rpg/v5/mage/mage-starfire-level-05/idle.webp",
-          "bytes": 91496,
-          "sha256": "8df237492c5f7f81838096b24a24c22146c54a3e2fd6c758a8a93c636341f4df"
+          "bytes": 91360,
+          "sha256": "40e6318e02a1450a4c0905368775c82b24cc5df850e434f32c47d07c09a8b239"
         },
         "walk-left": {
           "path": "rpg/v5/mage/mage-starfire-level-05/walk-left.webp",
-          "bytes": 137968,
-          "sha256": "bf3d8e47d59809ed02472ea15b736e34f11503072d47031c1dcb77e9891e0201"
+          "bytes": 138384,
+          "sha256": "ff4a02ab74dc6f739263a7788984c402e2056d1cc8f73d25fb9861c96fbb4e72"
         },
         "walk-right": {
           "path": "rpg/v5/mage/mage-starfire-level-05/walk-right.webp",
-          "bytes": 138178,
-          "sha256": "8c177f920d06a100bbda0e902f00d38a1b4ee24dd2089ce8ddc907cb8b11892a"
+          "bytes": 137884,
+          "sha256": "4eccf4bce7ec7f5ba0a04b01ca0a8ebe45eaf327b58548e733878c70101a8e95"
         },
         "attack": {
           "path": "rpg/v5/mage/mage-starfire-level-05/attack.webp",
-          "bytes": 149682,
-          "sha256": "a472e68c2ab71224219c3569cf3afcf6d9f14b841172f74ed12618f35fc9ad8d"
+          "bytes": 149376,
+          "sha256": "97e64396775df78661d706b407e3f4a90398aa03c5884774856957ff3f0b0f71"
         },
         "hurt": {
           "path": "rpg/v5/mage/mage-starfire-level-05/hurt.webp",
-          "bytes": 88886,
-          "sha256": "c167259f3a776d80bd72c43cfe08f9a22cb6447fc4533ad3f422c68059dcae3a"
+          "bytes": 88868,
+          "sha256": "4f7e091930f932f3c628eb41731b9663f4a4375b369afe5dd393c71ef3735247"
         },
         "happy": {
           "path": "rpg/v5/mage/mage-starfire-level-05/happy.webp",
-          "bytes": 143104,
-          "sha256": "590bd57d3c3f12c874c12db67f0d95367b2856c73b859c7bbdcacaf17a10d4d3"
+          "bytes": 143026,
+          "sha256": "da669b25789f99b0d9dd5907914ef73fe408373c43df3f7036f00952cae10caa"
         },
         "celebrate": {
           "path": "rpg/v5/mage/mage-starfire-level-05/celebrate.webp",
-          "bytes": 241282,
-          "sha256": "edc59ee74e0e9d071d38b0379477474c5bafd8c2f78f51137cc4d36bd7387582"
+          "bytes": 240656,
+          "sha256": "eec71d70cd74055cc56cc48ac4c72f3772e3627a2692fdf241d0609cc6d497a8"
         }
       }
     },
@@ -2005,38 +2005,38 @@
         },
         "idle": {
           "path": "rpg/v5/mage/mage-starfire-level-10/idle.webp",
-          "bytes": 93224,
-          "sha256": "fb537f153b503f2c8b4d90318f9d4348071cb0f0bf17135110895781f06465c9"
+          "bytes": 93508,
+          "sha256": "ce10acf71315da0a0bcdee3cf029dd9006beb309a555d5f085b03189ac39990a"
         },
         "walk-left": {
           "path": "rpg/v5/mage/mage-starfire-level-10/walk-left.webp",
-          "bytes": 141116,
-          "sha256": "def5dc517c935add139fa729741f547a3c54d7f086bedcc36a0de64b73718b4d"
+          "bytes": 141568,
+          "sha256": "6175f53106c5f94ea9762b97e17876e97a5401a976d66a8a021deabc7b677c12"
         },
         "walk-right": {
           "path": "rpg/v5/mage/mage-starfire-level-10/walk-right.webp",
-          "bytes": 141420,
-          "sha256": "3ed451f1c08730fe5bba456e908f1edc66461d5c5b680c460729c0661e0accb2"
+          "bytes": 141302,
+          "sha256": "bd94e1dc309335bc1d48d9b8ab79946f83b60c529ccc06121c748de062c5d2f2"
         },
         "attack": {
           "path": "rpg/v5/mage/mage-starfire-level-10/attack.webp",
-          "bytes": 152612,
-          "sha256": "fb2aa6959e5f03419736d89b9be0df169c57a35a938fb96a8e4280261d493606"
+          "bytes": 152476,
+          "sha256": "9ada8fd19ba74c1e6f7dff4a093d58402b559309fa68ee9462e242ff09eab481"
         },
         "hurt": {
           "path": "rpg/v5/mage/mage-starfire-level-10/hurt.webp",
-          "bytes": 90638,
-          "sha256": "535678545731749db3a576bd638c66eceae689ab1408e87f562ff5d0adb6b07c"
+          "bytes": 90608,
+          "sha256": "af50ce0483c432248bbb92ef46f5c011bbb3613df9ff27b143449bf0cb473112"
         },
         "happy": {
           "path": "rpg/v5/mage/mage-starfire-level-10/happy.webp",
-          "bytes": 145154,
-          "sha256": "6cdbc7d8b9f75884f9291310f741cf464479d8ec66336c3a2d5517c9557795c7"
+          "bytes": 145210,
+          "sha256": "6477cb8a81f984b7144c7298e12f90254661f35dda124d1380eabc8ccf850a6a"
         },
         "celebrate": {
           "path": "rpg/v5/mage/mage-starfire-level-10/celebrate.webp",
-          "bytes": 242998,
-          "sha256": "b1a4d951117a5636eecad6fe8612496cf41090335fc8ca00d24cc23d85c6301b"
+          "bytes": 241614,
+          "sha256": "b051d9205cacff18d6239a2ed15949bc69c15276a5561d47f14cdb39be24354d"
         }
       }
     },
@@ -2068,38 +2068,38 @@
         },
         "idle": {
           "path": "rpg/v5/mage/mage-starfire-level-15/idle.webp",
-          "bytes": 90276,
-          "sha256": "f6337fb2806bbef709bb91ee858a6cc61e6d87b7fbd9983ee87f60cc7ec28248"
+          "bytes": 90288,
+          "sha256": "e5ef8033926019a39903137a1f69b240d31e3b368ebd0072d2e587a868fc6a13"
         },
         "walk-left": {
           "path": "rpg/v5/mage/mage-starfire-level-15/walk-left.webp",
-          "bytes": 136250,
-          "sha256": "d3b8654038498dca1ee157456299ec385bbc3013d8c7667dafbd80c5b882199a"
+          "bytes": 136344,
+          "sha256": "7e02dd2388e7d14524dd6484d380351da1079f69e844b2b1049ff9c544f31647"
         },
         "walk-right": {
           "path": "rpg/v5/mage/mage-starfire-level-15/walk-right.webp",
-          "bytes": 136764,
-          "sha256": "bab0fe981cd3b13c14e68b7a45ac6f149656687f9bed831bb42d1a377b8b53f2"
+          "bytes": 136582,
+          "sha256": "3cc898307e74f3bdde464d6976e5570013596e9ff29cfb3a917720aa8a0383f7"
         },
         "attack": {
           "path": "rpg/v5/mage/mage-starfire-level-15/attack.webp",
-          "bytes": 150036,
-          "sha256": "cd3ca15da3ee93a0ef655cf75e8413eccfe0889104fd8dd8cffab63e17135d7d"
+          "bytes": 149990,
+          "sha256": "c01b0e82aca755127d5e2cdf1e956ab82ba07aed4f9061820d4907eee387d6e6"
         },
         "hurt": {
           "path": "rpg/v5/mage/mage-starfire-level-15/hurt.webp",
-          "bytes": 87504,
-          "sha256": "b86542ce48c315512645d617f291204819748e529432e53b82c436ddc43ed500"
+          "bytes": 87726,
+          "sha256": "b8fb100d4ffdf3312633d69a51ce726e15512bd23059edb279e8db80c274c9d1"
         },
         "happy": {
           "path": "rpg/v5/mage/mage-starfire-level-15/happy.webp",
-          "bytes": 140642,
-          "sha256": "f095eb735f622f70e858d37127c6951d18137c316fc06aed1ed30e90fef6ad03"
+          "bytes": 139948,
+          "sha256": "d8c5f88cd70325357e04271db5249b8614d3c9bf0947872691709168243fdae1"
         },
         "celebrate": {
           "path": "rpg/v5/mage/mage-starfire-level-15/celebrate.webp",
-          "bytes": 237810,
-          "sha256": "45e617d117aafea0eb52ed225fc6365ead6933ca2890906e4e68024bc9c5f1d2"
+          "bytes": 235458,
+          "sha256": "d9188c1ca202a20ec1d6b6355a10cffc046aec2ddd2df7b95f1d573cf52bcbec"
         }
       }
     },
@@ -2131,38 +2131,38 @@
         },
         "idle": {
           "path": "rpg/v5/mage/mage-starfire-level-20/idle.webp",
-          "bytes": 100312,
-          "sha256": "6ec4802731fc8eaf4b61c9f20a45609d575861cdf9044f487ad82681bad3b248"
+          "bytes": 100024,
+          "sha256": "22f2d740920ac5ab968dd7ee5072a6235381ef8bca86b50c54688fcbe5e27439"
         },
         "walk-left": {
           "path": "rpg/v5/mage/mage-starfire-level-20/walk-left.webp",
-          "bytes": 153188,
-          "sha256": "dece07eff0e1811ffea6236ce3c7ea583eabc38df52903644ec83f246548c78a"
+          "bytes": 151872,
+          "sha256": "7c397f94924e474a61622a0e93de311de087ae73e99205f7872a484efcaff812"
         },
         "walk-right": {
           "path": "rpg/v5/mage/mage-starfire-level-20/walk-right.webp",
-          "bytes": 154018,
-          "sha256": "93033fe6f553914fc50b9da2e22561363ffc99bc317a238fa3b9a50a6fb0f3ae"
+          "bytes": 153852,
+          "sha256": "3bc482756d3e0674d8e4b12ef1a9faad7c0bb7c2f57653a79727611146567a8e"
         },
         "attack": {
           "path": "rpg/v5/mage/mage-starfire-level-20/attack.webp",
-          "bytes": 162882,
-          "sha256": "25f79a8b4db00e45b091149e3ca3137c5f51b38f8d45163b37e857889ee32672"
+          "bytes": 162244,
+          "sha256": "f80aafbc43b6cb49abe54dfb61c098e2c3711bc8c5c28e2bfab72936d7e7bc98"
         },
         "hurt": {
           "path": "rpg/v5/mage/mage-starfire-level-20/hurt.webp",
-          "bytes": 98066,
-          "sha256": "a2b25bb1de1984e4660192b5bc69aab6027f2fd072b2eed06f8a7e63f5b51f5b"
+          "bytes": 97944,
+          "sha256": "c2146cc6ddbd2b231ebc6a4309f03780319fd5b593153768c77226de5050a547"
         },
         "happy": {
           "path": "rpg/v5/mage/mage-starfire-level-20/happy.webp",
-          "bytes": 155590,
-          "sha256": "3878928477096f083713a45c293d31584a9fab7caf067a48701a57c6fd68efca"
+          "bytes": 154492,
+          "sha256": "c90f73f9f442e0427ccd9d6ea5c4f44c1393289c05aea3e3a95b959f169d9969"
         },
         "celebrate": {
           "path": "rpg/v5/mage/mage-starfire-level-20/celebrate.webp",
-          "bytes": 251202,
-          "sha256": "9cfd7e3a0ea5bd8bc6b9ec53a8938474ef6788329218407e1d7c7778da4d195a"
+          "bytes": 249550,
+          "sha256": "7e0471614e07e3d7a322a35d57482779e904c82ef5153f517db503cf53da6487"
         }
       }
     },
@@ -2194,38 +2194,38 @@
         },
         "idle": {
           "path": "rpg/v5/mage/mage-starfire-starter/idle.webp",
-          "bytes": 84932,
-          "sha256": "a0e0bb39375bf265d05a0098b322888863aca37981adb2d357c5f65af314332c"
+          "bytes": 84444,
+          "sha256": "485a745f20a5c0e8a929f263de1138470f64a15e8cb1ee0605bd19d58cc81776"
         },
         "walk-left": {
           "path": "rpg/v5/mage/mage-starfire-starter/walk-left.webp",
-          "bytes": 127954,
-          "sha256": "048283afda0b21f892a5530d6bcd8ffac4ff2df66ae4c8b135748c3c2de3dc6b"
+          "bytes": 127934,
+          "sha256": "74f2f364ec98c67be8c8d010c9075a472d0430729bbd60cd864d07524d8b6801"
         },
         "walk-right": {
           "path": "rpg/v5/mage/mage-starfire-starter/walk-right.webp",
-          "bytes": 127924,
-          "sha256": "44622f0fb13f670eb9d1e2db8ee4716635dc03f4d3d9acce459302f532dda821"
+          "bytes": 127768,
+          "sha256": "374bd4a0b63121516c3413ee24e8fbdd6d48cbeb438aefe7b7edceae6da0379b"
         },
         "attack": {
           "path": "rpg/v5/mage/mage-starfire-starter/attack.webp",
-          "bytes": 143700,
-          "sha256": "b17c33c38c15a86d9b7425694706eb49625be050fbcc6d3b507f6b4d1a576f9b"
+          "bytes": 143904,
+          "sha256": "6859da62043ca9dc3f8a735d49606e25bc957d5a1a18118f9c2fcb84f8c98605"
         },
         "hurt": {
           "path": "rpg/v5/mage/mage-starfire-starter/hurt.webp",
-          "bytes": 82498,
-          "sha256": "74e572edfcf9404e34e44f3d184efe3cd7ac908d97d62532a4c40c7ea69648f8"
+          "bytes": 82520,
+          "sha256": "685a790ea203fee788ce74728e04d3a5fb356649cceb80324ee8b448cdcc8854"
         },
         "happy": {
           "path": "rpg/v5/mage/mage-starfire-starter/happy.webp",
-          "bytes": 133664,
-          "sha256": "13f8685f315dacd34fa71f0ee5fa007c61fedf593a31bc48c13a8bf9e4547994"
+          "bytes": 133252,
+          "sha256": "e79697adcf9715ae46476f603af137438dc61b4e72aa845188d37ca7383b5f72"
         },
         "celebrate": {
           "path": "rpg/v5/mage/mage-starfire-starter/celebrate.webp",
-          "bytes": 227186,
-          "sha256": "5c1767ea392b6386bf28f3f22911c3e95d49f002f5e5f289b51967d8cffdf48d"
+          "bytes": 225894,
+          "sha256": "01b09f48a5784f3f2c8e6f35faf24d3a71411e1beb8dc68d9566101a47062324"
         }
       }
     },
@@ -2257,38 +2257,38 @@
         },
         "idle": {
           "path": "rpg/v5/mage/mage-voidcore-level-05/idle.webp",
-          "bytes": 82352,
-          "sha256": "088072a3b95b9cb4489ef455f5b373bcff09d1294200e3f82fc70b8de9c8f713"
+          "bytes": 81802,
+          "sha256": "c91b8512899e951a318142d0878db2137542b97156b4125c81081e3ed8311cc6"
         },
         "walk-left": {
           "path": "rpg/v5/mage/mage-voidcore-level-05/walk-left.webp",
-          "bytes": 126980,
-          "sha256": "8750464cecfd66b2e2f3f4366eb3bb6409acc3af6b1de01c60c5f4d4b3d33469"
+          "bytes": 126156,
+          "sha256": "6187555569aca52b0dfa5fd286cdb7e4a54d0e3afa6ca1b6fdc73819691efd3b"
         },
         "walk-right": {
           "path": "rpg/v5/mage/mage-voidcore-level-05/walk-right.webp",
-          "bytes": 127520,
-          "sha256": "f0a227c7fcadaaac0ffc030ae3543a965a812368c2c14df90187df4a2ff1d6db"
+          "bytes": 126898,
+          "sha256": "5f8d0f8068b6c23f9d56503c8029f3333ae9557fbb86a65f1a1492375b2770dd"
         },
         "attack": {
           "path": "rpg/v5/mage/mage-voidcore-level-05/attack.webp",
-          "bytes": 146534,
-          "sha256": "763fcfa5f7eaaa7fc04b01ca367a57a146678f84679f62e6d3095cf6fb7209d7"
+          "bytes": 146186,
+          "sha256": "90488141d5782936496fc5297ebdf94dc217d4396b90204dc8f2db8a2f12dac8"
         },
         "hurt": {
           "path": "rpg/v5/mage/mage-voidcore-level-05/hurt.webp",
-          "bytes": 81838,
-          "sha256": "86a535fe7a1a6a71f0ea438f6ec7b980693a4936839ea71b74adfec730e70c4b"
+          "bytes": 81424,
+          "sha256": "dffbdf76ebc9db87e1dd5d4d17cc2f7ce780598cbbe907a445d3365eeec857b7"
         },
         "happy": {
           "path": "rpg/v5/mage/mage-voidcore-level-05/happy.webp",
-          "bytes": 131050,
-          "sha256": "3079c82f7730604c0fcdb63f84950a27cbf4de065ce70497b32a83749cab71c6"
+          "bytes": 130574,
+          "sha256": "5f1d0aba19440ef09388bd72e5700f54ebdd0c92d1d45569accc169ea7f55f2d"
         },
         "celebrate": {
           "path": "rpg/v5/mage/mage-voidcore-level-05/celebrate.webp",
-          "bytes": 230956,
-          "sha256": "bd7d29bc5d7cb29b9a7b9752dfd85bedf25ae0b5ccf348965a740fceb7ccf7b4"
+          "bytes": 229848,
+          "sha256": "8bec59cec7a309082fad140d423503b3ddfc23596fde80c6dcb97ee9d19b276d"
         }
       }
     },
@@ -2320,38 +2320,38 @@
         },
         "idle": {
           "path": "rpg/v5/mage/mage-voidcore-level-10/idle.webp",
-          "bytes": 99098,
-          "sha256": "addc5b21dc95dec3a19e00ee772a7a290e2845413f7a8e9de124164fd6f829b4"
+          "bytes": 99066,
+          "sha256": "d6517ec476d2f7ecfb84f43d631d2a1f7aae1dceeb069e7521307c804048e6f2"
         },
         "walk-left": {
           "path": "rpg/v5/mage/mage-voidcore-level-10/walk-left.webp",
-          "bytes": 152882,
-          "sha256": "1a7344e0fffe8733b0792cc855ba72549cd32c9a50e9652670e2ca389bd22e78"
+          "bytes": 152480,
+          "sha256": "f55987a346957ca46a482adf1fd89ef7005c6cff3e6aa2cf0caa12683912cb7f"
         },
         "walk-right": {
           "path": "rpg/v5/mage/mage-voidcore-level-10/walk-right.webp",
-          "bytes": 153508,
-          "sha256": "fa9c7896ffdfb11d9e7e9d0fef867fd9f5cc6a014eb7c5edec744138d9abe510"
+          "bytes": 153298,
+          "sha256": "c77bc1d540b80928f1083c59c76e90af2788eb3671bdea3364aea388c3eeb3da"
         },
         "attack": {
           "path": "rpg/v5/mage/mage-voidcore-level-10/attack.webp",
-          "bytes": 168744,
-          "sha256": "2fc9438ccc5799213b804505c660fcaa326062de47cfb8dbd7e8097a29b1c5cd"
+          "bytes": 167786,
+          "sha256": "e50095d04c080cda586cf795a559feebe99269840fa0228b7181f294f84cc456"
         },
         "hurt": {
           "path": "rpg/v5/mage/mage-voidcore-level-10/hurt.webp",
-          "bytes": 97996,
-          "sha256": "f3d407151deaacfffa99fe639b001b4fa2434d9deb01e36fc2d1fa85273cde5e"
+          "bytes": 97678,
+          "sha256": "e8a781eb82dd916cc0d2ace329f576158fa0e8f824adc06419a02aa7b93776ea"
         },
         "happy": {
           "path": "rpg/v5/mage/mage-voidcore-level-10/happy.webp",
-          "bytes": 153976,
-          "sha256": "e822a95edfc68368008bb7c185682790fc538c2bc2944603f4b28a663919d186"
+          "bytes": 153134,
+          "sha256": "dcbc56d1486e548b28bf538da95fbd13f8b71f1ee51e76cd65cc39ef4644b1ac"
         },
         "celebrate": {
           "path": "rpg/v5/mage/mage-voidcore-level-10/celebrate.webp",
-          "bytes": 257884,
-          "sha256": "f7b4e7a69d28ccfa9bb2e7749f3a08947917b8a67858f1f50a20a8bdbb3add47"
+          "bytes": 254826,
+          "sha256": "ef1550d30f56cbe9762c48de74ae85334b34eef267960afb9cc5717b2c270d7c"
         }
       }
     },
@@ -2383,38 +2383,38 @@
         },
         "idle": {
           "path": "rpg/v5/mage/mage-voidcore-level-15/idle.webp",
-          "bytes": 122468,
-          "sha256": "6f8a1c7a402322e6891aed243557806c1eed55e76a51b841bdfdbdfe86e595e3"
+          "bytes": 123252,
+          "sha256": "d58fb3506757149ca8d8dfdb170c1ed1d052a0a85cf4bbb8ab2c128cc519e0dd"
         },
         "walk-left": {
           "path": "rpg/v5/mage/mage-voidcore-level-15/walk-left.webp",
-          "bytes": 187814,
-          "sha256": "232497c7f15053ffc9cc50626b5887cde218619102f4e3dddf6e7530145f3820"
+          "bytes": 186794,
+          "sha256": "c5d00fab267a115eb1f0df9d7dec9c0f9bca6d26556894702fba09dd0ac1af6b"
         },
         "walk-right": {
           "path": "rpg/v5/mage/mage-voidcore-level-15/walk-right.webp",
-          "bytes": 189336,
-          "sha256": "1b4d5a1ed17466cfc08ea1f66667818cf8b2eb9210220725d4068e024a1c04f0"
+          "bytes": 188886,
+          "sha256": "ba07289bd8e311650aaa706e8fe153a30d2ae474bcb4a86eacb6e9ad572f1f24"
         },
         "attack": {
           "path": "rpg/v5/mage/mage-voidcore-level-15/attack.webp",
-          "bytes": 194206,
-          "sha256": "0f8ae12b475eb9485e0e8a263b533e9c078ea87c89307b4e89d40f38e89128e1"
+          "bytes": 193248,
+          "sha256": "577b609fd0ea98c571e5a1fe0c2fc54b4c518537166418bde047359f23e08d41"
         },
         "hurt": {
           "path": "rpg/v5/mage/mage-voidcore-level-15/hurt.webp",
-          "bytes": 118904,
-          "sha256": "3aefacb1ee095722d348da30b04b9d10b9fa51335cb04e6952ed826fa7d4742d"
+          "bytes": 118736,
+          "sha256": "8c138a89ed4fae578945e67274b6edb9c9348af9511550495abb060d22bb8c3c"
         },
         "happy": {
           "path": "rpg/v5/mage/mage-voidcore-level-15/happy.webp",
-          "bytes": 189812,
-          "sha256": "41193d5e52243b0e4814cee909596b42f6beafe964d434f162a52a27540f97ec"
+          "bytes": 189112,
+          "sha256": "bb3e73cf64fa38984e37c430f8ec1294490942353e0df45f3627d65c7e7e8ff9"
         },
         "celebrate": {
           "path": "rpg/v5/mage/mage-voidcore-level-15/celebrate.webp",
-          "bytes": 302314,
-          "sha256": "4e7738906f5e717b4c38c68a01906eb229310bd662df7d52fb72f2457aa21b92"
+          "bytes": 298856,
+          "sha256": "4671d0416f1af773b47caa56ab27f96eb123ea4b688c69a1ded55a355e8e6e4d"
         }
       }
     },
@@ -2446,38 +2446,38 @@
         },
         "idle": {
           "path": "rpg/v5/mage/mage-voidcore-level-20/idle.webp",
-          "bytes": 117184,
-          "sha256": "e199ca80369c750dc1bf3731eb689d8a618205857b590dca1f6f6c97fff6bd27"
+          "bytes": 117136,
+          "sha256": "6a60fd90a00ee6471f703d9b89564ec62fffb806d5b7a1fab23858ef693b4016"
         },
         "walk-left": {
           "path": "rpg/v5/mage/mage-voidcore-level-20/walk-left.webp",
-          "bytes": 179876,
-          "sha256": "1a0caef2b1d67c8f3131e2f914cb8ba266a2c5f35abb426ed8e503be3605ed1c"
+          "bytes": 178564,
+          "sha256": "2b22d0f1643e2d5c4f092b0c28b88178317509ddb8cf14133fdc5c453e44975e"
         },
         "walk-right": {
           "path": "rpg/v5/mage/mage-voidcore-level-20/walk-right.webp",
-          "bytes": 180714,
-          "sha256": "e07a42a8c62682d97dc1b719cc3c625ba1c8c70f022c3d3f0a74de7cdf8743f7"
+          "bytes": 180896,
+          "sha256": "526385d58279e2ca09c797267cdfdb13d2c47c2fb5707334eeae2ec202f35598"
         },
         "attack": {
           "path": "rpg/v5/mage/mage-voidcore-level-20/attack.webp",
-          "bytes": 187338,
-          "sha256": "387bb0a2966f4fcd5d20c0e3ee47d3beebf063217dd3a7152af7c0c3799eb248"
+          "bytes": 186566,
+          "sha256": "e2378ab1b5407a979d24a5457999c00942fbba674648695efb713cf03f541fac"
         },
         "hurt": {
           "path": "rpg/v5/mage/mage-voidcore-level-20/hurt.webp",
-          "bytes": 114526,
-          "sha256": "ca2cad8ad9fcfe135d831e5e364e4ebc72f36a0fb59bd74cb12456285cbe520c"
+          "bytes": 113554,
+          "sha256": "b47999e4d1de8c37aad62a71a2b4ca868e1481f126d424af156770482194b9a0"
         },
         "happy": {
           "path": "rpg/v5/mage/mage-voidcore-level-20/happy.webp",
-          "bytes": 181448,
-          "sha256": "4eb64ee366da0c7ba1cf37e7e578fa7277a8d012fb62a55395bfd1bbc4950e8b"
+          "bytes": 180682,
+          "sha256": "7fa68422ea1a92cfb04f3289b2810200d8982fd903b84057d63c07cb7320874d"
         },
         "celebrate": {
           "path": "rpg/v5/mage/mage-voidcore-level-20/celebrate.webp",
-          "bytes": 284934,
-          "sha256": "b0e4d64afd58bdbbb91281031006635d762acab7aeac14a96a00f661bf4304bf"
+          "bytes": 282668,
+          "sha256": "a1a0ba5f5a7d174ffdea5956ae4351504a35b2f92d84c5c24faede59bb2879b5"
         }
       }
     },
@@ -2509,38 +2509,38 @@
         },
         "idle": {
           "path": "rpg/v5/mage/mage-voidcore-starter/idle.webp",
-          "bytes": 86272,
-          "sha256": "8070554c5881f67f2b87bb5de7cfbee5a4ac40a809acff38bbef8600bc27be0c"
+          "bytes": 86178,
+          "sha256": "9bb68a1d4da87751e80547a525b316928b8b76d59c50f4cb4f5e58aa4216f2a0"
         },
         "walk-left": {
           "path": "rpg/v5/mage/mage-voidcore-starter/walk-left.webp",
-          "bytes": 131226,
-          "sha256": "8b8ce9f678efbccc1fd1e9e271f2a5c39eedec59017366f0751cebf902ac1173"
+          "bytes": 131774,
+          "sha256": "a034b060f905d399de8a3b5da73c9f0e220566c5f0ec34bef572ee7ae38da050"
         },
         "walk-right": {
           "path": "rpg/v5/mage/mage-voidcore-starter/walk-right.webp",
-          "bytes": 132132,
-          "sha256": "99f879b30677fbaff16881ca4dfed8177d99c1ed301944ea8bfcacc60737ed1c"
+          "bytes": 132266,
+          "sha256": "27fd4f0bc6d74af1430af9218e5dc59f82e121f7c17b94295b1361eccc017b4b"
         },
         "attack": {
           "path": "rpg/v5/mage/mage-voidcore-starter/attack.webp",
-          "bytes": 148170,
-          "sha256": "e78e86ae77145146a9f712372b32fbf6deda27f6d6bc60c6fb56714e83b8a253"
+          "bytes": 147930,
+          "sha256": "6a4906b2c0cfb87e2f06e6780ddc48941ed48597e5eb13ce24f35c553b811636"
         },
         "hurt": {
           "path": "rpg/v5/mage/mage-voidcore-starter/hurt.webp",
-          "bytes": 84176,
-          "sha256": "eab699be1f3d3bfdc4d0b2a5060af24e299c2304eb87c68030565da972dcca24"
+          "bytes": 84272,
+          "sha256": "d1fdea8f30022270804fefd76542d2f7d1677c908950c2ee15b3598057e710e7"
         },
         "happy": {
           "path": "rpg/v5/mage/mage-voidcore-starter/happy.webp",
-          "bytes": 135206,
-          "sha256": "9a609f34600ec0206a56b77f51909ec3081e7f3c443d804db13527ab0b6c612d"
+          "bytes": 135106,
+          "sha256": "63b3a02a4a834d7a5160e14811a6e507652d058bfb7e932e8a92180c5893e76a"
         },
         "celebrate": {
           "path": "rpg/v5/mage/mage-voidcore-starter/celebrate.webp",
-          "bytes": 234074,
-          "sha256": "55fe029db0b0f546eb48cb330ec825e929233e4951419a6fd7faef08221f9029"
+          "bytes": 232834,
+          "sha256": "5673e82432a9f649f363f22f1d2411ad0319c722899203b622b6e4256897fa80"
         }
       }
     },
@@ -2572,38 +2572,38 @@
         },
         "idle": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-05/idle.webp",
-          "bytes": 102044,
-          "sha256": "e93cfa00174fab48355073c8831b55e6b0ff23672a00d0d64f3ef08434b519ba"
+          "bytes": 102340,
+          "sha256": "61be86c5d4a6bc315dc2a44bf63a8852dab89970067a01a7f2e671ae903868b9"
         },
         "walk-left": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-05/walk-left.webp",
-          "bytes": 156336,
-          "sha256": "807237f1fe44418fc861a1b60a4576490077f2a7870e93d0a76da10ed3999937"
+          "bytes": 154918,
+          "sha256": "4bb0fe3c0131071d0f5c3713dd17ad4a7b44e2338818a702e075caac76e2ce5b"
         },
         "walk-right": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-05/walk-right.webp",
-          "bytes": 154484,
-          "sha256": "14bc609fd04af739809fb5f9c82b709128525457e3b4f0c1f2455083c1379f0c"
+          "bytes": 154142,
+          "sha256": "323db49a3ae46481d96ca5f7e7c233331cd834b7d182ce5320bca729d241d449"
         },
         "attack": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-05/attack.webp",
-          "bytes": 168102,
-          "sha256": "fa6767442328f88978cc131f14ea8eaba85d13141573b2a06a1a22ed9d0c7ca2"
+          "bytes": 166498,
+          "sha256": "cfd8427380df3354f20d8fbbec5b86878939151e661be4706f9707bfa73791a9"
         },
         "hurt": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-05/hurt.webp",
-          "bytes": 100262,
-          "sha256": "8b465bbb304f3aabdd3b540651959bb552f0895abb203a7fcb9e4a24d8ebd40b"
+          "bytes": 99348,
+          "sha256": "5502644ff659be277122d82e73ff71bad82a22de24dcfcc4bb088f46b8210310"
         },
         "happy": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-05/happy.webp",
-          "bytes": 159186,
-          "sha256": "f003070e58ceb5e322d479cb7e5d76e11789951e9b8a62707d3949c2b7c1e4de"
+          "bytes": 157646,
+          "sha256": "481b4b15890dc189cad90c355e5de585bce99cea86a653a6de4203fcb59fe380"
         },
         "celebrate": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-05/celebrate.webp",
-          "bytes": 263048,
-          "sha256": "e7ee3a07320546c3e6677b08561d2882d1d68820a8e92d27c96539af1cfbd9c7"
+          "bytes": 260868,
+          "sha256": "97ba48e9828bdbdc71db6105ccccd665559d6c519c255551dcccde8ba16bb687"
         }
       }
     },
@@ -2635,38 +2635,38 @@
         },
         "idle": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-10/idle.webp",
-          "bytes": 109080,
-          "sha256": "012bb87a29967fa369ce7615ee0991de6ae88fde151a331a55dd5214e1e78085"
+          "bytes": 109146,
+          "sha256": "b8e72a8a45126fe0edd18ed26791371944df7dcbd80fe71f2e40cf53985d954c"
         },
         "walk-left": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-10/walk-left.webp",
-          "bytes": 166296,
-          "sha256": "278d93803f27badb29a5be710d9cf3fd2e9e6208210f148a6eeb7f91c4177bfe"
+          "bytes": 165494,
+          "sha256": "b59e32d10786a9c40570ddfb2af996328fb8d5a7db21b39a9bcfc35abe0696ff"
         },
         "walk-right": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-10/walk-right.webp",
-          "bytes": 167362,
-          "sha256": "e0bf59c361af099e03b8ecdb349bb1a1c3f1a026e558751588b80049eb0b5ccf"
+          "bytes": 167038,
+          "sha256": "b3f2ded0fb13dddf2f166903194b12ceffd005cab8a3b8f47b5617ac1bf0fc86"
         },
         "attack": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-10/attack.webp",
-          "bytes": 176366,
-          "sha256": "b7484e682be0c3c206c4dc2b6123dd1e3bc29cc0297a715ef3a824957ab588a6"
+          "bytes": 177748,
+          "sha256": "2a6df6b2192c43535eb32115906e088625fe3ba55564ae354e11d98d81c58df9"
         },
         "hurt": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-10/hurt.webp",
-          "bytes": 105758,
-          "sha256": "3a4150a1ca855c89cd8f58ec3f186f1d7ab546baff9a40a07b198c8ad400b8a3"
+          "bytes": 105506,
+          "sha256": "c85a55389591256102e919283ff9d3337cb34a6ddade1c4fdb2d380a1636a8ee"
         },
         "happy": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-10/happy.webp",
-          "bytes": 168604,
-          "sha256": "c09b0ba5d4540a17a6622ce0a25eb6a365d3e908f3f94bc9b5c2063df7535ab5"
+          "bytes": 167848,
+          "sha256": "44dac655c1b540984c2ba9256bf735ba3b378eafeaf303c2a54cee694d0d51fb"
         },
         "celebrate": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-10/celebrate.webp",
-          "bytes": 276718,
-          "sha256": "2ca8bd548c73dfb426e1f175588171c56c4bf7b85fe7b3298417712e77308880"
+          "bytes": 273548,
+          "sha256": "9434b572a09090c73e0fad8191f67ccaf63ee7629e7a8c5b394f059065ecafff"
         }
       }
     },
@@ -2698,38 +2698,38 @@
         },
         "idle": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-15/idle.webp",
-          "bytes": 117142,
-          "sha256": "10f3d4bd476a27c3cb6716908c6e1465a87413e4c76663c79556d8d0ed2c4366"
+          "bytes": 117276,
+          "sha256": "e58de3ba6a94067978801e261d68fd83a7f553995521fb37bd8b0cb3885538e3"
         },
         "walk-left": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-15/walk-left.webp",
-          "bytes": 178774,
-          "sha256": "17255e9c46a5a816eda055023ded68ee365fecce4e38eb1cdb0b3eb144bf204a"
+          "bytes": 177802,
+          "sha256": "4a65b1f77e376b019155383c6e2a42005072a0f13acb5a298328457d4994ac3d"
         },
         "walk-right": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-15/walk-right.webp",
-          "bytes": 180062,
-          "sha256": "658ac8ec0cc1af4cee1016eae0354c98b54c5a891a9aa5055036a85040652e21"
+          "bytes": 179774,
+          "sha256": "cca1090e1e49e36f77270a79196a95474ce1bafd0fb81c1e51c1d4b64ac6fdb6"
         },
         "attack": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-15/attack.webp",
-          "bytes": 186240,
-          "sha256": "98638a94886320c7e6eb3b9ae3daf24210b2b248f0b7cb675d025c8bfb04b6ac"
+          "bytes": 186376,
+          "sha256": "48008e570e37f29c69c8f9f9b82e2ef2f60b2e82c226a6f9560a16995885850c"
         },
         "hurt": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-15/hurt.webp",
-          "bytes": 114620,
-          "sha256": "8631726048bc6e821746488c0697236054c7005ebcc89227be0a85ce7bb68e95"
+          "bytes": 114264,
+          "sha256": "5393a281709e3ef4b74163650c8b2bf37edb97634f674ae1ccf5e02d730fbf01"
         },
         "happy": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-15/happy.webp",
-          "bytes": 180762,
-          "sha256": "660079d2417d90c77e87ffafcff45c3d57a8c08b7fa1df3bf80f4589ce769c40"
+          "bytes": 179234,
+          "sha256": "4f0a80a01504c62ddbb51e66db3adbd857b6f945b1ef36a209e979de91697692"
         },
         "celebrate": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-15/celebrate.webp",
-          "bytes": 289514,
-          "sha256": "8782cc2cb8c24f843a18e770a991662a7c4c2f0125411f0ca13c51958d74949f"
+          "bytes": 287170,
+          "sha256": "b0149978099ff43190117adcc5fdfcd3a13fc85d0da4d5feae257f426ec33035"
         }
       }
     },
@@ -2761,38 +2761,38 @@
         },
         "idle": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-20/idle.webp",
-          "bytes": 132034,
-          "sha256": "4d3750548bdf641b3e3234f89c739f3752b8bb4d28fa7b5d3db44cf1e50a57ca"
+          "bytes": 131392,
+          "sha256": "214f1ddb585661e2e7b95f96c018809583f6af46a9c810922de1745a32a7fd5b"
         },
         "walk-left": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-20/walk-left.webp",
-          "bytes": 201968,
-          "sha256": "56881623271815da3aee37a4407d453801b82b114b9a45e0a43b7dfa5f9f1003"
+          "bytes": 201406,
+          "sha256": "0a3e4b9334ad620cc3482d3d3366494fe70c903ce9070a556eb2c78bc891389e"
         },
         "walk-right": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-20/walk-right.webp",
-          "bytes": 203026,
-          "sha256": "b401e14c92ff2e49539970574e8ceefd2e43a8ae590327c685877bdf0e954a1d"
+          "bytes": 201714,
+          "sha256": "050cab010d80303b872175f1d3f81a892bd136f18fa307d6aa34cc3fe6a42a5d"
         },
         "attack": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-20/attack.webp",
-          "bytes": 206844,
-          "sha256": "cf506d600f003f549a39c51ba5165a95cfa5d4d954d4897f497880aeb10bc51d"
+          "bytes": 205850,
+          "sha256": "b2caca4e110c8d20e44a41dca61f1d240c867c4ca8d83304cab4c552dc95ed01"
         },
         "hurt": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-20/hurt.webp",
-          "bytes": 128104,
-          "sha256": "f3ac38f35bd33c12c9c1b8b0ec2a02d5fb0ef719c6350072f4a79811656d5f67"
+          "bytes": 127826,
+          "sha256": "559030bd40fe920928b169f1daa6da12fa927e07f95bb96c37259918322cd370"
         },
         "happy": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-20/happy.webp",
-          "bytes": 201056,
-          "sha256": "d191ccb7b1d3fbfbd654d501213cf0dc63be1d0cc1ddf133810f4e16cd332781"
+          "bytes": 199896,
+          "sha256": "8b46d28574ac66e3aa08cc8592ba6b569b985604b1150a249ce73846684d5027"
         },
         "celebrate": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-level-20/celebrate.webp",
-          "bytes": 307810,
-          "sha256": "5ee5131d40f358ed2dd6dd436a0516b385d19b58817f1d18993765d54ee42aae"
+          "bytes": 304230,
+          "sha256": "d6432857ab2a5a5f98beef8bdc87aa3b4a67dc80afd8ded7c162117b2d915fa7"
         }
       }
     },
@@ -2824,38 +2824,38 @@
         },
         "idle": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-starter/idle.webp",
-          "bytes": 95218,
-          "sha256": "16d8dc5a82121bd7d3cce224bb1975f2ba5aadb79db88b5702f9c14310efc36f"
+          "bytes": 94886,
+          "sha256": "ae45c4a4649fd3d792b97169a374ac310012100b738764a3b1fd6d07ed75afe1"
         },
         "walk-left": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-starter/walk-left.webp",
-          "bytes": 144520,
-          "sha256": "7566715de3ace383f96e9a2a9d0267e8cbd7689a56443d24c45bc8d99ab50fdd"
+          "bytes": 144556,
+          "sha256": "3500b6a619f6d0f31c63c496dd406e29820f248af702cfadd462440a11af3b94"
         },
         "walk-right": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-starter/walk-right.webp",
-          "bytes": 146198,
-          "sha256": "9aa84d424961ee61bb8c59552a6bcacc7cf8bb027b7e0892609ba38684e7fd13"
+          "bytes": 145694,
+          "sha256": "b498433315e9a0f54106a18887c548fc4d9539bd79f94e541c9c0ce76fd4fa6b"
         },
         "attack": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-starter/attack.webp",
-          "bytes": 155236,
-          "sha256": "58df4409b9ec2e379cd069924a04f1ca3fdb4a1fea0fde18ef2f6f2f71745bf4"
+          "bytes": 154318,
+          "sha256": "29bc26cc07be4149af7c8fccf434381fc6f1383e816627134dde0eea9d654d59"
         },
         "hurt": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-starter/hurt.webp",
-          "bytes": 91890,
-          "sha256": "4d8fc6cd6e9ec59b3180c51a2ddc385e5c281e9f529dad22764f397f9a0dbd1d"
+          "bytes": 91868,
+          "sha256": "4488cf67fc74ec761b5789f4e1feb89d315d7f80cc93b67f23a209f80f112051"
         },
         "happy": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-starter/happy.webp",
-          "bytes": 149334,
-          "sha256": "a00cd82c4a38ae25aefe24ee8dee0f544675f210d22526d9562b8153aac64e0f"
+          "bytes": 147924,
+          "sha256": "23818723da1a89bfadd8c72c339e7775920dfc68a8e72608fa107dce0e043005"
         },
         "celebrate": {
           "path": "rpg/v5/ranger/ranger-dawnfeather-starter/celebrate.webp",
-          "bytes": 250012,
-          "sha256": "1d2ae36fddf16c0089d14464a2eca57042e6a394aa06dd2fcd3db0c40fa83f16"
+          "bytes": 247786,
+          "sha256": "8a86c1b5e07fbfaae03f2d4b4e414eaeec49300a56822752e4e095c1a9406658"
         }
       }
     },
@@ -2882,43 +2882,43 @@
       "files": {
         "static": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-05/static.webp",
-          "bytes": 24240,
-          "sha256": "08fe00806c9cfd70b6e245b78a0a8b96026abd9c2b2217188ad3f63f1e18a9df"
+          "bytes": 25450,
+          "sha256": "0ac804a1d29be85395bc91752de054b81c0606fb5d62447478b41c57945a281b"
         },
         "idle": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-05/idle.webp",
-          "bytes": 96740,
-          "sha256": "70ca67737fbdf4a09b5beb671c8df3e6e078e5dea9bbe85d2dac046571aae776"
+          "bytes": 100970,
+          "sha256": "64efb834de8e28b0496b91d978c744b22d492721ccc16fcbfffe1d9dd8df5493"
         },
         "walk-left": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-05/walk-left.webp",
-          "bytes": 146696,
-          "sha256": "155e8393093bfa2743f3ce167926ed71d857139579452b682678a34adeac6d01"
+          "bytes": 154012,
+          "sha256": "36e7f261d3805393235dcdb08a050625c058e5f122f7add4ded25d0eb197d101"
         },
         "walk-right": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-05/walk-right.webp",
-          "bytes": 146252,
-          "sha256": "322c79d10a483e044c795706a778d98c651c7453ee6033a910739316e595edd0"
+          "bytes": 153774,
+          "sha256": "3aa75e80421d5fd3aed3006492ce47f185845cc72048e50d3de1919f08199abb"
         },
         "attack": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-05/attack.webp",
-          "bytes": 160704,
-          "sha256": "3f0e4a4190608c9cdb86e8deadf652ff8998df152e5f22e0c4e16c84fb1339f2"
+          "bytes": 168278,
+          "sha256": "591863ee5b47f536dffc408f7dde218f8afe055dd3a3814e37e41191bc70dbd7"
         },
         "hurt": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-05/hurt.webp",
-          "bytes": 94724,
-          "sha256": "bbd5ec4f8b76f8f6ca1c5c8ce5fd3d2f9dd214c36b6df7f9ca7bb67203dcb972"
+          "bytes": 99616,
+          "sha256": "e398c013cdf74e29b07a5310cfdce7a462460820f1fad0184e5958d394cffb84"
         },
         "happy": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-05/happy.webp",
-          "bytes": 149716,
-          "sha256": "19a961b32df433509582c2ab6b7b2027b076a3cc770639353620b78fc346b430"
+          "bytes": 156160,
+          "sha256": "efcbf5aa3f57a8257f99bc2badf344000a2ab364a90ab1dd9fd4de46f2f95d66"
         },
         "celebrate": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-05/celebrate.webp",
-          "bytes": 241506,
-          "sha256": "f14acccbc2f8315f6d7676257caab6f98a411864bbf9ac981da26d37786203b0"
+          "bytes": 248958,
+          "sha256": "cfc9c7986fd72fc77cc0ceeb9cff747059dc1fe84c53e8d810a4f7196dd8e090"
         }
       }
     },
@@ -2945,43 +2945,43 @@
       "files": {
         "static": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-10/static.webp",
-          "bytes": 26036,
-          "sha256": "0773574e14272ebccd6981646f0d1e0cdce94ceea4bf54f90ab38ff3d570ccb4"
+          "bytes": 27440,
+          "sha256": "18eebf6ff9e5b4e3d2b5894f377183d7f234fc1d0d36a8e73aecf9955dc6ec96"
         },
         "idle": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-10/idle.webp",
-          "bytes": 103082,
-          "sha256": "cf7cb7705b60dcd9586fb18b2660ab6a94b15ee6f958772e2a6760299f5c9ae0"
+          "bytes": 108770,
+          "sha256": "2874e6145b2d8cbe7305baa9bfe3e26a21a7195ea932bc33e78e19caa48c2359"
         },
         "walk-left": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-10/walk-left.webp",
-          "bytes": 155506,
-          "sha256": "c2625c44e837a2b0ed4d3b5bf5a5a119516eda8449397f01b6422bcfe3ce960c"
+          "bytes": 163858,
+          "sha256": "3a5e9e0fff2ff5aa42f00484b503c53a500d1da6a6e916ad0f7cb6a12e1f7d4c"
         },
         "walk-right": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-10/walk-right.webp",
-          "bytes": 156350,
-          "sha256": "e14638635dfad7a2abf5a7bf7eb0f00d08a5b9e40764335e79bdff8e1fcc2c7d"
+          "bytes": 164374,
+          "sha256": "3049fd64fd217c429f852582390765ee81a6fe8902ea3070c13baebc31573093"
         },
         "attack": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-10/attack.webp",
-          "bytes": 163878,
-          "sha256": "1198c7494acd1c1185a56ac9692c2ffd198290077d24e2e9b1f78788051368dc"
+          "bytes": 171228,
+          "sha256": "12192e60f4095b4f68124c6152fe49420cb7d5d22e22f657524b069804fd9256"
         },
         "hurt": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-10/hurt.webp",
-          "bytes": 100708,
-          "sha256": "f932daf24aa7c8b1eb286d01eaef82cf911b918a05f7ab6964772f66ee6ef80f"
+          "bytes": 106774,
+          "sha256": "1711edc22ab44737f9b28a7f1befe0896e47eb3fe977aaf1c6666b8321a6118b"
         },
         "happy": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-10/happy.webp",
-          "bytes": 159346,
-          "sha256": "4d8338be336bb3726581dd734c9ef593896d1214501c4a0803707be644276fd7"
+          "bytes": 167078,
+          "sha256": "23e9d4438ba457c0664e595503f0be3efc2b25a261699198cddbd022bd505209"
         },
         "celebrate": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-10/celebrate.webp",
-          "bytes": 253346,
-          "sha256": "87062981abc03705e142ff2673c65dddf6416a098f598e986a30dccb6ca7f854"
+          "bytes": 261944,
+          "sha256": "13c503db52ecdeef008c83e3376dc1f294f667ef281d9c0967aa7270239417e9"
         }
       }
     },
@@ -3008,43 +3008,43 @@
       "files": {
         "static": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-15/static.webp",
-          "bytes": 28020,
-          "sha256": "134f8e98b6897a1bf8177e09d09e1162dbf7b05c75d226921dd7325044946e31"
+          "bytes": 30126,
+          "sha256": "977424ef706c78e9f13f15bf0f67b306606b3ab5adb0b843ca1f3f5326b74ffb"
         },
         "idle": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-15/idle.webp",
-          "bytes": 112708,
-          "sha256": "9c8d07428772b238e165408d43b4ba1ddb25594dc721e6b9c0c0136ce30922cb"
+          "bytes": 120528,
+          "sha256": "4d9b0fd42cdf35a12ca734b4b0a9198599fdd589c937b5b61e8622d5e374478e"
         },
         "walk-left": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-15/walk-left.webp",
-          "bytes": 171192,
-          "sha256": "ca9307e34b07be92a3ff2e94cc22a30e8a0b09bc164d9364876c84d5764afeea"
+          "bytes": 182666,
+          "sha256": "7cbb9a8a36fff04f92a7232ae225f2376073a58b8226e983169da9830d2105ac"
         },
         "walk-right": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-15/walk-right.webp",
-          "bytes": 171460,
-          "sha256": "f4cabce97b9d1b788af67d5641e232729150e4d1d65f099bf094ddcd210a8e46"
+          "bytes": 183284,
+          "sha256": "728ec48d3cc7114b39b72048c9bdf1db0f5d41b6f1330afee7b43bc7e14e099e"
         },
         "attack": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-15/attack.webp",
-          "bytes": 178306,
-          "sha256": "c34b7391c49f9c2f4c57f36abdda126b8df29fb88fc9077e6b79122d19fdb48f"
+          "bytes": 188920,
+          "sha256": "2b1e7f50efd13097cec211917d5500cbaa06cec083126a23cfea61f6ac0d2032"
         },
         "hurt": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-15/hurt.webp",
-          "bytes": 110582,
-          "sha256": "999c2ce908efda3b185dc6fc81c37f9fbe6d50dc12f7044eba7ecf7ce10e58c3"
+          "bytes": 117264,
+          "sha256": "ead4589c58b45c824537b33e611ecffa8b60d2f9d1973d8770823282576a1d44"
         },
         "happy": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-15/happy.webp",
-          "bytes": 173160,
-          "sha256": "74f85fe3dab6568afe2bdf6ffc889e86d818cfa7a3b0e51c226a1816efa97ed9"
+          "bytes": 184236,
+          "sha256": "948bd7a830e6e29b7a5a69676ce2744ce388020757dd3c6d2c0d318e02bfe751"
         },
         "celebrate": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-15/celebrate.webp",
-          "bytes": 267392,
-          "sha256": "1da81a21393f2377d2610d5a870d4ea5b1959c6aad7c36bcd15a487a0f241e0e"
+          "bytes": 279752,
+          "sha256": "7c1beaa285ecdb40a3ba0655b6d60f23192d8d4d6e8016bc4558e35460e2946b"
         }
       }
     },
@@ -3071,43 +3071,43 @@
       "files": {
         "static": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-20/static.webp",
-          "bytes": 27844,
-          "sha256": "af02edc9ad351326d73e7b1f5de48c165abd67d5ba2438f3adedfa2814b26c01"
+          "bytes": 29466,
+          "sha256": "e9c531f7462b3f7589fa0653ac7a6fed6d7560832e4d53f2e4c1a877563da4ad"
         },
         "idle": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-20/idle.webp",
-          "bytes": 109952,
-          "sha256": "1d6e4a6a14abec7bf2947e9cfe4fd91c72fc897d97e0f44fdb6c708937a37ae5"
+          "bytes": 115850,
+          "sha256": "5c35663ae8bfcddecdcc362c5d5d072941103282cdcf2284c2e3e03fb37c9581"
         },
         "walk-left": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-20/walk-left.webp",
-          "bytes": 165650,
-          "sha256": "ddf9eb13bc4bbc335943d2f940528f1f471b2db4ccac48223d0145414a31eed4"
+          "bytes": 175024,
+          "sha256": "09ed81c450b3cbf15a43256eaeec6529927d4acd386cb091f4702f98e2795539"
         },
         "walk-right": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-20/walk-right.webp",
-          "bytes": 165752,
-          "sha256": "b6ef8679c72618a52dcba662f27a0bb18d9be8bcb706f06474b6a8f6d7643b11"
+          "bytes": 175104,
+          "sha256": "77364a4c667bbf12b02fa9d3ce9969a36196002aa7989d2670ab11912bdf4c65"
         },
         "attack": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-20/attack.webp",
-          "bytes": 173832,
-          "sha256": "c6915713a44883ec4081d9eaeade43d2def4a1ff897aae1a3074fb6364e9e10f"
+          "bytes": 181870,
+          "sha256": "0659ec42c5ba61e66ed3c3e13482b477028f74a775dde4509a8393501bfe5ce4"
         },
         "hurt": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-20/hurt.webp",
-          "bytes": 106732,
-          "sha256": "96591878cb124996a0770d84caa3092c1872a866471e726a9d0ad561799a1cc6"
+          "bytes": 113242,
+          "sha256": "8b9a65dcad698d20aa9e9669827427ff9b8e2bba840b098ed4f18a1c557692eb"
         },
         "happy": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-20/happy.webp",
-          "bytes": 167436,
-          "sha256": "3002a046138137d20ef71d723a560216a096ea9893fb9bb5fd404aacc99a2a6a"
+          "bytes": 177086,
+          "sha256": "e15036e4b55567e51f79ce904df593f5ca5619a5f3ccb22af3b9658f720d151b"
         },
         "celebrate": {
           "path": "rpg/v5/ranger/ranger-moonshadow-level-20/celebrate.webp",
-          "bytes": 261442,
-          "sha256": "8f35a2d1a93f1a144686d43085f63bbedae1d8aba4e5b6893d673b596bc7eb52"
+          "bytes": 271244,
+          "sha256": "cef0c624abe41c0407635c1d46ec10bf2084509baf6f24ca388842debebcecfc"
         }
       }
     },
@@ -3134,43 +3134,43 @@
       "files": {
         "static": {
           "path": "rpg/v5/ranger/ranger-moonshadow-starter/static.webp",
-          "bytes": 21298,
-          "sha256": "23753bb20abcbee4bf15a895848a07f8214dbdc85ca029d6c28fcd91f2f65c82"
+          "bytes": 22532,
+          "sha256": "96ef28fa9c052934f4442258c4a8864661f750690d3a1588b1ac294d7c638543"
         },
         "idle": {
           "path": "rpg/v5/ranger/ranger-moonshadow-starter/idle.webp",
-          "bytes": 84744,
-          "sha256": "03919e293c98487d4436fbeade7d44e7f60095defcd93ebb17d7a484442cda34"
+          "bytes": 88598,
+          "sha256": "a45e21f51785cd2637f88d83091b5fe902f1a616f8525c0ba2e7531b9e3a07a2"
         },
         "walk-left": {
           "path": "rpg/v5/ranger/ranger-moonshadow-starter/walk-left.webp",
-          "bytes": 127614,
-          "sha256": "5f70c98ac36d8b9f68951b83b8cda0526476d0639ceaa8562e5fd1f3c885f956"
+          "bytes": 134398,
+          "sha256": "9da634aa5d4c89d7718b44ed8cca2754910bfc585a23a6af2883ddf0c6d5cae3"
         },
         "walk-right": {
           "path": "rpg/v5/ranger/ranger-moonshadow-starter/walk-right.webp",
-          "bytes": 128476,
-          "sha256": "8a3263099302d8b9f0fff12fab9c9e1dcf7c577e70200ed505db6b1dc686eb89"
+          "bytes": 134172,
+          "sha256": "aea53988e882ce047ab16eb39f874507d6341b959585a6de480ed93a8def1f5c"
         },
         "attack": {
           "path": "rpg/v5/ranger/ranger-moonshadow-starter/attack.webp",
-          "bytes": 145972,
-          "sha256": "513bae71ad6f10f0eb668f7655454252e7c3e2569b9b8d27907082a4cf076b44"
+          "bytes": 151968,
+          "sha256": "9f1bf4186758ee3ab598efa1f995e321a41fa79bab1ba8cf6f408f09ff8c7b76"
         },
         "hurt": {
           "path": "rpg/v5/ranger/ranger-moonshadow-starter/hurt.webp",
-          "bytes": 83058,
-          "sha256": "18b0b983e66355a6c949e7c453c2307ceb5c3ff6d559f9cb06000b3d3b02389d"
+          "bytes": 88282,
+          "sha256": "cf42cb85fd131b62798734a9c3638373ea31060874e8e9a10f17881d87b40819"
         },
         "happy": {
           "path": "rpg/v5/ranger/ranger-moonshadow-starter/happy.webp",
-          "bytes": 131016,
-          "sha256": "b8ec0892f527a0efc0d6e2735026adbe7415402aec1da600d33b0bbe45d6a524"
+          "bytes": 137614,
+          "sha256": "b9b78144d523759c42ebb54070d041ca8d77f21ee683de10fb95c6ecc5d3041f"
         },
         "celebrate": {
           "path": "rpg/v5/ranger/ranger-moonshadow-starter/celebrate.webp",
-          "bytes": 217246,
-          "sha256": "6f58228944c1c5577e189b94d347cf6c9a0fedf921a3fdc80241950800c527e1"
+          "bytes": 223356,
+          "sha256": "e381f65332a5f4d3540fbbaf714c12d0d9b55f1680faa2255f464091888b6b84"
         }
       }
     },
@@ -3197,43 +3197,43 @@
       "files": {
         "static": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-05/static.webp",
-          "bytes": 20390,
-          "sha256": "66b3f3c34746ce07a94c38ee64bff3816580dbe604e71a26a96e64d45a6eb30d"
+          "bytes": 21570,
+          "sha256": "8bb9d2f5700b7567b521ee6a937127aa44f9f28c62fbff01198978cd19a3028d"
         },
         "idle": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-05/idle.webp",
-          "bytes": 81584,
-          "sha256": "f95d6e8029718cd88f8f2ad3203a0dcda69aeacf63c3c3842c70555345710a4a"
+          "bytes": 85892,
+          "sha256": "2d8b32b83b64874e8d80bf2de0a6ae6845ff9220659478dd00a5cc5b95dc0908"
         },
         "walk-left": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-05/walk-left.webp",
-          "bytes": 122094,
-          "sha256": "c066c4c904a686ea2a71964bc516e03451e4904b34c4d76f549db523fa2af17b"
+          "bytes": 129254,
+          "sha256": "77dcd55e9037f7cc468c16e1ea65b734adbaf98595cee75fcc4fb02589a4f68a"
         },
         "walk-right": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-05/walk-right.webp",
-          "bytes": 122944,
-          "sha256": "6fc71992e477b697a919ea1af3be5c64f4590cba8019e598766084bd2b259c10"
+          "bytes": 130484,
+          "sha256": "b8d7996ad1e8eba48ada1e84678812600ef0293d81deff01de14c235fedb3601"
         },
         "attack": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-05/attack.webp",
-          "bytes": 140514,
-          "sha256": "1de61e1d9ce177aaa6bfffc194c5d278cc13bc256416b9bda36db7d9e49d12ff"
+          "bytes": 147318,
+          "sha256": "190e96e46488c73a81bff5f1c98acc0f955e226bef17ba166020bc21b347aed3"
         },
         "hurt": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-05/hurt.webp",
-          "bytes": 79900,
-          "sha256": "3bce2654e4392aab087a207c4cd9a944d202400b8efa061f71f17dff5c4bf91f"
+          "bytes": 84900,
+          "sha256": "9d70ce35203be9e2974d02560e696c1aea52041c90de0182c175472ce3bd5267"
         },
         "happy": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-05/happy.webp",
-          "bytes": 127626,
-          "sha256": "309bb5d986b0be6086683d603c0cda8aceec383f9fda05729433a58d1d7bf78a"
+          "bytes": 133922,
+          "sha256": "d101edbc56e3239ae50b1d6bc0d75dd40226f852531b515d3478efe9e8bcf405"
         },
         "celebrate": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-05/celebrate.webp",
-          "bytes": 215134,
-          "sha256": "81adb24b7513ccdae88ea683690f7db3625a6830c41b27691a3854cab7e2887d"
+          "bytes": 222170,
+          "sha256": "0126596218e7c20bc35a8a24d941d0fd313a38cacb7dbb2d56604bcaec9f1a87"
         }
       }
     },
@@ -3260,43 +3260,43 @@
       "files": {
         "static": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-10/static.webp",
-          "bytes": 24250,
-          "sha256": "aeb06f85245e6054fd6c1e6776875e064a463fd89212c62e4f2267b61279bc9c"
+          "bytes": 25426,
+          "sha256": "8b8ffa7bb0da0ce060c433a5ec05b9dae4ccd5f8ce78f775008c4b8f8e9574e7"
         },
         "idle": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-10/idle.webp",
-          "bytes": 95082,
-          "sha256": "5b313029057e62f2e9a478b3acd721e6f05feb32db6f53b32e2eedb6e0c2c8ac"
+          "bytes": 99888,
+          "sha256": "fedce29cab84ddde619e578b4ae9809c1f058925d336f00a149a5232f524251c"
         },
         "walk-left": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-10/walk-left.webp",
-          "bytes": 144078,
-          "sha256": "bec58a4294f8629fc87c99eae9b75a1f7048ed08e5019f0b6b4c20ce065c27d1"
+          "bytes": 150094,
+          "sha256": "497e4ff8cd3fc794a961938b1953bb373718f4db305b3a032e32a945b66cd63c"
         },
         "walk-right": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-10/walk-right.webp",
-          "bytes": 144794,
-          "sha256": "ad63098f4d454da6a777f2916790d01663d482e5bf16cdc18ee25f59a75ac14a"
+          "bytes": 150544,
+          "sha256": "8f9389b9ce92fb5e8a6463fee4e908ac25766dfb60dec3272013366a79241f74"
         },
         "attack": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-10/attack.webp",
-          "bytes": 156490,
-          "sha256": "22c6ba0262642b30327676c616aa7215a05a86c4737204d33fd331ccc16c1728"
+          "bytes": 163304,
+          "sha256": "727d87b2cfa5890b856d246d9d4f4289914e885f18a5f5f527b53c66ef92e1d3"
         },
         "hurt": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-10/hurt.webp",
-          "bytes": 93150,
-          "sha256": "a2f4be36fbb1856a55909a2261ca80e0e4745354604bfdd778256fa7beb01e55"
+          "bytes": 98358,
+          "sha256": "799e6de2c8bbdc9d0d3a461dea46d90a10c48e2ff77691e3ac440376ba330d39"
         },
         "happy": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-10/happy.webp",
-          "bytes": 147094,
-          "sha256": "63f0343f31e6d71ddba0554116729154c98a8630a94a71a658afbe54a26d725a"
+          "bytes": 153590,
+          "sha256": "25fc714da8c4a755225bcf6a8fcaeb4fcad7b3dc91d923f72b908e77af1aa4bc"
         },
         "celebrate": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-10/celebrate.webp",
-          "bytes": 236902,
-          "sha256": "797f67a9c73687622856fc567d932f9aa286f6c682e24c9266b397829b201d28"
+          "bytes": 242890,
+          "sha256": "2495d5a3d3907ec8bc335a37dc6993e796ba610bf9f59e7aa2209311d690578c"
         }
       }
     },
@@ -3323,43 +3323,43 @@
       "files": {
         "static": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-15/static.webp",
-          "bytes": 24714,
-          "sha256": "c4e9cda64f8ee08b52798e4e0a02b7e33d8c93248fe1635ebb01aa21990073f4"
+          "bytes": 25360,
+          "sha256": "099dd90af694420a20e8b93adac3eede247bff608145bf5b5dc5960cb606823d"
         },
         "idle": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-15/idle.webp",
-          "bytes": 97162,
-          "sha256": "6ea04ed123f48f01ba5cba4a0d6eee96eac3d43c1b7e96556c16cc5ca4b735c0"
+          "bytes": 99976,
+          "sha256": "04085216179dff701c12693042b1921f9de1ed820823270488da07a539f8728c"
         },
         "walk-left": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-15/walk-left.webp",
-          "bytes": 148262,
-          "sha256": "cec76d17d6ab8d7fea0fd235b5d5f35999901c3d12f43b9f0a1fb5ff239a95a4"
+          "bytes": 152450,
+          "sha256": "75f4b188d7faa28af7c0bd2986422f5b588117860ae5c5524434c9c7b230fdef"
         },
         "walk-right": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-15/walk-right.webp",
-          "bytes": 148798,
-          "sha256": "dffc547eda55802a22b4c19e0050c4efcb8f2b7a6066653f88ea15eafc2aff36"
+          "bytes": 152908,
+          "sha256": "16c761d002688d4886e92c2530d8ef34a7d11d62846fcdfab03ed52417170c95"
         },
         "attack": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-15/attack.webp",
-          "bytes": 160018,
-          "sha256": "0071a1edf2da0c99ef58632c16b0d67c927388670e16277415a4dc71749f6f3b"
+          "bytes": 162804,
+          "sha256": "f7c422f1b8f42c0e305996684de00d3607169eeeb84c08248a5e1ff154339866"
         },
         "hurt": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-15/hurt.webp",
-          "bytes": 96044,
-          "sha256": "495837000bf1144099ddc0b8288c5b9ce4f49c13a47ca56a6925823abb0c33be"
+          "bytes": 98812,
+          "sha256": "80d5fda5f2b03a95df8e57c7fa44355493f560706fd7108295dd24d1a2f39d28"
         },
         "happy": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-15/happy.webp",
-          "bytes": 151002,
-          "sha256": "df516ebc2c615c3866b75f74cf2be60ce51c90f5bbbebca24076361a688e289b"
+          "bytes": 154180,
+          "sha256": "0496d962415c07994a1b246ac551f7131aa6575b1b752eb001e0360704882d17"
         },
         "celebrate": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-15/celebrate.webp",
-          "bytes": 246900,
-          "sha256": "3da353bba842f181629b218ff0d7d9742b8b63a501ceac83e97f433a30d006bd"
+          "bytes": 250238,
+          "sha256": "e96b0fab340e2b8e33e2511f2f4b9057f65637cbc6b1fb9dfa2fb6ff53c13280"
         }
       }
     },
@@ -3386,43 +3386,43 @@
       "files": {
         "static": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-20/static.webp",
-          "bytes": 27924,
-          "sha256": "71dd8a05c5e396e204c0ea185bb5b3c34e5e819598d9b1376899587b2270a75d"
+          "bytes": 29008,
+          "sha256": "8537159bf48aa854b144b19ab7c7491e2a9fc57d78a676d3845e52095793f991"
         },
         "idle": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-20/idle.webp",
-          "bytes": 107198,
-          "sha256": "7ca2e90380f3dabfb8d5dcc641a1000bf528d9eeedd796251ca1d2768181609f"
+          "bytes": 111842,
+          "sha256": "76ecd6e4583090ec40c71613ff093c7eabf41fa87632eac90535d76569c4b8e9"
         },
         "walk-left": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-20/walk-left.webp",
-          "bytes": 164148,
-          "sha256": "c0112cfa594675eb4bbf224c8436fc84899c5e51fd98ddd300b8a3db44cb9ea7"
+          "bytes": 169884,
+          "sha256": "ac2491e42efcc2a137775abebfe20ac7e52743270b39b716904b99c4696a498b"
         },
         "walk-right": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-20/walk-right.webp",
-          "bytes": 164388,
-          "sha256": "86c611db64855b8f4ae4d61b67183f1c6061e7470de1f70b18baee7b18734530"
+          "bytes": 170848,
+          "sha256": "31f3a354051c7478a6f804d20fe9d88b6d8e34504f25c650ad8df612a660bbc8"
         },
         "attack": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-20/attack.webp",
-          "bytes": 172076,
-          "sha256": "96a8b1490d7154daed8b2393abff9bfd3022fd24922e982360a558c4dce3d88e"
+          "bytes": 176874,
+          "sha256": "b37d74e7df2cec4d747185b4371d95507d92ef31de39e22de398ddd8ca028703"
         },
         "hurt": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-20/hurt.webp",
-          "bytes": 104594,
-          "sha256": "8132a44decf8e4ad7c514e234f71aa7b48b1f83630ecbfa544aa7115f8fd15cf"
+          "bytes": 109154,
+          "sha256": "358d0ed27070be8edfb463ec699df868e1f5d331f7b3924d29010455eb46cb54"
         },
         "happy": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-20/happy.webp",
-          "bytes": 164782,
-          "sha256": "3d9e3a5e2195f3bc68c5579cc46716d7cab13035eca13aa9d80015fc3b912ceb"
+          "bytes": 170724,
+          "sha256": "583041e459a9948fa0af71c754e2b6a16f98811b6bf5c2f91e06a8af79f05ebe"
         },
         "celebrate": {
           "path": "rpg/v5/ranger/ranger-nightfang-level-20/celebrate.webp",
-          "bytes": 256722,
-          "sha256": "6979444a9b47f4f2947ed5aaaf3a79ca312deb558a96290a7219c41e84f72532"
+          "bytes": 261628,
+          "sha256": "520105cc20a588a0e7871975826107752b6dda2ee666b53f93c3e6764a0cb1a2"
         }
       }
     },
@@ -3449,43 +3449,43 @@
       "files": {
         "static": {
           "path": "rpg/v5/ranger/ranger-nightfang-starter/static.webp",
-          "bytes": 18470,
-          "sha256": "60c7b1686cb3d1c3d0829a5e78826f7068242207a03d071dbc854c777bcbd3e3"
+          "bytes": 19676,
+          "sha256": "05b252bdc6fad90413f562df52818d418edcb6f56c39c835b8dc5c906bcc14ce"
         },
         "idle": {
           "path": "rpg/v5/ranger/ranger-nightfang-starter/idle.webp",
-          "bytes": 72894,
-          "sha256": "53b836e84eca2cff80ded18ea86d3e7e8220e350e543f21ab17330d19eca328c"
+          "bytes": 78002,
+          "sha256": "48946b6a73311df5f3cfdb695706c3340f7aa7413561b64980e20aa7e2b92cc9"
         },
         "walk-left": {
           "path": "rpg/v5/ranger/ranger-nightfang-starter/walk-left.webp",
-          "bytes": 110826,
-          "sha256": "91b28fc1a4aecee87d273d90ee525e3aa3e7c3f02007a3bd4e6691728a558d6b"
+          "bytes": 117760,
+          "sha256": "fc91f313ba56eacdd2ed8464446d9e9d05928ef91af25fafba5d5c363709fb24"
         },
         "walk-right": {
           "path": "rpg/v5/ranger/ranger-nightfang-starter/walk-right.webp",
-          "bytes": 111870,
-          "sha256": "b2478a060ac0e5d8a507fd517f31d15fb0b8ebec5fe394631dffb06e7d2c06a4"
+          "bytes": 118046,
+          "sha256": "faf9c46fe3818f7608b6789d2a39b7c627ae2902d7e1ab01194908851e0ec847"
         },
         "attack": {
           "path": "rpg/v5/ranger/ranger-nightfang-starter/attack.webp",
-          "bytes": 132036,
-          "sha256": "7f0ef48e56c695e7f4300c23d1f6647061d6d6abc67db6af56da873324d0a164"
+          "bytes": 138380,
+          "sha256": "58f60869987e2cd52039d43472b9061b638e036c88583dd3c82b224f8ca38e79"
         },
         "hurt": {
           "path": "rpg/v5/ranger/ranger-nightfang-starter/hurt.webp",
-          "bytes": 71746,
-          "sha256": "2fc2ba6bb209b11c2b9d63bbadc91bb92e69d6acab4f971db2e4734ff1c84c1b"
+          "bytes": 76890,
+          "sha256": "43e1d4300c5fe798ec98bfb48b3079b536ec532ac06c16db0929bcfb7ae29482"
         },
         "happy": {
           "path": "rpg/v5/ranger/ranger-nightfang-starter/happy.webp",
-          "bytes": 114786,
-          "sha256": "ad918cf9b9aaaf053b10bae113a97c77837e54b3ac6c4bca31bedb19fa319a8f"
+          "bytes": 121534,
+          "sha256": "63af0ac2119a6f33c9953102ade142388bac54340b51112a5514d2e4880938ed"
         },
         "celebrate": {
           "path": "rpg/v5/ranger/ranger-nightfang-starter/celebrate.webp",
-          "bytes": 203476,
-          "sha256": "1a3a9f91eb4f3d9c336e59e30c6aab3fac5095f76e5901373d7b569f6343b244"
+          "bytes": 210288,
+          "sha256": "38e02f80b0d2bb6e201fb3733cda185a8222dcc35ba7abe41fc2a83ceddfac51"
         }
       }
     },
@@ -3512,43 +3512,43 @@
       "files": {
         "static": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-05/static.webp",
-          "bytes": 23590,
-          "sha256": "9dc5b41eeb542a6e192efe9a0c97a4b860cf99c8c13e3231318de9a05dc3102e"
+          "bytes": 25286,
+          "sha256": "76757970be71eab570dc3ba1844ca562c8b2037b6dbb49c68a121f3406337d39"
         },
         "idle": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-05/idle.webp",
-          "bytes": 93204,
-          "sha256": "508727150ff9dfc892bb31e5783d68d128694cbde1a800e27453c49b21e3dd2e"
+          "bytes": 98716,
+          "sha256": "5ad81426c2fcd5c5395b60f5634cde0a11389ee005b7ed05bf0d63ada8857912"
         },
         "walk-left": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-05/walk-left.webp",
-          "bytes": 140070,
-          "sha256": "eda278cfee1d74d9f774169d5f41fe3a5ada9257783e93aaa3e9a26b137328dd"
+          "bytes": 149660,
+          "sha256": "3fea9c2e3107b0bb2ae6af34f63611061d6d6f773d6895178d912e4b340795df"
         },
         "walk-right": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-05/walk-right.webp",
-          "bytes": 141410,
-          "sha256": "eb049906e604e9d9e147841e10d9513765459f7f93c4921e1ca2bd6de7b754a6"
+          "bytes": 150410,
+          "sha256": "c7ef465833abeb4afbdf018adc7473977c55c10177c6b8670e3cef4f04a94b74"
         },
         "attack": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-05/attack.webp",
-          "bytes": 156018,
-          "sha256": "104e2b774ac9c7139d16fdf0c38c9c130ade8860fbff42747d9f09aed408de89"
+          "bytes": 164160,
+          "sha256": "41f08272ebb62a00257b7d85bebff7264e2de0f97ebbef5be6d042ed5f41aabf"
         },
         "hurt": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-05/hurt.webp",
-          "bytes": 90568,
-          "sha256": "c5a8818d972334e88b521dfcd6fa52ab67c00181caeb9993094944b012e77734"
+          "bytes": 96784,
+          "sha256": "ae988d70a2eca9dc189e925e3c0ee7111f18f0dfb6b18398a1676fcceee51465"
         },
         "happy": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-05/happy.webp",
-          "bytes": 143062,
-          "sha256": "032394b928be751d7dabd4c62252e7cf4e8b7aa3c72b11a64433793eabb4b7b3"
+          "bytes": 151998,
+          "sha256": "3d81cff6dc7cb040ea9ef56b517e71ce950ba709005e8a8dd6e18ffa15ed6cfb"
         },
         "celebrate": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-05/celebrate.webp",
-          "bytes": 231830,
-          "sha256": "d60cced49b0991499249f1730a43d47ebf24602c35a9d48b9be77c311942a34a"
+          "bytes": 241144,
+          "sha256": "942d6d049efac27dbaea7fa950ce87d62ccbe4c3ab2666a17e0fdb93626cb7bd"
         }
       }
     },
@@ -3575,43 +3575,43 @@
       "files": {
         "static": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-10/static.webp",
-          "bytes": 24646,
-          "sha256": "da35aa8a75464028794bd03786ee590f9f91880347dbe976beb1f72f17603268"
+          "bytes": 25900,
+          "sha256": "c8d51e3eb391977e7a8eac7f3bbb27386a0259d09357238f8a6764a86dd7862f"
         },
         "idle": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-10/idle.webp",
-          "bytes": 97548,
-          "sha256": "16573e5efb512f432d5ec79f82e0b5d738d24739b86bcad08406cba92f0c28ca"
+          "bytes": 102474,
+          "sha256": "8e4f509286fec12c222969ab21629a4e2e05e9027adb8255afb0d28657c923dc"
         },
         "walk-left": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-10/walk-left.webp",
-          "bytes": 149172,
-          "sha256": "bedac222af278d9f9e5afa650bc98afd1e1105c01ef14bef8f0214849eea1b7f"
+          "bytes": 156012,
+          "sha256": "a0c840417f88f238f718fd3406daefd80d403b478fc837600cc34c3398cdce5a"
         },
         "walk-right": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-10/walk-right.webp",
-          "bytes": 149750,
-          "sha256": "84ae684d0ad69538626cc173473482346f89c5a41ea0392b7d04ad763020f158"
+          "bytes": 156330,
+          "sha256": "9fde6a9ac9e84a6eefabd01b204f0597d321d8c36771563764b252cf7637ce15"
         },
         "attack": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-10/attack.webp",
-          "bytes": 161618,
-          "sha256": "5373a448ff85bbd275e5a2df286b4d3d534e08b1fb48bf107dca031ff3e13543"
+          "bytes": 167150,
+          "sha256": "4cdb6b62454641990ed02e1f7bc3787c56ef40de3d8261c2e94dce1c18103f1a"
         },
         "hurt": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-10/hurt.webp",
-          "bytes": 95620,
-          "sha256": "38e033b7b109236f26ffa5c4d2f3b3a2e4152810905c9e78e061c3c53b6fb231"
+          "bytes": 100292,
+          "sha256": "f263e0bf0da474ceeb871f44ae5e3479b9d9d68b248c7d085b0e0b6110ed6e83"
         },
         "happy": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-10/happy.webp",
-          "bytes": 150238,
-          "sha256": "3da35554842243ce94a7363bc8e5980f91d6ec5e3230263da74bc1144c2acb10"
+          "bytes": 157618,
+          "sha256": "43ecbff388ca8d69a317c05d2f1681d0935cabaf6bcc713fbad5a4341835ee0b"
         },
         "celebrate": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-10/celebrate.webp",
-          "bytes": 240224,
-          "sha256": "66ccffff510c8883346ad85a5ebd29c3d6a906c46accbc309c7add466f4ef1c9"
+          "bytes": 246318,
+          "sha256": "a0940092444730af357bf8c384ac4c6f2843c917c4b73378750fa4b519650c63"
         }
       }
     },
@@ -3638,43 +3638,43 @@
       "files": {
         "static": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-15/static.webp",
-          "bytes": 26808,
-          "sha256": "2cbfc19061da1b03cd61535e8b60dc85586e7e68e2995ff09ad0621891f9ced2"
+          "bytes": 28364,
+          "sha256": "e83b0068002bd2117d5928d6269c337c65c3ddf6b84c4ebf0545e7836d51e181"
         },
         "idle": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-15/idle.webp",
-          "bytes": 106028,
-          "sha256": "d781828de8714215834edee79a127bc37def6411bb2d379cfc10fbd9f7bf2de8"
+          "bytes": 110682,
+          "sha256": "c0606a32665f482550a19eeddf313964fcb37c66baf0e057226a02fd678e0482"
         },
         "walk-left": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-15/walk-left.webp",
-          "bytes": 160860,
-          "sha256": "c37a10eeaf6e892715c17c605c03ce6c384d474195e6abdda4f9fa2598266bda"
+          "bytes": 169458,
+          "sha256": "eb37c5cb9783705291b89443bfe38b88a3f4384aedaeab145c1c5081070671d7"
         },
         "walk-right": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-15/walk-right.webp",
-          "bytes": 162424,
-          "sha256": "c62e2a4c83dbd6d255b21562029b4a33fe8bd6403af530ab81719a1fd1e57783"
+          "bytes": 170640,
+          "sha256": "b5b957e9fd3dfa5f124389dbb1ac88f65477fc8e3843a84ce04880bd5817e2a7"
         },
         "attack": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-15/attack.webp",
-          "bytes": 171122,
-          "sha256": "1e8c3d33d8bf6f78b43dfd7cb50a1415de937033b76d8dfea7544ac61194f498"
+          "bytes": 176988,
+          "sha256": "3201fd56d05a5b1cadbd243eaca9c97d4d129b1efc2d2bbcbcb16ff2eb25658a"
         },
         "hurt": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-15/hurt.webp",
-          "bytes": 103760,
-          "sha256": "edfb749cec50ea56f03042587cc02296c4031df89b006d00ac40a890991c2971"
+          "bytes": 108374,
+          "sha256": "cb64b79bbbcb17d704dec0b2d8f1f695bcabcfcabee654837490196d9feaa499"
         },
         "happy": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-15/happy.webp",
-          "bytes": 163086,
-          "sha256": "abe97634d36dea67d5a456964ca418ebc9197a4b8a1959400c6c115913e52aaa"
+          "bytes": 170432,
+          "sha256": "c31352d273bc43cff0e03b0f0662b2e1784e685884250a7eaf0e5f0b6abb363c"
         },
         "celebrate": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-15/celebrate.webp",
-          "bytes": 257220,
-          "sha256": "332a60912e633e122030ce38a931bcfbb731123671d67262951bb4415a37af37"
+          "bytes": 265012,
+          "sha256": "ceb9ad2da4c8aeac8c29ae3270c3e3a87e6f6bf531160b81e3d75458fa0140ae"
         }
       }
     },
@@ -3701,43 +3701,43 @@
       "files": {
         "static": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-20/static.webp",
-          "bytes": 30004,
-          "sha256": "d49d9e1cd279298d65ef07f6133457dcd03de45098e7370cee4cbaa2debd9981"
+          "bytes": 32490,
+          "sha256": "797eadacf7c123d3c081999cd3897f4f442be0277f979b9655f95a7a9a3f56f7"
         },
         "idle": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-20/idle.webp",
-          "bytes": 117170,
-          "sha256": "e4d58edc225661d7828d5e507e7be1df641529d823cfedc71060a2026bbd18b2"
+          "bytes": 126032,
+          "sha256": "ee0f3cd48f1ea4421b696011b7e2f35ed32d44825090830f2880ceef972b3f67"
         },
         "walk-left": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-20/walk-left.webp",
-          "bytes": 178582,
-          "sha256": "8655c86d54caad3bc95dfe5c00e25ab4e9ffd172119c6bed349d08ca7708b7f7"
+          "bytes": 190834,
+          "sha256": "a30b57fcfd6237d51a46723f62eea5880a265b4272b24cde223790c23dfd29b5"
         },
         "walk-right": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-20/walk-right.webp",
-          "bytes": 179836,
-          "sha256": "fc1553436e39132f4e62f4e7c8e37431f16d9b86dd59b4751989120e8cba91e1"
+          "bytes": 192844,
+          "sha256": "2fd1dc50cae896a7bada3bbaf3ccb85af89bdeb3a9d17d3f91695775c0d45f3a"
         },
         "attack": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-20/attack.webp",
-          "bytes": 182334,
-          "sha256": "399d864fb4af4f670c32fcedd78f836b675427b93de998048879bc94e086feb4"
+          "bytes": 193046,
+          "sha256": "eefa2944f631daeebc6f63f5d51eeba0eada46984dd7fa56dfc35e50c3069a81"
         },
         "hurt": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-20/hurt.webp",
-          "bytes": 113852,
-          "sha256": "a9ed04ea62d5cb16f92461e9cc999ccd7930198fe6617f933021c7d8511f30e7"
+          "bytes": 122286,
+          "sha256": "fa819eb3fffabbe09e3b52f080e177507b59965205fe69fba565fd6babce8393"
         },
         "happy": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-20/happy.webp",
-          "bytes": 179786,
-          "sha256": "efcad0ea667ced6860b59b07dbf46c7827280e8c4a0addf0605d4fbc46df911c"
+          "bytes": 191840,
+          "sha256": "889713eaeb27936e3a1375e1d14a80182d3bfc187f1f2f5cffbc268c456592f2"
         },
         "celebrate": {
           "path": "rpg/v5/ranger/ranger-sunleaf-level-20/celebrate.webp",
-          "bytes": 278030,
-          "sha256": "2b2e3530a99676c9751aaeef81006131da313cfe4785aa41c6b31799ff544905"
+          "bytes": 290410,
+          "sha256": "6b1c8d0deb5309a024f828759586c9a5961166e98c1a66233b172a3f3474ea9f"
         }
       }
     },
@@ -3764,43 +3764,43 @@
       "files": {
         "static": {
           "path": "rpg/v5/ranger/ranger-sunleaf-starter/static.webp",
-          "bytes": 20858,
-          "sha256": "ff808359e37d99e53c7316fc0b3623670b3826623651758e57228952f7114065"
+          "bytes": 21988,
+          "sha256": "2099a96a06943da24eac89abe57278ddf5e645efeace1c540224bd537d7edd55"
         },
         "idle": {
           "path": "rpg/v5/ranger/ranger-sunleaf-starter/idle.webp",
-          "bytes": 82630,
-          "sha256": "64a461c9359656d039cfbd9e48d275d8eea6cdcf064c17f63e53617f10e857a6"
+          "bytes": 87916,
+          "sha256": "406ab9d7ac7d35c9e6dc945cca2a4006fd5e478c12f05540d95aa291ec9a9094"
         },
         "walk-left": {
           "path": "rpg/v5/ranger/ranger-sunleaf-starter/walk-left.webp",
-          "bytes": 126002,
-          "sha256": "2881c853c5ffa36a8d9b7a3e1d6cc8a671e1c3f08fbff866d98ec76fd8db027a"
+          "bytes": 132504,
+          "sha256": "17fdbcd9fbcb50fab0f3c5030ee5a1dacdba07922188ac7b8474d148bfa52fe7"
         },
         "walk-right": {
           "path": "rpg/v5/ranger/ranger-sunleaf-starter/walk-right.webp",
-          "bytes": 125612,
-          "sha256": "e93ee3be045c7129923f4fa0cf162e042e4fad2e35d4fe0a624bf3dc2eeab6a6"
+          "bytes": 132414,
+          "sha256": "655ecbb9c998672bf646e2b8132abc8a564074f894c50ea3f211d3fdc8241113"
         },
         "attack": {
           "path": "rpg/v5/ranger/ranger-sunleaf-starter/attack.webp",
-          "bytes": 141572,
-          "sha256": "593bf1b65c71c2977cc9148ffa1f5b6ae95fcd3f47c0c99d92cd577357000e88"
+          "bytes": 147248,
+          "sha256": "f1dd1b8b435a2ed79fff53272e84f0671b68d93e4586adb1ffe9de47112f09d4"
         },
         "hurt": {
           "path": "rpg/v5/ranger/ranger-sunleaf-starter/hurt.webp",
-          "bytes": 81090,
-          "sha256": "4d9e2f77290ed3138fc68c507edc5db7f6db996442f403675d8f3fda09fd7b02"
+          "bytes": 86106,
+          "sha256": "1118ae2017982f550dcce5acbbb9c3d9886e762f55e7a1362940932bdf6425a6"
         },
         "happy": {
           "path": "rpg/v5/ranger/ranger-sunleaf-starter/happy.webp",
-          "bytes": 129330,
-          "sha256": "61136c8cb2193987a9ab41622bb9578b1e15cc549348193b2a64dee6680d2a05"
+          "bytes": 135764,
+          "sha256": "68e9bf81f24309286f456cbf8b8490b587b9e4da5b816020c163017fdca53ff0"
         },
         "celebrate": {
           "path": "rpg/v5/ranger/ranger-sunleaf-starter/celebrate.webp",
-          "bytes": 218424,
-          "sha256": "9d2dae7cc96d7ab83fe353a5f90ebe4c3f28ec82cec9e752ad3223aa9ec5634b"
+          "bytes": 224828,
+          "sha256": "d77972623daae9d0a70eca05bc0e6aeaef5603a600e6fc19e4ba71d7a25f6cd5"
         }
       }
     },
@@ -3832,38 +3832,38 @@
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-05/idle.webp",
-          "bytes": 75600,
-          "sha256": "0afdf4caf56797e5ed366bf0b4c6c2a732e7ce8916df17c8323ae85fad090ef1"
+          "bytes": 75442,
+          "sha256": "aa21ee63990071917bb6d5a989c8a42d79131ef32490ced009d2db6e41968802"
         },
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-05/walk-left.webp",
-          "bytes": 114398,
-          "sha256": "a481d97b6bd0fb26ec049de7ca033a9b07a9ac2f8219cb98805a7ef026782364"
+          "bytes": 114298,
+          "sha256": "97817806f7f4d4d7e8c8d835c53e7de14668fe9438d5426b252c5e3dc39f52d8"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-05/walk-right.webp",
-          "bytes": 114772,
-          "sha256": "05c3d20df3bffbcb456429af5fa721f37710056860f878a7b03295368768b4a0"
+          "bytes": 115114,
+          "sha256": "9b12ff712c83a8246abef493084796e9765bed061f874b74484fb47be930be9a"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-05/attack.webp",
-          "bytes": 132438,
-          "sha256": "bdf14164508804dbbf5f278aae71608f28bb30ebc3837b28352b8b18bfba0901"
+          "bytes": 131998,
+          "sha256": "ffaad23427f8c75f31742aeaf0eba6784e87b3880dd6c1ebb8cc3120db8a018d"
         },
         "hurt": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-05/hurt.webp",
-          "bytes": 74942,
-          "sha256": "808d3eaee743835ab45c2355fb06134432070cfdc4f423aaa66b7248bfe10319"
+          "bytes": 75114,
+          "sha256": "0b0f1d6be96fc62fe83083fab6c29bee4148aa2b0ec18ef68f2e49a1b15ae42d"
         },
         "happy": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-05/happy.webp",
-          "bytes": 120410,
-          "sha256": "17cbcf6f99e8cbdeb7d15d4838f4a02b78c07a593d72c1d91b58f47fd85501ba"
+          "bytes": 120208,
+          "sha256": "36d7440f95a7c6279ebc31af440d1471cae533c8d1c78f0219b0e37103aab9aa"
         },
         "celebrate": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-05/celebrate.webp",
-          "bytes": 214684,
-          "sha256": "e4a144bcf9dfe50720b457661d3cd294f50b8ec61fe1b9dc8455096ab8afad90"
+          "bytes": 213304,
+          "sha256": "a71d8f9bf54ec217217160c3cadcd81c36c594dbfcbce1e1f4c70e7e282de467"
         }
       }
     },
@@ -3895,38 +3895,38 @@
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-10/idle.webp",
-          "bytes": 100698,
-          "sha256": "9709bb01c50d48dd442d3ddff80665a72f513f91d6dc9c5971dae1a4b92e42a3"
+          "bytes": 100804,
+          "sha256": "3a96490502000dba70581db807b759fd743c1de0062bd5532f5512960897e069"
         },
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-10/walk-left.webp",
-          "bytes": 154082,
-          "sha256": "b2cf7a18c26fcbc824739dbcf25044ba547ef90a7996284ecf543a08f3912d00"
+          "bytes": 153452,
+          "sha256": "6c8387879f03805b23496c9365e33937f6ca34a5056ae766598f537f496df2ca"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-10/walk-right.webp",
-          "bytes": 153788,
-          "sha256": "e36e0e0c6892dd218282472f761d14e75bf4db6cd82a278cecaa1036f4b41f5d"
+          "bytes": 152878,
+          "sha256": "eb9fc13f92360b9b977c109f230ae658b1ac9a025c92a4604fb19338d99e7f4b"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-10/attack.webp",
-          "bytes": 159436,
-          "sha256": "8eab69a739d966c9dc14e35aab7f2c52acee3ad2a1f25dc0a0655a9d33cc60ca"
+          "bytes": 159116,
+          "sha256": "de5302ae83720e4004d54cefc9da9d7761d8179a61ee0fba54853c9a6f4cb984"
         },
         "hurt": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-10/hurt.webp",
-          "bytes": 97830,
-          "sha256": "caec73d2b45c6c2d02d5e1265191167d0f6e0e11f37c593bbb94336c05b8dfb9"
+          "bytes": 97332,
+          "sha256": "41599316ac44c3f1b3873a2624fb4ff56ccb253cdb499ee78a22f15aefcbd2b1"
         },
         "happy": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-10/happy.webp",
-          "bytes": 155764,
-          "sha256": "9a64c14fd3e9158e3fa1dc3562a413c884df13bcbe7ae3da5d79bf46bc7f82a1"
+          "bytes": 155990,
+          "sha256": "4f454ca286d678d04786d394b8aee8fc9d1fbdc6b506b7604333a8621887d294"
         },
         "celebrate": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-10/celebrate.webp",
-          "bytes": 247754,
-          "sha256": "6f87082277a358eb5353af6f43405de40f1819a190b25ac1328044caf6758f0c"
+          "bytes": 245508,
+          "sha256": "ca8c1a26721c684bf0191718097406fe7f5fb42afea3dc7eea2eb030a96cc8c7"
         }
       }
     },
@@ -3958,38 +3958,38 @@
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-15/idle.webp",
-          "bytes": 109788,
-          "sha256": "a3a10b8562ca08352293ba2b41a119bc1f4501cec40061c6f7a5d7ecd1309027"
+          "bytes": 109424,
+          "sha256": "3ab92d41ca8f3ace27f346545bcf607197aad8d7e6e71a776f48a439fb01ddce"
         },
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-15/walk-left.webp",
-          "bytes": 166812,
-          "sha256": "0787cf719dba9472e3402fb82e12441a87095e820de19d49443fdf4fa7c4519b"
+          "bytes": 167022,
+          "sha256": "880840dfd42e7c5b0f2a837860396eab362aa46ac36e2436151e645ccd5d2948"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-15/walk-right.webp",
-          "bytes": 166798,
-          "sha256": "b82b1f778ec419e9af85b3d48c92062133754aa81d1e5566bfd779b995a3051b"
+          "bytes": 166884,
+          "sha256": "02be00b2bb999bb3de26f657be5a77daa44dbee1fcf1003f89035387cc212637"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-15/attack.webp",
-          "bytes": 170438,
-          "sha256": "d0627d08e4fc41be36567ae26459bfead661b2fde9c210bea245681920c14d26"
+          "bytes": 170682,
+          "sha256": "7f0ae8d375fd0bc349514321e8c95256aa91db5dfb129496107142926e963899"
         },
         "hurt": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-15/hurt.webp",
-          "bytes": 106728,
-          "sha256": "c123329e11646e092ff22eab86e3ba20a6749a701ca340eb7233f8021737bd2a"
+          "bytes": 106658,
+          "sha256": "df51b3c2f7d71503099a759bec87be9be31a9963c2eff810523198128ab6922f"
         },
         "happy": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-15/happy.webp",
-          "bytes": 168496,
-          "sha256": "d68545249e482de09b30fd36a86b2c833e780b8b90a4f0b6718cb1fae4700aa3"
+          "bytes": 167780,
+          "sha256": "82c8c02528b7793f9fc9c156474e0fd20a2d4d89584a75ac0b3f4f9678470723"
         },
         "celebrate": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-15/celebrate.webp",
-          "bytes": 266596,
-          "sha256": "4710f9d357f955716025aa42ac2071d49f3ba7da2cb2810bc92d129e1f271183"
+          "bytes": 264508,
+          "sha256": "f99ae1e6442675126e2f06785f6448c559b5775c13aedc7536f256f8b310491d"
         }
       }
     },
@@ -4021,38 +4021,38 @@
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-20/idle.webp",
-          "bytes": 106568,
-          "sha256": "34ae8ea6065dafabff86b69e2775822abf84b28c9e4a4a392ed15df84bb2aa43"
+          "bytes": 107412,
+          "sha256": "893668c6be0867dde3a95f3dabf4de730f32a2812febcd4df53b575bc859378c"
         },
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-20/walk-left.webp",
-          "bytes": 163336,
-          "sha256": "3f73f3aabe321a30ea5f0e258e6eecf1339b90d09b0c4135ff70305130eba8dc"
+          "bytes": 162876,
+          "sha256": "57da7e30f72c966f4b6f08c57609cf95211b8a236b38d8f8fc2629873ea99a74"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-20/walk-right.webp",
-          "bytes": 163636,
-          "sha256": "4b896881a520785f25de05c3fb894eedf66aafdd58b9fe209eb1f9365d73816a"
+          "bytes": 162762,
+          "sha256": "84a5a5dfa7453d2126fb681e8f5d8320bdadca39686b0ad71cb32c3ac7c648d2"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-20/attack.webp",
-          "bytes": 171078,
-          "sha256": "7f965d6afc227eb1639e87792aac51a2f02eee63874f3ef5702f33f7ad7fcf56"
+          "bytes": 170456,
+          "sha256": "49232541f4d6447a810af50f011642cd95069e75359c0262ecc28de64a3de086"
         },
         "hurt": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-20/hurt.webp",
-          "bytes": 103906,
-          "sha256": "dc8c3129ed5a083cfd4d6f844ec43bae048e5bbb64717ed7392ff95bee29e029"
+          "bytes": 103964,
+          "sha256": "e5eb1ea7e2dd5cb2060cbb7038f2c77a453c3cb3ce9d75c51f6220dd7adb4773"
         },
         "happy": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-20/happy.webp",
-          "bytes": 165428,
-          "sha256": "e38b8d6bed8c9165b92c0df7d97cf15e6ac1ac7391d835ef165d3f5e818aedda"
+          "bytes": 165038,
+          "sha256": "2319ea07a0319a4f18c489604b80715631323401e36c9c7577af6b80862f0dd4"
         },
         "celebrate": {
           "path": "rpg/v5/warrior/warrior-dawnscale-level-20/celebrate.webp",
-          "bytes": 266436,
-          "sha256": "5e85f764167e49795e1512bbb36d054703ec743b8199830f511ad1f03dfdc71a"
+          "bytes": 264958,
+          "sha256": "6a4d516db068ab924b3352e7ffe214808989c1ecf43d445a635ab7dd187f57c2"
         }
       }
     },
@@ -4084,38 +4084,38 @@
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-dawnscale-starter/idle.webp",
-          "bytes": 73072,
-          "sha256": "01c98a3b154d6e7fc43ca73dd00784ae9a0d8bf1e3ac094faf6832ed5ac018dd"
+          "bytes": 73090,
+          "sha256": "340bc4888991818545316fcad137a57ec75f255bdedf6056e5cbe449aec1aaae"
         },
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-dawnscale-starter/walk-left.webp",
-          "bytes": 111090,
-          "sha256": "e94c6961d33b09237db032aeb07cb7379aaf77d8154459fad453faf746adb07a"
+          "bytes": 111206,
+          "sha256": "66da7b38ddbde74aa2f4b10113d2902e25cd9c9dccdd9f35beca263c1139d047"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-dawnscale-starter/walk-right.webp",
-          "bytes": 111626,
-          "sha256": "409a4ef8425e2f1b1b1ea7768ca290b481bd97a06fdd8a77eab5eef9268c29ce"
+          "bytes": 111996,
+          "sha256": "9362ab3e7fcab2296b8570919f7f5cd919ee46df4438729db22ad5b2c2d86fdb"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-dawnscale-starter/attack.webp",
-          "bytes": 132860,
-          "sha256": "d9e6e50e3ee034fa55a89f862c328450ae578bd22325288ac6848d6c6f14323f"
+          "bytes": 131816,
+          "sha256": "6ee88f1a190565e7ea1c88eeba34e8a46d4da63ab282990385a4eaa2a1ed47e4"
         },
         "hurt": {
           "path": "rpg/v5/warrior/warrior-dawnscale-starter/hurt.webp",
-          "bytes": 73252,
-          "sha256": "0ae7a45e3cd97900ba4c264d12e4a2328619936b94fa21e2f983c7ac6c915b55"
+          "bytes": 73290,
+          "sha256": "e877d056613677b6f39b16a9c31ec3ce9aa6ef40dd3cbf647dc128b70cc13085"
         },
         "happy": {
           "path": "rpg/v5/warrior/warrior-dawnscale-starter/happy.webp",
-          "bytes": 115366,
-          "sha256": "162daaef525449f594e11b42f3588ce00453ccf19d783d111d07cd2771f9e691"
+          "bytes": 114846,
+          "sha256": "9575df290818ffd089f969484a1bcac27bfc317bd4aeb753bb8b54c3a8fa7449"
         },
         "celebrate": {
           "path": "rpg/v5/warrior/warrior-dawnscale-starter/celebrate.webp",
-          "bytes": 208038,
-          "sha256": "f0260b0ed55234eb690667dcd661df87e51d699045152ec224a884bb0a5cda18"
+          "bytes": 206884,
+          "sha256": "f8f8b04eeb47afe4017ad0a48aee87f2dd76e60ec5170fc2312ae628ac35a81d"
         }
       }
     },
@@ -4147,38 +4147,38 @@
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-05/idle.webp",
-          "bytes": 74482,
-          "sha256": "e14723b6c288de8fd7b2475d1e5239309fa703be8654210606df151cb3760c74"
+          "bytes": 74684,
+          "sha256": "c1625c4d6777760218fb24c83637dc61c79012d384e5a3fa296c1480ae416060"
         },
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-05/walk-left.webp",
-          "bytes": 115934,
-          "sha256": "47a5e55e2edb55e3150df9aa5b75f8d42942048c9f48eb2bb9beb57e1e0bd92c"
+          "bytes": 115900,
+          "sha256": "fb3befb8777af9df678bf11b05651773bbd7c7d388d074e1122cfa80f54cbe6f"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-05/walk-right.webp",
-          "bytes": 116168,
-          "sha256": "a1c32e4b1207f8da891823819bdabec5e40b4c76e72906a907da8f9cf0eeb4d5"
+          "bytes": 116154,
+          "sha256": "fc04f9c577c960e5175d56796b01fdd589d113d97630c7ff51cf0c2a80d1c574"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-05/attack.webp",
-          "bytes": 133628,
-          "sha256": "33dd8a1a554022de7b6d828cc5d5c5040d31fc012fc9a738960dc1b097447d4a"
+          "bytes": 133268,
+          "sha256": "07d4b9208b9da6e31ff6ef3d0e240934945c090d4cce7a16d69473e97651b7b9"
         },
         "hurt": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-05/hurt.webp",
-          "bytes": 71828,
-          "sha256": "354910b2785b3e007178476551025eb9f3f09cee6292e2d8fd47ce10431b1ac3"
+          "bytes": 71916,
+          "sha256": "485752547a19590f813457f90a08fc356cfe2519fc6b574575d32da40f0eade3"
         },
         "happy": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-05/happy.webp",
-          "bytes": 119992,
-          "sha256": "e171de76d09d3d313e537dca4d7fd89a3c6c1acc178dd669e07395c32469929e"
+          "bytes": 119530,
+          "sha256": "d94dce193034d0d5b8ae52802b0efdf5b982b9fd71a2092c114d61c4c823bca6"
         },
         "celebrate": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-05/celebrate.webp",
-          "bytes": 217098,
-          "sha256": "68dcc2f1fdd67c07b4c1dee4fd846dfec31f095d1ac7927fa8fc61fc835e68a8"
+          "bytes": 217706,
+          "sha256": "f3dc60c45c3965643aac2724c567b46cbd6c3626f0f6f4db516c0d308461fa1d"
         }
       }
     },
@@ -4210,38 +4210,38 @@
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-10/idle.webp",
-          "bytes": 76244,
-          "sha256": "87193d7c4afdb12a42f233ff2e6a775efc215d4da9f72714599306053245b08d"
+          "bytes": 76478,
+          "sha256": "6c7536cccc76c38e70f9cf30e02ac4bc619d900dce0312db2afce5c4dc5353b6"
         },
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-10/walk-left.webp",
-          "bytes": 116454,
-          "sha256": "7fddbf7b593ab815b28773add60cbb4b8f418028772402fe9dbf51fd9b93760c"
+          "bytes": 115940,
+          "sha256": "b2ee7592afc3235d74858d0ebd263cc217f568b38880edd1ea6a66127dac26c4"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-10/walk-right.webp",
-          "bytes": 117260,
-          "sha256": "a251fcf0eb120cf906d23b93e8f740664a01cb93c9404745ddf44f219dfef519"
+          "bytes": 116236,
+          "sha256": "29555e3ecf8c77a7dd3d8357e0b4e26f14c083192c7922ff6ad422260aa81417"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-10/attack.webp",
-          "bytes": 134620,
-          "sha256": "0242170e4516c58f224fff30f503c2e98d59be3d9459911497488b2d73766aa6"
+          "bytes": 133938,
+          "sha256": "a5e1e7687039c72fbfb1adbb9d66050839b67c75508faa4d634a4be6850008d3"
         },
         "hurt": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-10/hurt.webp",
-          "bytes": 77246,
-          "sha256": "3d9764696df458319372cb453e97e419bb4dac2c20f4e9cbc292800797c136aa"
+          "bytes": 76682,
+          "sha256": "c55f22db8b141563690a6ac9f2e03e5b9584c689a59c03fa48bc9d9a3062d768"
         },
         "happy": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-10/happy.webp",
-          "bytes": 121602,
-          "sha256": "cbfafb9490568050c09680ba117bdc2291fae3b746105cc4c12ec4c079a2bd54"
+          "bytes": 121574,
+          "sha256": "4b17306e77392e22bfe50f741c3b68c60f1ba4f155aef2a26a13d5a12f5245b3"
         },
         "celebrate": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-10/celebrate.webp",
-          "bytes": 213844,
-          "sha256": "6d53a6601cb49cec96036409bc46596ef4230795f54a0c40907f5036441dab3c"
+          "bytes": 213600,
+          "sha256": "ccfe75a9bcf8fd4727a10abbe47ed3755c1afb3014e41c5097d35114ea77e835"
         }
       }
     },
@@ -4273,38 +4273,38 @@
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-15/idle.webp",
-          "bytes": 87426,
-          "sha256": "a204f1ce1e1c350b9539ffca26297095d8bc002d5c99bc08617627448e87e834"
+          "bytes": 87552,
+          "sha256": "43c2448c8e4ef5e0ee9fca3309062749726967735cf4ec7202acdf213b417d12"
         },
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-15/walk-left.webp",
-          "bytes": 135214,
-          "sha256": "3085df93a80e5e97244ef2fc9a9510f2108a85299dcb2bb22603a8ec477a8756"
+          "bytes": 134184,
+          "sha256": "395076f0c9a72cee6dcd009fe41e555a9bc63e01f782f5919635220d0e99b3ac"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-15/walk-right.webp",
-          "bytes": 133550,
-          "sha256": "8f65b1973db7462492726a1a3e1dfaa6dd8060d15925095c802031e4ad7c7549"
+          "bytes": 132800,
+          "sha256": "aece5e615fe598a34b4cad3a6026271c9b0ca94c4ffc469a03eb91960c384f59"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-15/attack.webp",
-          "bytes": 148978,
-          "sha256": "0f9a9841854c7467f99770055406d7fd925f931fab17c33384cef7e286c227b5"
+          "bytes": 148146,
+          "sha256": "c7870ddc23e7d6f60933968462d437194c875894b0ee9a8e034b276caa88e2f1"
         },
         "hurt": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-15/hurt.webp",
-          "bytes": 88316,
-          "sha256": "5286a55a993f14e360538cc8c3c0b8dd50d5852cc8b2e6a1d9fa4a896ac774bd"
+          "bytes": 87758,
+          "sha256": "94daa7f9a86c3f9d3fa4a31cbb468ee645f1b297fd36121f66054b2292482405"
         },
         "happy": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-15/happy.webp",
-          "bytes": 137114,
-          "sha256": "08f7430327f1b318583647af67babcfd74dd0a2bb9445ef5c31647f0d2c4fabb"
+          "bytes": 136336,
+          "sha256": "ab3d8bd26e9bb5a36350a154d2e369de7be4746cdc87ce1f040fa6cda5bb8066"
         },
         "celebrate": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-15/celebrate.webp",
-          "bytes": 226600,
-          "sha256": "29231bee4f52bbce2cbf036696142ea86b9eb57718015eef71078a54eb017784"
+          "bytes": 223760,
+          "sha256": "80c6002d37ef71531af74e145503c531b805ecab01f52ab2a36b69201967a562"
         }
       }
     },
@@ -4336,38 +4336,38 @@
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-20/idle.webp",
-          "bytes": 85294,
-          "sha256": "4700bce5b6d18a7ebaecb680361704b6c20a949d455135e5089d2e0999c00d8d"
+          "bytes": 85450,
+          "sha256": "b58e712cd9f1bec927ff8db0a1b74c9cba3ac993e4e6c50962d023a143c7ae18"
         },
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-20/walk-left.webp",
-          "bytes": 130198,
-          "sha256": "b672ea7718fc8fb72413324f6fa338dfaa768aabee858647d656d3abcefe6166"
+          "bytes": 129682,
+          "sha256": "f55c491b80ace9ab10cd1b205f9dc78f084a771a461b1cf7f8299fb37eac8c56"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-20/walk-right.webp",
-          "bytes": 130482,
-          "sha256": "8997ea8a16139a17c12741f6467f20799ad70bf90752267aee880380799bda5e"
+          "bytes": 130028,
+          "sha256": "047bb3b2c109bc0c15cb8481ecff3ca6dd7f3294ea29db296953c93769db6673"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-20/attack.webp",
-          "bytes": 146226,
-          "sha256": "086e541512280cc0a7fbf105a2337346b1d7460aa75838360416e2bcc9c4704c"
+          "bytes": 145374,
+          "sha256": "33eb9702c28e865b891ae58aa114d88baa60bdece3fa6239bcfdc38027c6c1fe"
         },
         "hurt": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-20/hurt.webp",
-          "bytes": 85424,
-          "sha256": "b2ca296a48e9b14861d0047c06500d6a2f025e7a731412443b430f1449551607"
+          "bytes": 84690,
+          "sha256": "dabfc97eb6b61f472a43d8ead5cb477a92d0b5a190d28b1e10dca7498a38ca7d"
         },
         "happy": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-20/happy.webp",
-          "bytes": 134652,
-          "sha256": "6f5a12e8ec9df8ea9bf3998a9bb49c84b36513ceb052b5748813560e3de1c934"
+          "bytes": 134448,
+          "sha256": "2dbf895a626816231a1addf0bcd9c0c6e283b026cd9e4032c752bf05114a09b3"
         },
         "celebrate": {
           "path": "rpg/v5/warrior/warrior-eclipse-level-20/celebrate.webp",
-          "bytes": 228870,
-          "sha256": "b0aa82e136b6f99570af11a1524b5565f56eef7551eafbe230b1a37b5badd922"
+          "bytes": 227510,
+          "sha256": "43c4bea4d432dbb653e08d9cbc4518256b96137a45c17a3ffc95aee4db986e5f"
         }
       }
     },
@@ -4399,38 +4399,38 @@
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-eclipse-starter/idle.webp",
-          "bytes": 61686,
-          "sha256": "c608be889ba5346b7c81194791a6063cef8e6d3396b5cceb22ede45f2b7e697e"
+          "bytes": 61678,
+          "sha256": "5e1b5319110ab2794faecddb43b88b845fe30dc59f84abd79466391816bf13c0"
         },
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-eclipse-starter/walk-left.webp",
-          "bytes": 94876,
-          "sha256": "9acec6bf308281a60494596836a7ed9d580efe6714ed1ec896df54f1f4a7cb8c"
+          "bytes": 94352,
+          "sha256": "b0370ee279006935ffe561742cfbabcca97d897122c7190298dfa7fba6d3298f"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-eclipse-starter/walk-right.webp",
-          "bytes": 95382,
-          "sha256": "61a278b4423bbefcb614d6b08a6666546cf3d37105c0f6600094b72bd54f415f"
+          "bytes": 95632,
+          "sha256": "1011d960c270fdf2319b1a4b6636c9252937cf793018650333162a278c445ea8"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-eclipse-starter/attack.webp",
-          "bytes": 117492,
-          "sha256": "f29116fc2e0772f8cf41154e9c9c0071b07dab00cdf5d0a713e5012de325c08d"
+          "bytes": 116292,
+          "sha256": "d1d209b654ff62a580c0ef09afeecb682b5b2674f3996a3d014ccef81de8bb26"
         },
         "hurt": {
           "path": "rpg/v5/warrior/warrior-eclipse-starter/hurt.webp",
-          "bytes": 62326,
-          "sha256": "29c6889e9042f41d7d1901b8124bea8ef35ffa7ded268e5bf5eecba58f0bf7ad"
+          "bytes": 62412,
+          "sha256": "464f0acecaa5eb8d1f53d01dcb7fa47501fa7dd2cf6acabf4bf325ff577493fe"
         },
         "happy": {
           "path": "rpg/v5/warrior/warrior-eclipse-starter/happy.webp",
-          "bytes": 100302,
-          "sha256": "159629055bb98d86eb393ea1e0989f9ad13c959596d7944271bb73f1b5abb011"
+          "bytes": 100104,
+          "sha256": "be9906b51568b5a9f222e03be2ec22c8127600a61f55b6caffcb108a93f5a10e"
         },
         "celebrate": {
           "path": "rpg/v5/warrior/warrior-eclipse-starter/celebrate.webp",
-          "bytes": 186588,
-          "sha256": "1d4919057f714f96446218605a7b4df8b5f46a6f9996470f884e190ca4580dad"
+          "bytes": 183798,
+          "sha256": "0283f49968992163405cc0e6dc9c0f576e2dc7b22ff46ba90fb4605cf0115790"
         }
       }
     },
@@ -4462,38 +4462,38 @@
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-05/idle.webp",
-          "bytes": 99080,
-          "sha256": "2971d5d6dae0b411709d9fcb214e783f0ea5f65f3889a54afb74cffb55ac1105"
+          "bytes": 98602,
+          "sha256": "7e181ddc4a04dc94305d5eb3c45bd2f3deb86591ac9364ec5bae11a66d9ff5c3"
         },
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-05/walk-left.webp",
-          "bytes": 151900,
-          "sha256": "dbdb6f216499518dbc23e90a698a062cc6914b5c42cbcf9b8b8df70d43f50074"
+          "bytes": 151406,
+          "sha256": "d2b4e608e6db267f30995e01f1fc183d9878801f75adfda2c2529f4738ec7b31"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-05/walk-right.webp",
-          "bytes": 152738,
-          "sha256": "00f23cec130f65050362c84c571c29b320f010c20ce74ee03b56a5659c89d6cd"
+          "bytes": 152586,
+          "sha256": "68449258908d843d7c0d53784cbe5ec90c4de39707d5d1a511ec903ad6143fcd"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-05/attack.webp",
-          "bytes": 164534,
-          "sha256": "ea843388cfe23d96cd947f8a1303b5f20b3fff337a074120f044c85edeb4b90a"
+          "bytes": 164526,
+          "sha256": "17b2c4c5de99bc306a8a29e01383608f6452e2cb6dfffeb6483c39574431729f"
         },
         "hurt": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-05/hurt.webp",
-          "bytes": 98462,
-          "sha256": "547664471e1e72599ece8ebcf43e48ab129ffd8de83eec697cbbe55c32de999d"
+          "bytes": 98110,
+          "sha256": "e08118768c593ee28895643dd58790737aed6eefff8e379afe3790e28182ef28"
         },
         "happy": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-05/happy.webp",
-          "bytes": 154358,
-          "sha256": "8d854e368f08c84271518cc5a01fca6b0383f4c7f81dcb667f3e80f317dddd4b"
+          "bytes": 154002,
+          "sha256": "f48012b5349c668bfa08db220227084e427947d055f96ab16bc3d19c262facae"
         },
         "celebrate": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-05/celebrate.webp",
-          "bytes": 245788,
-          "sha256": "61505aaf530a60e6b5562ecd99d8f87aacf5eadad5ec0b9f6948917b4b681ad4"
+          "bytes": 242570,
+          "sha256": "403d763d8dce196f555fb6363b6922265ab400e32cf3d463335487d7828f6eb5"
         }
       }
     },
@@ -4525,38 +4525,38 @@
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-10/idle.webp",
-          "bytes": 75162,
-          "sha256": "334208f21f474ea9f8fe21faf66bf362dc8684c957c618095ca35421fd335c10"
+          "bytes": 74976,
+          "sha256": "e5593993bc21e978961d1809798556beb4b8b851e0bd99501bc5a20093b223f4"
         },
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-10/walk-left.webp",
-          "bytes": 113394,
-          "sha256": "43e7b679048bc2412293fc2f2132a9c47f8431b826851de70b0a4959368ca0e8"
+          "bytes": 113566,
+          "sha256": "4b67e51f89225638b0ae20169495f631c786617c307004f44251d9ac36a39b6f"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-10/walk-right.webp",
-          "bytes": 113270,
-          "sha256": "d34807e2593e8955cd0ee6e84ffc8d51534b68c60b2e090c850d7e6e35474b35"
+          "bytes": 113236,
+          "sha256": "81d15597519a21d038e41e2b69e6385a2dcc36b9788fa1a4130845a3ac492d7b"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-10/attack.webp",
-          "bytes": 132268,
-          "sha256": "cb39dc6c2452ab1e3800fb760d38eeb0b361de4e84ef8038144c8ddd12fcce1a"
+          "bytes": 132330,
+          "sha256": "46b2334e984fb6bbd4ead7046b5cf07ac33ea65e8437f71ed4e7fb1523845454"
         },
         "hurt": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-10/hurt.webp",
-          "bytes": 75004,
-          "sha256": "482d322acacd1b8a611bcb73085760de2d815e8826b937714c872daf12429fe3"
+          "bytes": 74830,
+          "sha256": "c2f9995bbaac2af55fb12f777fc021a6f34dec78c8d9146232d4ab69a9a683e0"
         },
         "happy": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-10/happy.webp",
-          "bytes": 117312,
-          "sha256": "5941b4f47df1e4d79072a448d21299d0e9f00ccb04106160ed9c24f337a95963"
+          "bytes": 117562,
+          "sha256": "837c5c7691448ce9c0b5ae4307e2da205b3ec816b3073a04def116a9aa8f5a7a"
         },
         "celebrate": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-10/celebrate.webp",
-          "bytes": 204008,
-          "sha256": "70061a0e26bc5ef1d813f40f61432130c7ff4d452f6f005c2d454ee622d9de17"
+          "bytes": 203098,
+          "sha256": "da3cf04808d2859036e6fdc7543a4fae6fc325a7f69693e4014336c34652bbec"
         }
       }
     },
@@ -4588,38 +4588,38 @@
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-15/idle.webp",
-          "bytes": 120576,
-          "sha256": "7d1d7962b78812fcd727d21940d26807351d7076055446be0c5013e0fbba92f8"
+          "bytes": 120422,
+          "sha256": "ee95f06d87d3f403ffcdadf0e478a7d80f9e08377bc0520e29233fcaf6d4a4f3"
         },
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-15/walk-left.webp",
-          "bytes": 184014,
-          "sha256": "5bd615b6ea204928af9cd146e3facc20a3c4d058db41ec33bc9ceb8150d7729e"
+          "bytes": 183672,
+          "sha256": "dd7c992808ed43b8d88eb90d9b8efc6cf142b3def4e1ec5452c126e4bdce2304"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-15/walk-right.webp",
-          "bytes": 185038,
-          "sha256": "e32c8a3be8709805aa263bb66b4df340a4fd2502e457757a2f75ac8ab95f60f6"
+          "bytes": 185234,
+          "sha256": "dc05d7ab928e924eee05efcebedb6d428b22afe4453cf52fb5bfba0d5591d556"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-15/attack.webp",
-          "bytes": 191560,
-          "sha256": "bbda60380286ac3bcf79e9376005ffb82a532c62a711bf9b70afd40784a3d907"
+          "bytes": 193330,
+          "sha256": "4279a4dc595a4bb62683ae22c9926e9d4d581a21b03e66ff74d58072b91ed048"
         },
         "hurt": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-15/hurt.webp",
-          "bytes": 118524,
-          "sha256": "5a587d6f214a746ff869610a15b3b192ca3d0cb810d25f6e4bea7083f2ef437d"
+          "bytes": 118402,
+          "sha256": "a7e155db5314ef026d8ebe11c6ca2ba1c47677cb00faed0bea6fdd3662d56e4d"
         },
         "happy": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-15/happy.webp",
-          "bytes": 184816,
-          "sha256": "c507921d477ce37939aa586f2521ed252320d54840febb615118d6dfe7f31416"
+          "bytes": 184478,
+          "sha256": "addf98b8c8bcfcfd3faa80632a8dfec2302133f9075f5f1107f858e51fc7e591"
         },
         "celebrate": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-15/celebrate.webp",
-          "bytes": 279330,
-          "sha256": "a6518a16858a1b597d23ae5a830d050943fb6cec9d53beb8d643109f75c0369e"
+          "bytes": 277570,
+          "sha256": "82b50ac420b179bff70e9c0f955fa34870e13ec9cf685e19858a67c831f12594"
         }
       }
     },
@@ -4651,38 +4651,38 @@
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-20/idle.webp",
-          "bytes": 99858,
-          "sha256": "639f36e96f826bfecf8f8a290bee5bc4d729d644f9fce9204253f8727efd3333"
+          "bytes": 99462,
+          "sha256": "bcd8aff978e832cd7c80125e8aef1542ddb0a868be9cad5542d894b0a7a670da"
         },
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-20/walk-left.webp",
-          "bytes": 152926,
-          "sha256": "74bdb2e7a2e6834563297fbed148bebcbda336ad020b420faebba0e2a578be2c"
+          "bytes": 152648,
+          "sha256": "c88da65586c1057447882f21c4d7491fbe3b471502f600d2385a09183a7d80b2"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-20/walk-right.webp",
-          "bytes": 154978,
-          "sha256": "96f00f5650dc3d8241229ebbf3e4183ea0ea7df5baac150f122ddb52392d23df"
+          "bytes": 155104,
+          "sha256": "e93edb7e6cba0ac429274d8d2a23781466dd67c5ee7d732388c8bea4555d9116"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-20/attack.webp",
-          "bytes": 166024,
-          "sha256": "17cd656a456e61139f354e04ef1d8a2b930a635966a16ec13ed3e228ce2d45e2"
+          "bytes": 166450,
+          "sha256": "9d2c8664c523299df6742c5762bb4846e1f6a8852f87e9bdf9c1196c563c5c24"
         },
         "hurt": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-20/hurt.webp",
-          "bytes": 98092,
-          "sha256": "c5a31f41632888c74343d65fc87b8cf3663bd514c2ed872274d580a2ad45a684"
+          "bytes": 97988,
+          "sha256": "f90688a194f40fb4cd0822ac976aba47ad4af119ec4da544902a0abc2f8cf6ec"
         },
         "happy": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-20/happy.webp",
-          "bytes": 153840,
-          "sha256": "b3d7fc87de72f2b80da3e9848d397663d506a2dcc3ec5100960c8e53c281dff5"
+          "bytes": 153762,
+          "sha256": "87aea53ee57975728ff7ec9c34b8fd3059e501b09708df5695ebb3252cb946f1"
         },
         "celebrate": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-level-20/celebrate.webp",
-          "bytes": 238800,
-          "sha256": "9c95ea7095a8c688101e9efa9e1cb0933ccb72fd89879ae40c582b0a8a523106"
+          "bytes": 236182,
+          "sha256": "3e01330dab8577d622dc84c49e825221722a0653a39575f10749ad7fc3295c03"
         }
       }
     },
@@ -4714,38 +4714,38 @@
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-starter/idle.webp",
-          "bytes": 71308,
-          "sha256": "2d0c1ea5c5eeea7f924a5d9c9136aa4a4c519280255ab4ab74854532d016e19e"
+          "bytes": 71234,
+          "sha256": "85af2742dad745704451685df1620c51aeef0068873d6d64d7eb807a35bf4973"
         },
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-starter/walk-left.webp",
-          "bytes": 108392,
-          "sha256": "138ea225223070e94459fed7084c9e61fef8e45bb64869aee93c990d205390d5"
+          "bytes": 108312,
+          "sha256": "8acd78668bd812735a2659f7dbbe5ab65b53471983782befd72512b098a5bf8f"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-starter/walk-right.webp",
-          "bytes": 108028,
-          "sha256": "a699ae8839004cd58f07de15ba02586701b29923f2cc12e10d9878042b18bbbe"
+          "bytes": 107988,
+          "sha256": "d139cb906e491256581d81345c433d81d8b8d9e140fb42e9899c4a8d6cbef4ab"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-starter/attack.webp",
-          "bytes": 128876,
-          "sha256": "342ec8b7adb2d8647ffb6eacd503609a2fddc4c3d1feca55f6b24cc5ecb7b919"
+          "bytes": 129028,
+          "sha256": "354f81fe0c3e4b6c6f731e20feeb4bd26adcbf80b145c11949cc8c5892aad2ea"
         },
         "hurt": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-starter/hurt.webp",
-          "bytes": 72466,
-          "sha256": "f97884d0c0be51d66f1fc06aa351b722a443ba2042acb8c330c8ddf660d288c7"
+          "bytes": 72534,
+          "sha256": "81006ad67694a0adf443d4dd750bcf051a0f2a25f1a54e8c177449922983300f"
         },
         "happy": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-starter/happy.webp",
-          "bytes": 112992,
-          "sha256": "a21520babbba4751e714993fed08aaabcbd98852e26c6fb6cf50495366932cce"
+          "bytes": 112340,
+          "sha256": "6b850bb8da483bb7b55a97c7de41a78567cc0f8f70454dc9b8f2d325b975bbc0"
         },
         "celebrate": {
           "path": "rpg/v5/warrior/warrior-nightwyrm-starter/celebrate.webp",
-          "bytes": 191464,
-          "sha256": "cf2ddda45331bfdc473eeef92ad0e3703cb2044be40f2299206947b357917c0f"
+          "bytes": 189696,
+          "sha256": "2cabd9834fae6026e58b10b2476284f856dd46901240b460192d4dd3dfacba07"
         }
       }
     },
@@ -4777,38 +4777,38 @@
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-05/idle.webp",
-          "bytes": 76720,
-          "sha256": "b632008dad5e899a66c8114e90377ea894c8c623f5f4db40cfc9896627770a7d"
+          "bytes": 76572,
+          "sha256": "89b9454a22e7e455b82a4ce22373556d6f48f9f1375b328ae01527df937bf0f3"
         },
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-05/walk-left.webp",
-          "bytes": 117488,
-          "sha256": "1877bf7d3bedfc404dd6da2e7762644556399f70d383bd4c59f01b8da82c59bd"
+          "bytes": 116852,
+          "sha256": "40aca7d91cde74ecaf8d5ee712be8700c2f77ab418f710802c90bed79841cfdb"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-05/walk-right.webp",
-          "bytes": 117296,
-          "sha256": "0922fec6b040396576d07412e13fceb2dc2dcef58ce16c93a0f1fe6e389f03e3"
+          "bytes": 117366,
+          "sha256": "0f3e3c539a2ccc6cf5012bcedf7922e70c110aa59f993114360bdd572efaf82b"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-05/attack.webp",
-          "bytes": 132728,
-          "sha256": "1ca5b61177f5b93563ef9763c0a7eeab8fdc50401df30071121d86eba1e43217"
+          "bytes": 132348,
+          "sha256": "dd7e4073aba8adcfcc73294d5502df18574f662961886b5c2a2bb959279783ee"
         },
         "hurt": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-05/hurt.webp",
-          "bytes": 76168,
-          "sha256": "e9026ce4de09b26abfe2b8f1f4001a193da22eea5fea5addf5cb8477fb95b09c"
+          "bytes": 75578,
+          "sha256": "2be5fbaacaf53f3348428104bd916bb27658f79a26faa9da8db6675a715d0753"
         },
         "happy": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-05/happy.webp",
-          "bytes": 121306,
-          "sha256": "1a43ed4cec2be70296c4a0c046bd60d178edf2c6f62ab38a9eee8f8d72ad0d25"
+          "bytes": 121114,
+          "sha256": "437fdcadf2dea297335b7d82048916f3eeb2b8eead3518e9321161d5227356e3"
         },
         "celebrate": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-05/celebrate.webp",
-          "bytes": 209948,
-          "sha256": "1a8d498005192e33be31c11e01bcd731e52386a695e771caca0ff052e5d0927d"
+          "bytes": 209184,
+          "sha256": "740dcb2728a3cc83c884fcc4c992136a0a24236afbeca945d699244b771a9bf5"
         }
       }
     },
@@ -4840,38 +4840,38 @@
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-10/idle.webp",
-          "bytes": 114058,
-          "sha256": "a72ef9f8b3b561c425f00cc5c5b18e0574799e52867726c811e4e3726e602ad9"
+          "bytes": 114382,
+          "sha256": "460a8442cc2c8ce720af67b06e79a95c5efbbba54d0cba82fa453e55310dea23"
         },
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-10/walk-left.webp",
-          "bytes": 175330,
-          "sha256": "3d58b2445c781ec433d72f7f70eab71bbdd33360b1079d10ca61d18d680fe7bb"
+          "bytes": 174908,
+          "sha256": "f1813e6128610f7006287e27bfb1224193771e3b3dcb13ebeda0b04db8b61976"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-10/walk-right.webp",
-          "bytes": 173574,
-          "sha256": "ac55f3de8133239f4eac50d1ccb414255627b54eb1cc106765a9216d7f21b6ca"
+          "bytes": 174148,
+          "sha256": "bcb2da30a00c1303183cb3008de5e1abd7a43a34759bdf7c1ea2094d4d36fc63"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-10/attack.webp",
-          "bytes": 184594,
-          "sha256": "16c8d121d02873d924db1c50c698cf36726822c92412478b92523a576ba82560"
+          "bytes": 184062,
+          "sha256": "97593fa003da5824dbf4dc609e82f2792ccfa1bddd6c0e250ae10e4dbf753327"
         },
         "hurt": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-10/hurt.webp",
-          "bytes": 111834,
-          "sha256": "5669033a940cfb5242ea29b5d78e28a33bbd0fe27b0d156e866a9995f188d08c"
+          "bytes": 111762,
+          "sha256": "9185ddf8c3fcf66e76ef4b4f8f2cb346a758dfa3c957906ca079bb144cd3fd54"
         },
         "happy": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-10/happy.webp",
-          "bytes": 181438,
-          "sha256": "51dbee502618815c5f63bc810c2f4d00c5d15654bc1fa24e4b9999440496925d"
+          "bytes": 180730,
+          "sha256": "954327b422055fd99a39cca52ef27c39fc1a1eff134d4937a9e498625118e1b0"
         },
         "celebrate": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-10/celebrate.webp",
-          "bytes": 288334,
-          "sha256": "0e443d62445e6f83d41c5193f8895f7b55dc8a1c1f9ecf09b4e34553f6a08d11"
+          "bytes": 286566,
+          "sha256": "c59f868016147cfe85cf29f4f716576e4e816ee87c8e39ca6e6ddcd5f3e02762"
         }
       }
     },
@@ -4903,38 +4903,38 @@
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-15/idle.webp",
-          "bytes": 119150,
-          "sha256": "39357fd9ef6651c900f9c812c85abf007e963a6a6b79907e18c8b3eb879b9991"
+          "bytes": 119628,
+          "sha256": "60b8dbfb12a0f500694204a29b40bd39b420ceda57e521efe453adbadd6fad52"
         },
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-15/walk-left.webp",
-          "bytes": 181304,
-          "sha256": "c1cc615bfd989b9d41fbe572721cf13b6a89c313814c15e6db12e60967ff88ac"
+          "bytes": 180274,
+          "sha256": "9ec48fcdc82cc093b95ae5e7e0f3fa5d9aaa9bc3599e0691b2f609c4664db4ff"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-15/walk-right.webp",
-          "bytes": 181188,
-          "sha256": "8fea59b4782918667bdf6dc4d0145ae2be9980fc0dee8e65585eb2fc6f441fa7"
+          "bytes": 180848,
+          "sha256": "a7f298c2786bc9c7570fa7a9f1208c7feef37d3875b4ea00f2e15a0f26b9e2da"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-15/attack.webp",
-          "bytes": 182364,
-          "sha256": "06fc79d7f022ecc9605a02711ef0b527c78e63ea2f98572ddd280ea6bf77845b"
+          "bytes": 181674,
+          "sha256": "ae9e5d0767b928f9dd2f04f4b20662074604474d80c80fd2fd47db1f1b6bf2cd"
         },
         "hurt": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-15/hurt.webp",
-          "bytes": 116566,
-          "sha256": "0d96656061ea5515e6d64ad991265c25c18e92e1863c688a5dcd9d06a37b54a4"
+          "bytes": 115960,
+          "sha256": "380d7c8d702039192f67fd50c4eefc53fef6500e31f1a90632d4802cb458e8e6"
         },
         "happy": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-15/happy.webp",
-          "bytes": 183490,
-          "sha256": "c2612ac204108ed28be6a9cb482dad8e972803dd9ad8641eef5ca406b8a2206d"
+          "bytes": 182544,
+          "sha256": "b7aa5ccf6344faf8bc81feb2a12ac2eff92f956987c5fdcc8cf1e64400640e27"
         },
         "celebrate": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-15/celebrate.webp",
-          "bytes": 280694,
-          "sha256": "89d4cbddd79b707d2770af93af123b4089ae16c20e8a26d52fdc4ed9aee7f3e5"
+          "bytes": 278134,
+          "sha256": "6b371cfb9b0d971b8888d5ec048e5dd74f3b94342362e6b391bd90d7f2a1d2bf"
         }
       }
     },
@@ -4966,38 +4966,38 @@
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-20/idle.webp",
-          "bytes": 111174,
-          "sha256": "2387b4ce69f82e7d0e0f3688f237f012ee05f9a96ff6c9760ceded87110a47c9"
+          "bytes": 110822,
+          "sha256": "a005bb9ec7fb477f4c11b4986c3c41f9b7522f8ccb0c04e8109928f5cf74ee37"
         },
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-20/walk-left.webp",
-          "bytes": 168396,
-          "sha256": "6581a46d33c10a00e0020dd904d04d38dc8fe363df5a3a403cdc1cd78bb52abf"
+          "bytes": 167446,
+          "sha256": "62406022bbbb1b56bbf4959698e456c7fcda2e75f337ae5791cc00c16d06059e"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-20/walk-right.webp",
-          "bytes": 169000,
-          "sha256": "798dc30070c79e6385b7709f7b03e64341c81b1b79d18ce4f08ae46adf20fcb0"
+          "bytes": 167640,
+          "sha256": "aa3715f0b6db199976d80e9db51ecf6385724f7a59233868eea2f333040ec12e"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-20/attack.webp",
-          "bytes": 173878,
-          "sha256": "dd90b917c1c074b6d571ac69d7eb85cd2caef27df907e40ada5972d356ec21ae"
+          "bytes": 172798,
+          "sha256": "a94ff48d573544b074d7135fb8fc215a2a93223dc8257e1e47e9e2e2a16b0241"
         },
         "hurt": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-20/hurt.webp",
-          "bytes": 107822,
-          "sha256": "d264786a2098d99fdb34798beebcd3a1afc88b0b880b874a78f2f3d3fc5008aa"
+          "bytes": 107678,
+          "sha256": "090f78db82ec2e2a6d904512b7089b94ddde0a080a6cb534b2d81d9c16688cac"
         },
         "happy": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-20/happy.webp",
-          "bytes": 171214,
-          "sha256": "18dc4917bec7d58336eef031866e1e39058f93aac5df05aff527dcc51cf56714"
+          "bytes": 170088,
+          "sha256": "d7ec7b88aae761be977c3b32a03033a1b7e3906a7067a5cebad7ef49c1724af3"
         },
         "celebrate": {
           "path": "rpg/v5/warrior/warrior-sunshield-level-20/celebrate.webp",
-          "bytes": 270066,
-          "sha256": "be671860ff41dfb87012cb0a667014ac06465e06bcb5e7db08e6f853456efbb2"
+          "bytes": 268432,
+          "sha256": "1a05329ceea66712809e149c40067acc59228f67e733e2f59e19c1f1b3479f20"
         }
       }
     },
@@ -5029,38 +5029,38 @@
         },
         "idle": {
           "path": "rpg/v5/warrior/warrior-sunshield-starter/idle.webp",
-          "bytes": 63542,
-          "sha256": "4ab8fc5fe97f96f4bf7c0870fe62390553acfedec00d2ad93faa527f50481fb5"
+          "bytes": 63900,
+          "sha256": "73a385be51ee3fe03184df049be7068d9a22391b813881471f262de1e36f4f74"
         },
         "walk-left": {
           "path": "rpg/v5/warrior/warrior-sunshield-starter/walk-left.webp",
-          "bytes": 97734,
-          "sha256": "8cba77a63df929ac41f9b64c1f82bce2f20c95d4a0cae75fc43d9adc0ae7cf7f"
+          "bytes": 97466,
+          "sha256": "820acb47820456e7f6eb20b6e4735903236944a2a23fc95f83598ea4d499cc6d"
         },
         "walk-right": {
           "path": "rpg/v5/warrior/warrior-sunshield-starter/walk-right.webp",
-          "bytes": 97680,
-          "sha256": "e7c1f89f5feeda8f8ca551c190b12814c19215bd15a601ffbe1f09f097569708"
+          "bytes": 97710,
+          "sha256": "632f0e06f43b017daf7a95a9a921f9f86cb7609309848bb9bccccfb1da3766b2"
         },
         "attack": {
           "path": "rpg/v5/warrior/warrior-sunshield-starter/attack.webp",
-          "bytes": 117062,
-          "sha256": "ff4eb791b108ba893c1e64027edc2455cb5af07bb2e587c8a06bc874cf59b29e"
+          "bytes": 116704,
+          "sha256": "3f5b5c8cb25fb6f8c6f9bd70627930e19f665c67ef985bf35d3434a84e5a43e1"
         },
         "hurt": {
           "path": "rpg/v5/warrior/warrior-sunshield-starter/hurt.webp",
-          "bytes": 63572,
-          "sha256": "2d1733d6a58b62f28de85fc947e5f326acf51df871e1c7756454e0f5af7351dc"
+          "bytes": 63340,
+          "sha256": "10faa0a16d78e62fb57310a4e23b588269f15310c928bd83de7a04a6345f335d"
         },
         "happy": {
           "path": "rpg/v5/warrior/warrior-sunshield-starter/happy.webp",
-          "bytes": 100590,
-          "sha256": "67cccf9d88c5436ab952aab58ecd4e04da15603f11754bbb0c7f935731eb644b"
+          "bytes": 100538,
+          "sha256": "056b014b97e47d22a240ca74fba4262f651f08b07eed1a6227c7282a5322a4b8"
         },
         "celebrate": {
           "path": "rpg/v5/warrior/warrior-sunshield-starter/celebrate.webp",
-          "bytes": 187676,
-          "sha256": "55e9ecca8a05adecbfb3631fb5eb647d00c9d77c1c176743788e45e2086cb12f"
+          "bytes": 186898,
+          "sha256": "24463e518050267bce720c9eb2990efe7a0c0223d927c727fc741468fe8f84fb"
         }
       }
     }

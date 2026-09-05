@@ -1,7 +1,7 @@
 "use strict";
 
-const CODE_CACHE="dragonswood-site-code-v2";
-const MEDIA_CACHE="dragonswood-site-media-v2";
+const CODE_CACHE="dragonswood-site-code-v5";
+const MEDIA_CACHE="dragonswood-site-media-v5";
 const CODE_PREFIX="dragonswood-site-code-";
 const MEDIA_PREFIX="dragonswood-site-media-";
 

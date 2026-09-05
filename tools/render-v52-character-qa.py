@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render human-review contact sheets for V5.2 appearance and motion."""
+"""Render human-review contact sheets for V5.3 appearance and motion."""
 
 from __future__ import annotations
 
@@ -20,18 +20,19 @@ def read_frame(path: Path, index: int = 0) -> Image.Image:
     return image.convert("RGBA")
 
 
-def tint_layer(layer: Image.Image, color: tuple[int, int, int]) -> Image.Image:
+def tint_layer(layer: Image.Image, color: tuple[int, int, int], kind: str) -> Image.Image:
     data = np.asarray(layer.convert("RGBA"), dtype=np.uint8)
-    gray = data[:, :, 0].astype(np.float32) / 255
-    rgb = np.stack([gray * channel for channel in color], axis=2).clip(0, 255).astype(np.uint8)
+    shade = data[:, :, 0].astype(np.float32) / 255
+    factor = .72 + .42 * shade if kind == "skin" else .48 + .66 * shade
+    rgb = np.stack([factor * channel for channel in color], axis=2).clip(0, 255).astype(np.uint8)
     return Image.fromarray(np.dstack([rgb, data[:, :, 3]]), "RGBA")
 
 
 def appearance(repo: Path, class_id: str, char_id: str, state: str, skin: str, hair: str) -> Image.Image:
     base = read_frame(repo / "assets" / "rpg" / "v5" / class_id / char_id / f"{state}.webp")
     layer_root = repo / "assets" / "rpg" / "v5-appearance" / "layers" / class_id / char_id
-    base.alpha_composite(tint_layer(read_frame(layer_root / f"{state}-skin.webp"), SKINS[skin]))
-    base.alpha_composite(tint_layer(read_frame(layer_root / f"{state}-hair.webp"), HAIRS[hair]))
+    base.alpha_composite(tint_layer(read_frame(layer_root / f"{state}-skin.webp"), SKINS[skin], "skin"))
+    base.alpha_composite(tint_layer(read_frame(layer_root / f"{state}-hair.webp"), HAIRS[hair], "hair"))
     return base
 
 
@@ -74,6 +75,11 @@ def main() -> None:
     repo, output = args.repo.resolve(), args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
     for class_id, char_id in (
+        ("warrior", "warrior-dawnscale-level-15"),
+        ("warrior", "warrior-sunshield-level-20"),
+        ("ranger", "ranger-sunleaf-starter"),
+        ("ranger", "ranger-moonshadow-level-20"),
+        ("mage", "mage-celestial-level-15"),
         ("ranger", "ranger-sunleaf-level-20"),
         ("healer", "healer-dawnkeeper-level-20"),
         ("mage", "mage-starfire-level-20"),

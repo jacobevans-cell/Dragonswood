@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the Dragonswood V5.2 character art, motion, appearance layers, and catalog.
+"""Build the Dragonswood V5.3 character art, motion, appearance layers, and catalog.
 
 The generated progression sheets are treated as immutable source art. This script
 removes real or baked backgrounds, extracts the five level tiers, normalizes every
@@ -34,26 +34,26 @@ FAMILIES = {
     "warrior": {
         "dawnscale": ("Dawnscale", "male", "radiant", "dark"),
         "eclipse": ("Eclipse", "male", "shadow", "dark"),
-        "sunshield": ("Sunshield", "female", "radiant", "brown"),
-        "nightwyrm": ("Nightwyrm", "female", "shadow", "brown-long"),
+        "sunshield": ("Sunshield", "female", "radiant", "brown-long-wide-sunshield"),
+        "nightwyrm": ("Nightwyrm", "female", "shadow", "brown-long-wide-nightwyrm"),
     },
     "ranger": {
         "dawnfeather": ("Dawnfeather", "male", "radiant", "dark"),
         "nightfang": ("Nightfang", "male", "shadow", "dark"),
         "sunleaf": ("Sunleaf", "female", "radiant", "brown-long-right"),
-        "moonshadow": ("Moonshadow", "female", "shadow", "silver"),
+        "moonshadow": ("Moonshadow", "female", "shadow", "silver-long-right"),
     },
     "mage": {
         "starfire": ("Starfire", "male", "radiant", "brown"),
         "voidcore": ("Voidcore", "male", "shadow", "dark"),
-        "celestial": ("Celestial", "female", "radiant", "silver"),
-        "eclipse-witch": ("Eclipse Witch", "female", "shadow", "silver"),
+        "celestial": ("Celestial", "female", "radiant", "silver-long-left"),
+        "eclipse-witch": ("Eclipse Witch", "female", "shadow", "silver-long-left"),
     },
     "healer": {
         "dawnkeeper": ("Dawnkeeper", "male", "radiant", "silver"),
         "mooncleric": ("Mooncleric", "male", "shadow", "dark"),
-        "dawnwing": ("Dawnwing", "female", "radiant", "silver"),
-        "twilight": ("Twilight", "female", "shadow", "dark"),
+        "dawnwing": ("Dawnwing", "female", "radiant", "silver-long-left"),
+        "twilight": ("Twilight", "female", "shadow", "dark-long-left"),
     },
 }
 
@@ -78,6 +78,14 @@ CLASS_COLORS = {
 }
 
 STATE_NAMES = ("static", "idle", "walk-left", "walk-right", "attack", "hurt", "happy", "celebrate")
+
+# Fully enclosed helmets hide the hair. Empty hair layers are intentional for
+# these tiers: tinting pale armor as hair was the source of the white helmet,
+# staff, and face blocks seen in the tester recordings.
+HIDDEN_HAIR_TIERS = {
+    ("warrior", "dawnscale"): {"level-10", "level-15", "level-20"},
+    ("warrior", "eclipse"): {"level-05", "level-10", "level-15", "level-20"},
+}
 
 
 def alpha_composite_at(dst: Image.Image, src: Image.Image, xy: tuple[int, int]) -> None:
@@ -164,6 +172,41 @@ def remove_neighbor_fragments(image: Image.Image) -> Image.Image:
     return Image.fromarray(cleaned, "RGBA")
 
 
+def cleanup_equipment_mattes(image: Image.Image, class_id: str, family: str) -> Image.Image:
+    """Remove the flat white generation matte trapped inside affected bows."""
+    if class_id != "ranger" or family not in {"sunleaf", "moonshadow", "nightfang"}:
+        return image
+    rgba = np.asarray(image.convert("RGBA"), dtype=np.uint8).copy()
+    rgb = rgba[:, :, :3].astype(np.int16)
+    alpha = rgba[:, :, 3]
+    height, width = alpha.shape
+    spread = rgb.max(axis=2) - rgb.min(axis=2)
+    yy, xx = np.indices(alpha.shape)
+    # These three families hold the bow to the viewer's left. The unwanted
+    # material is a large, nearly neutral white island inside that bow; keeping
+    # this spatially narrow prevents white hair and costume trim being touched.
+    candidate = (
+        (alpha > 40)
+        & (rgb.min(axis=2) >= 224)
+        & (spread <= 24)
+        & (xx < width * .44)
+        & (yy > height * .23)
+    )
+    remove = np.zeros_like(candidate)
+    for component_y, component_x in connected_components(candidate):
+        if len(component_y) >= 140:
+            remove[component_y, component_x] = True
+    if not np.any(remove):
+        return image
+    # Include only the pale antialiased rim immediately attached to the matte.
+    expanded = np.asarray(
+        Image.fromarray((remove.astype(np.uint8) * 255), "L").filter(ImageFilter.MaxFilter(3))
+    ) > 0
+    pale_rim = (rgb.min(axis=2) >= 202) & (spread <= 38)
+    rgba[:, :, 3][remove | (expanded & pale_rim)] = 0
+    return Image.fromarray(rgba, "RGBA")
+
+
 def extract_master_tiers(master_path: Path) -> list[Image.Image]:
     master = remove_background(Image.open(master_path))
     tiers: list[Image.Image] = []
@@ -191,27 +234,29 @@ def affine_frame(image: Image.Image, *, dx: float = 0, dy: float = 0, scale: flo
 
 def motion_specs(state: str, class_id: str) -> tuple[list[dict[str, float | bool]], list[int]]:
     if state == "idle":
-        return ([{"dy": 0, "scale": 1.0}, {"dy": -2, "scale": 1.006}, {"dy": 0, "scale": 1.0}, {"dy": 2, "scale": .995}], [300] * 4)
+        # A restrained, bottom-anchored breath. Large scale changes make the
+        # oversized chibi heads look loose even when every layer is in sync.
+        return ([{"dy": 0, "scale": 1.0}, {"dy": -1, "scale": 1.002}, {"dy": 0, "scale": 1.0}, {"dy": 1, "scale": .999}], [360] * 4)
     if state in ("walk-left", "walk-right"):
         flip = state == "walk-right"
         return ([
-            {"dx": -8, "dy": 1, "angle": -1.6, "flip": flip},
-            {"dx": -4, "dy": -10, "angle": -.4, "flip": flip},
-            {"dx": 2, "dy": -3, "angle": 1.2, "flip": flip},
-            {"dx": 8, "dy": 1, "angle": 1.6, "flip": flip},
-            {"dx": 3, "dy": -10, "angle": .4, "flip": flip},
-            {"dx": -3, "dy": -3, "angle": -1.2, "flip": flip},
-        ], [105] * 6)
+            {"dx": -5, "dy": 0, "angle": -.7, "flip": flip},
+            {"dx": -3, "dy": -5, "angle": -.2, "flip": flip},
+            {"dx": 1, "dy": -2, "angle": .5, "flip": flip},
+            {"dx": 5, "dy": 0, "angle": .7, "flip": flip},
+            {"dx": 2, "dy": -5, "angle": .2, "flip": flip},
+            {"dx": -2, "dy": -2, "angle": -.5, "flip": flip},
+        ], [120] * 6)
     if state == "attack":
         if class_id == "healer":
-            return ([{"dy": 2}, {"dy": -8, "scale": 1.015}, {"dy": -16, "scale": 1.035}, {"dy": -8, "scale": 1.02}, {"dy": 0}], [150, 110, 150, 160, 210])
-        return ([{"dx": -3}, {"dx": -12, "angle": -3}, {"dx": 15, "dy": -4, "scale": 1.025, "angle": 5}, {"dx": 7, "angle": 2}, {"dx": 0}], [150, 90, 110, 150, 220])
+            return ([{"dy": 1}, {"dy": -5, "scale": 1.006}, {"dy": -10, "scale": 1.014}, {"dy": -5, "scale": 1.008}, {"dy": 0}], [160, 130, 170, 180, 240])
+        return ([{"dx": -2}, {"dx": -7, "angle": -1.2}, {"dx": 9, "dy": -3, "scale": 1.01, "angle": 1.8}, {"dx": 4, "angle": .7}, {"dx": 0}], [160, 110, 130, 170, 240])
     if state == "hurt":
-        return ([{}, {"dx": 18, "dy": 5, "angle": 4}, {"dx": -7, "dy": 2, "angle": -2}, {}], [130, 170, 150, 260])
+        return ([{}, {"dx": 10, "dy": 3, "angle": 1.5}, {"dx": -4, "dy": 1, "angle": -.8}, {}], [160, 190, 170, 300])
     if state == "happy":
-        return ([{}, {"dy": -8, "angle": -1.5}, {"dy": -18, "scale": 1.015}, {"dy": -8, "angle": 1.5}, {}, {"dy": 3}], [120, 110, 160, 110, 140, 210])
+        return ([{}, {"dy": -5, "angle": -.35}, {"dy": -10, "scale": 1.008}, {"dy": -5, "angle": .35}, {}, {"dy": 1}], [160, 130, 170, 130, 180, 260])
     if state == "celebrate":
-        return ([{}, {"dy": -12, "angle": -3}, {"dy": -24, "scale": 1.025, "angle": -2}, {"dy": -30, "scale": 1.035}, {"dy": -24, "scale": 1.025, "angle": 2}, {"dy": -10, "angle": 3}, {}, {"dy": 4}], [100, 90, 100, 170, 100, 90, 120, 240])
+        return ([{}, {"dy": -7, "angle": -.6}, {"dy": -14, "scale": 1.012, "angle": -.35}, {"dy": -18, "scale": 1.016}, {"dy": -14, "scale": 1.012, "angle": .35}, {"dy": -6, "angle": .6}, {}, {"dy": 2}], [130, 110, 140, 190, 140, 110, 160, 280])
     raise ValueError(f"Unknown animation state: {state}")
 
 
@@ -288,7 +333,24 @@ def soften_mask(mask: np.ndarray, source_alpha: np.ndarray) -> np.ndarray:
     return np.minimum(np.asarray(layer, dtype=np.uint8), source_alpha)
 
 
-def appearance_masks(base: Image.Image, hair_kind: str) -> tuple[Image.Image, Image.Image]:
+def select_seeded_components(candidate: np.ndarray, anchor: np.ndarray, bridge_size: int = 5) -> np.ndarray:
+    """Keep color regions connected to a trusted semantic anchor."""
+    if not np.any(candidate) or not np.any(anchor):
+        return np.zeros_like(candidate)
+    bridge = np.asarray(
+        Image.fromarray((candidate.astype(np.uint8) * 255), "L").filter(ImageFilter.MaxFilter(bridge_size))
+    ) > 0
+    anchor_zone = np.asarray(
+        Image.fromarray((anchor.astype(np.uint8) * 255), "L").filter(ImageFilter.MaxFilter(3))
+    ) > 0
+    selected = np.zeros_like(candidate)
+    for component_y, component_x in connected_components(bridge):
+        if np.count_nonzero(anchor_zone[component_y, component_x]) >= 4:
+            selected[component_y, component_x] = True
+    return candidate & selected
+
+
+def appearance_masks(base: Image.Image, hair_kind: str, *, hide_hair: bool = False) -> tuple[Image.Image, Image.Image]:
     arr = np.asarray(base.convert("RGBA"), dtype=np.uint8)
     rgb = arr[:, :, :3].astype(np.float32)
     alpha = arr[:, :, 3]
@@ -319,7 +381,21 @@ def appearance_masks(base: Image.Image, hair_kind: str) -> tuple[Image.Image, Im
             if score > best_score:
                 best_score, face_cx, face_cy = score, float(cx), float(cy)
     face_region = ((xx - face_cx) / 58) ** 2 + ((yy - face_cy) / 52) ** 2 <= 1
-    skin_mask = skin_like & face_region
+    # Build the final face mask from chroma distance to the detected face,
+    # rather than the initial strict detector alone. This includes shaded
+    # cheeks and foreheads so deep tones do not look like a pasted-on beard.
+    face_probe = skin_like & (((xx - face_cx) / 34) ** 2 + ((yy - face_cy) / 34) ** 2 <= 1)
+    if np.any(face_probe):
+        face_cb = float(np.median(cb[face_probe]))
+        face_cr = float(np.median(cr[face_probe]))
+        chroma_distance = np.sqrt((cb - face_cb) ** 2 + (cr - face_cr) ** 2)
+        skin_candidate = opaque & face_region & (chroma_distance <= 24)
+    else:
+        skin_candidate = skin_like & face_region
+    face_anchor = skin_candidate & (((xx - face_cx) / 34) ** 2 + ((yy - face_cy) / 34) ** 2 <= 1)
+    skin_mask = select_seeded_components(skin_candidate, face_anchor, 3)
+    if np.count_nonzero(skin_mask) < 120:
+        skin_mask = np.zeros_like(skin_mask)
 
     hair_cy = face_cy - 34
     head_region = ((xx - face_cx) / 108) ** 2 + ((yy - hair_cy) / 104) ** 2 <= 1
@@ -335,14 +411,26 @@ def appearance_masks(base: Image.Image, hair_kind: str) -> tuple[Image.Image, Im
     hue[redmax] = (60 * ((g[redmax] - b[redmax]) / (maxc[redmax] - minc[redmax])) + 360) % 360
     hue[greenmax] = 60 * ((b[greenmax] - r[greenmax]) / (maxc[greenmax] - minc[greenmax])) + 120
     hue[bluemax] = 60 * ((r[bluemax] - g[bluemax]) / (maxc[bluemax] - minc[bluemax])) + 240
-    if hair_kind == "silver":
+    if hair_kind.startswith("silver"):
         hair_color = (sat < .34) & (value > 78)
     elif hair_kind.startswith("brown"):
-        hair_color = (((hue <= 65) | (hue >= 342)) & (sat > .16) & (value < 230)) | (value < 70)
+        # Near-black pixels are outlines and armor shadows, not brown hair.
+        # Keeping them out preserves the original linework and stops connected
+        # helmet contours from becoming a recolorable hair region.
+        if "nightwyrm" in hair_kind:
+            hair_color = ((hue <= 70) | (hue >= 335)) & (sat > .02) & (value >= 3) & (value < 210)
+        elif "sunshield" in hair_kind:
+            hair_color = ((hue <= 38) | (hue >= 350)) & (sat > .12) & (value >= 18) & (value < 182)
+        else:
+            hair_color = ((hue <= 50) | (hue >= 350)) & (sat > .18) & (value >= 34) & (value < 205)
     else:
         hair_color = (value < 145) & ((sat > .08) | (value < 75))
     central_face = ((xx - face_cx) / 49) ** 2 + ((yy - face_cy) / 47) ** 2 <= 1
-    hair_seed = opaque & head_region & hair_color & ~skin_mask & (~central_face | (yy < face_cy - 25))
+    helmeted_long_hair = "nightwyrm" in hair_kind or "sunshield" in hair_kind
+    hair_exclusion = skin_mask if helmeted_long_hair else skin_like
+    head_candidate = opaque & head_region & hair_color & ~hair_exclusion & (~central_face | (yy < face_cy - 25))
+    scalp_anchor = head_candidate & (np.abs(xx - face_cx) <= 55) & (yy >= face_cy - 96) & (yy <= face_cy - 18)
+    hair_seed = select_seeded_components(head_candidate, scalp_anchor, 5)
     hair_mask = hair_seed
     if "-long" in hair_kind:
         side_region = (yy >= face_cy - 82) & (yy <= face_cy + 155) & (np.abs(xx - face_cx) <= 165) & ((np.abs(xx - face_cx) >= 42) | (yy < face_cy - 18))
@@ -350,14 +438,12 @@ def appearance_masks(base: Image.Image, hair_kind: str) -> tuple[Image.Image, Im
             side_region &= xx >= face_cx + 36
         elif hair_kind.endswith("-left"):
             side_region &= xx <= face_cx - 36
-        candidate = opaque & side_region & hair_color & ~skin_mask & ~central_face
-        bridge = np.asarray(Image.fromarray((candidate.astype(np.uint8) * 255), "L").filter(ImageFilter.MaxFilter(7))) > 0
-        seed_zone = np.asarray(Image.fromarray((hair_seed.astype(np.uint8) * 255), "L").filter(ImageFilter.MaxFilter(11))) > 0
-        selected = np.zeros_like(candidate)
-        for component_y, component_x in connected_components(bridge):
-            if np.count_nonzero(seed_zone[component_y, component_x]) >= 4:
-                selected[component_y, component_x] = True
-        hair_mask = hair_seed | (candidate & selected)
+        if helmeted_long_hair:
+            side_region &= yy <= face_cy + 115
+        candidate = opaque & side_region & hair_color & ~hair_exclusion & ~central_face
+        hair_mask = hair_seed | (candidate if "-wide" in hair_kind else select_seeded_components(candidate, hair_seed, 7))
+    if hide_hair or np.count_nonzero(hair_mask) < 100:
+        hair_mask = np.zeros_like(hair_mask)
     skin_alpha = soften_mask(skin_mask, alpha)
     hair_alpha = soften_mask(hair_mask, alpha)
     luminance = (.299 * r + .587 * g + .114 * b)
@@ -451,6 +537,8 @@ def build(args: argparse.Namespace) -> None:
                     prepared[(class_id, family, tier_id)] = base
 
     for (class_id, family, tier_id), base in prepared.items():
+        base = cleanup_equipment_mattes(base, class_id, family)
+        prepared[(class_id, family, tier_id)] = base
         target = prepared_root / class_id / family / f"{tier_id}.png"
         target.parent.mkdir(parents=True, exist_ok=True)
         base.save(target)
@@ -465,7 +553,11 @@ def build(args: argparse.Namespace) -> None:
             for tier_id, tier_name, level_min, level_max in TIERS:
                 char_id = f"{class_id}-{family}-{tier_id}"
                 base = prepared[(class_id, family, tier_id)]
-                skin_mask, hair_mask = appearance_masks(base, hair_kind)
+                skin_mask, hair_mask = appearance_masks(
+                    base,
+                    hair_kind,
+                    hide_hair=tier_id in HIDDEN_HAIR_TIERS.get((class_id, family), set()),
+                )
                 action_name = "heal" if class_id == "healer" else "attack"
                 files = {}
                 for logical_state in STATE_NAMES:
@@ -500,7 +592,7 @@ def build(args: argparse.Namespace) -> None:
 
     catalog = {
         "schemaVersion": 2,
-        "characterSystem": "dragonswood-v5.2",
+        "characterSystem": "dragonswood-v5.3",
         "sourceCharacterCount": len(characters),
         "productionAssetCount": base_asset_count,
         "appearance": {

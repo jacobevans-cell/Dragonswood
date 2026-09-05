@@ -57,38 +57,18 @@ jobs:
         run: |
           set -euo pipefail
           if [ "$GITHUB_EVENT_NAME" = "push" ]; then
-            node - "$DEPLOY_REQUEST_FILE" "$FIREBASE_PROJECT_ID" "$GITHUB_ENV" <<'NODE'
-            const fs = require("node:fs");
-            const [requestPath, expectedProject, githubEnvPath] = process.argv.slice(2);
-            const allowed = new Set([
-              "verify",
-              "firestore-rules",
-              "grade-academic-answer",
-              "academic-ai-all",
-              "firestore-and-academic-ai"
-            ]);
-            let request;
-            try {
-              request = JSON.parse(fs.readFileSync(requestPath, "utf8"));
-            } catch {
-              console.error("Firebase deployment request is not valid JSON.");
-              process.exit(1);
-            }
-            if (request.schemaVersion !== 1 || request.projectId !== expectedProject || !allowed.has(request.target)) {
-              console.error("Firebase deployment request is invalid or targets the wrong project.");
-              process.exit(1);
-            }
-            if (request.target !== "verify" && request.confirmation !== "DEPLOY") {
-              console.error("Live deployment blocked. The request file must explicitly contain DEPLOY.");
-              process.exit(1);
-            }
-            fs.appendFileSync(githubEnvPath, `SELECTED_TARGET=${request.target}\n`);
-            console.log(`Approved Firebase action: ${request.target}`);
-            NODE
-            exit 0
+            request_schema="$(jq -r '.schemaVersion // empty' "$DEPLOY_REQUEST_FILE")"
+            request_project="$(jq -r '.projectId // empty' "$DEPLOY_REQUEST_FILE")"
+            selected_target="$(jq -r '.target // empty' "$DEPLOY_REQUEST_FILE")"
+            selected_confirmation="$(jq -r '.confirmation // empty' "$DEPLOY_REQUEST_FILE")"
+            if [ "$request_schema" != "1" ] || [ "$request_project" != "$FIREBASE_PROJECT_ID" ]; then
+              echo "Firebase deployment request is invalid or targets the wrong project."
+              exit 1
+            fi
+          else
+            selected_target="$REQUESTED_TARGET"
+            selected_confirmation="$DEPLOY_CONFIRMATION"
           fi
-
-          selected_target="$REQUESTED_TARGET"
 
           case "$selected_target" in
             verify|firestore-rules|grade-academic-answer|academic-ai-all|firestore-and-academic-ai) ;;
@@ -98,7 +78,7 @@ jobs:
               ;;
           esac
 
-          if [ "$selected_target" != "verify" ] && [ "$DEPLOY_CONFIRMATION" != "DEPLOY" ]; then
+          if [ "$selected_target" != "verify" ] && [ "$selected_confirmation" != "DEPLOY" ]; then
             echo "Live deployment blocked. Enter DEPLOY in the confirmation field."
             exit 1
           fi

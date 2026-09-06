@@ -66,7 +66,7 @@ service cloud.firestore {
               && request.resource.data.characterV5Affinity in ['radiant','shadow']
               && request.resource.data.characterV5ClassId in ['warrior','ranger','mage','healer']
               && request.resource.data.characterV5SkinTone in ['light','medium','deep']
-              && request.resource.data.characterV5HairColor in ['dark','brown','silver']
+              && request.resource.data.characterV5HairColor in ['black','brown','white','purple','dark','silver']
               && request.resource.data.characterV5SelectedAt == request.time)
             || (request.resource.data.characterSystemVersion in ['','legacy']
               && request.resource.data.characterV5Gender == ''

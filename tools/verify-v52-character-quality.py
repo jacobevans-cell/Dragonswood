@@ -15,7 +15,7 @@ from PIL import Image
 EXPECTED_FRAMES = {"static": 1, "idle": 4, "walk-left": 6, "walk-right": 6, "attack": 5, "heal": 5, "hurt": 4, "happy": 6, "celebrate": 8}
 TIERS = ("starter", "level-05", "level-10", "level-15", "level-20")
 SKINS = ("light", "medium", "deep")
-HAIRS = ("dark", "brown", "silver")
+HAIRS = ("black", "brown", "white", "purple")
 HIDDEN_HAIR_IDS = {
     "warrior-dawnscale-level-10",
     "warrior-dawnscale-level-15",
@@ -72,6 +72,8 @@ def main() -> None:
         failures.append(f"Catalog has {catalog.get('productionAssetCount')} base assets, expected 640.")
     if catalog.get("appearance", {}).get("wrapperAssetCount") != 0:
         failures.append("Catalog still reports obsolete SVG appearance wrappers.")
+    if catalog.get("appearance", {}).get("hairColors") != list(HAIRS):
+        failures.append(f"Catalog hair colors are {catalog.get('appearance', {}).get('hairColors')}, expected {list(HAIRS)}.")
 
     by_family: dict[tuple[str, str], dict[str, Path]] = {}
     for character in catalog.get("characters", []):

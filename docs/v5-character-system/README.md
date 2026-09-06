@@ -9,7 +9,7 @@ The tester flow is:
 1. Existing V5 choice is treated as reset.
 2. Choose `male` or `female` first.
 3. Compare eight characters: Radiant and Shadow versions of Warrior, Ranger, Mage, and Healer.
-4. Choose one of three skin tones and one of three hair colors, then confirm.
+4. Choose one of three skin tones and one of four hair colors, then confirm.
 5. The chosen class and animated character replace the legacy visual in Adventurer Hall, the student portal, Daily Boss, and Kingdom Wars.
 6. The character automatically changes visual tier at Levels 5, 10, 15, and 20.
 
@@ -23,11 +23,13 @@ characterV5Gender: "male" | "female" | ""
 characterV5Affinity: "radiant" | "shadow" | ""
 characterV5ClassId: "warrior" | "ranger" | "mage" | "healer" | ""
 characterV5SkinTone: "light" | "medium" | "deep" | ""
-characterV5HairColor: "dark" | "brown" | "silver" | ""
+characterV5HairColor: "black" | "brown" | "white" | "purple" | ""
 characterV5SelectedAt: timestamp | null
 ```
 
 `classId` remains the rollback source of truth. V5 gameplay uses `DWRPG.characterClassId(profile)` so the selected V5 class is effective everywhere without destroying the legacy class.
+
+Existing tester values migrate safely at runtime: `dark` maps to Black and `silver` maps to the silver-white option. Firestore temporarily accepts those two aliases so an older saved tester profile can be recolored without a broken state; the UI exposes only Black, Brown, White, and Purple.
 
 ## Level tiers
 
@@ -86,8 +88,8 @@ Expected result:
 ```json
 {
   "passed": true,
-  "profiles": 720,
-  "checkedFiles": 6480,
+  "profiles": 960,
+  "checkedFiles": 8640,
   "catalogCharacters": 80,
   "productionAssets": 640,
   "failures": []

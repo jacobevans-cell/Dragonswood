@@ -113,11 +113,11 @@ Implemented:
 - Single-canvas renderer with one shared frame clock, so the base, skin, and hair cannot drift apart
 - Class-specific warrior slash, ranger arrow, mage spell, and healer cast animations
 - Scalp-anchored hair masks, explicit armored-face anchors, full long-hair coverage, preserved source shading, and no equipment tint spill
-- Three skin tones and three hair colors, selected after gender and class/path
+- Three skin tones and four hair colors (Black, Brown, silver-white, and Purple), selected after gender and class/path
 - Live replacement in Adventurer Hall, student portal, Daily Boss, and Kingdom Wars
 - Additive Firestore fields and narrow owner/email rules
 - Per-account legacy rollback and one-switch global rollback
-- No-write visual preview, automated 720-profile appearance integration verification, and V5.3 visual-quality gates
+- No-write visual preview, automated 960-profile appearance integration verification, and V5.3 visual-quality gates
 
 The patch deliberately preserves all legacy assets and profile fields. Read `game-patch/docs/v5-character-system/README.md` before promotion.
 """
@@ -129,7 +129,7 @@ The patch deliberately preserves all legacy assets and profile fields. Read `gam
             "testerEmail": "jacobicusjax@gmail.com",
             "deployedCommit": args.deployed_commit,
             "rollbackTag": args.rollback_tag,
-            "runtimeVersion": "56.32-v5.3.8-tester",
+            "runtimeVersion": "56.33-v5.3.9-tester",
             "masterHandoffEntriesBeforePatch": master_entries,
             "gamePatchFiles": len(rows),
             "sourceArtMasters": len(master_rows),
@@ -138,8 +138,8 @@ The patch deliberately preserves all legacy assets and profile fields. Read `gam
             "appearanceWrappers": 0,
             "appearanceRenderer": "DWRPG.renderV5Character",
             "validation": {
-                "profiles": 720,
-                "checkedPaths": 6480,
+                "profiles": 960,
+                "checkedPaths": 8640,
                 "happyFramesChecked": 320,
                 "dawnscaleWalkTiersChecked": 4,
                 "idleLoopsChecked": 80,

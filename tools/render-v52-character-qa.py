@@ -11,7 +11,12 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 SKINS = {"light": (232, 174, 139), "medium": (176, 103, 70), "deep": (105, 63, 52)}
-HAIRS = {"dark": (34, 29, 43), "brown": (91, 55, 38), "silver": (185, 194, 210)}
+HAIRS = {
+    "black": (28, 25, 35),
+    "brown": (105, 62, 43),
+    "white": (214, 221, 235),
+    "purple": (105, 69, 148),
+}
 
 
 def read_frame(path: Path, index: int = 0) -> Image.Image:
@@ -42,15 +47,15 @@ def make_action_appearance_sheet(repo: Path, output: Path, class_id: str, char_i
     sheet = Image.new("RGBA", (5 * 330, 360), (15, 11, 42, 255))
     draw = ImageDraw.Draw(sheet)
     for index in range(5):
-        art = appearance(repo, class_id, char_id, action, "deep", "silver", index)
+        art = appearance(repo, class_id, char_id, action, "deep", "white", index)
         sheet.alpha_composite(art, (index * 330 + 5, 26))
-        draw.text((index * 330 + 8, 7), f"{action} frame {index} / deep + silver", fill=(255, 228, 130, 255), font=font)
+        draw.text((index * 330 + 8, 7), f"{action} frame {index} / deep + silver-white", fill=(255, 228, 130, 255), font=font)
     sheet.convert("RGB").save(output / f"{char_id}-{action}-appearance.jpg", quality=94)
 
 
 def make_appearance_sheet(repo: Path, output: Path, class_id: str, char_id: str) -> None:
     font = ImageFont.load_default()
-    sheet = Image.new("RGBA", (3 * 340, 3 * 360), (15, 11, 42, 255))
+    sheet = Image.new("RGBA", (len(HAIRS) * 340, len(SKINS) * 360), (15, 11, 42, 255))
     draw = ImageDraw.Draw(sheet)
     for row, skin in enumerate(SKINS):
         for col, hair in enumerate(HAIRS):
@@ -109,6 +114,9 @@ def main() -> None:
     make_motion_sheet(repo, output, "mage", "mage-starfire-level-20")
     make_motion_sheet(repo, output, "healer", "healer-dawnkeeper-level-20")
     make_action_appearance_sheet(repo, output, "warrior", "warrior-dawnscale-level-20")
+    make_action_appearance_sheet(repo, output, "ranger", "ranger-sunleaf-starter")
+    make_action_appearance_sheet(repo, output, "mage", "mage-celestial-level-15")
+    make_action_appearance_sheet(repo, output, "healer", "healer-dawnkeeper-level-20")
     print(output)
 
 

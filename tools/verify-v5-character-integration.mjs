@@ -72,6 +72,9 @@ if(R.resolveV5Character(outsider)!==null)failures.push('A non-tester account res
 if(R.characterClassId(outsider)!=='mage')failures.push('A non-tester account escaped its legacy class through V5 fields.');
 if(!R.isV5Tester({email:' JACOBICUSJAX@GMAIL.COM '}))failures.push('Tester email normalization failed.');
 if(R.isV5Tester({email:'jacobicusjax@gmail.com.example'}))failures.push('Tester email matching was not exact.');
+if(JSON.stringify(Object.keys(R.v5HairColors))!==JSON.stringify(['black','brown','white','purple']))failures.push('Hair options are not exactly Black, Brown, White, and Purple.');
+if(R.v5HairColor({characterV5HairColor:'dark'})!=='black')failures.push('Legacy dark hair did not migrate to Black.');
+if(R.v5HairColor({characterV5HairColor:'silver'})!=='white')failures.push('Legacy silver hair did not migrate to White.');
 
 const disabledContext={window:{DRAGONSWOOD_PET_REGISTRY:[]},Intl,Date,Math,Number,String,Array,Object,Set,Map};
 vm.createContext(disabledContext);

@@ -4,7 +4,7 @@
 The generated progression sheets are treated as immutable source art. This script
 removes real or baked backgrounds, extracts the five level tiers, normalizes every
 character to a safe stage, creates state-specific motion, and emits synchronized
-tint layers for three skin tones by three hair colors.
+tint layers for three skin tones by four hair colors.
 """
 
 from __future__ import annotations
@@ -64,9 +64,10 @@ SKIN_COLORS = {
 }
 
 HAIR_COLORS = {
-    "dark": (34, 29, 43),
-    "brown": (91, 55, 38),
-    "silver": (185, 194, 210),
+    "black": (28, 25, 35),
+    "brown": (105, 62, 43),
+    "white": (214, 221, 235),
+    "purple": (105, 69, 148),
 }
 
 AFFINITY_COLORS = {"radiant": (255, 211, 89, 225), "shadow": (147, 92, 255, 225)}
@@ -283,7 +284,11 @@ def star(draw: ImageDraw.ImageDraw, x: float, y: float, radius: float, color: tu
 
 
 def add_effects(frame: Image.Image, state: str, index: int, total: int, class_id: str, affinity: str, seed: int) -> Image.Image:
-    result = frame.copy()
+    # Attack effects live behind the character. Drawing them onto the finished
+    # sprite put arrows, sword trails, spell circles, and healing rings across
+    # faces and torsos. The transformed body is composited last so it naturally
+    # occludes every effect pixel that would otherwise pass through it.
+    result = Image.new("RGBA", frame.size) if state == "attack" else frame.copy()
     draw = ImageDraw.Draw(result, "RGBA")
     accent = CLASS_COLORS[class_id]
     path = AFFINITY_COLORS[affinity]
@@ -296,30 +301,33 @@ def add_effects(frame: Image.Image, state: str, index: int, total: int, class_id
                 draw.ellipse((320 - radius // 2, 350 - radius // 6, 320 + radius // 2, 350 + radius // 6), outline=accent, width=5)
                 star(draw, 320, 235 - index * 7, 14 + index * 3, path)
         elif class_id == "warrior" and index in (1, 2, 3):
-            # A compact diagonal sword trail crosses the weapon/body instead of
-            # floating as a disconnected semicircle beside the character.
+            # A compact diagonal trail stays on the weapon side. The character
+            # is composited over it below, so the trail cannot cross the body.
             shift = (index - 2) * 16
-            slash = [(560 + shift, 440), (525 + shift, 395), (490 + shift, 355), (455 + shift, 320), (420 + shift, 285)]
+            slash = [(580 + shift, 455), (545 + shift, 410), (510 + shift, 370), (475 + shift, 335), (440 + shift, 305)]
             draw.line(slash, fill=(*path[:3], 105), width=28, joint="curve")
             draw.line(slash, fill=path, width=12, joint="curve")
             draw.line([(x - 12, y + 18) for x, y in slash], fill=accent, width=5, joint="curve")
             if index == 2:
                 star(draw, slash[-1][0], slash[-1][1], 18, path)
         elif class_id == "ranger" and index in (1, 2, 3):
-            # Fast arrow streak with a clear release/impact beat.
-            x0 = 350 + (index - 1) * 34
-            y0 = 276 - (index - 1) * 18
-            draw.line((x0 - 92, y0 + 22, x0 + 92, y0 - 22), fill=(*path[:3], 95), width=20)
-            draw.line((x0 - 82, y0 + 19, x0 + 92, y0 - 22), fill=path, width=7)
-            draw.polygon(((x0 + 106, y0 - 25), (x0 + 76, y0 - 34), (x0 + 86, y0 - 8)), fill=accent)
+            # Fire outward from the bow side instead of horizontally through
+            # the chest. Body occlusion preserves a clean release point.
+            travel = index - 1
+            tail_x, head_x = 305 - travel * 36, 92 - travel * 32
+            y0 = 302 - travel * 12
+            draw.line((tail_x, y0 - 18, head_x, y0 + 18), fill=(*path[:3], 95), width=20)
+            draw.line((tail_x, y0 - 18, head_x, y0 + 18), fill=path, width=7)
+            draw.polygon(((head_x - 18, y0 + 21), (head_x + 14, y0 + 4), (head_x + 8, y0 + 32)), fill=accent)
         elif class_id == "mage" and index in (1, 2, 3):
             radius = 28 + index * 13
-            cx, cy = 426 + (index - 2) * 20, 248 - (index - 2) * 10
+            cx, cy = 510 + (index - 2) * 18, 315 - (index - 2) * 8
             draw.ellipse((cx - radius, cy - radius, cx + radius, cy + radius), fill=(*path[:3], 72), outline=path, width=8)
             draw.ellipse((cx - radius // 2, cy - radius // 2, cx + radius // 2, cy + radius // 2), outline=accent, width=6)
             for angle in range(0, 360, 60):
                 radians = math.radians(angle)
                 star(draw, cx + math.cos(radians) * (radius + 18), cy + math.sin(radians) * (radius + 18), 8, path)
+        result.alpha_composite(frame)
     elif state == "hurt" and index in (1, 2):
         flash = Image.new("RGBA", result.size, (255, 72, 85, 0))
         flash.putalpha(result.getchannel("A").point(lambda a: int(a * .32)))
@@ -458,7 +466,12 @@ def appearance_masks(
         # Keeping them out preserves the original linework and stops connected
         # helmet contours from becoming a recolorable hair region.
         if "sunleaf" in hair_kind:
-            hair_color = ((hue <= 68) | (hue >= 335)) & (sat > .04) & (value >= 8) & (value < 215)
+            # Sunleaf uses layered brown curls with neutral/dark strand pixels.
+            # Restricting the mask to saturated brown left obvious brown islands
+            # inside Silver hair, so include those neutral strand shadows too.
+            warm_strand = ((hue <= 68) | (hue >= 325)) & (value >= 3) & (value < 225)
+            neutral_strand = (sat <= .16) & (value >= 3) & (value < 138)
+            hair_color = warm_strand | neutral_strand
         elif "nightwyrm" in hair_kind:
             hair_color = ((hue <= 70) | (hue >= 335)) & (sat > .02) & (value >= 3) & (value < 210)
         elif "sunshield" in hair_kind:
@@ -469,10 +482,17 @@ def appearance_masks(
         hair_color = (value < 145) & ((sat > .08) | (value < 75))
     central_face = ((xx - face_cx) / 49) ** 2 + ((yy - face_cy) / 47) ** 2 <= 1
     helmeted_long_hair = "nightwyrm" in hair_kind or "sunshield" in hair_kind
-    hair_exclusion = skin_mask if helmeted_long_hair else skin_like
+    if "sunleaf" in hair_kind:
+        # Warm brown curls overlap the broad skin-color range. Excluding every
+        # skin-like source pixel is what left brown islands in Silver hair.
+        # Protect the real face/nearby limbs while allowing warm hair pixels.
+        limb_skin = skin_like & (yy >= face_cy + 25) & (np.abs(xx - face_cx) <= 105)
+        hair_exclusion = skin_mask | limb_skin
+    else:
+        hair_exclusion = skin_mask if helmeted_long_hair else skin_like
     head_candidate = opaque & head_region & hair_color & ~hair_exclusion & (~central_face | (yy < face_cy - 25))
     scalp_anchor = head_candidate & (np.abs(xx - face_cx) <= 55) & (yy >= face_cy - 96) & (yy <= face_cy - 18)
-    hair_seed = select_seeded_components(head_candidate, scalp_anchor, 5)
+    hair_seed = select_seeded_components(head_candidate, scalp_anchor, 21 if "sunleaf" in hair_kind else 5)
     hair_mask = hair_seed
     if "-long" in hair_kind:
         side_span = 235 if "sunleaf" in hair_kind else 165
@@ -488,16 +508,30 @@ def appearance_masks(
         # Long-hair masks must remain connected to the detected scalp. Taking
         # every color match in the side region recolored bows, staffs, armor,
         # capes, and headdresses in the same palette.
-        hair_mask = hair_seed | select_seeded_components(candidate, hair_seed, 5)
+        hair_mask = hair_seed | select_seeded_components(candidate, hair_seed, 25 if "sunleaf" in hair_kind else 5)
         if "sunleaf" in hair_kind:
             # The Ascendant curls contain very dark internal strand pixels that
             # have unreliable hue. Fill only small gaps touching a trusted hair
             # pixel, clipped to the opaque semantic hair region, so silver does
             # not leave brown islands and never bleeds into the background.
-            expanded_hair = np.asarray(
-                Image.fromarray((hair_mask.astype(np.uint8) * 255), "L").filter(ImageFilter.MaxFilter(5))
-            ) > 0
-            hair_mask |= expanded_hair & opaque & (head_region | side_region) & ~skin_like & ~central_face
+            layer = Image.fromarray((hair_mask.astype(np.uint8) * 255), "L")
+            closed_hair = np.asarray(layer.filter(ImageFilter.MaxFilter(11)).filter(ImageFilter.MinFilter(11))) > 0
+            expanded_hair = np.asarray(layer.filter(ImageFilter.MaxFilter(5))) > 0
+            strong_costume_color = (hue >= 70) & (hue <= 220) & (sat > .20)
+            safe_hair_region = opaque & (head_region | side_region) & ~hair_exclusion & ~central_face & ~strong_costume_color
+            hair_mask |= (closed_hair | expanded_hair) & safe_hair_region
+            # Grow through larger internal strand gaps, but never beyond opaque
+            # pixels in the semantic hair envelope. This removes the patchwork
+            # brown islands without recreating the old exterior glow.
+            grown_hair = hair_mask.copy()
+            for _ in range(4):
+                grown_hair = (
+                    np.asarray(
+                        Image.fromarray((grown_hair.astype(np.uint8) * 255), "L").filter(ImageFilter.MaxFilter(5))
+                    )
+                    > 0
+                ) & safe_hair_region
+            hair_mask |= grown_hair
     if hide_hair or np.count_nonzero(hair_mask) < 100:
         hair_mask = np.zeros_like(hair_mask)
     skin_alpha = soften_mask(skin_mask, alpha)

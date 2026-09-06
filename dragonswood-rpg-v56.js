@@ -198,9 +198,10 @@
   function normalizedEmail(value){return String(value||"").trim().toLowerCase()}
   function isV5Tester(profile={},email=""){return v5Config.enabled&&normalizedEmail(email||profile.email)===v5Config.testerEmail}
   const v5SkinTones=Object.freeze({light:{name:"Light",color:"#e8ae8b"},medium:{name:"Medium",color:"#b06746"},deep:{name:"Deep",color:"#693f34"}});
-  const v5HairColors=Object.freeze({dark:{name:"Dark",color:"#221d2b"},brown:{name:"Brown",color:"#5b3726"},silver:{name:"Silver",color:"#b9c2d2"}});
+  const v5HairColors=Object.freeze({black:{name:"Black",color:"#1c1923"},brown:{name:"Brown",color:"#693e2b"},white:{name:"White",color:"#d6ddeb"},purple:{name:"Purple",color:"#694594"}});
+  const v5HairAliases=Object.freeze({dark:"black",silver:"white"});
   function v5SkinTone(profile={}){return Object.hasOwn(v5SkinTones,String(profile.characterV5SkinTone||""))?String(profile.characterV5SkinTone):"medium"}
-  function v5HairColor(profile={}){return Object.hasOwn(v5HairColors,String(profile.characterV5HairColor||""))?String(profile.characterV5HairColor):"dark"}
+  function v5HairColor(profile={}){const saved=String(profile.characterV5HairColor||"");return Object.hasOwn(v5HairColors,saved)?saved:(v5HairAliases[saved]||"black")}
   function hasV5Selection(profile={}){return profile.characterSystemVersion==="v5"&&["male","female"].includes(profile.characterV5Gender)&&["radiant","shadow"].includes(profile.characterV5Affinity)&&Object.hasOwn(classes,String(profile.characterV5ClassId||""))}
   function v5SelectionRequired(profile={},email=""){return isV5Tester(profile,email)&&!hasV5Selection(profile)}
   function characterClassId(profile={}){return isV5Tester(profile)&&hasV5Selection(profile)?String(profile.characterV5ClassId):String(profile.classId||"")}
@@ -283,7 +284,7 @@
     const observer=new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(node=>{if(node.nodeType===1)v5HydrateRoot(node)})));observer.observe(doc.documentElement,{childList:true,subtree:true});v5HydrateRoot(doc);
   }
   function v5Markup(pack,state="idle",options={}){
-    if(!pack?.v5)return "";ensureV5Renderer(options.document||window.document);const paths=v5StatePaths(pack,state,options),label=v5Attr(options.alt||pack.name||"V5 adventurer"),skin=Object.hasOwn(v5SkinTones,pack.skinTone)?pack.skinTone:"medium",hair=Object.hasOwn(v5HairColors,pack.hairColor)?pack.hairColor:"dark",extra=v5Attr(options.className||""),timeline=v5MotionTimeline(pack,state).join(",");
+    if(!pack?.v5)return "";ensureV5Renderer(options.document||window.document);const paths=v5StatePaths(pack,state,options),label=v5Attr(options.alt||pack.name||"V5 adventurer"),skin=Object.hasOwn(v5SkinTones,pack.skinTone)?pack.skinTone:"medium",hair=Object.hasOwn(v5HairColors,pack.hairColor)?pack.hairColor:"black",extra=v5Attr(options.className||""),timeline=v5MotionTimeline(pack,state).join(",");
     return `<span class="dw-v5-character${extra?` ${extra}`:""}" role="img" aria-label="${label}"><canvas class="dw-v5-canvas" width="320" height="320" aria-hidden="true" data-base="${v5Attr(paths.base)}" data-skin="${v5Attr(paths.skin)}" data-hair="${v5Attr(paths.hair)}" data-skin-color="${v5Attr(v5SkinTones[skin].color)}" data-hair-color="${v5Attr(v5HairColors[hair].color)}" data-timeline="${timeline}"></canvas></span>`;
   }
   function renderV5Character(host,pack,state="idle",options={}){if(!host||!pack?.v5)return false;host.innerHTML=v5Markup(pack,state,options);v5HydrateRoot(host);return true}
@@ -292,5 +293,5 @@
   function inventory(profile={}){return Array.isArray(profile.rpgInventory)?profile.rpgInventory.map(String):[]}
   function dailyXp(profile={}){return String(profile.dailyXpDate||"")===dateKey()?Math.max(0,Math.min(150,Number(profile.dailyXpEarned)||0)):0}
 
-  window.DWRPG={classes,pets,prestigePets,petRegistry,enemies,items,appearancePacks,v5Config,v5Families,v5Tiers,v5SkinTones,v5HairColors,v5SkinTone,v5HairColor,dateKey,levelForXp,hash,dailyEnemy,canonicalPetId,resolvePet,isV5Tester,hasV5Selection,v5SelectionRequired,characterClassId,v5TierForLevel,resolveV5Character,v5StatePaths,v5MotionTimeline,v5Markup,renderV5Character,ensureV5Renderer,resolveAppearance,resolveBackground,inventory,dailyXp,version:"56.32-v5.3.8-tester"};
+  window.DWRPG={classes,pets,prestigePets,petRegistry,enemies,items,appearancePacks,v5Config,v5Families,v5Tiers,v5SkinTones,v5HairColors,v5SkinTone,v5HairColor,dateKey,levelForXp,hash,dailyEnemy,canonicalPetId,resolvePet,isV5Tester,hasV5Selection,v5SelectionRequired,characterClassId,v5TierForLevel,resolveV5Character,v5StatePaths,v5MotionTimeline,v5Markup,renderV5Character,ensureV5Renderer,resolveAppearance,resolveBackground,inventory,dailyXp,version:"56.33-v5.3.9-tester"};
 })();

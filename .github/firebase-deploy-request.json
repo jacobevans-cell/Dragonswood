@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "requestId": "initial-access-verification",
+  "requestId": "v5-3-9-hair-rules-20260905",
   "projectId": "dragonswood-9289e",
-  "target": "verify",
-  "confirmation": ""
+  "target": "firestore-rules",
+  "confirmation": "DEPLOY"
 }

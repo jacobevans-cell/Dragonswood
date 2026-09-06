@@ -13,14 +13,28 @@ import { KEEPER4_META } from "./books/keeper-4/meta.js?v=1";
 import { HARRY_POTTER_META } from "./books/harry-potter/meta.js?v=1";
 import { WONDER_META } from "./books/wonder/meta.js?v=1";
 import { WILD_ROBOT_1_META } from "./books/wild-robot-1/meta.js?v=1";
+import { WILD_ROBOT_2_META } from "./books/wild-robot-2/meta.js?v=1";
+import { WILD_ROBOT_3_META } from "./books/wild-robot-3/meta.js?v=1";
 import { GENERATED_TESTS } from "./assessment-tests.generated.js?v=20260901-1";
 import { HARRY_POTTER_TESTS } from "./assessment-tests-harry-potter.generated.js?v=1";
 import { PERCY4_TESTS } from "./assessment-tests-percy-jackson-4.generated.js?v=1";
 import { PERCY5_TESTS } from "./assessment-tests-percy-jackson-5.generated.js?v=1";
 import { WONDER_TESTS } from "./assessment-tests-wonder.generated.js?v=1";
 import { WILD_ROBOT_1_TESTS } from "./assessment-tests-wild-robot-1.generated.js?v=1";
+import { WILD_ROBOT_2_TESTS } from "./assessment-tests-wild-robot-2.generated.js?v=1";
+import { WILD_ROBOT_3_TESTS } from "./assessment-tests-wild-robot-3.generated.js?v=1";
 
 export const CHAPTER_MAPS = {
+  "wild-robot-3": {
+    editionPages: WILD_ROBOT_3_META.pages,
+    verified: true,
+    chapters: WILD_ROBOT_3_META.chapters
+  },
+  "wild-robot-2": {
+    editionPages: WILD_ROBOT_2_META.pages,
+    verified: true,
+    chapters: WILD_ROBOT_2_META.chapters
+  },
   "wild-robot-1": {
     editionPages: WILD_ROBOT_1_META.pages,
     verified: true,
@@ -315,5 +329,7 @@ export const STARTER_TESTS = {
   ...PERCY4_TESTS,
   ...PERCY5_TESTS,
   ...WONDER_TESTS,
-  ...WILD_ROBOT_1_TESTS
+  ...WILD_ROBOT_1_TESTS,
+  ...WILD_ROBOT_2_TESTS,
+  ...WILD_ROBOT_3_TESTS
 };

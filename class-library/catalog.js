@@ -13,6 +13,8 @@ import { KEEPER4_META } from "./books/keeper-4/meta.js?v=1";
 import { HARRY_POTTER_META } from "./books/harry-potter/meta.js?v=1";
 import { WONDER_META } from "./books/wonder/meta.js?v=1";
 import { WILD_ROBOT_1_META } from "./books/wild-robot-1/meta.js?v=1";
+import { WILD_ROBOT_2_META } from "./books/wild-robot-2/meta.js?v=1";
+import { WILD_ROBOT_3_META } from "./books/wild-robot-3/meta.js?v=1";
 
 export const BOOKS = [
   {
@@ -272,7 +274,7 @@ export const BOOKS = [
     author: "Peter Brown",
     category: "Adventure",
     teaser: "Roz has been taken away from the island and placed on a farm where people expect her to behave like an ordinary machine. She must understand her new home while quietly searching for a way back to the family she chose. Start here after The Wild Robot.",
-    pages: 253,
+    pages: WILD_ROBOT_2_META.pages,
     cover: "class-library/covers/classroom/wild-robot-2-classroom.jpg",
     file: "class-library/books/wild-robot-2-escapes.pdf",
     badge: "Wild Robot · 2"
@@ -286,7 +288,7 @@ export const BOOKS = [
     author: "Peter Brown",
     category: "Adventure",
     teaser: "A threat spreading through the ocean reaches Roz's island and puts many kinds of animals in danger. Solving it will require travel, cooperation, and choices no single creature can make alone. Start here after The Wild Robot Escapes.",
-    pages: 236,
+    pages: WILD_ROBOT_3_META.pages,
     cover: "class-library/covers/classroom/wild-robot-3-classroom.jpg",
     file: "class-library/books/wild-robot-3-protects.pdf",
     badge: "Wild Robot · 3"

@@ -1,7 +1,7 @@
 import * as pdfjsLib from "./vendor/pdf.mjs";
-import { BOOKS } from "./catalog.js?v=20260905-5";
+import { BOOKS } from "./catalog.js?v=20260905-7";
 import { CLASSROOM_DICTIONARY } from "./dictionary/classroom.js?v=20260831-16";
-import { CHAPTER_MAPS } from "./assessment-data.js?v=20260905-5";
+import { CHAPTER_MAPS } from "./assessment-data.js?v=20260905-7";
 import {
   emptyStudentState,
   gradeSummary,
@@ -17,7 +17,7 @@ import {
   assignStudentBook,
   forceStudentChapter,
   unlockStudentBook
-} from "./assessment-store.js?v=20260905-5";
+} from "./assessment-store.js?v=20260905-7";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL("./vendor/pdf.worker.mjs", import.meta.url).href;
 

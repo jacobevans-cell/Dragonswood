@@ -18,8 +18,7 @@
   D.morphology.forEach(row=>{if(lessons[row.id])Object.assign(row,lessons[row.id])});
 })();
 
-/* Day 26 live curriculum overrides: morphology video, Character Case Files, Quickwrite. */
-(function(){
+(function installDay26Curriculum(){
   const D=window.DRAGONSWOOD_DATA;
   if(!D||!Array.isArray(D.items))return;
   const yt="https://www.youtube.com/watch?v=60IcoXhBouU";
@@ -43,7 +42,7 @@
     {prompt:"How can morphology help with academic vocabulary?",choices:["It helps readers use known word parts to unlock unfamiliar words","It eliminates the need to know word meanings","It only helps with one-syllable words","It works only for spelling names"],answer:"It helps readers use known word parts to unlock unfamiliar words"}
   ];
   const caseFile={
-    id:"day26-missing-championship-banner-v1",
+    id:"day26-missing-championship-banner-v2",
     title:"THE CHARACTER CASE FILES • THE MISSING CHAMPIONSHIP BANNER",
     report:[
       "At 2:48 p.m., the school's signed championship banner was hanging inside the locked trophy hallway display. At 3:12 p.m., the banner was gone.",
@@ -51,30 +50,33 @@
       "A rolling art cart was parked beside the display at 3:05. One corner of the missing banner has a small silver paint smear. Build a theory from the timeline and evidence, not a guess."
     ],
     characters:[
-      {id:"priya",name:"Priya Shah",role:"Student Council Photographer",color:"#4a67a1",questions:[
-        {q:"When did you see the banner?",a:"I photographed the awards display from about 2:50 until 3:00. The banner was still there when I left."},
-        {q:"Who arrived next?",a:"Mateo came through with the art cart just as I was leaving."},
-        {q:"Did you touch the case?",a:"No. I only took pictures from the hallway side."}
+      {id:"priya",name:"Priya Shah",role:"Student Council Photographer",color:"#4a67a1",image:"assets/character-case/priya.png",questions:[
+        {q:"When did you first see the banner?",a:"I started photographing the awards display at about 2:50. The banner was definitely still inside the case then."},
+        {q:"How long were you in the hallway?",a:"Until almost 3:00. I took photos from a few angles, but I never opened or touched the display."},
+        {q:"Who did you see near the display?",a:"Mateo came through pushing the art cart just as I was leaving. I remember because the cart nearly bumped my camera bag."},
+        {q:"Did anything look unusual?",a:"Not while I was there. The lower panel looked normal to me, and the banner was still hanging straight."}
       ]},
-      {id:"mateo",name:"Mateo Ruiz",role:"Art Club Helper",color:"#8b5a2b",questions:[
-        {q:"Why were you in the hallway?",a:"I rolled the art cart through around 3:03. One wheel got stuck beside the display, so I stopped for about a minute."},
-        {q:"What was on the cart?",a:"Pep-rally supplies, blue painter's tape, and silver poster paint."},
-        {q:"Did you open the display?",a:"No. I never opened the glass door."}
+      {id:"mateo",name:"Mateo Ruiz",role:"Art Club Helper",color:"#8b5a2b",image:"assets/character-case/eli-chen.jpg",questions:[
+        {q:"Why were you in the trophy hallway?",a:"I was moving the art cart from the art room to the gym for pep-rally decorating. I got there around 3:03."},
+        {q:"Why did you stop beside the display?",a:"The front wheel caught on something near the case, so I stopped and pulled the cart backward for about a minute."},
+        {q:"What supplies were on the cart?",a:"Poster board, blue painter's tape, brushes, and silver poster paint. We were making signs for the pep rally."},
+        {q:"Did you touch the display or banner?",a:"I never opened the glass door. I did kneel down beside the cart to free the wheel, but I didn't take the banner."}
       ]},
-      {id:"tessa",name:"Tessa Morgan",role:"Volleyball Team Manager",color:"#7d3d72",questions:[
-        {q:"When were you in the hallway?",a:"Around 3:08. I was looking for Coach Reyes."},
-        {q:"What did you notice?",a:"The art cart was still beside the display. I remember the lower panel looked slightly crooked."},
-        {q:"Did you take the banner?",a:"No. I left through the gym doors a couple of minutes later."}
+      {id:"tessa",name:"Tessa Morgan",role:"Volleyball Team Manager",color:"#7d3d72",image:"assets/character-case/nia-brooks.jpg",questions:[
+        {q:"When were you in the hallway?",a:"A little after 3:08. I was looking for Coach Reyes because I needed the equipment-room key."},
+        {q:"What did you notice near the trophy display?",a:"The art cart was still parked close to it. The lower ventilation panel looked crooked, like one corner wasn't sitting flat."},
+        {q:"Did you see the championship banner?",a:"I didn't really look through the glass. I was focused on finding Coach Reyes and left through the gym doors a couple minutes later."},
+        {q:"Did you touch the cart or the display?",a:"No. I walked around the cart because it was partly blocking the hallway, but I didn't move anything."}
       ]}
     ],
     quiz:[
       {q:"Which clue most strongly suggests the banner could be removed without opening the glass door?",choices:["The removable lower ventilation panel","Priya's camera","The locked glass door","The gym doors"],correct:0,explain:"The removable lower panel provides another possible way to reach inside the display."},
       {q:"Which evidence connects Mateo's art supplies to the scene?",choices:["Blue painter's tape and silver paint match clues near the display and on the banner","Priya took photographs","Tessa looked for Coach Reyes","The case was locked"],correct:0,explain:"The tape and silver paint directly match physical clues from the scene."},
-      {q:"Which statement is best supported by the evidence?",choices:["The glass door probably was not used","Priya definitely stole the banner","Tessa broke the case","The banner vanished before 2:50"],correct:0,explain:"The door stayed locked and undamaged, so another access point is more likely."},
-      {q:"Who had the strongest combination of opportunity and matching physical evidence?",choices:["Mateo","Priya","Tessa","Coach Reyes"],correct:0,explain:"Mateo stopped beside the display with an art cart carrying both blue tape and silver paint, matching two scene clues."},
-      {q:"What is the strongest theory?",choices:["Mateo likely used the removable lower panel while stopped with the art cart, and the tape/paint evidence connects his supplies to the removal","Priya broke the glass with her camera","Tessa opened the locked case with no key","The banner removed itself"],correct:0,explain:"That theory fits the access point, timeline, opportunity, and matching physical evidence."}
+      {q:"Which witness gives evidence that the lower panel changed after Priya left?",choices:["Tessa","Priya","Coach Reyes","No one"],correct:0,explain:"Priya says the panel looked normal before 3:00, while Tessa later says it looked crooked."},
+      {q:"Who had the strongest combination of opportunity and matching physical evidence?",choices:["Mateo","Priya","Tessa","Coach Reyes"],correct:0,explain:"Mateo stopped beside the display with supplies matching two scene clues during the key time window."},
+      {q:"What is the strongest theory?",choices:["Mateo likely used the removable lower panel while stopped with the art cart, and the tape/paint evidence connects his supplies to the removal","Priya broke the glass with her camera","Tessa opened the locked case with no key","The banner removed itself"],correct:0,explain:"That theory best fits the access point, timeline, opportunity, and physical evidence."}
     ],
-    applicationPrompt:"What most likely happened to the championship banner? Use at least two specific clues or statements as evidence, and explain why they support your conclusion."
+    applicationPrompt:"What most likely happened to the championship banner? Use at least two independent clues or interview statements as evidence, explain how they fit the timeline, and identify one clue that could mislead an investigator."
   };
   const quickwrite=[
     {label:"Option 1 • The Locker That Wasn't There",prompt:"When you arrived at school, a new locker stood between lockers 214 and 215. Nobody else seemed able to see it. When you opened the door, a countdown started at 10:00. Continue the story.",finalEvent:"When you opened the door, a countdown started at 10:00.",keywords:["locker","school","countdown","door","hidden"]},
@@ -84,20 +86,13 @@
     const fs=D.items.find(x=>x.id===`${grade}-HUM-D26-C1-A`)||D.items.find(x=>x.grade===grade&&Number(x.day)===26&&x.subject==="HUM"&&x.strand==="Foundational Skills");
     if(fs)Object.assign(fs,{displayTitle:"Foundational Skills • Morphology",requirement:"Foundational Skills\n\nWatch the morphology lesson, then answer the questions about prefixes, suffixes, root words, base words, and how word parts help you figure out meaning.",resourceName:ytTitle,resourceUrl:yt,resourceType:"video",videoRequired:true,videoDurationSeconds:337,kidIntro:"Morphology is the study of meaningful word parts. Watch for prefixes, suffixes, roots, and bases, then use those parts to unlock meaning.",lessonKeywords:["morphology","prefix","suffix","root","base word","word parts","meaning"],lessonQuestions:grade==="I"?q4:q5});
     const reading=D.items.find(x=>x.id===`${grade}-HUM-D26-C2-A`)||D.items.find(x=>x.grade===grade&&Number(x.day)===26&&x.subject==="HUM"&&x.strand==="Reading");
-    if(reading)Object.assign(reading,{displayTitle:"The Character Case Files • The Missing Championship Banner",requirement:"Character Case Files\n\nRead the case, question the people of interest, study every clue, and decide what most likely happened. Your final theory must use evidence.",resourceName:"",resourceUrl:"",resourceType:"activity",videoRequired:false,videoDurationSeconds:0,additionalVideos:[],kidIntro:"Detectives do not guess. Build a theory that fits the timeline, physical evidence, and witness statements.",characterCase:caseFile,lessonQuestions:undefined,lessonContent:undefined,applicationPrompt:undefined});
+    if(reading)Object.assign(reading,{displayTitle:"The Character Case Files • The Missing Championship Banner",requirement:"Character Case Files\n\nOpen each witness file, study the portrait, conduct the interviews, compare the timeline and physical evidence, complete the evidence check, and submit your final case theory.",resourceName:"",resourceUrl:"",resourceType:"activity",videoRequired:false,videoDurationSeconds:0,additionalVideos:[],kidIntro:"Interview every witness before deciding. Strong detectives compare what people say with the physical evidence and timeline.",characterCase:caseFile,lessonQuestions:undefined,lessonContent:undefined,applicationPrompt:undefined});
     const writing=D.items.find(x=>x.id===`${grade}-HUM-D26-C3-A`)||D.items.find(x=>x.grade===grade&&Number(x.day)===26&&x.subject==="HUM"&&x.strand==="Writing");
-    if(writing)Object.assign(writing,{displayTitle:"Writing • Quickwrite Choice",requirement:"Quickwrite Choice",resourceName:"",resourceUrl:"",resourceType:"activity",videoRequired:false,videoDurationSeconds:0,additionalVideos:[],quickWriteDirect:true,quickWriteSentenceRange:[grade==="I"?5:7,grade==="I"?5:7],quickWriteOptions:quickwrite.map(o=>({...o,prompt:`${o.prompt} Write exactly ${grade==="I"?5:7} complete sentences.`})),lessonQuestions:undefined,lessonContent:undefined,applicationPrompt:undefined});
+    if(writing)Object.assign(writing,{displayTitle:"Writing • Quickwrite Choice",requirement:`Quickwrite Choice\n\nChoose ONE story starter and continue the story in exactly ${grade==="I"?5:7} complete sentences. Keep the story connected to the starter, add details, and make the events flow logically.`,resourceName:"",resourceUrl:"",resourceType:"activity",videoRequired:false,videoDurationSeconds:0,additionalVideos:[],quickWriteDirect:true,quickWriteSentenceRange:[grade==="I"?5:7,grade==="I"?5:7],quickWriteOptions:quickwrite.map(option=>({...option,prompt:`${option.prompt} Write exactly ${grade==="I"?5:7} complete sentences.`}))});
   }
 })();
 
-/* v56.23 — load the no-video-only lesson engine. */
 (function(){if(window.__DW_NO_VIDEO_ENGINE_LOADER__)return;window.__DW_NO_VIDEO_ENGINE_LOADER__=true;const s=document.createElement("script");s.src="q1-no-video-lessons.js?v=58.2.6";s.async=false;document.head.appendChild(s)})();
-
-/* v56.24.4 — curriculum interaction layer. */
 (function(){if(window.__DW_CURRICULUM_INTERACTION_LOADER__)return;window.__DW_CURRICULUM_INTERACTION_LOADER__=true;const s=document.createElement("script");s.src="q1-curriculum-interactions.js?v=56.24.5";s.async=false;document.head.appendChild(s)})();
-
-/* v56.25.3 - answer-integrity policy. */
 (function(){if(window.__DW_CURRICULUM_ANSWER_POLICY_LOADER__)return;window.__DW_CURRICULUM_ANSWER_POLICY_LOADER__=true;const s=document.createElement("script");s.src="q1-curriculum-answer-policy.js?v=56.25.4";s.async=false;document.head.appendChild(s)})();
-
-/* v57.1.1 - Math auto-grading policy. */
 (function(){if(window.__DW_MATH_AUTO_GRADING_LOADER__)return;window.__DW_MATH_AUTO_GRADING_LOADER__=true;const s=document.createElement("script");s.src="dragonswood-math-autograding.js?v=57.1.3";s.async=false;document.head.appendChild(s)})();

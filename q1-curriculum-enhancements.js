@@ -42,7 +42,7 @@
     {prompt:"How can morphology help with academic vocabulary?",choices:["It helps readers use known word parts to unlock unfamiliar words","It eliminates the need to know word meanings","It only helps with one-syllable words","It works only for spelling names"],answer:"It helps readers use known word parts to unlock unfamiliar words"}
   ];
   const caseFile={
-    id:"day26-missing-championship-banner-v2",
+    id:"day26-missing-championship-banner-v3",
     title:"THE CHARACTER CASE FILES • THE MISSING CHAMPIONSHIP BANNER",
     report:[
       "At 2:48 p.m., the school's signed championship banner was hanging inside the locked trophy hallway display. At 3:12 p.m., the banner was gone.",
@@ -82,17 +82,27 @@
     {label:"Option 1 • The Locker That Wasn't There",prompt:"When you arrived at school, a new locker stood between lockers 214 and 215. Nobody else seemed able to see it. When you opened the door, a countdown started at 10:00. Continue the story.",finalEvent:"When you opened the door, a countdown started at 10:00.",keywords:["locker","school","countdown","door","hidden"]},
     {label:"Option 2 • The Last Bus",prompt:"You missed your usual bus after practice and climbed onto the only one left in the parking lot. The driver smiled and said, 'Good. You're the last one we were waiting for.' Continue the story.",finalEvent:"The driver said you were the last one they were waiting for.",keywords:["bus","practice","driver","waiting","parking lot"]}
   ];
+
+  function upsert(grade,strand,id){
+    let item=D.items.find(x=>x.id===id)||D.items.find(x=>x.grade===grade&&Number(x.day)===26&&x.subject==="HUM"&&x.strand===strand);
+    if(!item){
+      item={id,grade,day:26,subject:"HUM",strand,requirement:"",resourceName:"",resourceUrl:"",resourceType:"activity"};
+      D.items.push(item);
+    }
+    return item;
+  }
+
   for(const grade of ["I","K"]){
-    const fs=D.items.find(x=>x.id===`${grade}-HUM-D26-C1-A`)||D.items.find(x=>x.grade===grade&&Number(x.day)===26&&x.subject==="HUM"&&x.strand==="Foundational Skills");
-    if(fs)Object.assign(fs,{displayTitle:"Foundational Skills • Morphology",requirement:"Foundational Skills\n\nWatch the morphology lesson, then answer the questions about prefixes, suffixes, root words, base words, and how word parts help you figure out meaning.",resourceName:ytTitle,resourceUrl:yt,resourceType:"video",videoRequired:true,videoDurationSeconds:337,kidIntro:"Morphology is the study of meaningful word parts. Watch for prefixes, suffixes, roots, and bases, then use those parts to unlock meaning.",lessonKeywords:["morphology","prefix","suffix","root","base word","word parts","meaning"],lessonQuestions:grade==="I"?q4:q5});
-    const reading=D.items.find(x=>x.id===`${grade}-HUM-D26-C2-A`)||D.items.find(x=>x.grade===grade&&Number(x.day)===26&&x.subject==="HUM"&&x.strand==="Reading");
-    if(reading)Object.assign(reading,{displayTitle:"The Character Case Files • The Missing Championship Banner",requirement:"Character Case Files\n\nOpen each witness file, study the portrait, conduct the interviews, compare the timeline and physical evidence, complete the evidence check, and submit your final case theory.",resourceName:"",resourceUrl:"",resourceType:"activity",videoRequired:false,videoDurationSeconds:0,additionalVideos:[],kidIntro:"Interview every witness before deciding. Strong detectives compare what people say with the physical evidence and timeline.",characterCase:caseFile,lessonQuestions:undefined,lessonContent:undefined,applicationPrompt:undefined});
-    const writing=D.items.find(x=>x.id===`${grade}-HUM-D26-C3-A`)||D.items.find(x=>x.grade===grade&&Number(x.day)===26&&x.subject==="HUM"&&x.strand==="Writing");
-    if(writing)Object.assign(writing,{displayTitle:"Writing • Quickwrite Choice",requirement:`Quickwrite Choice\n\nChoose ONE story starter and continue the story in exactly ${grade==="I"?5:7} complete sentences. Keep the story connected to the starter, add details, and make the events flow logically.`,resourceName:"",resourceUrl:"",resourceType:"activity",videoRequired:false,videoDurationSeconds:0,additionalVideos:[],quickWriteDirect:true,quickWriteSentenceRange:[grade==="I"?5:7,grade==="I"?5:7],quickWriteOptions:quickwrite.map(option=>({...option,prompt:`${option.prompt} Write exactly ${grade==="I"?5:7} complete sentences.`}))});
+    const fs=upsert(grade,"Foundational Skills",`${grade}-HUM-D26-C1-A`);
+    Object.assign(fs,{displayTitle:"Foundational Skills • Morphology",requirement:"Foundational Skills\n\nWatch the morphology lesson, then answer the questions about prefixes, suffixes, root words, base words, and how word parts help you figure out meaning.",resourceName:ytTitle,resourceUrl:yt,resourceType:"video",videoRequired:true,videoDurationSeconds:337,kidIntro:"Morphology is the study of meaningful word parts. Watch for prefixes, suffixes, roots, and bases, then use those parts to unlock meaning.",lessonKeywords:["morphology","prefix","suffix","root","base word","word parts","meaning"],lessonQuestions:grade==="I"?q4:q5});
+
+    const reading=upsert(grade,"Reading",`${grade}-HUM-D26-C2-A`);
+    Object.assign(reading,{displayTitle:"The Character Case Files • The Missing Championship Banner",requirement:"Character Case Files\n\nRead the case, question the people of interest, study every clue, and decide what most likely happened. Your final theory must use evidence.",resourceName:"",resourceUrl:"",resourceType:"activity",videoRequired:false,videoDurationSeconds:0,additionalVideos:[],kidIntro:"Detectives do not guess. Build a theory that fits the timeline, physical evidence, and witness statements.",characterCase:caseFile});
+    delete reading.lessonQuestions; delete reading.lessonContent; delete reading.applicationPrompt;
+
+    const writing=upsert(grade,"Writing",`${grade}-HUM-D26-C3-A`);
+    const sentenceCount=grade==="I"?5:7;
+    Object.assign(writing,{displayTitle:"Writing • Quickwrite Choice",requirement:`Quickwrite\n\nChoose ONE story starter and continue the story in exactly ${sentenceCount} complete sentences. Keep the story connected to the starter, add details, and make the events flow logically.`,resourceName:"",resourceUrl:"",resourceType:"activity",videoRequired:false,videoDurationSeconds:0,additionalVideos:[],quickWriteDirect:true,quickWriteSentenceRange:[sentenceCount,sentenceCount],quickWriteOptions:quickwrite,kidIntro:`Choose one story path and write exactly ${sentenceCount} complete sentences.`});
+    delete writing.lessonQuestions; delete writing.lessonContent; delete writing.applicationPrompt;
   }
 })();
-
-(function(){if(window.__DW_NO_VIDEO_ENGINE_LOADER__)return;window.__DW_NO_VIDEO_ENGINE_LOADER__=true;const s=document.createElement("script");s.src="q1-no-video-lessons.js?v=58.2.6";s.async=false;document.head.appendChild(s)})();
-(function(){if(window.__DW_CURRICULUM_INTERACTION_LOADER__)return;window.__DW_CURRICULUM_INTERACTION_LOADER__=true;const s=document.createElement("script");s.src="q1-curriculum-interactions.js?v=56.24.5";s.async=false;document.head.appendChild(s)})();
-(function(){if(window.__DW_CURRICULUM_ANSWER_POLICY_LOADER__)return;window.__DW_CURRICULUM_ANSWER_POLICY_LOADER__=true;const s=document.createElement("script");s.src="q1-curriculum-answer-policy.js?v=56.25.4";s.async=false;document.head.appendChild(s)})();
-(function(){if(window.__DW_MATH_AUTO_GRADING_LOADER__)return;window.__DW_MATH_AUTO_GRADING_LOADER__=true;const s=document.createElement("script");s.src="dragonswood-math-autograding.js?v=57.1.3";s.async=false;document.head.appendChild(s)})();

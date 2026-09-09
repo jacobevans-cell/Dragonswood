@@ -170,6 +170,16 @@
   }
 })();
 
+(function trimDay27ToCaseAndQuickwrite(){
+  const D=window.DRAGONSWOOD_DATA;
+  if(!D||!Array.isArray(D.items))return;
+  const keep=new Set(["I-HUM-D27-C2-A","I-HUM-D27-C3-A","K-HUM-D27-C2-A","K-HUM-D27-C3-A"]);
+  for(let i=D.items.length-1;i>=0;i--){
+    const item=D.items[i];
+    if(Number(item?.day)===27&&!keep.has(item.id))D.items.splice(i,1);
+  }
+})();
+
 (function(){if(window.__DW_NO_VIDEO_ENGINE_LOADER__)return;window.__DW_NO_VIDEO_ENGINE_LOADER__=true;const s=document.createElement("script");s.src="q1-no-video-lessons.js?v=58.2.7";s.async=false;document.head.appendChild(s)})();
 (function(){if(window.__DW_CURRICULUM_INTERACTION_LOADER__)return;window.__DW_CURRICULUM_INTERACTION_LOADER__=true;const s=document.createElement("script");s.src="q1-curriculum-interactions.js?v=56.24.5";s.async=false;document.head.appendChild(s)})();
 (function(){if(window.__DW_CURRICULUM_ANSWER_POLICY_LOADER__)return;window.__DW_CURRICULUM_ANSWER_POLICY_LOADER__=true;const s=document.createElement("script");s.src="q1-curriculum-answer-policy.js?v=56.25.4";s.async=false;document.head.appendChild(s)})();

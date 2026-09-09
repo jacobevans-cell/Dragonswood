@@ -107,6 +107,69 @@
   }
 })();
 
+(function installDay27Curriculum(){
+  const D=window.DRAGONSWOOD_DATA;
+  if(!D||!Array.isArray(D.items))return;
+
+  const caseFile={
+    id:"day27-vanishing-tournament-medal-v1",
+    title:"THE CHARACTER CASE FILES • THE VANISHING TOURNAMENT MEDAL",
+    report:[
+      "At 10:06 a.m., the gold tournament medal was photographed inside the locked athletics display. At 10:31 a.m., Coach Reyes opened the case for an assembly and found the medal missing.",
+      "The glass door was still locked and undamaged. A narrow maintenance slot sits behind the display. A folded blue program was found beneath the case, and a strip of clear tape was stuck to the back edge of the shelf.",
+      "Three people were near the hallway during the twenty-five minute window. Interview them, compare their timelines, and decide which details are evidence and which are distractions."
+    ],
+    characters:[
+      {id:"eli",name:"Eli Chen",role:"Student Photographer",color:"#314d8f",image:"assets/character-case/eli-chen.jpg",questions:[
+        {q:"Why were you near the athletics display?",a:"I photographed the medal at 10:06 for the school news page. My photo shows it inside the case and the door fully closed."},
+        {q:"Where did you go after the photo?",a:"I went straight to the media room. My camera uploaded files there at 10:11 and again at 10:18."},
+        {q:"Did you leave anything behind?",a:"I dropped a folded blue assembly program while taking pictures. I realized it was missing later."},
+        {q:"Did you touch the display?",a:"Only the outside glass when I leaned close for the photo. I never opened the case or reached behind it."}
+      ]},
+      {id:"nia",name:"Nia Brooks",role:"Library Media Specialist",color:"#7b365f",image:"assets/character-case/nia-brooks.jpg",questions:[
+        {q:"When were you in the hallway?",a:"Around 10:20. I was delivering a box of assembly programs to the office and stopped to straighten the display sign."},
+        {q:"What did you notice about the case?",a:"The glass door looked closed. I noticed a loose strip of clear tape hanging from the back edge of the shelf."},
+        {q:"Did you see the medal?",a:"I could still see something gold through the glass, but the display sign partly blocked my view, so I cannot swear it was the medal."},
+        {q:"Who else did you see?",a:"Omar was coming from the equipment hallway carrying a long poster tube. We passed each other near the display."}
+      ]},
+      {id:"omar",name:"Omar Haddad",role:"Student Council Treasurer",color:"#8a3f44",image:"assets/character-case/omar-haddad.jpg",questions:[
+        {q:"Why were you carrying a poster tube?",a:"Student Council stored assembly banners in the equipment room. I picked up a long cardboard tube at about 10:22."},
+        {q:"Did you stop near the medal display?",a:"Yes. The tube cap fell off beside the case, so I set the tube against the wall while I picked it up."},
+        {q:"Could the tube fit through the maintenance slot?",a:"The empty tube is narrow enough, but I never put it through the slot. I only leaned it against the wall."},
+        {q:"What happened after you left?",a:"I brought the tube to the gym. Coach Reyes saw me arrive around 10:28, and the banner was still rolled inside when we opened it."}
+      ]}
+    ],
+    quiz:[
+      {q:"Which evidence proves the medal was still in the display at 10:06?",choices:["Eli's time-stamped photograph","The blue program under the case","Omar's poster tube","The clear tape on the shelf"],correct:0,explain:"Eli's time-stamped photograph directly shows the medal inside the display at 10:06."},
+      {q:"Why is the blue program probably a weak clue?",choices:["Eli admits dropping it while photographing the medal before it disappeared","It was hidden inside Omar's poster tube","Nia says she placed it behind the case","Coach Reyes wrote Omar's name on it"],correct:0,explain:"The program has an innocent explanation tied to Eli's earlier photograph and does not prove anyone removed the medal."},
+      {q:"Which detail creates the strongest possible access route to the locked display?",choices:["The maintenance slot behind the case","The media-room upload","The assembly program","The display sign"],correct:0,explain:"The maintenance slot provides a way to reach behind the display without opening the locked glass door."},
+      {q:"Which person had an object narrow enough to possibly reach through that slot?",choices:["Omar","Eli","Nia","Coach Reyes"],correct:0,explain:"Omar admits that the empty poster tube was narrow enough to fit through the maintenance slot."},
+      {q:"Which conclusion is best supported by the evidence?",choices:["Omar had the strongest opportunity, but investigators still need evidence proving the tube actually touched or removed the medal","Eli definitely stole the medal because his program was on the floor","Nia definitely stole it because she noticed clear tape","The medal could only have been removed by unlocking the glass door"],correct:0,explain:"The evidence creates suspicion and opportunity around Omar, but a strong investigator separates possibility from proof."}
+    ],
+    applicationPrompt:"Who is the strongest person of interest in the missing-medal case? Use at least two independent clues or interview statements, explain the timeline, and clearly separate what the evidence proves from what it only suggests."
+  };
+
+  const quickwrite=[
+    {label:"Option 1 • The Door Under the Bleachers",prompt:"After the last volleyball game, you noticed a small door beneath the lowest row of bleachers. It had never been there before. When you opened it, you heard a crowd cheering somewhere far below the gym. Continue the story.",finalEvent:"When you opened the door, you heard a crowd cheering somewhere far below the gym.",keywords:["volleyball","game","door","bleachers","gym","crowd","cheering","below"]},
+    {label:"Option 2 • The Message in the Yearbook",prompt:"You opened an old school yearbook and found a handwritten message addressed to you even though the book was printed twenty years before you were born. The last line said, 'Do not let them ring the bell at noon.' Continue the story.",finalEvent:"The last line said, 'Do not let them ring the bell at noon.'",keywords:["yearbook","message","school","twenty years","born","bell","noon"]}
+  ];
+
+  for(const grade of ["I","K"]){
+    const reading=D.items.find(x=>x.id===`${grade}-HUM-D27-C2-A`);
+    if(reading){
+      Object.assign(reading,{displayTitle:"The Character Case Files • The Vanishing Tournament Medal",requirement:"Character Case Files\n\nRead the case report, interview all three witnesses, compare the timeline and physical evidence, complete the evidence check, and submit your final case theory.",resourceName:"Fluency • Character Case Files",resourceUrl:"",resourceType:"activity",videoRequired:false,videoDurationSeconds:0,additionalVideos:[],kidIntro:"A good detective separates what the evidence proves from what it only suggests. Interview everyone before choosing a theory.",characterCase:caseFile});
+      delete reading.lessonQuestions; delete reading.lessonContent; delete reading.applicationPrompt;
+    }
+
+    const writing=D.items.find(x=>x.id===`${grade}-HUM-D27-C3-A`);
+    if(writing){
+      const sentenceCount=grade==="I"?5:7;
+      Object.assign(writing,{displayTitle:"Writing • Quickwrite Choice",requirement:`Quickwrite\n\nChoose ONE story starter and continue the story in exactly ${sentenceCount} complete sentences. Add details, keep the events connected, and make something meaningful happen next.`,resourceName:"",resourceUrl:"",resourceType:"activity",videoRequired:false,videoDurationSeconds:0,additionalVideos:[],quickWriteDirect:true,quickWriteSentenceRange:[sentenceCount,sentenceCount],quickWriteOptions:quickwrite,kidIntro:`Choose one story path and write exactly ${sentenceCount} complete sentences.`});
+      delete writing.lessonQuestions; delete writing.lessonContent; delete writing.applicationPrompt;
+    }
+  }
+})();
+
 (function(){if(window.__DW_NO_VIDEO_ENGINE_LOADER__)return;window.__DW_NO_VIDEO_ENGINE_LOADER__=true;const s=document.createElement("script");s.src="q1-no-video-lessons.js?v=58.2.7";s.async=false;document.head.appendChild(s)})();
 (function(){if(window.__DW_CURRICULUM_INTERACTION_LOADER__)return;window.__DW_CURRICULUM_INTERACTION_LOADER__=true;const s=document.createElement("script");s.src="q1-curriculum-interactions.js?v=56.24.5";s.async=false;document.head.appendChild(s)})();
 (function(){if(window.__DW_CURRICULUM_ANSWER_POLICY_LOADER__)return;window.__DW_CURRICULUM_ANSWER_POLICY_LOADER__=true;const s=document.createElement("script");s.src="q1-curriculum-answer-policy.js?v=56.25.4";s.async=false;document.head.appendChild(s)})();

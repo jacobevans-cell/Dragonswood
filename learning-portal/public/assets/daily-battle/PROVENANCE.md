@@ -1,0 +1,32 @@
+# Daily Battle artwork and actor sources
+
+Imported for the user's authorized Daily Battle rebuild on September 12, 2026. This imports the battle presentation only; it does not replace site-wide profiles or award XP, currency, equipment, or other prizes.
+
+- Hero: supplied `DRAGONSWOOD-PHASER4-COMPLETE-TEST-BUILD-v2-2026-09-12.zip`, SHA-256 `98e7480c9d8f55bdf692c6d717b9db131110ca9149327dffad980b531fbbf16c`, nested in `DRAGONSWOOD-COMPLETE-SITE-AND-CHARACTERS-HANDOFF-2026-09-12.zip`.
+- Current preview hero: `warrior-light-male-1`, Dawnscale, authored rear view from `assets/roster/dawnscale-level-1-pair-v1.png`. Original master pixels are unchanged. Supplied metadata and `sprite-appearance.js` provide runtime crop, keying and material recoloring. The authored rear and all attachment points are reflected together to face right. This appearance is a presentation placeholder and is independent of academic track and saved character progression.
+- Enemies: supplied `DRAGONSWOOD-50-ENEMIES-PHASER4-COMPLETE-2026-09-12.zip`, SHA-256 `722209fa0970de8aeb3a45308e0b0f8b2ca6107799e897b502376e9efd645ac6`. All 50 original transparent PNGs are preserved. Each imported file was checked against its original manifest SHA-256. `enemy-manifest.json` retains original definition, geometry, and hash fields; only public paths are relocated. Images load on demand.
+- Actor modules: supplied hero `roster-model.js`, `sprite-appearance.js`; enemy `enemy-actor.js`, `enemy-effects.js`, `motion.js`. Battle adapters add opponent-facing transformations, one-way target-relative attacks, completion/cancellation, bounded loads, and reduced-motion behavior. Hero sword movement adapts supplied `warriorPose`; no workshop controller is imported.
+- Engine: existing vendored Phaser 4.2.1 and its license are reused. No new CDN or CSP exception.
+
+## New arena illustration
+
+Saved arena SHA-256: `3f289998efd5451a512625c7b69fa940465d2f233acf30137a0a759d1b3a0b1e`.
+
+Built-in `image_gen` tool, not the CLI, generated the project-specific empty arena. Generated source: `C:/Users/Jacob/.codex/generated_images/01a0996b-2f06-7e42-898a-169000c4ada7/exec-31d04d70-a2fc-45b6-8c24-fb5ab36458b8.png`. Copied unchanged to `forest-arena.png`. Inspected after generation: a clear stone foreground supports both opponents; ivy-covered arches and forest remain in the background; no people, creatures, text, UI, or obstacles occupy the two actor zones.
+
+Exact final prompt:
+
+Use case: stylized-concept. Asset type: background plate for a polished elementary-school fantasy RPG battle, wide landscape 2:1 composition. Create an empty enchanted forest ruins clearing: ancient moss-covered stone arches in the middle distance, overgrown broken walls, tall dark trees framing sides and canopy, soft sunbeams falling into a quiet clearing, fern and ivy textures, small luminous motes. Foreground is a broad flat weathered stone courtyard, unobstructed and nearly horizontal, occupying the bottom half so separately composited full-body characters can stand at 26% and 76% horizontal positions with feet at 88% image height. Camera is at a modest low RPG battle angle, distant arch centered behind the gap between opponents. Detailed painterly pixel-inspired fantasy game illustration, rich forest emeralds and muted teal shadows with warm golden sunlight, crisp beautiful stone texture and depth, suitable for ages 8–12, adventurous not frightening. Empty arena only. No characters, no creatures, no people, no weapons, no text, no symbols, no HUD, no health bars, no frames, no borders, no UI, no foreground objects blocking the two character placement zones. The overall image should support a wide 1000x520 game stage; keep scenic focal points in upper two thirds and floor readable below.
+
+
+## September 13 current roster integration
+
+Source: `work/master-guide-2026-09-13/04_PLAYER_CHARACTERS`, `05_ENEMIES_AND_BOSSES`, and `06_PETS`, governed by the current Assets & Rosters Bible and Pet Roster & Integration Rules. `master-roster-intake.json` records exact source/runtime paths, bytes and SHA-256 for 45 hero masters, 130 pet PNGs, 50 enemy PNGs and three supplied helper modules. All 50 existing enemy sprites and the existing Dawnscale master matched and were reused. No legacy roster assets were added. No artwork was generated or edited.
+
+The compact, collapsed Daily Battle appearance preview offers all 40 current hero designs and all 65 pets, plus no companion. Choices save in this browser per preview profile, independent of teaching day and academic track. It is not an ownership, level-gate, account-equip or production profile integration. Only selected actor definitions and image masters are requested by the browser; the full image collection is not preloaded.
+
+Heroes use the supplied rear-view masters and appearance metadata. Warrior weapon poses and Mage cast poses use the supplied motion helpers; the existing battle effects target the current enemy. Pet actors use the supplied complete transparent views, bounds, effect origins and pet motion calculations, adapted to the existing battle target and cleanup lifecycle. Their displayed height is 120 pixels beside a 291-pixel hero. Static/less-motion mode uses the supplied front pet image. The live scene uses the rear pet image. No source PNGs are split into artificial limbs or passed through the hero green-background keyer.
+
+Actor motion callbacks are presentation only. Existing first-answer score/health penalties, one coached retry, recovery, 25-question completion, saved work and no-prize policy are unchanged. Pet stat/economy fields are not passed into its renderer. Motion completes through callbacks; the existing safety timeout prevents failed effects from blocking the interface. Hidden and offscreen scenes pause, and disposal cancels presentation and releases textures/listeners. A scene failure retains available static art and leaves the HTML questions usable.
+
+Validation: four focused current-roster tests passed, including all copied source hashes, view dimensions, valid current selections, academic-track independence, and exactly-once companion impact/completion with texture cleanup. Parent-agent browser review covered default companions, Celestial with Eclipse Phoenix, Nightwyrm without a pet, less-motion, 390-pixel layout, saved/reloaded answers and preview-profile isolation. Supplied source validation reports remain source evidence and were not reclassified as new browser results.

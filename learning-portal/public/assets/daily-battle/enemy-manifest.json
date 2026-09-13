@@ -1,0 +1,1474 @@
+{
+  "schemaVersion": 1,
+  "title": "Dragonswood front-facing enemy collection",
+  "version": "1.0.0",
+  "phaserVersion": "4.2.1",
+  "enemyCount": 50,
+  "motions": [
+    "idle",
+    "hurt",
+    "heal",
+    "attack"
+  ],
+  "attackStyles": [
+    "slash",
+    "thrust",
+    "claw",
+    "spell",
+    "charge",
+    "burst"
+  ],
+  "artMethod": "Built-in image_gen; one original transparent PNG per enemy; source alpha preserved.",
+  "enemies": [
+    {
+      "id": "briar-goblin-scout",
+      "name": "Briar Goblin Scout",
+      "family": "Raiders",
+      "number": 1,
+      "attackStyle": "slash",
+      "effectColor": "#bce670",
+      "originHint": "weapon-right",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/briar-goblin-scout-front-v1.png",
+      "effectOrigin": {
+        "x": 0.06,
+        "y": 0.4
+      },
+      "floating": false,
+      "bounds": {
+        "x": 83,
+        "y": 27,
+        "width": 1074,
+        "height": 1194
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "4c33271ffc38d0830abbfb22273aefb09068d3fc0170dc9f552fee71cff1a504",
+      "bytes": 1486125,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "coppercap-sapper",
+      "name": "Coppercap Sapper",
+      "family": "Raiders",
+      "number": 2,
+      "attackStyle": "burst",
+      "effectColor": "#ffbe62",
+      "originHint": "chest",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/coppercap-sapper-front-v1.png",
+      "effectOrigin": {
+        "x": 0.61,
+        "y": 0.48
+      },
+      "floating": false,
+      "bounds": {
+        "x": 142,
+        "y": 7,
+        "width": 970,
+        "height": 1236
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "501f694decd510a5b3ffa57a3f5a033cf0ce5923ee5b9d386ca691a622d990d1",
+      "bytes": 1548135,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "thorn-spearguard",
+      "name": "Thorn Spearguard",
+      "family": "Raiders",
+      "number": 3,
+      "attackStyle": "thrust",
+      "effectColor": "#8ff0b1",
+      "originHint": "weapon-right",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/thorn-spearguard-front-v1.png",
+      "effectOrigin": {
+        "x": 0.89,
+        "y": 0.07
+      },
+      "floating": false,
+      "bounds": {
+        "x": 106,
+        "y": 8,
+        "width": 1095,
+        "height": 1221
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "c4a92c9cfcbdab673ccab947102e3ead962a546402fa649b8c07718930607291",
+      "bytes": 1676482,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "cinder-hobgoblin",
+      "name": "Cinder Hobgoblin",
+      "family": "Raiders",
+      "number": 4,
+      "attackStyle": "slash",
+      "effectColor": "#ff9568",
+      "originHint": "weapon-right",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/cinder-hobgoblin-front-v1.png",
+      "effectOrigin": {
+        "x": 0.89,
+        "y": 0.23
+      },
+      "floating": false,
+      "bounds": {
+        "x": 34,
+        "y": 7,
+        "width": 1216,
+        "height": 1214
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "69dcf5cf09a7b0827dd6201d1fc4c5aae5cc3224bc6c3d8bc64f347a0aff2b38",
+      "bytes": 1931913,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "stormbone-shaman",
+      "name": "Stormbone Shaman",
+      "family": "Raiders",
+      "number": 5,
+      "attackStyle": "spell",
+      "effectColor": "#8fdcff",
+      "originHint": "staff-right",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/stormbone-shaman-front-v1.png",
+      "effectOrigin": {
+        "x": 0.92,
+        "y": 0.12
+      },
+      "floating": false,
+      "bounds": {
+        "x": 118,
+        "y": 3,
+        "width": 1115,
+        "height": 1234
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "7c100a3b0287e64ab78d42499e14d98d9f23d2c4ca04cffe79ab594fd998ad9b",
+      "bytes": 1908572,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "boneguard-knight",
+      "name": "Boneguard Knight",
+      "family": "Undead",
+      "number": 6,
+      "attackStyle": "slash",
+      "effectColor": "#c5b5ff",
+      "originHint": "weapon-right",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/boneguard-knight-front-v1.png",
+      "effectOrigin": {
+        "x": 0.08,
+        "y": 0.23
+      },
+      "floating": false,
+      "bounds": {
+        "x": 42,
+        "y": 40,
+        "width": 1183,
+        "height": 1179
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "b8a073321ffb6a040f0eb780f3e29e4617d61a62e8a29ef00cabe3262d398c52",
+      "bytes": 1800214,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "lantern-skeleton",
+      "name": "Lantern Skeleton",
+      "family": "Undead",
+      "number": 7,
+      "attackStyle": "spell",
+      "effectColor": "#87ffc4",
+      "originHint": "staff-right",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/lantern-skeleton-front-v3.png",
+      "effectOrigin": {
+        "x": 0.86,
+        "y": 0.36
+      },
+      "floating": false,
+      "bounds": {
+        "x": 392,
+        "y": 238,
+        "width": 642,
+        "height": 817
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "ede6b6b276114979ea7f216e366e204605d6a0f8167f90a1a067f0037440822b",
+      "bytes": 811349,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "ashen-reaper",
+      "name": "Ashen Reaper",
+      "family": "Undead",
+      "number": 8,
+      "attackStyle": "slash",
+      "effectColor": "#d2b5ff",
+      "originHint": "weapon-right",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/ashen-reaper-front-v1.png",
+      "floating": true,
+      "effectOrigin": {
+        "x": 0.85,
+        "y": 0.16
+      },
+      "bounds": {
+        "x": 176,
+        "y": 15,
+        "width": 1057,
+        "height": 1220
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "396023d77b4ffba1232126438f6aaa381283bcd2c1761ab1c8ac8f0f6447fc77",
+      "bytes": 1478608,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "tomb-mummy",
+      "name": "Tomb Mummy",
+      "family": "Undead",
+      "number": 9,
+      "attackStyle": "claw",
+      "effectColor": "#f1ca7b",
+      "originHint": "hands",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/tomb-mummy-front-v1.png",
+      "effectOrigin": {
+        "x": 0.82,
+        "y": 0.48
+      },
+      "floating": false,
+      "bounds": {
+        "x": 105,
+        "y": 32,
+        "width": 1056,
+        "height": 1191
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "37994c2d0526172db960166b75401e288a1bf525a1d9950000fa9f3070130868",
+      "bytes": 1894709,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "frost-revenant",
+      "name": "Frost Revenant",
+      "family": "Undead",
+      "number": 10,
+      "attackStyle": "slash",
+      "effectColor": "#a8e9ff",
+      "originHint": "weapon-right",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/frost-revenant-front-v1.png",
+      "effectOrigin": {
+        "x": 0.89,
+        "y": 0.22
+      },
+      "floating": false,
+      "bounds": {
+        "x": 114,
+        "y": 13,
+        "width": 1124,
+        "height": 1225
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "81825135c0b33b287159db6bb00380adc8e731b90ca57947617be0cb8d73a56e",
+      "bytes": 1975173,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "elder-rootwarden",
+      "name": "Elder Rootwarden",
+      "family": "Wildwood",
+      "number": 11,
+      "attackStyle": "claw",
+      "effectColor": "#a9e879",
+      "originHint": "hands",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/elder-rootwarden-front-v1.png",
+      "effectOrigin": {
+        "x": 0.8,
+        "y": 0.67
+      },
+      "floating": false,
+      "bounds": {
+        "x": 111,
+        "y": 8,
+        "width": 1039,
+        "height": 1222
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "d53a3fe67ad1e7fb6f5998b8cd0ea352ced683263e075e3774dc1c35d0aa4b1b",
+      "bytes": 2057932,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "thornstalker",
+      "name": "Thornstalker",
+      "family": "Wildwood",
+      "number": 12,
+      "attackStyle": "claw",
+      "effectColor": "#b0ed96",
+      "originHint": "hands",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/thornstalker-front-v1.png",
+      "effectOrigin": {
+        "x": 0.8,
+        "y": 0.88
+      },
+      "floating": false,
+      "bounds": {
+        "x": 68,
+        "y": 10,
+        "width": 1115,
+        "height": 1237
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "3522db6a648183ca31916f1b3dad68cf21e31499c8c26b828064854495b45a59",
+      "bytes": 1652201,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "sporecap-brute",
+      "name": "Sporecap Brute",
+      "family": "Wildwood",
+      "number": 13,
+      "attackStyle": "burst",
+      "effectColor": "#edb5ff",
+      "originHint": "chest",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/sporecap-brute-front-v1.png",
+      "effectOrigin": {
+        "x": 0.51,
+        "y": 0.49
+      },
+      "floating": false,
+      "bounds": {
+        "x": 95,
+        "y": 29,
+        "width": 1094,
+        "height": 1193
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "6f6e962bad3d746e788427a37c097b44ebaf2763a76feaa29c2d3c4398d4c22d",
+      "bytes": 2162504,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "mossstone-colossus",
+      "name": "Mossstone Colossus",
+      "family": "Wildwood",
+      "number": 14,
+      "attackStyle": "charge",
+      "effectColor": "#9bd69d",
+      "originHint": "chest",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/mossstone-colossus-front-v1.png",
+      "effectOrigin": {
+        "x": 0.49,
+        "y": 0.44
+      },
+      "floating": false,
+      "bounds": {
+        "x": 25,
+        "y": 29,
+        "width": 1216,
+        "height": 1203
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "555a1742d3d217a2d8f278f7eb688001c86de470b8a9de7256bf4aeae5d081de",
+      "bytes": 2516490,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "bramble-sprite",
+      "name": "Bramble Sprite",
+      "family": "Wildwood",
+      "number": 15,
+      "attackStyle": "spell",
+      "effectColor": "#d5a1ff",
+      "originHint": "staff-right",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/bramble-sprite-front-v1.png",
+      "effectOrigin": {
+        "x": 0.87,
+        "y": 0.34
+      },
+      "floating": true,
+      "bounds": {
+        "x": 91,
+        "y": 13,
+        "width": 1081,
+        "height": 1217
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "5eae152d2c69b8af5a5699b9f2adedfa1df200986b7e9e923951145f89d0f616",
+      "bytes": 1551274,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "silverfang-direwolf",
+      "name": "Silverfang Direwolf",
+      "family": "Beasts",
+      "number": 16,
+      "attackStyle": "charge",
+      "effectColor": "#bfd4ff",
+      "originHint": "mouth",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/silverfang-direwolf-front-v3.png",
+      "effectOrigin": {
+        "x": 0.61,
+        "y": 0.41
+      },
+      "floating": false,
+      "bounds": {
+        "x": 278,
+        "y": 244,
+        "width": 638,
+        "height": 775
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "4377757925308d94d0f73d0f2a896830dbc45bff76001f73959be5a46cd699f7",
+      "bytes": 775789,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "ironhide-boar",
+      "name": "Ironhide Boar",
+      "family": "Beasts",
+      "number": 17,
+      "attackStyle": "charge",
+      "effectColor": "#ffd197",
+      "originHint": "chest",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/ironhide-boar-front-v1.png",
+      "effectOrigin": {
+        "x": 0.5,
+        "y": 0.57
+      },
+      "floating": false,
+      "bounds": {
+        "x": 34,
+        "y": 19,
+        "width": 1210,
+        "height": 1205
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "eba4231402e927878116165559dba70e2b5f4c20fb80e40e942df58294305833",
+      "bytes": 2132995,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "frosthorn-yeti",
+      "name": "Frosthorn Yeti",
+      "family": "Beasts",
+      "number": 18,
+      "attackStyle": "slash",
+      "effectColor": "#c2edff",
+      "originHint": "hands",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/frosthorn-yeti-front-v1.png",
+      "effectOrigin": {
+        "x": 0.9,
+        "y": 0.23
+      },
+      "floating": false,
+      "bounds": {
+        "x": 25,
+        "y": 32,
+        "width": 1219,
+        "height": 1190
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "fa822785717c60abb4e77fcb41970288f3f070fe50d12b013339cc1cd0aaf800",
+      "bytes": 2088683,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "duskwing-bat",
+      "name": "Duskwing Bat",
+      "family": "Beasts",
+      "number": 19,
+      "attackStyle": "burst",
+      "effectColor": "#cfb0ff",
+      "originHint": "mouth",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/duskwing-bat-front-v3.png",
+      "effectOrigin": {
+        "x": 0.5,
+        "y": 0.52
+      },
+      "floating": true,
+      "bounds": {
+        "x": 82,
+        "y": 282,
+        "width": 1092,
+        "height": 680
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "ebc278172f6159da6c21fb83856d77a7473123d49990abdbf25bbacf9a72e0db",
+      "bytes": 759328,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "moonwing-gryphon",
+      "name": "Moonwing Gryphon",
+      "family": "Beasts",
+      "number": 20,
+      "attackStyle": "claw",
+      "effectColor": "#f8db98",
+      "originHint": "hands",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/moonwing-gryphon-front-v1.png",
+      "effectOrigin": {
+        "x": 0.68,
+        "y": 0.9
+      },
+      "floating": false,
+      "bounds": {
+        "x": 18,
+        "y": 13,
+        "width": 1226,
+        "height": 1233
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "6e7588c4d7635909d3c9fc8beaa2c117a7dcbe72a11d58b97b061f493d351949",
+      "bytes": 2081926,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "cinder-imp",
+      "name": "Cinder Imp",
+      "family": "Elementals",
+      "number": 21,
+      "attackStyle": "burst",
+      "effectColor": "#ffae66",
+      "originHint": "chest",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/cinder-imp-front-v1.png",
+      "effectOrigin": {
+        "x": 0.9,
+        "y": 0.25
+      },
+      "floating": false,
+      "bounds": {
+        "x": 203,
+        "y": 9,
+        "width": 996,
+        "height": 1234
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "0ce44619f8f1481ef98238c71148e068204b977bc22107cec124a012bfdf2cb6",
+      "bytes": 1525356,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "tidal-coil",
+      "name": "Tidal Coil",
+      "family": "Elementals",
+      "number": 22,
+      "attackStyle": "spell",
+      "effectColor": "#8ee9ff",
+      "originHint": "mouth",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/tidal-coil-front-v1.png",
+      "effectOrigin": {
+        "x": 0.53,
+        "y": 0.57
+      },
+      "floating": false,
+      "bounds": {
+        "x": 214,
+        "y": 9,
+        "width": 936,
+        "height": 1229
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "3ccbef6d222f20fec4ea6dd107a1019884f2caed8f143897ce31dfd45b7562f5",
+      "bytes": 1611585,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "thunder-djinn",
+      "name": "Thunder Djinn",
+      "family": "Elementals",
+      "number": 23,
+      "attackStyle": "spell",
+      "effectColor": "#cab8ff",
+      "originHint": "chest",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/thunder-djinn-front-v1.png",
+      "effectOrigin": {
+        "x": 0.5,
+        "y": 0.46
+      },
+      "floating": true,
+      "bounds": {
+        "x": 173,
+        "y": 8,
+        "width": 923,
+        "height": 1229
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "c3535ddabb23e57be7dfb4b81875ca96c14db482f8d61a2f2f95471dd68e8795",
+      "bytes": 1417916,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "crystal-frostling",
+      "name": "Crystal Frostling",
+      "family": "Elementals",
+      "number": 24,
+      "attackStyle": "thrust",
+      "effectColor": "#b9f2ff",
+      "originHint": "hands",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/crystal-frostling-front-v1.png",
+      "effectOrigin": {
+        "x": 0.75,
+        "y": 0.65
+      },
+      "floating": false,
+      "bounds": {
+        "x": 175,
+        "y": 4,
+        "width": 904,
+        "height": 1238
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "9ec31a9c7717d2a2fadf8fcd3f76b157a0613a410f5dbfea13dd2f0b64174f45",
+      "bytes": 1438392,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "obsidian-brute",
+      "name": "Obsidian Brute",
+      "family": "Elementals",
+      "number": 25,
+      "attackStyle": "charge",
+      "effectColor": "#ffa37c",
+      "originHint": "chest",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/obsidian-brute-front-v1.png",
+      "effectOrigin": {
+        "x": 0.51,
+        "y": 0.53
+      },
+      "floating": false,
+      "bounds": {
+        "x": 55,
+        "y": 4,
+        "width": 1151,
+        "height": 1241
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "50a4bc7013469510aa3e4aac86810763eb9d05fae7e9585eeb4987f99f152814",
+      "bytes": 1959429,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "ember-drake",
+      "name": "Ember Drake",
+      "family": "Scaled",
+      "number": 26,
+      "attackStyle": "spell",
+      "effectColor": "#ffbb72",
+      "originHint": "mouth",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/ember-drake-front-v1.png",
+      "effectOrigin": {
+        "x": 0.9,
+        "y": 0.19
+      },
+      "floating": false,
+      "bounds": {
+        "x": 54,
+        "y": 19,
+        "width": 1147,
+        "height": 1204
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "cdfa5208aa0a3127801414be0f2962cd1a0857bd23b24ee91304f9ad446697bd",
+      "bytes": 1654500,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "bog-hydra",
+      "name": "Bog Hydra",
+      "family": "Scaled",
+      "number": 27,
+      "attackStyle": "spell",
+      "effectColor": "#b4ec89",
+      "originHint": "mouth",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/bog-hydra-front-v1.png",
+      "effectOrigin": {
+        "x": 0.5,
+        "y": 0.22
+      },
+      "floating": false,
+      "bounds": {
+        "x": 132,
+        "y": 8,
+        "width": 977,
+        "height": 1237
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "b2e4a274b547782c8cf66390abc83793c874fc71538357b0776046a0b2ae4842",
+      "bytes": 1879701,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "dune-serpent",
+      "name": "Dune Serpent",
+      "family": "Scaled",
+      "number": 28,
+      "attackStyle": "thrust",
+      "effectColor": "#ffe09b",
+      "originHint": "mouth",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/dune-serpent-front-v1.png",
+      "effectOrigin": {
+        "x": 0.52,
+        "y": 0.27
+      },
+      "floating": false,
+      "bounds": {
+        "x": 160,
+        "y": 16,
+        "width": 911,
+        "height": 1209
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "5798eb1df4fad044957cf8273a8ba7caebfc3de8386d010c4bf48af5133e3a78",
+      "bytes": 1486030,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "jade-basilisk",
+      "name": "Jade Basilisk",
+      "family": "Scaled",
+      "number": 29,
+      "attackStyle": "claw",
+      "effectColor": "#b1f2bb",
+      "originHint": "hands",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/jade-basilisk-front-v1.png",
+      "effectOrigin": {
+        "x": 0.79,
+        "y": 0.88
+      },
+      "floating": false,
+      "bounds": {
+        "x": 44,
+        "y": 3,
+        "width": 1182,
+        "height": 1250
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "328bcb218611b0750babd1bcee1034fa9a3277dc6e5f6b1a0c538918f7731eb4",
+      "bytes": 1863329,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "scaleguard-captain",
+      "name": "Scaleguard Captain",
+      "family": "Scaled",
+      "number": 30,
+      "attackStyle": "thrust",
+      "effectColor": "#b4e6ed",
+      "originHint": "weapon-right",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/scaleguard-captain-front-v1.png",
+      "effectOrigin": {
+        "x": 0.12,
+        "y": 0.13
+      },
+      "floating": false,
+      "bounds": {
+        "x": 193,
+        "y": 0,
+        "width": 908,
+        "height": 1252
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "390f4e7c7e50ab1daeaa8cfc9aa9b219af23ace73cee1e90bbfbda532d778e4e",
+      "bytes": 1503076,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "amberhorn-beetle",
+      "name": "Amberhorn Beetle",
+      "family": "Crawlers",
+      "number": 31,
+      "attackStyle": "charge",
+      "effectColor": "#ffcf77",
+      "originHint": "mouth",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/amberhorn-beetle-front-v1.png",
+      "effectOrigin": {
+        "x": 0.5,
+        "y": 0.6
+      },
+      "floating": false,
+      "bounds": {
+        "x": 23,
+        "y": 40,
+        "width": 1208,
+        "height": 1184
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "d871e51917c3b90f523d77f954b50786609d25ac77a7e9a8864dd9f282099016",
+      "bytes": 1467521,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "silkspinner",
+      "name": "Silkspinner",
+      "family": "Crawlers",
+      "number": 32,
+      "attackStyle": "burst",
+      "effectColor": "#d9c8ff",
+      "originHint": "mouth",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/silkspinner-front-v1.png",
+      "effectOrigin": {
+        "x": 0.5,
+        "y": 0.61
+      },
+      "floating": false,
+      "bounds": {
+        "x": 19,
+        "y": 81,
+        "width": 1217,
+        "height": 1082
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "0bf58d35e935ac3ab947aa49a8d21f55aa2afd538b1ae9f69744011f8e34116e",
+      "bytes": 1594594,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "crimson-mantis",
+      "name": "Crimson Mantis",
+      "family": "Crawlers",
+      "number": 33,
+      "attackStyle": "claw",
+      "effectColor": "#ffb2a8",
+      "originHint": "hands",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/crimson-mantis-front-v1.png",
+      "effectOrigin": {
+        "x": 0.74,
+        "y": 0.6
+      },
+      "floating": false,
+      "bounds": {
+        "x": 189,
+        "y": 14,
+        "width": 904,
+        "height": 1230
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "37d360ceab8c598e9c0eb9c7ac61dbd509c438d3b0e037ad8b3803dd345e41eb",
+      "bytes": 1164138,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "hivewing-wasp",
+      "name": "Hivewing Wasp",
+      "family": "Crawlers",
+      "number": 34,
+      "attackStyle": "thrust",
+      "effectColor": "#ffe789",
+      "originHint": "chest",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/hivewing-wasp-front-v1.png",
+      "effectOrigin": {
+        "x": 0.5,
+        "y": 0.74
+      },
+      "floating": true,
+      "bounds": {
+        "x": 18,
+        "y": 53,
+        "width": 1222,
+        "height": 1153
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "e02381c4416b9e0e9e9b108b4e0f2db78b3c8ebde96051919821891c2273de24",
+      "bytes": 1632801,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "onyx-scorpion",
+      "name": "Onyx Scorpion",
+      "family": "Crawlers",
+      "number": 35,
+      "attackStyle": "claw",
+      "effectColor": "#d0b4ff",
+      "originHint": "hands",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/onyx-scorpion-front-v1.png",
+      "effectOrigin": {
+        "x": 0.76,
+        "y": 0.72
+      },
+      "floating": false,
+      "bounds": {
+        "x": 21,
+        "y": 15,
+        "width": 1212,
+        "height": 1190
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "279c8b8811ced5804cfbaa7f85f5d8883e94e07573ad26161394878e180b7d95",
+      "bytes": 1591472,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "clockwork-warden",
+      "name": "Clockwork Warden",
+      "family": "Constructs",
+      "number": 36,
+      "attackStyle": "slash",
+      "effectColor": "#ffd38c",
+      "originHint": "weapon-right",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/clockwork-warden-front-v1.png",
+      "effectOrigin": {
+        "x": 0.85,
+        "y": 0.18
+      },
+      "floating": false,
+      "bounds": {
+        "x": 18,
+        "y": 12,
+        "width": 1236,
+        "height": 1215
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "ddfb87df03adfeefccbc66480d6a56f2635675aeca3c7d78e0d552a3ecd2691c",
+      "bytes": 2175875,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "runebound-automaton",
+      "name": "Runebound Automaton",
+      "family": "Constructs",
+      "number": 37,
+      "attackStyle": "spell",
+      "effectColor": "#9eeaff",
+      "originHint": "chest",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/runebound-automaton-front-v1.png",
+      "effectOrigin": {
+        "x": 0.5,
+        "y": 0.43
+      },
+      "floating": false,
+      "bounds": {
+        "x": 173,
+        "y": 9,
+        "width": 906,
+        "height": 1227
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "d747883463ed12dbc294f025d8be96c67ab91dd7306e813f48136bc79ec421d2",
+      "bytes": 1546201,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "ironjaw-mimic",
+      "name": "Ironjaw Mimic",
+      "family": "Constructs",
+      "number": 38,
+      "attackStyle": "claw",
+      "effectColor": "#ffc688",
+      "originHint": "mouth",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/ironjaw-mimic-front-v1.png",
+      "effectOrigin": {
+        "x": 0.49,
+        "y": 0.4
+      },
+      "floating": false,
+      "bounds": {
+        "x": 56,
+        "y": 77,
+        "width": 1149,
+        "height": 1133
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "e7605c436caaa917c214fee0bf1dcb91eb8a362b802f70a5f115427c713042e2",
+      "bytes": 1578203,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "slate-gargoyle",
+      "name": "Slate Gargoyle",
+      "family": "Constructs",
+      "number": 39,
+      "attackStyle": "spell",
+      "effectColor": "#c8c4ed",
+      "originHint": "hands",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/slate-gargoyle-front-v1.png",
+      "effectOrigin": {
+        "x": 0.86,
+        "y": 0.19
+      },
+      "floating": false,
+      "bounds": {
+        "x": 66,
+        "y": 98,
+        "width": 1179,
+        "height": 1089
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "774072a1aa9b162430adafdd19d5e740d254790668ece9b74bfd9a0cad4b5584",
+      "bytes": 1989866,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "hollow-halberd",
+      "name": "Hollow Halberd",
+      "family": "Constructs",
+      "number": 40,
+      "attackStyle": "thrust",
+      "effectColor": "#a8deff",
+      "originHint": "weapon-right",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/hollow-halberd-front-v1.png",
+      "effectOrigin": {
+        "x": 0.9,
+        "y": 0.15
+      },
+      "floating": false,
+      "bounds": {
+        "x": 122,
+        "y": 0,
+        "width": 1048,
+        "height": 1244
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "ccbfbf944ce87dcc3bed7889a2111ed9e6b1ef939336e751ff8a3c5bf8c36ad1",
+      "bytes": 1726226,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "voidmask-sorcerer",
+      "name": "Voidmask Sorcerer",
+      "family": "Arcane",
+      "number": 41,
+      "attackStyle": "spell",
+      "effectColor": "#d8b3ff",
+      "originHint": "staff-right",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/voidmask-sorcerer-front-v1.png",
+      "effectOrigin": {
+        "x": 0.9,
+        "y": 0.23
+      },
+      "floating": false,
+      "bounds": {
+        "x": 102,
+        "y": 3,
+        "width": 1084,
+        "height": 1232
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "12219f4420a10b3bd14833a00b7c53038a0efa26ffebf2b07e194f22d9c3eb2f",
+      "bytes": 1715581,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "cinderspell-witch",
+      "name": "Cinderspell Witch",
+      "family": "Arcane",
+      "number": 42,
+      "attackStyle": "spell",
+      "effectColor": "#ffc491",
+      "originHint": "staff-right",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/cinderspell-witch-front-v1.png",
+      "effectOrigin": {
+        "x": 0.89,
+        "y": 0.18
+      },
+      "floating": false,
+      "bounds": {
+        "x": 230,
+        "y": 7,
+        "width": 946,
+        "height": 1227
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "af7c45862839393cc8b6c64b1ae265f1af915ddd47d2a471118a0b6435a0e43d",
+      "bytes": 1628387,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "starless-watcher",
+      "name": "Starless Watcher",
+      "family": "Arcane",
+      "number": 43,
+      "attackStyle": "burst",
+      "effectColor": "#c9b5ff",
+      "originHint": "eye",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/starless-watcher-front-v1.png",
+      "effectOrigin": {
+        "x": 0.5,
+        "y": 0.44
+      },
+      "floating": true,
+      "bounds": {
+        "x": 55,
+        "y": 22,
+        "width": 1149,
+        "height": 1202
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "58b799b276ce4a5874674e5a7ddf12e7d7a32984f5964877c505c40dffc1e2c6",
+      "bytes": 1648920,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "duskshade-wraith",
+      "name": "Duskshade Wraith",
+      "family": "Arcane",
+      "number": 44,
+      "attackStyle": "spell",
+      "effectColor": "#a7ddff",
+      "originHint": "hands",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/duskshade-wraith-front-v1.png",
+      "effectOrigin": {
+        "x": 0.74,
+        "y": 0.58
+      },
+      "floating": true,
+      "bounds": {
+        "x": 198,
+        "y": 16,
+        "width": 861,
+        "height": 1220
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "ed43d1daec9abf1cca681317a0f7855faeebe7b99c13ee752984a15f0346125d",
+      "bytes": 1195388,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "amethyst-warlock",
+      "name": "Amethyst Warlock",
+      "family": "Arcane",
+      "number": 45,
+      "attackStyle": "spell",
+      "effectColor": "#e2b1ff",
+      "originHint": "staff-right",
+      "isBoss": false,
+      "path": "/assets/daily-battle/enemies/amethyst-warlock-front-v1.png",
+      "effectOrigin": {
+        "x": 0.86,
+        "y": 0.17
+      },
+      "floating": false,
+      "bounds": {
+        "x": 152,
+        "y": 8,
+        "width": 1007,
+        "height": 1238
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "14bf1747a9837f59c793ac2e4deb67afbceddf87200e43173143f9b8e97b742c",
+      "bytes": 1638910,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "briar-crown-king",
+      "name": "Briar Crown King",
+      "family": "Bosses",
+      "number": 46,
+      "attackStyle": "slash",
+      "effectColor": "#ffd482",
+      "originHint": "weapon-right",
+      "isBoss": true,
+      "path": "/assets/daily-battle/enemies/briar-crown-king-front-v1.png",
+      "effectOrigin": {
+        "x": 0.12,
+        "y": 0.14
+      },
+      "floating": false,
+      "bounds": {
+        "x": 3,
+        "y": 6,
+        "width": 1248,
+        "height": 1241
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "d7daf1fa1570070b5b22bc49ce1de277a369127d5eccd09e8c86b114fa0f8f2d",
+      "bytes": 2169883,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "bonecrown-lich",
+      "name": "Bonecrown Lich",
+      "family": "Bosses",
+      "number": 47,
+      "attackStyle": "spell",
+      "effectColor": "#b8ffe1",
+      "originHint": "staff-right",
+      "isBoss": true,
+      "path": "/assets/daily-battle/enemies/bonecrown-lich-front-v1.png",
+      "effectOrigin": {
+        "x": 0.87,
+        "y": 0.18
+      },
+      "floating": false,
+      "bounds": {
+        "x": 159,
+        "y": 2,
+        "width": 953,
+        "height": 1246
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "90ec810de4b5a92b43e0ba2081454e9b489a3d0e4222df53b82b2227b5c4e0b8",
+      "bytes": 1644519,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "inferno-dragon",
+      "name": "Inferno Dragon",
+      "family": "Bosses",
+      "number": 48,
+      "attackStyle": "spell",
+      "effectColor": "#ffb96f",
+      "originHint": "mouth",
+      "isBoss": true,
+      "path": "/assets/daily-battle/enemies/inferno-dragon-front-v3.png",
+      "effectOrigin": {
+        "x": 0.47,
+        "y": 0.39
+      },
+      "floating": false,
+      "bounds": {
+        "x": 192,
+        "y": 186,
+        "width": 894,
+        "height": 879
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "1ef548f6bfe9dbbaebf6ff64a84526f4435646dc14c1d15510af09209b43911d",
+      "bytes": 1155889,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "glacier-ogre",
+      "name": "Glacier Ogre",
+      "family": "Bosses",
+      "number": 49,
+      "attackStyle": "slash",
+      "effectColor": "#bbecff",
+      "originHint": "weapon-right",
+      "isBoss": true,
+      "path": "/assets/daily-battle/enemies/glacier-ogre-front-v1.png",
+      "effectOrigin": {
+        "x": 0.85,
+        "y": 0.25
+      },
+      "floating": false,
+      "bounds": {
+        "x": 11,
+        "y": 0,
+        "width": 1235,
+        "height": 1251
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "a1fc024401e3c51e51707b548143a40302db34c2b0b6f14cdd46c58013538cd2",
+      "bytes": 2515536,
+      "generationStatus": "complete"
+    },
+    {
+      "id": "eclipse-warden",
+      "name": "Eclipse Warden",
+      "family": "Bosses",
+      "number": 50,
+      "attackStyle": "slash",
+      "effectColor": "#e6b3ff",
+      "originHint": "weapon-right",
+      "isBoss": true,
+      "path": "/assets/daily-battle/enemies/eclipse-warden-front-v3.png",
+      "effectOrigin": {
+        "x": 0.75,
+        "y": 0.75
+      },
+      "floating": false,
+      "bounds": {
+        "x": 234,
+        "y": 173,
+        "width": 838,
+        "height": 907
+      },
+      "sourceSize": {
+        "width": 1254,
+        "height": 1254
+      },
+      "sha256": "5bd76ba1c35ad8a9188dc4565ca4c653d35165c4944dc78a0743cf8a8071dfdb",
+      "bytes": 1032431,
+      "generationStatus": "complete"
+    }
+  ]
+}

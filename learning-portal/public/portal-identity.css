@@ -1,0 +1,26 @@
+.portal-identity { display:flex; align-items:center; gap:8px; min-height:56px; color:var(--ink); text-decoration:none; max-width:270px; }
+.portal-identity > span:last-child { min-width:0; }
+.portal-identity strong,.portal-identity small { display:block; }
+.portal-identity strong { font-size:14px; line-height:1.35; }
+.portal-identity small { font-size:14px; line-height:1.35; color:var(--muted); }
+.portal-portrait { position:relative; display:inline-grid; place-items:center; flex:0 0 64px; width:64px; height:64px; border:1px solid var(--line); border-radius:14px; background:#161324; }
+.portal-portrait canvas,.portal-portrait img { width:100%; height:100%; object-fit:contain; }
+.portal-portrait--large { flex:0 0 154px; width:154px; height:180px; border:0; background:transparent; }
+.portal-portrait [hidden],.portal-companion[hidden] { display:none; }
+.portal-guide { display:flex; align-items:center; gap:10px; margin:0 0 18px; padding:0 14px 0 0; max-width:800px; min-height:96px; }
+.portal-guide img { flex:0 0 128px; width:128px; height:128px; padding:13px; object-fit:contain; }
+.portal-guide strong { color:var(--gold); font-size:16px; }
+.portal-guide p { margin:3px 0; color:var(--muted); font-size:14px; }
+.portal-adventurer { display:grid; grid-template-columns:230px minmax(0,1fr); gap:22px; align-items:center; min-height:180px; }
+.portal-adventurer-art { display:flex; align-items:flex-end; justify-content:center; flex-wrap:nowrap; min-height:180px; }
+.portal-companion { flex:0 0 76px; width:76px; height:90px; object-fit:contain; }
+.portal-adventurer h2 { font-size:1.7rem; }
+.portal-character-editor summary { min-height:44px; display:flex; align-items:center; cursor:pointer; font-size:14px; }
+.portal-character-fields { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.portal-character-fields label { min-width:0; font-size:14px; }
+.portal-character-fields select { min-height:44px; font-size:14px; }
+.portal-character-editor button { min-height:44px; }
+.portal-adventurer:has(.portal-character-editor:not([open])){padding-block:18px}
+@media (max-width:800px) { .portal-identity { max-width:240px; } .portal-adventurer { grid-template-columns:190px minmax(0,1fr); } .portal-adventurer-art { min-height:156px; } .portal-portrait--large { flex-basis:124px; width:124px; height:146px; } .portal-companion { flex-basis:66px; width:66px; height:78px; } .portal-character-fields { grid-template-columns:1fr; gap:4px; } }
+@media (max-width:520px) { .portal-adventurer { grid-template-columns:1fr; gap:8px; } .portal-adventurer-art { align-items:flex-end; } .portal-portrait--large { flex-basis:146px; width:146px; height:170px; } .portal-companion { flex-basis:74px; width:74px; height:88px; } .portal-guide img { width:100px; height:100px; flex-basis:100px; padding:10px; } .portal-guide { gap:2px; } .portal-identity { max-width:100%; } }
+@media(max-width:520px){.portal-adventurer:has(.portal-character-editor:not([open])){grid-template-columns:110px minmax(0,1fr);gap:12px;padding:16px}.portal-adventurer:has(.portal-character-editor:not([open])) .portal-adventurer-art{min-height:120px;gap:0}.portal-adventurer:has(.portal-character-editor:not([open])) .portal-portrait--large{flex-basis:76px;width:76px;height:112px}.portal-adventurer:has(.portal-character-editor:not([open])) .portal-companion{flex-basis:34px;width:34px;height:48px}.portal-adventurer:has(.portal-character-editor:not([open])) h2{font-size:1.25rem;margin-block:8px}.portal-adventurer:has(.portal-character-editor:not([open])) .eyebrow{font-size:11px}.portal-adventurer:has(.portal-character-editor:not([open])) p{font-size:14px;margin-block:8px}}

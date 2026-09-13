@@ -1,0 +1,11 @@
+# Portal mascot and identity integration
+
+Source: `DRAGONSWOOD MASTER GUIDE 2026-09-13.zip`, `Dragonswood-Admin-Bible-and-Assets/03_MASCOTS/Dragonswood_Dragon/`. Sixteen selected files (214,083 bytes total) were extracted after the verified rollback checkpoint. Every size and SHA-256 matches the supplied file manifest; `source-verification.json` records each identity. Original paths and slugs are preserved within this runtime root. No artwork was generated, modified, re-cut, or replaced with a legacy roster.
+
+The official purple dragon is a quiet platform guide. The current route alone loads its static subject pose/first animation frame. Veil remains Arcade-specific; Crackle and Nestle remain the Egg Drop guides. The component preserves full square canvases with contain fitting, explicit dimensions and clear space. Its text never invents grades, completion, rewards or punitive states.
+
+All used full-body subject/guide exports were inspected directly. Horns, body, wing/tail features and props remain within their supplied square canvases; no inferred image-generation prompt is used as visual evidence. Header identity uses the selected current player's entire keyed front atlas frame, rather than an invented face-crop rectangle. This processing reuses the supplied source-specific appearance logic and does not alter the source PNG.
+
+Portal profile choices are server-owned. New profiles select one of eight level-one families; that class is then locked while eligible owned pets can be equipped or removed. Four starter pets are an explicit local-preview inventory only. The production store defaults to no invented ownership and accepts trusted inventory/computed-level providers. Browser preview settings cannot replace a supplied authoritative Daily Battle profile. Character/pet selection changes no academic question, answer, score, battle damage, XP or currency.
+
+Tests: `tests/portal-identity.test.mjs`, `tests/adventurer-store.test.mjs`, and `tests/legacy-pet-exchange.test.mjs` passed15/15. The exchange helper is private review-only: it preserves old fields in an archive, normalizes Nyx aliases before counting collisions, reports unknowns/locked ownership, and separates unapplied compensation suggestions. No live migration or token credit was performed. Parent integration owns final route/browser verification.

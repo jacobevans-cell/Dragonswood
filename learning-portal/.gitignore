@@ -1,0 +1,4 @@
+private-runtime/
+*.sqlite*
+.env*
+*credentials*

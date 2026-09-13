@@ -1,0 +1,334 @@
+.ccf-hero {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 30px;
+  align-items: center;
+  border-top: 3px solid var(--gold);
+  background:
+    radial-gradient(ellipse at 0% 0%, #60483f55, transparent 65%), #211c32;
+  padding: 32px;
+}
+.ccf-hero h2 {
+  font-size: clamp(30px, 3vw, 46px);
+  line-height: 1.12;
+  margin: 10px 0 16px;
+}
+.ccf-deck {
+  font-size: 17px;
+  max-width: 760px;
+}
+.ccf-case-stamp {
+  text-align: center;
+  padding: 20px 10px;
+  border: 1px solid #cca364;
+  border-radius: 60px 60px 10px 10px;
+  color: var(--gold);
+  font-size: 12px;
+  letter-spacing: 3px;
+}
+.ccf-case-stamp strong {
+  display: block;
+  font:
+    48px Georgia,
+    serif;
+  letter-spacing: 0;
+  margin: 5px 0;
+}
+.ccf-case-stamp span {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+}
+.ccf-process {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+}
+.ccf-process span {
+  border-bottom: 2px solid #8a6f51;
+  padding: 5px 0;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.ccf-report p {
+  max-width: 950px;
+}
+.ccf-paragraph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+  border: 1px solid #74604d;
+  border-radius: 50%;
+  font-size: 12px;
+  color: #d9b977;
+  margin-right: 10px;
+}
+.ccf-evidence-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+.ccf-evidence-buttons button {
+  text-align: left;
+  white-space: normal;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-height: 66px;
+  font-size: 14px;
+}
+.ccf-evidence-buttons button span {
+  font-family: Georgia, serif;
+  color: var(--gold);
+  font-size: 23px;
+}
+.ccf-evidence-buttons button[aria-pressed="true"] {
+  border-color: var(--gold);
+  background: #5c473f;
+}
+.ccf-evidence-reader {
+  position: relative;
+  background: #f3edde;
+  color: #292033;
+  border-radius: 12px;
+  padding: 26px;
+  border-left: 5px solid #bd944e;
+  margin: 20px 0;
+}
+.ccf-evidence-reader .eyebrow {
+  color: #6e4926;
+}
+.ccf-evidence-reader h3 {
+  color: #302239;
+  font-size: 25px;
+}
+.ccf-evidence-reader p {
+  font-family: Georgia, serif;
+  font-size: 18px;
+  line-height: 1.85;
+  white-space: pre-line;
+}
+.ccf-pinboard {
+  padding: 26px;
+  border: 1px solid #66514e;
+  border-radius: 12px;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      #3f303522 0px,
+      #3f303522 2px,
+      transparent 2px,
+      transparent 14px
+    ),
+    #191523;
+}
+[data-ccf-pins] {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.ccf-pinned {
+  position: relative;
+  border: 1px solid #796057;
+  border-radius: 4px;
+  background: #2e2638;
+  padding: 22px;
+}
+.ccf-pinned h4 {
+  color: #efd4a4;
+  font-size: 17px;
+  margin: 4px 0 10px;
+}
+.ccf-pinned p {
+  font-size: 14px;
+  line-height: 1.75;
+}
+.ccf-pin {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  left: calc(50% - 6px);
+  top: -6px;
+  background: #77d8ca;
+  box-shadow: 0 2px 8px #0008;
+}
+.ccf-cast {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin: 24px 0;
+}
+.ccf-person {
+  border: 1px solid #65516f;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #1b1527;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.ccf-person.active {
+  border-color: #6be0c9;
+  box-shadow: 0 0 0 2px #6be0c922;
+}
+.ccf-person img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+}
+.ccf-person > div {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+}
+.ccf-person h3 {
+  font-size: 27px;
+  margin: 10px 0 18px;
+}
+.ccf-person .eyebrow {
+  font-size: 11px;
+  line-height: 1.65;
+}
+.ccf-person .btn {
+  white-space: normal;
+  text-align: left;
+  margin-top: auto;
+}
+.ccf-statement-notes {
+  margin-top: 28px;
+  gap: 28px;
+}
+.ccf-statement {
+  padding: 26px;
+  border-radius: 12px;
+  background: #161321;
+  border: 1px solid #65516f;
+}
+.ccf-statement p {
+  line-height: 1.8;
+}
+.ccf-statement strong {
+  color: #f2c986;
+}
+.ccf-timeline {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.ccf-timeline li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border: 1px solid #5a4766;
+  border-left: 3px solid #70cabd;
+  border-radius: 8px;
+  padding: 16px;
+  background: #191523;
+}
+.ccf-timeline li strong {
+  display: block;
+  margin-top: 5px;
+}
+.ccf-timeline .btn-row {
+  flex-shrink: 0;
+}
+.ccf-reasoning-path {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 24px 0;
+}
+.ccf-reasoning-path span {
+  padding: 12px;
+  border: 1px solid #615174;
+  border-radius: 8px;
+  background: #191523;
+  font-size: 14px;
+  text-align: center;
+}
+@media (max-width: 1100px) {
+  .ccf-evidence-buttons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ccf-person > div {
+    padding: 15px;
+  }
+  .ccf-person h3 {
+    font-size: 23px;
+  }
+  .ccf-timeline li {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+@media (max-width: 800px) {
+  .ccf-hero {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 24px;
+  }
+  .ccf-case-stamp {
+    width: 80px;
+    border-radius: 12px;
+    padding: 10px;
+  }
+  .ccf-case-stamp strong {
+    font-size: 32px;
+  }
+  .ccf-cast {
+    grid-template-columns: 1fr;
+  }
+  .ccf-person {
+    display: grid;
+    grid-template-columns: 140px minmax(0, 1fr);
+  }
+  .ccf-person img {
+    height: 100%;
+    object-fit: cover;
+  }
+  .ccf-person h3 {
+    font-size: 24px;
+    margin: 10px 0;
+  }
+  .ccf-reasoning-path {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  [data-ccf-pins] {
+    grid-template-columns: 1fr;
+  }
+  .ccf-evidence-reader,
+  .ccf-pinboard,
+  .ccf-statement {
+    padding: 18px;
+  }
+}
+@media (max-width: 520px) {
+  .ccf-evidence-buttons {
+    grid-template-columns: 1fr;
+  }
+  .ccf-person {
+    grid-template-columns: 105px minmax(0, 1fr);
+  }
+  .ccf-person h3 {
+    font-size: 21px;
+  }
+  .ccf-person .btn {
+    font-size: 12px;
+    padding: 9px;
+  }
+  .ccf-evidence-reader p {
+    font-size: 17px;
+  }
+}

@@ -1,0 +1,2696 @@
+[
+  {
+    "path": "public/activity-overview.js",
+    "sha256": "60c9947589b9d643b0782bfbefdaf4eea08e22744a43038466bd62488abe3013",
+    "bytes": 10741,
+    "role": "public-static"
+  },
+  {
+    "path": "public/app.js",
+    "sha256": "e322fc8a16fb9d2c5dd175969cf1a1c8283c42a3251d2a55962f867d11d1e8c6",
+    "bytes": 90613,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assessment-coach.js",
+    "sha256": "2b6c6bb5c38efc50015f5b76dd1f2f266246d2520df615b6fed1e0aa4c2492f9",
+    "bytes": 6714,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assessment-ui.js",
+    "sha256": "1adf3c4483104d90aecd5a6e7754f97708512637a0b04a1b0053c132b1930c78",
+    "bytes": 12518,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/bridge-choices.png",
+    "sha256": "440eb612d644adb1e7dfcb4e76fe9693f8f01474a6c55e9d57c51425cb99b674",
+    "bytes": 3224765,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/ccf/case030-v2/felix-rowan.png",
+    "sha256": "fe1127d0782c50550933f3609c8fbf156e25bf20023b824d25abe64db0c81ad1",
+    "bytes": 2221166,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/ccf/case030-v2/manor-scene-anchored.png",
+    "sha256": "6b46698fb521e2893c37a2626b6a10946198622e1f6dfbcb0523c89a6113e65f",
+    "bytes": 2076728,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/ccf/case030-v2/manor-scene-clear-doorway.png",
+    "sha256": "fc250356ed0f79212375e3c56f882f610a8b2fce6855ede74deb01e18651b577",
+    "bytes": 2009547,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/ccf/case030-v2/manor-scene.png",
+    "sha256": "c91916b7087d1a1da349bfa8066f046fb472883dc74270f8bf66e5190d6e4cc8",
+    "bytes": 2177166,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/ccf/case030-v2/mira-quill.png",
+    "sha256": "c1e686074b40fa8038d10c4b28cc8642b15afa376c0e229683140c0f65d78165",
+    "bytes": 2100241,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/ccf/case030-v2/vera-vale.png",
+    "sha256": "aae6d264e56efc2e9cac8da567b4d2766c26f3d46abed84353cd36d9ca580ba6",
+    "bytes": 2169254,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/ccf-days/day31/cast.png",
+    "sha256": "aff5a1ed3fcab13d6c50a60b986ef2aedb3773df2655eebb99eab88c6343a31d",
+    "bytes": 2592331,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/ccf-days/day31/evidence-desk.png",
+    "sha256": "26f952abd99d71e792da23ad10ef2be5ff02309665d51f90ae0a67a2e05516a1",
+    "bytes": 2555274,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/ccf-days/day32/cast.png",
+    "sha256": "cff8d81a4a1fdbecc04e3fafd69c06754908771a9b18360156ffba2716ff48e6",
+    "bytes": 2376610,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/ccf-days/day32/evidence-desk.png",
+    "sha256": "32f181b9266b04f6120c6264e2f49ab0606b96f1d669fc3fc381cee3ab67e8af",
+    "bytes": 2377835,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/ccf-days/day33/cast.png",
+    "sha256": "25496abf0c1208d9c7f61675b75c6e7db022e558076ffa69d5e752e5b4b2d3b9",
+    "bytes": 2268361,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/ccf-days/day33/evidence-desk-v2.png",
+    "sha256": "a99f07a370f5e2eb8ba19d228f1cebedeb06564590434b7624ac7d88d22c7c22",
+    "bytes": 2179629,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/ccf-days/day35/cast.png",
+    "sha256": "8453fd2f6cadb465c5017639f7a537ee2ad96b21efbf1e0b8df5019be371e60b",
+    "bytes": 2568127,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/ccf-days/day35/evidence-desk-v2.png",
+    "sha256": "b634804c85d808aa59bb72252cc101dde15c1f2a86258d46d5c7e253d6aa2b55",
+    "bytes": 2056062,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/ccf-days/day36/cast.png",
+    "sha256": "e36bc1782d29441273eda85af1f24a32ec42474fba0ab4ce97595ecc28bcc9d9",
+    "bytes": 2585368,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/ccf-days/day36/evidence-desk.png",
+    "sha256": "e63e9672fc2640c073f1063e635d8c5a723da9548476618942e7188572941f1d",
+    "bytes": 2304506,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/ccf-days/day37/cast.png",
+    "sha256": "76fa40c3cffe55c806b392678666f2c0230c8801141251245d64ad61139f5710",
+    "bytes": 2351870,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/ccf-days/day37/evidence-desk.png",
+    "sha256": "f4c34cb8aeb553eaf6ab9e5193e3ca05490d729144df9ffef47fd53a4271242d",
+    "bytes": 2228869,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/ccf-days/day38/cast.png",
+    "sha256": "0c0b6bd5577487ffa1085746f20ee7672db3ac8af27402227fc8e75dd0e083c9",
+    "bytes": 2406459,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/ccf-days/day38/evidence-desk.png",
+    "sha256": "6915c3709e4fb5cf640d7bf0950e9917063388aac8f7717d28d7bb59cde6ceec",
+    "bytes": 2469393,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/curriculum-days/art-source-manifest.json",
+    "sha256": "2f39e4b5829ad6408715eb859ba7a341929f93fc72c9a90ad9a0707d2be5dd87",
+    "bytes": 8771,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/curriculum-days/morph-day31.png",
+    "sha256": "31f1e2e97e677b5835a01aa92b92bc7430e749df5d9751426ce941b22701c30c",
+    "bytes": 2581159,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/curriculum-days/morph-day32.png",
+    "sha256": "9e239566b1ce53f137d76311532412379e58b4efda95ee7b0bb362b4858127d9",
+    "bytes": 2764968,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/curriculum-days/morph-day33.png",
+    "sha256": "32314ed5ce3408b634fedc264f870d1abc6000684a4bd23088814a1e01073690",
+    "bytes": 3040207,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/curriculum-days/morph-day35.png",
+    "sha256": "5c2196e19ca6ed23ecfd4c96255b81957d67c1889ea3c5c59bb087f9a791e8db",
+    "bytes": 2383069,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/curriculum-days/morph-day36.png",
+    "sha256": "66928bd3f48fbb1033315ff3bf1a427ae14ca6a5e11b237f6531700aed574773",
+    "bytes": 2927261,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/curriculum-days/morph-day37.png",
+    "sha256": "14a806a3942188a2a19c0abbee1a68a98ddc8f43dcd0870ce0205a66f4f13b93",
+    "bytes": 2510144,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/curriculum-days/morph-day38.png",
+    "sha256": "f3a53994d187db1cd9998b4b5ca82f773dced3f18a150699e5bafaee35623da8",
+    "bytes": 3105562,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/amberhorn-beetle-front-v1.png",
+    "sha256": "d871e51917c3b90f523d77f954b50786609d25ac77a7e9a8864dd9f282099016",
+    "bytes": 1467521,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/amethyst-warlock-front-v1.png",
+    "sha256": "14bf1747a9837f59c793ac2e4deb67afbceddf87200e43173143f9b8e97b742c",
+    "bytes": 1638910,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/ashen-reaper-front-v1.png",
+    "sha256": "396023d77b4ffba1232126438f6aaa381283bcd2c1761ab1c8ac8f0f6447fc77",
+    "bytes": 1478608,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/bog-hydra-front-v1.png",
+    "sha256": "b2e4a274b547782c8cf66390abc83793c874fc71538357b0776046a0b2ae4842",
+    "bytes": 1879701,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/bonecrown-lich-front-v1.png",
+    "sha256": "90ec810de4b5a92b43e0ba2081454e9b489a3d0e4222df53b82b2227b5c4e0b8",
+    "bytes": 1644519,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/boneguard-knight-front-v1.png",
+    "sha256": "b8a073321ffb6a040f0eb780f3e29e4617d61a62e8a29ef00cabe3262d398c52",
+    "bytes": 1800214,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/bramble-sprite-front-v1.png",
+    "sha256": "5eae152d2c69b8af5a5699b9f2adedfa1df200986b7e9e923951145f89d0f616",
+    "bytes": 1551274,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/briar-crown-king-front-v1.png",
+    "sha256": "d7daf1fa1570070b5b22bc49ce1de277a369127d5eccd09e8c86b114fa0f8f2d",
+    "bytes": 2169883,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/briar-goblin-scout-front-v1.png",
+    "sha256": "4c33271ffc38d0830abbfb22273aefb09068d3fc0170dc9f552fee71cff1a504",
+    "bytes": 1486125,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/cinder-hobgoblin-front-v1.png",
+    "sha256": "69dcf5cf09a7b0827dd6201d1fc4c5aae5cc3224bc6c3d8bc64f347a0aff2b38",
+    "bytes": 1931913,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/cinder-imp-front-v1.png",
+    "sha256": "0ce44619f8f1481ef98238c71148e068204b977bc22107cec124a012bfdf2cb6",
+    "bytes": 1525356,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/cinderspell-witch-front-v1.png",
+    "sha256": "af7c45862839393cc8b6c64b1ae265f1af915ddd47d2a471118a0b6435a0e43d",
+    "bytes": 1628387,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/clockwork-warden-front-v1.png",
+    "sha256": "ddfb87df03adfeefccbc66480d6a56f2635675aeca3c7d78e0d552a3ecd2691c",
+    "bytes": 2175875,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/coppercap-sapper-front-v1.png",
+    "sha256": "501f694decd510a5b3ffa57a3f5a033cf0ce5923ee5b9d386ca691a622d990d1",
+    "bytes": 1548135,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/crimson-mantis-front-v1.png",
+    "sha256": "37d360ceab8c598e9c0eb9c7ac61dbd509c438d3b0e037ad8b3803dd345e41eb",
+    "bytes": 1164138,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/crystal-frostling-front-v1.png",
+    "sha256": "9ec31a9c7717d2a2fadf8fcd3f76b157a0613a410f5dbfea13dd2f0b64174f45",
+    "bytes": 1438392,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/dune-serpent-front-v1.png",
+    "sha256": "5798eb1df4fad044957cf8273a8ba7caebfc3de8386d010c4bf48af5133e3a78",
+    "bytes": 1486030,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/duskshade-wraith-front-v1.png",
+    "sha256": "ed43d1daec9abf1cca681317a0f7855faeebe7b99c13ee752984a15f0346125d",
+    "bytes": 1195388,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/duskwing-bat-front-v3.png",
+    "sha256": "ebc278172f6159da6c21fb83856d77a7473123d49990abdbf25bbacf9a72e0db",
+    "bytes": 759328,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/eclipse-warden-front-v3.png",
+    "sha256": "5bd76ba1c35ad8a9188dc4565ca4c653d35165c4944dc78a0743cf8a8071dfdb",
+    "bytes": 1032431,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/elder-rootwarden-front-v1.png",
+    "sha256": "d53a3fe67ad1e7fb6f5998b8cd0ea352ced683263e075e3774dc1c35d0aa4b1b",
+    "bytes": 2057932,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/ember-drake-front-v1.png",
+    "sha256": "cdfa5208aa0a3127801414be0f2962cd1a0857bd23b24ee91304f9ad446697bd",
+    "bytes": 1654500,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/frost-revenant-front-v1.png",
+    "sha256": "81825135c0b33b287159db6bb00380adc8e731b90ca57947617be0cb8d73a56e",
+    "bytes": 1975173,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/frosthorn-yeti-front-v1.png",
+    "sha256": "fa822785717c60abb4e77fcb41970288f3f070fe50d12b013339cc1cd0aaf800",
+    "bytes": 2088683,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/glacier-ogre-front-v1.png",
+    "sha256": "a1fc024401e3c51e51707b548143a40302db34c2b0b6f14cdd46c58013538cd2",
+    "bytes": 2515536,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/hivewing-wasp-front-v1.png",
+    "sha256": "e02381c4416b9e0e9e9b108b4e0f2db78b3c8ebde96051919821891c2273de24",
+    "bytes": 1632801,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/hollow-halberd-front-v1.png",
+    "sha256": "ccbfbf944ce87dcc3bed7889a2111ed9e6b1ef939336e751ff8a3c5bf8c36ad1",
+    "bytes": 1726226,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/inferno-dragon-front-v3.png",
+    "sha256": "1ef548f6bfe9dbbaebf6ff64a84526f4435646dc14c1d15510af09209b43911d",
+    "bytes": 1155889,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/ironhide-boar-front-v1.png",
+    "sha256": "eba4231402e927878116165559dba70e2b5f4c20fb80e40e942df58294305833",
+    "bytes": 2132995,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/ironjaw-mimic-front-v1.png",
+    "sha256": "e7605c436caaa917c214fee0bf1dcb91eb8a362b802f70a5f115427c713042e2",
+    "bytes": 1578203,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/jade-basilisk-front-v1.png",
+    "sha256": "328bcb218611b0750babd1bcee1034fa9a3277dc6e5f6b1a0c538918f7731eb4",
+    "bytes": 1863329,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/lantern-skeleton-front-v3.png",
+    "sha256": "ede6b6b276114979ea7f216e366e204605d6a0f8167f90a1a067f0037440822b",
+    "bytes": 811349,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/moonwing-gryphon-front-v1.png",
+    "sha256": "6e7588c4d7635909d3c9fc8beaa2c117a7dcbe72a11d58b97b061f493d351949",
+    "bytes": 2081926,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/mossstone-colossus-front-v1.png",
+    "sha256": "555a1742d3d217a2d8f278f7eb688001c86de470b8a9de7256bf4aeae5d081de",
+    "bytes": 2516490,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/obsidian-brute-front-v1.png",
+    "sha256": "50a4bc7013469510aa3e4aac86810763eb9d05fae7e9585eeb4987f99f152814",
+    "bytes": 1959429,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/onyx-scorpion-front-v1.png",
+    "sha256": "279c8b8811ced5804cfbaa7f85f5d8883e94e07573ad26161394878e180b7d95",
+    "bytes": 1591472,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/runebound-automaton-front-v1.png",
+    "sha256": "d747883463ed12dbc294f025d8be96c67ab91dd7306e813f48136bc79ec421d2",
+    "bytes": 1546201,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/scaleguard-captain-front-v1.png",
+    "sha256": "390f4e7c7e50ab1daeaa8cfc9aa9b219af23ace73cee1e90bbfbda532d778e4e",
+    "bytes": 1503076,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/silkspinner-front-v1.png",
+    "sha256": "0bf58d35e935ac3ab947aa49a8d21f55aa2afd538b1ae9f69744011f8e34116e",
+    "bytes": 1594594,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/silverfang-direwolf-front-v3.png",
+    "sha256": "4377757925308d94d0f73d0f2a896830dbc45bff76001f73959be5a46cd699f7",
+    "bytes": 775789,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/slate-gargoyle-front-v1.png",
+    "sha256": "774072a1aa9b162430adafdd19d5e740d254790668ece9b74bfd9a0cad4b5584",
+    "bytes": 1989866,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/sporecap-brute-front-v1.png",
+    "sha256": "6f6e962bad3d746e788427a37c097b44ebaf2763a76feaa29c2d3c4398d4c22d",
+    "bytes": 2162504,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/starless-watcher-front-v1.png",
+    "sha256": "58b799b276ce4a5874674e5a7ddf12e7d7a32984f5964877c505c40dffc1e2c6",
+    "bytes": 1648920,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/stormbone-shaman-front-v1.png",
+    "sha256": "7c100a3b0287e64ab78d42499e14d98d9f23d2c4ca04cffe79ab594fd998ad9b",
+    "bytes": 1908572,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/thorn-spearguard-front-v1.png",
+    "sha256": "c4a92c9cfcbdab673ccab947102e3ead962a546402fa649b8c07718930607291",
+    "bytes": 1676482,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/thornstalker-front-v1.png",
+    "sha256": "3522db6a648183ca31916f1b3dad68cf21e31499c8c26b828064854495b45a59",
+    "bytes": 1652201,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/thunder-djinn-front-v1.png",
+    "sha256": "c3535ddabb23e57be7dfb4b81875ca96c14db482f8d61a2f2f95471dd68e8795",
+    "bytes": 1417916,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/tidal-coil-front-v1.png",
+    "sha256": "3ccbef6d222f20fec4ea6dd107a1019884f2caed8f143897ce31dfd45b7562f5",
+    "bytes": 1611585,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/tomb-mummy-front-v1.png",
+    "sha256": "37994c2d0526172db960166b75401e288a1bf525a1d9950000fa9f3070130868",
+    "bytes": 1894709,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemies/voidmask-sorcerer-front-v1.png",
+    "sha256": "12219f4420a10b3bd14833a00b7c53038a0efa26ffebf2b07e194f22d9c3eb2f",
+    "bytes": 1715581,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/enemy-manifest.json",
+    "sha256": "82a576ae6df681dfdc08c4d94694e792dd86cbf2204bf0d9b2df877d6253b071",
+    "bytes": 38760,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/forest-arena.png",
+    "sha256": "3f289998efd5451a512625c7b69fa940465d2f233acf30137a0a759d1b3a0b1e",
+    "bytes": 3018759,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/geometry-review.json",
+    "sha256": "b1cadde9e5f38c5f73de0eab8711d5645c4195690581c28df2668c0f279dea81",
+    "bytes": 2844,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/eclipse-witch-level-1.json",
+    "sha256": "98bf2103e566252e09a6b6731052cc2243bf58308f4ace62ceb940b16e3a3cc8",
+    "bytes": 12043,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/eclipse-witch-level-10.json",
+    "sha256": "04d2e89841a0688b68e80a235f8468dd04dc69c61a489a5b0a1af8bb0aaece9e",
+    "bytes": 14611,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/eclipse-witch-level-15.json",
+    "sha256": "2dc9be4af045b3db9be4a659a5af4029d5dd57ec0bcf9478b51692b225d19a98",
+    "bytes": 23779,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/eclipse-witch-level-20.json",
+    "sha256": "2730f75a00af2c446a0d58bc9de9934c649a389b23e4dbd9392da521d307b2ac",
+    "bytes": 25225,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/eclipse-witch-level-5.json",
+    "sha256": "2b830c686e73ac07910094e906afae9373d7df4f15456ee99c32694c35d3ce09",
+    "bytes": 13214,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/mage-light-female-1.json",
+    "sha256": "774d4a1e3a7b6f0b629f809430e889df12b2f3c253bf2cb92a65e0e987576b34",
+    "bytes": 3796,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/mage-light-female-10.json",
+    "sha256": "252ef223630392219671b948f4648203ea0cec4de754e09e24b7df4db6ec6183",
+    "bytes": 2804,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/mage-light-female-15.json",
+    "sha256": "70b426cbba558d447c212b3fcd48a8eb06e21b282aa5440e363b26b001468686",
+    "bytes": 2887,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/mage-light-female-20.json",
+    "sha256": "f8cbeb1a3063663bda3267a7f3cc771e8dedb66e0a6757ce088edf87881fef1a",
+    "bytes": 2869,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/mage-light-female-5.json",
+    "sha256": "d0ea93cc014cb035239e8ed96e7cef53e8640e03ed364def7c004c2deff9d763",
+    "bytes": 2805,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/starfire-level-1.json",
+    "sha256": "9115c7c7aeb3fd5c39b9cb0efa17db69b35a8d33adefdbe9d0e67ecd3f28496e",
+    "bytes": 1701,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/starfire-level-10.json",
+    "sha256": "6895189bad92d665de6b8471092b67795de8f50aab9dc4f72bce4c5614c961f3",
+    "bytes": 5716,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/starfire-level-15.json",
+    "sha256": "81a97ab10123be34db5ec83bb3ed2cd0acdc0a277f78ae80045eaa5ac8c4fd1b",
+    "bytes": 5594,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/starfire-level-20.json",
+    "sha256": "43475f729cf7b8df0a5a0c5485b132d2998d41589433170fd6748d3781bfb836",
+    "bytes": 5927,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/starfire-level-5.json",
+    "sha256": "408182f053af0b0cc1d3e1c06c7012b1e9e6812d314b5ce5f3255999bf45dc30",
+    "bytes": 6411,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/voidcore-level-1.json",
+    "sha256": "9f7c19362dc709e0628378cf76119257e18f9c4c40ba4048a4b2451b3b233e67",
+    "bytes": 1618,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/voidcore-level-10.json",
+    "sha256": "44b2c35c7706baa5e88852e10ec6441fa6fbaa3c7e5fe6e7db11c5920cdf75a8",
+    "bytes": 1663,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/voidcore-level-15.json",
+    "sha256": "a578b0a973f0c5ee6feafe8541993ce1d5723b57e03655d6661a0137550b9ed2",
+    "bytes": 1831,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/voidcore-level-20.json",
+    "sha256": "eb2eb392cc51e3971518981cd75021c8d7654f23dd5f683700013947eb12d38e",
+    "bytes": 1831,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/voidcore-level-5.json",
+    "sha256": "8ecc9a223d151101522a1afd917fcc682fe8b87337aa23e90e13f074da9bb46b",
+    "bytes": 1786,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/warrior-dark-female-1.json",
+    "sha256": "813c3e39afc0e3e1975867947872832b59b18d6c5eb419230dcb1fcfe3f0c917",
+    "bytes": 40050,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/warrior-dark-female-10.json",
+    "sha256": "44f9ea5d3c816393d8d6893ce3230f47e0844dd9dbce3018a147ff407dbbf40f",
+    "bytes": 75335,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/warrior-dark-female-15.json",
+    "sha256": "31805b2cbaaa978f8f63b23d4cb31b2f59c9193c5dd62fc296cb859e22751c52",
+    "bytes": 75306,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/warrior-dark-female-20.json",
+    "sha256": "a11e96fe9d6229f223ede87a9010a134d3c884d8c72a17de77b0d61a69593b96",
+    "bytes": 53556,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/warrior-dark-female-5.json",
+    "sha256": "fd72076119c806b47337acb8ff345415738a01cd31c1a7953148f6f165e8c301",
+    "bytes": 56746,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/warrior-dark-male-1.json",
+    "sha256": "93a22fef7d22efb846ebde86031e8afe84d2fee1bbcf856887d6d6c17f955a14",
+    "bytes": 1601,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/warrior-dark-male-10.json",
+    "sha256": "58d78421256f25670a0551681ee7a4e01c1254173a7dfefe43b41e3c21772081",
+    "bytes": 1115,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/warrior-dark-male-15.json",
+    "sha256": "8adc2f29b88970e09124285343e2bc8c5850ace16ef675ef9bc5869fa71e95cb",
+    "bytes": 1061,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/warrior-dark-male-20.json",
+    "sha256": "f775099161881c0b5dc3f7a5e1a7584a2d3da97f3ff920fd422c7391de1ec991",
+    "bytes": 1145,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/warrior-dark-male-5.json",
+    "sha256": "389085f7ae189567efdefdce7e4fd9a6ecfab986f4d01d744844b6da2f78cc74",
+    "bytes": 1226,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/warrior-light-female-1.json",
+    "sha256": "c30f626be924a546d43fb3ea2caffdadef92e0b15ae1f5cb20da0629e1232d27",
+    "bytes": 2365,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/warrior-light-female-10.json",
+    "sha256": "fd81dfa3f12a5b4eb1c54c7da261d693f05245852b81ec2b4666b42679ab04c9",
+    "bytes": 3939,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/warrior-light-female-15.json",
+    "sha256": "b8ae24f40c60f513a4653fa77f9d86e0b882d43c063710a2c4796ac3622a0043",
+    "bytes": 1940,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/warrior-light-female-20.json",
+    "sha256": "cde0a4fac2e768efdacc36129af18c301095fa0335522ab5b187dbb02c629e43",
+    "bytes": 2318,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/warrior-light-female-5.json",
+    "sha256": "4cf781f60dc133c64fd892f306829f1dbb4823d233e391c2d2831f549e547001",
+    "bytes": 2405,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/warrior-light-male-1.json",
+    "sha256": "0fb08a023381b81a3a79f4c94ff2e8c8de4b4c734be4c1b5ce00757f5a38669a",
+    "bytes": 1654,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/warrior-light-male-10.json",
+    "sha256": "d6f9184f2aaa1221dab6868d596a27fe284dfe1900f1c67d9517d4c0128bb0ef",
+    "bytes": 1571,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/warrior-light-male-15.json",
+    "sha256": "0dd8e61e42db4b6266aef8a70f5c7765ed1d8d5a193a9e8413368a7d456333e0",
+    "bytes": 1497,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/warrior-light-male-20.json",
+    "sha256": "356a718acc494a5f2c2b5f634388945a904b4407697886c012eb6394ada2a973",
+    "bytes": 1423,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/hero-definitions/warrior-light-male-5.json",
+    "sha256": "3835dc957099826677172c576da9cdbfb326dfe6b5558653249a7df5ae19e928",
+    "bytes": 1859,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/celestial-level-1-staff-v3.png",
+    "sha256": "d7d566c04aae6460fa0dad66636b16324c32e63a004b3666d7bdd5a9aac87448",
+    "bytes": 1689813,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/celestial-level-1-v2.png",
+    "sha256": "a700f4f5ac074f6470b10ba90acc112b55d8fade565b4a8cb773471d491d419e",
+    "bytes": 1708591,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/celestial-level-10-staff-v3.png",
+    "sha256": "4d1d750416d6d851c30953f1c4240a9fd3fe8d673c08eb4c00ac55c032afff94",
+    "bytes": 1855067,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/celestial-level-10-v2.png",
+    "sha256": "4e01ac06d50e05848e7a5104d6595106e737d7143a97a44c1845f6997ba1033b",
+    "bytes": 1841889,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/celestial-level-15-staff-v3.png",
+    "sha256": "acb607d27fd9fcb20d440146fc5c50823fd39b373750f793bc5879c155f752aa",
+    "bytes": 2005513,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/celestial-level-15-v2.png",
+    "sha256": "04609127c308c1fb9c65e7c93bdc24978f2759da3bb992091d2e997d5994074f",
+    "bytes": 2041325,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/celestial-level-20-staff-v3.png",
+    "sha256": "227f69ae4329faf358a9225c3b8d55559f20756fdab379e9049da4d9550b4a09",
+    "bytes": 2134125,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/celestial-level-20-v2.png",
+    "sha256": "caeaf3289c36beb106eedee5e6771621900d63f86f64e4833c8801e3521b0af5",
+    "bytes": 2102629,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/celestial-level-5-staff-v3.png",
+    "sha256": "3d892fcdab0d07b75cebbfa56c770b9aa665d68c314d39b8902b764f9855166a",
+    "bytes": 1739059,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/celestial-level-5-v2.png",
+    "sha256": "540613ee9e830f13a59bddb17af60534f2b78b55c57df237fe76675aa5f7d01f",
+    "bytes": 1718410,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/dawnscale-level-1-pair-v1.png",
+    "sha256": "6c70b57f761e08dccde25a6e04e0a73deefeb9b7e411023be5d1aacb73f67ca9",
+    "bytes": 1871162,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/dawnscale-level-10-pair-v1.png",
+    "sha256": "17d8c2f7f5225f7c41e7bba38e1ea71c1dc8e96f5edb88205daeb6cde65b9037",
+    "bytes": 1745887,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/dawnscale-level-15-pair-v1.png",
+    "sha256": "7b712c4f2864d3621646b0b7bdee0a28c4ed96d84c3c5145e355a692f0e6910a",
+    "bytes": 1863741,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/dawnscale-level-20-pair-v1.png",
+    "sha256": "12637b38c16049536b9e305c6dcb2d62916c169536908d2160a09e0ed6548f78",
+    "bytes": 2026750,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/dawnscale-level-5-pair-v1.png",
+    "sha256": "d3c80c9d1b5fedb93174c4731a9fe934b14ebafa0f7991817ad5b776ca322433",
+    "bytes": 1694694,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/eclipse-level-1-pair-v1.png",
+    "sha256": "0e2da0e78f9d64da04cba1ae7fc685928cfdb93738e0d5f7b58fe0b9a25c0a08",
+    "bytes": 1837571,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/eclipse-level-10-pair-v1.png",
+    "sha256": "97b856e8fe91030836e6e89a59fb226c31c2d13ba8ad89fae990588a59488867",
+    "bytes": 1892639,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/eclipse-level-15-pair-v1.png",
+    "sha256": "b29f9c128e777c7f7efc301adf9034c413a027cf00468d960dda9c14ba1de364",
+    "bytes": 2027542,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/eclipse-level-20-pair-v1.png",
+    "sha256": "ebe394f08c1f1a1645f9a92f5833dafa1e1331570cec9ac17d3e21716f198d52",
+    "bytes": 1965113,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/eclipse-level-5-pair-v1.png",
+    "sha256": "b6f9d102c1969d6a6d81abaa6b831c154632b8f8ae3d129bbd9bd6ef96a2ba6c",
+    "bytes": 1758028,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/eclipse-witch-level-1-pair-v1.png",
+    "sha256": "ecb1d07394c7b24906fcc4cc4bb81115a7a7a36f107798f74712676cd3b35981",
+    "bytes": 2093919,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/eclipse-witch-level-10-pair-v1.png",
+    "sha256": "e37100c67ddd5c0bf13dfa4129d169ce4339fc27be0b823da02d03284e50b452",
+    "bytes": 2331824,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/eclipse-witch-level-15-pair-v1.png",
+    "sha256": "d7567a80f15db1805e50dd2f4a2f36b81a2baaaae188b4db044eccfa65699801",
+    "bytes": 2416453,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/eclipse-witch-level-20-pair-v1.png",
+    "sha256": "1db88dd7d7556159c4d21a3ac025f9f5bec1aa6e1feea43d61410274a68c0cc4",
+    "bytes": 2562863,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/eclipse-witch-level-5-pair-v1.png",
+    "sha256": "f01d73b16d3724f778ff9aa4c8b507cdc436baf39dc47edaf950eda2da1912d9",
+    "bytes": 2176263,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/nightwyrm-level-1-pair-v1.png",
+    "sha256": "ee1eea40b81ac14c7f588589e71c23ec060c73a133e68e68f3cea1e2f968a44d",
+    "bytes": 1912321,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/nightwyrm-level-10-pair-v1.png",
+    "sha256": "dfee73ca8ea8ab1dc9bc1eeecefe017da5fc6ec779fe7c36c1722481579b6251",
+    "bytes": 2039175,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/nightwyrm-level-15-pair-v1.png",
+    "sha256": "c3299b9ea8fec5266fdfa8a00de1945ee25babb0f22cf21dddaee4b223c55d14",
+    "bytes": 1993119,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/nightwyrm-level-20-pair-v1.png",
+    "sha256": "aed9ca16f1825d306f64e963e3ba819d7f592ca09980f9bc5b96d01256dc1ff0",
+    "bytes": 2045985,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/nightwyrm-level-5-pair-v1.png",
+    "sha256": "ccf6d060f60bbc2f11e1f6932de22d8338733045f2175791efc39e8e474bfad6",
+    "bytes": 1952251,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/starfire-level-1-pair-v1.png",
+    "sha256": "a8612386d048d71e36b29f3bf73c700440fc4671624acfb214f4f674d736db83",
+    "bytes": 1885742,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/starfire-level-10-pair-v1.png",
+    "sha256": "d0fa41aaa357693ba2fbe9477ec8460e9a7f36bcb7143020cae8b8a3ba687af2",
+    "bytes": 2119792,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/starfire-level-15-pair-v1.png",
+    "sha256": "0d26fddd3cb3f29ff306af448100c829dbe0de5d0cbd8786a0b5932898f0abc8",
+    "bytes": 2239148,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/starfire-level-20-pair-v1.png",
+    "sha256": "7be18a05e5cdf60c0951f7f68fb52073bb970a0ee6b00037d5949aaba46951e3",
+    "bytes": 2307763,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/starfire-level-5-pair-v1.png",
+    "sha256": "9b245b10bd5617c0257310b659a9a988735004c00adfe036802b1ae177fba7fb",
+    "bytes": 1975155,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/sunshield-level-1-pair-v1.png",
+    "sha256": "ac0003d116355e4c723bd7f2852ca143ee0cf2c14a5d740db24bab8b3b06e2e8",
+    "bytes": 1938207,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/sunshield-level-10-pair-v1.png",
+    "sha256": "50ae935766fb851c96dd45c62f0b7198f7ba7b90abcc6ba7d39c412a3da09a6a",
+    "bytes": 2043353,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/sunshield-level-15-pair-v1.png",
+    "sha256": "0abe1aa7c1202dfaf7fe455f9044eaa9b9e71f8a4014257bf8bc12a72559dcd5",
+    "bytes": 2123934,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/sunshield-level-20-pair-v1.png",
+    "sha256": "53abf3b8516fca6fc00b6e5679ea1bb2fabe2b229c397d168478a9e816264d57",
+    "bytes": 2332469,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/sunshield-level-5-pair-v1.png",
+    "sha256": "ed5f1ad6b342fe9c6bb74acc44b047da8f8743e8d73d66cb7892edaa0651dd5f",
+    "bytes": 2054366,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/voidcore-level-1-pair-v1.png",
+    "sha256": "47fa2a28fe1c668e561ee0285e0c751e39e5ffc542ff51dbec747f17dafacd11",
+    "bytes": 1937987,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/voidcore-level-10-pair-v1.png",
+    "sha256": "05698701578d16389d48d9bfa17967b18bd0c293d75dafde6d90dabddb15952e",
+    "bytes": 2120388,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/voidcore-level-15-pair-v1.png",
+    "sha256": "feb7f6b964d569d8d851a4aa9e2cea22c195a2414cc9f80854b0bfa40c3b8acd",
+    "bytes": 2237397,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/voidcore-level-20-pair-v1.png",
+    "sha256": "7efab9dde6a23755538feefb1540f40723cdaf5e7cad8a13a4f1baaa63a333ca",
+    "bytes": 2134962,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/heroes/voidcore-level-5-pair-v1.png",
+    "sha256": "5a33f511f35fd7896dfee9046bcd17838192cd9a8ccfb7b7caad94a2be9db91d",
+    "bytes": 2003993,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/master-roster-intake.json",
+    "sha256": "86dae3b406f46597ac048b9b5b0f6cd0464f51b4399666f863cd6349ba6e992e",
+    "bytes": 75748,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-aegis-gryphon-bold.json",
+    "sha256": "e783d65dbed4e9581f70fbc70b3591fff8dbd0d7da6e45de545b17f32fbb24c0",
+    "bytes": 719,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-aegis-gryphon-grace.json",
+    "sha256": "b0f7cae861852282b6690049838afc8c48ee1ee27195d5f7ba44de299a997167",
+    "bytes": 725,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-amethyst-sigilkin-bold.json",
+    "sha256": "dbacfd1adcce40c25f4e7abc757fc8e5ba13eb51a140b9aef8afe510a8299f09",
+    "bytes": 738,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-amethyst-sigilkin-grace.json",
+    "sha256": "237791cd85e12c656a5dfa6899aa67474a71cb862dd17b4f1a1ec758e2e1a8c1",
+    "bytes": 742,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-brasswing-gryph-bold.json",
+    "sha256": "4483b067099a5799b1e8448f65fa03e3750e5fb8e157939cf683fe69989273e6",
+    "bytes": 729,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-brasswing-gryph-grace.json",
+    "sha256": "b4a90f9a61734ec3c7ca6aeb3ae55fa1b26d62c2efa3b40052d6285fcb7f2405",
+    "bytes": 733,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-briarhorn-guardian-bold.json",
+    "sha256": "c2aa523d1c4a0207987fd8001ebda2910413ce0d4ee88c7559aa9ca1f312b12d",
+    "bytes": 746,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-briarhorn-guardian-grace.json",
+    "sha256": "1473f1dca0659b8ca6eec588a5f365110c47d4115e01286ad50eb032e4d9f939",
+    "bytes": 750,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-cloudrune-sylph-bold.json",
+    "sha256": "3526bd8d69b2ef63a3ac1b760d4570fa7be68868885fa4be5b4072a2375a01a3",
+    "bytes": 727,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-cloudrune-sylph-grace.json",
+    "sha256": "27167c000c21826612f4cea92f59d0dcdaf2ff87aa83e2bbb8475bcd76e3a3db",
+    "bytes": 731,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-copperclaw-gargoyle-bold.json",
+    "sha256": "56fda46cfb7dbc6289caeef1a953a2d6e4d0fccafded4b1d6943ce31404f9da9",
+    "bytes": 749,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-copperclaw-gargoyle-grace.json",
+    "sha256": "6291f437ffb773dd7356b843a229bfa3acc83f73c6f282475b53eca3352da0a9",
+    "bytes": 753,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-crownshield-gryphon-bold.json",
+    "sha256": "9e49638ec22505794c35f07b26e2c7e3101ac7c74fced5e5f1fdc884f38e6f17",
+    "bytes": 749,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-crownshield-gryphon-grace.json",
+    "sha256": "a09c5a1181e434374cb2c01160a30daaf90e2add51e32e721301933c0871604a",
+    "bytes": 754,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-dawnweaver-ascendant-bold.json",
+    "sha256": "ffb6f6612d3706bdb0cb341e718a30e9a8aee1976d6f7d1fcee6852e87e4701a",
+    "bytes": 755,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-dawnweaver-ascendant-grace.json",
+    "sha256": "3cfa27d15d63bc39818680e287d96fc56d7c3e06bc6d986f09eb710520127fe6",
+    "bytes": 758,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-dewglass-sprite-bold.json",
+    "sha256": "4ed72cc2406f9bae2d796154d900f3c26b2e6164a41c0c75484d438a89f0da7f",
+    "bytes": 727,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-dewglass-sprite-grace.json",
+    "sha256": "898ebdd8d63e0a30eb8def47413fb158828804ae63d7039bd0730c92da8677ae",
+    "bytes": 731,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-dreamshard-oracle-bold.json",
+    "sha256": "a96802b0b940a3617d50597ca569e1be9009937842849ed4ef2313424a0416b1",
+    "bytes": 737,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-dreamshard-oracle-grace.json",
+    "sha256": "9e82dc8b961013b4ffbcaa39e47f535ed96498392a0ff8fa92d82da468188145",
+    "bytes": 742,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-eclipse-phoenix.json",
+    "sha256": "74b5610faa9f5ae667f09e2e0a0a3fb76e1921082feb0b810df7a88dbd3e25e5",
+    "bytes": 706,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-emberdrake-bold.json",
+    "sha256": "f1079011ba35fc71bd12502691a1db9e23f4e22afec6c48e6a5b9389ac55d34f",
+    "bytes": 704,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-emberdrake-grace.json",
+    "sha256": "63ca8703c27c0877d87689a24a18081c999f651677a05c2ddae9238c080ec6b8",
+    "bytes": 708,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-frostlight-wisp-bold.json",
+    "sha256": "42665dfa1a962d7b4a4d0bd3d5e308bbd4d78e73a92dec42fe6d694716410632",
+    "bytes": 728,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-frostlight-wisp-grace.json",
+    "sha256": "f0da60b29f2367492ca4d20b65cb97a9e63c567a382b86dd412be9989356a54b",
+    "bytes": 732,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-ironbrand-drake-bold.json",
+    "sha256": "84b96e8170b8a4855058969fef3c90645dce22c57aad50836f52d63deeb2e047",
+    "bytes": 729,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-ironbrand-drake-grace.json",
+    "sha256": "777a15e62d97c33eb396197c1318f2ede51b96dd827f523ef593bb8f325bb324",
+    "bytes": 733,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-ironwing-wyvern-bold.json",
+    "sha256": "e8a63caafc8c0f80170dd7eaf028dfdea54f4871c523a89c1a427cd405c171da",
+    "bytes": 730,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-ironwing-wyvern-grace.json",
+    "sha256": "667117bc6439676e818d8b3df4c67bcdc5d6c4629781d4f9ae11f3b2176e97c5",
+    "bytes": 735,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-jadehoof-kirin-bold.json",
+    "sha256": "c8e1b941035c38eb0e7140f32ba54d2b46356e4fb54f12ac0349629ccc741439",
+    "bytes": 726,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-jadehoof-kirin-grace.json",
+    "sha256": "c55bc75e40bf2a0c5aea0c516f91a2676569c8333d2b85dc37383146735c3b7a",
+    "bytes": 730,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-lunar-crown-sphinx-bold.json",
+    "sha256": "f3cf37c4068f196632d0a2f4f313e93627d17656c1b7e304cdfad4ad9e667eda",
+    "bytes": 743,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-lunar-crown-sphinx-grace.json",
+    "sha256": "a4913dde0ca97430d828b7b8f482abe76c2d5aa85b8051e67f8e170ad65b43b5",
+    "bytes": 748,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-maelstrom-djinn-bold.json",
+    "sha256": "25a9cdf0f3d1eb982c4cfe0c508886e5f080df78ae66b60f532cda4a34614c1d",
+    "bytes": 728,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-maelstrom-djinn-grace.json",
+    "sha256": "959af2f4f4b455952cd388cfe9f5806cf5776d70ab4ce83b5f8abb4ed92281aa",
+    "bytes": 732,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-moonblade-prowler-bold.json",
+    "sha256": "eb434b14f297d3a0bcd9ca32facbfcf23feb759014d815fdff2cff89bd52ee22",
+    "bytes": 740,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-moonblade-prowler-grace.json",
+    "sha256": "a784dc3e40f29caa18c530f598bb3ea9df243973354351360fc22c3335ff3286",
+    "bytes": 744,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-mossguard-golem-bold.json",
+    "sha256": "fa0e9362a218776d2f6f6c635622f9da0f7a248f8e71ad981eef069c92b64696",
+    "bytes": 729,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-mossguard-golem-grace.json",
+    "sha256": "c2ffadf6b388eb3dae42c2b369d5f1bcdac6843bb870b557087ce1bd70b310af",
+    "bytes": 733,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-phoenix-spark-bold.json",
+    "sha256": "2855d24df25e079de3dfbc94f182b1fc20832fb93bfb09e698bbea097e066d13",
+    "bytes": 718,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-phoenix-spark-grace.json",
+    "sha256": "aad15abf0d894125d3eaf97cd85c0018160cb2b8d1034bbf4dbb9ca63114a5ac",
+    "bytes": 722,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-prismwing-arcanid-bold.json",
+    "sha256": "3b7cbb3b3f4206ab35beabf50fbc38b97f29b4e88f99f16c8ac57b2abb9f3c6b",
+    "bytes": 739,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-prismwing-arcanid-grace.json",
+    "sha256": "f298c912613ab3be7e1331897740faeb1192ad3b37ab1216f028127f353bf7f6",
+    "bytes": 742,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-rubyhorn-gorgon-bold.json",
+    "sha256": "d05fa9a47625101d471b13e5721bb716c37abb1ce9c524787b8e59f695be4245",
+    "bytes": 729,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-rubyhorn-gorgon-grace.json",
+    "sha256": "090175e528aa55c351c6cbda436d5346de3da4f1e4cb599bdf6a8886ae87a478",
+    "bytes": 733,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-runeheart-wyrmling-bold.json",
+    "sha256": "e754be1853603e1d94c1110077b3d19348efa5f0dac434cf45c153afb686532d",
+    "bytes": 744,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-runeheart-wyrmling-grace.json",
+    "sha256": "db63780e612e420ca2752974db4db4f548cb5e4318c572d5529cb95a51cc5cbd",
+    "bytes": 747,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-runelet-bold.json",
+    "sha256": "05e2fdc786bda0abcd5bb371b20c9f7ee1e0cde9bdb63dcf5323d90c99761024",
+    "bytes": 688,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-runelet-grace.json",
+    "sha256": "5adee784a7d6fe95ca2ec6fdb296f5aeb4d6146086aa549117f1d8a57f516a81",
+    "bytes": 692,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-sapphire-seer-bold.json",
+    "sha256": "bf81d01cac606dac7f3ee6923ff2bf60cc977ece6f4050600e80f56eb03d9088",
+    "bytes": 718,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-sapphire-seer-grace.json",
+    "sha256": "abf8152ee4d5b866d35129a17040297ab10fb95ce626b4e7a62b922089593d30",
+    "bytes": 722,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-sparkhorn-imp-bold.json",
+    "sha256": "7abb7c9e031417e8dc51faeeedb8446eb867d11cb890f2fdcf97701fa09cf1cd",
+    "bytes": 718,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-sparkhorn-imp-grace.json",
+    "sha256": "dac469bd911bd5c1a202d29821c4720291128d131db3462ffb7be2c6de40f8e4",
+    "bytes": 722,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-starcoil-wyrm-bold.json",
+    "sha256": "c5753e7bdeef7370e3ae7cef0a5ddf09d54f16d0f8b5348fc3f0f4541de57b14",
+    "bytes": 718,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-starcoil-wyrm-grace.json",
+    "sha256": "598076a8d19f194b763aac504cf2889209d93d9fb5682b0c520bdb1a493ea92f",
+    "bytes": 722,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-stormscale-drake-bold.json",
+    "sha256": "1248384e76ef2b053f74d79f8c185a055a7a6b05763f65dc03aacbad8191b789",
+    "bytes": 734,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-stormscale-drake-grace.json",
+    "sha256": "a9e50b5e8cf25c6dab094dc9f280df77b82d0d588a97c0bd27e862c571de8474",
+    "bytes": 738,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-sunblade-sovereign-bold.json",
+    "sha256": "4994369caca4cb851b2310cba158f999405751f2a87cf00e4a980b1116e527bc",
+    "bytes": 745,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-sunblade-sovereign-grace.json",
+    "sha256": "3d79f6ed6b1c28ac6a519d12e5b4961837e3109a9ee4589f3cb340b96110c194",
+    "bytes": 750,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-suncrest-hippogriff-bold.json",
+    "sha256": "7a20135fb274b5aed2f8448a5821759bcdc450744a16669c2de514307e95bcda",
+    "bytes": 749,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-suncrest-hippogriff-grace.json",
+    "sha256": "4d168d450810134f377fbfd958a871291432b36d11e3979d993580583b1bd061",
+    "bytes": 754,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-thornscale-basilisk-bold.json",
+    "sha256": "2012e93b64778e4b580adc74cfdaee60c3aba323c099733880e389380016620b",
+    "bytes": 751,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-thornscale-basilisk-grace.json",
+    "sha256": "b67a4c4dbc0ac55bbe963b01340d92808e2048076b3adaf7cf0a85d2ce364bb3",
+    "bytes": 755,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-tidefin-familiar-bold.json",
+    "sha256": "059f5a3d9d22fefb6a93e95974c5de19fe498c3a2bb96bba2a22f8853c936f97",
+    "bytes": 733,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pet-definitions/pet-new-tidefin-familiar-grace.json",
+    "sha256": "6b07fda678a66d17f341b58953b2c5390ad4e22ae0806157ecded5111d834abd",
+    "bytes": 737,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/aegis-gryphon-bold-back-v1.png",
+    "sha256": "cc0cb9430d7705a5768a67ecb9576e6a7afd392bd832ba5341ad2633ff665465",
+    "bytes": 924898,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/aegis-gryphon-bold-front-v1.png",
+    "sha256": "ec02613e6f26c253b0aca01fbdd7310c2542504db6d75759c5e6787d3f792649",
+    "bytes": 1203403,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/aegis-gryphon-grace-back-v1.png",
+    "sha256": "094bed226181d56d94a9757c4702351ef72b54796f62a515402ed18fa57ec306",
+    "bytes": 1273472,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/aegis-gryphon-grace-front-v1.png",
+    "sha256": "70343b0371a20e8657a01062350cef685b6fe406e6450c33c1285fd2387f1122",
+    "bytes": 1171636,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/amethyst-sigilkin-bold-back-v1.png",
+    "sha256": "1f591098e2a62a8bef8e9e4903b6859b409bca086f1cbcde0fd9daaca3ab348e",
+    "bytes": 672326,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/amethyst-sigilkin-bold-front-v1.png",
+    "sha256": "88640e5c3fee53e40ae96dd839f8e9147019d56d83ed5933ba555f0811e49ceb",
+    "bytes": 865712,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/amethyst-sigilkin-grace-back-v1.png",
+    "sha256": "70386045af1c1a568b8238a112afc550506739be58833cbb545732b16ee6b29d",
+    "bytes": 690872,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/amethyst-sigilkin-grace-front-v1.png",
+    "sha256": "6b04dc65864a8c81e6a3df5b48e20b85989a661748279aa255cbb1969e898fb9",
+    "bytes": 792040,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/brasswing-gryph-bold-back-v1.png",
+    "sha256": "2ee3c604f5256961d9614243724551a59f6df6fce9d81a543735480cf9481cca",
+    "bytes": 880012,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/brasswing-gryph-bold-front-v1.png",
+    "sha256": "83ab20fda8cfa4291698ee99687ff57824ea43c4bde34c02769a7038cccdaf68",
+    "bytes": 858030,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/brasswing-gryph-grace-back-v1.png",
+    "sha256": "44081adf66fe4d4cb6e4054edc00c75feb9cfe44df8cfe1fa6ace61597bf182b",
+    "bytes": 776116,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/brasswing-gryph-grace-front-v1.png",
+    "sha256": "374e5f39884ba92cebbdd8b22cf4ab18c325b4373babbc92e32a2def6d457030",
+    "bytes": 1045990,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/briarhorn-guardian-bold-back-v1.png",
+    "sha256": "8990f7c35f2a70e794eea7294dbaa43be3c4011f9b43ed921bf0bb22a62ffb6d",
+    "bytes": 763971,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/briarhorn-guardian-bold-front-v1.png",
+    "sha256": "de8502554503469c61eafaa24b07fdee9c6638c64953651d0ebd3be04c170e41",
+    "bytes": 1020077,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/briarhorn-guardian-grace-back-v1.png",
+    "sha256": "4434af38b743536867365b702c88abd32a6ab0744a09bba3e696ed9aed1f29aa",
+    "bytes": 820364,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/briarhorn-guardian-grace-front-v1.png",
+    "sha256": "54543418e00cfe1bdedb22ea1b560a94fd452ec914d8b31aa7cb88e5b257edb1",
+    "bytes": 1075074,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/cloudrune-sylph-bold-back-v1.png",
+    "sha256": "8e4a8a862232e6e4f4852ed62c748648e485f85d0d5b4620bb6d9c62161a36e5",
+    "bytes": 662236,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/cloudrune-sylph-bold-front-v1.png",
+    "sha256": "94ddff9aa95968e4b47c8f6fa907907789ca9a10a89f024f7766966d2fa95353",
+    "bytes": 817041,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/cloudrune-sylph-grace-back-v1.png",
+    "sha256": "1221624c759dd324199e851a6e80fda3057b0df53443e1c529a3f400b7330f7d",
+    "bytes": 760825,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/cloudrune-sylph-grace-front-v1.png",
+    "sha256": "d960edee541c76dc5b8c8afd38f70a4e81ed152874c9140838ec5f54bf0974bb",
+    "bytes": 844796,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/copperclaw-gargoyle-bold-back-v1.png",
+    "sha256": "7a76b4f9ae213425ef28b92e0223fc258288bb8ea41e6373f27e6ec420629290",
+    "bytes": 888916,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/copperclaw-gargoyle-bold-front-v1.png",
+    "sha256": "8e0f49db3c460bdb6e211363b7035bca923da352f19eaecb7ac40db5ed1b5b8e",
+    "bytes": 1170266,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/copperclaw-gargoyle-grace-back-v1.png",
+    "sha256": "dedead0924d3994d4689b240f808f5ded5e486275143e119421db27e72526afa",
+    "bytes": 1047072,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/copperclaw-gargoyle-grace-front-v1.png",
+    "sha256": "f88b1005f75f27d0a370ab6cc258708792841a938d82b24032b4415ce9c81945",
+    "bytes": 1094300,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/crownshield-gryphon-bold-back-v1.png",
+    "sha256": "2375d8b590f61ce7f22ef9435dd7bc6a0e2bee9f652bb8733fc6c7eba8e6abc9",
+    "bytes": 956821,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/crownshield-gryphon-bold-front-v1.png",
+    "sha256": "c9cf91580ee2ebe18f9378cf246fb97d9c58a68db68365dcdacb81476e676b73",
+    "bytes": 966139,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/crownshield-gryphon-grace-back-v1.png",
+    "sha256": "49670e3a4c5d5df54474e7e4c7533f2e3f7d568fec2c12ab347392e82accb008",
+    "bytes": 943013,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/crownshield-gryphon-grace-front-v1.png",
+    "sha256": "5066ada597787ffba50888b79b680d1d780a4fb8e75ce2380d0d88dbacf0cfbc",
+    "bytes": 1253335,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/dawnweaver-ascendant-bold-back-v1.png",
+    "sha256": "a5f1bef8ca2eefdab72fbe449d1068da85371da4a882698e2344749c5bb742f6",
+    "bytes": 1387660,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/dawnweaver-ascendant-bold-front-v1.png",
+    "sha256": "2ae1baf468ea0ca7710a8deccc2ff7a9d1e23ecd355e36365bd1138f87c88d45",
+    "bytes": 1488577,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/dawnweaver-ascendant-grace-back-v1.png",
+    "sha256": "6ce17dc5fd75665fe2d055e47641f40f65307a3908152546557d806855b1cff5",
+    "bytes": 1331973,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/dawnweaver-ascendant-grace-front-v1.png",
+    "sha256": "6121ded09f7cf2c8e7274999d9b550da1b3c260a44bc4f6801474b22c48723c8",
+    "bytes": 1478616,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/dewglass-sprite-bold-back-v2.png",
+    "sha256": "2422037b1dfe79d70cfb94a004e132061034cbb491c19ea2794877d034e7c65d",
+    "bytes": 660043,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/dewglass-sprite-bold-front-v1.png",
+    "sha256": "a1890b1ab636bab05fb805d6d65c4d3b8bc0ea715649ad770432c3cbdfaa0179",
+    "bytes": 662597,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/dewglass-sprite-grace-back-v2.png",
+    "sha256": "68af0f0d6d902a4601292fd704da3c293d44049845d2296c06dc54b65e192830",
+    "bytes": 571735,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/dewglass-sprite-grace-front-v1.png",
+    "sha256": "3bfb5ba6457c40f6f6828489e7833028f4d849dcbcfd24bebdba5ba91f599702",
+    "bytes": 746174,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/dreamshard-oracle-bold-back-v1.png",
+    "sha256": "67f35461fcd8e8880670e5c2c3add891d0f65a3c30dfcbd1df1d78529f969179",
+    "bytes": 732312,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/dreamshard-oracle-bold-front-v1.png",
+    "sha256": "b4c7b9919909498bf5fee5ec38625d3da399d1de20b46273bcfd574c346b5f8e",
+    "bytes": 710781,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/dreamshard-oracle-grace-back-v1.png",
+    "sha256": "04744e16837d60272946420254c313005ddbb27bae5e2b8f1975a0950dd45abb",
+    "bytes": 799734,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/dreamshard-oracle-grace-front-v1.png",
+    "sha256": "6bb02ebe90260d196a4fc44fc991a865d617aad27540a0b97340226b052ea767",
+    "bytes": 676640,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/eclipse-phoenix-back-v1.png",
+    "sha256": "097abfcbcbc3d698ce607345f162740380d76bcc2def12578f7fc4a882838b2d",
+    "bytes": 951749,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/eclipse-phoenix-front-v1.png",
+    "sha256": "d52d2d924e4bc90c8dd1f8d3b26cfee6050ee73bc63c4b6e275ad3da04cc6097",
+    "bytes": 1415591,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/emberdrake-bold-back-v2.png",
+    "sha256": "991bf270f7367949475461a3f313e69b70049e80dbd4e8d2c7823e0bd3709d57",
+    "bytes": 712360,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/emberdrake-bold-front-v1.png",
+    "sha256": "b8942babc57fe16df57248dad1e847a634f174963d158319a38a781854491081",
+    "bytes": 836663,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/emberdrake-grace-back-v1.png",
+    "sha256": "1af7b4a74d9e9f6e5dc9d896bbd6ab11947d3a80d79e306e321535efef7f2874",
+    "bytes": 879937,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/emberdrake-grace-front-v1.png",
+    "sha256": "3e05927f57610be50211c84b3ea42267434e99b19ea6ff210ee4844eb4925c09",
+    "bytes": 816226,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/frostlight-wisp-bold-back-v1.png",
+    "sha256": "0c68a6a96522352ff63968c453a1b02bbe812703ccf42da920221b3521339c61",
+    "bytes": 909115,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/frostlight-wisp-bold-front-v1.png",
+    "sha256": "fb20169345c3ae8d7758c68f001632408ddd5f85f67b25d8279e4449c82a3ae1",
+    "bytes": 803743,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/frostlight-wisp-grace-back-v1.png",
+    "sha256": "39555fbee01ecf00e4e0d213bc327d36467fa531b2681b9b2c04c8488de0e384",
+    "bytes": 839198,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/frostlight-wisp-grace-front-v1.png",
+    "sha256": "f535c6edf81bfca4262ed0634b8e0492abd264daf2d020a4aa346ea663627dc2",
+    "bytes": 883946,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/ironbrand-drake-bold-back-v1.png",
+    "sha256": "85f34d119f7d3c800a4c872befcb0accbba0245cefdf640ba4f4133a9091a1cf",
+    "bytes": 838711,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/ironbrand-drake-bold-front-v1.png",
+    "sha256": "b882235b4fe1cf333689012d3efafe019a544dcc0dedb078baaa46b3a167d775",
+    "bytes": 1021771,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/ironbrand-drake-grace-back-v1.png",
+    "sha256": "543873cd4476a130e0fc2a8abf905856a79318fe13f931c010ac4149681d0c25",
+    "bytes": 974810,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/ironbrand-drake-grace-front-v1.png",
+    "sha256": "a502b4822c17fe7d2340c3271c4f94554c4dcb29b7343b3b0f254f4ada6a9bb9",
+    "bytes": 1198882,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/ironwing-wyvern-bold-back-v1.png",
+    "sha256": "ae80bb66627b8d0fdf8f5ce079b387037a4c0d1d8ab1e26a58df4937390da376",
+    "bytes": 962176,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/ironwing-wyvern-bold-front-v1.png",
+    "sha256": "11b07b6b74e30794de62f643709faae064789841346804304b24f25457a1656d",
+    "bytes": 1145372,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/ironwing-wyvern-grace-back-v1.png",
+    "sha256": "803ca54da9093567f70a4d30b7b00854974c800d8e257e961e79026f83076f81",
+    "bytes": 1146565,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/ironwing-wyvern-grace-front-v1.png",
+    "sha256": "5b85d211d8b9dc97e9112125d4a7172447bbfc1637808d8822e4220c3d0a3547",
+    "bytes": 1254849,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/jadehoof-kirin-bold-back-v1.png",
+    "sha256": "2956035a68aa8ce565956626836d23a138867c7133f4cc4f2680ae198d61cb1d",
+    "bytes": 802597,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/jadehoof-kirin-bold-front-v1.png",
+    "sha256": "c7efbc6bd2d91a57c0b24727a316e2796dad6e45b0fdc3da9a654140a1d492d3",
+    "bytes": 1098622,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/jadehoof-kirin-grace-back-v1.png",
+    "sha256": "ac492e8ff8daad490d6879b6a215c1fd7a7b804537030c014cda9d1056b8be59",
+    "bytes": 926683,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/jadehoof-kirin-grace-front-v1.png",
+    "sha256": "70ed6c4b89c270b0863db0ae257669de3927b1b312caccb8af7b3e1fc11c419c",
+    "bytes": 1051463,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/lunar-crown-sphinx-bold-back-v1.png",
+    "sha256": "29c37b3c0fabbf483ca063fdf1f3a760246971c202042b1542d176c182b5d301",
+    "bytes": 1075270,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/lunar-crown-sphinx-bold-front-v1.png",
+    "sha256": "f3a7fe776aaf0ccb3ae63caf33ef2b8374bdf5c9d6d84cad003c55e0b61058aa",
+    "bytes": 1298979,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/lunar-crown-sphinx-grace-back-v1.png",
+    "sha256": "4d627c01aed045d4a1136d158e38719398da6f5bce73cd3cb5160c98a993fd5c",
+    "bytes": 1168693,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/lunar-crown-sphinx-grace-front-v1.png",
+    "sha256": "b93a3616ba581d2e3985d34e3f5defc0c44eec6d92eed178957d577e88a2d053",
+    "bytes": 1260609,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/maelstrom-djinn-bold-back-v1.png",
+    "sha256": "a988b1cc69d4ca104663f4055ec2f176eb0b566065c517ff7167852d5572bed2",
+    "bytes": 1126738,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/maelstrom-djinn-bold-front-v1.png",
+    "sha256": "471478755109c813b9447cdda33aaf8a1ec23ff8a7530184caf1588b27590621",
+    "bytes": 1087137,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/maelstrom-djinn-grace-back-v1.png",
+    "sha256": "c6c2caae37f846e48088fc83d93b33e20ec9372f88c40e7e71756066509e6747",
+    "bytes": 1054072,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/maelstrom-djinn-grace-front-v1.png",
+    "sha256": "79eee9d4b5374490119005c7bfe78fe1409c9391b4f7afdee6cc524e6f653bc8",
+    "bytes": 1191183,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/moonblade-prowler-bold-back-v1.png",
+    "sha256": "669cdafc6d630e8eef97c70e222893a527c700226ef90657f492f8acdd078f4c",
+    "bytes": 941871,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/moonblade-prowler-bold-front-v1.png",
+    "sha256": "5ef8dc08388f4e7ea5b08bd4e56a4f14273e7bd95df204c2d68f8c61e0783046",
+    "bytes": 1180838,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/moonblade-prowler-grace-back-v1.png",
+    "sha256": "c07aa60690ce551da2d5eb5eb432269115666027759ded72dbdafe1d377e418c",
+    "bytes": 899654,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/moonblade-prowler-grace-front-v1.png",
+    "sha256": "050d2bed19cae377af169aab8d8cd88e2c715c5121679bb564f48ed2484a2c1e",
+    "bytes": 1249987,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/mossguard-golem-bold-back-v1.png",
+    "sha256": "e57ac60612d03aaa7709e2e58e11d31653c090f705e579206399e5ae7539cbc1",
+    "bytes": 796897,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/mossguard-golem-bold-front-v1.png",
+    "sha256": "1ea66afb99a49f945c60fcf9e1b2d911fff12c4c9fd095d9e24923bfa05fde7e",
+    "bytes": 983351,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/mossguard-golem-grace-back-v1.png",
+    "sha256": "76cde37a926683a1dd422e55914ba2d739a5aeac1d811dfa1ec5c81b6fab33bd",
+    "bytes": 819339,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/mossguard-golem-grace-front-v1.png",
+    "sha256": "960ba823a41c8d4197c459513fa3e7d16af6984e200175a89bea23c15a2bb9f4",
+    "bytes": 1120950,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/phoenix-spark-bold-back-v1.png",
+    "sha256": "70a61a61c9194248a52cdb0606ef69d9ee17811bee5bdb662cf211c336d30ce9",
+    "bytes": 756089,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/phoenix-spark-bold-front-v1.png",
+    "sha256": "fb7cb495fd239b240b043ec995dae6fdb278262c778c2aef1ba906100422e79f",
+    "bytes": 1110892,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/phoenix-spark-grace-back-v1.png",
+    "sha256": "61fb3859bd628cee3572b88c6d2194565dd51b26da76df23bcc15819d44b979e",
+    "bytes": 672927,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/phoenix-spark-grace-front-v1.png",
+    "sha256": "99e17deff21f5b50dae3bbcb499b3002cbebc9b9a7913cdb8c22d3fb2fcb5242",
+    "bytes": 956512,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/prismwing-arcanid-bold-back-v1.png",
+    "sha256": "9a0788e1a61db49eb9cdb69ebecc360819493b6bf7ffab77eca631bae45db5f1",
+    "bytes": 929725,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/prismwing-arcanid-bold-front-v1.png",
+    "sha256": "bd39c52ff83b583525194ef2967aef7e197c794d5e545001104319bb29a92cd5",
+    "bytes": 962639,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/prismwing-arcanid-grace-back-v1.png",
+    "sha256": "b6f6e4d3f063e27ff4ed03ebd9293c3d8fd986c1f06eb0cd8faff2637897e14c",
+    "bytes": 928207,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/prismwing-arcanid-grace-front-v1.png",
+    "sha256": "d83fb3ef54069131dd0b5919260d485f8fde920bd9dd4956082eeaa5be465b6d",
+    "bytes": 1189209,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/rubyhorn-gorgon-bold-back-v1.png",
+    "sha256": "66e8d1f32d63a86dcf0378216aaa2c51ddae8cca7c7fa8b648bcc59aa6cfd571",
+    "bytes": 1076375,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/rubyhorn-gorgon-bold-front-v1.png",
+    "sha256": "3a65d0b0f2c9122498b0c518ea3e0de00004a6ba79417b18a89fdd8c71bc067a",
+    "bytes": 1092009,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/rubyhorn-gorgon-grace-back-v1.png",
+    "sha256": "dcd7449e250935d1575edb883c527af55ac70eeb4519493c35250600ea26281c",
+    "bytes": 876639,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/rubyhorn-gorgon-grace-front-v1.png",
+    "sha256": "7f980d5ab743df658a52e6c2ef19c62efac0e428aea4924831806b1409446b8a",
+    "bytes": 1149452,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/runeheart-wyrmling-bold-back-v1.png",
+    "sha256": "13508a4504ee39da3e41e6d0b2789581ea76bbe60ba6c8bc4a6077b0cc1ac4d0",
+    "bytes": 939882,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/runeheart-wyrmling-bold-front-v1.png",
+    "sha256": "11805bacbf235e2ac249ba90247e11faf797e416291c5f9011d91984be26eba1",
+    "bytes": 1230169,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/runeheart-wyrmling-grace-back-v1.png",
+    "sha256": "c63135d0e1474cb0ecb2bbc1073b35aba44297ccd0612fa20500217ec07be4a3",
+    "bytes": 1071734,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/runeheart-wyrmling-grace-front-v1.png",
+    "sha256": "0e2510f324aafc79a530c31492c3fb04c6b6677ec4fd7d6767a7c5e7df9b0dc1",
+    "bytes": 1243976,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/runelet-bold-back-v1.png",
+    "sha256": "9105cec3c7afc929c8bada812222f8e309c71c86cfbe072329d6aaf5bf049c83",
+    "bytes": 877398,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/runelet-bold-front-v1.png",
+    "sha256": "933d4e9dd070763a0061449ec7d7f3eb5a59591b5c6ee41698e0a605c6c9e27a",
+    "bytes": 813708,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/runelet-grace-back-v1.png",
+    "sha256": "e777684d2de31b2ecef3ff293febc0ca1e113575490ffe1778fe6cb4b6fa71c8",
+    "bytes": 949199,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/runelet-grace-front-v1.png",
+    "sha256": "407071cbee6bfd29b27ac987620727649555b7c907851ae21ea08ecea424fbd1",
+    "bytes": 909982,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/sapphire-seer-bold-back-v1.png",
+    "sha256": "49ae1c65601c4bf72328788e3c8199c0293aee90add589e609def28f74291669",
+    "bytes": 983734,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/sapphire-seer-bold-front-v1.png",
+    "sha256": "1c201d7204abe007d4a59ff0eb34c6ac36453f7b33f1a0b02df47e43646634d3",
+    "bytes": 976846,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/sapphire-seer-grace-back-v1.png",
+    "sha256": "ba2c0b17df57d64848447cbcf2916a439239afebea0169b8d023e6783fa294c1",
+    "bytes": 949029,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/sapphire-seer-grace-front-v1.png",
+    "sha256": "608daf38857d063bdf8b1029d40fdb118e2d4db14bba4dbca4cb452c28273f40",
+    "bytes": 1053311,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/sparkhorn-imp-bold-back-v1.png",
+    "sha256": "1036f71452bea100a5c6ad1c2b1ec4b823238585cfa48709311035442968db10",
+    "bytes": 685026,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/sparkhorn-imp-bold-front-v1.png",
+    "sha256": "c2d1c23eb7f184f93e266b499af2f646ce742a9c3574fc52526d3a6b240897f0",
+    "bytes": 767425,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/sparkhorn-imp-grace-back-v1.png",
+    "sha256": "9dab1a78d80ff58851af4273f873b7de95ea0d0ed0733fbb46900a9db89f727f",
+    "bytes": 745092,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/sparkhorn-imp-grace-front-v1.png",
+    "sha256": "97d7a0742f3092d3b2ad623bc4e0bdc3158a6c38b36184103749ec498a87c551",
+    "bytes": 903976,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/starcoil-wyrm-bold-back-v1.png",
+    "sha256": "eea0454ea1f6be7695b1f00df1797c2a24aec7a4df1d09a8f436466eec698c90",
+    "bytes": 1079974,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/starcoil-wyrm-bold-front-v1.png",
+    "sha256": "42e6df9dafb95f3658c0b9a1646cd26e6031cecd64b83b068536a3179f200f1e",
+    "bytes": 1310469,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/starcoil-wyrm-grace-back-v1.png",
+    "sha256": "e542e7813175b6fe5b638ee6b982fea389928e2ab91b21dafef864c587e1da22",
+    "bytes": 967345,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/starcoil-wyrm-grace-front-v1.png",
+    "sha256": "af380ae7e67b676c8cd61c2c7779a0a5d210ec625998da2afd4dc4df5afb7724",
+    "bytes": 1360476,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/stormscale-drake-bold-back-v1.png",
+    "sha256": "8856455028bb59c2cfc983cfa9ade0c64a3a7553cbe38bbcf445c8b189dee8f4",
+    "bytes": 818494,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/stormscale-drake-bold-front-v1.png",
+    "sha256": "cc16bf7fda162c457da15a779ac4881a0dc960ca8a72021c653a8fe41036cbd8",
+    "bytes": 1004694,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/stormscale-drake-grace-back-v1.png",
+    "sha256": "2b87f839cb32f83937eec0d8d39fef62c97795c01808a45b107f50d9b1d569d7",
+    "bytes": 742015,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/stormscale-drake-grace-front-v1.png",
+    "sha256": "26e5a95fa634abf069dbc8b166e6ad8aefed0c6c76db3fe6e6191a1f15643b3c",
+    "bytes": 1074835,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/sunblade-sovereign-bold-back-v1.png",
+    "sha256": "b8ba8cf9b288187f97085d96d6ac11903f04992a492e022ea5a56eab21864cd4",
+    "bytes": 1365679,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/sunblade-sovereign-bold-front-v1.png",
+    "sha256": "f504a6a3b731eac14f967ad65b612886de77d437a4e98653efb887479dd1fb34",
+    "bytes": 1308216,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/sunblade-sovereign-grace-back-v1.png",
+    "sha256": "53d9a7d4b60b9014eb7a49eecb1e0f0f3837943488e9c56e63b1bec90f4eefc7",
+    "bytes": 1052634,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/sunblade-sovereign-grace-front-v1.png",
+    "sha256": "2c12212703c5c8630ab9f81f40b4968433dc197e0bba8d87e3c7b52b6d0fbf99",
+    "bytes": 1511548,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/suncrest-hippogriff-bold-back-v1.png",
+    "sha256": "baa8f6f1cf0f69235220726868835e76b08368d31490421e6180a2bcced4f75c",
+    "bytes": 888140,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/suncrest-hippogriff-bold-front-v1.png",
+    "sha256": "9377a8e924f89ee95a193983c1ca8ed7051d7e34b8ffc98944f92520f61749f0",
+    "bytes": 1007312,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/suncrest-hippogriff-grace-back-v1.png",
+    "sha256": "c8bd1ab66b840e495775c1bc2f727b274b1f0ab983dfb3c777032225f361c041",
+    "bytes": 946390,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/suncrest-hippogriff-grace-front-v1.png",
+    "sha256": "5d98bb746498e52947ea284d621a13f7eb1c944e33c6ccc89ca50aa0f4c6ed6c",
+    "bytes": 1119796,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/thornscale-basilisk-bold-back-v1.png",
+    "sha256": "02cb5c31bf699e4c3f223186000afa222af72f4a3a5774299fb667064e25afbd",
+    "bytes": 799590,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/thornscale-basilisk-bold-front-v1.png",
+    "sha256": "05eb925c4ffc81ab6d4463701bd9017117fa6968a29d24276f2777d1868cdba6",
+    "bytes": 1029021,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/thornscale-basilisk-grace-back-v1.png",
+    "sha256": "db639214cbfcc8457ca8f1ef5a2a292196ead0fa94222455284c94c42c1adc18",
+    "bytes": 644517,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/thornscale-basilisk-grace-front-v1.png",
+    "sha256": "3fbd2d8724d47b8bb2bae7fe1f08d2d57ddbf30efd0db99be791626a65332c25",
+    "bytes": 928619,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/tidefin-familiar-bold-back-v1.png",
+    "sha256": "4eb3f17b88b5a3e4f06898a8d1fcc5f16ae0a73882805042fc4fb4f5759d5d81",
+    "bytes": 838327,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/tidefin-familiar-bold-front-v1.png",
+    "sha256": "ccd9236381b9f7ceda2c37461c7164ca88f366f16a2e03c42802f29720f8c028",
+    "bytes": 1056206,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/tidefin-familiar-grace-back-v1.png",
+    "sha256": "36bc62c6f67b7cc29a1044f5de23e111c3cbb2046bada0dc5085d22e1da752d8",
+    "bytes": 927857,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/pets/tidefin-familiar-grace-front-v1.png",
+    "sha256": "9a78a7a008a25e69411924120a6f7f516ae4f6ab0a7f66e182f876c3d9c01aa0",
+    "bytes": 1034091,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/daily-battle/PROVENANCE.md",
+    "sha256": "fd06044c0bcf68dce2090788c999b3d1689133c6af2c4c875a6ab90c343488b3",
+    "bytes": 6492,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/dragonswood-mascot/assets/actions/achievement.webp",
+    "sha256": "aea73a01470f5c1a0fe2c40c944b2f17e0d5d4c96899e903bafc1774fcf09712",
+    "bytes": 14248,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/dragonswood-mascot/assets/actions/boss.webp",
+    "sha256": "29a4c730b5a9358e430da9ce33d3136c0cd07d1622eb71ba46b21aee23578c32",
+    "bytes": 13796,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/dragonswood-mascot/assets/actions/languages.webp",
+    "sha256": "4e454b273fae8e11735be2649e0e6a0cd48b667e745acf8b7f61103895a2f9e1",
+    "bytes": 13342,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/dragonswood-mascot/assets/actions/math.webp",
+    "sha256": "a2d92c89851fa5a1f8fdbec153c3873f35891aef0c4a2b630891410c370d88a3",
+    "bytes": 14242,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/dragonswood-mascot/assets/actions/reading.webp",
+    "sha256": "1ad572e3582d4314565b7d289dbee404dfaa33308c027252dec672f955223487",
+    "bytes": 13778,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/dragonswood-mascot/assets/actions/recovery.webp",
+    "sha256": "b82f2bb1cfc12e5fe594b16cc40701883eeaa3f300e683236752e95b4d5ad0fb",
+    "bytes": 11878,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/dragonswood-mascot/assets/actions/science.webp",
+    "sha256": "fbee7893f94c943f09df9ed45c45e1c448ee0c59803bd1ab04ac241ef4f76cec",
+    "bytes": 13920,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/dragonswood-mascot/assets/actions/scribe.webp",
+    "sha256": "2f03991f4f0c7be2f65729e675a700e4a2c67ba3a34e52fc3e893bd8b7d38558",
+    "bytes": 14460,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/dragonswood-mascot/assets/animations/guide-right/frame-1.webp",
+    "sha256": "1a01efaec636cda47a4032d3a0e61fc81360ed1581cd636185679fcfc3bec7d4",
+    "bytes": 14428,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/dragonswood-mascot/assets/animations/idle/frame-1.webp",
+    "sha256": "56f124e4a0933732d588c279870cb7164dc4469bc2ee5f185bf7ee4d976ad19e",
+    "bytes": 14608,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/dragonswood-mascot/assets/badges/hint.webp",
+    "sha256": "118702eb5dce68349104284cdb7dc388c9d6cc3152ee2b56a4eb1948c05baf3f",
+    "bytes": 20732,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/dragonswood-mascot/assets/badges/neutral.webp",
+    "sha256": "650bf6652690bb3beede962b4efe4d6de8f5ec4b6c87fc27fb8efddc6d3f8bac",
+    "bytes": 20040,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/dragonswood-mascot/assets/badges/sympathetic.webp",
+    "sha256": "eaab3e71da9bb4d9058c0f735af78fad35c74709ca3b6c7d0a63893aec947c81",
+    "bytes": 19164,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/dragonswood-mascot/assets/icons/dragonswood-mascot-32.png",
+    "sha256": "6e02e3fe5e8019709618245d7e09a0c115456ba8c8149c6209a978c73a0a167f",
+    "bytes": 2369,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/dragonswood-mascot/assets/icons/dragonswood-mascot-64.png",
+    "sha256": "bdd32cdce99fe39831ebba297cec6a5f1ce212227049631e0eee7d5b2bb9dad1",
+    "bytes": 6909,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/dragonswood-mascot/mascot.manifest.json",
+    "sha256": "6450d7557f60e71285d99b6cbf9eb39e492cc2890b596174dbacac74dca65c93",
+    "bytes": 6169,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/dragonswood-mascot/PROVENANCE.md",
+    "sha256": "10e2a75101042d51546d23a015cffdc8f1b2c5d0cf507aea631af89376f82a4c",
+    "bytes": 2354,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/dragonswood-mascot/source-verification.json",
+    "sha256": "1693b3ac814115459762396f9799e9f005baf0df3c454fc84ca83dd59f3728f9",
+    "bytes": 4166,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/egg-drop/welcome.png",
+    "sha256": "df376545611c2e9b79fe94cdec2c922453a22c2f6e9055a3052035366db40767",
+    "bytes": 1188104,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/opinion-articles/brainrot.png",
+    "sha256": "2a6d72f16615388017f509a9de14b022df5fb1b584cb5a7836c411900d9b7a1e",
+    "bytes": 2305965,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/opinion-articles/class-choice.png",
+    "sha256": "4c9dd9f8ebdf6e01d39733231d6506e0570e761abdb113d254b1255881b7d229",
+    "bytes": 2257374,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/opinion-articles/screen-time.png",
+    "sha256": "718c4942cd222a6b3b03082845b28bcd1ee72febf08087f5ca828d2235fcae20",
+    "bytes": 2312170,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/opinion-articles/teammate.png",
+    "sha256": "ec4d4de2ea3c3b17ae8364504ab93d7da3704db9b937051a36aa6b1d2941bcfa",
+    "bytes": 2050018,
+    "role": "public-static"
+  },
+  {
+    "path": "public/assets/portal.png",
+    "sha256": "a68425a3cfa3b7eb4ef1466e0e779a8ac4f8ebebff0846a55a4f0ca9b38db8ee",
+    "bytes": 3951480,
+    "role": "public-static"
+  },
+  {
+    "path": "public/battle-actors/actor-catalog.js",
+    "sha256": "d059016d0e3ce80737f9346b020700921a0b5a446deb8be6d9d27891ef31719c",
+    "bytes": 13212,
+    "role": "public-static"
+  },
+  {
+    "path": "public/battle-actors/actor-selection.js",
+    "sha256": "31b45773004cc7ebc1eb3d028652a5c3864f8d768d3bbb889527eb20e7ba3a1d",
+    "bytes": 2319,
+    "role": "public-static"
+  },
+  {
+    "path": "public/battle-actors/battle-geometry.js",
+    "sha256": "67759da5cb3d9b1125f6411c12add31cedfb9c72c405fb1a47f0d00182c290e2",
+    "bytes": 1886,
+    "role": "public-static"
+  },
+  {
+    "path": "public/battle-actors/enemy-actor.js",
+    "sha256": "db438539353133cfe77f3ab2623a89c9c24e15b24ddd724b577af538a9b066e1",
+    "bytes": 7614,
+    "role": "public-static"
+  },
+  {
+    "path": "public/battle-actors/enemy-effects.js",
+    "sha256": "b7e2ab6ecd4fc59a0c35e3256226c3225b862c2a835140a9496c2da83fe1f0af",
+    "bytes": 8848,
+    "role": "public-static"
+  },
+  {
+    "path": "public/battle-actors/hero-actor.js",
+    "sha256": "1e146bb75d08b60629c62c2be287faa3a2a0d688e8d35274361b157d39da4562",
+    "bytes": 5607,
+    "role": "public-static"
+  },
+  {
+    "path": "public/battle-actors/hero-definition.js",
+    "sha256": "8fad600a41c605d17e82b5f3dd7756f8ca5e512d08b35fe1b75bc99eb3108dba",
+    "bytes": 6892,
+    "role": "public-static"
+  },
+  {
+    "path": "public/battle-actors/mage-blast.js",
+    "sha256": "803dc8225079d532aaa03021e655a04501d3e4b2b81a267161fca675cd227bcc",
+    "bytes": 9578,
+    "role": "public-static"
+  },
+  {
+    "path": "public/battle-actors/motion.js",
+    "sha256": "00f399944fea86e1a9290527d3cc64e01d9f256c559c10b151b36bcdf1a4113c",
+    "bytes": 2628,
+    "role": "public-static"
+  },
+  {
+    "path": "public/battle-actors/pet-actor.js",
+    "sha256": "2c8e9f011df8a3073d1a062eecb2c11a2506625a1cd0434b881a0099472d1c21",
+    "bytes": 8130,
+    "role": "public-static"
+  },
+  {
+    "path": "public/battle-actors/pet-motion.js",
+    "sha256": "60d51fe9ea096dc1244399d43009fbd24407f53e9b5ea9fa3965dc15a73006e9",
+    "bytes": 3043,
+    "role": "public-static"
+  },
+  {
+    "path": "public/battle-actors/portrait-fit.js",
+    "sha256": "6472bb3a54ae359df9cb84e4e5153a6b6650b704b7c3ec318e9364a4dfa9d0cb",
+    "bytes": 1129,
+    "role": "public-static"
+  },
+  {
+    "path": "public/battle-actors/roster-model.js",
+    "sha256": "63a60fd069c4b7deb3f51f38feb2947cd46b41f01775ab11b5169fdd8f5ee199",
+    "bytes": 3591,
+    "role": "public-static"
+  },
+  {
+    "path": "public/battle-actors/sprite-appearance.js",
+    "sha256": "c57b9e694e5a91ac9231e198dbfb51b2c3e32f9c780490a9447c60061563655b",
+    "bytes": 12343,
+    "role": "public-static"
+  },
+  {
+    "path": "public/battle-actors/warrior-effects.js",
+    "sha256": "e50017a5f7852d6050fbae7d78f0de9e8a4b0e631b3323d2f93d6d4aa9767ce3",
+    "bytes": 5811,
+    "role": "public-static"
+  },
+  {
+    "path": "public/ccf-desk.js",
+    "sha256": "e348524f235167cdbddff153f0efc4514c04310c3849d8856e97e2642e721f3c",
+    "bytes": 15125,
+    "role": "public-static"
+  },
+  {
+    "path": "public/ccf-documents.js",
+    "sha256": "ebf05bab401ad05f524dd05b46e1ae701090e8ca975479936bf5834bc83cc6ed",
+    "bytes": 4646,
+    "role": "public-static"
+  },
+  {
+    "path": "public/ccf-scene-layout.js",
+    "sha256": "25da07cc0143144701a78e34c33db82b7a4da419166dbda52e0bd7def2a06980",
+    "bytes": 1673,
+    "role": "public-static"
+  },
+  {
+    "path": "public/ccf-scene.js",
+    "sha256": "6cc6ca08b67377a857ab66a1d0d47913d32dfc567ac6956129f6e71be4ddc0aa",
+    "bytes": 14766,
+    "role": "public-static"
+  },
+  {
+    "path": "public/ccf.css",
+    "sha256": "bff0a4af6ab6c572f2b8eec4d4dd63abc1e94f86ddae262719f2c8f75560d042",
+    "bytes": 6161,
+    "role": "public-static"
+  },
+  {
+    "path": "public/curriculum-days.js",
+    "sha256": "a2380dbd4cefba53b790b4bd5cccd6e792cc852c309e58a3fc9703910c4c4963",
+    "bytes": 33339,
+    "role": "public-static"
+  },
+  {
+    "path": "public/daily-battle-scene.js",
+    "sha256": "28fa4512913d88f26fa447d3be9b2a5eef9ae0f67beaf1e616ffe617abc93c30",
+    "bytes": 18673,
+    "role": "public-static"
+  },
+  {
+    "path": "public/daily-battle-visuals.js",
+    "sha256": "b6895e50f09787a9ea9631d6b41ce27ef380c0719468d6df973324700c23d367",
+    "bytes": 21658,
+    "role": "public-static"
+  },
+  {
+    "path": "public/daily-battle.css",
+    "sha256": "474a7c5105329b9d42c6234b8a11844172fca0c5965decc7a2461c8c869ebed7",
+    "bytes": 18395,
+    "role": "public-static"
+  },
+  {
+    "path": "public/daily-battle.js",
+    "sha256": "9545cbcc652cfabd7c16cdc8bbf8512b1d869896248d62bdf97c13c3e4665e37",
+    "bytes": 27453,
+    "role": "public-static"
+  },
+  {
+    "path": "public/decimal-lab.js",
+    "sha256": "71ed01e41105eb7b29a14419ea9174f413de1f4d6c3af5ce884210f3ad4d474f",
+    "bytes": 13398,
+    "role": "public-static"
+  },
+  {
+    "path": "public/diagrams.js",
+    "sha256": "99c898d4a32c77bf62efbff550785fd602691f2d429ab8146fb0d2a1b70ba984",
+    "bytes": 4742,
+    "role": "public-static"
+  },
+  {
+    "path": "public/egg-energy.js",
+    "sha256": "faf703ee0ce8645b692f3dd1dfa1b7b99f5ba458f7b787533f8ec88d1e3e109e",
+    "bytes": 10267,
+    "role": "public-static"
+  },
+  {
+    "path": "public/fonts.css",
+    "sha256": "e924bad09384b93c97cc6b1da214f7dd62faae189933f6449e96b0deca604963",
+    "bytes": 71,
+    "role": "public-static"
+  },
+  {
+    "path": "public/geometry-lab.js",
+    "sha256": "f72911583d74a6796b67efe8c8a791bdf309224a11a16ceec91df2dceafe9ce3",
+    "bytes": 19813,
+    "role": "public-static"
+  },
+  {
+    "path": "public/index.html",
+    "sha256": "bf768ef1ac69d75d3f473f8e0c8ff078380f860d8b25ce6d365a9eb8949e8c05",
+    "bytes": 839,
+    "role": "public-static"
+  },
+  {
+    "path": "public/lesson-practice-grade4.js",
+    "sha256": "eea4076926f3c0c20267610fffe84247c848a6469c05bc1d9c3977126a75cc7a",
+    "bytes": 29286,
+    "role": "public-static"
+  },
+  {
+    "path": "public/lesson-practice-grade5.js",
+    "sha256": "d4d90c3092aecb578eac8577625130408cd960a73b888c903a3697775166e439",
+    "bytes": 28707,
+    "role": "public-static"
+  },
+  {
+    "path": "public/lesson-practice.css",
+    "sha256": "a7b4f6d574c8ac638f62cc02619689bba317c55fc2f21520c90b69b1c22369e6",
+    "bytes": 4696,
+    "role": "public-static"
+  },
+  {
+    "path": "public/lesson-practice.js",
+    "sha256": "99aae53722dee7eed92517e8ba5030b0a9b3079f102b85363e78346850861a23",
+    "bytes": 15490,
+    "role": "public-static"
+  },
+  {
+    "path": "public/lesson-video.js",
+    "sha256": "475d9f10a8843cea14efa9b658c19dfa195aeef57b56a0c2cf73faf9d4c4a344",
+    "bytes": 12167,
+    "role": "public-static"
+  },
+  {
+    "path": "public/opinion-articles.js",
+    "sha256": "ac55863d41d36069b2bd6c254bf494e042f98c83532e724fcfb6c6975574a902",
+    "bytes": 15220,
+    "role": "public-static"
+  },
+  {
+    "path": "public/opinion-essay.js",
+    "sha256": "dd6006b48498fe6f38c54f4d109be2a8cf60cc2e0d1c2c761362b27da0e56365",
+    "bytes": 6559,
+    "role": "public-static"
+  },
+  {
+    "path": "public/portal-identity.css",
+    "sha256": "41ada483844244d65f7a7adee3b22736693abbd06dae98826df0993b707fd318",
+    "bytes": 3670,
+    "role": "public-static"
+  },
+  {
+    "path": "public/portal-identity.js",
+    "sha256": "cf86001824fd360691670c39cafb39aae716d308ff2faf5bc94ca4f75120d22a",
+    "bytes": 13411,
+    "role": "public-static"
+  },
+  {
+    "path": "public/powers-lab.js",
+    "sha256": "e28061e3280c3e5b39c579c80e99b50b03050daf7c3f83cf75ad4051955422dd",
+    "bytes": 6407,
+    "role": "public-static"
+  },
+  {
+    "path": "public/practice-duration-receipts.js",
+    "sha256": "212634affee07d25f28a636e94b100304aea6a8993c516fa90d0ed2a5884e24d",
+    "bytes": 849,
+    "role": "public-static"
+  },
+  {
+    "path": "public/practice-models.js",
+    "sha256": "8e8fe4b03a640976be23a8074042718e3f30c855b70a0a2d2d39f81a818c0325",
+    "bytes": 7433,
+    "role": "public-static"
+  },
+  {
+    "path": "public/project-days.js",
+    "sha256": "d77255de90609e98d99737da444a12f166e8aaf4ef0200b0a5ff6e4e1f4ca986",
+    "bytes": 16737,
+    "role": "public-static"
+  },
+  {
+    "path": "public/project-science-coaches.js",
+    "sha256": "42048db4eb67f96281139f33882930f3dcc7141ce9ee6a7243f5d88398a54bfe",
+    "bytes": 12387,
+    "role": "public-static"
+  },
+  {
+    "path": "public/school-schedule.css",
+    "sha256": "65d08df1025cc84c2c7f00cd08a3d74d0d9eb76e2ad647fbea41d9a038321573",
+    "bytes": 678,
+    "role": "public-static"
+  },
+  {
+    "path": "public/school-schedule.js",
+    "sha256": "5a661231ba6dc162280000770465c86dc161b76e87807712916caaa411862ea1",
+    "bytes": 4162,
+    "role": "public-static"
+  },
+  {
+    "path": "public/science-conditions.js",
+    "sha256": "dd88296ea0e7eb436a513a5abce835b06d611f22b36f72c59dbe88a3d9de86f5",
+    "bytes": 2032,
+    "role": "public-static"
+  },
+  {
+    "path": "public/science-lab.js",
+    "sha256": "ae5c6b586e144d06281af6b904ef0cd074aaba4e9ba0cc539389ec1e22502628",
+    "bytes": 8761,
+    "role": "public-static"
+  },
+  {
+    "path": "public/science-strategy.js",
+    "sha256": "032d1e23c73bb4d0d7a6c1666115959c2e4991f03fad344070745a46a8e5f4ed",
+    "bytes": 9987,
+    "role": "public-static"
+  },
+  {
+    "path": "public/style.css",
+    "sha256": "08cc3d003dad28875a2aa52f6d40b76fb134a8d666d5b16d60ccac63cf837566",
+    "bytes": 36987,
+    "role": "public-static"
+  },
+  {
+    "path": "public/vendor/phaser-4.2.1.min.js",
+    "sha256": "66348b1b5141e49b7d5ebbe688cddcb502eab1cb00f21c538686a5b2c5abe4de",
+    "bytes": 1375976,
+    "role": "public-static"
+  },
+  {
+    "path": "public/vendor/PHASER-LICENSE.md",
+    "sha256": "c3a9ba7e38d4ef33dccf5fdd1046655c63df06714f84776118fe406f43db5cf2",
+    "bytes": 1100,
+    "role": "public-static"
+  },
+  {
+    "path": "public/vendor/PHASER-VERSION.md",
+    "sha256": "f55a0e43311a4cb6f9e2f575249fe58c0784c22800a0a6ab4fd138329fad2605",
+    "bytes": 1130,
+    "role": "public-static"
+  },
+  {
+    "path": "public/video-policy.js",
+    "sha256": "deea2c599727b38613fbd1a8249c9e66e88d211e6579f3173eee2052e7845e01",
+    "bytes": 146,
+    "role": "public-static"
+  },
+  {
+    "path": "public/visual-coach.js",
+    "sha256": "23d4b27ee456348751981016c5162ea58924a75e3bde7202f2bff62b73dcb7fb",
+    "bytes": 33763,
+    "role": "public-static"
+  },
+  {
+    "path": "public/writing-topics.js",
+    "sha256": "3bcd39e759d8526b2c37b7493fb8c9392dcccec0aad7eeb18adf6b6423ae6616",
+    "bytes": 5882,
+    "role": "public-static"
+  }
+]

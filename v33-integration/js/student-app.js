@@ -326,6 +326,7 @@ async function acknowledgeTeacherAttention(button){
 function currentPage(){
   if(blockingPass())return 'adventure';
   const hash = location.hash.replace('#','');
+  const pathRoute=window.DWDragonPath?.route();if(pathRoute)return pathRoute==='adventurer'?'adventure':pathRoute==='schedule'?'day':'missions';
   if(hash==='arcade'){
     globalThis.history?.replaceState?.(null,'','#adventure');
     return 'adventure';
@@ -379,7 +380,7 @@ function shell(){
   return `<div class="portal student-shell student-page-${state.page}" data-${IS_PRODUCTION?'release':'tester-build'}="v3.3">
     <header class="student-topbar"><div class="student-brand">
       <div class="brand-lockup"><img class="student-crest" src="assets/branding/dragonswood-mascot-crest.png" alt="Dragonswood mascot crest"><div><div class="brand-name">DRAGONSWOOD</div><div class="brand-sub">STUDENT ADVENTURE PORTAL</div></div></div>
-      <div class="student-utility"><a class="btn btn-secondary btn-sm" href="../#home">Daily learning</a>${state.isTester?'<button class="btn btn-secondary btn-sm" type="button" data-tester-controls>🧪 <span>Tester Controls</span></button>':''}<button class="btn btn-secondary btn-sm" type="button" data-passes>🎟️ <span>${substituteModeActive()?'Ask sub for pass':'Passes'}</span></button><div class="profile-pill" role="button" tabindex="0" data-account-menu aria-label="Open account menu"><div class="profile-orb">${escapeHtml(state.initial)}</div><span><b>${escapeHtml(state.firstName)}</b><small>Level ${state.level}</small></span></div></div>
+      <div class="student-utility">${state.isTester?'<button class="btn btn-secondary btn-sm" type="button" data-tester-controls>🧪 <span>Tester Controls</span></button>':''}<button class="btn btn-secondary btn-sm" type="button" data-passes>🎟️ <span>${substituteModeActive()?'Ask sub for pass':'Passes'}</span></button><div class="profile-pill" role="button" tabindex="0" data-account-menu aria-label="Open account menu"><div class="profile-orb">${escapeHtml(state.initial)}</div><span><b>${escapeHtml(state.firstName)}</b><small>Level ${state.level}</small></span></div></div>
       </div></header>
     <aside class="student-sidebar">${navMarkup()}</aside>
     <main class="student-main" id="page-content">${state.isTester&&state.simulatedDate?`<div class="tester-date-banner" role="status">🧪 SAFE DATE PREVIEW • real date ${escapeHtml(window.DWV33Core?.phoenixDateKey?.()||'today')} • simulated date ${escapeHtml(state.simulatedDate)} • academic and Boss preview writes are disabled <button type="button" data-return-real-date>Return to Today</button></div>`:''}<div class="student-content">${substituteModeActive()?afternoonSubstituteActive()?`<section class="substitute-student-banner" role="alert"><span>🎮</span><div><h2>Afternoon Substitute Day • 1-hour free-play window</h2><p>${afternoonSubstituteEligible()?'You finished Daily Battle and today’s Curriculum Quest. Quest Games and Arcade are unlocked free—no Tokens—until the class window ends.':'Finish Daily Battle and every lesson in today’s Current Quest to unlock Quest Games and Arcade free. No Tokens will be used.'} Passes and restricted areas remain closed.</p></div></section>`:'<section class="substitute-student-banner" role="alert"><span>🛑</span><div><h2>Substitute Mode is on today</h2><p>Passes, Kingdom Wars, Deep Time Lab, Dragon Tongues, Arcade, and Boss Battle are unavailable. If you need help or need to leave the room, ask your substitute teacher.</p></div></section>':''}${pageMarkup()}</div></main>
@@ -396,6 +397,7 @@ function studentTitle(icon,eyebrow,title,sub){const mascot=titleIcons[state.page
 function questCard(icon,kicker,title,count,pct,copy){return `<article class="panel quest-card"><div class="quest-top"><span class="text-26">${icon}</span><span class="big-count">${count}</span></div><div class="eyebrow">${kicker}</div><h3>${title}</h3><p>${copy}</p><progress class="dw-progress" max="100" value="${pct}" aria-label="${title} progress">${pct}%</progress></article>`}
 
 function pageMarkup(){
+  if(window.DWDragonPath?.route())return window.DWDragonPath.markup();
   const moduleId=currentModuleId();
   if(moduleId)return moduleHost.markup(moduleId);
   switch(state.page){
@@ -470,41 +472,8 @@ const missions = [
   {id:'spelling',module:'rune-spelling',n:'2',kicker:'SPELLING PRACTICE',icon:'🔤',title:'Rune Spelling',desc:'Study and practice today’s teacher-assigned spelling words.',time:'10–15 min',reward:'Spelling grade',button:'Open spelling →'},
   {id:'curriculum',module:'curriculum-quest',n:'3',kicker:'CLASS MISSION',icon:'🐉',title:'Curriculum Quest',desc:'Continue math, reading, writing, science, morphology, and Character Case Files. Each lesson shows its videos, activities, and time.',time:'Follow your daily schedule',reward:'5 points per subject',button:'Open quest →'}
 ];
-function missionsPage(){
-  const completeCount=missions.filter(m=>state.completedMissions.has(m.id)).length;
-  const optionalOpen=unfinishedRequiredWork('games').length===0;
-  const accessSummary=optionalOpen
-    ?afternoonSubstituteActive()?afternoonSubstituteEligible()?'Daily Battle and Current Quest are complete. Quest Games and Arcade are free during the one-hour window.':'Finish Daily Battle and today’s Current Quest for free games and Arcade.':substituteModeActive()?'Dragon’s Path is complete. Substitute Mode keeps passes and five optional activities closed today.':'Dragon’s Path is complete. Dragon Tongues, games, Scribe Arena, Boss Battle, Kingdom Wars, and Arcade are available.'
-    :state.testerUnlocks.unlockMorning===true
-      ?'Tester access is active. Required work remains incomplete until you do it.'
-      :'Complete Daily Battle, Rune Spelling, and Curriculum Quest to open free-choice adventures.';
-  const accessLabel=state.dailyAccessOverride===true?'🔓 Teacher override':state.testerUnlocks.unlockMorning===true?'🧪 Tester access':optionalOpen?'🔓 Adventures open':'🔒 Path in progress';
-  const readingRows=state.reading?.rows||[],today=window.DWV33Core?.phoenixDateKey?.()||'',readingRow=readingRows.find(row=>row.dateKey===today)||readingRows.slice().sort((a,b)=>String(b.dateKey).localeCompare(String(a.dateKey)))[0],readingMinutes=readingRow?Math.round(readingRow.activeSeconds/6)/10:0,readingTarget=state.reading?.targetMinutes||20,readingAssigned=(state.reading?.assignedDateKeys||[]).includes(today);
-  const languageSubstituteLocked=substituteBlocked('dragon-tongues'),languageLocked=languageSubstituteLocked||!(optionalOpen||weekendAcademicOpen('dragon-tongues')||state.testerUnlocks.unlockMorning===true);
-  return `${studentTitle('📜','DRAGON’S PATH','Your quest path','Complete each glowing step. Free-choice adventures unlock when your required path is finished.')}
-    <div class="panel path-summary"><div class="path-count"><strong>${completeCount}</strong><small>of 3</small></div><div class="path-copy"><div class="eyebrow">TODAY’S PROGRESS</div><b>One mission at a time.</b><div>${accessSummary}</div></div><div class="path-lock">${accessLabel}</div></div>
-    <div class="mission-list">${missions.map((m,i)=>missionRow(m,i)).join('')}</div>
-    <div class="mission-list mt-12"><article class="panel mission-row ${languageLocked?'locked':'current'}"><div class="mission-num">✦</div><div class="mission-art">🗣️</div><div><div class="eyebrow">${languageSubstituteLocked?'SUBSTITUTE MODE':'OPTIONAL LANGUAGE PATH'}</div><h3>Dragon Tongues</h3><p>${languageSubstituteLocked?'Unavailable today. Ask your substitute teacher if you need help.':'Choose a language and learn freely at your own pace after Curriculum Quest.'}</p><div class="reward-line"><span>🌍 12 languages</span><span>${languageSubstituteLocked?'🛑 Closed today':'🐉 Free path'}</span></div></div><button class="btn ${languageLocked?'btn-secondary':'btn-primary'} btn-sm" type="button" data-module="dragon-tongues" ${languageLocked?'disabled':''}>${languageSubstituteLocked?'Unavailable today':'Explore languages →'}</button></article></div>
-    <div class="mission-extra"><article class="panel extra-card"><div class="extra-icon">📚</div><div><div class="extra-kicker">${readingAssigned?'STORYVAULT READING ASSIGNED':'DRAGONSWOOD STORYVAULT'}</div><h3>Dragonswood Storyvault</h3><p>${readingAssigned?`${readingMinutes}/${readingTarget} verified active Storyvault minutes${readingRow?.lastPage?` • last page ${readingRow.lastPage}`:''}.`:'Choose a book and continue from your saved page.'}</p></div><button class="btn btn-secondary btn-sm" data-module="class-reader">${readingAssigned&&readingMinutes<readingTarget?'Open Storyvault':'Browse books'}</button></article><article class="panel extra-card"><div class="extra-icon">⭐</div><div><div class="extra-kicker">BONUS CHALLENGE</div><h3>Level-Up Mission</h3><p>Ready for more? Try a mission one level above.</p></div><button class="btn btn-secondary btn-sm" data-module="level-up-challenge">Try the challenge</button></article></div>`;
-}
-function missionRow(m,i){
-  const done=state.completedMissions.has(m.id);
-  const testerUnlocked=(m.id==='spelling'&&state.testerUnlocks.unlockMorning===true)||(m.id==='curriculum'&&state.curriculumAccessUnlocked===true);
-  const weekendUnlocked=(m.id==='spelling'||m.id==='curriculum')&&weekendAcademicOpen(m.module);
-  const previousDone=!!window.DWLearningBridge?.href(m.module)||i===0||state.completedMissions.has(missions[i-1].id)||state.dailyAccessOverride===true||testerUnlocked||weekendUnlocked;
-  const current=!done&&previousDone;
-  const locked=!done&&!previousDone;
-  return `<article class="panel mission-row ${done?'complete':''} ${current?'current':''} ${locked?'locked':''}"><div class="mission-num">${done?'✓':m.n}</div><div class="mission-art">${m.icon}</div><div><div class="eyebrow">${done?'COMPLETE':m.kicker}</div><h3>${m.title}</h3><p>${m.desc}</p><div class="reward-line"><span>⏱ ${m.time}</span><span>✨ ${m.reward}</span></div></div><button class="btn ${current?'btn-primary':'btn-secondary'} btn-sm" type="button" data-module="${m.module}" ${locked?'disabled':''}>${done?'Review quest':m.button}</button></article>`;
-}
+function missionsPage(){return window.DWDragonPath.markup();}
 
-const games=[
-  ['decimal-deception','Math','assets/art/quest-game-cards/dragonswood-card-decimal-deception-1200x660.webp','Decimal Deception','Restore the crystal grid with decimal clues.'],
-  ['math-operations','Math','assets/art/quest-game-cards/dragonswood-card-math-operations-quest-1200x660.webp','Math Operations Quest','Practice whole-number operations or enter Fraction Forge for fraction operations.','fraction-forge'],
-  ['elemental-laboratory','Science','assets/art/quest-game-cards/dragonswood-card-elemental-laboratory-1200x660.webp','Elemental Laboratory','Build atoms and investigate matter.'],
-  ['cosmic-architect','Science','assets/art/quest-game-cards/dragonswood-card-cosmic-architect-1200x660.webp','Cosmic Architect','Build and investigate a model of the cosmos.'],
-  ['arcane-forge','Science','assets/art/quest-game-cards/dragonswood-card-arcane-forge-1200x660.webp','Arcane Forge','Use science evidence to power the forge.'],
-  ['deep-time-lab','Science','assets/art/quest-game-cards/dragonswood-card-deep-time-lab-1200x660.webp','Deep Time Lab','Investigate fossils, evidence, and all forty Deep Time cases.']
-];
 function gamesPage(){
   const visible=state.gameFilter==='All'?games:games.filter(g=>g[1]===state.gameFilter);
   return `${studentTitle('🎮','Quest Games','Choose your adventure','Every game practices a real school skill. Pick a subject and jump in.')}
@@ -758,6 +727,7 @@ function render(){
     disposeAdventureIdentity();app.innerHTML=authGate();bindAuthGate();document.title=IS_PRODUCTION?'Dragonswood | Sign In':'[INTEGRATION] Dragonswood | Sign In';return;
   }
   ensureRecoveryProbe();
+  if(window.DWDragonPath?.sync()){state.page=currentPage();document.title="Dragonswood | Dragon’s Path";syncPassSafety();return;}
   const requestedModule=currentModuleId(),mountedModule=app.querySelector('[data-v33-module-shell]')?.dataset.v33ModuleShell||'';
   if(!blockingPass()&&requestedModule&&requestedModule===mountedModule&&app.querySelector('[data-module-frame]')){
     state.page=currentPage();
@@ -770,6 +740,7 @@ function render(){
   if(preserve)app.style.minHeight=`${Math.max(app.offsetHeight,document.documentElement.scrollHeight)}px`;
   app.innerHTML=shell();
   bind();
+  window.DWDragonPath?.mount();
   restoreViewportAfterRender(scrollX,scrollY,key);
   const moduleId=currentModuleId();
   document.title=`${IS_PRODUCTION?'':'[TESTER] '}Dragonswood | ${moduleId?moduleHost.definition(moduleId).title:studentNavItems().find(n=>n[0]===state.page)[2]}`;
@@ -899,7 +870,8 @@ async function enterArcade(trigger){
   }
 }
 
-function openPage(page,trigger=null){
+async function openPage(page,trigger=null){
+  try{await window.DWDragonPath?.beforeLeave();}catch(error){showToast(error.message);return;}
   if(blockingPass()){showToast('Return your active pass before continuing Dragonswood.');location.hash='adventure';return}
   if(substituteBlocked(page)){location.hash='missions';showSubstituteModeDialog(page);return}
   if(String(page)==='arcade'){enterArcade(trigger);return}
@@ -907,7 +879,8 @@ function openPage(page,trigger=null){
   if(String(page)==='hall'&&state.page!=='hall')state.previousPortalPage=state.page||'adventure';
   location.hash=page;
 }
-function openModule(id){
+async function openModule(id){
+  try{await window.DWDragonPath?.beforeLeave();}catch(error){showToast(error.message);return;}
   if(id==='boss-battle'){location.hash='boss';return;}
   if(blockingPass()){showToast('Return your active pass before opening another activity.');location.hash='adventure';return}
   if(substituteBlocked(id)){location.hash='missions';showSubstituteModeDialog(id);return}
@@ -948,7 +921,8 @@ async function submitWriting(){
   if(state.scribeSession&&integrationController?.submitWriting){try{await integrationController.submitWriting(state.writing);openDialog('Checkpoint submitted',`<p>Your <b>${wc}-word</b> response is saved. Your teacher can review it, and the writing coach will add feedback when the grading service is available.</p>`)}catch(err){openDialog('Submission needs attention',`<p>${escapeHtml(err?.message||'Writing could not be submitted.')}</p>`)}return}
   openDialog('Checkpoint ready',`<p>Your draft has <b>${wc} words</b>. In production this would submit once, show a success state, and prevent duplicate submission.</p>`)
 }
-window.addEventListener('hashchange',()=>{if(integrationSession.status==='authorized')render()});
+window.addEventListener('hashchange',async()=>{if(integrationSession.status!=='authorized')return;try{await window.DWDragonPath?.beforeLeave();render();}catch(error){const frame=document.querySelector('[data-dragon-path-frame]');if(frame)history.replaceState(null,'',frame.dataset.parentHash||'#missions');showToast(error.message);}});
+window.addEventListener('dragonswood:open-school',event=>{const id=String(event.detail||'').replace(/^module\//,'');if(['rune-spelling','class-reader'].includes(id))openModule(id);});
 window.addEventListener('message',handleModuleState);
 (async function bootstrapIntegration(){
   if(!window.DWV33Integration){integrationSession={status:'error',message:'Integration runtime did not load.'};render();return}

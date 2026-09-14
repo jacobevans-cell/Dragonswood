@@ -1,9 +1,11 @@
-# GitHub portal replacement
+# One Dragonswood portal
 
-The student homepage remains https://jacobevans-cell.github.io/Dragonswood/. It loads the approved new learning UI directly. School tools, spelling, Storyvault, teacher dashboard and learning links remain on this origin and share the default Firebase Auth session.
+The existing student navigation remains at https://jacobevans-cell.github.io/Dragonswood/. Dragon’s Path now hosts the approved new daily path and lessons inside that shell. The obsolete mission overview is removed. My Adventurer opens the new hero chooser; Schedule uses the approved daily schedule. Spelling, Storyvault, passes, journals and games continue within the same portal navigation. The old school-tools URL only returns to the main portal.
 
-Firebase remains the private authenticated API and saved-work backend. CORS allows the exact GitHub origin only when configured; all API calls still verify Firebase tokens, roster ownership, grade and teacher authority. Cross-origin sessions bind to verified UID and authentication time and retain idle, absolute-expiry and logout enforcement without third-party cookies. Tokens are never passed in navigation URLs.
+The same-origin lesson frame contains lesson tabs, not another portal sidebar or logo. Its route follows the parent bookmark, background roster updates preserve the frame, and parent navigation waits for saved work. Messages require the exact frame and origin; feature destinations are allowlisted. Firebase account and grade authority remain server-verified. Teacher Review is explicitly labeled and its remembered profile is validated against the current teacher roster.
 
-Deploy the reviewed backend with the GitHub origin allowlist before merging the frontend. No separate Firebase homepage redirect is released. Existing AI pilot scope and assessment rules are unchanged.
+Hero choices show all eight actual supplied level-one portraits. Metadata retains canonical asset paths; only the configured serving base changes. Private answer banks, grading rules, student records and the AI pilot scope are unchanged.
 
-Rollback: revert this PR to the prior GitHub commit and restore the previous Cloud Run image and pilot digest from the private deployment receipt. No student data migration or reset is part of this change.
+Validation includes all hero-definition resource paths, browser-rendered hero cards, parent routing and frame checks, pass/substitute protections, authenticated save/refresh, account isolation, CCF resource checks and the repository release gate.
+
+Rollback: revert this change to the preceding merged commit 755ad5d7a8b92c15eeda820b3f2ab9ca68359898. The private deployment receipt preserves backend revision dragonswood-learning-00004-4kd and its corresponding pilot pin. No student reset or migration is performed.

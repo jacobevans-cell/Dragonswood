@@ -6,22 +6,36 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="theme-color" content="#18112b" />
     <title>Dragonswood · Dragon’s Path</title>
-    <link rel="stylesheet" href="./style.css?v=dragon-path-10" />
-    <link rel="stylesheet" href="./ccf.css?v=dragon-path-10" />
-    <link rel="stylesheet" href="./daily-battle.css?v=dragon-path-10" />
-    <link rel="stylesheet" href="./portal-identity.css?v=dragon-path-10" />
-    <link rel="stylesheet" href="./school-schedule.css?v=dragon-path-10" />
-    <link rel="stylesheet" href="./dragon-path-embed.css?v=dragon-path-10" />
+    <link rel="stylesheet" href="./style.css?v=dragon-path-11" />
+    <link rel="stylesheet" href="./ccf.css?v=dragon-path-11" />
+    <link rel="stylesheet" href="./daily-battle.css?v=dragon-path-11" />
+    <link rel="stylesheet" href="./portal-identity.css?v=dragon-path-11" />
+    <link rel="stylesheet" href="./school-schedule.css?v=dragon-path-11" />
+    <link rel="stylesheet" href="./dragon-path-embed.css?v=dragon-path-11" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to lesson</a>
     <div id="app">
-      <main class="loading">
+      <main class="loading" data-quest-opening>
         <h1>Dragonswood</h1>
-        <p>Opening your quest…</p>
+        <p data-quest-opening-status role="status">Opening your quest…</p>
+        <button class="btn" data-quest-opening-retry hidden>Try opening my quest again</button>
       </main>
     </div>
     <div id="toast" role="status" aria-live="polite"></div>
-    <script type="module" src="./app.js?v=dragon-path-10"></script>
+    <script>
+      (()=>{
+        const retry=document.querySelector('[data-quest-opening-retry]');
+        retry.addEventListener('click',()=>location.reload());
+        const recover=()=>{const opening=document.querySelector('[data-quest-opening]');if(!opening)return;opening.querySelector('[data-quest-opening-status]').textContent='Opening your quest is taking too long. Your saved work is safe. Try again.';retry.hidden=false;};
+        const timer=setTimeout(recover,20000);
+        const failed=event=>{if(event.type==='unhandledrejection'||event.target?.tagName==='SCRIPT'||event.message)recover();};
+        window.addEventListener('error',failed,true);
+        window.addEventListener('unhandledrejection',failed);
+        const done=new MutationObserver(()=>{if(!document.querySelector('[data-quest-opening]')){clearTimeout(timer);window.removeEventListener('error',failed,true);window.removeEventListener('unhandledrejection',failed);done.disconnect();}});
+        done.observe(document.getElementById('app'),{childList:true,subtree:true});
+      })();
+    </script>
+    <script type="module" src="./app.js?v=dragon-path-11"></script>
   </body>
 </html>

@@ -1,18 +1,18 @@
 // Optional presentation layer: no answers, grading, HP, rewards or profile writes.
-import { loadActorSelection, actorPalette } from "./battle-actors/actor-selection.js?v=dragon-path-10";
-import { publicResources } from "./public-resources.js?v=dragon-path-10";
-import { createPetActor } from "./battle-actors/pet-actor.js?v=dragon-path-10";
-import { HeroActor } from "./battle-actors/hero-actor.js?v=dragon-path-10";
-import { createEnemyActor } from "./battle-actors/enemy-actor.js?v=dragon-path-10";
+import { loadActorSelection, actorPalette } from "./battle-actors/actor-selection.js?v=dragon-path-11";
+import { publicResources } from "./public-resources.js?v=dragon-path-11";
+import { createPetActor } from "./battle-actors/pet-actor.js?v=dragon-path-11";
+import { HeroActor } from "./battle-actors/hero-actor.js?v=dragon-path-11";
+import { createEnemyActor } from "./battle-actors/enemy-actor.js?v=dragon-path-11";
 import {
   prepareSpritePixels,
   recolorSpritePixels,
-} from "./battle-actors/sprite-appearance.js?v=dragon-path-10";
+} from "./battle-actors/sprite-appearance.js?v=dragon-path-11";
 import {
   ARENA,
   arenaBackgroundFrame,
   enemyFacing,
-} from "./battle-actors/battle-geometry.js?v=dragon-path-10";
+} from "./battle-actors/battle-geometry.js?v=dragon-path-11";
 
 const PHASER_URL = "/Dragonswood/learning-portal/public/vendor/phaser-4.2.1.min.js";
 const PHASER_INTEGRITY = "sha256-ZjSLG1FB5Jt9XrvmiM3ctQLqscsA8hxThoalssWr5N4=";

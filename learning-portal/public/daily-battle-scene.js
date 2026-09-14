@@ -1,17 +1,18 @@
 // Optional presentation layer: no answers, grading, HP, rewards or profile writes.
-import { loadActorSelection, actorPalette } from "./battle-actors/actor-selection.js?v=dragon-path-6";
-import { createPetActor } from "./battle-actors/pet-actor.js?v=dragon-path-6";
-import { HeroActor } from "./battle-actors/hero-actor.js?v=dragon-path-6";
-import { createEnemyActor } from "./battle-actors/enemy-actor.js?v=dragon-path-6";
+import { loadActorSelection, actorPalette } from "./battle-actors/actor-selection.js?v=dragon-path-7";
+import { publicResources } from "./public-resources.js?v=dragon-path-7";
+import { createPetActor } from "./battle-actors/pet-actor.js?v=dragon-path-7";
+import { HeroActor } from "./battle-actors/hero-actor.js?v=dragon-path-7";
+import { createEnemyActor } from "./battle-actors/enemy-actor.js?v=dragon-path-7";
 import {
   prepareSpritePixels,
   recolorSpritePixels,
-} from "./battle-actors/sprite-appearance.js?v=dragon-path-6";
+} from "./battle-actors/sprite-appearance.js?v=dragon-path-7";
 import {
   ARENA,
   arenaBackgroundFrame,
   enemyFacing,
-} from "./battle-actors/battle-geometry.js?v=dragon-path-6";
+} from "./battle-actors/battle-geometry.js?v=dragon-path-7";
 
 const PHASER_URL = "/Dragonswood/learning-portal/public/vendor/phaser-4.2.1.min.js";
 const PHASER_INTEGRITY = "sha256-ZjSLG1FB5Jt9XrvmiM3ctQLqscsA8hxThoalssWr5N4=";
@@ -98,6 +99,7 @@ function enemyManifest() {
         if (!response.ok) throw new Error("Enemy collection unavailable");
         return response.json();
       })
+      .then((data) => publicResources(data))
       .then((data) => new Map(data.enemies.map((enemy) => [enemy.id, enemy])))
       .catch((error) => {
         manifestPromise = null;
@@ -233,7 +235,6 @@ export async function mountDailyBattleScene({
   async function drawStill(id, epoch = swapEpoch) {
     const definition = enemies?.get(id);
     if (!definition || disposed) return;
-    const image = await loadImage(definition.path);
     if (disposed || epoch !== swapEpoch) return;
     prepareStillHero();
     const context = still.getContext("2d");
@@ -283,6 +284,9 @@ export async function mountDailyBattleScene({
         ARENA.petX - b.width * scale / 2, ARENA.floor - b.height * scale,
         b.width * scale, b.height * scale);
     }
+    // Keep the selected hero visible even if this enemy image cannot load.
+    const image = await loadImage(definition.path);
+    if (disposed || epoch !== swapEpoch) return;
     const b = definition.bounds,
       factor = Math.min(
         (definition.isBoss ? ARENA.bossHeight : ARENA.enemyHeight) / b.height,

@@ -29,36 +29,20 @@
     globalThis.fetch=resilientFetch;
   }
 
-  // Firebase reauthenticateWithPopup throws auth/user-mismatch when a browser has
-  // more than one Google account and the wrong account is clicked. Dragonswood
-  // already has a valid Firebase user at this point, so do not force another
-  // account chooser. Retry the existing session instead.
-  const mismatchKey='dw-auth-mismatch-reload-v1';
+  // Preserve hosted-auth's real Firebase click handler. It is responsible for
+  // reauthenticating a paused session. Only clarify the button/copy for humans.
   const repairAuthScreen=()=>{
     const button=document.getElementById('portal-signin');
     const help=document.getElementById('portal-signin-help');
     if(!button)return;
-    const mismatch=/auth\/user-mismatch/i.test(help?.textContent||'');
-    const existingUser=/continue with google/i.test(button.textContent||'');
-    if(mismatch){
-      let reloaded=false;
-      try{reloaded=sessionStorage.getItem(mismatchKey)==='1';}catch{}
-      if(!reloaded){
-        try{sessionStorage.setItem(mismatchKey,'1');}catch{}
-        setTimeout(()=>location.reload(),50);
-        return;
-      }
-    }else{
-      try{sessionStorage.removeItem(mismatchKey);}catch{}
+    const text=help?.textContent||'';
+    if(/auth\/user-mismatch/i.test(text)){
+      if(help)help.textContent='Google opened a different account. Choose the same Google account already signed into Dragonswood.';
+      button.textContent='Choose Google account again';
+      return;
     }
-    if(existingUser||mismatch){
-      button.textContent='Retry Dragonswood';
-      button.onclick=event=>{
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        try{sessionStorage.removeItem(mismatchKey);}catch{}
-        location.reload();
-      };
+    if(/session paused after inactivity|sign in again to continue/i.test(text)){
+      button.textContent='Sign in again with Google';
     }
   };
   const app=document.getElementById('app');

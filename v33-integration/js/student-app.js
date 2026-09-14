@@ -729,7 +729,7 @@ function render(){
   }
   const characterOwner=integrationSession.user?.uid;
   if(characterOwner&&state.world?.hall?.adventurerProgression&&!blockingPass()&&characterSetupPromptedFor!==characterOwner&&window.DWLearningBridge?.profileFor(state.world.hall).needsClassSelection){
-    characterSetupPromptedFor=characterOwner;history.replaceState(null,'','#hall');
+    characterSetupPromptedFor=characterOwner;const setupUrl=new URL('../',document.baseURI);setupUrl.hash='hall';history.replaceState(null,'',setupUrl.href);
   }
   ensureRecoveryProbe();
   if(window.DWDragonPath?.sync()){state.page=currentPage();app.querySelectorAll('.nav-link[data-page]').forEach(button=>{const selected=button.dataset.page===state.page;button.classList.toggle('active',selected);if(selected)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');});document.title="Dragonswood | "+(state.page==='adventure'?'My Adventurer':state.page==='day'?'Schedule':'Dragon’s Path');syncPassSafety();return;}

@@ -15,8 +15,8 @@
     <script type="importmap">
       {
         "imports": {
-          "./hosted-auth.js?v=dragon-path-11": "./hosted-auth-parent-bridge.js?v=parent-session-1",
-          "/Dragonswood/learning-portal/public/hosted-auth.js?v=dragon-path-11": "/Dragonswood/learning-portal/public/hosted-auth-parent-bridge.js?v=parent-session-1"
+          "./hosted-auth.js?v=dragon-path-11": "./hosted-auth-parent-bridge.js?v=single-auth-v1",
+          "/Dragonswood/learning-portal/public/hosted-auth.js?v=dragon-path-11": "/Dragonswood/learning-portal/public/hosted-auth-parent-bridge.js?v=single-auth-v1"
         }
       }
     </script>
@@ -27,16 +27,16 @@
       <main class="loading" data-quest-opening>
         <h1>Dragonswood</h1>
         <p data-quest-opening-status role="status">Opening your quest…</p>
-        <button class="btn" data-quest-opening-retry hidden>Reload Dragon’s Path</button>
+        <button class="btn" data-quest-opening-retry hidden>Reload Dragonswood</button>
       </main>
     </div>
     <div id="toast" role="status" aria-live="polite"></div>
     <script>
       (()=>{
         const retry=document.querySelector('[data-quest-opening-retry]');
-        retry.addEventListener('click',()=>location.reload());
-        const recover=()=>{const opening=document.querySelector('[data-quest-opening]');if(!opening)return;opening.querySelector('[data-quest-opening-status]').textContent='Opening your quest is taking too long. Your saved work is safe. Try again.';retry.hidden=false;};
-        const timer=setTimeout(recover,20000);
+        retry.addEventListener('click',()=>{try{window.parent.location.reload()}catch{location.reload()}});
+        const recover=()=>{const opening=document.querySelector('[data-quest-opening]');if(!opening)return;opening.querySelector('[data-quest-opening-status]').textContent='Dragon’s Path is waiting for the main Dragonswood session. Reload Dragonswood once.';retry.hidden=false;};
+        const timer=setTimeout(recover,15000);
         const failed=event=>{if(event.type==='unhandledrejection'||event.target?.tagName==='SCRIPT'||event.message)recover();};
         window.addEventListener('error',failed,true);
         window.addEventListener('unhandledrejection',failed);

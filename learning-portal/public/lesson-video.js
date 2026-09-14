@@ -1,4 +1,4 @@
-import { PLAYBACK_RATES, validPlaybackRate } from "./video-policy.js";
+import { PLAYBACK_RATES, validPlaybackRate } from "./video-policy.js?v=dragon-path-3";
 const esc = (v) =>
   String(v ?? "").replace(
     /[&<>"']/g,

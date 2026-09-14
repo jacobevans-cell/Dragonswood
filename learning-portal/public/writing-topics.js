@@ -1,4 +1,4 @@
-import { OPINION_ARTICLES } from "./opinion-articles.js";
+import { OPINION_ARTICLES } from "./opinion-articles.js?v=dragon-path-3";
 
 const esc = (value) =>
   String(value ?? "").replace(

@@ -1,7 +1,7 @@
-import { HERO_OPTIONS, PET_OPTIONS } from './battle-actors/actor-catalog.js';
-import { loadActorSelection, actorPalette } from './battle-actors/actor-selection.js';
-import { prepareSpritePixels, recolorSpritePixels } from './battle-actors/sprite-appearance.js';
-import { alphaBounds, containSilhouette } from './battle-actors/portrait-fit.js';
+import { HERO_OPTIONS, PET_OPTIONS } from './battle-actors/actor-catalog.js?v=dragon-path-3';
+import { loadActorSelection, actorPalette } from './battle-actors/actor-selection.js?v=dragon-path-3';
+import { prepareSpritePixels, recolorSpritePixels } from './battle-actors/sprite-appearance.js?v=dragon-path-3';
+import { alphaBounds, containSilhouette } from './battle-actors/portrait-fit.js?v=dragon-path-3';
 
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const MASCOT = '/Dragonswood/learning-portal/public/assets/dragonswood-mascot/';

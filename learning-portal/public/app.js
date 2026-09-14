@@ -1,32 +1,32 @@
-import { lockedVideo, bindLessonVideos } from "./lesson-video.js";
-import { activityOverview, activityOverviewMarkup, battleOverviewMarkup } from "./activity-overview.js";
-import { renderLessonPractice, bindLessonPractice } from "./lesson-practice.js";
-import { scienceLesson } from "./science-lab.js";
-import { caseDesk, bindCaseDesk } from "./ccf-desk.js";
-import { bindScienceStrategy } from "./science-strategy.js";
-import { bindEggEnergy } from "./egg-energy.js";
-import { essayGuide, essayPreview, bindEssayPreview } from "./opinion-essay.js";
-import { topicChooser, lockedTopic } from "./writing-topics.js";
-import { energyDiagram, strategyDiagram } from "./diagrams.js";
-import { geometryLesson, bindGeometryLab } from "./geometry-lab.js";
-import { powersLab, bindPowersLab } from "./powers-lab.js";
-import { visualCoach, bindVisualCoaches } from "./visual-coach.js";
-import { publicRubric, questionComponent, objectiveComponents, questionsReady, questionControlLocked, questionAnswer, questionAssessment, assessmentFeedback, assessmentTotals, teacherAssessment } from "./assessment-ui.js";
-import { stageSafeQuestionCoach } from "./assessment-coach.js";
-import {renderCurriculumMath,renderCurriculumReading,renderCurriculumMorphology,curriculumMathVisual,curriculumCoach,bindCurriculumDays} from './curriculum-days.js';
-import {writingMilestone,scienceMilestone,learningMethodCoach,bindProjectDayEditors,teacherProjectPanel} from './project-days.js';
+import { lockedVideo, bindLessonVideos } from "./lesson-video.js?v=dragon-path-3";
+import { activityOverview, activityOverviewMarkup, battleOverviewMarkup } from "./activity-overview.js?v=dragon-path-3";
+import { renderLessonPractice, bindLessonPractice } from "./lesson-practice.js?v=dragon-path-3";
+import { scienceLesson } from "./science-lab.js?v=dragon-path-3";
+import { caseDesk, bindCaseDesk } from "./ccf-desk.js?v=dragon-path-3";
+import { bindScienceStrategy } from "./science-strategy.js?v=dragon-path-3";
+import { bindEggEnergy } from "./egg-energy.js?v=dragon-path-3";
+import { essayGuide, essayPreview, bindEssayPreview } from "./opinion-essay.js?v=dragon-path-3";
+import { topicChooser, lockedTopic } from "./writing-topics.js?v=dragon-path-3";
+import { energyDiagram, strategyDiagram } from "./diagrams.js?v=dragon-path-3";
+import { geometryLesson, bindGeometryLab } from "./geometry-lab.js?v=dragon-path-3";
+import { powersLab, bindPowersLab } from "./powers-lab.js?v=dragon-path-3";
+import { visualCoach, bindVisualCoaches } from "./visual-coach.js?v=dragon-path-3";
+import { publicRubric, questionComponent, objectiveComponents, questionsReady, questionControlLocked, questionAnswer, questionAssessment, assessmentFeedback, assessmentTotals, teacherAssessment } from "./assessment-ui.js?v=dragon-path-3";
+import { stageSafeQuestionCoach } from "./assessment-coach.js?v=dragon-path-3";
+import {renderCurriculumMath,renderCurriculumReading,renderCurriculumMorphology,curriculumMathVisual,curriculumCoach,bindCurriculumDays} from './curriculum-days.js?v=dragon-path-3';
+import {writingMilestone,scienceMilestone,learningMethodCoach,bindProjectDayEditors,teacherProjectPanel} from './project-days.js?v=dragon-path-3';
 import {
   dailyBattlePage,
   bindDailyBattle,
   battleTeacherPanel,
   bindBattleTeacher,
-} from "./daily-battle.js";
-import {portalIdentityMarkup,portalGuideMarkup,adventurerHomeMarkup,bindPortalIdentity} from './portal-identity.js';
-import {scheduleMarkup,lockedSubjectMarkup,teacherScheduleMarkup,bindSchoolSchedule} from './school-schedule.js';
-import {scienceConditionsMarkup,bindScienceConditions} from './science-conditions.js';
-import {publicResources} from './public-resources.js';
-import {configureActorAssetBase} from './battle-actors/actor-selection.js';
-import {embeddedPath,pathTabs,bindPathTabs,startPathFrame} from './dragon-path-embed.js';
+} from "./daily-battle.js?v=dragon-path-3";
+import {portalIdentityMarkup,portalGuideMarkup,adventurerHomeMarkup,bindPortalIdentity} from './portal-identity.js?v=dragon-path-3';
+import {scheduleMarkup,lockedSubjectMarkup,teacherScheduleMarkup,bindSchoolSchedule} from './school-schedule.js?v=dragon-path-3';
+import {scienceConditionsMarkup,bindScienceConditions} from './science-conditions.js?v=dragon-path-3';
+import {publicResources} from './public-resources.js?v=dragon-path-3';
+import {configureActorAssetBase} from './battle-actors/actor-selection.js?v=dragon-path-3';
+import {embeddedPath,pathTabs,bindPathTabs,startPathFrame} from './dragon-path-embed.js?v=dragon-path-3';
 configureActorAssetBase(new URL('./assets/daily-battle/',import.meta.url).href);
 startPathFrame();
 const runtimeConfig=await fetch(new URL('./runtime-config.json',import.meta.url),{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Runtime configuration unavailable.');return r.json();});
@@ -1633,7 +1633,7 @@ setInterval(async () => {
   } catch {}
 }, 15000);
 if(hosted){
-  const {startHostedAuth}=await import('./hosted-auth.js');
+  const {startHostedAuth}=await import('./hosted-auth.js?v=dragon-path-3');
   hostedAuth=await startHostedAuth({config:runtimeConfig,
     onClear:()=>{clearTimeout(saveTimer);profileGeneration++;stopVideos();stopScienceStrategy();stopCCF();stopBattle();stopSchoolSchedule();stopPortalIdentity();stopScienceConditions();content=null;state=null;work={};dirty.clear();conflicts.clear();pendingRequests={};pendingQuestions={};questionChecking.clear();loadingProfile=false;},
     beforeSwitch:async()=>{await flush();if(dirty.size||conflicts.size||questionChecking.size||Object.keys(pendingRequests).length||Object.keys(pendingQuestions).length)throw Error('Save or resolve your current work before switching accounts.');},

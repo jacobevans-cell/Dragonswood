@@ -65,6 +65,8 @@
     let F;
     try{F=await createFirebase('student')}catch(err){emit(onUpdate,{status:'error',message:`Firebase could not load: ${err?.message||err}`});return {environment,signIn:async()=>{},signOut:async()=>{},dispose(){}}}
     const {S,auth,db,functions}=F;
+    // Match the embedded lessons before sign-in so both views retain the same session.
+    await S.auth.setPersistence(auth,S.auth.browserSessionPersistence);
     let learningUnsub=null;
     let profileUnsub=null,dailyUnsub=null,spellingUnsub=null,overrideUnsub=null,scribeUnsub=null,responsesUnsub=null,gamesUnsub=null,readingUnsub=null,gradeSettingsUnsub=null,scheduleUnsub=null,jobsUnsub=null,eventsUnsub=null,jobWeekUnsub=null,scoresUnsub=null,rewardsUnsub=null,lootUnsub=null,prizesUnsub=null,pollUnsub=null,pollVotesUnsub=null,attentionUnsub=null,attentionEventsUnsub=null,kingdomAccessUnsub=null,substituteUnsub=null,testerUnsub=null,testerControlsUnsub=null;
     let bathroomStatusUnsub=null,snackStatusUnsub=null,outOfSeatStatusUnsub=null,officeStatusUnsub=null,bathroomRequestUnsub=null,snackRequestUnsub=null,outOfSeatRequestUnsub=null,officeRequestUnsub=null,boySlotUnsub=null,girlSlotUnsub=null,blackoutUnsub=null,classMainUnsub=null,secondRecessUnsub=null,classPetUnsub=null,fieldTripUnsub=null,universalPointsUnsub=null;

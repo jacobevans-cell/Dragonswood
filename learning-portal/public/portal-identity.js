@@ -1,8 +1,9 @@
-import { HERO_OPTIONS, PET_OPTIONS } from './battle-actors/actor-catalog.js?v=dragon-path-4';
-import { loadActorSelection, actorPalette } from './battle-actors/actor-selection.js?v=dragon-path-4';
-import { prepareSpritePixels, recolorSpritePixels } from './battle-actors/sprite-appearance.js?v=dragon-path-4';
-import { alphaBounds, containSilhouette } from './battle-actors/portrait-fit.js?v=dragon-path-4';
-import { animatePortalIdle } from './portal-idle.js?v=dragon-path-4';
+import { HERO_OPTIONS, PET_OPTIONS } from './battle-actors/actor-catalog.js?v=dragon-path-5';
+import { loadActorSelection, actorPalette } from './battle-actors/actor-selection.js?v=dragon-path-5';
+import { prepareSpritePixels, recolorSpritePixels } from './battle-actors/sprite-appearance.js?v=dragon-path-5';
+import { alphaBounds, containSilhouette } from './battle-actors/portrait-fit.js?v=dragon-path-5';
+import { animatePortalIdle } from './portal-idle.js?v=dragon-path-5';
+import { adventurerChooserMarkup, bindAdventurerChooser } from './adventurer-chooser.js?v=dragon-path-5';
 
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const MASCOT = '/Dragonswood/learning-portal/public/assets/dragonswood-mascot/';
@@ -38,14 +39,7 @@ export function portalGuideMarkup(route) {
   if (!guide) return '';
   return `<section class="portal-guide" aria-label="Dragonswood guide"><img src="${MASCOT}${guide[0]}" width="128" height="128" alt="" decoding="async"><div><strong>${esc(guide[1])}</strong><p>${esc(guide[2])}</p></div></section>`;
 }
-function heroChoicesMarkup(profile){return '<div class="portal-hero-grid" role="group" aria-label="Choose your hero">'+starterHeroes.map((hero,index)=>`<button type="button" class="portal-hero-option" data-adventurer-choice="${esc(hero.id)}" aria-pressed="${hero.id===profile.heroId||(!profile.heroId&&index===0)}"><span class="portal-hero-art"><span class="portal-portrait-fallback portal-hero-grid-status">Loading portrait…</span><canvas data-adventurer-portrait="${esc(hero.id)}" width="200" height="240" role="img" aria-label="${esc(hero.family)} hero preview" hidden></canvas></span><strong>${esc(hero.family)}</strong><small>${hero.class==='mage'?'Mage':'Warrior'} · Level 1</small></button>`).join('')+'</div>';}
-export function adventurerHomeMarkup(profile) {
-  if (!profile) return '';
-  const current = heroFor(profile), needs = Boolean(profile.needsClassSelection), allowedPets = eligiblePortalPets(profile);
-  const choices = needs ? starterHeroes : (current ? [current] : []);
-  const selectedPet = allowedPets.find(pet => pet.id === profile.petId);
-  return `<section class="panel portal-adventurer" data-adventurer-home><div class="portal-adventurer-art">${portraitMarkup(profile, true)}<canvas data-adventurer-pet class="portal-companion" width="256" height="300" role="img" aria-label="Your companion" hidden></canvas></div><div class="portal-adventurer-copy"><div class="eyebrow">YOUR ADVENTURER</div><h2>${needs ? 'Choose your beginning.' : esc(profile.displayName || 'Your journey continues.')}</h2><p>${needs ? 'Choose a Warrior or Mage family. Every new class choice begins at level 1.' : `${esc(heroDescription(current))} · Level ${esc(profile.level ?? current?.level ?? 1)}`}</p><details class="portal-character-editor" ${needs ? 'open' : ''}><summary>${needs ? 'Choose your character' : 'Character & companion'}</summary>${needs?heroChoicesMarkup(profile):''}<div class="portal-character-fields"><label class="${needs?'portal-hero-choice-label':''}">Character family<select data-adventurer-hero ${needs ? "" : "disabled"}>${choices.map(hero => `<option value="${esc(hero.id)}" ${hero.id === profile.heroId ? 'selected' : ''}>${esc(heroDescription(hero))} · Level ${hero.level}</option>`).join('')}</select></label><label>Companion<select data-adventurer-pet-choice><option value="" ${!selectedPet ? 'selected' : ''}>No companion</option>${allowedPets.map(pet => `<option value="${esc(pet.id)}" ${pet.id === selectedPet?.id ? 'selected' : ''}>${esc(pet.name)}</option>`).join('')}</select></label></div><p class="small">${allowedPets.length ? 'Only your owned companions that meet the level requirement appear here.' : 'No eligible owned companion is available yet. You can complete every lesson without a pet.'}</p><p class="small">${needs ? "Your character class and level do not change your assigned learning track." : "Your class is saved. You can change your eligible companion here."}</p><button type="button" class="btn primary" data-adventurer-save>${needs ? 'Save my adventurer' : 'Save character & companion'}</button><p data-adventurer-status class="small" role="status"></p></details></div></section>`;
-}
+export const adventurerHomeMarkup = adventurerChooserMarkup;
 function imageAt(url) {
   if (!imageCache.has(url)) imageCache.set(url, new Promise((resolve, reject) => {
     const image = new Image();
@@ -78,11 +72,12 @@ export function bindPortalIdentity({ root = document, profile, onSave, onError }
   let disposed = false, saving = false, epoch = 0;
   const idleStops=new Map();
   const targetEpochs = new WeakMap();
-  async function draw(canvas, heroId) {
+  async function draw(canvas, heroId, appearance = profile?.appearance) {
+    for(const [old,stop] of idleStops)if(!old.isConnected){stop();idleStops.delete(old);}
     const token = (targetEpochs.get(canvas) || 0) + 1; targetEpochs.set(canvas, token);
     if (!HERO_OPTIONS.some(hero => hero.id === heroId)) return;
     try {
-      const source = await portraitSource(heroId, actorPalette(profile?.appearance));
+      const source = await portraitSource(heroId, actorPalette(appearance));
       if (disposed || !canvas.isConnected || targetEpochs.get(canvas) !== token) return;
       const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
       const bounds = source.bounds, fit = containSilhouette(bounds, canvas.width, canvas.height);
@@ -113,46 +108,7 @@ export function bindPortalIdentity({ root = document, profile, onSave, onError }
     } catch {}
   }
   root.querySelectorAll('[data-adventurer-portrait]').forEach(canvas => draw(canvas, canvas.dataset.adventurerPortrait));
-  if (profile?.needsClassSelection) {
-    const select = root.querySelector('[data-adventurer-hero]');
-    const canvas = root.querySelector('[data-adventurer-home] [data-adventurer-portrait]');
-    if (select && canvas) draw(canvas, select.value);
-    const status = root.querySelector('[data-adventurer-status]');
-    if (status) status.textContent = 'Character preview · save your choice to begin.';
-  }
   if (profile?.petId) drawPet(profile.petId);
-  const onChange = event => {
-    if (event.target.matches('[data-adventurer-hero]')) {
-      const canvas = root.querySelector('[data-adventurer-home] [data-adventurer-portrait]');
-      if (canvas) draw(canvas, event.target.value);
-      const status = root.querySelector('[data-adventurer-status]');
-      if (status) status.textContent = 'Previewing this character. Save to make it your adventurer.';
-    }
-    if (event.target.matches('[data-adventurer-pet-choice]')) drawPet(event.target.value || null);
-  };
-  const onClick = async event => {
-    const choice=event.target.closest('[data-adventurer-choice]');
-    if(choice&&root.contains(choice)&&!saving&&profile.needsClassSelection){const select=root.querySelector('[data-adventurer-hero]');select.value=choice.dataset.adventurerChoice;root.querySelectorAll('[data-adventurer-choice]').forEach(b=>b.setAttribute('aria-pressed',String(b===choice)));const canvas=root.querySelector('[data-adventurer-home] .portal-adventurer-art [data-adventurer-portrait]');if(canvas)draw(canvas,select.value);draw(choice.querySelector('canvas'),select.value);const status=root.querySelector('[data-adventurer-status]');if(status)status.textContent='Previewing this hero. Save to make it your adventurer.';return;}
-    const button = event.target.closest('[data-adventurer-save]');
-    if (!button || !root.contains(button) || disposed || saving) return;
-    const home = button.closest('[data-adventurer-home]'), status = home.querySelector('[data-adventurer-status]');
-    const heroId = home.querySelector('[data-adventurer-hero]').value, petId = home.querySelector('[data-adventurer-pet-choice]').value || null;
-    if (!starterHeroes.some(hero => hero.id === heroId) && heroId !== profile.heroId) return;
-    if (petId && !eligiblePortalPets(profile).some(pet => pet.id === petId)) return;
-    if (typeof onSave !== 'function') { status.textContent = 'Character saving is not connected yet.'; return; }
-    saving = true;
-    home.querySelectorAll('button,select').forEach(control => control.disabled = true);
-    status.textContent = 'Saving your adventurer…';
-    try {
-      await onSave({ expectedRevision: profile.revision, heroId, petId, requestId: crypto.randomUUID() });
-      if (!disposed) status.textContent = 'Your adventurer is saved.';
-    } catch (error) {
-      if (!disposed) { status.textContent = error.message || 'Your choice could not be saved. Try again.'; onError?.(error); }
-    } finally {
-      saving = false;
-      if (!disposed) home.querySelectorAll('button,select').forEach(control => control.disabled = control.matches('[data-adventurer-hero]') && !profile.needsClassSelection);
-    }
-  };
-  root.addEventListener('change', onChange); root.addEventListener('click', onClick);
-  return () => { disposed = true; epoch++; idleStops.forEach(stop=>stop());idleStops.clear();root.removeEventListener('change', onChange); root.removeEventListener('click', onClick); };
+  const stopChooser=bindAdventurerChooser({root,profile,drawPortrait:draw,onSave,onError});
+  return () => { disposed = true; epoch++; stopChooser(); idleStops.forEach(stop=>stop()); idleStops.clear(); };
 }

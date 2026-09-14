@@ -1,8 +1,8 @@
-import { makeSpriteAppearance } from "./sprite-appearance.js?v=dragon-path-9";
-import { ARENA, heroPoint, clamp } from "./battle-geometry.js?v=dragon-path-9";
-import { drawEnemyEffects } from "./enemy-effects.js?v=dragon-path-9";
-import { warriorPose as suppliedWarriorPose } from "./warrior-effects.js?v=dragon-path-9";
-import { blastPose } from "./mage-blast.js?v=dragon-path-9";
+import { makeSpriteAppearance } from "./sprite-appearance.js?v=dragon-path-10";
+import { ARENA, heroPoint, clamp } from "./battle-geometry.js?v=dragon-path-10";
+import { drawEnemyEffects } from "./enemy-effects.js?v=dragon-path-10";
+import { warriorPose as suppliedWarriorPose } from "./warrior-effects.js?v=dragon-path-10";
+import { blastPose } from "./mage-blast.js?v=dragon-path-10";
 
 export class HeroActor {
   constructor(scene, definition, masterKey, { reducedMotion = false, appearance = { skin:"medium", hair:"brown", eyes:"blue" } } = {}) {

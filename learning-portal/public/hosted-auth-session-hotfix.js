@@ -1,13 +1,12 @@
 // Emergency production guard for Dragon's Path startup.
-// Keep the production session bootstrap resilient without touching saved work.
+// Keep the embedded lesson on the same working Firebase session as the outer portal.
 (()=>{
   'use strict';
   const apiOrigin='https://dragonswood-9289e.web.app';
-  const firebaseApiKey='AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE';
   const nativeFetch=globalThis.fetch.bind(globalThis);
   const hasTimeout=typeof AbortSignal!=='undefined'&&typeof AbortSignal.timeout==='function';
   const nativeTimeout=hasTimeout?AbortSignal.timeout.bind(AbortSignal):null;
-  const nativeFirebaseIdbOpen=globalThis.indexedDB?.open?.bind(globalThis.indexedDB)||null;
+  const nativeIdbOpen=globalThis.indexedDB?.open?.bind(globalThis.indexedDB)||null;
 
   // A token refresh and /api/session must not fight over the same tiny budget.
   if(nativeTimeout&&!AbortSignal.timeout.__dragonswoodSessionBudgetFix){
@@ -31,91 +30,36 @@
     globalThis.fetch=resilientFetch;
   }
 
-  // Dragon's Path intentionally converts Firebase auth to SESSION persistence.
-  // Some managed Chromebooks hang while Firebase probes its IndexedDB persistence
-  // before that conversion happens. Make only Firebase's auth database unavailable
-  // inside this embedded frame so Firebase immediately falls back to browser storage.
-  // Other IndexedDB databases remain untouched.
-  if(nativeFirebaseIdbOpen&&globalThis.indexedDB){
-    const safeOpen=(name,...args)=>{
-      if(String(name)==='firebaseLocalStorageDb')throw new DOMException('Dragonswood is using session auth on this device.','InvalidStateError');
-      return nativeFirebaseIdbOpen(name,...args);
-    };
-    try{Object.defineProperty(globalThis.indexedDB,'open',{value:safeOpen,configurable:true});}
-    catch{try{globalThis.indexedDB.open=safeOpen;}catch{}}
+  // The outer Dragonswood portal is already authenticated before this iframe opens.
+  // Firebase's embedded SDK still probes IndexedDB (auth + heartbeat) before reading
+  // the shared sessionStorage record. On a few managed Chromebooks that probe never
+  // resolves, leaving the child frame forever on "Opening your quest…". Dragon's
+  // Path does not use IndexedDB for lesson work, so make IndexedDB unavailable only
+  // inside this embedded frame. Firebase then immediately falls through to the
+  // already-working browser session storage used by the parent portal.
+  if(window.parent!==window&&nativeIdbOpen&&globalThis.indexedDB){
+    const blockedOpen=()=>{throw new DOMException('IndexedDB is disabled inside the embedded Dragon Path session.','InvalidStateError');};
+    try{Object.defineProperty(globalThis.indexedDB,'open',{value:blockedOpen,configurable:true});}
+    catch{try{globalThis.indexedDB.open=blockedOpen;}catch{}}
   }
 
-  const dragonswoodFirebaseKey=key=>typeof key==='string'&&key.includes(firebaseApiKey)&&/^firebase:(authUser|redirectUser):/.test(key);
-
-  const clearStoredFirebaseUser=()=>{
-    for(const storage of [globalThis.sessionStorage,globalThis.localStorage]){
-      try{
-        for(let i=storage.length-1;i>=0;i--){
-          const key=storage.key(i);
-          if(dragonswoodFirebaseKey(key))storage.removeItem(key);
-        }
-      }catch{}
-    }
-  };
-
-  const clearIndexedDbFirebaseUser=async()=>{
-    try{
-      if(!nativeFirebaseIdbOpen)return;
-      if(typeof indexedDB.databases==='function'){
-        const databases=await indexedDB.databases();
-        if(!databases.some(database=>database?.name==='firebaseLocalStorageDb'))return;
-      }
-      await new Promise(resolve=>{
-        let request;
-        try{request=nativeFirebaseIdbOpen('firebaseLocalStorageDb',1);}catch{return resolve();}
-        request.onerror=()=>resolve();
-        request.onupgradeneeded=()=>{try{request.transaction?.abort();}catch{}resolve();};
-        request.onsuccess=()=>{
-          const db=request.result;
-          if(!db.objectStoreNames.contains('firebaseLocalStorage')){db.close();resolve();return;}
-          let transaction;
-          try{transaction=db.transaction('firebaseLocalStorage','readwrite');}catch{db.close();resolve();return;}
-          const store=transaction.objectStore('firebaseLocalStorage');
-          const keys=store.getAllKeys();
-          keys.onsuccess=()=>{
-            for(const key of keys.result||[]){
-              if(dragonswoodFirebaseKey(key))try{store.delete(key);}catch{}
-            }
-          };
-          transaction.oncomplete=()=>{db.close();resolve();};
-          transaction.onerror=transaction.onabort=()=>{db.close();resolve();};
-        };
-      });
-    }catch{}
-  };
-
-  const stallRepairKey='dw-dragon-path-stall-repair-v1';
-  const emergencyRepair=async()=>{
-    clearStoredFirebaseUser();
-    await clearIndexedDbFirebaseUser();
-    location.reload();
-  };
+  // IMPORTANT: never clear Firebase local/session storage from this iframe. It is
+  // shared with the outer portal, which is visibly signed in and is the authority
+  // for the student's identity. Earlier recovery code cleared that shared session
+  // and could create a reload loop on the exact Chromebooks we were trying to fix.
+  const stallRepairKey='dw-dragon-path-stall-repair-v2';
+  const emergencyRepair=async()=>{location.reload();};
   globalThis.DWDragonPathEmergencyRepair=emergencyRepair;
 
-  // Preserve hosted-auth's real Firebase click handler during normal session resume.
-  // Only replace it after Firebase explicitly reports a user mismatch.
   const repairAuthScreen=()=>{
     const button=document.getElementById('portal-signin');
     const help=document.getElementById('portal-signin-help');
     if(!button)return;
     const text=help?.textContent||'';
-    const mismatch=/auth\/user-mismatch/i.test(text)||button.dataset.dwMismatchRepair==='1';
-    if(mismatch){
-      button.dataset.dwMismatchRepair='1';
-      if(help)help.textContent='This browser has an old Google session saved. Reset it, then choose the correct Google account.';
-      button.textContent='Reset Google session';
-      button.onclick=async event=>{
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        button.disabled=true;
-        if(help)help.textContent='Resetting the old Google session…';
-        await emergencyRepair();
-      };
+    if(/auth\/user-mismatch/i.test(text)){
+      if(help)help.textContent='Dragon’s Path opened a different Google account than the main Dragonswood portal. Reload the quest to reuse the signed-in student account.';
+      button.textContent='Reload Dragon’s Path';
+      button.onclick=event=>{event.preventDefault();event.stopImmediatePropagation();location.reload();};
       return;
     }
     if(/session paused after inactivity|sign in again to continue/i.test(text)){
@@ -134,20 +78,20 @@
     repairAuthScreen();
   }
 
-  // If Firebase never reaches its auth-state callback, the normal UI cannot even
-  // explain the failure. Repair that one silent-stall case automatically once.
-  setTimeout(async()=>{
+  // One automatic reload is enough to evict an already-running copy of the old
+  // embedded auth code. Do not erase the parent's login while doing it.
+  setTimeout(()=>{
     if(!document.querySelector('[data-quest-opening]'))return;
     let repaired=false;
     try{repaired=sessionStorage.getItem(stallRepairKey)==='1';}catch{}
     if(!repaired){
       try{sessionStorage.setItem(stallRepairKey,'1');}catch{}
-      await emergencyRepair();
+      location.reload();
       return;
     }
     const status=document.querySelector('[data-quest-opening-status]');
     const retry=document.querySelector('[data-quest-opening-retry]');
-    if(status)status.textContent='This device is stuck opening Dragonswood. Repair the sign-in session and reopen your quest.';
-    if(retry){retry.hidden=false;retry.textContent='Repair and reopen my quest';}
+    if(status)status.textContent='Dragon’s Path could not finish opening on this Chromebook. Your main Dragonswood sign-in is still safe.';
+    if(retry){retry.hidden=false;retry.textContent='Reload Dragon’s Path';}
   },12000);
 })();

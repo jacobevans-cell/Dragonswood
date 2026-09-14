@@ -238,6 +238,12 @@ service cloud.firestore {
 
       allow create: if (isExploreStudent() || isTester())
                     && isOwner(studentId)
+                    && !request.resource.data.keys().hasAny([
+                      'learningAdventurer','adventurerProgression',
+                      'characterMigrationVersion','characterMigrationId',
+                      'petRosterVersion','ownedPetIds','favoritePetIds','petId',
+                      'lastHatchedPetId','legacyPetArchive'
+                    ])
                     && request.resource.data.hp == 10
                     && request.resource.data.gold == 0
                     && request.resource.data.xp == 0;
@@ -1533,6 +1539,16 @@ service cloud.firestore {
         && hasLiveArcadeSession(uid, request.resource.data.arcadeSessionId);
       allow delete: if false;
     }
+
+    // These grades are emitted by the authenticated server after a durable
+    // result checkpoint. Browsers never create or alter official projections.
+    match /learningGradebookV1/{projectionId} {
+      allow read: if (isTeacher() && request.auth.token.email_verified == true)
+        || (isSignedIn() && request.auth.token.email_verified == true && resource.data.studentId == request.auth.uid);
+      allow write: if false;
+    }
+    match /learningRuntimeV1/{document=**} { allow read, write: if false; }
+    match /learningGradebookStagingV1/{document=**} { allow read, write: if false; }
 
     // Documentation-only default deny. Firestore ORs matching allow rules, so
     // this does not override any explicit block above; unmatched paths remain

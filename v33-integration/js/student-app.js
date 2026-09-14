@@ -202,6 +202,7 @@ function ensureCombinedGameStyles(){
 
 function recoverySummaryCurrent(){const summary=state.recoverySummary||{},age=Date.now()-Number(summary.checkedAt||0);return summary.checked===true&&summary.dateKey===state.missionDate&&(state.completedMissions.has('curriculum')||age>=0&&age<5000)}
 function ensureRecoveryProbe(){
+  if(state.learningProgress?.available)return;
   if(recoverySummaryCurrent()||recoveryProbe||requestedModuleId()==='curriculum-quest'||!moduleHost?.href)return;
   const frame=document.createElement('iframe');frame.id='v33-recovery-progress-probe';frame.title='Recovery progress check';frame.tabIndex=-1;frame.setAttribute('aria-hidden','true');frame.setAttribute('style','position:fixed;width:1px;height:1px;left:-10000px;top:-10000px;border:0;opacity:0;pointer-events:none');frame.src=moduleHost.href('curriculum-quest',document.baseURI,window.DWV33Integration?.environment);document.body?.appendChild(frame);recoveryProbe=frame;
 }
@@ -226,7 +227,8 @@ function unfinishedRequiredWork(target='activity'){
     if(!testerMorningOverride&&state.dailyAccessUnlocked!==true)rows.push({id:'morning',icon:'🌅',title:'Morning Work',detail:state.morningWorkComplete?'Teacher check-in or access hold remains.':'Not complete today.',route:'module/daily-quest'});
     if(!testerMorningOverride&&needsSpelling&&state.spellingComplete!==true)rows.push({id:'spelling',icon:'🔤',title:'Rune Spelling',detail:`Today’s Grade ${state.spellingGrade} spelling path is not complete.`,route:'module/rune-spelling'});
     if(needsCurriculum&&state.curriculumAccessUnlocked!==true){
-      if(!recoverySummaryCurrent())rows.push({id:'recovery',icon:'🐉',title:'Recovery Missions',detail:'Open Recovery Quest for a live check.',route:'module/curriculum-quest'});
+      if(state.learningProgress?.available){if(!state.learningProgress.curriculumComplete)rows.push({id:'curriculum',icon:'🐉',title:'Today’s learning path',detail:'Finish today’s math, reading, writing, science, morphology, and Character Case Files.',route:'module/curriculum-quest'});}
+      else if(!recoverySummaryCurrent())rows.push({id:'recovery',icon:'🐉',title:'Recovery Missions',detail:'Open Recovery Quest for a live check.',route:'module/curriculum-quest'});
       else for(const day of state.recoverySummary.days||[])rows.push({id:`recovery-${day.day}`,icon:'🐉',title:`Recovery Day ${day.day}`,detail:`${day.count} unfinished mission${day.count===1?'':'s'}.`,route:'module/curriculum-quest'});
     }
   }
@@ -656,6 +658,11 @@ function applyStudentModel(model,academic,world,passes,poll,attention,kingdomAcc
     if(state.scribeResponse)state.writing=state.scribeResponse.responseText||'';
   }
   if(academic?.reading)state.reading=academic.reading;
+  state.learningProgress=state.simulatedDate?null:academic?.learning||null;
+  if(state.learningProgress?.available){
+    setMissionStatus('morning',state.learningProgress.morningComplete?'complete':'not_started');
+    setMissionStatus('curriculum',state.learningProgress.curriculumComplete?'complete':'not_started');
+  }
   if(world){state.worldConnected=true;state.world=world;}
   if(passes)state.passes=passes;
   if(poll)state.poll=poll;

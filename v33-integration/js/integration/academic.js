@@ -197,7 +197,32 @@
     if(category==='Rune Spelling')return title.includes('mastery')?POINT_VALUES.spellingMastery:POINT_VALUES.spellingDaily;
     return POINT_VALUES.curriculum;
   }
+  const LEARNING_POINTS_POLICY='authoritative-earned-over-possible.1';
+  function learningAssignments(envelopes,student,overrides){
+    const newest=new Map();
+    for(const e of envelopes||[]){const p=e?.snapshot;if(e.schemaVersion!==1||p?.schemaVersion!=='dragonswood-gradebook-projection.1'||p.policyVersion!==LEARNING_POINTS_POLICY||p.studentId!==student.id||Number(p.grade)!==Number(student.grade)||e.snapshotHash!==p.snapshotHash||!validDateKey(p.date)||!Array.isArray(p.items)||!Number.isSafeInteger(e.sequence))continue;const old=newest.get(p.streamId);if(!old||e.sequence>old.sequence)newest.set(p.streamId,e);}
+    const names={morning:'Daily Battle',math:'Math',reading:'Reading',writing:'Opinion writing',science:'Science',morphology:'Morphology / picture quickwrite',ccf:'Character Case Files'};
+    return [...newest.values()].flatMap(e=>e.snapshot.items.filter(i=>i.policyVersion===LEARNING_POINTS_POLICY&&names[i.assignment]).map(i=>{
+      const possible=i.possible?.numerator/i.possible?.denominator,earned=i.earned?i.earned.numerator/i.earned.denominator:null;
+      if(possible!==5||(earned!==null&&(!Number.isFinite(earned)||earned<0||earned>5)))throw Error('A new learning grade failed validation.');
+      return {id:i.id,dateKey:e.snapshot.date,day:e.snapshot.day,weightKey:i.assignment==='morning'?'daily':'curriculum',category:i.category,title:'Day '+e.snapshot.day+' · '+names[i.assignment],policyVersion:LEARNING_POINTS_POLICY,score:i.counted&&earned!==null?earned/possible*100:null,status:i.status==='graded'?'complete':i.status,counted:i.counted===true,completed:i.completed,pendingPossible:i.pendingPossible?.numerator/i.pendingPossible?.denominator||0,authoritativeResultId:i.resultId,authoritativeTeacherOverride:i.teacherOverride===true};
+    }));
+  }
+  function mergeLearningAssignments(legacy,native,overrides){
+    const sameScope=(a,b)=>a.dateKey===b.dateKey&&a.category===b.category;
+    const hasLegacyOverride=n=>legacy.some(old=>sameScope(old,n)&&overrides.has(text(old.id)));
+    const retained=legacy.map(old=>native.some(n=>sameScope(old,n))?{...old,counted:overrides.has(text(old.id))?undefined:false,legacySuperseded:!overrides.has(text(old.id)),title:old.title+(overrides.has(text(old.id))?' · preserved teacher override':' · previous version')}:old);
+    return [...retained,...native.map(n=>hasLegacyOverride(n)?{...n,counted:false,overrideReconciliationRequired:true,title:n.title+' · teacher override retained on previous record'}:n)];
+  }
+  function studentLearningProgress(envelopes,student,dateKey){
+    const rows=learningAssignments(envelopes,student,new Map()).filter(row=>row.dateKey===dateKey);
+    const morning=rows.find(row=>row.id===`learning:${row.day}:grade${Number(student.grade)}:morning`);
+    const subjects=['math','reading','writing','science','morphology','ccf'];
+    const completed=Object.fromEntries(subjects.map(subject=>[subject,rows.some(row=>row.id===`learning:${row.day}:grade${Number(student.grade)}:${subject}`&&row.completed===true)]));
+    return Object.freeze({available:rows.length>0,dateKey,morningComplete:morning?.completed===true,curriculumComplete:subjects.every(subject=>completed[subject]),completed:Object.freeze(completed),rows:Object.freeze(rows.map(pointGrade))});
+  }
   function pointGrade(item={}){
+    if(item.policyVersion===LEARNING_POINTS_POLICY){const possible=5,score=hasNumber(item.score)?Number(item.score):null;return Object.freeze({...item,score,baseScore:score,pointsEarned:score===null?null:score/100*possible,pointsPossible:possible,extraCreditPoints:0});}
     const possible=assignmentPointValue(item),baseScore=hasNumber(item.score)?clamp(item.score,0,120):null;
     const quickwrite=/quickwrite/i.test(text(item.title)),bonus=!item.teacherOverride&&quickwrite&&baseScore!==null&&baseScore>=100?clamp(item.extraCreditPoints??item.bonusPoints??0,0,1):0;
     const earned=baseScore===null?null:Math.round((baseScore/100*possible+bonus)*100)/100;
@@ -444,7 +469,9 @@
           })
         });
       };
-      const effectiveAssignments=assignments.map(applyGradeOverride).map(pointGrade),effectiveRecoveryAssignments=recoveryAssignments.map(applyGradeOverride).map(pointGrade);
+      const native=learningAssignments(todayOptions.learningGradebook||[],student,studentGradeOverrides),nativeCurrent=native.filter(row=>evidencePeriod(row,policy)==='current'),nativeRecovery=native.filter(row=>evidencePeriod(row,policy)==='recovery');
+      const reconcileOverride=item=>item.overrideReconciliationRequired?{...item,counted:false}:item;
+      const effectiveAssignments=mergeLearningAssignments(assignments,nativeCurrent,studentGradeOverrides).map(applyGradeOverride).map(reconcileOverride).map(pointGrade),effectiveRecoveryAssignments=mergeLearningAssignments(recoveryAssignments,nativeRecovery,studentGradeOverrides).map(applyGradeOverride).map(reconcileOverride).map(pointGrade);
       const hasTeacherOverrides=[...effectiveAssignments,...effectiveRecoveryAssignments].some(item=>item.teacherOverride);
       const allEffective=[...effectiveRecoveryAssignments,...effectiveAssignments],gradeDateKey=text(todayOptions.dateKey);
       const scoreForAverage=item=>{
@@ -463,7 +490,7 @@
       const effectiveReading=round(mean(scoredFor('reading')));
       const effectiveMissing=effectiveAssignments.filter(item=>item.counted!==false&&['missing','incomplete'].includes(text(item.status))).length;
       const countedPointAssignments=allEffective.filter(item=>item.counted!==false&&scoreForAverage(item)!==null),pointsEarned=Math.round(countedPointAssignments.reduce((sum,item)=>sum+number(item.pointsEarned),0)*100)/100,pointsPossible=countedPointAssignments.reduce((sum,item)=>sum+number(item.pointsPossible),0),effectiveTotal=pointsPossible?Math.round(pointsEarned/pointsPossible*100):null;
-      const effectiveProvisional=effectiveMissing>0||readingEvidenceIssue||effectiveTotal===null;
+      const effectiveProvisional=effectiveMissing>0||readingEvidenceIssue||effectiveTotal===null||allEffective.some(item=>item.pendingPossible>0||item.overrideReconciliationRequired);
       const effectiveTotalStatus=readingEvidenceIssue?'Evidence review required':effectiveProvisional?'Provisional':'Complete evidence';
       const recoveryScored=key=>effectiveRecoveryAssignments.filter(item=>item.weightKey===key&&item.counted!==false&&hasNumber(item.score)).map(item=>number(item.score));
       const effectiveRecoveryDaily=hasTeacherOverrides?round(mean(recoveryScored('daily'))):recoveryDaily;
@@ -501,5 +528,5 @@
     return Object.freeze({gradebook:gradebook(roster,dailyRows,curriculumRows,readingRows,spellingRows,weightSettings,todayOptions,gradeOverrides),scribe:Object.freeze({session,responses,submitted,drafting,aiScored,avgWords})});
   }
 
-  return Object.freeze({GRADE_INTEGRITY_VERSION,GRADEBOOK_START_DAY,DEFAULT_GRADEBOOK_START_DATE,DEFAULT_MINIMUM_ACADEMIC_DAY,DEFAULT_CURRENT_GRADE_START_DATE,GAME_CATALOG,writingMetrics,sessionResponseId,normalizeSession,normalizeResponse,normalizeReadingAssignments,normalizeGradePolicy,evidenceDateKey,academicDay,evidencePeriod,dailyAcademicScore,curriculumAcademicScore,spellingActivityScore,todayProgress,writingPortfolio,normalizeGameResults,normalizeReading,normalizeWeights,studentAcademic,gradebook,teacherAcademic});
+  return Object.freeze({GRADE_INTEGRITY_VERSION,GRADEBOOK_START_DAY,DEFAULT_GRADEBOOK_START_DATE,DEFAULT_MINIMUM_ACADEMIC_DAY,DEFAULT_CURRENT_GRADE_START_DATE,GAME_CATALOG,writingMetrics,sessionResponseId,normalizeSession,normalizeResponse,normalizeReadingAssignments,normalizeGradePolicy,evidenceDateKey,academicDay,evidencePeriod,dailyAcademicScore,curriculumAcademicScore,spellingActivityScore,todayProgress,writingPortfolio,normalizeGameResults,normalizeReading,normalizeWeights,studentAcademic,studentLearningProgress,gradebook,teacherAcademic});
 });

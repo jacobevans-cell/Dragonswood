@@ -727,7 +727,7 @@ function render(){
     disposeAdventureIdentity();app.innerHTML=authGate();bindAuthGate();document.title=IS_PRODUCTION?'Dragonswood | Sign In':'[INTEGRATION] Dragonswood | Sign In';return;
   }
   ensureRecoveryProbe();
-  if(window.DWDragonPath?.sync()){state.page=currentPage();document.title="Dragonswood | Dragon’s Path";syncPassSafety();return;}
+  if(window.DWDragonPath?.sync()){state.page=currentPage();app.querySelectorAll('.nav-link[data-page]').forEach(button=>{const selected=button.dataset.page===state.page;button.classList.toggle('active',selected);if(selected)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');});document.title="Dragonswood | "+(state.page==='adventure'?'My Adventurer':state.page==='day'?'Schedule':'Dragon’s Path');syncPassSafety();return;}
   const requestedModule=currentModuleId(),mountedModule=app.querySelector('[data-v33-module-shell]')?.dataset.v33ModuleShell||'';
   if(!blockingPass()&&requestedModule&&requestedModule===mountedModule&&app.querySelector('[data-module-frame]')){
     state.page=currentPage();

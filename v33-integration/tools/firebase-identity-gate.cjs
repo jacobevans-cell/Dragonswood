@@ -249,7 +249,7 @@ async function attemptAuthenticatedWrite(account){
     assert.equal(badReward.res.status,403,`Expected 403 reward cap, got ${badReward.res.status}: ${badReward.text}`);
     record('Academic game result and reward caps',true,'valid result saved; oversized reward denied');
 
-    const readingBase=(account,name,date=today)=>({studentId:account.uid,studentName:name,bookId:'witches',bookTitle:'The Witches',dateKey:date,activeSeconds:15,firstPage:24,lastPage:24,pages:[24],status:'in-progress'});
+    const readingBase=(account,name,date=today)=>({studentId:account.uid,studentName:name,bookId:'witches',bookTitle:'Dragonswood Storyvault',sourceBookId:'witches',sourceBookTitle:'The Witches',dateKey:date,activeSeconds:15,firstPage:24,lastPage:24,pages:[24],status:'in-progress'});
     const readingId=`${accounts.grade5.uid}_${today}_witches`;
     const missingReading=await getDoc('readingSessions',readingId,accounts.grade5.token);
     assert.equal(missingReading.res.status,404,`Expected authorized missing-document read before first heartbeat, got ${missingReading.res.status}: ${missingReading.text}`);
@@ -274,7 +274,7 @@ async function attemptAuthenticatedWrite(account){
     ];
     for(const [label,id,data,options] of deniedCreates){const attempt=await commitDoc('readingSessions',id,data,accounts.grade4.token,{create:true,...options});assert.equal(attempt.res.status,403,`Expected 403 ${label}, got ${attempt.res.status}: ${attempt.text}`)}
 
-    const oldTime=new Date(Date.now()-15000),updateId=`${accounts.noPet.uid}_${previousDay}_witches`,updateBase={...readingBase(accounts.noPet,'NoPet',previousDay),targetMinutes:20,lastHeartbeatMs:Date.now()-15000,createdAt:oldTime,updatedAt:oldTime};
+    const oldTime=new Date(Date.now()-15000),updateId=`${accounts.noPet.uid}_${previousDay}_witches`,updateBase={...readingBase(accounts.noPet,'NoPet',previousDay),createdAt:oldTime,updatedAt:oldTime};
     const seededUpdate=await replaceDoc('readingSessions',updateId,updateBase);assert.equal(seededUpdate.res.ok,true,JSON.stringify(seededUpdate.body));
     const readingUpdate=await commitDoc('readingSessions',updateId,{activeSeconds:30,firstPage:24,lastPage:25,pages:[24,25],status:'in-progress'},accounts.noPet.token,{mask:['activeSeconds','firstPage','lastPage','pages','status','targetMinutes','lastHeartbeatMs'],serverFields:['updatedAt']});
     assert.equal(readingUpdate.res.ok,true,JSON.stringify(readingUpdate.body));

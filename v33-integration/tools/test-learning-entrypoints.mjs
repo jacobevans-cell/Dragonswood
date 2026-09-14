@@ -10,6 +10,7 @@ test('new character identity preserves level one and only equips an owned eligib
  const raw={adventurerProgression:{version:'dragonswood-adventurer-progression.1',level:1,xp:0,heroId:'warrior-light-male-1',needsClassSelection:false},learningAdventurer:{petId:'pet-new-emberdrake-bold'},petRosterVersion:2,ownedPetIds:['pet-new-emberdrake-bold']};
  const p=bridge.profileFor(raw);assert.equal(p.heroId,'warrior-light-male-1');assert.equal(p.level,1);assert.equal(p.petId,'pet-new-emberdrake-bold');
  assert.equal(bridge.profileFor({...raw,ownedPetIds:[]}).petId,null);
+ assert.equal(bridge.profileFor({...raw,learningAdventurer:{...raw.learningAdventurer,appearance:{skin:'deep'}}}).appearance.skin,'deep');
  assert.equal(bridge.profileFor({...raw,adventurerProgression:{...raw.adventurerProgression,needsClassSelection:true}}).heroId,null);
  assert.equal(bridge.profileFor({xp:12000,characterV5ClassId:'old'}).heroId,null);
 });

@@ -1,4 +1,4 @@
-import { HERO_OPTIONS, PET_OPTIONS } from './actor-catalog.js?v=dragon-path-3';
+import { HERO_OPTIONS, PET_OPTIONS } from './actor-catalog.js?v=dragon-path-4';
 
 export const DEFAULT_ACTORS = Object.freeze({
   heroId: 'warrior-light-male-1',

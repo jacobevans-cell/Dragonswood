@@ -1,7 +1,8 @@
-import { HERO_OPTIONS, PET_OPTIONS } from './battle-actors/actor-catalog.js?v=dragon-path-3';
-import { loadActorSelection, actorPalette } from './battle-actors/actor-selection.js?v=dragon-path-3';
-import { prepareSpritePixels, recolorSpritePixels } from './battle-actors/sprite-appearance.js?v=dragon-path-3';
-import { alphaBounds, containSilhouette } from './battle-actors/portrait-fit.js?v=dragon-path-3';
+import { HERO_OPTIONS, PET_OPTIONS } from './battle-actors/actor-catalog.js?v=dragon-path-4';
+import { loadActorSelection, actorPalette } from './battle-actors/actor-selection.js?v=dragon-path-4';
+import { prepareSpritePixels, recolorSpritePixels } from './battle-actors/sprite-appearance.js?v=dragon-path-4';
+import { alphaBounds, containSilhouette } from './battle-actors/portrait-fit.js?v=dragon-path-4';
+import { animatePortalIdle } from './portal-idle.js?v=dragon-path-4';
 
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const MASCOT = '/Dragonswood/learning-portal/public/assets/dragonswood-mascot/';
@@ -75,6 +76,7 @@ async function portraitSource(heroId, appearance) {
 /** Root owns the trusted save request and profile state; this binder never writes local profile authority. */
 export function bindPortalIdentity({ root = document, profile, onSave, onError } = {}) {
   let disposed = false, saving = false, epoch = 0;
+  const idleStops=new Map();
   const targetEpochs = new WeakMap();
   async function draw(canvas, heroId) {
     const token = (targetEpochs.get(canvas) || 0) + 1; targetEpochs.set(canvas, token);
@@ -88,6 +90,7 @@ export function bindPortalIdentity({ root = document, profile, onSave, onError }
       ctx.drawImage(source.canvas, bounds.x, bounds.y, bounds.width, bounds.height, fit.x, fit.y, fit.width, fit.height);
       canvas.hidden = false; canvas.parentElement.querySelector('.portal-portrait-fallback').hidden = true;
       canvas.setAttribute('aria-label', `${HERO_OPTIONS.find(h => h.id === heroId).family} adventurer`);
+      if(canvas.closest('.portal-adventurer-art,[data-live-adventurer]')&&!canvas.closest('.portal-hero-option')){idleStops.get(canvas)?.();idleStops.set(canvas,animatePortalIdle(canvas));}
     } catch { if (!disposed && targetEpochs.get(canvas) === token) { canvas.hidden = true; const fallback = canvas.parentElement?.querySelector('.portal-portrait-fallback'); if (fallback) {fallback.hidden = false;if(fallback.tagName!=='IMG')fallback.textContent='Portrait unavailable · select to retry';} } }
   }
   async function drawPet(petId) {
@@ -151,5 +154,5 @@ export function bindPortalIdentity({ root = document, profile, onSave, onError }
     }
   };
   root.addEventListener('change', onChange); root.addEventListener('click', onClick);
-  return () => { disposed = true; epoch++; root.removeEventListener('change', onChange); root.removeEventListener('click', onClick); };
+  return () => { disposed = true; epoch++; idleStops.forEach(stop=>stop());idleStops.clear();root.removeEventListener('change', onChange); root.removeEventListener('click', onClick); };
 }

@@ -713,7 +713,7 @@ function authGate(){
   const loadingSkeleton=status==='loading'&&window.DWImmersiveUI?window.DWImmersiveUI.skeletonMarkup('portal'):'';
   return `<div class="portal student-shell" data-${IS_PRODUCTION?'release':'tester-build'}="v3.3"><main class="student-main" id="page-content"><div class="student-content"><section class="panel next-step"><div class="eyebrow">${IS_PRODUCTION?'SECURE STUDENT PORTAL':'SECURE INTEGRATION CANDIDATE'}</div><img class="auth-crest" src="assets/branding/dragonswood-mascot-crest.png" alt="Dragonswood mascot crest"><h2>${status==='unauthorized'?'The gate is sealed':status==='loading'?'Opening the portal…':'Dragonswood Sign In'}</h2><p>${escapeHtml(message)}</p>${loadingSkeleton}${canSignIn?'<button class="btn btn-primary w-full" type="button" data-signin>Enter with your school Google account</button>':''}${emulatorForm}<p class="center muted mt-12 text-11">${IS_PRODUCTION?'Explore Academy • secure student portal':`${escapeHtml(window.DWV33Integration?.environment||'loading')} • no production writes enabled`}</p></section></div></main>${IS_PRODUCTION?'':'<div class="tester-ribbon">V3.3 INTEGRATION • SAFE MODE</div>'}</div>`;
 }
-let renderedViewportKey=location.hash,viewportRestoreToken=0;
+let renderedViewportKey=location.hash,viewportRestoreToken=0,characterSetupPromptedFor="";
 function restoreViewportAfterRender(scrollX,scrollY,key){
   const token=++viewportRestoreToken;
   const restore=()=>{if(token!==viewportRestoreToken||location.hash!==key)return;window.scrollTo({left:scrollX,top:scrollY,behavior:'instant'})};
@@ -724,7 +724,12 @@ function render(){
   const key=location.hash,preserve=renderedViewportKey===key,scrollX=preserve?window.scrollX:0,scrollY=preserve?window.scrollY:0;
   renderedViewportKey=key;
   if(integrationSession.status!=='authorized'){
+    characterSetupPromptedFor='';
     disposeAdventureIdentity();app.innerHTML=authGate();bindAuthGate();document.title=IS_PRODUCTION?'Dragonswood | Sign In':'[INTEGRATION] Dragonswood | Sign In';return;
+  }
+  const characterOwner=integrationSession.user?.uid;
+  if(characterOwner&&state.world?.hall?.adventurerProgression&&!blockingPass()&&characterSetupPromptedFor!==characterOwner&&window.DWLearningBridge?.profileFor(state.world.hall).needsClassSelection){
+    characterSetupPromptedFor=characterOwner;history.replaceState(null,'','#hall');
   }
   ensureRecoveryProbe();
   if(window.DWDragonPath?.sync()){state.page=currentPage();app.querySelectorAll('.nav-link[data-page]').forEach(button=>{const selected=button.dataset.page===state.page;button.classList.toggle('active',selected);if(selected)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');});document.title="Dragonswood | "+(state.page==='adventure'?'My Adventurer':state.page==='day'?'Schedule':'Dragon’s Path');syncPassSafety();return;}

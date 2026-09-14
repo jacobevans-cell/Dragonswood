@@ -1,4 +1,5 @@
 const app = document.querySelector('#app');
+function portalHashUrl(hash){const url=new URL('../',document.baseURI);url.hash=hash;return url.href;}
 const IS_PRODUCTION = window.DWV33Integration?.environment === 'production';
 const TESTER_KEY = IS_PRODUCTION ? 'dw-v33' : 'dw-v33-tester';
 const SIMULATED_DATE_KEY='dw-tester-simulated-date';
@@ -328,7 +329,7 @@ function currentPage(){
   const hash = location.hash.replace('#','');
   const pathRoute=window.DWDragonPath?.route();if(pathRoute)return pathRoute==='adventurer'?'adventure':pathRoute==='schedule'?'day':'missions';
   if(hash==='arcade'){
-    globalThis.history?.replaceState?.(null,'','#adventure');
+    globalThis.history?.replaceState?.(null,'',portalHashUrl('#adventure'));
     return 'adventure';
   }
   const moduleId=moduleHost?.routeId(hash);
@@ -729,7 +730,7 @@ function render(){
   }
   const characterOwner=integrationSession.user?.uid;
   if(characterOwner&&state.world?.hall?.adventurerProgression&&!blockingPass()&&characterSetupPromptedFor!==characterOwner&&window.DWLearningBridge?.profileFor(state.world.hall).needsClassSelection){
-    characterSetupPromptedFor=characterOwner;const setupUrl=new URL('../',document.baseURI);setupUrl.hash='hall';history.replaceState(null,'',setupUrl.href);
+    characterSetupPromptedFor=characterOwner;history.replaceState(null,'',portalHashUrl('#hall'));
   }
   ensureRecoveryProbe();
   if(window.DWDragonPath?.sync()){state.page=currentPage();app.querySelectorAll('.nav-link[data-page]').forEach(button=>{const selected=button.dataset.page===state.page;button.classList.toggle('active',selected);if(selected)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');});document.title="Dragonswood | "+(state.page==='adventure'?'My Adventurer':state.page==='day'?'Schedule':'Dragon’s Path');syncPassSafety();return;}
@@ -751,12 +752,12 @@ function render(){
   document.title=`${IS_PRODUCTION?'':'[TESTER] '}Dragonswood | ${moduleId?moduleHost.definition(moduleId).title:studentNavItems().find(n=>n[0]===state.page)[2]}`;
   if(pendingRequiredWorkNotice){
     const target=pendingRequiredWorkNotice;pendingRequiredWorkNotice='';
-    globalThis.history?.replaceState?.(null,'','#missions');
+    globalThis.history?.replaceState?.(null,'',portalHashUrl('#missions'));
     showRequiredWorkDialog(target);
   }
   if(pendingSubstituteNotice){
     const target=pendingSubstituteNotice;pendingSubstituteNotice='';
-    globalThis.history?.replaceState?.(null,'','#missions');
+    globalThis.history?.replaceState?.(null,'',portalHashUrl('#missions'));
     showSubstituteModeDialog(target);
   }
 }
@@ -926,7 +927,7 @@ async function submitWriting(){
   if(state.scribeSession&&integrationController?.submitWriting){try{await integrationController.submitWriting(state.writing);openDialog('Checkpoint submitted',`<p>Your <b>${wc}-word</b> response is saved. Your teacher can review it, and the writing coach will add feedback when the grading service is available.</p>`)}catch(err){openDialog('Submission needs attention',`<p>${escapeHtml(err?.message||'Writing could not be submitted.')}</p>`)}return}
   openDialog('Checkpoint ready',`<p>Your draft has <b>${wc} words</b>. In production this would submit once, show a success state, and prevent duplicate submission.</p>`)
 }
-window.addEventListener('hashchange',async()=>{if(integrationSession.status!=='authorized')return;try{await window.DWDragonPath?.beforeLeave();render();}catch(error){const frame=document.querySelector('[data-dragon-path-frame]');if(frame)history.replaceState(null,'',frame.dataset.parentHash||'#missions');showToast(error.message);}});
+window.addEventListener('hashchange',async()=>{if(integrationSession.status!=='authorized')return;try{await window.DWDragonPath?.beforeLeave();render();}catch(error){const frame=document.querySelector('[data-dragon-path-frame]');if(frame)history.replaceState(null,'',portalHashUrl(frame.dataset.parentHash||'#missions'));showToast(error.message);}});
 window.addEventListener('dragonswood:open-school',event=>{const id=String(event.detail||'').replace(/^module\//,'');if(['rune-spelling','class-reader'].includes(id))openModule(id);});
 window.addEventListener('message',handleModuleState);
 (async function bootstrapIntegration(){

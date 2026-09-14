@@ -45,6 +45,7 @@
     const learning=globalThis.DWLearningBridge?.href(id);if(learning)return learning;
     const url=new URL(`../${mod.path}`,baseHref||globalThis.document?.baseURI||globalThis.location?.href);
     if(mod.query)new URLSearchParams(mod.query).forEach((value,key)=>url.searchParams.set(key,value));
+    if(mod.id==='adventurer-hall')url.searchParams.set('v','hall-restored-1');
     if(mod.id==='daily-quest')url.searchParams.set('v','58.0.7');
     // Daily curriculum changes frequently. A fresh iframe URL prevents the portal
     // from reopening a cached copy after a lesson publish.

@@ -1,5 +1,5 @@
-import { mountCaseScene } from "./ccf-scene.js?v=dragon-path-8";
-import { documentMarkup, portraitMarkup } from "./ccf-documents.js?v=dragon-path-8";
+import { mountCaseScene } from "./ccf-scene.js?v=dragon-path-9";
+import { documentMarkup, portraitMarkup } from "./ccf-documents.js?v=dragon-path-9";
 const esc = (v) =>
   String(v ?? "").replace(
     /[&<>"']/g,

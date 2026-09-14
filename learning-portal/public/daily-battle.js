@@ -1,10 +1,10 @@
-import { HERO_OPTIONS, PET_OPTIONS } from "./battle-actors/actor-catalog.js?v=dragon-path-8";
-import { actorSelection, trustedActorSelection } from "./battle-actors/actor-selection.js?v=dragon-path-8";
-import { mountDailyBattleScene } from "./daily-battle-scene.js?v=dragon-path-8";
+import { HERO_OPTIONS, PET_OPTIONS } from "./battle-actors/actor-catalog.js?v=dragon-path-9";
+import { actorSelection, trustedActorSelection } from "./battle-actors/actor-selection.js?v=dragon-path-9";
+import { mountDailyBattleScene } from "./daily-battle-scene.js?v=dragon-path-9";
 import {
   geometryMarkup as geometry,
   coachVisualMarkup as coachVisual,
-} from "./daily-battle-visuals.js?v=dragon-path-8";
+} from "./daily-battle-visuals.js?v=dragon-path-9";
 
 const esc = (value) =>
   String(value ?? "").replace(

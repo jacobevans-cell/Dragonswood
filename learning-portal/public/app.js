@@ -1,32 +1,32 @@
-import { lockedVideo, bindLessonVideos } from "./lesson-video.js?v=dragon-path-8";
-import { activityOverview, activityOverviewMarkup, battleOverviewMarkup } from "./activity-overview.js?v=dragon-path-8";
-import { renderLessonPractice, bindLessonPractice } from "./lesson-practice.js?v=dragon-path-8";
-import { scienceLesson } from "./science-lab.js?v=dragon-path-8";
-import { caseDesk, bindCaseDesk } from "./ccf-desk.js?v=dragon-path-8";
-import { bindScienceStrategy } from "./science-strategy.js?v=dragon-path-8";
-import { bindEggEnergy } from "./egg-energy.js?v=dragon-path-8";
-import { essayGuide, essayPreview, bindEssayPreview } from "./opinion-essay.js?v=dragon-path-8";
-import { topicChooser, lockedTopic } from "./writing-topics.js?v=dragon-path-8";
-import { energyDiagram, strategyDiagram } from "./diagrams.js?v=dragon-path-8";
-import { geometryLesson, bindGeometryLab } from "./geometry-lab.js?v=dragon-path-8";
-import { powersLab, bindPowersLab } from "./powers-lab.js?v=dragon-path-8";
-import { visualCoach, bindVisualCoaches } from "./visual-coach.js?v=dragon-path-8";
-import { publicRubric, questionComponent, objectiveComponents, questionsReady, questionControlLocked, questionAnswer, questionAssessment, assessmentFeedback, assessmentTotals, teacherAssessment } from "./assessment-ui.js?v=dragon-path-8";
-import { stageSafeQuestionCoach } from "./assessment-coach.js?v=dragon-path-8";
-import {renderCurriculumMath,renderCurriculumReading,renderCurriculumMorphology,curriculumMathVisual,curriculumCoach,bindCurriculumDays} from './curriculum-days.js?v=dragon-path-8';
-import {writingMilestone,scienceMilestone,learningMethodCoach,bindProjectDayEditors,teacherProjectPanel} from './project-days.js?v=dragon-path-8';
+import { lockedVideo, bindLessonVideos } from "./lesson-video.js?v=dragon-path-9";
+import { activityOverview, activityOverviewMarkup, battleOverviewMarkup } from "./activity-overview.js?v=dragon-path-9";
+import { renderLessonPractice, bindLessonPractice } from "./lesson-practice.js?v=dragon-path-9";
+import { scienceLesson } from "./science-lab.js?v=dragon-path-9";
+import { caseDesk, bindCaseDesk } from "./ccf-desk.js?v=dragon-path-9";
+import { bindScienceStrategy } from "./science-strategy.js?v=dragon-path-9";
+import { bindEggEnergy } from "./egg-energy.js?v=dragon-path-9";
+import { essayGuide, essayPreview, bindEssayPreview } from "./opinion-essay.js?v=dragon-path-9";
+import { topicChooser, lockedTopic } from "./writing-topics.js?v=dragon-path-9";
+import { energyDiagram, strategyDiagram } from "./diagrams.js?v=dragon-path-9";
+import { geometryLesson, bindGeometryLab } from "./geometry-lab.js?v=dragon-path-9";
+import { powersLab, bindPowersLab } from "./powers-lab.js?v=dragon-path-9";
+import { visualCoach, bindVisualCoaches } from "./visual-coach.js?v=dragon-path-9";
+import { publicRubric, questionComponent, objectiveComponents, questionsReady, questionControlLocked, questionAnswer, questionAssessment, assessmentFeedback, assessmentTotals, teacherAssessment } from "./assessment-ui.js?v=dragon-path-9";
+import { stageSafeQuestionCoach } from "./assessment-coach.js?v=dragon-path-9";
+import {renderCurriculumMath,renderCurriculumReading,renderCurriculumMorphology,curriculumMathVisual,curriculumCoach,bindCurriculumDays} from './curriculum-days.js?v=dragon-path-9';
+import {writingMilestone,scienceMilestone,learningMethodCoach,bindProjectDayEditors,teacherProjectPanel} from './project-days.js?v=dragon-path-9';
 import {
   dailyBattlePage,
   bindDailyBattle,
   battleTeacherPanel,
   bindBattleTeacher,
-} from "./daily-battle.js?v=dragon-path-8";
-import {portalIdentityMarkup,portalGuideMarkup,adventurerHomeMarkup,bindPortalIdentity} from './portal-identity.js?v=dragon-path-8';
-import {scheduleMarkup,lockedSubjectMarkup,teacherScheduleMarkup,bindSchoolSchedule} from './school-schedule.js?v=dragon-path-8';
-import {scienceConditionsMarkup,bindScienceConditions} from './science-conditions.js?v=dragon-path-8';
-import {publicResources} from './public-resources.js?v=dragon-path-8';
-import {configureActorAssetBase} from './battle-actors/actor-selection.js?v=dragon-path-8';
-import {embeddedPath,pathTabs,bindPathTabs,startPathFrame} from './dragon-path-embed.js?v=dragon-path-8';
+} from "./daily-battle.js?v=dragon-path-9";
+import {portalIdentityMarkup,portalGuideMarkup,adventurerHomeMarkup,bindPortalIdentity} from './portal-identity.js?v=dragon-path-9';
+import {scheduleMarkup,lockedSubjectMarkup,teacherScheduleMarkup,bindSchoolSchedule} from './school-schedule.js?v=dragon-path-9';
+import {scienceConditionsMarkup,bindScienceConditions} from './science-conditions.js?v=dragon-path-9';
+import {publicResources} from './public-resources.js?v=dragon-path-9';
+import {configureActorAssetBase} from './battle-actors/actor-selection.js?v=dragon-path-9';
+import {embeddedPath,pathTabs,bindPathTabs,startPathFrame} from './dragon-path-embed.js?v=dragon-path-9';
 configureActorAssetBase(new URL('./assets/daily-battle/',import.meta.url).href);
 startPathFrame();
 const runtimeConfig=await fetch(new URL('./runtime-config.json',import.meta.url),{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Runtime configuration unavailable.');return r.json();});
@@ -100,23 +100,35 @@ async function api(path, body) {
   const requestedDay=body?.day??day;
   if(!/[?&]day=/.test(path))path+=(path.includes("?")?"&":"?")+"day="+requestedDay;
   if(body)body={...body,day:requestedDay};
-  let res;
-  try {
+  const bound=profileContext();
+  // Only replay reads and saves whose exact request key is already persisted.
+  const retryableRequest=!body||(/^\/api\/(save|submit)(?:\?|$)/.test(path)&&typeof body.key==='string');
+  const payload=body?JSON.stringify(body):undefined;
+  for(let attempt=0;;attempt++){
+   if(!profileCurrent(bound))throw Object.assign(Error('Your selected account changed. Reopen the activity.'),{status:409});
+   let res,data;
+   try {
     res = await (hosted ? hostedAuth.fetch : fetch)(path, {
       method: body ? "POST" : "GET",
       signal: AbortSignal.timeout(hosted?45000:12000),
       headers: body ? { "Content-Type": "application/json" } : {},
-      body: body ? JSON.stringify(body) : undefined,
+      body: payload,
     });
-  } catch {
-    throw new Error(
-      "We couldn’t connect. Your draft is kept in this browser. Try saving again.",
-    );
+    try{data=await res.json();}catch{
+      throw Object.assign(Error('The server is busy. Your draft is kept in this browser. Try saving again.'),{status:res.ok?503:res.status});
+    }
+    if(!res.ok)throw Object.assign(Error(data.error||'The server is busy. Your draft is kept in this browser. Try saving again.'),data,{status:res.status});
+    return publicResources(data);
+   }catch(error){
+    const transient=!error.status||[408,429,502,503,504].includes(error.status);
+    if(hosted&&retryableRequest&&transient&&attempt<2&&profileCurrent(bound)){
+      await new Promise(resolve=>setTimeout(resolve,1500*2**attempt+Math.floor(Math.random()*750)));
+      continue;
+    }
+    if(error.status)throw error;
+    throw Object.assign(Error('We couldn’t connect. Your draft is kept in this browser. Try saving again.'),{cause:error});
+   }
   }
-  const data = await res.json();
-  if (!res.ok)
-    throw Object.assign(new Error(data.error), data, { status: res.status });
-  return publicResources(data);
 }
 let toastTimer;
 function toast(message) {
@@ -796,7 +808,7 @@ function queueSave(id, submit = false) {
           if (e.missing && route === id && $("#missing"))
             $("#missing").innerHTML =
               `<div class="notice error"><strong>${esc(e.message)}</strong><ul>${e.missing.map((r) => `<li>${esc(r.label)}</li>`).join("")}</ul></div>`;
-          if (e.status && e.status < 500) {
+          if (e.status && e.status < 500 && ![408,429].includes(e.status)) {
             delete pendingRequests[id];
             try {
               localStorage.setItem(
@@ -1583,8 +1595,10 @@ setInterval(() => {
     }
   }
 }, 500);
+let statePolling=false;
 setInterval(async () => {
-  if (!state || loadingProfile || switchingProfile || lockingTopic || questionChecking.size) return;
+  if (statePolling || document.hidden || !state || loadingProfile || switchingProfile || lockingTopic || questionChecking.size || dirty.size || Object.keys(pendingRequests).length) return;
+  statePolling=true;
   try {
     const bound = profileContext();
     const next = await api(`/api/state?grade=${bound.grade}`);
@@ -1633,10 +1647,10 @@ setInterval(async () => {
           ),
         );
     }
-  } catch {}
-}, 15000);
+  } catch {} finally {statePolling=false;}
+}, 30000);
 if(hosted){
-  const {startHostedAuth}=await import('./hosted-auth.js?v=dragon-path-8');
+  const {startHostedAuth}=await import('./hosted-auth.js?v=dragon-path-9');
   hostedAuth=await startHostedAuth({config:runtimeConfig,
     onClear:()=>{clearTimeout(saveTimer);profileGeneration++;stopVideos();stopScienceStrategy();stopCCF();stopBattle();stopSchoolSchedule();stopPortalIdentity();stopScienceConditions();content=null;state=null;work={};dirty.clear();conflicts.clear();pendingRequests={};pendingQuestions={};questionChecking.clear();loadingProfile=false;},
     beforeSwitch:async()=>{await flush();if(dirty.size||conflicts.size||questionChecking.size||Object.keys(pendingRequests).length||Object.keys(pendingQuestions).length)throw Error('Save or resolve your current work before switching accounts.');},

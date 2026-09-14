@@ -1,4 +1,4 @@
-import { strategyDiagram } from "./diagrams.js?v=dragon-path-8";
+import { strategyDiagram } from "./diagrams.js?v=dragon-path-9";
 const esc = (v) =>
   String(v ?? "").replace(
     /[&<>"']/g,

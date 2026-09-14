@@ -11,12 +11,25 @@ export function actorSelection(value = {}) {
   };
 }
 const requests = new Map();
+let assetBase = '/assets/daily-battle/';
+/** Reuse the approved actors when the parent portal is hosted under a GitHub Pages subpath. */
+export function configureActorAssetBase(value) {
+  const next = new URL(value, globalThis.location?.href);
+  if (!['http:', 'https:'].includes(next.protocol)) throw new Error('Invalid actor asset location.');
+  assetBase = next.href.endsWith('/') ? next.href : next.href + '/';
+  requests.clear();
+}
 async function definition(kind, id) {
   const key = `${kind}:${id}`;
   if (!requests.has(key)) requests.set(key,
-    fetch(`/assets/daily-battle/${kind}-definitions/${encodeURIComponent(id)}.json`, { signal: AbortSignal.timeout(8000) })
+    fetch(`${assetBase}${kind}-definitions/${encodeURIComponent(id)}.json`, { signal: AbortSignal.timeout(8000) })
       .then(response => { if (!response.ok) throw new Error('Selected artwork is unavailable'); return response.json(); })
-      .then(data => { if (data.id !== id) throw new Error('Actor identity mismatch'); return data; })
+      .then(data => { if (data.id !== id) throw new Error('Actor identity mismatch');
+        for (const view of Object.values(data.views || {})) {
+          if (!view.path?.startsWith('/assets/daily-battle/')) throw new Error('Unexpected actor artwork path.');
+          view.path = assetBase + view.path.slice('/assets/daily-battle/'.length);
+        }
+        return data; })
       .catch(error => { requests.delete(key); throw error; }));
   return requests.get(key);
 }

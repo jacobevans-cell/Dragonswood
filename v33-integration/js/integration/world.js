@@ -18,7 +18,7 @@
   function iconFor(label){const key=text(label).toLowerCase();return Object.entries(ICONS).find(([term])=>key.includes(term))?.[1]||'✦'}
   function scheduleRows(config,date=new Date()){
     const day=phoenixParts(date).weekday||'Monday';
-    const source=config?.days?.[day]||DEFAULT_SCHEDULE[day]||[];
+    const source=window.DWLearningBridge?.schedule(date)||config?.days?.[day]||[];
     return source.map((row,index)=>{
       const item=Array.isArray(row)?{time:row[0],title:row[1],detail:row[2]}:row||{};
       const title=text(item.title||item.name||item.label,'Class block');
@@ -71,7 +71,7 @@
     return Object.freeze({
       dateKey:Core.phoenixDateKey(date),weekKey:weekKey(date),dayName:parts.weekday||'Today',dayIndex,
       schedule:Object.freeze(scheduleRows(schedule,date)),job:assignedJob(uid,jobs,jobWeek),events:upcomingEvents(events,date),
-      hall:Object.freeze({email:text(email||profile?.email),classId:text(profile?.classId),characterSystemVersion:text(profile?.characterSystemVersion),characterV5Gender:text(profile?.characterV5Gender),characterV5Affinity:text(profile?.characterV5Affinity),characterV5ClassId:text(profile?.characterV5ClassId),characterV5SkinTone:text(profile?.characterV5SkinTone),characterV5HairColor:text(profile?.characterV5HairColor),xp:number(profile?.xp),activePet:text(profile?.activePet),ownedPets,equipped:Object.freeze({...profile?.rpgEquipped}),appearanceId:text(profile?.rpgEquipped?.appearance),homeBackgroundId:text(profile?.homeBackgroundId,'fairy-purple'),inventory:Object.freeze(Array.isArray(profile?.rpgInventory)?profile.rpgInventory.map(String):[]),eggs:number(profile?.eggInventory),petTokens:number(profile?.petTokens)}),
+      hall:Object.freeze({learningAdventurer:profile?.learningAdventurer?Object.freeze({...profile.learningAdventurer}):null,adventurerProgression:profile?.adventurerProgression?Object.freeze({...profile.adventurerProgression}):null,adventurerAppearance:profile?.adventurerAppearance?Object.freeze({...profile.adventurerAppearance}):null,petRosterVersion:profile?.petRosterVersion,ownedPetIds:Object.freeze(Array.isArray(profile?.ownedPetIds)?[...profile.ownedPetIds]:[]),email:text(email||profile?.email),classId:text(profile?.classId),characterSystemVersion:text(profile?.characterSystemVersion),characterV5Gender:text(profile?.characterV5Gender),characterV5Affinity:text(profile?.characterV5Affinity),characterV5ClassId:text(profile?.characterV5ClassId),characterV5SkinTone:text(profile?.characterV5SkinTone),characterV5HairColor:text(profile?.characterV5HairColor),xp:number(profile?.xp),activePet:text(profile?.activePet),ownedPets,equipped:Object.freeze({...profile?.rpgEquipped}),appearanceId:text(profile?.rpgEquipped?.appearance),homeBackgroundId:text(profile?.homeBackgroundId,'fairy-purple'),inventory:Object.freeze(Array.isArray(profile?.rpgInventory)?profile.rpgInventory.map(String):[]),eggs:number(profile?.eggInventory),petTokens:number(profile?.petTokens)}),
       boss:Object.freeze({lastLoot:(Array.isArray(bossLoot)?bossLoot:[]).slice().sort((a,b)=>text(b.dateKey).localeCompare(text(a.dateKey)))[0]||null,prizes:Object.freeze(Array.isArray(prizes)?prizes.map(row=>Object.freeze({...row})):[])}),
       leaderboard:leaderboard(scores,rewards,uid,date)
     });

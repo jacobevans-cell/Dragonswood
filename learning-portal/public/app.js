@@ -24,6 +24,9 @@ import {
 import {portalIdentityMarkup,portalGuideMarkup,adventurerHomeMarkup,bindPortalIdentity} from './portal-identity.js';
 import {scheduleMarkup,lockedSubjectMarkup,teacherScheduleMarkup,bindSchoolSchedule} from './school-schedule.js';
 import {scienceConditionsMarkup,bindScienceConditions} from './science-conditions.js';
+const runtimeConfig=await fetch('/runtime-config.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Runtime configuration unavailable.');return r.json();});
+const hosted=runtimeConfig.mode!=='preview';
+let hostedAuth=null;
 let stopScienceConditions=()=>{};
 let stopPortalIdentity=()=>{},stopSchoolSchedule=()=>{};
 const $ = (s) => document.querySelector(s);
@@ -91,9 +94,9 @@ async function api(path, body) {
   if(body)body={...body,day:requestedDay};
   let res;
   try {
-    res = await fetch(path, {
+    res = await (hosted ? hostedAuth.fetch : fetch)(path, {
       method: body ? "POST" : "GET",
-      signal: AbortSignal.timeout(12000),
+      signal: AbortSignal.timeout(hosted?45000:12000),
       headers: body ? { "Content-Type": "application/json" } : {},
       body: body ? JSON.stringify(body) : undefined,
     });
@@ -131,7 +134,8 @@ function nav() {
 }
 function shell(body) {
   $("#app").innerHTML =
-    `<header class="topbar"><a class="brand" href="#home"><span class="crest"><img src="/assets/dragonswood-mascot/assets/icons/dragonswood-mascot-64.png" alt="" width="32" height="32"></span> DRAGONSWOOD</a><div class="top-actions"><span class="preview-label">ROUND ONE · LOCAL PREVIEW</span><select id="day" aria-label="Teaching day">${TEACHING_DAYS.map(d=>`<option value="${d}" ${d===day?"selected":""}>Day ${d} · ${weekday(d)}</option>`).join("")}</select><select id="grade" aria-label="Preview grade"><option value="4" ${grade === 4 ? "selected" : ""}>Grade 4 · Preview</option><option value="5" ${grade === 5 ? "selected" : ""}>Grade 5 · Preview</option></select><a href="#teacher" class="btn quiet small">Teacher view</a></div></header><div class="shell"><aside aria-label="Quest navigation">${portalIdentityMarkup(state.adventurer)}${nav()}</aside><main id="main" tabindex="-1">${[...conflicts].map((id) => `<div class="notice error conflict"><strong>${esc(names[id] || id)} draft needs attention.</strong> Export this draft before loading its saved version. Your other work can keep saving. <button class="btn small" data-action="export-conflict" data-id="${esc(id)}">Export this draft</button> <button class="btn small" data-action="reload-saved" data-id="${esc(id)}" ${resolvingConflicts.has(id) ? 'disabled' : ''}>Export and load saved version</button></div>`).join('')}${portalGuideMarkup(route)}${route==="science"?scienceConditionsMarkup(state.scienceConditions):""}${body}</main></div>`;
+    `<header class="topbar"><a class="brand" href="#home"><span class="crest"><img src="/assets/dragonswood-mascot/assets/icons/dragonswood-mascot-64.png" alt="" width="32" height="32"></span> DRAGONSWOOD</a><div class="top-actions">${hosted?'<a class="btn quiet small" href="https://jacobevans-cell.github.io/Dragonswood/">Back to main portal</a>':''}${hosted?'':'<span class="preview-label">ROUND ONE · LOCAL PREVIEW</span>'}<select id="day" aria-label="Teaching day">${TEACHING_DAYS.map(d=>`<option value="${d}" ${d===day?"selected":""}>Day ${d} · ${weekday(d)}</option>`).join("")}</select>${hosted?hostedAuth.controls():`<select id="grade" aria-label="Preview grade"><option value="4" ${grade === 4 ? "selected" : ""}>Grade 4 · Preview</option><option value="5" ${grade === 5 ? "selected" : ""}>Grade 5 · Preview</option></select><a href="#teacher" class="btn quiet small">Teacher view</a>`}</div></header><div class="shell"><aside aria-label="Quest navigation">${portalIdentityMarkup(state.adventurer)}${nav()}</aside><main id="main" tabindex="-1">${[...conflicts].map((id) => `<div class="notice error conflict"><strong>${esc(names[id] || id)} draft needs attention.</strong> Export this draft before loading its saved version. Your other work can keep saving. <button class="btn small" data-action="export-conflict" data-id="${esc(id)}">Export this draft</button> <button class="btn small" data-action="reload-saved" data-id="${esc(id)}" ${resolvingConflicts.has(id) ? 'disabled' : ''}>Export and load saved version</button></div>`).join('')}${portalGuideMarkup(route)}${route==="science"?scienceConditionsMarkup(state.scienceConditions):""}${body}</main></div>`;
+  if(hosted)hostedAuth.bind();
   $("#day").disabled = lockingTopic || loadingProfile || switchingProfile || questionChecking.size > 0;
   $("#day").addEventListener("change",async(e)=>{
     const next=Number(e.target.value);if(!TEACHING_DAYS.includes(next)||switchingProfile||loadingProfile||lockingTopic||questionChecking.size){e.target.value=day;return;}
@@ -140,8 +144,8 @@ function shell(body) {
       stopVideos();stopScienceStrategy();stopCCF();stopBattle();day=next;localStorage.setItem("dw-preview-day",day);await load();
     }finally{switchingProfile=false;if($("#day"))$("#day").disabled=lockingTopic||loadingProfile;if($("#grade"))$("#grade").disabled=lockingTopic||loadingProfile;}
   });
-  $("#grade").disabled = lockingTopic || loadingProfile || switchingProfile || questionChecking.size > 0;
-  $("#grade").addEventListener("change", async (e) => {
+  if($("#grade"))$("#grade").disabled = lockingTopic || loadingProfile || switchingProfile || questionChecking.size > 0;
+  $("#grade")?.addEventListener("change", async (e) => {
     const next = Number(e.target.value);
     if (switchingProfile || loadingProfile || lockingTopic || questionChecking.size || ![4, 5].includes(next)) {
       e.target.value = grade;
@@ -541,7 +545,7 @@ async function teacher({ preserveInteraction = false } = {}) {
   if(selectedTeacherProfile){state.schedule=selectedTeacherProfile.schedule;state.scienceConditions=selectedTeacherProfile.scienceConditions;}
   if (preserveInteraction && (document.activeElement?.closest("main select, main input, main textarea, main button") || document.querySelector("main details[open]"))) return;
   shell(
-    `<div class="eyebrow">TEACHER VIEW · LOCAL DEMONSTRATION</div><h1>The same record. A clearer picture.</h1><div class="notice">These are this browser’s two preview profiles. They are not real student accounts. Production authentication, roster sync, and teacher permissions must be connected before classroom release.</div>${teacherScheduleMarkup(result.profiles)}${scienceConditionsMarkup(state.scienceConditions,{teacher:true})}${battleTeacherPanel(result.profiles)}${teacherProjectPanel(result.profiles)}<div class="panel table-wrap"><table><thead><tr><th>Assignment</th>${result.profiles.map(p=>`<th>Grade ${p.grade}${p.previewOnly?" preview":""}</th>`).join("")}</tr></thead><tbody>${Object.entries(
+    `<div class="eyebrow">TEACHER VIEW${hosted?'':' · LOCAL DEMONSTRATION'}</div><h1>The same record. A clearer picture.</h1>${hosted?'<div class="notice">Review the selected student’s saved work. Use the roster above to switch students.</div>':'<div class="notice">These are this browser’s two preview profiles. They are not real student accounts.</div>'}${teacherScheduleMarkup(result.profiles)}${scienceConditionsMarkup(state.scienceConditions,{teacher:true})}${battleTeacherPanel(result.profiles)}${teacherProjectPanel(result.profiles)}<div class="panel table-wrap"><table><thead><tr><th>Assignment</th>${result.profiles.map(p=>`<th>Grade ${p.grade}${p.previewOnly?" preview":""}</th>`).join("")}</tr></thead><tbody>${Object.entries(
       names,
     )
       .map(
@@ -567,7 +571,8 @@ async function teacher({ preserveInteraction = false } = {}) {
 }
 function render() {
   selection = null;
-  if (!content) return;
+  if (!content || !state) return;
+  if(hosted&&route==='teacher'&&!hostedAuth.teacher())route='home';
   stopVideos();
   stopScienceStrategy();
   stopCCF();
@@ -1422,7 +1427,7 @@ async function load() {
     const boot = await api(`/api/bootstrap?grade=${loadGrade}&day=${loadDay}`);
     if (generation !== profileGeneration || grade !== loadGrade || day !== loadDay) return;
     if (boot.content.grade !== loadGrade || boot.state.grade !== loadGrade || boot.content.day !== loadDay || (boot.state.day??30) !== loadDay)
-      throw new Error("The preview returned a different grade or day. Your saved work has not been changed.");
+      throw new Error("The server returned a different grade or day. Your saved work has not been changed.");
     content = boot.content;
     videos = boot.videoLessons;
     state = boot.state;
@@ -1583,6 +1588,8 @@ setInterval(async () => {
     const assessmentChanged = JSON.stringify(state.assessment?.records) !== JSON.stringify(next.assessment?.records);
     state.assessment = next.assessment;
     updateVideoLocks();
+    const accessChanged=JSON.stringify(state.schedule?.subjects)!==JSON.stringify(next.schedule?.subjects);
+    state.schedule=next.schedule;state.adventurer=next.adventurer;state.scienceConditions=next.scienceConditions;
     const overviewChanged = JSON.stringify(state.completion) !== JSON.stringify(next.completion) || JSON.stringify(state.submissions) !== JSON.stringify(next.submissions);
     state.submissions = next.submissions;
     state.completion = next.completion;
@@ -1610,4 +1617,11 @@ setInterval(async () => {
     }
   } catch {}
 }, 15000);
-await load();
+if(hosted){
+  const {startHostedAuth}=await import('/hosted-auth.js');
+  hostedAuth=await startHostedAuth({config:runtimeConfig,
+    onClear:()=>{clearTimeout(saveTimer);profileGeneration++;stopVideos();stopScienceStrategy();stopCCF();stopBattle();stopSchoolSchedule();stopPortalIdentity();stopScienceConditions();content=null;state=null;work={};dirty.clear();conflicts.clear();pendingRequests={};pendingQuestions={};questionChecking.clear();loadingProfile=false;},
+    beforeSwitch:async()=>{await flush();if(dirty.size||conflicts.size||questionChecking.size||Object.keys(pendingRequests).length||Object.keys(pendingQuestions).length)throw Error('Save or resolve your current work before switching accounts.');},
+    onReady:async session=>{grade=session.student.grade;day=TEACHING_DAYS.includes(session.teachingDay)?session.teachingDay:30;await load();},onError:toast});
+  hostedAuth.start();
+}else await load();

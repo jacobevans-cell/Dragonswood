@@ -2,7 +2,7 @@
 set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$REPO_ROOT"
-node --test v33-integration/tools/test-learning-gradebook.mjs v33-integration/tools/test-learning-entrypoints.mjs
+node --test v33-integration/tools/test-learning-gradebook.mjs v33-integration/tools/test-learning-entrypoints.mjs v33-integration/tools/test-single-portal.mjs
 node v33-integration/tools/test-integration-core.cjs
 node v33-integration/tools/test-student-passes.cjs
 node v33-integration/tools/test-substitute-mode.cjs

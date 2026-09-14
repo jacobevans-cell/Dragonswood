@@ -3,7 +3,7 @@
 import { layoutCaseScene } from "./ccf-scene-layout.js";
 
 const PHASER_VERSION = "4.2.1";
-const PHASER_URL = "/vendor/phaser-4.2.1.min.js";
+const PHASER_URL = "/Dragonswood/learning-portal/public/vendor/phaser-4.2.1.min.js";
 const PHASER_INTEGRITY = "sha256-ZjSLG1FB5Jt9XrvmiM3ctQLqscsA8hxThoalssWr5N4=";
 let libraryPromise;
 let sceneNumber = 0;

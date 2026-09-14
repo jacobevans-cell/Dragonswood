@@ -4,6 +4,9 @@ on:
   pull_request:
     paths:
       - "index.html"
+      - "portal-entry.js"
+      - "school-tools.html"
+      - "learning-portal/**"
       - "teacher.html"
       - "dragonswood-student-tools.js"
       - "firestore.rules"

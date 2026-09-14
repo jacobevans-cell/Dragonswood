@@ -8,7 +8,7 @@ export const HERO = {
   "label": "Dawnscale · Level 1",
   "views": {
     "front": {
-      "path": "/assets/daily-battle/heroes/dawnscale-level-1-pair-v1.png",
+      "path": "/Dragonswood/learning-portal/public/assets/daily-battle/heroes/dawnscale-level-1-pair-v1.png",
       "frame": [
         0,
         0,
@@ -291,7 +291,7 @@ export const HERO = {
       ]
     },
     "back": {
-      "path": "/assets/daily-battle/heroes/dawnscale-level-1-pair-v1.png",
+      "path": "/Dragonswood/learning-portal/public/assets/daily-battle/heroes/dawnscale-level-1-pair-v1.png",
       "frame": [
         750,
         0,

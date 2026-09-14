@@ -23,7 +23,7 @@ body {
   margin: 0;
   background:
     linear-gradient(110deg, #120f20f5, #1b142bee),
-    url("/assets/portal.png") center/cover fixed;
+    url("/Dragonswood/learning-portal/public/assets/portal.png") center/cover fixed;
   color: var(--ink);
 }
 button,

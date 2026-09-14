@@ -13,9 +13,9 @@ import {
   enemyFacing,
 } from "./battle-actors/battle-geometry.js";
 
-const PHASER_URL = "/vendor/phaser-4.2.1.min.js";
+const PHASER_URL = "/Dragonswood/learning-portal/public/vendor/phaser-4.2.1.min.js";
 const PHASER_INTEGRITY = "sha256-ZjSLG1FB5Jt9XrvmiM3ctQLqscsA8hxThoalssWr5N4=";
-const ASSET_BASE = "/assets/daily-battle/";
+const ASSET_BASE = "/Dragonswood/learning-portal/public/assets/daily-battle/";
 let libraryPromise,
   manifestPromise,
   serial = 0;

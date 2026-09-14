@@ -7,6 +7,7 @@
   const nativeFetch=globalThis.fetch.bind(globalThis);
   const hasTimeout=typeof AbortSignal!=='undefined'&&typeof AbortSignal.timeout==='function';
   const nativeTimeout=hasTimeout?AbortSignal.timeout.bind(AbortSignal):null;
+  const nativeFirebaseIdbOpen=globalThis.indexedDB?.open?.bind(globalThis.indexedDB)||null;
 
   // A token refresh and /api/session must not fight over the same tiny budget.
   if(nativeTimeout&&!AbortSignal.timeout.__dragonswoodSessionBudgetFix){
@@ -30,13 +31,22 @@
     globalThis.fetch=resilientFetch;
   }
 
+  // Dragon's Path intentionally converts Firebase auth to SESSION persistence.
+  // Some managed Chromebooks hang while Firebase probes its IndexedDB persistence
+  // before that conversion happens. Make only Firebase's auth database unavailable
+  // inside this embedded frame so Firebase immediately falls back to browser storage.
+  // Other IndexedDB databases remain untouched.
+  if(nativeFirebaseIdbOpen&&globalThis.indexedDB){
+    const safeOpen=(name,...args)=>{
+      if(String(name)==='firebaseLocalStorageDb')throw new DOMException('Dragonswood is using session auth on this device.','InvalidStateError');
+      return nativeFirebaseIdbOpen(name,...args);
+    };
+    try{Object.defineProperty(globalThis.indexedDB,'open',{value:safeOpen,configurable:true});}
+    catch{try{globalThis.indexedDB.open=safeOpen;}catch{}}
+  }
+
   const dragonswoodFirebaseKey=key=>typeof key==='string'&&key.includes(firebaseApiKey)&&/^firebase:(authUser|redirectUser):/.test(key);
 
-  // A few shared/classroom browsers can retain an old Firebase user even after the
-  // Dragonswood server session expires. If Google then returns a different account,
-  // Firebase's reauthenticate flow can get stuck forever on auth/user-mismatch.
-  // Clear only this project's stale Firebase user record, then let the normal clean
-  // sign-in flow choose the account again. Cloud work is untouched.
   const clearStoredFirebaseUser=()=>{
     for(const storage of [globalThis.sessionStorage,globalThis.localStorage]){
       try{
@@ -50,14 +60,14 @@
 
   const clearIndexedDbFirebaseUser=async()=>{
     try{
-      if(!globalThis.indexedDB)return;
+      if(!nativeFirebaseIdbOpen)return;
       if(typeof indexedDB.databases==='function'){
         const databases=await indexedDB.databases();
         if(!databases.some(database=>database?.name==='firebaseLocalStorageDb'))return;
       }
       await new Promise(resolve=>{
         let request;
-        try{request=indexedDB.open('firebaseLocalStorageDb',1);}catch{return resolve();}
+        try{request=nativeFirebaseIdbOpen('firebaseLocalStorageDb',1);}catch{return resolve();}
         request.onerror=()=>resolve();
         request.onupgradeneeded=()=>{try{request.transaction?.abort();}catch{}resolve();};
         request.onsuccess=()=>{
@@ -79,6 +89,14 @@
     }catch{}
   };
 
+  const stallRepairKey='dw-dragon-path-stall-repair-v1';
+  const emergencyRepair=async()=>{
+    clearStoredFirebaseUser();
+    await clearIndexedDbFirebaseUser();
+    location.reload();
+  };
+  globalThis.DWDragonPathEmergencyRepair=emergencyRepair;
+
   // Preserve hosted-auth's real Firebase click handler during normal session resume.
   // Only replace it after Firebase explicitly reports a user mismatch.
   const repairAuthScreen=()=>{
@@ -96,9 +114,7 @@
         event.stopImmediatePropagation();
         button.disabled=true;
         if(help)help.textContent='Resetting the old Google session…';
-        clearStoredFirebaseUser();
-        await clearIndexedDbFirebaseUser();
-        location.reload();
+        await emergencyRepair();
       };
       return;
     }
@@ -106,9 +122,32 @@
       button.textContent='Sign in again with Google';
     }
   };
+
   const app=document.getElementById('app');
   if(app){
-    new MutationObserver(repairAuthScreen).observe(app,{childList:true,subtree:true,characterData:true});
+    new MutationObserver(()=>{
+      repairAuthScreen();
+      if(!document.querySelector('[data-quest-opening]')){
+        try{sessionStorage.removeItem(stallRepairKey);}catch{}
+      }
+    }).observe(app,{childList:true,subtree:true,characterData:true});
     repairAuthScreen();
   }
+
+  // If Firebase never reaches its auth-state callback, the normal UI cannot even
+  // explain the failure. Repair that one silent-stall case automatically once.
+  setTimeout(async()=>{
+    if(!document.querySelector('[data-quest-opening]'))return;
+    let repaired=false;
+    try{repaired=sessionStorage.getItem(stallRepairKey)==='1';}catch{}
+    if(!repaired){
+      try{sessionStorage.setItem(stallRepairKey,'1');}catch{}
+      await emergencyRepair();
+      return;
+    }
+    const status=document.querySelector('[data-quest-opening-status]');
+    const retry=document.querySelector('[data-quest-opening-retry]');
+    if(status)status.textContent='This device is stuck opening Dragonswood. Repair the sign-in session and reopen your quest.';
+    if(retry){retry.hidden=false;retry.textContent='Repair and reopen my quest';}
+  },12000);
 })();

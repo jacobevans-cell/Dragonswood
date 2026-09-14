@@ -25,7 +25,8 @@ test('direct legacy URLs reach their replacement and retired Boss code cannot ex
  const rules=read('firestore.rules');assert.match(rules,/match \/bossLoot\/\{lootId\}[^}]*allow create: if false/);assert.doesNotMatch(rules,/'daily_quest','daily_boss'/);
 });
 test('the main student and teacher shells load the new identity bridge and the student pass guard remains before learning navigation',()=>{
- for(const p of ['index.html','teacher.html'])assert.match(read(p),/js\/learning-bridge.js/);
+ for(const p of ['school-tools.html','teacher.html'])assert.match(read(p),/js\/learning-bridge.js/);
+ assert.match(read('index.html'),/portal-entry.js/);assert.doesNotMatch(read('index.html'),/student-app.js|firebase-auth|learning-bridge.js/);
  const student=read('v33-integration/js/student-app.js'),open=student.slice(student.indexOf('function openModule(id)'),student.indexOf('function closeModule()'));
  assert.ok(open.indexOf('blockingPass()')<open.indexOf('DWLearningBridge'));assert.ok(open.indexOf('substituteBlocked')<open.indexOf('DWLearningBridge'));
  assert.match(student,/function mountModule\(id\)\{if\(id==='boss-battle'\)/);

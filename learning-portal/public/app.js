@@ -25,6 +25,10 @@ import {portalIdentityMarkup,portalGuideMarkup,adventurerHomeMarkup,bindPortalId
 import {scheduleMarkup,lockedSubjectMarkup,teacherScheduleMarkup,bindSchoolSchedule} from './school-schedule.js';
 import {scienceConditionsMarkup,bindScienceConditions} from './science-conditions.js';
 import {publicResources} from './public-resources.js';
+import {configureActorAssetBase} from './battle-actors/actor-selection.js';
+import {embeddedPath,pathTabs,bindPathTabs,startPathFrame} from './dragon-path-embed.js';
+configureActorAssetBase(new URL('./assets/daily-battle/',import.meta.url).href);
+startPathFrame();
 const runtimeConfig=await fetch(new URL('./runtime-config.json',import.meta.url),{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Runtime configuration unavailable.');return r.json();});
 const hosted=runtimeConfig.mode!=='preview';
 let hostedAuth=null;
@@ -137,6 +141,7 @@ function shell(body) {
   $("#app").innerHTML =
     `<header class="topbar"><a class="brand" href="#home"><span class="crest"><img src="/Dragonswood/learning-portal/public/assets/dragonswood-mascot/assets/icons/dragonswood-mascot-64.png" alt="" width="32" height="32"></span> DRAGONSWOOD</a><div class="top-actions">${hosted?'<a class="btn quiet small" href="/Dragonswood/school-tools.html#passes" data-school-tool>Passes &amp; school tools</a>':''}${hosted?'':'<span class="preview-label">ROUND ONE · LOCAL PREVIEW</span>'}<select id="day" aria-label="Teaching day">${TEACHING_DAYS.map(d=>`<option value="${d}" ${d===day?"selected":""}>Day ${d} · ${weekday(d)}</option>`).join("")}</select>${hosted?hostedAuth.controls():`<select id="grade" aria-label="Preview grade"><option value="4" ${grade === 4 ? "selected" : ""}>Grade 4 · Preview</option><option value="5" ${grade === 5 ? "selected" : ""}>Grade 5 · Preview</option></select><a href="#teacher" class="btn quiet small">Teacher view</a>`}</div></header><div class="shell"><aside aria-label="Quest navigation">${portalIdentityMarkup(state.adventurer)}${nav()}</aside><main id="main" tabindex="-1">${[...conflicts].map((id) => `<div class="notice error conflict"><strong>${esc(names[id] || id)} draft needs attention.</strong> Export this draft before loading its saved version. Your other work can keep saving. <button class="btn small" data-action="export-conflict" data-id="${esc(id)}">Export this draft</button> <button class="btn small" data-action="reload-saved" data-id="${esc(id)}" ${resolvingConflicts.has(id) ? 'disabled' : ''}>Export and load saved version</button></div>`).join('')}${portalGuideMarkup(route)}${route==="science"?scienceConditionsMarkup(state.scienceConditions):""}${body}</main></div>`;
   if(hosted)hostedAuth.bind();
+  if(embeddedPath){document.querySelector('#main').insertAdjacentHTML('afterbegin',pathTabs(route));bindPathTabs(document.querySelector('#main'));}
   document.querySelectorAll('[data-school-tool]').forEach(link=>link.addEventListener('click',async event=>{
     event.preventDefault();
     try{await flush();if(dirty.size||conflicts.size||questionChecking.size||Object.keys(pendingRequests).length||Object.keys(pendingQuestions).length)throw Error('Save or resolve your current work before opening another school tool.');
@@ -586,6 +591,8 @@ function render() {
   stopBattle();
   const views = {
     home: () => home() + assessmentTotals(state.assessment),
+    adventurer: () => adventurerHomeMarkup(state.adventurer),
+    schedule: () => scheduleMarkup(state.schedule),
     math,
     morning,
     reading,
@@ -1536,6 +1543,7 @@ window.addEventListener("hashchange", () => {
   render();
   window.scrollTo(0, 0);
 });
+window.DWLearningNavigation={beforeLeave:async()=>{await flush();if(dirty.size||conflicts.size||questionChecking.size||Object.keys(pendingRequests).length||Object.keys(pendingQuestions).length)throw Error('Your work is still saving. Please wait before opening another activity.');},onError:toast};
 $(".skip").addEventListener("click", (e) => {
   e.preventDefault();
   $("#main")?.focus();

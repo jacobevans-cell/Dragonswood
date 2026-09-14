@@ -431,7 +431,7 @@ function adventurePage(){
         </div>
         <div class="stat-row"><div class="stat-box"><strong>❤️ ${state.hp}</strong><small>HP</small></div><div class="stat-box"><strong>🪙 ${state.gold}</strong><small>Gold</small></div><div class="stat-box"><strong>🔥 ${state.streak}</strong><small>Streak</small></div></div>
         <div class="xp-labels"><span>${state.xp.toLocaleString()} / ${state.xpMax.toLocaleString()} XP</span><span>${pct}%</span></div><progress class="dw-progress" max="100" value="${pct}" aria-label="Experience progress">${pct}%</progress>
-        <button class="btn btn-secondary w-full" type="button" data-page="hall">⚔️ Open my character</button>
+        <button class="btn btn-secondary w-full" type="button" data-page="character">⚔️ Open my character</button>
       </div>
     </article>
     <article class="panel next-step">
@@ -450,7 +450,7 @@ function getLevelBadgeAsset(level){
 }
 
 function canonicalAdventureIdentity(){
-  if(window.DWLearningBridge){const hall=state.world?.hall||{};return {profile:hall,learning:true,backgroundArt:new URL('../assets/rpg/backgrounds/fairy-purple.webp',document.baseURI).href};}
+  if(window.DWLearningBridge){const hall=state.world?.hall||{};return {profile:hall,learning:true,backgroundArt:new URL('../assets/rpg/backgrounds/'+(['fairy-purple','fairy-bamboo','fairy-mushroom','crystal-cave','jungle','mountain-night','snow-aurora','snow-village'].includes(hall.homeBackgroundId)?hall.homeBackgroundId:'fairy-purple')+'.webp',document.baseURI).href};}
   const RPG=window.DWRPG,hall=state.world?.hall||{},profile={email:hall.email,classId:String(hall.classId||'').toLowerCase(),characterSystemVersion:hall.characterSystemVersion,characterV5Gender:hall.characterV5Gender,characterV5Affinity:hall.characterV5Affinity,characterV5ClassId:hall.characterV5ClassId,characterV5SkinTone:hall.characterV5SkinTone,characterV5HairColor:hall.characterV5HairColor,xp:Number(hall.xp)||Number(state.xp)||0,level:Number(state.level)||1,activePet:hall.activePet,rpgEquipped:hall.equipped||{},homeBackgroundId:hall.homeBackgroundId},portalPath=value=>{const src=String(value||'');if(/^https?:|^data:|^blob:/.test(src))return src;if(src.startsWith('v33-integration/'))return src.slice('v33-integration/'.length);if(src.startsWith('assets/'))return`../${src}`;return src},rawAppearance=RPG?.resolveAppearance?.(profile)||null,artKeys=['art','skinArt','idleArt','playArt','walkLeftArt','walkRightArt','attackArt','healArt','abilityArt','hurtArt','happyArt','celebrateArt'],appearance=rawAppearance?{...rawAppearance,...Object.fromEntries(artKeys.map(key=>[key,portalPath(rawAppearance[key])]))}:null,classId=RPG?.characterClassId?.(profile)||profile.classId,cls=RPG?.classes?.[classId]||null,resolvedPet=RPG?.resolvePet?.(profile)||null,pet=resolvedPet?{...resolvedPet,art:portalPath(resolvedPet.art),animatedArt:portalPath(resolvedPet.animatedArt),motion:Object.fromEntries(Object.entries(resolvedPet.motion||{}).map(([key,value])=>[key,portalPath(value)]))}:null,background=RPG?.resolveBackground?.(profile)||null,reduced=matchMedia?.('(prefers-reduced-motion: reduce)')?.matches===true,staticHeroArt=appearance?.skinArt||portalPath(cls?.art)||'../assets/rpg/class-warrior.png',backgroundPath=portalPath(background?.art||'assets/rpg/backgrounds/fairy-purple.webp');
   return {profile,pet,appearance,appearanceName:appearance?.name||cls?.name||'adventurer appearance',staticHeroArt,heroArt:reduced?staticHeroArt:(appearance?.idleArt||staticHeroArt),backgroundArt:new URL(backgroundPath,document.baseURI).href};
 }
@@ -730,7 +730,7 @@ function render(){
   }
   const characterOwner=integrationSession.user?.uid;
   if(characterOwner&&state.world?.hall?.adventurerProgression&&!blockingPass()&&characterSetupPromptedFor!==characterOwner&&window.DWLearningBridge?.profileFor(state.world.hall).needsClassSelection){
-    characterSetupPromptedFor=characterOwner;history.replaceState(null,'',portalHashUrl('#hall'));
+    characterSetupPromptedFor=characterOwner;history.replaceState(null,'',portalHashUrl('#character'));
   }
   ensureRecoveryProbe();
   if(window.DWDragonPath?.sync()){state.page=currentPage();app.querySelectorAll('.nav-link[data-page]').forEach(button=>{const selected=button.dataset.page===state.page;button.classList.toggle('active',selected);if(selected)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');});document.title="Dragonswood | "+(state.page==='adventure'?'My Adventurer':state.page==='day'?'Schedule':'Dragon’s Path');syncPassSafety();return;}

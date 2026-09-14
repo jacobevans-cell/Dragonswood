@@ -1,6 +1,6 @@
-import {HERO_OPTIONS,PET_OPTIONS} from './battle-actors/actor-catalog.js?v=dragon-path-6';
-import {actorPalette} from './battle-actors/actor-selection.js?v=dragon-path-6';
-import {ADVENTURER_SETUP_VERSION,APPEARANCE_OPTIONS,setupHero} from './adventurer-setup.js?v=dragon-path-6';
+import {HERO_OPTIONS,PET_OPTIONS} from './battle-actors/actor-catalog.js?v=dragon-path-7';
+import {actorPalette} from './battle-actors/actor-selection.js?v=dragon-path-7';
+import {ADVENTURER_SETUP_VERSION,APPEARANCE_OPTIONS,setupHero} from './adventurer-setup.js?v=dragon-path-7';
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const title=v=>v[0].toUpperCase()+v.slice(1);

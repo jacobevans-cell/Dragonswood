@@ -1,9 +1,9 @@
-import { HERO_OPTIONS, PET_OPTIONS } from './battle-actors/actor-catalog.js?v=dragon-path-6';
-import { loadActorSelection, actorPalette } from './battle-actors/actor-selection.js?v=dragon-path-6';
-import { prepareSpritePixels, recolorSpritePixels } from './battle-actors/sprite-appearance.js?v=dragon-path-6';
-import { alphaBounds, containSilhouette } from './battle-actors/portrait-fit.js?v=dragon-path-6';
-import { animatePortalIdle } from './portal-idle.js?v=dragon-path-6';
-import { adventurerChooserMarkup, bindAdventurerChooser } from './adventurer-chooser.js?v=dragon-path-6';
+import { HERO_OPTIONS, PET_OPTIONS } from './battle-actors/actor-catalog.js?v=dragon-path-7';
+import { loadActorSelection, actorPalette } from './battle-actors/actor-selection.js?v=dragon-path-7';
+import { prepareSpritePixels, recolorSpritePixels } from './battle-actors/sprite-appearance.js?v=dragon-path-7';
+import { alphaBounds, containSilhouette } from './battle-actors/portrait-fit.js?v=dragon-path-7';
+import { animatePortalIdle } from './portal-idle.js?v=dragon-path-7';
+import { adventurerChooserMarkup, bindAdventurerChooser } from './adventurer-chooser.js?v=dragon-path-7';
 
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const MASCOT = '/Dragonswood/learning-portal/public/assets/dragonswood-mascot/';

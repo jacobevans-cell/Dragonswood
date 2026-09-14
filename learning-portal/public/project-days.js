@@ -1,8 +1,8 @@
-import {essayPreview,essayGuide} from './opinion-essay.js?v=dragon-path-6';
-import {lockedTopic} from './writing-topics.js?v=dragon-path-6';
-import {lockedVideo} from './lesson-video.js?v=dragon-path-6';
-import {strategyDiagram} from './diagrams.js?v=dragon-path-6';
-import {scienceFieldCoach} from './project-science-coaches.js?v=dragon-path-6';
+import {essayPreview,essayGuide} from './opinion-essay.js?v=dragon-path-7';
+import {lockedTopic} from './writing-topics.js?v=dragon-path-7';
+import {lockedVideo} from './lesson-video.js?v=dragon-path-7';
+import {strategyDiagram} from './diagrams.js?v=dragon-path-7';
+import {scienceFieldCoach} from './project-science-coaches.js?v=dragon-path-7';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const panel=(title,body)=>`<section class="panel"><h2>${esc(title)}</h2>${body}</section>`;
 export function learningMethodCoach(assignment,path,label,day=30){

@@ -1,0 +1,62 @@
+{
+  "version": "curriculum-morphology-art.1",
+  "reviewDate": "2026-09-13",
+  "artifacts": [
+    {
+      "day": 31,
+      "file": "morph-day31.png",
+      "generationMode": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: landscape picture prompt for Dragonswood grades 4-5 literacy lessons, 1536x1024 if possible. A thoughtful 11-year-old child at a fantasy school market stall compares an ornate brass lantern and a simple wooden lantern. The ornate lantern has a clear small tag saying 18, the simple lantern has a tag saying 6. Child has open notebook on counter, pausing to think; friendly stallkeeper nearby. Both lanterns unlit. Decision scene, no unsafe behavior. Rich beautifully painted storybook fantasy illustration, inviting teal, gold, violet and forest-green palette, expressive age-appropriate children with varied appearances, clear objects and uncluttered purposeful composition. Wide landscape crop, all key props within central 85%. No UI, no captions, no watermarks. This is a new standalone image, not a collage.",
+      "review": "Verified: 18/6 tags, two distinct lanterns, thoughtful child, open notebook. The prompt supplies token budget and imagined reasoning; the image is not evidence of an actual purchase.",
+      "sourceImageFilename": "exec-3cb85ba3-b27b-4e45-86f1-2e4c4ff8b352.png"
+    },
+    {
+      "day": 32,
+      "file": "morph-day32.png",
+      "generationMode": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: landscape picture prompt for Dragonswood grades 4-5 literacy lessons, 1536x1024 if possible. A dramatic but safe fantasy school puppet-show rehearsal in a garden. Rain clouds approaching. Children hold rolled backdrop and puppet props, one child looking thoughtfully toward sheltered stone arcade; a closed curtain suggests an exciting performance about to begin. Visible planned outdoor stage and dry sheltered option. No rain falling yet. Rich beautifully painted storybook fantasy illustration, inviting teal, gold, violet and forest-green palette, expressive age-appropriate children with varied appearances, clear objects and uncluttered purposeful composition. Wide landscape crop, all key props within central 85%. No UI, no captions, no watermarks. This is a new standalone image, not a collage.",
+      "review": "Verified: clouds, rolled backdrop, puppets, outdoor stage, covered arcade. The expensive-curtain detail is explicitly imagined; rain is a possible continuation.",
+      "sourceImageFilename": "exec-d7ad3ee8-4160-40ab-be93-c781020928a0.png"
+    },
+    {
+      "day": 33,
+      "file": "morph-day33.png",
+      "generationMode": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: landscape picture prompt for Dragonswood grades 4-5 literacy lessons, 1536x1024 if possible. Two 11-year-old fantasy school children prepare a supervised map adventure at a woodland trailhead. One child speaks while pointing to a paper trail map; another carefully writes in a notebook. Adult guide stands nearby. Wooden sign points along broad safe paths, compass and satchel visible. No legible words necessary. Rich beautifully painted storybook fantasy illustration, inviting teal, gold, violet and forest-green palette, expressive age-appropriate children with varied appearances, clear objects and uncluttered purposeful composition. Wide landscape crop, all key props within central 85%. No UI, no captions, no watermarks. This is a new standalone image, not a collage.",
+      "review": "Verified: map pointing, open notebook/writing, compass, adult guide, trail. No outside map or directions required.",
+      "sourceImageFilename": "exec-53107a87-1ce3-4e32-9db4-a0a09fe71dd5.png"
+    },
+    {
+      "day": 35,
+      "file": "morph-day35.png",
+      "generationMode": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: landscape picture prompt for Dragonswood grades 4-5 literacy lessons, 1536x1024 if possible. Fantasy school makers workshop. Two children test a small handmade wheeled cart with a broad wooden base and rubber bands, comparing it with a sketchbook and a measuring strip on table. One child points to a wheel stuck against a wooden block while other examines the sketch. Thoughtful testing, no dangerous tools. Rich beautifully painted storybook fantasy illustration, inviting teal, gold, violet and forest-green palette, expressive age-appropriate children with varied appearances, clear objects and uncluttered purposeful composition. Wide landscape crop, all key props within central 85%. No UI, no captions, no watermarks. This is a new standalone image, not a collage.",
+      "review": "Verified: cart, wooden base, wheels, rubber bands, sketch, measuring strip, block beside wheel. The contradictory claim and trial result are supplied in the written fictional context.",
+      "sourceImageFilename": "exec-c4d3bd74-ca82-4547-a914-6485fcb1a4a3.png"
+    },
+    {
+      "day": 36,
+      "file": "morph-day36.png",
+      "generationMode": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: landscape picture prompt for Dragonswood grades 4-5 literacy lessons, 1536x1024 if possible. Fantasy school garden before rain. Dark clouds approach. One child looks up while another moves paper seed packets from a bench into a covered wooden box under an awning. A few loose dry leaves lift in the breeze, a watering can and garden beds nearby. Safe clear cause-and-prevention visual. Rich beautifully painted storybook fantasy illustration, inviting teal, gold, violet and forest-green palette, expressive age-appropriate children with varied appearances, clear objects and uncluttered purposeful composition. Wide landscape crop, all key props within central 85%. No UI, no captions, no watermarks. This is a new standalone image, not a collage.",
+      "review": "Verified: clouds, windblown leaves, paper seed packets, bench, covered box, awning. Outcome is not declared certain.",
+      "sourceImageFilename": "exec-b3d5cfe7-23a0-476d-ac06-a9fa0f4a1b22.png"
+    },
+    {
+      "day": 37,
+      "file": "morph-day37.png",
+      "generationMode": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: landscape picture prompt for Dragonswood grades 4-5 literacy lessons, 1536x1024 if possible. Fantasy school lantern-festival planning room. One child stands at an easel holding the only marker and pointing firmly to their own festival layout while three classmates hold unused idea cards and look eager to contribute. Decorations and lantern materials on large shared table. No adult politics, no violence, no villain coding, the controlling behavior rather than appearance is the issue. Rich beautifully painted storybook fantasy illustration, inviting teal, gold, violet and forest-green palette, expressive age-appropriate children with varied appearances, clear objects and uncluttered purposeful composition. Wide landscape crop, all key props within central 85%. No UI, no captions, no watermarks. This is a new standalone image, not a collage.",
+      "review": "Verified: child with marker pointing to plan, three classmates with idea cards, festival supplies. Correction after visual review: pencil pot is visible, so the final context says 'a marker' rather than 'the only marker'. Refusal to listen is explicitly imagined, not inferred from appearance.",
+      "sourceImageFilename": "exec-cf165775-1306-4112-a3b1-e0de46691d58.png"
+    },
+    {
+      "day": 38,
+      "file": "morph-day38.png",
+      "generationMode": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: landscape picture prompt for Dragonswood grades 4-5 literacy lessons, 1536x1024 if possible. A completed cozy fantasy school invention fair in a garden courtyard. Three children reflect together beside their handmade wheeled-cart display and open notebook, pointing to the covered booths, map, and rows of colorful lanterns. Adult visitors look at displays. A cheerful event with concrete materials and plans, no text or logos. Rich beautifully painted storybook fantasy illustration, inviting teal, gold, violet and forest-green palette, expressive age-appropriate children with varied appearances, clear objects and uncluttered purposeful composition. Wide landscape crop, all key props within central 85%. No UI, no captions, no watermarks. This is a new standalone image, not a collage.",
+      "review": "Verified: cart display, notebook/sketches, fair booths, courtyard map, lanterns, visitors. The new scene shows a larger cart than the workshop image; no assignment claims it is exactly the same cart.",
+      "sourceImageFilename": "exec-66a561b7-cee0-48cb-9854-d1bfc5748b18.png"
+    }
+  ]
+}

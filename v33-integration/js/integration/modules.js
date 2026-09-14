@@ -8,10 +8,10 @@
   const MODULES=Object.freeze([
     {id:'adventurer-hall',title:'Adventurer Hall & Pet Sanctuary',icon:'⚔️',path:'adventurer-hall.html',returnPage:'hall',morningGate:true},
     {id:'boss-battle',title:'Daily Boss Battle',icon:'👹',path:'boss-battle.html',returnPage:'boss',morningGate:true},
-    {id:'daily-quest',title:"Today's Daily Quest",icon:'📜',path:'daily-quest.html',returnPage:'missions'},
+    {id:'daily-quest',title:'Daily Battle',icon:'📜',path:'daily-quest.html',returnPage:'missions'},
     {id:'level-up-challenge',title:'Level-Up Challenge',icon:'⭐',path:'daily-quest.html',query:'levelup=1',returnPage:'missions'},
     {id:'rune-spelling',title:'Rune Spelling',icon:'🔤',path:'rune-spelling.html',returnPage:'missions'},
-    {id:'curriculum-quest',title:'Curriculum & Recovery Quest',icon:'🐉',path:'curriculum-quest.html',returnPage:'missions'},
+    {id:'curriculum-quest',title:'Curriculum Quest',icon:'🐉',path:'curriculum-quest.html',returnPage:'missions'},
     {id:'dragon-tongues',title:'Dragon Tongues',icon:'🗣️',path:'dragon-tongues/index.html',returnPage:'missions'},
     {id:'decimal-deception',title:'Decimal Deception',icon:'💎',path:'decimal-deception.html',returnPage:'games',morningGate:true},
     {id:'math-operations',title:'Math Operations Quest',icon:'➗',path:'math-operations-quest.html',returnPage:'games',morningGate:true},
@@ -42,6 +42,7 @@
   }
   function href(id,baseHref,requestedEnvironment){
     const mod=definition(id);if(!mod)return '';
+    const learning=globalThis.DWLearningBridge?.href(id);if(learning)return learning;
     const url=new URL(`../${mod.path}`,baseHref||globalThis.document?.baseURI||globalThis.location?.href);
     if(mod.query)new URLSearchParams(mod.query).forEach((value,key)=>url.searchParams.set(key,value));
     if(mod.id==='daily-quest')url.searchParams.set('v','58.0.7');

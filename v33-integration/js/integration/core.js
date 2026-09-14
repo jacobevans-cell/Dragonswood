@@ -123,11 +123,12 @@
 
   function normalizeStudent(user,profile,dailyRows=[],dailyOverride={},selfUnlockMorning=false,now=new Date()){
     const p=profile||{};
-    const xp=Math.max(0,finite(p.xp));
+    const migrated=p.adventurerProgression?.version==='dragonswood-adventurer-progression.1';
+    const xp=Math.max(0,finite(migrated?p.adventurerProgression.xp:p.xp));
     const li=levelInfo(xp);
     const first=text(p.firstName)||firstNameFromUser(user);
-    const classId=text(p.classId).toLowerCase();
-    const activePet=text(p.activePet);
+    const classId=text(migrated?(p.adventurerProgression.needsClassSelection?'':p.learningAdventurer?.class):p.classId).toLowerCase();
+    const activePet=text(migrated?p.learningAdventurer?.petId:p.activePet);
     const access=dailyAccessState(dailyRows,dailyOverride,user?.uid,selfUnlockMorning,now);
     const dailyMissions=dailyMissionState(dailyRows,now);
     return {

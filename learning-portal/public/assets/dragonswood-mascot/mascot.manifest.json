@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 2,
+  "release": {
+    "version": "1.0.0",
+    "status": "approved-full-handoff",
+    "technicalIdStability": "permanent",
+    "productionCanvas": "512x512 transparent"
+  },
+  "mascot": {
+    "id": "dragonswood-dragon",
+    "displayName": "Dragonswood Dragon",
+    "properName": null,
+    "nameStatus": "official-name-pending",
+    "pronouns": "he/him",
+    "role": "Official guide, encourager, notifier, and celebration mascot for all Dragonswood experiences",
+    "never": [
+      "punishment character",
+      "mock a wrong answer",
+      "threaten a student",
+      "replace visible instructions",
+      "convey an essential state only through expression, color, sound, or motion"
+    ]
+  },
+  "identityLocks": [
+    "cute purple baby dragon",
+    "friendly elementary-age proportions",
+    "large blue eyes",
+    "purple crest",
+    "exactly two swept segmented gold horns",
+    "blue ear fins and wing membranes",
+    "cream segmented belly",
+    "gold cheek markings, claws, and back spikes",
+    "blue neckerchief",
+    "round gold spiral medallion on brown cord",
+    "arrow-tipped tail",
+    "clean 2D cel-shaded linework"
+  ],
+  "perspectiveRule": "A three-quarter pose may intentionally hide a far-side ear, horn, wing, hand, or foot; absence alone is not clipping.",
+  "animations": {
+    "idle": {"path": "assets/animations/idle.webp", "apng": "assets/animations/idle.apng", "fallback": "assets/animations/idle/frame-1.png", "frames": 4, "mode": "continuous", "use": "welcome, empty states, passive guide"},
+    "celebrate": {"path": "assets/animations/celebrate.webp", "apng": "assets/animations/celebrate.apng", "fallback": "assets/animations/celebrate/frame-1.png", "frames": 4, "mode": "transient", "durationMs": 1800, "returnTo": "idle", "use": "correct answer, completed mission, level-up"},
+    "guide-right": {"path": "assets/animations/guide-right.webp", "apng": "assets/animations/guide-right.apng", "fallback": "assets/animations/guide-right/frame-1.png", "frames": 4, "mode": "transient", "durationMs": 1800, "returnTo": "idle", "use": "tutorial cue, next step"},
+    "flying": {"path": "assets/animations/flying.webp", "apng": "assets/animations/flying.apng", "fallback": "assets/animations/flying/frame-1.png", "frames": 4, "mode": "continuous-while-active", "use": "loading, travel, syncing"},
+    "support": {"path": "assets/animations/support.webp", "apng": "assets/animations/support.apng", "fallback": "assets/animations/support/frame-1.png", "frames": 4, "mode": "transient", "durationMs": 2200, "returnTo": "idle", "use": "incorrect answer, recovery, retry"},
+    "reading": {"path": "assets/animations/reading.webp", "apng": "assets/animations/reading.apng", "fallback": "assets/animations/reading/frame-1.png", "frames": 4, "mode": "continuous-while-active", "use": "directions, e-reader, narration"},
+    "reward": {"path": "assets/animations/reward.webp", "apng": "assets/animations/reward.apng", "fallback": "assets/animations/reward/frame-1.png", "frames": 4, "mode": "transient", "durationMs": 2200, "returnTo": "idle", "use": "loot, chest, daily reward"},
+    "attention": {"path": "assets/animations/attention.webp", "apng": "assets/animations/attention.apng", "fallback": "assets/animations/attention/frame-1.png", "frames": 4, "mode": "continuous-until-resolved", "use": "teacher attention, pass response, urgent notice"}
+  },
+  "actions": {
+    "reading": "Witches e-reader, comprehension, library, read-aloud",
+    "scribe": "Scribe & Journal, writing, constructed response",
+    "math": "Math paths, practice, operations, number challenges",
+    "science": "Labs, Deep Time Lab, investigations, experiments",
+    "languages": "Dragon Tongues, speaking, listening, vocabulary",
+    "calendar": "Schedule, deadlines, countdowns, events",
+    "attention": "Attention Center and urgent teacher notices",
+    "pass": "Bathroom and water passes",
+    "games": "Games hub and recreational games",
+    "arcade": "Arcade hub, tokens, and timed recreation",
+    "boss": "Daily Boss and challenge rounds",
+    "kingdom": "Kingdom Wars, maps, social studies, exploration",
+    "shop": "Class Shop, purchases, inventory",
+    "pet-sanctuary": "Pets, hatchery, pet points, sanctuary",
+    "recovery": "Recovery Quest, unfinished work, calm re-entry",
+    "achievement": "Level-up, badges, completed goals, certificates"
+  },
+  "badges": {
+    "neutral": "general identity",
+    "smile": "welcome or friendly confirmation",
+    "wink": "optional tip or playful aside",
+    "celebrate": "strong success",
+    "thinking": "reflection or processing",
+    "hint": "student-requested support",
+    "concerned": "needs attention without blame",
+    "sympathetic": "retry, recovery, reassurance",
+    "surprised": "discovery or reveal",
+    "determined": "challenge and perseverance",
+    "sleepy": "inactive or late status with gentle copy",
+    "speaking": "microphone, narration, oral response",
+    "listening": "audio, directions, listening practice",
+    "reading": "reading in progress",
+    "reward": "gold, treasure, shop reward",
+    "alert": "urgent unresolved teacher item"
+  },
+  "icons": {
+    "sizes": [16, 32, 48, 64, 128, 180, 192, 256, 512],
+    "ico": "assets/icons/dragonswood-mascot.ico"
+  },
+  "sizes": {
+    "browserTab": "16-32px",
+    "compactStatus": "32-48px",
+    "navigationTile": "48-88px",
+    "messageBadge": "48-72px",
+    "lessonFeedback": "96-160px",
+    "emptyStateModal": "160-240px",
+    "welcomeHero": "240-420px"
+  },
+  "formatPolicy": {
+    "chromiumProduction": "webp",
+    "animationFallback": "apng or first PNG frame",
+    "editableSource": "preserved PNG atlas/reference",
+    "thumbnailOnly": "inline-preview",
+    "neverShipToStudentRuntime": ["source", "proofs", ".build"]
+  },
+  "accessibility": {
+    "reducedMotionFallback": "first static frame",
+    "decorativeAlt": "",
+    "meaningfulAltPattern": "Dragonswood dragon {state}",
+    "neverConveyMeaningByAnimationAlone": true,
+    "maximumProminentAnimationsPerView": 1
+  },
+  "sourceOfTruth": [
+    "mascot.manifest.json",
+    "MASCOT-BIBLE.md",
+    "ASSET-CATALOG.csv",
+    "assets",
+    "source",
+    "proofs"
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "scope": "Compact native 1000x420 arena. Static checks use the actual hero sword pose source and enemy poseAt. Browser review still required.",
+  "arena": {
+    "width": 1000,
+    "height": 420,
+    "floor": 372,
+    "heroX": 263,
+    "heroHeight": 291,
+    "heroShadowWidth": 111,
+    "heroShadowHeight": 19,
+    "enemyX": 757,
+    "enemyHeight": 246,
+    "bossHeight": 280,
+    "enemyMaxWidth": 271
+  },
+  "background": {
+    "x": 5.684341886080802e-14,
+    "y": -49.91949396204711,
+    "width": 999.9999999999999,
+    "height": 519.8389879240942,
+    "sourceWidth": 1739,
+    "sourceHeight": 904,
+    "sourceAspectPreserved": true,
+    "topTrimInStagePixels": 49.91949396204711,
+    "bottomTrimInStagePixels": 49.91949396204711
+  },
+  "heroAttackAllFrameCornersInBounds": {
+    "minX": 117.50755988714727,
+    "minY": 43.35066604903682,
+    "maxX": 440.6460460711206,
+    "maxY": 419.1376511652993
+  },
+  "heroFramesChecked": 201,
+  "enemyFramesPerMotion": 201,
+  "checks": [
+    {
+      "id": "briar-goblin-scout",
+      "width": 221.27638190954775,
+      "height": 246,
+      "facing": 1,
+      "allFourMotionsFullArtworkInBounds": true,
+      "allAttackOriginsAndFlightsInBounds": true,
+      "bounds": {
+        "minX": 263,
+        "minY": 112.24608417644905,
+        "maxX": 900.0418307968349,
+        "maxY": 389.48340368719164
+      }
+    },
+    {
+      "id": "bramble-sprite",
+      "width": 218.50944946589976,
+      "height": 246,
+      "facing": -1,
+      "allFourMotionsFullArtworkInBounds": true,
+      "allAttackOriginsAndFlightsInBounds": true,
+      "bounds": {
+        "minX": 263,
+        "minY": 110.85000000000002,
+        "maxX": 880.1881760581784,
+        "maxY": 376.4168088730122
+      }
+    },
+    {
+      "id": "crystal-frostling",
+      "width": 179.63166397415185,
+      "height": 246,
+      "facing": -1,
+      "allFourMotionsFullArtworkInBounds": true,
+      "allAttackOriginsAndFlightsInBounds": true,
+      "bounds": {
+        "minX": 263,
+        "minY": 114.7836913919887,
+        "maxX": 879.3330895732565,
+        "maxY": 386.945796471652
+      }
+    },
+    {
+      "id": "clockwork-warden",
+      "width": 250.25185185185185,
+      "height": 246,
+      "facing": -1,
+      "allFourMotionsFullArtworkInBounds": true,
+      "allAttackOriginsAndFlightsInBounds": true,
+      "bounds": {
+        "minX": 263,
+        "minY": 110.48047342808698,
+        "maxX": 914.4505130647185,
+        "maxY": 391.2490144355537
+      }
+    },
+    {
+      "id": "briar-crown-king",
+      "width": 271,
+      "height": 269.47996794871796,
+      "facing": 1,
+      "allFourMotionsFullArtworkInBounds": true,
+      "allAttackOriginsAndFlightsInBounds": true,
+      "bounds": {
+        "minX": 263,
+        "minY": 85.32861620837758,
+        "maxX": 927.1563636635134,
+        "maxY": 392.5132960313975
+      }
+    }
+  ]
+}

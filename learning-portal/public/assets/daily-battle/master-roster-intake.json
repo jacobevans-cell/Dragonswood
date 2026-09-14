@@ -1,0 +1,1832 @@
+{
+  "edition": "2026-09-13",
+  "heroCount": 40,
+  "petCount": 65,
+  "enemyCount": 50,
+  "files": [
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/dawnscale-level-1-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/dawnscale-level-1-pair-v1.png",
+      "sha256": "6c70b57f761e08dccde25a6e04e0a73deefeb9b7e411023be5d1aacb73f67ca9",
+      "bytes": 1871162,
+      "reused": true
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/dawnscale-level-5-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/dawnscale-level-5-pair-v1.png",
+      "sha256": "d3c80c9d1b5fedb93174c4731a9fe934b14ebafa0f7991817ad5b776ca322433",
+      "bytes": 1694694,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/dawnscale-level-10-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/dawnscale-level-10-pair-v1.png",
+      "sha256": "17d8c2f7f5225f7c41e7bba38e1ea71c1dc8e96f5edb88205daeb6cde65b9037",
+      "bytes": 1745887,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/dawnscale-level-15-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/dawnscale-level-15-pair-v1.png",
+      "sha256": "7b712c4f2864d3621646b0b7bdee0a28c4ed96d84c3c5145e355a692f0e6910a",
+      "bytes": 1863741,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/dawnscale-level-20-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/dawnscale-level-20-pair-v1.png",
+      "sha256": "12637b38c16049536b9e305c6dcb2d62916c169536908d2160a09e0ed6548f78",
+      "bytes": 2026750,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/sunshield-level-1-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/sunshield-level-1-pair-v1.png",
+      "sha256": "ac0003d116355e4c723bd7f2852ca143ee0cf2c14a5d740db24bab8b3b06e2e8",
+      "bytes": 1938207,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/sunshield-level-5-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/sunshield-level-5-pair-v1.png",
+      "sha256": "ed5f1ad6b342fe9c6bb74acc44b047da8f8743e8d73d66cb7892edaa0651dd5f",
+      "bytes": 2054366,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/sunshield-level-10-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/sunshield-level-10-pair-v1.png",
+      "sha256": "50ae935766fb851c96dd45c62f0b7198f7ba7b90abcc6ba7d39c412a3da09a6a",
+      "bytes": 2043353,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/sunshield-level-15-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/sunshield-level-15-pair-v1.png",
+      "sha256": "0abe1aa7c1202dfaf7fe455f9044eaa9b9e71f8a4014257bf8bc12a72559dcd5",
+      "bytes": 2123934,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/sunshield-level-20-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/sunshield-level-20-pair-v1.png",
+      "sha256": "53abf3b8516fca6fc00b6e5679ea1bb2fabe2b229c397d168478a9e816264d57",
+      "bytes": 2332469,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/eclipse-level-1-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/eclipse-level-1-pair-v1.png",
+      "sha256": "0e2da0e78f9d64da04cba1ae7fc685928cfdb93738e0d5f7b58fe0b9a25c0a08",
+      "bytes": 1837571,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/eclipse-level-5-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/eclipse-level-5-pair-v1.png",
+      "sha256": "b6f9d102c1969d6a6d81abaa6b831c154632b8f8ae3d129bbd9bd6ef96a2ba6c",
+      "bytes": 1758028,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/eclipse-level-10-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/eclipse-level-10-pair-v1.png",
+      "sha256": "97b856e8fe91030836e6e89a59fb226c31c2d13ba8ad89fae990588a59488867",
+      "bytes": 1892639,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/eclipse-level-15-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/eclipse-level-15-pair-v1.png",
+      "sha256": "b29f9c128e777c7f7efc301adf9034c413a027cf00468d960dda9c14ba1de364",
+      "bytes": 2027542,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/eclipse-level-20-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/eclipse-level-20-pair-v1.png",
+      "sha256": "ebe394f08c1f1a1645f9a92f5833dafa1e1331570cec9ac17d3e21716f198d52",
+      "bytes": 1965113,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/nightwyrm-level-1-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/nightwyrm-level-1-pair-v1.png",
+      "sha256": "ee1eea40b81ac14c7f588589e71c23ec060c73a133e68e68f3cea1e2f968a44d",
+      "bytes": 1912321,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/nightwyrm-level-5-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/nightwyrm-level-5-pair-v1.png",
+      "sha256": "ccf6d060f60bbc2f11e1f6932de22d8338733045f2175791efc39e8e474bfad6",
+      "bytes": 1952251,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/nightwyrm-level-10-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/nightwyrm-level-10-pair-v1.png",
+      "sha256": "dfee73ca8ea8ab1dc9bc1eeecefe017da5fc6ec779fe7c36c1722481579b6251",
+      "bytes": 2039175,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/nightwyrm-level-15-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/nightwyrm-level-15-pair-v1.png",
+      "sha256": "c3299b9ea8fec5266fdfa8a00de1945ee25babb0f22cf21dddaee4b223c55d14",
+      "bytes": 1993119,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/nightwyrm-level-20-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/nightwyrm-level-20-pair-v1.png",
+      "sha256": "aed9ca16f1825d306f64e963e3ba819d7f592ca09980f9bc5b96d01256dc1ff0",
+      "bytes": 2045985,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/starfire-level-1-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/starfire-level-1-pair-v1.png",
+      "sha256": "a8612386d048d71e36b29f3bf73c700440fc4671624acfb214f4f674d736db83",
+      "bytes": 1885742,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/starfire-level-5-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/starfire-level-5-pair-v1.png",
+      "sha256": "9b245b10bd5617c0257310b659a9a988735004c00adfe036802b1ae177fba7fb",
+      "bytes": 1975155,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/starfire-level-10-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/starfire-level-10-pair-v1.png",
+      "sha256": "d0fa41aaa357693ba2fbe9477ec8460e9a7f36bcb7143020cae8b8a3ba687af2",
+      "bytes": 2119792,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/starfire-level-15-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/starfire-level-15-pair-v1.png",
+      "sha256": "0d26fddd3cb3f29ff306af448100c829dbe0de5d0cbd8786a0b5932898f0abc8",
+      "bytes": 2239148,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/starfire-level-20-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/starfire-level-20-pair-v1.png",
+      "sha256": "7be18a05e5cdf60c0951f7f68fb52073bb970a0ee6b00037d5949aaba46951e3",
+      "bytes": 2307763,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/front/celestial-level-1-v2.png",
+      "runtime": "assets/daily-battle/heroes/celestial-level-1-v2.png",
+      "sha256": "a700f4f5ac074f6470b10ba90acc112b55d8fade565b4a8cb773471d491d419e",
+      "bytes": 1708591,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/back/celestial-level-1-staff-v3.png",
+      "runtime": "assets/daily-battle/heroes/celestial-level-1-staff-v3.png",
+      "sha256": "d7d566c04aae6460fa0dad66636b16324c32e63a004b3666d7bdd5a9aac87448",
+      "bytes": 1689813,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/front/celestial-level-5-v2.png",
+      "runtime": "assets/daily-battle/heroes/celestial-level-5-v2.png",
+      "sha256": "540613ee9e830f13a59bddb17af60534f2b78b55c57df237fe76675aa5f7d01f",
+      "bytes": 1718410,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/back/celestial-level-5-staff-v3.png",
+      "runtime": "assets/daily-battle/heroes/celestial-level-5-staff-v3.png",
+      "sha256": "3d892fcdab0d07b75cebbfa56c770b9aa665d68c314d39b8902b764f9855166a",
+      "bytes": 1739059,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/front/celestial-level-10-v2.png",
+      "runtime": "assets/daily-battle/heroes/celestial-level-10-v2.png",
+      "sha256": "4e01ac06d50e05848e7a5104d6595106e737d7143a97a44c1845f6997ba1033b",
+      "bytes": 1841889,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/back/celestial-level-10-staff-v3.png",
+      "runtime": "assets/daily-battle/heroes/celestial-level-10-staff-v3.png",
+      "sha256": "4d1d750416d6d851c30953f1c4240a9fd3fe8d673c08eb4c00ac55c032afff94",
+      "bytes": 1855067,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/front/celestial-level-15-v2.png",
+      "runtime": "assets/daily-battle/heroes/celestial-level-15-v2.png",
+      "sha256": "04609127c308c1fb9c65e7c93bdc24978f2759da3bb992091d2e997d5994074f",
+      "bytes": 2041325,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/back/celestial-level-15-staff-v3.png",
+      "runtime": "assets/daily-battle/heroes/celestial-level-15-staff-v3.png",
+      "sha256": "acb607d27fd9fcb20d440146fc5c50823fd39b373750f793bc5879c155f752aa",
+      "bytes": 2005513,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/front/celestial-level-20-v2.png",
+      "runtime": "assets/daily-battle/heroes/celestial-level-20-v2.png",
+      "sha256": "caeaf3289c36beb106eedee5e6771621900d63f86f64e4833c8801e3521b0af5",
+      "bytes": 2102629,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/back/celestial-level-20-staff-v3.png",
+      "runtime": "assets/daily-battle/heroes/celestial-level-20-staff-v3.png",
+      "sha256": "227f69ae4329faf358a9225c3b8d55559f20756fdab379e9049da4d9550b4a09",
+      "bytes": 2134125,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/voidcore-level-1-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/voidcore-level-1-pair-v1.png",
+      "sha256": "47fa2a28fe1c668e561ee0285e0c751e39e5ffc542ff51dbec747f17dafacd11",
+      "bytes": 1937987,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/voidcore-level-5-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/voidcore-level-5-pair-v1.png",
+      "sha256": "5a33f511f35fd7896dfee9046bcd17838192cd9a8ccfb7b7caad94a2be9db91d",
+      "bytes": 2003993,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/voidcore-level-10-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/voidcore-level-10-pair-v1.png",
+      "sha256": "05698701578d16389d48d9bfa17967b18bd0c293d75dafde6d90dabddb15952e",
+      "bytes": 2120388,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/voidcore-level-15-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/voidcore-level-15-pair-v1.png",
+      "sha256": "feb7f6b964d569d8d851a4aa9e2cea22c195a2414cc9f80854b0bfa40c3b8acd",
+      "bytes": 2237397,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/voidcore-level-20-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/voidcore-level-20-pair-v1.png",
+      "sha256": "7efab9dde6a23755538feefb1540f40723cdaf5e7cad8a13a4f1baaa63a333ca",
+      "bytes": 2134962,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/eclipse-witch-level-1-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/eclipse-witch-level-1-pair-v1.png",
+      "sha256": "ecb1d07394c7b24906fcc4cc4bb81115a7a7a36f107798f74712676cd3b35981",
+      "bytes": 2093919,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/eclipse-witch-level-5-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/eclipse-witch-level-5-pair-v1.png",
+      "sha256": "f01d73b16d3724f778ff9aa4c8b507cdc436baf39dc47edaf950eda2da1912d9",
+      "bytes": 2176263,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/eclipse-witch-level-10-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/eclipse-witch-level-10-pair-v1.png",
+      "sha256": "e37100c67ddd5c0bf13dfa4129d169ce4339fc27be0b823da02d03284e50b452",
+      "bytes": 2331824,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/eclipse-witch-level-15-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/eclipse-witch-level-15-pair-v1.png",
+      "sha256": "d7567a80f15db1805e50dd2f4a2f36b81a2baaaae188b4db044eccfa65699801",
+      "bytes": 2416453,
+      "reused": false
+    },
+    {
+      "category": "hero",
+      "source": "04_PLAYER_CHARACTERS/assets/roster/eclipse-witch-level-20-pair-v1.png",
+      "runtime": "assets/daily-battle/heroes/eclipse-witch-level-20-pair-v1.png",
+      "sha256": "1db88dd7d7556159c4d21a3ac025f9f5bec1aa6e1feea43d61410274a68c0cc4",
+      "bytes": 2562863,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/emberdrake-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/emberdrake-bold-front-v1.png",
+      "sha256": "b8942babc57fe16df57248dad1e847a634f174963d158319a38a781854491081",
+      "bytes": 836663,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/emberdrake-bold-back-v2.png",
+      "runtime": "assets/daily-battle/pets/emberdrake-bold-back-v2.png",
+      "sha256": "991bf270f7367949475461a3f313e69b70049e80dbd4e8d2c7823e0bd3709d57",
+      "bytes": 712360,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/emberdrake-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/emberdrake-grace-front-v1.png",
+      "sha256": "3e05927f57610be50211c84b3ea42267434e99b19ea6ff210ee4844eb4925c09",
+      "bytes": 816226,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/emberdrake-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/emberdrake-grace-back-v1.png",
+      "sha256": "1af7b4a74d9e9f6e5dc9d896bbd6ab11947d3a80d79e306e321535efef7f2874",
+      "bytes": 879937,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/runelet-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/runelet-bold-front-v1.png",
+      "sha256": "933d4e9dd070763a0061449ec7d7f3eb5a59591b5c6ee41698e0a605c6c9e27a",
+      "bytes": 813708,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/runelet-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/runelet-bold-back-v1.png",
+      "sha256": "9105cec3c7afc929c8bada812222f8e309c71c86cfbe072329d6aaf5bf049c83",
+      "bytes": 877398,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/runelet-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/runelet-grace-front-v1.png",
+      "sha256": "407071cbee6bfd29b27ac987620727649555b7c907851ae21ea08ecea424fbd1",
+      "bytes": 909982,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/runelet-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/runelet-grace-back-v1.png",
+      "sha256": "e777684d2de31b2ecef3ff293febc0ca1e113575490ffe1778fe6cb4b6fa71c8",
+      "bytes": 949199,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/brasswing-gryph-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/brasswing-gryph-bold-front-v1.png",
+      "sha256": "83ab20fda8cfa4291698ee99687ff57824ea43c4bde34c02769a7038cccdaf68",
+      "bytes": 858030,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/brasswing-gryph-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/brasswing-gryph-bold-back-v1.png",
+      "sha256": "2ee3c604f5256961d9614243724551a59f6df6fce9d81a543735480cf9481cca",
+      "bytes": 880012,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/brasswing-gryph-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/brasswing-gryph-grace-front-v1.png",
+      "sha256": "374e5f39884ba92cebbdd8b22cf4ab18c325b4373babbc92e32a2def6d457030",
+      "bytes": 1045990,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/brasswing-gryph-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/brasswing-gryph-grace-back-v1.png",
+      "sha256": "44081adf66fe4d4cb6e4054edc00c75feb9cfe44df8cfe1fa6ace61597bf182b",
+      "bytes": 776116,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/dewglass-sprite-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/dewglass-sprite-bold-front-v1.png",
+      "sha256": "a1890b1ab636bab05fb805d6d65c4d3b8bc0ea715649ad770432c3cbdfaa0179",
+      "bytes": 662597,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/dewglass-sprite-bold-back-v2.png",
+      "runtime": "assets/daily-battle/pets/dewglass-sprite-bold-back-v2.png",
+      "sha256": "2422037b1dfe79d70cfb94a004e132061034cbb491c19ea2794877d034e7c65d",
+      "bytes": 660043,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/dewglass-sprite-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/dewglass-sprite-grace-front-v1.png",
+      "sha256": "3bfb5ba6457c40f6f6828489e7833028f4d849dcbcfd24bebdba5ba91f599702",
+      "bytes": 746174,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/dewglass-sprite-grace-back-v2.png",
+      "runtime": "assets/daily-battle/pets/dewglass-sprite-grace-back-v2.png",
+      "sha256": "68af0f0d6d902a4601292fd704da3c293d44049845d2296c06dc54b65e192830",
+      "bytes": 571735,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/mossguard-golem-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/mossguard-golem-bold-front-v1.png",
+      "sha256": "1ea66afb99a49f945c60fcf9e1b2d911fff12c4c9fd095d9e24923bfa05fde7e",
+      "bytes": 983351,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/mossguard-golem-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/mossguard-golem-bold-back-v1.png",
+      "sha256": "e57ac60612d03aaa7709e2e58e11d31653c090f705e579206399e5ae7539cbc1",
+      "bytes": 796897,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/mossguard-golem-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/mossguard-golem-grace-front-v1.png",
+      "sha256": "960ba823a41c8d4197c459513fa3e7d16af6984e200175a89bea23c15a2bb9f4",
+      "bytes": 1120950,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/mossguard-golem-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/mossguard-golem-grace-back-v1.png",
+      "sha256": "76cde37a926683a1dd422e55914ba2d739a5aeac1d811dfa1ec5c81b6fab33bd",
+      "bytes": 819339,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/sparkhorn-imp-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/sparkhorn-imp-bold-front-v1.png",
+      "sha256": "c2d1c23eb7f184f93e266b499af2f646ce742a9c3574fc52526d3a6b240897f0",
+      "bytes": 767425,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/sparkhorn-imp-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/sparkhorn-imp-bold-back-v1.png",
+      "sha256": "1036f71452bea100a5c6ad1c2b1ec4b823238585cfa48709311035442968db10",
+      "bytes": 685026,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/sparkhorn-imp-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/sparkhorn-imp-grace-front-v1.png",
+      "sha256": "97d7a0742f3092d3b2ad623bc4e0bdc3158a6c38b36184103749ec498a87c551",
+      "bytes": 903976,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/sparkhorn-imp-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/sparkhorn-imp-grace-back-v1.png",
+      "sha256": "9dab1a78d80ff58851af4273f873b7de95ea0d0ed0733fbb46900a9db89f727f",
+      "bytes": 745092,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/thornscale-basilisk-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/thornscale-basilisk-bold-front-v1.png",
+      "sha256": "05eb925c4ffc81ab6d4463701bd9017117fa6968a29d24276f2777d1868cdba6",
+      "bytes": 1029021,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/thornscale-basilisk-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/thornscale-basilisk-bold-back-v1.png",
+      "sha256": "02cb5c31bf699e4c3f223186000afa222af72f4a3a5774299fb667064e25afbd",
+      "bytes": 799590,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/thornscale-basilisk-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/thornscale-basilisk-grace-front-v1.png",
+      "sha256": "3fbd2d8724d47b8bb2bae7fe1f08d2d57ddbf30efd0db99be791626a65332c25",
+      "bytes": 928619,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/thornscale-basilisk-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/thornscale-basilisk-grace-back-v1.png",
+      "sha256": "db639214cbfcc8457ca8f1ef5a2a292196ead0fa94222455284c94c42c1adc18",
+      "bytes": 644517,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/frostlight-wisp-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/frostlight-wisp-bold-front-v1.png",
+      "sha256": "fb20169345c3ae8d7758c68f001632408ddd5f85f67b25d8279e4449c82a3ae1",
+      "bytes": 803743,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/frostlight-wisp-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/frostlight-wisp-bold-back-v1.png",
+      "sha256": "0c68a6a96522352ff63968c453a1b02bbe812703ccf42da920221b3521339c61",
+      "bytes": 909115,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/frostlight-wisp-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/frostlight-wisp-grace-front-v1.png",
+      "sha256": "f535c6edf81bfca4262ed0634b8e0492abd264daf2d020a4aa346ea663627dc2",
+      "bytes": 883946,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/frostlight-wisp-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/frostlight-wisp-grace-back-v1.png",
+      "sha256": "39555fbee01ecf00e4e0d213bc327d36467fa531b2681b9b2c04c8488de0e384",
+      "bytes": 839198,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/copperclaw-gargoyle-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/copperclaw-gargoyle-bold-front-v1.png",
+      "sha256": "8e0f49db3c460bdb6e211363b7035bca923da352f19eaecb7ac40db5ed1b5b8e",
+      "bytes": 1170266,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/copperclaw-gargoyle-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/copperclaw-gargoyle-bold-back-v1.png",
+      "sha256": "7a76b4f9ae213425ef28b92e0223fc258288bb8ea41e6373f27e6ec420629290",
+      "bytes": 888916,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/copperclaw-gargoyle-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/copperclaw-gargoyle-grace-front-v1.png",
+      "sha256": "f88b1005f75f27d0a370ab6cc258708792841a938d82b24032b4415ce9c81945",
+      "bytes": 1094300,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/copperclaw-gargoyle-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/copperclaw-gargoyle-grace-back-v1.png",
+      "sha256": "dedead0924d3994d4689b240f808f5ded5e486275143e119421db27e72526afa",
+      "bytes": 1047072,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/tidefin-familiar-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/tidefin-familiar-bold-front-v1.png",
+      "sha256": "ccd9236381b9f7ceda2c37461c7164ca88f366f16a2e03c42802f29720f8c028",
+      "bytes": 1056206,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/tidefin-familiar-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/tidefin-familiar-bold-back-v1.png",
+      "sha256": "4eb3f17b88b5a3e4f06898a8d1fcc5f16ae0a73882805042fc4fb4f5759d5d81",
+      "bytes": 838327,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/tidefin-familiar-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/tidefin-familiar-grace-front-v1.png",
+      "sha256": "9a78a7a008a25e69411924120a6f7f516ae4f6ab0a7f66e182f876c3d9c01aa0",
+      "bytes": 1034091,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/tidefin-familiar-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/tidefin-familiar-grace-back-v1.png",
+      "sha256": "36bc62c6f67b7cc29a1044f5de23e111c3cbb2046bada0dc5085d22e1da752d8",
+      "bytes": 927857,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/suncrest-hippogriff-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/suncrest-hippogriff-bold-front-v1.png",
+      "sha256": "9377a8e924f89ee95a193983c1ca8ed7051d7e34b8ffc98944f92520f61749f0",
+      "bytes": 1007312,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/suncrest-hippogriff-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/suncrest-hippogriff-bold-back-v1.png",
+      "sha256": "baa8f6f1cf0f69235220726868835e76b08368d31490421e6180a2bcced4f75c",
+      "bytes": 888140,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/suncrest-hippogriff-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/suncrest-hippogriff-grace-front-v1.png",
+      "sha256": "5d98bb746498e52947ea284d621a13f7eb1c944e33c6ccc89ca50aa0f4c6ed6c",
+      "bytes": 1119796,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/suncrest-hippogriff-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/suncrest-hippogriff-grace-back-v1.png",
+      "sha256": "c8bd1ab66b840e495775c1bc2f727b274b1f0ab983dfb3c777032225f361c041",
+      "bytes": 946390,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/amethyst-sigilkin-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/amethyst-sigilkin-bold-front-v1.png",
+      "sha256": "88640e5c3fee53e40ae96dd839f8e9147019d56d83ed5933ba555f0811e49ceb",
+      "bytes": 865712,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/amethyst-sigilkin-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/amethyst-sigilkin-bold-back-v1.png",
+      "sha256": "1f591098e2a62a8bef8e9e4903b6859b409bca086f1cbcde0fd9daaca3ab348e",
+      "bytes": 672326,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/amethyst-sigilkin-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/amethyst-sigilkin-grace-front-v1.png",
+      "sha256": "6b04dc65864a8c81e6a3df5b48e20b85989a661748279aa255cbb1969e898fb9",
+      "bytes": 792040,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/amethyst-sigilkin-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/amethyst-sigilkin-grace-back-v1.png",
+      "sha256": "70386045af1c1a568b8238a112afc550506739be58833cbb545732b16ee6b29d",
+      "bytes": 690872,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/briarhorn-guardian-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/briarhorn-guardian-bold-front-v1.png",
+      "sha256": "de8502554503469c61eafaa24b07fdee9c6638c64953651d0ebd3be04c170e41",
+      "bytes": 1020077,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/briarhorn-guardian-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/briarhorn-guardian-bold-back-v1.png",
+      "sha256": "8990f7c35f2a70e794eea7294dbaa43be3c4011f9b43ed921bf0bb22a62ffb6d",
+      "bytes": 763971,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/briarhorn-guardian-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/briarhorn-guardian-grace-front-v1.png",
+      "sha256": "54543418e00cfe1bdedb22ea1b560a94fd452ec914d8b31aa7cb88e5b257edb1",
+      "bytes": 1075074,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/briarhorn-guardian-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/briarhorn-guardian-grace-back-v1.png",
+      "sha256": "4434af38b743536867365b702c88abd32a6ab0744a09bba3e696ed9aed1f29aa",
+      "bytes": 820364,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/cloudrune-sylph-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/cloudrune-sylph-bold-front-v1.png",
+      "sha256": "94ddff9aa95968e4b47c8f6fa907907789ca9a10a89f024f7766966d2fa95353",
+      "bytes": 817041,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/cloudrune-sylph-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/cloudrune-sylph-bold-back-v1.png",
+      "sha256": "8e4a8a862232e6e4f4852ed62c748648e485f85d0d5b4620bb6d9c62161a36e5",
+      "bytes": 662236,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/cloudrune-sylph-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/cloudrune-sylph-grace-front-v1.png",
+      "sha256": "d960edee541c76dc5b8c8afd38f70a4e81ed152874c9140838ec5f54bf0974bb",
+      "bytes": 844796,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/cloudrune-sylph-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/cloudrune-sylph-grace-back-v1.png",
+      "sha256": "1221624c759dd324199e851a6e80fda3057b0df53443e1c529a3f400b7330f7d",
+      "bytes": 760825,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/moonblade-prowler-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/moonblade-prowler-bold-front-v1.png",
+      "sha256": "5ef8dc08388f4e7ea5b08bd4e56a4f14273e7bd95df204c2d68f8c61e0783046",
+      "bytes": 1180838,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/moonblade-prowler-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/moonblade-prowler-bold-back-v1.png",
+      "sha256": "669cdafc6d630e8eef97c70e222893a527c700226ef90657f492f8acdd078f4c",
+      "bytes": 941871,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/moonblade-prowler-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/moonblade-prowler-grace-front-v1.png",
+      "sha256": "050d2bed19cae377af169aab8d8cd88e2c715c5121679bb564f48ed2484a2c1e",
+      "bytes": 1249987,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/moonblade-prowler-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/moonblade-prowler-grace-back-v1.png",
+      "sha256": "c07aa60690ce551da2d5eb5eb432269115666027759ded72dbdafe1d377e418c",
+      "bytes": 899654,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/sapphire-seer-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/sapphire-seer-bold-front-v1.png",
+      "sha256": "1c201d7204abe007d4a59ff0eb34c6ac36453f7b33f1a0b02df47e43646634d3",
+      "bytes": 976846,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/sapphire-seer-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/sapphire-seer-bold-back-v1.png",
+      "sha256": "49ae1c65601c4bf72328788e3c8199c0293aee90add589e609def28f74291669",
+      "bytes": 983734,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/sapphire-seer-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/sapphire-seer-grace-front-v1.png",
+      "sha256": "608daf38857d063bdf8b1029d40fdb118e2d4db14bba4dbca4cb452c28273f40",
+      "bytes": 1053311,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/sapphire-seer-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/sapphire-seer-grace-back-v1.png",
+      "sha256": "ba2c0b17df57d64848447cbcf2916a439239afebea0169b8d023e6783fa294c1",
+      "bytes": 949029,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/jadehoof-kirin-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/jadehoof-kirin-bold-front-v1.png",
+      "sha256": "c7efbc6bd2d91a57c0b24727a316e2796dad6e45b0fdc3da9a654140a1d492d3",
+      "bytes": 1098622,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/jadehoof-kirin-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/jadehoof-kirin-bold-back-v1.png",
+      "sha256": "2956035a68aa8ce565956626836d23a138867c7133f4cc4f2680ae198d61cb1d",
+      "bytes": 802597,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/jadehoof-kirin-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/jadehoof-kirin-grace-front-v1.png",
+      "sha256": "70ed6c4b89c270b0863db0ae257669de3927b1b312caccb8af7b3e1fc11c419c",
+      "bytes": 1051463,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/jadehoof-kirin-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/jadehoof-kirin-grace-back-v1.png",
+      "sha256": "ac492e8ff8daad490d6879b6a215c1fd7a7b804537030c014cda9d1056b8be59",
+      "bytes": 926683,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/phoenix-spark-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/phoenix-spark-bold-front-v1.png",
+      "sha256": "fb7cb495fd239b240b043ec995dae6fdb278262c778c2aef1ba906100422e79f",
+      "bytes": 1110892,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/phoenix-spark-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/phoenix-spark-bold-back-v1.png",
+      "sha256": "70a61a61c9194248a52cdb0606ef69d9ee17811bee5bdb662cf211c336d30ce9",
+      "bytes": 756089,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/phoenix-spark-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/phoenix-spark-grace-front-v1.png",
+      "sha256": "99e17deff21f5b50dae3bbcb499b3002cbebc9b9a7913cdb8c22d3fb2fcb5242",
+      "bytes": 956512,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/phoenix-spark-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/phoenix-spark-grace-back-v1.png",
+      "sha256": "61fb3859bd628cee3572b88c6d2194565dd51b26da76df23bcc15819d44b979e",
+      "bytes": 672927,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/stormscale-drake-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/stormscale-drake-bold-front-v1.png",
+      "sha256": "cc16bf7fda162c457da15a779ac4881a0dc960ca8a72021c653a8fe41036cbd8",
+      "bytes": 1004694,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/stormscale-drake-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/stormscale-drake-bold-back-v1.png",
+      "sha256": "8856455028bb59c2cfc983cfa9ade0c64a3a7553cbe38bbcf445c8b189dee8f4",
+      "bytes": 818494,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/stormscale-drake-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/stormscale-drake-grace-front-v1.png",
+      "sha256": "26e5a95fa634abf069dbc8b166e6ad8aefed0c6c76db3fe6e6191a1f15643b3c",
+      "bytes": 1074835,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/stormscale-drake-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/stormscale-drake-grace-back-v1.png",
+      "sha256": "2b87f839cb32f83937eec0d8d39fef62c97795c01808a45b107f50d9b1d569d7",
+      "bytes": 742015,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/dreamshard-oracle-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/dreamshard-oracle-bold-front-v1.png",
+      "sha256": "b4c7b9919909498bf5fee5ec38625d3da399d1de20b46273bcfd574c346b5f8e",
+      "bytes": 710781,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/dreamshard-oracle-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/dreamshard-oracle-bold-back-v1.png",
+      "sha256": "67f35461fcd8e8880670e5c2c3add891d0f65a3c30dfcbd1df1d78529f969179",
+      "bytes": 732312,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/dreamshard-oracle-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/dreamshard-oracle-grace-front-v1.png",
+      "sha256": "6bb02ebe90260d196a4fc44fc991a865d617aad27540a0b97340226b052ea767",
+      "bytes": 676640,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/dreamshard-oracle-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/dreamshard-oracle-grace-back-v1.png",
+      "sha256": "04744e16837d60272946420254c313005ddbb27bae5e2b8f1975a0950dd45abb",
+      "bytes": 799734,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/ironwing-wyvern-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/ironwing-wyvern-bold-front-v1.png",
+      "sha256": "11b07b6b74e30794de62f643709faae064789841346804304b24f25457a1656d",
+      "bytes": 1145372,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/ironwing-wyvern-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/ironwing-wyvern-bold-back-v1.png",
+      "sha256": "ae80bb66627b8d0fdf8f5ce079b387037a4c0d1d8ab1e26a58df4937390da376",
+      "bytes": 962176,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/ironwing-wyvern-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/ironwing-wyvern-grace-front-v1.png",
+      "sha256": "5b85d211d8b9dc97e9112125d4a7172447bbfc1637808d8822e4220c3d0a3547",
+      "bytes": 1254849,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/ironwing-wyvern-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/ironwing-wyvern-grace-back-v1.png",
+      "sha256": "803ca54da9093567f70a4d30b7b00854974c800d8e257e961e79026f83076f81",
+      "bytes": 1146565,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/starcoil-wyrm-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/starcoil-wyrm-bold-front-v1.png",
+      "sha256": "42e6df9dafb95f3658c0b9a1646cd26e6031cecd64b83b068536a3179f200f1e",
+      "bytes": 1310469,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/starcoil-wyrm-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/starcoil-wyrm-bold-back-v1.png",
+      "sha256": "eea0454ea1f6be7695b1f00df1797c2a24aec7a4df1d09a8f436466eec698c90",
+      "bytes": 1079974,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/starcoil-wyrm-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/starcoil-wyrm-grace-front-v1.png",
+      "sha256": "af380ae7e67b676c8cd61c2c7779a0a5d210ec625998da2afd4dc4df5afb7724",
+      "bytes": 1360476,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/starcoil-wyrm-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/starcoil-wyrm-grace-back-v1.png",
+      "sha256": "e542e7813175b6fe5b638ee6b982fea389928e2ab91b21dafef864c587e1da22",
+      "bytes": 967345,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/rubyhorn-gorgon-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/rubyhorn-gorgon-bold-front-v1.png",
+      "sha256": "3a65d0b0f2c9122498b0c518ea3e0de00004a6ba79417b18a89fdd8c71bc067a",
+      "bytes": 1092009,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/rubyhorn-gorgon-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/rubyhorn-gorgon-bold-back-v1.png",
+      "sha256": "66e8d1f32d63a86dcf0378216aaa2c51ddae8cca7c7fa8b648bcc59aa6cfd571",
+      "bytes": 1076375,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/rubyhorn-gorgon-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/rubyhorn-gorgon-grace-front-v1.png",
+      "sha256": "7f980d5ab743df658a52e6c2ef19c62efac0e428aea4924831806b1409446b8a",
+      "bytes": 1149452,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/rubyhorn-gorgon-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/rubyhorn-gorgon-grace-back-v1.png",
+      "sha256": "dcd7449e250935d1575edb883c527af55ac70eeb4519493c35250600ea26281c",
+      "bytes": 876639,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/prismwing-arcanid-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/prismwing-arcanid-bold-front-v1.png",
+      "sha256": "bd39c52ff83b583525194ef2967aef7e197c794d5e545001104319bb29a92cd5",
+      "bytes": 962639,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/prismwing-arcanid-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/prismwing-arcanid-bold-back-v1.png",
+      "sha256": "9a0788e1a61db49eb9cdb69ebecc360819493b6bf7ffab77eca631bae45db5f1",
+      "bytes": 929725,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/prismwing-arcanid-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/prismwing-arcanid-grace-front-v1.png",
+      "sha256": "d83fb3ef54069131dd0b5919260d485f8fde920bd9dd4956082eeaa5be465b6d",
+      "bytes": 1189209,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/prismwing-arcanid-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/prismwing-arcanid-grace-back-v1.png",
+      "sha256": "b6f6e4d3f063e27ff4ed03ebd9293c3d8fd986c1f06eb0cd8faff2637897e14c",
+      "bytes": 928207,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/crownshield-gryphon-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/crownshield-gryphon-bold-front-v1.png",
+      "sha256": "c9cf91580ee2ebe18f9378cf246fb97d9c58a68db68365dcdacb81476e676b73",
+      "bytes": 966139,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/crownshield-gryphon-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/crownshield-gryphon-bold-back-v1.png",
+      "sha256": "2375d8b590f61ce7f22ef9435dd7bc6a0e2bee9f652bb8733fc6c7eba8e6abc9",
+      "bytes": 956821,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/crownshield-gryphon-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/crownshield-gryphon-grace-front-v1.png",
+      "sha256": "5066ada597787ffba50888b79b680d1d780a4fb8e75ce2380d0d88dbacf0cfbc",
+      "bytes": 1253335,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/crownshield-gryphon-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/crownshield-gryphon-grace-back-v1.png",
+      "sha256": "49670e3a4c5d5df54474e7e4c7533f2e3f7d568fec2c12ab347392e82accb008",
+      "bytes": 943013,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/maelstrom-djinn-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/maelstrom-djinn-bold-front-v1.png",
+      "sha256": "471478755109c813b9447cdda33aaf8a1ec23ff8a7530184caf1588b27590621",
+      "bytes": 1087137,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/maelstrom-djinn-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/maelstrom-djinn-bold-back-v1.png",
+      "sha256": "a988b1cc69d4ca104663f4055ec2f176eb0b566065c517ff7167852d5572bed2",
+      "bytes": 1126738,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/maelstrom-djinn-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/maelstrom-djinn-grace-front-v1.png",
+      "sha256": "79eee9d4b5374490119005c7bfe78fe1409c9391b4f7afdee6cc524e6f653bc8",
+      "bytes": 1191183,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/maelstrom-djinn-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/maelstrom-djinn-grace-back-v1.png",
+      "sha256": "c6c2caae37f846e48088fc83d93b33e20ec9372f88c40e7e71756066509e6747",
+      "bytes": 1054072,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/ironbrand-drake-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/ironbrand-drake-bold-front-v1.png",
+      "sha256": "b882235b4fe1cf333689012d3efafe019a544dcc0dedb078baaa46b3a167d775",
+      "bytes": 1021771,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/ironbrand-drake-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/ironbrand-drake-bold-back-v1.png",
+      "sha256": "85f34d119f7d3c800a4c872befcb0accbba0245cefdf640ba4f4133a9091a1cf",
+      "bytes": 838711,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/ironbrand-drake-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/ironbrand-drake-grace-front-v1.png",
+      "sha256": "a502b4822c17fe7d2340c3271c4f94554c4dcb29b7343b3b0f254f4ada6a9bb9",
+      "bytes": 1198882,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/ironbrand-drake-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/ironbrand-drake-grace-back-v1.png",
+      "sha256": "543873cd4476a130e0fc2a8abf905856a79318fe13f931c010ac4149681d0c25",
+      "bytes": 974810,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/runeheart-wyrmling-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/runeheart-wyrmling-bold-front-v1.png",
+      "sha256": "11805bacbf235e2ac249ba90247e11faf797e416291c5f9011d91984be26eba1",
+      "bytes": 1230169,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/runeheart-wyrmling-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/runeheart-wyrmling-bold-back-v1.png",
+      "sha256": "13508a4504ee39da3e41e6d0b2789581ea76bbe60ba6c8bc4a6077b0cc1ac4d0",
+      "bytes": 939882,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/runeheart-wyrmling-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/runeheart-wyrmling-grace-front-v1.png",
+      "sha256": "0e2510f324aafc79a530c31492c3fb04c6b6677ec4fd7d6767a7c5e7df9b0dc1",
+      "bytes": 1243976,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/runeheart-wyrmling-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/runeheart-wyrmling-grace-back-v1.png",
+      "sha256": "c63135d0e1474cb0ecb2bbc1073b35aba44297ccd0612fa20500217ec07be4a3",
+      "bytes": 1071734,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/aegis-gryphon-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/aegis-gryphon-bold-front-v1.png",
+      "sha256": "ec02613e6f26c253b0aca01fbdd7310c2542504db6d75759c5e6787d3f792649",
+      "bytes": 1203403,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/aegis-gryphon-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/aegis-gryphon-bold-back-v1.png",
+      "sha256": "cc0cb9430d7705a5768a67ecb9576e6a7afd392bd832ba5341ad2633ff665465",
+      "bytes": 924898,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/aegis-gryphon-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/aegis-gryphon-grace-front-v1.png",
+      "sha256": "70343b0371a20e8657a01062350cef685b6fe406e6450c33c1285fd2387f1122",
+      "bytes": 1171636,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/aegis-gryphon-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/aegis-gryphon-grace-back-v1.png",
+      "sha256": "094bed226181d56d94a9757c4702351ef72b54796f62a515402ed18fa57ec306",
+      "bytes": 1273472,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/lunar-crown-sphinx-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/lunar-crown-sphinx-bold-front-v1.png",
+      "sha256": "f3a7fe776aaf0ccb3ae63caf33ef2b8374bdf5c9d6d84cad003c55e0b61058aa",
+      "bytes": 1298979,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/lunar-crown-sphinx-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/lunar-crown-sphinx-bold-back-v1.png",
+      "sha256": "29c37b3c0fabbf483ca063fdf1f3a760246971c202042b1542d176c182b5d301",
+      "bytes": 1075270,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/lunar-crown-sphinx-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/lunar-crown-sphinx-grace-front-v1.png",
+      "sha256": "b93a3616ba581d2e3985d34e3f5defc0c44eec6d92eed178957d577e88a2d053",
+      "bytes": 1260609,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/lunar-crown-sphinx-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/lunar-crown-sphinx-grace-back-v1.png",
+      "sha256": "4d627c01aed045d4a1136d158e38719398da6f5bce73cd3cb5160c98a993fd5c",
+      "bytes": 1168693,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/sunblade-sovereign-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/sunblade-sovereign-bold-front-v1.png",
+      "sha256": "f504a6a3b731eac14f967ad65b612886de77d437a4e98653efb887479dd1fb34",
+      "bytes": 1308216,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/sunblade-sovereign-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/sunblade-sovereign-bold-back-v1.png",
+      "sha256": "b8ba8cf9b288187f97085d96d6ac11903f04992a492e022ea5a56eab21864cd4",
+      "bytes": 1365679,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/sunblade-sovereign-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/sunblade-sovereign-grace-front-v1.png",
+      "sha256": "2c12212703c5c8630ab9f81f40b4968433dc197e0bba8d87e3c7b52b6d0fbf99",
+      "bytes": 1511548,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/sunblade-sovereign-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/sunblade-sovereign-grace-back-v1.png",
+      "sha256": "53d9a7d4b60b9014eb7a49eecb1e0f0f3837943488e9c56e63b1bec90f4eefc7",
+      "bytes": 1052634,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/dawnweaver-ascendant-bold-front-v1.png",
+      "runtime": "assets/daily-battle/pets/dawnweaver-ascendant-bold-front-v1.png",
+      "sha256": "2ae1baf468ea0ca7710a8deccc2ff7a9d1e23ecd355e36365bd1138f87c88d45",
+      "bytes": 1488577,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/dawnweaver-ascendant-bold-back-v1.png",
+      "runtime": "assets/daily-battle/pets/dawnweaver-ascendant-bold-back-v1.png",
+      "sha256": "a5f1bef8ca2eefdab72fbe449d1068da85371da4a882698e2344749c5bb742f6",
+      "bytes": 1387660,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/dawnweaver-ascendant-grace-front-v1.png",
+      "runtime": "assets/daily-battle/pets/dawnweaver-ascendant-grace-front-v1.png",
+      "sha256": "6121ded09f7cf2c8e7274999d9b550da1b3c260a44bc4f6801474b22c48723c8",
+      "bytes": 1478616,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/dawnweaver-ascendant-grace-back-v1.png",
+      "runtime": "assets/daily-battle/pets/dawnweaver-ascendant-grace-back-v1.png",
+      "sha256": "6ce17dc5fd75665fe2d055e47641f40f65307a3908152546557d806855b1cff5",
+      "bytes": 1331973,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/eclipse-phoenix-front-v1.png",
+      "runtime": "assets/daily-battle/pets/eclipse-phoenix-front-v1.png",
+      "sha256": "d52d2d924e4bc90c8dd1f8d3b26cfee6050ee73bc63c4b6e275ad3da04cc6097",
+      "bytes": 1415591,
+      "reused": false
+    },
+    {
+      "category": "pet",
+      "source": "06_PETS/assets/pets/eclipse-phoenix-back-v1.png",
+      "runtime": "assets/daily-battle/pets/eclipse-phoenix-back-v1.png",
+      "sha256": "097abfcbcbc3d698ce607345f162740380d76bcc2def12578f7fc4a882838b2d",
+      "bytes": 951749,
+      "reused": false
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/briar-goblin-scout-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/briar-goblin-scout-front-v1.png",
+      "sha256": "4c33271ffc38d0830abbfb22273aefb09068d3fc0170dc9f552fee71cff1a504",
+      "bytes": 1486125,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/duskwing-bat-front-v3.png",
+      "runtime": "assets/daily-battle/enemies/duskwing-bat-front-v3.png",
+      "sha256": "ebc278172f6159da6c21fb83856d77a7473123d49990abdbf25bbacf9a72e0db",
+      "bytes": 759328,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/amberhorn-beetle-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/amberhorn-beetle-front-v1.png",
+      "sha256": "d871e51917c3b90f523d77f954b50786609d25ac77a7e9a8864dd9f282099016",
+      "bytes": 1467521,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/silkspinner-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/silkspinner-front-v1.png",
+      "sha256": "0bf58d35e935ac3ab947aa49a8d21f55aa2afd538b1ae9f69744011f8e34116e",
+      "bytes": 1594594,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/bramble-sprite-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/bramble-sprite-front-v1.png",
+      "sha256": "5eae152d2c69b8af5a5699b9f2adedfa1df200986b7e9e923951145f89d0f616",
+      "bytes": 1551274,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/coppercap-sapper-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/coppercap-sapper-front-v1.png",
+      "sha256": "501f694decd510a5b3ffa57a3f5a033cf0ce5923ee5b9d386ca691a622d990d1",
+      "bytes": 1548135,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/cinder-imp-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/cinder-imp-front-v1.png",
+      "sha256": "0ce44619f8f1481ef98238c71148e068204b977bc22107cec124a012bfdf2cb6",
+      "bytes": 1525356,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/ironjaw-mimic-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/ironjaw-mimic-front-v1.png",
+      "sha256": "e7605c436caaa917c214fee0bf1dcb91eb8a362b802f70a5f115427c713042e2",
+      "bytes": 1578203,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/boneguard-knight-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/boneguard-knight-front-v1.png",
+      "sha256": "b8a073321ffb6a040f0eb780f3e29e4617d61a62e8a29ef00cabe3262d398c52",
+      "bytes": 1800214,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/briar-crown-king-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/briar-crown-king-front-v1.png",
+      "sha256": "d7daf1fa1570070b5b22bc49ce1de277a369127d5eccd09e8c86b114fa0f8f2d",
+      "bytes": 2169883,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/thorn-spearguard-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/thorn-spearguard-front-v1.png",
+      "sha256": "c4a92c9cfcbdab673ccab947102e3ead962a546402fa649b8c07718930607291",
+      "bytes": 1676482,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/hivewing-wasp-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/hivewing-wasp-front-v1.png",
+      "sha256": "e02381c4416b9e0e9e9b108b4e0f2db78b3c8ebde96051919821891c2273de24",
+      "bytes": 1632801,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/crimson-mantis-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/crimson-mantis-front-v1.png",
+      "sha256": "37d360ceab8c598e9c0eb9c7ac61dbd509c438d3b0e037ad8b3803dd345e41eb",
+      "bytes": 1164138,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/silverfang-direwolf-front-v3.png",
+      "runtime": "assets/daily-battle/enemies/silverfang-direwolf-front-v3.png",
+      "sha256": "4377757925308d94d0f73d0f2a896830dbc45bff76001f73959be5a46cd699f7",
+      "bytes": 775789,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/thornstalker-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/thornstalker-front-v1.png",
+      "sha256": "3522db6a648183ca31916f1b3dad68cf21e31499c8c26b828064854495b45a59",
+      "bytes": 1652201,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/sporecap-brute-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/sporecap-brute-front-v1.png",
+      "sha256": "6f6e962bad3d746e788427a37c097b44ebaf2763a76feaa29c2d3c4398d4c22d",
+      "bytes": 2162504,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/tomb-mummy-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/tomb-mummy-front-v1.png",
+      "sha256": "37994c2d0526172db960166b75401e288a1bf525a1d9950000fa9f3070130868",
+      "bytes": 1894709,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/lantern-skeleton-front-v3.png",
+      "runtime": "assets/daily-battle/enemies/lantern-skeleton-front-v3.png",
+      "sha256": "ede6b6b276114979ea7f216e366e204605d6a0f8167f90a1a067f0037440822b",
+      "bytes": 811349,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/stormbone-shaman-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/stormbone-shaman-front-v1.png",
+      "sha256": "7c100a3b0287e64ab78d42499e14d98d9f23d2c4ca04cffe79ab594fd998ad9b",
+      "bytes": 1908572,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/glacier-ogre-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/glacier-ogre-front-v1.png",
+      "sha256": "a1fc024401e3c51e51707b548143a40302db34c2b0b6f14cdd46c58013538cd2",
+      "bytes": 2515536,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/ironhide-boar-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/ironhide-boar-front-v1.png",
+      "sha256": "eba4231402e927878116165559dba70e2b5f4c20fb80e40e942df58294305833",
+      "bytes": 2132995,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/cinder-hobgoblin-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/cinder-hobgoblin-front-v1.png",
+      "sha256": "69dcf5cf09a7b0827dd6201d1fc4c5aae5cc3224bc6c3d8bc64f347a0aff2b38",
+      "bytes": 1931913,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/scaleguard-captain-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/scaleguard-captain-front-v1.png",
+      "sha256": "390f4e7c7e50ab1daeaa8cfc9aa9b219af23ace73cee1e90bbfbda532d778e4e",
+      "bytes": 1503076,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/onyx-scorpion-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/onyx-scorpion-front-v1.png",
+      "sha256": "279c8b8811ced5804cfbaa7f85f5d8883e94e07573ad26161394878e180b7d95",
+      "bytes": 1591472,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/frosthorn-yeti-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/frosthorn-yeti-front-v1.png",
+      "sha256": "fa822785717c60abb4e77fcb41970288f3f070fe50d12b013339cc1cd0aaf800",
+      "bytes": 2088683,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/moonwing-gryphon-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/moonwing-gryphon-front-v1.png",
+      "sha256": "6e7588c4d7635909d3c9fc8beaa2c117a7dcbe72a11d58b97b061f493d351949",
+      "bytes": 2081926,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/elder-rootwarden-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/elder-rootwarden-front-v1.png",
+      "sha256": "d53a3fe67ad1e7fb6f5998b8cd0ea352ced683263e075e3774dc1c35d0aa4b1b",
+      "bytes": 2057932,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/clockwork-warden-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/clockwork-warden-front-v1.png",
+      "sha256": "ddfb87df03adfeefccbc66480d6a56f2635675aeca3c7d78e0d552a3ecd2691c",
+      "bytes": 2175875,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/slate-gargoyle-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/slate-gargoyle-front-v1.png",
+      "sha256": "774072a1aa9b162430adafdd19d5e740d254790668ece9b74bfd9a0cad4b5584",
+      "bytes": 1989866,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/bonecrown-lich-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/bonecrown-lich-front-v1.png",
+      "sha256": "90ec810de4b5a92b43e0ba2081454e9b489a3d0e4222df53b82b2227b5c4e0b8",
+      "bytes": 1644519,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/dune-serpent-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/dune-serpent-front-v1.png",
+      "sha256": "5798eb1df4fad044957cf8273a8ba7caebfc3de8386d010c4bf48af5133e3a78",
+      "bytes": 1486030,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/crystal-frostling-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/crystal-frostling-front-v1.png",
+      "sha256": "9ec31a9c7717d2a2fadf8fcd3f76b157a0613a410f5dbfea13dd2f0b64174f45",
+      "bytes": 1438392,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/ember-drake-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/ember-drake-front-v1.png",
+      "sha256": "cdfa5208aa0a3127801414be0f2962cd1a0857bd23b24ee91304f9ad446697bd",
+      "bytes": 1654500,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/tidal-coil-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/tidal-coil-front-v1.png",
+      "sha256": "3ccbef6d222f20fec4ea6dd107a1019884f2caed8f143897ce31dfd45b7562f5",
+      "bytes": 1611585,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/cinderspell-witch-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/cinderspell-witch-front-v1.png",
+      "sha256": "af7c45862839393cc8b6c64b1ae265f1af915ddd47d2a471118a0b6435a0e43d",
+      "bytes": 1628387,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/runebound-automaton-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/runebound-automaton-front-v1.png",
+      "sha256": "d747883463ed12dbc294f025d8be96c67ab91dd7306e813f48136bc79ec421d2",
+      "bytes": 1546201,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/hollow-halberd-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/hollow-halberd-front-v1.png",
+      "sha256": "ccbfbf944ce87dcc3bed7889a2111ed9e6b1ef939336e751ff8a3c5bf8c36ad1",
+      "bytes": 1726226,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/ashen-reaper-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/ashen-reaper-front-v1.png",
+      "sha256": "396023d77b4ffba1232126438f6aaa381283bcd2c1761ab1c8ac8f0f6447fc77",
+      "bytes": 1478608,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/frost-revenant-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/frost-revenant-front-v1.png",
+      "sha256": "81825135c0b33b287159db6bb00380adc8e731b90ca57947617be0cb8d73a56e",
+      "bytes": 1975173,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/inferno-dragon-front-v3.png",
+      "runtime": "assets/daily-battle/enemies/inferno-dragon-front-v3.png",
+      "sha256": "1ef548f6bfe9dbbaebf6ff64a84526f4435646dc14c1d15510af09209b43911d",
+      "bytes": 1155889,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/jade-basilisk-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/jade-basilisk-front-v1.png",
+      "sha256": "328bcb218611b0750babd1bcee1034fa9a3277dc6e5f6b1a0c538918f7731eb4",
+      "bytes": 1863329,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/mossstone-colossus-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/mossstone-colossus-front-v1.png",
+      "sha256": "555a1742d3d217a2d8f278f7eb688001c86de470b8a9de7256bf4aeae5d081de",
+      "bytes": 2516490,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/obsidian-brute-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/obsidian-brute-front-v1.png",
+      "sha256": "50a4bc7013469510aa3e4aac86810763eb9d05fae7e9585eeb4987f99f152814",
+      "bytes": 1959429,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/bog-hydra-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/bog-hydra-front-v1.png",
+      "sha256": "b2e4a274b547782c8cf66390abc83793c874fc71538357b0776046a0b2ae4842",
+      "bytes": 1879701,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/thunder-djinn-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/thunder-djinn-front-v1.png",
+      "sha256": "c3535ddabb23e57be7dfb4b81875ca96c14db482f8d61a2f2f95471dd68e8795",
+      "bytes": 1417916,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/voidmask-sorcerer-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/voidmask-sorcerer-front-v1.png",
+      "sha256": "12219f4420a10b3bd14833a00b7c53038a0efa26ffebf2b07e194f22d9c3eb2f",
+      "bytes": 1715581,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/duskshade-wraith-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/duskshade-wraith-front-v1.png",
+      "sha256": "ed43d1daec9abf1cca681317a0f7855faeebe7b99c13ee752984a15f0346125d",
+      "bytes": 1195388,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/starless-watcher-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/starless-watcher-front-v1.png",
+      "sha256": "58b799b276ce4a5874674e5a7ddf12e7d7a32984f5964877c505c40dffc1e2c6",
+      "bytes": 1648920,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/amethyst-warlock-front-v1.png",
+      "runtime": "assets/daily-battle/enemies/amethyst-warlock-front-v1.png",
+      "sha256": "14bf1747a9837f59c793ac2e4deb67afbceddf87200e43173143f9b8e97b742c",
+      "bytes": 1638910,
+      "reused": true
+    },
+    {
+      "category": "enemy",
+      "source": "05_ENEMIES_AND_BOSSES/assets/enemies/eclipse-warden-front-v3.png",
+      "runtime": "assets/daily-battle/enemies/eclipse-warden-front-v3.png",
+      "sha256": "5bd76ba1c35ad8a9188dc4565ca4c653d35165c4944dc78a0743cf8a8071dfdb",
+      "bytes": 1032431,
+      "reused": true
+    },
+    {
+      "category": "hero-code",
+      "source": "04_PLAYER_CHARACTERS/src/warrior-effects.js",
+      "runtime": "battle-actors/warrior-effects.js",
+      "sha256": "e50017a5f7852d6050fbae7d78f0de9e8a4b0e631b3323d2f93d6d4aa9767ce3",
+      "bytes": 5811,
+      "reused": false
+    },
+    {
+      "category": "hero-code",
+      "source": "04_PLAYER_CHARACTERS/src/mage-blast.js",
+      "runtime": "battle-actors/mage-blast.js",
+      "sha256": "803dc8225079d532aaa03021e655a04501d3e4b2b81a267161fca675cd227bcc",
+      "bytes": 9578,
+      "reused": false
+    },
+    {
+      "category": "pet-code",
+      "source": "06_PETS/src/motion.js",
+      "runtime": "battle-actors/pet-motion.js",
+      "sha256": "60d51fe9ea096dc1244399d43009fbd24407f53e9b5ea9fa3965dc15a73006e9",
+      "bytes": 3043,
+      "reused": false
+    }
+  ]
+}

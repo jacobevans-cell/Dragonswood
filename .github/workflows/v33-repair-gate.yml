@@ -30,7 +30,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -51,5 +51,5 @@ jobs:
           python -m pip install pillow playwright
           python -m playwright install --with-deps chromium
 
-      - name: Run exact V3.3 production gate
-        run: bash v33-integration/tools/run-student-beta-gate.sh
+      - name: Run current learning release gate
+        run: bash v33-integration/tools/run-learning-release-gate.sh

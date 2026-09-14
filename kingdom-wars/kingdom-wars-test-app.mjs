@@ -79,16 +79,18 @@ class DemoBackend{
     const classId=['warrior','ranger','mage','healer'].includes(resolvedClass)?resolvedClass:'ranger';
     this.me={id:u.uid||'tester',student:{
       email:u.email||raw.email||'',
+      learningAdventurer:raw.learningAdventurer,adventurerProgression:raw.adventurerProgression,
+      adventurerAppearance:raw.adventurerAppearance,petRosterVersion:raw.petRosterVersion,ownedPetIds:raw.ownedPetIds,petId:raw.petId,
       classId,
       characterSystemVersion:raw.characterSystemVersion||'',
       characterV5Gender:raw.characterV5Gender||'',
       characterV5Affinity:raw.characterV5Affinity||'',
       characterV5ClassId:raw.characterV5ClassId||'',
-      xp:Number(raw.xp)||740,
+      xp:Number(raw.adventurerProgression?.version==='dragonswood-adventurer-progression.1'?raw.adventurerProgression.xp:(raw.xp??740)),
       rpgInventory:Array.isArray(raw.rpgInventory)?raw.rpgInventory:['briarfox_bow'],
       rpgEquipped:raw.rpgEquipped&&typeof raw.rpgEquipped==='object'?raw.rpgEquipped:{weapon:'briarfox_bow'},
       ownedPets:Array.isArray(raw.ownedPets)?raw.ownedPets:['embercub'],
-      activePet:raw.activePet||'embercub',
+      activePet:raw.petRosterVersion===2?(raw.learningAdventurer?.petId??raw.petId??''):(raw.activePet||'embercub'),
       lastBossWinDate:new Date().toISOString().slice(0,10)
     }};
     const display=(u.displayName||u.email||'Tester').split(/[ @]/)[0]||'Tester';

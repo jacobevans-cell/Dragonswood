@@ -1,0 +1,102 @@
+{
+  "sourceArchive": "DRAGONSWOOD MASTER GUIDE 2026-09-13.zip",
+  "edition": "2026-09-13",
+  "files": [
+    {
+      "source": "03_MASCOTS/Dragonswood_Dragon/mascot.manifest.json",
+      "runtime": "mascot.manifest.json",
+      "bytes": 6169,
+      "sha256": "6450d7557f60e71285d99b6cbf9eb39e492cc2890b596174dbacac74dca65c93"
+    },
+    {
+      "source": "03_MASCOTS/Dragonswood_Dragon/assets/icons/dragonswood-mascot-64.png",
+      "runtime": "assets/icons/dragonswood-mascot-64.png",
+      "bytes": 6909,
+      "sha256": "bdd32cdce99fe39831ebba297cec6a5f1ce212227049631e0eee7d5b2bb9dad1"
+    },
+    {
+      "source": "03_MASCOTS/Dragonswood_Dragon/assets/icons/dragonswood-mascot-32.png",
+      "runtime": "assets/icons/dragonswood-mascot-32.png",
+      "bytes": 2369,
+      "sha256": "6e02e3fe5e8019709618245d7e09a0c115456ba8c8149c6209a978c73a0a167f"
+    },
+    {
+      "source": "03_MASCOTS/Dragonswood_Dragon/assets/badges/neutral.webp",
+      "runtime": "assets/badges/neutral.webp",
+      "bytes": 20040,
+      "sha256": "650bf6652690bb3beede962b4efe4d6de8f5ec4b6c87fc27fb8efddc6d3f8bac"
+    },
+    {
+      "source": "03_MASCOTS/Dragonswood_Dragon/assets/badges/sympathetic.webp",
+      "runtime": "assets/badges/sympathetic.webp",
+      "bytes": 19164,
+      "sha256": "eaab3e71da9bb4d9058c0f735af78fad35c74709ca3b6c7d0a63893aec947c81"
+    },
+    {
+      "source": "03_MASCOTS/Dragonswood_Dragon/assets/badges/hint.webp",
+      "runtime": "assets/badges/hint.webp",
+      "bytes": 20732,
+      "sha256": "118702eb5dce68349104284cdb7dc388c9d6cc3152ee2b56a4eb1948c05baf3f"
+    },
+    {
+      "source": "03_MASCOTS/Dragonswood_Dragon/assets/animations/guide-right/frame-1.webp",
+      "runtime": "assets/animations/guide-right/frame-1.webp",
+      "bytes": 14428,
+      "sha256": "1a01efaec636cda47a4032d3a0e61fc81360ed1581cd636185679fcfc3bec7d4"
+    },
+    {
+      "source": "03_MASCOTS/Dragonswood_Dragon/assets/animations/idle/frame-1.webp",
+      "runtime": "assets/animations/idle/frame-1.webp",
+      "bytes": 14608,
+      "sha256": "56f124e4a0933732d588c279870cb7164dc4469bc2ee5f185bf7ee4d976ad19e"
+    },
+    {
+      "source": "03_MASCOTS/Dragonswood_Dragon/assets/actions/math.webp",
+      "runtime": "assets/actions/math.webp",
+      "bytes": 14242,
+      "sha256": "a2d92c89851fa5a1f8fdbec153c3873f35891aef0c4a2b630891410c370d88a3"
+    },
+    {
+      "source": "03_MASCOTS/Dragonswood_Dragon/assets/actions/reading.webp",
+      "runtime": "assets/actions/reading.webp",
+      "bytes": 13778,
+      "sha256": "1ad572e3582d4314565b7d289dbee404dfaa33308c027252dec672f955223487"
+    },
+    {
+      "source": "03_MASCOTS/Dragonswood_Dragon/assets/actions/scribe.webp",
+      "runtime": "assets/actions/scribe.webp",
+      "bytes": 14460,
+      "sha256": "2f03991f4f0c7be2f65729e675a700e4a2c67ba3a34e52fc3e893bd8b7d38558"
+    },
+    {
+      "source": "03_MASCOTS/Dragonswood_Dragon/assets/actions/science.webp",
+      "runtime": "assets/actions/science.webp",
+      "bytes": 13920,
+      "sha256": "fbee7893f94c943f09df9ed45c45e1c448ee0c59803bd1ab04ac241ef4f76cec"
+    },
+    {
+      "source": "03_MASCOTS/Dragonswood_Dragon/assets/actions/languages.webp",
+      "runtime": "assets/actions/languages.webp",
+      "bytes": 13342,
+      "sha256": "4e454b273fae8e11735be2649e0e6a0cd48b667e745acf8b7f61103895a2f9e1"
+    },
+    {
+      "source": "03_MASCOTS/Dragonswood_Dragon/assets/actions/boss.webp",
+      "runtime": "assets/actions/boss.webp",
+      "bytes": 13796,
+      "sha256": "29a4c730b5a9358e430da9ce33d3136c0cd07d1622eb71ba46b21aee23578c32"
+    },
+    {
+      "source": "03_MASCOTS/Dragonswood_Dragon/assets/actions/recovery.webp",
+      "runtime": "assets/actions/recovery.webp",
+      "bytes": 11878,
+      "sha256": "b82f2bb1cfc12e5fe594b16cc40701883eeaa3f300e683236752e95b4d5ad0fb"
+    },
+    {
+      "source": "03_MASCOTS/Dragonswood_Dragon/assets/actions/achievement.webp",
+      "runtime": "assets/actions/achievement.webp",
+      "bytes": 14248,
+      "sha256": "aea73a01470f5c1a0fe2c40c944b2f17e0d5d4c96899e903bafc1774fcf09712"
+    }
+  ]
+}

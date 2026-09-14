@@ -238,6 +238,12 @@ service cloud.firestore {
 
       allow create: if (isExploreStudent() || isTester())
                     && isOwner(studentId)
+                    && !request.resource.data.keys().hasAny([
+                      'learningAdventurer','adventurerProgression',
+                      'characterMigrationVersion','characterMigrationId',
+                      'petRosterVersion','ownedPetIds','favoritePetIds','petId',
+                      'lastHatchedPetId','legacyPetArchive'
+                    ])
                     && request.resource.data.hp == 10
                     && request.resource.data.gold == 0
                     && request.resource.data.xp == 0;
@@ -281,17 +287,10 @@ service cloud.firestore {
                     && resource.data.hp > 0
                     && request.resource.data.diff(resource.data).affectedKeys()
                        .hasOnly(['xp','gold','dailyXpDate','dailyXpEarned','dailyGoldEarned','dailyGoldWindowStartedAt','lastGameClaimId',
-                                'bossWins','lastBossWinDate','rpgInventory','eggInventory','updatedAt'])
-                    // Daily Boss adds win bookkeeping and may drop one item or one egg.
-                    && request.resource.data.get('bossWins',0) is number
-                    && request.resource.data.get('bossWins',0) <= resource.data.get('bossWins',0) + 1
-                    && request.resource.data.get('rpgInventory',[]).size()
-                       <= resource.data.get('rpgInventory',[]).size() + 1
-                    && request.resource.data.get('rpgInventory',[])
-                       .hasAll(resource.data.get('rpgInventory',[]))
-                    && request.resource.data.get('eggInventory',0)
-                       <= resource.data.get('eggInventory',0) + 1
+                                'updatedAt'])
+                    // The retired Boss cannot change win, item, or egg records.
                     && request.resource.data.lastGameClaimId is string
+                    && !request.resource.data.lastGameClaimId.matches('.*_dailyboss_.*')
                     && request.resource.data.dailyXpDate is string
                     && request.resource.data.dailyXpEarned is number
                     && request.resource.data.dailyXpEarned >= 0
@@ -537,7 +536,7 @@ service cloud.firestore {
                     && request.resource.data.studentId == request.auth.uid
                     && resultId.matches('^' + request.auth.uid + '_.*$')
                     && request.resource.data.gameId in [
-                      'daily_quest','daily_boss','fraction_forge',
+                      'daily_quest','fraction_forge',
                       'long_division_quest','math_operations_quest'
                     ]
                     && request.resource.data.keys().hasOnly([
@@ -740,25 +739,8 @@ service cloud.firestore {
     // same day is impossible rather than merely discouraged.
     match /bossLoot/{lootId} {
       allow read: if isTeacher() || (isSignedIn() && resource.data.studentId == request.auth.uid);
-      // DW AUDIT FIX V57.1.9: boss rows may record in-game loot, but never self-issue real-world passes or class-goal rewards.
-      allow create: if isExploreStudent()
-                    && request.resource.data.studentId == request.auth.uid
-                    && lootId == request.auth.uid + '_' + request.resource.data.dateKey
-                    && request.resource.data.keys().hasOnly([
-                      'studentId','studentName','dateKey','status','enemyId','goldAward','xpAward',
-                      'rareGoal','goalPoints','rareGoalStatus','itemId','eggAward','bossWinNumber',
-                      'eggOpportunity','eggAwarded','rarePrizeType','createdAt'
-                    ])
-                    && request.resource.data.status == 'complete'
-                    && request.resource.data.dateKey is string
-                    && request.resource.data.goldAward is number && request.resource.data.goldAward >= 0 && request.resource.data.goldAward <= 3
-                    && request.resource.data.xpAward is number && request.resource.data.xpAward >= 0 && request.resource.data.xpAward <= 12
-                    && request.resource.data.goalPoints == 0
-                    && request.resource.data.rareGoal == 'none'
-                    && request.resource.data.rareGoalStatus == 'none'
-                    && request.resource.data.rarePrizeType == 'none'
-                    && request.resource.data.itemId is string
-                    && request.resource.data.createdAt == request.time;
+      // Retired for the new learning release. Keep historical records readable.
+      allow create: if false;
       allow update, delete: if isTeacher();
     }
 
@@ -1533,6 +1515,16 @@ service cloud.firestore {
         && hasLiveArcadeSession(uid, request.resource.data.arcadeSessionId);
       allow delete: if false;
     }
+
+    // These grades are emitted by the authenticated server after a durable
+    // result checkpoint. Browsers never create or alter official projections.
+    match /learningGradebookV1/{projectionId} {
+      allow read: if (isTeacher() && request.auth.token.email_verified == true)
+        || (isSignedIn() && request.auth.token.email_verified == true && resource.data.studentId == request.auth.uid);
+      allow write: if false;
+    }
+    match /learningRuntimeV1/{document=**} { allow read, write: if false; }
+    match /learningGradebookStagingV1/{document=**} { allow read, write: if false; }
 
     // Documentation-only default deny. Firestore ORs matching allow rules, so
     // this does not override any explicit block above; unmatched paths remain

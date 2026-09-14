@@ -242,14 +242,14 @@ async function attemptAuthenticatedWrite(account){
     assert.equal(teacherReview.res.ok,true,JSON.stringify(teacherReview.body));
     record('Teacher Scribe review write',true,'score + feedback constrained to emulator');
 
-    const gameId=`decimal-${accounts.grade5.uid}`;
-    const gameCreate=await writeDoc('gameResults',gameId,{studentId:accounts.grade5.uid,gameId:'decimal-deception',subject:'Math',status:'complete',score:92,xpAward:12,goldAward:3},accounts.grade5.token);
+    const gameId=`${accounts.grade5.uid}_fraction_${today}`;
+    const gameCreate=await commitDoc('gameResults',gameId,{studentId:accounts.grade5.uid,gameId:'fraction_forge',dateKey:today,status:'complete',score:92,xpAward:12,goldAward:3},accounts.grade5.token,{create:true,serverFields:['createdAt']});
     assert.equal(gameCreate.res.ok,true,JSON.stringify(gameCreate.body));
-    const badReward=await writeDoc('gameResults',`bad-${accounts.grade4.uid}`,{studentId:accounts.grade4.uid,gameId:'decimal-deception',subject:'Math',status:'complete',score:100,xpAward:99,goldAward:99},accounts.grade4.token);
+    const badReward=await commitDoc('gameResults',`${accounts.grade4.uid}_fraction_${today}`,{studentId:accounts.grade4.uid,gameId:'fraction_forge',dateKey:today,status:'complete',score:100,xpAward:99,goldAward:99},accounts.grade4.token,{create:true,serverFields:['createdAt']});
     assert.equal(badReward.res.status,403,`Expected 403 reward cap, got ${badReward.res.status}: ${badReward.text}`);
     record('Academic game result and reward caps',true,'valid result saved; oversized reward denied');
 
-    const readingBase=(account,name,date=today)=>({studentId:account.uid,studentName:name,bookId:'witches',bookTitle:'The Witches',dateKey:date,activeSeconds:15,firstPage:24,lastPage:24,pages:[24],status:'in-progress'});
+    const readingBase=(account,name,date=today)=>({studentId:account.uid,studentName:name,bookId:'witches',bookTitle:'Dragonswood Storyvault',sourceBookId:'witches',sourceBookTitle:'The Witches',dateKey:date,activeSeconds:15,firstPage:24,lastPage:24,pages:[24],status:'in-progress'});
     const readingId=`${accounts.grade5.uid}_${today}_witches`;
     const missingReading=await getDoc('readingSessions',readingId,accounts.grade5.token);
     assert.equal(missingReading.res.status,404,`Expected authorized missing-document read before first heartbeat, got ${missingReading.res.status}: ${missingReading.text}`);
@@ -274,7 +274,7 @@ async function attemptAuthenticatedWrite(account){
     ];
     for(const [label,id,data,options] of deniedCreates){const attempt=await commitDoc('readingSessions',id,data,accounts.grade4.token,{create:true,...options});assert.equal(attempt.res.status,403,`Expected 403 ${label}, got ${attempt.res.status}: ${attempt.text}`)}
 
-    const oldTime=new Date(Date.now()-15000),updateId=`${accounts.noPet.uid}_${previousDay}_witches`,updateBase={...readingBase(accounts.noPet,'NoPet',previousDay),targetMinutes:20,lastHeartbeatMs:Date.now()-15000,createdAt:oldTime,updatedAt:oldTime};
+    const oldTime=new Date(Date.now()-15000),updateId=`${accounts.noPet.uid}_${previousDay}_witches`,updateBase={...readingBase(accounts.noPet,'NoPet',previousDay),createdAt:oldTime,updatedAt:oldTime};
     const seededUpdate=await replaceDoc('readingSessions',updateId,updateBase);assert.equal(seededUpdate.res.ok,true,JSON.stringify(seededUpdate.body));
     const readingUpdate=await commitDoc('readingSessions',updateId,{activeSeconds:30,firstPage:24,lastPage:25,pages:[24,25],status:'in-progress'},accounts.noPet.token,{mask:['activeSeconds','firstPage','lastPage','pages','status','targetMinutes','lastHeartbeatMs'],serverFields:['updatedAt']});
     assert.equal(readingUpdate.res.ok,true,JSON.stringify(readingUpdate.body));
@@ -287,12 +287,14 @@ async function attemptAuthenticatedWrite(account){
 
     const lootId=`${accounts.grade5.uid}_${today}`;
     const validLoot=await writeDoc('bossLoot',lootId,{studentId:accounts.grade5.uid,dateKey:today,status:'complete',goldAward:3,xpAward:12,goalPoints:0,rareGoal:'none',itemId:'crafting-materials'},accounts.grade5.token);
-    assert.equal(validLoot.res.ok,true,JSON.stringify(validLoot.body));
+    assert.equal(validLoot.res.status,403,'The retired Boss cannot create a chest.');
+    const history=await replaceDoc('bossLoot',lootId,{studentId:accounts.grade5.uid,dateKey:today,status:'complete',goldAward:3,xpAward:12,goalPoints:0,rareGoal:'none',itemId:'crafting-materials'});
+    assert.equal(history.res.ok,true);assert.equal((await getDoc('bossLoot',lootId,accounts.grade5.token)).res.ok,true,'Historical owner records remain readable.');
     const oversizedLoot=await writeDoc('bossLoot',`${accounts.grade4.uid}_${today}`,{studentId:accounts.grade4.uid,dateKey:today,status:'complete',goldAward:30,xpAward:120,goalPoints:250,rareGoal:'fieldTrip',itemId:'forbidden'},accounts.grade4.token);
     assert.equal(oversizedLoot.res.status,403,`Expected 403 boss cap, got ${oversizedLoot.res.status}: ${oversizedLoot.text}`);
     const crossLoot=await getDoc('bossLoot',lootId,accounts.grade4.token);
     assert.equal(crossLoot.res.status,403,`Expected 403 cross-loot read, got ${crossLoot.res.status}: ${crossLoot.text}`);
-    record('Daily Boss chest caps and isolation',true,'one owner chest accepted; oversized/cross-student access denied');
+    record('Retired Boss history and isolation',true,'all new chests denied; historical owner reads retained; cross-student access denied');
 
     const noPetBeforeHatch=await getDoc('students',accounts.noPet.uid,accounts.noPet.token);
     const noPetBeforeHatchModel=Core.normalizeStudent(accounts.noPet,decodeFields(noPetBeforeHatch.body.fields),[]);

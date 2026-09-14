@@ -1,0 +1,10 @@
+const fields={materials:'Available supplies and quantities',tape:'Tape / adhesive allowance',device:'Device size and mass limits',eggs:'Egg and practice-test allowance',tools:'Permitted tools and adult help',testing:'Test location, height and adult supervision',finalDrop:'Final drop procedure and observer area'};
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+export function scienceConditionsMarkup(conditions,{teacher=false}={}){
+ if(!conditions)return '';
+ return `<details class="panel"><summary>${teacher?'Publish science supply and test conditions':'Our class supply and activity sheet'}</summary>${teacher?`<p>Publish the actual limits for your classroom. The strategy-specific allowed and forbidden materials still apply.</p><form id="science-conditions">${Object.entries(fields).map(([k,label])=>`<label>${label}<textarea name="${k}" minlength="5" maxlength="2000" required rows="2">${esc(conditions.values[k]||'')}</textarea></label>`).join('')}<button class="btn" type="submit">Publish class conditions</button></form>`:conditions.published?Object.entries(fields).map(([k,label])=>`<h3>${label}</h3><p style="white-space:pre-wrap">${esc(conditions.values[k])}</p>`).join(''):'<p>Your teacher will publish the class quantities and testing arrangements here. Continue the digital lesson. Wait for those instructions and design approval before gathering supplies or building.</p>'}</details>`;
+}
+export function bindScienceConditions({root,conditions,grade,api,onChange,onError}){
+ const handler=async e=>{if(e.target.id!=='science-conditions')return;e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;try{await api('/api/teacher/science-conditions',{grade,expectedRevision:conditions.revision,values:Object.fromEntries(new FormData(e.target))});await onChange();}catch(error){onError(error.message);}finally{b.disabled=false;}};
+ root.addEventListener('submit',handler);return()=>root.removeEventListener('submit',handler);
+}

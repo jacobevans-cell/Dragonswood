@@ -14,7 +14,11 @@
   <link rel="stylesheet" href="css/dragonswood.css?v=58.0.14">
   <link rel="stylesheet" href="styles/module-host.css">
   <link rel="stylesheet" href="css/visual-v11.css?v=1.2">
-<style>.student-page-missions .student-content,.student-page-adventure .student-content,.student-page-day .student-content{max-width:1500px}.unified-dragon-path{min-width:0;width:100%}.unified-dragon-path iframe{color-scheme:dark}</style>
+<style>.student-page-missions .student-content,.student-page-adventure .student-content,.student-page-day .student-content{max-width:1500px}.unified-dragon-path{min-width:0;width:100%}.unified-dragon-path iframe{color-scheme:dark}
+/* Legacy image rules must not display the loading placeholder after the hero is ready. */
+[data-live-adventurer] .portal-portrait > [hidden]{display:none!important}
+[data-live-adventurer] .portal-portrait > canvas:not([hidden]){display:block}
+</style>
 </head>
 <body class="student-app">
   <a class="skip-link" href="#page-content">Skip to content</a>

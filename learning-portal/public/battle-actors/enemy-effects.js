@@ -1,5 +1,5 @@
-import { clamp, smooth } from "./motion.js?v=dragon-path-5";
-import { targetFlight } from "./battle-geometry.js?v=dragon-path-5";
+import { clamp, smooth } from "./motion.js?v=dragon-path-6";
+import { targetFlight } from "./battle-geometry.js?v=dragon-path-6";
 const TAU = Math.PI * 2;
 function line(g, points, width, color, alpha) {
   if (points.length < 2 || alpha <= 0) return;

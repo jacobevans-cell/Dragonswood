@@ -1,7 +1,7 @@
 // Planning estimates, not deadlines or grading inputs. Video and question counts
 // come from the current bootstrap; timings describe a full, unfinished lesson.
-import {getLessonPractice} from './lesson-practice.js?v=dragon-path-5';
-import {PRACTICE_DURATION_RECEIPTS} from './practice-duration-receipts.js?v=dragon-path-5';
+import {getLessonPractice} from './lesson-practice.js?v=dragon-path-6';
+import {PRACTICE_DURATION_RECEIPTS} from './practice-duration-receipts.js?v=dragon-path-6';
 export const ACTIVITY_ESTIMATE_VERSION = 'day30-38-planning.2';
 export const OVERVIEW_SUBJECTS = ['math', 'reading', 'writing', 'science', 'morphology', 'ccf'];
 

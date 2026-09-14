@@ -26,7 +26,16 @@
     <script>
       (()=>{
         const retry=document.querySelector('[data-quest-opening-retry]');
-        retry.addEventListener('click',()=>location.reload());
+        retry.addEventListener('click',async()=>{
+          if(typeof window.DWDragonPathEmergencyRepair==='function'){
+            retry.disabled=true;
+            const status=document.querySelector('[data-quest-opening-status]');
+            if(status)status.textContent='Repairing this device’s Dragonswood sign-in…';
+            await window.DWDragonPathEmergencyRepair();
+            return;
+          }
+          location.reload();
+        });
         const recover=()=>{const opening=document.querySelector('[data-quest-opening]');if(!opening)return;opening.querySelector('[data-quest-opening-status]').textContent='Opening your quest is taking too long. Your saved work is safe. Try again.';retry.hidden=false;};
         const timer=setTimeout(recover,20000);
         const failed=event=>{if(event.type==='unhandledrejection'||event.target?.tagName==='SCRIPT'||event.message)recover();};
@@ -36,7 +45,7 @@
         done.observe(document.getElementById('app'),{childList:true,subtree:true});
       })();
     </script>
-    <script src="./hosted-auth-session-hotfix.js?v=dragon-path-15"></script>
+    <script src="./hosted-auth-session-hotfix.js?v=dragon-path-16"></script>
     <script type="module" src="./app.js?v=dragon-path-11"></script>
   </body>
 </html>

@@ -3,6 +3,7 @@
 (()=>{
   'use strict';
   const apiOrigin='https://dragonswood-9289e.web.app';
+  const firebaseApiKey='AIzaSyC918WJoGQgxRKsqcz-3bXI7iZWv_1bwYE';
   const nativeFetch=globalThis.fetch.bind(globalThis);
   const hasTimeout=typeof AbortSignal!=='undefined'&&typeof AbortSignal.timeout==='function';
   const nativeTimeout=hasTimeout?AbortSignal.timeout.bind(AbortSignal):null;
@@ -29,16 +30,76 @@
     globalThis.fetch=resilientFetch;
   }
 
-  // Preserve hosted-auth's real Firebase click handler. It is responsible for
-  // reauthenticating a paused session. Only clarify the button/copy for humans.
+  const dragonswoodFirebaseKey=key=>typeof key==='string'&&key.includes(firebaseApiKey)&&/^firebase:(authUser|redirectUser):/.test(key);
+
+  // A few shared/classroom browsers can retain an old Firebase user even after the
+  // Dragonswood server session expires. If Google then returns a different account,
+  // Firebase's reauthenticate flow can get stuck forever on auth/user-mismatch.
+  // Clear only this project's stale Firebase user record, then let the normal clean
+  // sign-in flow choose the account again. Cloud work is untouched.
+  const clearStoredFirebaseUser=()=>{
+    for(const storage of [globalThis.sessionStorage,globalThis.localStorage]){
+      try{
+        for(let i=storage.length-1;i>=0;i--){
+          const key=storage.key(i);
+          if(dragonswoodFirebaseKey(key))storage.removeItem(key);
+        }
+      }catch{}
+    }
+  };
+
+  const clearIndexedDbFirebaseUser=async()=>{
+    try{
+      if(!globalThis.indexedDB)return;
+      if(typeof indexedDB.databases==='function'){
+        const databases=await indexedDB.databases();
+        if(!databases.some(database=>database?.name==='firebaseLocalStorageDb'))return;
+      }
+      await new Promise(resolve=>{
+        let request;
+        try{request=indexedDB.open('firebaseLocalStorageDb',1);}catch{return resolve();}
+        request.onerror=()=>resolve();
+        request.onupgradeneeded=()=>{try{request.transaction?.abort();}catch{}resolve();};
+        request.onsuccess=()=>{
+          const db=request.result;
+          if(!db.objectStoreNames.contains('firebaseLocalStorage')){db.close();resolve();return;}
+          let transaction;
+          try{transaction=db.transaction('firebaseLocalStorage','readwrite');}catch{db.close();resolve();return;}
+          const store=transaction.objectStore('firebaseLocalStorage');
+          const keys=store.getAllKeys();
+          keys.onsuccess=()=>{
+            for(const key of keys.result||[]){
+              if(dragonswoodFirebaseKey(key))try{store.delete(key);}catch{}
+            }
+          };
+          transaction.oncomplete=()=>{db.close();resolve();};
+          transaction.onerror=transaction.onabort=()=>{db.close();resolve();};
+        };
+      });
+    }catch{}
+  };
+
+  // Preserve hosted-auth's real Firebase click handler during normal session resume.
+  // Only replace it after Firebase explicitly reports a user mismatch.
   const repairAuthScreen=()=>{
     const button=document.getElementById('portal-signin');
     const help=document.getElementById('portal-signin-help');
     if(!button)return;
     const text=help?.textContent||'';
-    if(/auth\/user-mismatch/i.test(text)){
-      if(help)help.textContent='Google opened a different account. Choose the same Google account already signed into Dragonswood.';
-      button.textContent='Choose Google account again';
+    const mismatch=/auth\/user-mismatch/i.test(text)||button.dataset.dwMismatchRepair==='1';
+    if(mismatch){
+      button.dataset.dwMismatchRepair='1';
+      if(help)help.textContent='This browser has an old Google session saved. Reset it, then choose the correct Google account.';
+      button.textContent='Reset Google session';
+      button.onclick=async event=>{
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        button.disabled=true;
+        if(help)help.textContent='Resetting the old Google session…';
+        clearStoredFirebaseUser();
+        await clearIndexedDbFirebaseUser();
+        location.reload();
+      };
       return;
     }
     if(/session paused after inactivity|sign in again to continue/i.test(text)){

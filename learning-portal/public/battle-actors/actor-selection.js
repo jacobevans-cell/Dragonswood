@@ -11,7 +11,7 @@ export function actorSelection(value = {}) {
   };
 }
 const requests = new Map();
-let assetBase = '/assets/daily-battle/';
+let assetBase = '/Dragonswood/learning-portal/public/assets/daily-battle/';
 /** Reuse the approved actors when the parent portal is hosted under a GitHub Pages subpath. */
 export function configureActorAssetBase(value) {
   const next = new URL(value, globalThis.location?.href);
@@ -26,8 +26,8 @@ async function definition(kind, id) {
       .then(response => { if (!response.ok) throw new Error('Selected artwork is unavailable'); return response.json(); })
       .then(data => { if (data.id !== id) throw new Error('Actor identity mismatch');
         for (const view of Object.values(data.views || {})) {
-          if (!view.path?.startsWith('/assets/daily-battle/')) throw new Error('Unexpected actor artwork path.');
-          view.path = assetBase + view.path.slice('/assets/daily-battle/'.length);
+          if (!view.path?.startsWith('/Dragonswood/learning-portal/public/assets/daily-battle/')) throw new Error('Unexpected actor artwork path.');
+          view.path = assetBase + view.path.slice('/Dragonswood/learning-portal/public/assets/daily-battle/'.length);
         }
         return data; })
       .catch(error => { requests.delete(key); throw error; }));

@@ -4,7 +4,7 @@ import { prepareSpritePixels, recolorSpritePixels } from './battle-actors/sprite
 import { alphaBounds, containSilhouette } from './battle-actors/portrait-fit.js';
 
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const MASCOT = '/assets/dragonswood-mascot/';
+const MASCOT = '/Dragonswood/learning-portal/public/assets/dragonswood-mascot/';
 const starterHeroes = HERO_OPTIONS.filter(hero => hero.level === 1);
 const imageCache = new Map();
 const portraitCache = new Map();

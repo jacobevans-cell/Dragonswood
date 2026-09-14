@@ -423,7 +423,7 @@ function morphologyMethod(grade) {
     grade === 4 ? "Show flexibility in a scene" : "Build a suspenseful moment",
     stage(
       "Look → imagine → explain",
-      `<figure class="coach-scene"><img src="/assets/bridge-choices.png" alt="Two children safely consider a damaged bridge, a route sketch, a spare board and branches in the stream."><figcaption>Use a visible detail: the sketch, spare board, damaged plank or blocked stream.</figcaption></figure>${flow(
+      `<figure class="coach-scene"><img src="/Dragonswood/learning-portal/public/assets/bridge-choices.png" alt="Two children safely consider a damaged bridge, a route sketch, a spare board and branches in the stream."><figcaption>Use a visible detail: the sketch, spare board, damaged plank or blocked stream.</figcaption></figure>${flow(
         grade === 4
           ? [
               ["Notice", "Something makes the first plan difficult."],

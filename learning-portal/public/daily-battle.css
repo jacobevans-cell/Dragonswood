@@ -159,7 +159,7 @@
 .battle-scene-wrap {
   position: relative;
   isolation: isolate;
-  background: #263c34 url("/assets/daily-battle/forest-arena.png") center/cover;
+  background: #263c34 url("/Dragonswood/learning-portal/public/assets/daily-battle/forest-arena.png") center/cover;
 }
 .battle-scene-wrap:after {
   content: "";

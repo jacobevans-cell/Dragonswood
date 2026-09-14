@@ -1,11 +1,9 @@
-# One Dragonswood portal
+# GitHub portal replacement
 
-The canonical student site is https://dragonswood-9289e.web.app/. The GitHub Pages index is a bookmark entry point that redirects before loading authentication. It must not start the old student application or display a separate Google login.
+The student homepage remains https://jacobevans-cell.github.io/Dragonswood/. It loads the approved new learning UI directly. School tools, spelling, Storyvault, teacher dashboard and learning links remain on this origin and share the default Firebase Auth session.
 
-Firebase Hosting serves the existing public school tools on this same origin. The new learning homepage and authenticated APIs use the existing `dragonswood-learning` service. `school-tools.html` retains the other school features. It is not the default homepage. Teacher dashboard authentication uses the default Firebase app on the canonical origin, while teacher authority remains controlled by verified identity and existing Firebase rules.
+Firebase remains the private authenticated API and saved-work backend. CORS allows the exact GitHub origin only when configured; all API calls still verify Firebase tokens, roster ownership, grade and teacher authority. Cross-origin sessions bind to verified UID and authentication time and retain idle, absolute-expiry and logout enforcement without third-party cookies. Tokens are never passed in navigation URLs.
 
-Do not copy tokens into URLs, transfer browser credentials between domains, or weaken API authentication to make navigation appear seamless. Existing bookmarks may require the first normal login on the canonical origin; navigating between school tools and lessons then uses that same browser session.
+Deploy the reviewed backend with the GitHub origin allowlist before merging the frontend. No separate Firebase homepage redirect is released. Existing AI pilot scope and assessment rules are unchanged.
 
-When releasing changes, update the reviewed Firebase backend/public assets and Firebase Hosting static-tool version before changing the GitHub entry point. Retain the previous Hosting version and service revision. A GitHub merge alone does not update the Firebase-hosted tool files. Keep the public Hosting manifest separate from backend banks, transcripts, saved work, deployment credentials, and private grading evidence.
-
-Run the current learning release gate, plus affected application checks and browser navigation verification. Include root bookmarks, direct activity URLs, teacher-dashboard session reuse, save-before-navigation, mobile layout, and sign-out/account separation. The routing tests do not by themselves prove a live student gradebook submission.
+Rollback: revert this PR to the prior GitHub commit and restore the previous Cloud Run image and pilot digest from the private deployment receipt. No student data migration or reset is part of this change.

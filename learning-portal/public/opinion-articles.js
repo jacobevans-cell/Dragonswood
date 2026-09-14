@@ -5,7 +5,7 @@ export const OPINION_ARTICLES = {
       "Is 'Brainrot' Ruining Our Generation - or Are Adults Taking Internet Memes Too Seriously?",
     subtitle:
       "The word sounds like a diagnosis. Online, it is also a joke, a style of humor, and a way of belonging.",
-    image: "/assets/opinion-articles/brainrot.png",
+    image: "/Dragonswood/learning-portal/public/assets/opinion-articles/brainrot.png",
     imageAlt:
       "Children share a tablet showing playful meme characters while one child draws a coffee-cup ballerina.",
     imageWidth: 1536,
@@ -42,7 +42,7 @@ export const OPINION_ARTICLES = {
       "Is Being a Good Teammate More Important Than Being the Best Player?",
     subtitle:
       "A star can change the score. A teammate can change how the whole group plays.",
-    image: "/assets/opinion-articles/teammate.png",
+    image: "/Dragonswood/learning-portal/public/assets/opinion-articles/teammate.png",
     imageAlt:
       "Volleyball players compete while a teammate helps another player up from the court.",
     imageWidth: 1536,
@@ -75,7 +75,7 @@ export const OPINION_ARTICLES = {
       "Should Kids Control Their Own Screen Time, or Should Adults Set the Limits?",
     subtitle:
       "A clock can count minutes, but it cannot tell whether a child is creating, learning, talking, or endlessly scrolling.",
-    image: "/assets/opinion-articles/screen-time.png",
+    image: "/Dragonswood/learning-portal/public/assets/opinion-articles/screen-time.png",
     imageAlt:
       "A child and an adult discuss a tablet together at a table with a clock, notebook and soccer ball nearby.",
     imageWidth: 1536,
@@ -107,7 +107,7 @@ export const OPINION_ARTICLES = {
     title: "Should Students Help Choose What Their Class Learns?",
     subtitle:
       "Student choice can create energy and ownership. A classroom still has shared goals that everyone must reach.",
-    image: "/assets/opinion-articles/class-choice.png",
+    image: "/Dragonswood/learning-portal/public/assets/opinion-articles/class-choice.png",
     imageAlt:
       "Students and a teacher discuss possible learning topics using pictures of animals, space, buildings and inventions.",
     imageWidth: 1536,

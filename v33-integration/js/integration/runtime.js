@@ -37,7 +37,7 @@
   async function createFirebase(role){
     const S=await sdk();
     // Share the canonical portal's Firebase session; verified identity still governs teacher authority.
-    const canonicalPortal=location.hostname==='dragonswood-9289e.web.app';
+    const canonicalPortal=['jacobevans-cell.github.io','dragonswood-9289e.web.app'].includes(location.hostname);
     const appName=role==='teacher'&&!canonicalPortal?'DragonswoodV33TeacherIntegration':'';
     const firebaseConfig=environment==='emulator'?EMULATOR_FIREBASE_CONFIG:PRODUCTION_FIREBASE_CONFIG;
     let firebaseApp;

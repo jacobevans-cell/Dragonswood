@@ -18,3 +18,5 @@
 .portal-hero-option [hidden]{display:none}.portal-hero-grid-status{font-size:12px;min-height:18px}
 .portal-hero-choice-label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 @media(max-width:700px){.portal-hero-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.portal-hero-option canvas{height:155px}.path-lesson-tabs{gap:5px}.path-lesson-tabs a,.path-lesson-tabs button{padding:8px;font-size:13px}}
+
+.path-lesson-back{margin:0 0 18px}.path-lesson-back a{color:var(--gold);text-decoration:none}.path-extra-tools{margin-top:20px}.path-extra-tools button{text-align:left;color:var(--ink);font:inherit}.dragon-path-embedded #day:disabled{opacity:1;border-color:transparent;appearance:none;background:transparent;color:var(--ink)}

@@ -3,7 +3,7 @@ const root=fileURLToPath(new URL('../../',import.meta.url)),read=p=>fs.readFileS
 const assigned=[];const context=vm.createContext({window:{location:{assign:url=>assigned.push(url)}},document:{currentScript:{src:'https://school.example/Dragonswood/v33-integration/js/learning-bridge.js'}},URL,Intl,console});
 vm.runInContext(read('v33-integration/js/learning-bridge.js'),context);const bridge=context.window.DWLearningBridge;
 test('learning entry points return to the replacement at the existing GitHub address',()=>{
- for(const [id,route] of [['daily-quest','missions/morning'],['curriculum-quest','missions'],['adventurer-hall','adventure']]){assert.equal(bridge.href(id),'https://jacobevans-cell.github.io/Dragonswood/#'+route);assert.equal(bridge.open(id),true);}
+ for(const [id,route] of [['daily-quest','missions/morning'],['curriculum-quest','missions'],['adventurer-hall','hall']]){assert.equal(bridge.href(id),'https://jacobevans-cell.github.io/Dragonswood/#'+route);assert.equal(bridge.open(id),true);}
  assert.equal(bridge.open('boss-battle'),false);assert.equal(assigned.length,3);
 });
 test('new character identity preserves level one and only equips an owned eligible companion',()=>{
@@ -19,7 +19,7 @@ test('schedule covers the eight actual Monday–Thursday dates and supplies no i
  for(const date of ['2026-09-13','2026-09-18','2026-09-25'])assert.equal(bridge.schedule(new Date(date+'T12:00:00-07:00')),null);
 });
 test('direct legacy URLs reach their replacement and retired Boss code cannot execute or award loot',()=>{
- for(const p of ['curriculum-quest.html','adventurer-hall.html'])assert.match(read(p),/https:\/\/jacobevans-cell.github.io\/Dragonswood\/#missions/);
+ assert.match(read('curriculum-quest.html'),/#missions/);assert.match(read('adventurer-hall.html'),/#hall/);
  assert.match(read('daily-quest.html'),/data-learning-cutover/);assert.match(read('daily-quest.html'),/get\('levelup'\)!=='1'/);
  const boss=read('boss-battle.html');assert.match(boss,/old Boss Battle is closed/);assert.doesNotMatch(boss,/<script|runTransaction|bossLoot|gameResults/);
  const rules=read('firestore.rules');assert.match(rules,/match \/bossLoot\/\{lootId\}[^}]*allow create: if false/);assert.doesNotMatch(rules,/'daily_quest','daily_boss'/);

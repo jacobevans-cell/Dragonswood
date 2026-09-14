@@ -1,32 +1,32 @@
-import { lockedVideo, bindLessonVideos } from "./lesson-video.js?v=dragon-path-3";
-import { activityOverview, activityOverviewMarkup, battleOverviewMarkup } from "./activity-overview.js?v=dragon-path-3";
-import { renderLessonPractice, bindLessonPractice } from "./lesson-practice.js?v=dragon-path-3";
-import { scienceLesson } from "./science-lab.js?v=dragon-path-3";
-import { caseDesk, bindCaseDesk } from "./ccf-desk.js?v=dragon-path-3";
-import { bindScienceStrategy } from "./science-strategy.js?v=dragon-path-3";
-import { bindEggEnergy } from "./egg-energy.js?v=dragon-path-3";
-import { essayGuide, essayPreview, bindEssayPreview } from "./opinion-essay.js?v=dragon-path-3";
-import { topicChooser, lockedTopic } from "./writing-topics.js?v=dragon-path-3";
-import { energyDiagram, strategyDiagram } from "./diagrams.js?v=dragon-path-3";
-import { geometryLesson, bindGeometryLab } from "./geometry-lab.js?v=dragon-path-3";
-import { powersLab, bindPowersLab } from "./powers-lab.js?v=dragon-path-3";
-import { visualCoach, bindVisualCoaches } from "./visual-coach.js?v=dragon-path-3";
-import { publicRubric, questionComponent, objectiveComponents, questionsReady, questionControlLocked, questionAnswer, questionAssessment, assessmentFeedback, assessmentTotals, teacherAssessment } from "./assessment-ui.js?v=dragon-path-3";
-import { stageSafeQuestionCoach } from "./assessment-coach.js?v=dragon-path-3";
-import {renderCurriculumMath,renderCurriculumReading,renderCurriculumMorphology,curriculumMathVisual,curriculumCoach,bindCurriculumDays} from './curriculum-days.js?v=dragon-path-3';
-import {writingMilestone,scienceMilestone,learningMethodCoach,bindProjectDayEditors,teacherProjectPanel} from './project-days.js?v=dragon-path-3';
+import { lockedVideo, bindLessonVideos } from "./lesson-video.js?v=dragon-path-4";
+import { activityOverview, activityOverviewMarkup, battleOverviewMarkup } from "./activity-overview.js?v=dragon-path-4";
+import { renderLessonPractice, bindLessonPractice } from "./lesson-practice.js?v=dragon-path-4";
+import { scienceLesson } from "./science-lab.js?v=dragon-path-4";
+import { caseDesk, bindCaseDesk } from "./ccf-desk.js?v=dragon-path-4";
+import { bindScienceStrategy } from "./science-strategy.js?v=dragon-path-4";
+import { bindEggEnergy } from "./egg-energy.js?v=dragon-path-4";
+import { essayGuide, essayPreview, bindEssayPreview } from "./opinion-essay.js?v=dragon-path-4";
+import { topicChooser, lockedTopic } from "./writing-topics.js?v=dragon-path-4";
+import { energyDiagram, strategyDiagram } from "./diagrams.js?v=dragon-path-4";
+import { geometryLesson, bindGeometryLab } from "./geometry-lab.js?v=dragon-path-4";
+import { powersLab, bindPowersLab } from "./powers-lab.js?v=dragon-path-4";
+import { visualCoach, bindVisualCoaches } from "./visual-coach.js?v=dragon-path-4";
+import { publicRubric, questionComponent, objectiveComponents, questionsReady, questionControlLocked, questionAnswer, questionAssessment, assessmentFeedback, assessmentTotals, teacherAssessment } from "./assessment-ui.js?v=dragon-path-4";
+import { stageSafeQuestionCoach } from "./assessment-coach.js?v=dragon-path-4";
+import {renderCurriculumMath,renderCurriculumReading,renderCurriculumMorphology,curriculumMathVisual,curriculumCoach,bindCurriculumDays} from './curriculum-days.js?v=dragon-path-4';
+import {writingMilestone,scienceMilestone,learningMethodCoach,bindProjectDayEditors,teacherProjectPanel} from './project-days.js?v=dragon-path-4';
 import {
   dailyBattlePage,
   bindDailyBattle,
   battleTeacherPanel,
   bindBattleTeacher,
-} from "./daily-battle.js?v=dragon-path-3";
-import {portalIdentityMarkup,portalGuideMarkup,adventurerHomeMarkup,bindPortalIdentity} from './portal-identity.js?v=dragon-path-3';
-import {scheduleMarkup,lockedSubjectMarkup,teacherScheduleMarkup,bindSchoolSchedule} from './school-schedule.js?v=dragon-path-3';
-import {scienceConditionsMarkup,bindScienceConditions} from './science-conditions.js?v=dragon-path-3';
-import {publicResources} from './public-resources.js?v=dragon-path-3';
-import {configureActorAssetBase} from './battle-actors/actor-selection.js?v=dragon-path-3';
-import {embeddedPath,pathTabs,bindPathTabs,startPathFrame} from './dragon-path-embed.js?v=dragon-path-3';
+} from "./daily-battle.js?v=dragon-path-4";
+import {portalIdentityMarkup,portalGuideMarkup,adventurerHomeMarkup,bindPortalIdentity} from './portal-identity.js?v=dragon-path-4';
+import {scheduleMarkup,lockedSubjectMarkup,teacherScheduleMarkup,bindSchoolSchedule} from './school-schedule.js?v=dragon-path-4';
+import {scienceConditionsMarkup,bindScienceConditions} from './science-conditions.js?v=dragon-path-4';
+import {publicResources} from './public-resources.js?v=dragon-path-4';
+import {configureActorAssetBase} from './battle-actors/actor-selection.js?v=dragon-path-4';
+import {embeddedPath,pathTabs,bindPathTabs,startPathFrame} from './dragon-path-embed.js?v=dragon-path-4';
 configureActorAssetBase(new URL('./assets/daily-battle/',import.meta.url).href);
 startPathFrame();
 const runtimeConfig=await fetch(new URL('./runtime-config.json',import.meta.url),{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Runtime configuration unavailable.');return r.json();});
@@ -45,6 +45,9 @@ const esc = (v) =>
   );
 const TEACHING_DAYS=[30,31,32,33,35,36,37,38];
 const weekday=d=>["Monday","Tuesday","Wednesday","Thursday"][TEACHING_DAYS.indexOf(d)%4];
+let releasedDay=30;
+const canPreviewDays=()=>!hosted||hostedAuth?.teacher();
+const visibleTeachingDays=()=>canPreviewDays()?TEACHING_DAYS:[releasedDay];
 let day=Number(localStorage.getItem("dw-preview-day")||30);
 if(!TEACHING_DAYS.includes(day))day=30;
 let grade = Number(localStorage.getItem("dw-preview-grade") || 4),
@@ -139,7 +142,7 @@ function nav() {
 }
 function shell(body) {
   $("#app").innerHTML =
-    `<header class="topbar"><a class="brand" href="#home"><span class="crest"><img src="/Dragonswood/learning-portal/public/assets/dragonswood-mascot/assets/icons/dragonswood-mascot-64.png" alt="" width="32" height="32"></span> DRAGONSWOOD</a><div class="top-actions">${hosted?'<a class="btn quiet small" href="/Dragonswood/school-tools.html#passes" data-school-tool>Passes &amp; school tools</a>':''}${hosted?'':'<span class="preview-label">ROUND ONE · LOCAL PREVIEW</span>'}<select id="day" aria-label="Teaching day">${TEACHING_DAYS.map(d=>`<option value="${d}" ${d===day?"selected":""}>Day ${d} · ${weekday(d)}</option>`).join("")}</select>${hosted?hostedAuth.controls():`<select id="grade" aria-label="Preview grade"><option value="4" ${grade === 4 ? "selected" : ""}>Grade 4 · Preview</option><option value="5" ${grade === 5 ? "selected" : ""}>Grade 5 · Preview</option></select><a href="#teacher" class="btn quiet small">Teacher view</a>`}</div></header><div class="shell"><aside aria-label="Quest navigation">${portalIdentityMarkup(state.adventurer)}${nav()}</aside><main id="main" tabindex="-1">${[...conflicts].map((id) => `<div class="notice error conflict"><strong>${esc(names[id] || id)} draft needs attention.</strong> Export this draft before loading its saved version. Your other work can keep saving. <button class="btn small" data-action="export-conflict" data-id="${esc(id)}">Export this draft</button> <button class="btn small" data-action="reload-saved" data-id="${esc(id)}" ${resolvingConflicts.has(id) ? 'disabled' : ''}>Export and load saved version</button></div>`).join('')}${portalGuideMarkup(route)}${route==="science"?scienceConditionsMarkup(state.scienceConditions):""}${body}</main></div>`;
+    `<header class="topbar"><a class="brand" href="#home"><span class="crest"><img src="/Dragonswood/learning-portal/public/assets/dragonswood-mascot/assets/icons/dragonswood-mascot-64.png" alt="" width="32" height="32"></span> DRAGONSWOOD</a><div class="top-actions">${hosted?'<a class="btn quiet small" href="/Dragonswood/school-tools.html#passes" data-school-tool>Passes &amp; school tools</a>':''}${hosted?'':'<span class="preview-label">ROUND ONE · LOCAL PREVIEW</span>'}<select id="day" aria-label="Teaching day">${visibleTeachingDays().map(d=>`<option value="${d}" ${d===day?"selected":""}>Day ${d} · ${weekday(d)}</option>`).join("")}</select>${hosted?hostedAuth.controls():`<select id="grade" aria-label="Preview grade"><option value="4" ${grade === 4 ? "selected" : ""}>Grade 4 · Preview</option><option value="5" ${grade === 5 ? "selected" : ""}>Grade 5 · Preview</option></select><a href="#teacher" class="btn quiet small">Teacher view</a>`}</div></header><div class="shell"><aside aria-label="Quest navigation">${portalIdentityMarkup(state.adventurer)}${nav()}</aside><main id="main" tabindex="-1">${[...conflicts].map((id) => `<div class="notice error conflict"><strong>${esc(names[id] || id)} draft needs attention.</strong> Export this draft before loading its saved version. Your other work can keep saving. <button class="btn small" data-action="export-conflict" data-id="${esc(id)}">Export this draft</button> <button class="btn small" data-action="reload-saved" data-id="${esc(id)}" ${resolvingConflicts.has(id) ? 'disabled' : ''}>Export and load saved version</button></div>`).join('')}${portalGuideMarkup(route)}${route==="science"?scienceConditionsMarkup(state.scienceConditions):""}${body}</main></div>`;
   if(hosted)hostedAuth.bind();
   if(embeddedPath){document.querySelector('#main').insertAdjacentHTML('afterbegin',pathTabs(route));bindPathTabs(document.querySelector('#main'));}
   document.querySelectorAll('[data-school-tool]').forEach(link=>link.addEventListener('click',async event=>{
@@ -148,13 +151,13 @@ function shell(body) {
       location.assign(link.href);
     }catch(error){toast(error.message);}
   }));
-  $("#day").disabled = lockingTopic || loadingProfile || switchingProfile || questionChecking.size > 0;
+  $("#day").disabled = !canPreviewDays() || lockingTopic || loadingProfile || switchingProfile || questionChecking.size > 0;
   $("#day").addEventListener("change",async(e)=>{
-    const next=Number(e.target.value);if(!TEACHING_DAYS.includes(next)||switchingProfile||loadingProfile||lockingTopic||questionChecking.size){e.target.value=day;return;}
+    const next=Number(e.target.value);if(!TEACHING_DAYS.includes(next)||!canPreviewDays()||switchingProfile||loadingProfile||lockingTopic||questionChecking.size){e.target.value=day;return;}
     switchingProfile=true;e.target.disabled=true;
     try{await flush();if(conflicts.size||dirty.size||Object.keys(pendingRequests).length||Object.keys(pendingQuestions).length){e.target.value=day;toast("Save or resolve current work before switching days.");return;}
       stopVideos();stopScienceStrategy();stopCCF();stopBattle();day=next;localStorage.setItem("dw-preview-day",day);await load();
-    }finally{switchingProfile=false;if($("#day"))$("#day").disabled=lockingTopic||loadingProfile;if($("#grade"))$("#grade").disabled=lockingTopic||loadingProfile;}
+    }finally{switchingProfile=false;if($("#day"))$("#day").disabled=!canPreviewDays()||lockingTopic||loadingProfile;if($("#grade"))$("#grade").disabled=lockingTopic||loadingProfile;}
   });
   if($("#grade"))$("#grade").disabled = lockingTopic || loadingProfile || switchingProfile || questionChecking.size > 0;
   $("#grade")?.addEventListener("change", async (e) => {
@@ -181,7 +184,7 @@ function shell(body) {
       await load();
     } finally {
       switchingProfile = false;
-      if ($("#day")) $("#day").disabled = lockingTopic || loadingProfile;
+      if ($("#day")) $("#day").disabled = !canPreviewDays() || lockingTopic || loadingProfile;
       if ($("#grade")) $("#grade").disabled = lockingTopic || loadingProfile;
     }
   });
@@ -231,7 +234,7 @@ function home() {
     ],
   ];
   if(day>30){cards[0]=["math",content.curriculum.math.title,content.curriculum.math.goal,"Interactive workshop"];cards[1]=["reading",content.passage.title,content.readingTask.mission,"Evidence studio"];cards[2]=["writing",content.writingDay.title,content.writingDay.task,content.writingDay.phase];cards[3]=["science",content.scienceDay.title,content.scienceDay.phase,"Individual egg-drop project"];if(content.morph.video)cards[4]=["morphology",content.morph.word,"Explore the word, practice its meaning, then explain your own idea.","Video + word lab"];}
-  return `${adventurerHomeMarkup(state.adventurer)}<section class="hero hero-grid"><div><div class="eyebrow">CURRICULUM QUEST · GRADE ${grade}</div><h1>Ideas take flight.</h1><p>Welcome to Day ${day}. Read, investigate, create, and use evidence to explain your thinking. Your projects continue across our four-day school weeks.</p><a href="#morning" class="btn primary">Start with Daily Battle <span>→</span></a>${battleOverviewMarkup(state.dailyBattle)}</div><img class="hero-art" src="/Dragonswood/learning-portal/public/assets/bridge-choices.png" alt="Two children consider a safe plan beside a damaged garden bridge."></section><div class="week-strip">${TEACHING_DAYS.map(d=>`<button class="day-chip ${d===day?"current":""}" data-action="open-day" data-day="${d}">${weekday(d).slice(0,3)} · Day ${d}</button>`).join("")}</div>${scheduleMarkup(state.schedule)}<div class="overview-line"><h2>Your learning path</h2><span id="home-count" class="tag ${state.completion.complete ? "good" : ""}">${state.completion.done} of ${state.completion.total} submitted</span></div><div class="progress"><i style="width:${(state.completion.done / state.completion.total) * 100}%"></i></div>${state.completion.complete ? `<div class="notice success">Day ${day} is complete. Your projects stay open for revision. Written feedback may still be on its way.</div>` : ""}<p class="activity-overview-note">Plan your day: estimates include videos, lesson work, and any building or testing. Some days need more time than others. These are planning guides, not timers.</p><div class="cards">${cards.map(([id, title, desc, tag]) => `<a href="#${id}" class="quest-card"><div class="row"><span class="card-icon">${icons[id]}</span><span class="tag ${state.completion.sections[id] ? "good" : ""}">${state.completion.sections[id] ? "✓ Submitted" : tag}</span></div><div class="eyebrow">${names[id]}</div><h3>${title}</h3><p>${desc}</p>${activityOverviewMarkup(overview[id])}<span class="quest-card-action">${state.drafts[id] ? "Continue" : "Open lesson"} →</span></a>`).join("")}</div><p class="caption">Eight teaching days · Monday–Thursday. Each day keeps its own work and completion; your essay and science notebook continue across days.</p>`;
+  return `${embeddedPath?"":adventurerHomeMarkup(state.adventurer)}<section class="hero hero-grid"><div><div class="eyebrow">CURRICULUM QUEST · GRADE ${grade}</div><h1>Ideas take flight.</h1><p>Welcome to Day ${day}. Read, investigate, create, and use evidence to explain your thinking. Your projects continue across our four-day school weeks.</p><a href="#morning" class="btn primary">Start with Daily Battle <span>→</span></a>${battleOverviewMarkup(state.dailyBattle)}</div><img class="hero-art" src="/Dragonswood/learning-portal/public/assets/bridge-choices.png" alt="Two children consider a safe plan beside a damaged garden bridge."></section><div class="week-strip">${visibleTeachingDays().map(d=>`<button class="day-chip ${d===day?"current":""}" data-action="open-day" data-day="${d}">${weekday(d).slice(0,3)} · Day ${d}</button>`).join("")}</div>${scheduleMarkup(state.schedule)}<div class="overview-line"><h2>Your learning path</h2><span id="home-count" class="tag ${state.completion.complete ? "good" : ""}">${state.completion.done} of ${state.completion.total} submitted</span></div><div class="progress"><i style="width:${(state.completion.done / state.completion.total) * 100}%"></i></div>${state.completion.complete ? `<div class="notice success">Day ${day} is complete. Your projects stay open for revision. Written feedback may still be on its way.</div>` : ""}<p class="activity-overview-note">Plan your day: estimates include videos, lesson work, and any building or testing. Some days need more time than others. These are planning guides, not timers.</p><div class="cards">${cards.map(([id, title, desc, tag]) => `<a href="#${id}" class="quest-card"><div class="row"><span class="card-icon">${icons[id]}</span><span class="tag ${state.completion.sections[id] ? "good" : ""}">${state.completion.sections[id] ? "✓ Submitted" : tag}</span></div><div class="eyebrow">${names[id]}</div><h3>${title}</h3><p>${desc}</p>${activityOverviewMarkup(overview[id])}<span class="quest-card-action">${state.drafts[id] ? "Continue" : "Open lesson"} →</span></a>`).join("")}</div>${embeddedPath?`<div class="cards path-extra-tools"><button class="quest-card" type="button" data-path-school="module/rune-spelling"><h3>Rune Spelling</h3><p>Open your assigned spelling practice.</p></button><button class="quest-card" type="button" data-path-school="module/class-reader"><h3>Storyvault</h3><p>Continue your reading with your saved page.</p></button></div>`:""}<p class="caption">Eight teaching days · Monday–Thursday. Each day keeps its own work and completion; your essay and science notebook continue across days.</p>`;
 }
 function heading(id, title, sub) {
   return `<a class="back" href="#home">← Curriculum Quest</a><div class="lesson-heading"><div class="eyebrow">${names[id]} · DAY ${day} · GRADE ${grade}</div><h1>${title}</h1><p class="muted">${sub}</p></div>${publicRubric(state.assessment?.contracts?.[id])}`;
@@ -1532,7 +1535,7 @@ async function load() {
   } finally {
     if (generation === profileGeneration && grade === loadGrade && day === loadDay) {
       loadingProfile = false;
-      if ($("#day")) $("#day").disabled = lockingTopic || switchingProfile;
+      if ($("#day")) $("#day").disabled = !canPreviewDays() || lockingTopic || switchingProfile;
       if ($("#grade")) $("#grade").disabled = lockingTopic || switchingProfile;
     }
   }
@@ -1633,10 +1636,10 @@ setInterval(async () => {
   } catch {}
 }, 15000);
 if(hosted){
-  const {startHostedAuth}=await import('./hosted-auth.js?v=dragon-path-3');
+  const {startHostedAuth}=await import('./hosted-auth.js?v=dragon-path-4');
   hostedAuth=await startHostedAuth({config:runtimeConfig,
     onClear:()=>{clearTimeout(saveTimer);profileGeneration++;stopVideos();stopScienceStrategy();stopCCF();stopBattle();stopSchoolSchedule();stopPortalIdentity();stopScienceConditions();content=null;state=null;work={};dirty.clear();conflicts.clear();pendingRequests={};pendingQuestions={};questionChecking.clear();loadingProfile=false;},
     beforeSwitch:async()=>{await flush();if(dirty.size||conflicts.size||questionChecking.size||Object.keys(pendingRequests).length||Object.keys(pendingQuestions).length)throw Error('Save or resolve your current work before switching accounts.');},
-    onReady:async session=>{grade=session.student.grade;day=TEACHING_DAYS.includes(session.teachingDay)?session.teachingDay:30;await load();},onError:toast});
+    onReady:async session=>{grade=session.student.grade;releasedDay=TEACHING_DAYS.includes(session.teachingDay)?session.teachingDay:30;day=releasedDay;await load();},onError:toast});
   hostedAuth.start();
 }else await load();

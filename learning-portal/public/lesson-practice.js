@@ -1,6 +1,6 @@
-import { GRADE4_PRACTICE } from './lesson-practice-grade4.js?v=dragon-path-7';
-import { GRADE5_PRACTICE } from './lesson-practice-grade5.js?v=dragon-path-7';
-import { checkPracticeTask, geometrySVG, geometryExample, PLACE_LABELS, placeValue, placeDigits } from './practice-models.js?v=dragon-path-7';
+import { GRADE4_PRACTICE } from './lesson-practice-grade4.js?v=dragon-path-8';
+import { GRADE5_PRACTICE } from './lesson-practice-grade5.js?v=dragon-path-8';
+import { checkPracticeTask, geometrySVG, geometryExample, PLACE_LABELS, placeValue, placeDigits } from './practice-models.js?v=dragon-path-8';
 
 export const PRACTICE_VERSION = 'lesson-practice.1';
 export function getLessonPractice(grade, day, subject = 'math') {

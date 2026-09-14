@@ -4,9 +4,9 @@ import {
   durationFor,
   poseAt,
   validateDefinition,
-} from "./motion.js?v=dragon-path-9";
-import { drawEnemyEffects } from "./enemy-effects.js?v=dragon-path-9";
-import { enemyFacing } from "./battle-geometry.js?v=dragon-path-9";
+} from "./motion.js?v=dragon-path-10";
+import { drawEnemyEffects } from "./enemy-effects.js?v=dragon-path-10";
+import { enemyFacing } from "./battle-geometry.js?v=dragon-path-10";
 const gameAssets = new WeakMap();
 let serial = 0;
 async function acquire(scene, url, bounds) {

@@ -1,32 +1,32 @@
-import { lockedVideo, bindLessonVideos } from "./lesson-video.js?v=dragon-path-9";
-import { activityOverview, activityOverviewMarkup, battleOverviewMarkup } from "./activity-overview.js?v=dragon-path-9";
-import { renderLessonPractice, bindLessonPractice } from "./lesson-practice.js?v=dragon-path-9";
-import { scienceLesson } from "./science-lab.js?v=dragon-path-9";
-import { caseDesk, bindCaseDesk } from "./ccf-desk.js?v=dragon-path-9";
-import { bindScienceStrategy } from "./science-strategy.js?v=dragon-path-9";
-import { bindEggEnergy } from "./egg-energy.js?v=dragon-path-9";
-import { essayGuide, essayPreview, bindEssayPreview } from "./opinion-essay.js?v=dragon-path-9";
-import { topicChooser, lockedTopic } from "./writing-topics.js?v=dragon-path-9";
-import { energyDiagram, strategyDiagram } from "./diagrams.js?v=dragon-path-9";
-import { geometryLesson, bindGeometryLab } from "./geometry-lab.js?v=dragon-path-9";
-import { powersLab, bindPowersLab } from "./powers-lab.js?v=dragon-path-9";
-import { visualCoach, bindVisualCoaches } from "./visual-coach.js?v=dragon-path-9";
-import { publicRubric, questionComponent, objectiveComponents, questionsReady, questionControlLocked, questionAnswer, questionAssessment, assessmentFeedback, assessmentTotals, teacherAssessment } from "./assessment-ui.js?v=dragon-path-9";
-import { stageSafeQuestionCoach } from "./assessment-coach.js?v=dragon-path-9";
-import {renderCurriculumMath,renderCurriculumReading,renderCurriculumMorphology,curriculumMathVisual,curriculumCoach,bindCurriculumDays} from './curriculum-days.js?v=dragon-path-9';
-import {writingMilestone,scienceMilestone,learningMethodCoach,bindProjectDayEditors,teacherProjectPanel} from './project-days.js?v=dragon-path-9';
+import { lockedVideo, bindLessonVideos } from "./lesson-video.js?v=dragon-path-10";
+import { activityOverview, activityOverviewMarkup, battleOverviewMarkup } from "./activity-overview.js?v=dragon-path-10";
+import { renderLessonPractice, bindLessonPractice } from "./lesson-practice.js?v=dragon-path-10";
+import { scienceLesson } from "./science-lab.js?v=dragon-path-10";
+import { caseDesk, bindCaseDesk } from "./ccf-desk.js?v=dragon-path-10";
+import { bindScienceStrategy } from "./science-strategy.js?v=dragon-path-10";
+import { bindEggEnergy } from "./egg-energy.js?v=dragon-path-10";
+import { essayGuide, essayPreview, bindEssayPreview } from "./opinion-essay.js?v=dragon-path-10";
+import { topicChooser, lockedTopic } from "./writing-topics.js?v=dragon-path-10";
+import { energyDiagram, strategyDiagram } from "./diagrams.js?v=dragon-path-10";
+import { geometryLesson, bindGeometryLab } from "./geometry-lab.js?v=dragon-path-10";
+import { powersLab, bindPowersLab } from "./powers-lab.js?v=dragon-path-10";
+import { visualCoach, bindVisualCoaches } from "./visual-coach.js?v=dragon-path-10";
+import { publicRubric, questionComponent, objectiveComponents, questionsReady, questionControlLocked, questionAnswer, questionAssessment, assessmentFeedback, assessmentTotals, teacherAssessment } from "./assessment-ui.js?v=dragon-path-10";
+import { stageSafeQuestionCoach } from "./assessment-coach.js?v=dragon-path-10";
+import {renderCurriculumMath,renderCurriculumReading,renderCurriculumMorphology,curriculumMathVisual,curriculumCoach,bindCurriculumDays} from './curriculum-days.js?v=dragon-path-10';
+import {writingMilestone,scienceMilestone,learningMethodCoach,bindProjectDayEditors,teacherProjectPanel} from './project-days.js?v=dragon-path-10';
 import {
   dailyBattlePage,
   bindDailyBattle,
   battleTeacherPanel,
   bindBattleTeacher,
-} from "./daily-battle.js?v=dragon-path-9";
-import {portalIdentityMarkup,portalGuideMarkup,adventurerHomeMarkup,bindPortalIdentity} from './portal-identity.js?v=dragon-path-9';
-import {scheduleMarkup,lockedSubjectMarkup,teacherScheduleMarkup,bindSchoolSchedule} from './school-schedule.js?v=dragon-path-9';
-import {scienceConditionsMarkup,bindScienceConditions} from './science-conditions.js?v=dragon-path-9';
-import {publicResources} from './public-resources.js?v=dragon-path-9';
-import {configureActorAssetBase} from './battle-actors/actor-selection.js?v=dragon-path-9';
-import {embeddedPath,pathTabs,bindPathTabs,startPathFrame} from './dragon-path-embed.js?v=dragon-path-9';
+} from "./daily-battle.js?v=dragon-path-10";
+import {portalIdentityMarkup,portalGuideMarkup,adventurerHomeMarkup,bindPortalIdentity} from './portal-identity.js?v=dragon-path-10';
+import {scheduleMarkup,lockedSubjectMarkup,teacherScheduleMarkup,bindSchoolSchedule} from './school-schedule.js?v=dragon-path-10';
+import {scienceConditionsMarkup,bindScienceConditions} from './science-conditions.js?v=dragon-path-10';
+import {publicResources} from './public-resources.js?v=dragon-path-10';
+import {configureActorAssetBase} from './battle-actors/actor-selection.js?v=dragon-path-10';
+import {embeddedPath,pathTabs,bindPathTabs,startPathFrame} from './dragon-path-embed.js?v=dragon-path-10';
 configureActorAssetBase(new URL('./assets/daily-battle/',import.meta.url).href);
 startPathFrame();
 const runtimeConfig=await fetch(new URL('./runtime-config.json',import.meta.url),{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Runtime configuration unavailable.');return r.json();});
@@ -1543,7 +1543,8 @@ async function load() {
   } catch (e) {
     if (generation !== profileGeneration || grade !== loadGrade || day !== loadDay) return;
     $("#app").innerHTML =
-      `<main class="loading"><h1>We couldn’t open your quest.</h1><p>${esc(e.message)}</p><a class="btn" href="/">Try again</a></main>`;
+      `<main class="loading"><h1>We couldn’t open your quest.</h1><p>${esc(e.message)}</p><button class="btn" data-retry-quest>Try again</button></main>`;
+    document.querySelector('[data-retry-quest]').addEventListener('click', () => load(), { once: true });
   } finally {
     if (generation === profileGeneration && grade === loadGrade && day === loadDay) {
       loadingProfile = false;
@@ -1650,7 +1651,7 @@ setInterval(async () => {
   } catch {} finally {statePolling=false;}
 }, 30000);
 if(hosted){
-  const {startHostedAuth}=await import('./hosted-auth.js?v=dragon-path-9');
+  const {startHostedAuth}=await import('./hosted-auth.js?v=dragon-path-10');
   hostedAuth=await startHostedAuth({config:runtimeConfig,
     onClear:()=>{clearTimeout(saveTimer);profileGeneration++;stopVideos();stopScienceStrategy();stopCCF();stopBattle();stopSchoolSchedule();stopPortalIdentity();stopScienceConditions();content=null;state=null;work={};dirty.clear();conflicts.clear();pendingRequests={};pendingQuestions={};questionChecking.clear();loadingProfile=false;},
     beforeSwitch:async()=>{await flush();if(dirty.size||conflicts.size||questionChecking.size||Object.keys(pendingRequests).length||Object.keys(pendingQuestions).length)throw Error('Save or resolve your current work before switching accounts.');},

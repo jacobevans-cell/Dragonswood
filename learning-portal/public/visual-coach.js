@@ -1,9 +1,9 @@
-import { eggEnergyCoach } from "./egg-energy.js?v=dragon-path-8";
-import { essayMap, opinionEssayStructure } from "./opinion-essay.js?v=dragon-path-8";
-import { geometryCoach } from "./geometry-lab.js?v=dragon-path-8";
-import { powerChart } from "./powers-lab.js?v=dragon-path-8";
-import { energyDiagram, strategyDiagram } from "./diagrams.js?v=dragon-path-8";
-import { tenthsDiagram, placeValue } from "./decimal-lab.js?v=dragon-path-8";
+import { eggEnergyCoach } from "./egg-energy.js?v=dragon-path-9";
+import { essayMap, opinionEssayStructure } from "./opinion-essay.js?v=dragon-path-9";
+import { geometryCoach } from "./geometry-lab.js?v=dragon-path-9";
+import { powerChart } from "./powers-lab.js?v=dragon-path-9";
+import { energyDiagram, strategyDiagram } from "./diagrams.js?v=dragon-path-9";
+import { tenthsDiagram, placeValue } from "./decimal-lab.js?v=dragon-path-9";
 
 const esc = (value) =>
   String(value).replace(

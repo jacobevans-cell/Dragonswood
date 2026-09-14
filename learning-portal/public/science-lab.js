@@ -3,9 +3,9 @@ import {
   eggStagePicture,
   eggStageGallery,
   videoEnergyConnections,
-} from "./egg-energy.js?v=dragon-path-10";
-import { scienceStrategyChooser } from "./science-strategy.js?v=dragon-path-10";
-import { lockedVideo } from "./lesson-video.js?v=dragon-path-10";
+} from "./egg-energy.js?v=dragon-path-11";
+import { scienceStrategyChooser } from "./science-strategy.js?v=dragon-path-11";
+import { lockedVideo } from "./lesson-video.js?v=dragon-path-11";
 const esc = (v) =>
   String(v ?? "").replace(
     /[&<>"']/g,

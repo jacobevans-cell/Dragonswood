@@ -1,4 +1,4 @@
-import { HERO_OPTIONS } from './battle-actors/actor-catalog.js?v=dragon-path-10';
+import { HERO_OPTIONS } from './battle-actors/actor-catalog.js?v=dragon-path-11';
 
 // A new setup version reopens the chooser without deleting any saved identity or work.
 export const ADVENTURER_SETUP_VERSION = 'dragonswood-adventurer-setup.2';

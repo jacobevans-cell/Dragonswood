@@ -1,5 +1,5 @@
 /** Runtime-only sprite materials. Source artwork is never modified. */
-import {viewFrame} from './roster-model.js?v=dragon-path-5';
+import {viewFrame} from './roster-model.js?v=dragon-path-6';
 const SKIN = {light:[214,130,90], medium:[153,79,52], deep:[90,47,37]};
 const HAIR = {black:[49,46,60], brown:[114,72,51], purple:[120,82,160]};
 const EYES = {green:[82,179,102], brown:[193,135,56], purple:[154,111,212]};

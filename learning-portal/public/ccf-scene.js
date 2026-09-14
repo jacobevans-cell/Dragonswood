@@ -1,6 +1,6 @@
 // Optional investigation view. The parent supplies the complete, accessible
 // evidence list; this scene never grades, saves, or contains a case solution.
-import { layoutCaseScene } from "./ccf-scene-layout.js?v=dragon-path-5";
+import { layoutCaseScene } from "./ccf-scene-layout.js?v=dragon-path-6";
 
 const PHASER_VERSION = "4.2.1";
 const PHASER_URL = "/Dragonswood/learning-portal/public/vendor/phaser-4.2.1.min.js";

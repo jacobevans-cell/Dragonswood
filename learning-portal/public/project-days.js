@@ -1,8 +1,8 @@
-import {essayPreview,essayGuide} from './opinion-essay.js?v=dragon-path-5';
-import {lockedTopic} from './writing-topics.js?v=dragon-path-5';
-import {lockedVideo} from './lesson-video.js?v=dragon-path-5';
-import {strategyDiagram} from './diagrams.js?v=dragon-path-5';
-import {scienceFieldCoach} from './project-science-coaches.js?v=dragon-path-5';
+import {essayPreview,essayGuide} from './opinion-essay.js?v=dragon-path-6';
+import {lockedTopic} from './writing-topics.js?v=dragon-path-6';
+import {lockedVideo} from './lesson-video.js?v=dragon-path-6';
+import {strategyDiagram} from './diagrams.js?v=dragon-path-6';
+import {scienceFieldCoach} from './project-science-coaches.js?v=dragon-path-6';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const panel=(title,body)=>`<section class="panel"><h2>${esc(title)}</h2>${body}</section>`;
 export function learningMethodCoach(assignment,path,label,day=30){
@@ -78,5 +78,5 @@ export function bindProjectDayEditors(root=document){
  root.querySelectorAll('[data-assignment="writing"]').forEach(el=>el.addEventListener('input',update));update();
 }
 export function teacherProjectPanel(profiles){
- return panel('Individual science project reviews',`<p>These controls record teacher decisions for these local preview profiles. Review the saved design and supply request below before approving physical work. Production teacher accounts remain a separate integration.</p>${profiles.map(p=>`<article class="panel"><h3>Grade ${p.grade} preview</h3><p><strong>Current design:</strong> ${p.projectReviews?.designCurrent?'Approved':'Awaiting review'}</p><details><summary>Design and supply request</summary><p style="white-space:pre-wrap">${esc(p.projectWork?.science?.data.design||'No design saved.')}</p><p style="white-space:pre-wrap">${esc(p.projectWork?.science?.data.supplies||'No supply request saved.')}</p></details><label for="review-kind-${p.grade}">Review type</label><select id="review-kind-${p.grade}"><option value="design">Current design and supplies</option><option value="test">Low-height test / retest conditions</option><option value="final">Final adult-operated drop completed</option></select><label for="review-note-${p.grade}">Reviewed conditions and notes</label><textarea id="review-note-${p.grade}" rows="3" placeholder="Record approved supplies, conditions, constraints or an honest deferral. Do not invent a height or result."></textarea><button class="btn small" data-project-approve="${p.grade}">Record reviewed approval</button><p class="small" data-project-review-status="${p.grade}" role="status"></p></article>`).join('')}`);
+ return panel('Individual science project reviews',`<p>These controls save your review for the selected student. Review the saved design and supply request below before approving physical work.</p>${profiles.map(p=>`<article class="panel"><h3>Grade ${p.grade}</h3><p><strong>Current design:</strong> ${p.projectReviews?.designCurrent?'Approved':'Awaiting review'}</p><details><summary>Design and supply request</summary><p style="white-space:pre-wrap">${esc(p.projectWork?.science?.data.design||'No design saved.')}</p><p style="white-space:pre-wrap">${esc(p.projectWork?.science?.data.supplies||'No supply request saved.')}</p></details><label for="review-kind-${p.grade}">Review type</label><select id="review-kind-${p.grade}"><option value="design">Current design and supplies</option><option value="test">Low-height test / retest conditions</option><option value="final">Final adult-operated drop completed</option></select><label for="review-note-${p.grade}">Reviewed conditions and notes</label><textarea id="review-note-${p.grade}" rows="3" placeholder="Record approved supplies, conditions, constraints or an honest deferral. Do not invent a height or result."></textarea><button class="btn small" data-project-approve="${p.grade}">Record reviewed approval</button><p class="small" data-project-review-status="${p.grade}" role="status"></p></article>`).join('')}`);
 }

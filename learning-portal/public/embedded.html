@@ -30,7 +30,7 @@
           if(typeof window.DWDragonPathEmergencyRepair==='function'){
             retry.disabled=true;
             const status=document.querySelector('[data-quest-opening-status]');
-            if(status)status.textContent='Repairing this device’s Dragonswood sign-in…';
+            if(status)status.textContent='Reloading Dragon’s Path with your existing Dragonswood sign-in…';
             await window.DWDragonPathEmergencyRepair();
             return;
           }
@@ -45,7 +45,7 @@
         done.observe(document.getElementById('app'),{childList:true,subtree:true});
       })();
     </script>
-    <script src="./hosted-auth-session-hotfix.js?v=dragon-path-16"></script>
+    <script src="./hosted-auth-session-hotfix.js?v=dragon-path-17"></script>
     <script type="module" src="./app.js?v=dragon-path-11"></script>
   </body>
 </html>

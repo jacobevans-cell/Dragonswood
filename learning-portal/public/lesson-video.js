@@ -1,4 +1,4 @@
-import { lessonVideoSource } from "./video-delivery.js?v=dragon-path-11";
+import { lessonVideoSource, lessonVideoSources } from "./video-delivery.js?v=dragon-path-11";
 import { PLAYBACK_RATES, validPlaybackRate } from "./video-policy.js?v=dragon-path-11";
 const esc = (v) =>
   String(v ?? "").replace(
@@ -18,8 +18,49 @@ function preferredSpeed() {
     return 1;
   }
 }
+// Delivery may change; the server's video ID, duration and viewing receipt do not.
+export async function loadLessonMedia(video, sources, {
+  signal, onStatus = () => {}, timeoutMs = 12000,
+} = {}) {
+  const candidates = [...new Set(sources.filter(Boolean))];
+  if (signal?.aborted) throw new DOMException("Video opening cancelled.", "AbortError");
+  if (!video.error && video.readyState >= 1 && candidates.includes(video.getAttribute("src"))) return;
+  for (let index = 0; index < candidates.length; index++) {
+    if (signal?.aborted) throw new DOMException("Video opening cancelled.", "AbortError");
+    onStatus(index ? "Trying another copy of this lesson…" : "Loading lesson video…");
+    try {
+      await new Promise((resolve, reject) => {
+        let timer;
+        const done = (failure) => {
+          clearTimeout(timer);
+          video.removeEventListener("loadedmetadata", loaded);
+          video.removeEventListener("error", failed);
+          signal?.removeEventListener("abort", cancelled);
+          failure ? reject(failure) : resolve();
+        };
+        const loaded = () => done();
+        const failed = () => done(new Error("This video copy could not load."));
+        const cancelled = () => {
+          video.pause();
+          done(new DOMException("Video opening cancelled.", "AbortError"));
+        };
+        video.addEventListener("loadedmetadata", loaded, { once: true });
+        video.addEventListener("error", failed, { once: true });
+        signal?.addEventListener("abort", cancelled, { once: true });
+        timer = setTimeout(failed, timeoutMs);
+        video.preload = "metadata";
+        video.setAttribute("src", candidates[index]);
+        video.load();
+      });
+      return;
+    } catch (failure) {
+      if (failure.name === "AbortError") throw failure;
+    }
+  }
+  throw new Error("The lesson video could not load. Check the connection and try Play again.");
+}
 export function lockedVideo(v, p) {
-  return `<div class="lesson-video" data-video-id="${esc(v.id)}"><div class="row"><h3>${esc(v.title)}</h3><span class="tag">Required video · choose your pace</span></div><video class="video" playsinline preload="none" disablepictureinpicture disableremoteplayback aria-label="${esc(v.title)}" src="${esc(lessonVideoSource(v))}"></video><div class="btn-row"><button class="btn primary" data-video-play>Play lesson</button><button class="btn" data-video-back disabled>Back 10 seconds</button><button class="btn" data-video-forward disabled>Forward 10 seconds</button><label class="video-speed">Speed <select data-video-rate aria-label="Playback speed">${PLAYBACK_RATES.map((r) => `<option value="${r}" ${r === preferredSpeed() ? "selected" : ""}>${r}×${r === 1 ? " · Normal" : ""}</option>`).join("")}</select></label><button class="btn" data-video-mute aria-pressed="false">Mute</button><button class="btn" data-video-full>Full screen</button></div><p data-video-position class="small muted">${time(p?.position)}${v.durationSeconds ? " / " + time(v.durationSeconds) : ""}</p><progress data-video-progress max="100" value="${p?.requiredSeconds ? Math.min(100, (100 * p.seconds) / p.requiredSeconds) : 0}" aria-label="Required video watch progress"></progress><p data-video-status role="status">${p?.complete ? "✓ Video watched. Your activity is unlocked." : "Watch the lesson to unlock your activity. Your place and watched time save automatically."}</p><p class="small muted">Choose a speed from 0.5× to 1.5×. You can pause or go back anytime. Forward 10 seconds unlocks after the viewing requirement is met. Rewatching or skipping does not add extra progress.</p><p data-video-error class="notice error" hidden></p></div>`;
+  return `<div class="lesson-video" data-video-id="${esc(v.id)}" data-video-sources="${esc(JSON.stringify(lessonVideoSources(v)))}"><div class="row"><h3>${esc(v.title)}</h3><span class="tag">Required video · choose your pace</span></div><video class="video" playsinline preload="none" disablepictureinpicture disableremoteplayback aria-label="${esc(v.title)}" src="${esc(lessonVideoSource(v))}"></video><div class="btn-row"><button class="btn primary" data-video-play>Play lesson</button><button class="btn" data-video-back disabled>Back 10 seconds</button><button class="btn" data-video-forward disabled>Forward 10 seconds</button><label class="video-speed">Speed <select data-video-rate aria-label="Playback speed">${PLAYBACK_RATES.map((r) => `<option value="${r}" ${r === preferredSpeed() ? "selected" : ""}>${r}×${r === 1 ? " · Normal" : ""}</option>`).join("")}</select></label><button class="btn" data-video-mute aria-pressed="false">Mute</button><button class="btn" data-video-full>Full screen</button></div><p data-video-error class="notice error" role="alert" hidden></p><p data-video-position class="small muted">${time(p?.position)}${v.durationSeconds ? " / " + time(v.durationSeconds) : ""}</p><progress data-video-progress max="100" value="${p?.requiredSeconds ? Math.min(100, (100 * p.seconds) / p.requiredSeconds) : 0}" aria-label="Required video watch progress"></progress><p data-video-status role="status">${p?.complete ? "✓ Video watched. Your activity is unlocked." : "Watch the lesson to unlock your activity. Your place and watched time save automatically."}</p><p class="small muted">Choose a speed from 0.5× to 1.5×. You can pause or go back anytime. Forward 10 seconds unlocks after the viewing requirement is met. Rewatching or skipping does not add extra progress.</p></div>`;
 }
 export function bindLessonVideos({ root = document, grade, api, onProgress }) {
   const cleanups = [];
@@ -39,6 +80,7 @@ export function bindLessonVideos({ root = document, grade, api, onProgress }) {
       progress = null,
       chain = Promise.resolve(),
       adjusting = false,
+      mediaController = null,
       rate = Number(speed.value);
     function showError(message) {
       video.pause();
@@ -116,40 +158,36 @@ export function bindLessonVideos({ root = document, grade, api, onProgress }) {
       busy = true;
       starting = true;
       play.disabled = true;
+      play.textContent = "Loading lesson…";
+      error.hidden = true;
+      status.textContent = "Opening this lesson video…";
+      const controller = new AbortController();
+      mediaController = controller;
       try {
         await chain;
-        // A fresh lease restores server-confirmed progress after a pause or reload.
-        const session = await api("/api/video/start", {
-          grade,
-          videoId: box.dataset.videoId,
-          rate,
+        if (!active) return;
+        const sources = box.dataset.videoSources
+          ? JSON.parse(box.dataset.videoSources)
+          : [video.getAttribute("src")];
+        // Start downloading metadata during the server round trip. Playback and
+        // credit still wait for the authenticated viewing session and play receipt.
+        const mediaReady = loadLessonMedia(video, sources, {
+          signal: controller.signal,
+          onStatus: (message) => { if (active) status.textContent = message; },
         });
+        // A fresh lease restores server-confirmed progress after a pause or reload.
+        const [session] = await Promise.all([
+          api("/api/video/start", {
+            grade,
+            videoId: box.dataset.videoId,
+            rate,
+          }),
+          mediaReady,
+        ]);
         if (!active) return;
         token = session.token;
         sequence = session.sequence;
         display(session.progress);
-        if (!video.readyState) {
-          await new Promise((resolve, reject) => {
-            const timeout = setTimeout(
-              () =>
-                done(new Error("The video could not load. Try Play again.")),
-              15000,
-            );
-            const loaded = () => done(),
-              failed = () =>
-                done(new Error("Playback is unavailable. Try Play again."));
-            function done(e) {
-              clearTimeout(timeout);
-              video.removeEventListener("loadedmetadata", loaded);
-              video.removeEventListener("error", failed);
-              e ? reject(e) : resolve();
-            }
-            video.addEventListener("loadedmetadata", loaded, { once: true });
-            video.addEventListener("error", failed, { once: true });
-            video.load();
-          });
-        }
-        if (!active) return;
         if (Math.abs(video.duration - progress.durationSeconds) > 1)
           throw Error(
             "The video length has changed. Its source needs verification.",
@@ -170,8 +208,10 @@ export function bindLessonVideos({ root = document, grade, api, onProgress }) {
         play.textContent = "Pause lesson";
         error.hidden = true;
       } catch (e) {
-        showError(e.message);
+        if (active) showError(e.message);
       } finally {
+        controller.abort();
+        if (mediaController === controller) mediaController = null;
         busy = false;
         starting = false;
         play.disabled = false;
@@ -293,6 +333,7 @@ export function bindLessonVideos({ root = document, grade, api, onProgress }) {
     window.addEventListener("pagehide", pagehide);
     cleanups.push(() => {
       if (!active) return;
+      mediaController?.abort();
       clearInterval(timer);
       document.removeEventListener("visibilitychange", visibility);
       window.removeEventListener("pagehide", pagehide);

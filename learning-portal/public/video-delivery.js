@@ -42,6 +42,10 @@ const recoveredVideos=Object.freeze({
   "https://pub-005ee88ce4da43c5a2afcbb4b730333c.r2.dev/K%20-%205th/Morphology/NoDay%20-%20Morphology%20K%20Q1%20lesson%207.4.mp4": "https://dragonswood-9289e.web.app/curriculum-media/015d33cd644c8f37f2e1d089.mp4",
   "https://pub-005ee88ce4da43c5a2afcbb4b730333c.r2.dev/I%20-%204th/Reading/D34%20-%20-HUM%20I%20Q1%20Lesson%2034%E2%80%93%20Reading%20Comprehension%20%E2%80%94%20inferencing.mp4": "https://dragonswood-9289e.web.app/curriculum-media/bbd1fcad5db556851f5ccb2e.mp4"
 });
+export function lessonVideoSources(video){
+  return [...new Set([video.fallbackUrl,recoveredVideos[video.url],video.url]
+    .filter(url=>typeof url==='string'&&url.length>0))];
+}
 export function lessonVideoSource(video){
-  return video.fallbackUrl || recoveredVideos[video.url] || video.url;
+  return lessonVideoSources(video)[0];
 }

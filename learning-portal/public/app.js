@@ -344,7 +344,7 @@ function questions(id, include = null) {
 function finish(id, requirements) {
   const submitted = state.submissions[id];
   const checked = questionsReady(state.assessment?.contracts?.[id], state.assessment?.questions?.[id]);
-  return `<div class="panel"><h3>Before you submit</h3><ul class="requirements">${requirements.map((s) => `<li>${s}</li>`).join("")}${objectiveComponents(state.assessment?.contracts?.[id]).length ? '<li>Use each question’s check button and finish any required recovery choice.</li>' : ''}</ul><p class="small muted">Completion rule: finish the required activities and submit all required parts. Points measure understanding separately. Finalized question answers stay checked. Written work can be revised.</p>${!checked ? '<p class="notice">Finish checking each question before submitting this section. Checked questions count as complete even if they earn zero points.</p>' : ''}<div id="feedback">${feedback(id)}</div><div id="missing" role="alert"></div><div class="submit-bar"><button class="btn primary" data-action="submit" data-id="${id}" ${checked ? '' : 'disabled'}>${submitted ? "Submit revision" : "Submit today’s work"}</button><button class="btn quiet" data-action="save" data-id="${id}">Save draft</button><span class="save-label" role="status" data-save="${id}">${dirty.has(id) ? "Changes waiting to save" : state.drafts[id] ? (hosted ? "Saved to your account" : "Saved on this device’s preview server") : "Not started"}</span><button class="btn small quiet" data-action="export">Export my work</button></div></div>`;
+  return `<div class="panel"><h3>${id === "writing" ? "Check your writing" : "Before you submit"}</h3>${id === "writing" ? `<p>Use the writing coaches beside your answers as you work. When you are ready, <strong>Save & check my writing</strong> submits today’s ${day === 30 ? "plan" : "writing milestone"} for feedback. Read the feedback here, improve your own words, and submit a revision.</p><p class="small muted">AI feedback checks your saved writing against today’s requirements; it does not write your essay. If review is pending, your work stays saved and you can continue. Saving a draft alone does not submit it for grading.</p>` : ""}<ul class="requirements">${requirements.map((s) => `<li>${s}</li>`).join("")}${objectiveComponents(state.assessment?.contracts?.[id]).length ? '<li>Use each question’s check button and finish any required recovery choice.</li>' : ''}</ul><p class="small muted">Completion rule: finish the required activities and submit all required parts. Points measure understanding separately. Finalized question answers stay checked. Written work can be revised.</p>${!checked ? '<p class="notice">Finish checking each question before submitting this section. Checked questions count as complete even if they earn zero points.</p>' : ''}<div id="feedback">${feedback(id)}</div><div id="missing" role="alert"></div><div class="submit-bar"><button class="btn primary" data-action="submit" data-id="${id}" ${checked ? '' : 'disabled'}>${id === "writing" ? (submitted ? "Save & check my revision" : "Save & check my writing") : (submitted ? "Submit revision" : "Submit today’s work")}</button><button class="btn quiet" data-action="save" data-id="${id}">Save draft</button><span class="save-label" role="status" data-save="${id}">${dirty.has(id) ? "Changes waiting to save" : state.drafts[id] ? (hosted ? "Saved to your account" : "Saved on this device’s preview server") : "Not started"}</span><button class="btn small quiet" data-action="export">Export my work</button></div></div>`;
 }
 function feedback(id) {
   const current = assessmentFeedback(state.assessment?.records?.[id], state.assessment?.contracts?.[id]);
@@ -1333,6 +1333,25 @@ async function action(el) {
   }
   if (a === "reload-saved") {
     await resolveConflict(id);
+    return;
+  }
+  if (a === "refresh-feedback") {
+    el.disabled = true;
+    try {
+      const next = await api(`/api/state?grade=${actionProfile.grade}`);
+      if (!profileCurrent(actionProfile) || !responseMatchesProfile(next, actionProfile)) return;
+      // Read-only refresh: never replace drafts, work buffers or pending saves.
+      state.assessment.records[id] = next.assessment?.records?.[id];
+      state.submissions[id] = next.submissions?.[id];
+      if (route === id && $("#feedback")) {
+        $("#feedback").innerHTML = feedback(id);
+        $("#feedback").querySelectorAll("[data-action]").forEach(button =>
+          button.addEventListener("click", () => action(button).catch(e => toast(e.message))));
+      }
+      toast(next.assessment?.records?.[id]?.latestFeedback?.result?.status === "graded"
+        ? "Your latest feedback is ready below."
+        : "Your work is saved. Feedback is still pending; you can keep writing.");
+    } finally { el.disabled = false; }
     return;
   }
   if (a === "retry") {

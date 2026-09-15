@@ -8,5 +8,9 @@ node v33-integration/tools/test-integration-core.cjs
 node --test v33-integration/tools/test-battle-save-recovery.mjs
 node v33-integration/tools/test-student-passes.cjs
 node v33-integration/tools/test-substitute-mode.cjs
-npx --yes firebase-tools@15.28.1 emulators:exec --project demo-dragonswood-v33 --config firebase.v33-production-gate.json --only auth,firestore "DW_PRODUCTION_RULES_GATE=1 node v33-integration/tools/firebase-identity-gate.cjs"
+# Keep the CLI's transitive Node typings off a missing registry tarball.
+TEST_TOOLS_DIR="$(mktemp -d)"
+cp v33-integration/tools/firebase-cli-test-package.json "$TEST_TOOLS_DIR/package.json"
+npm install --prefix "$TEST_TOOLS_DIR" --ignore-scripts --no-audit --no-fund
+"$TEST_TOOLS_DIR/node_modules/.bin/firebase" emulators:exec --project demo-dragonswood-v33 --config firebase.v33-production-gate.json --only auth,firestore "DW_PRODUCTION_RULES_GATE=1 node v33-integration/tools/firebase-identity-gate.cjs"
 echo 'LEARNING RELEASE GATE: PASS — routes, new actors, schedule, gradebook, passes, identity and exact production rules'

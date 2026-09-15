@@ -1,5 +1,5 @@
-@import url("/fonts.css");
-@import url("/lesson-practice.css");
+@import url("./fonts.css");
+@import url("./lesson-practice.css");
 :root {
   color-scheme: dark;
   --bg: #120f20;

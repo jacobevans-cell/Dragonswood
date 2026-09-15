@@ -3,6 +3,7 @@ import {lockedTopic} from './writing-topics.js?v=dragon-path-11';
 import {lockedVideo} from './lesson-video.js?v=dragon-path-11';
 import {strategyDiagram} from './diagrams.js?v=dragon-path-11';
 import {scienceFieldCoach} from './project-science-coaches.js?v=dragon-path-11';
+import {scienceStrategyChooser} from './science-strategy.js?v=dragon-path-11';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const panel=(title,body)=>`<section class="panel"><h2>${esc(title)}</h2>${body}</section>`;
 export function learningMethodCoach(assignment,path,label,day=30){
@@ -52,7 +53,7 @@ export function scienceMilestone({content,state,grade,field,questions,videos,fin
  return `<section class="panel egg-welcome"><div><div class="eyebrow">CRACKLE & NESTLE’S EGG-DROP LAB · DAY ${s.day}</div><h2>${esc(s.title)}</h2><p>${esc(s.prompt)}</p><p>${esc(s.gradeGuidance)}</p></div><img src="${esc(p.welcomeImage)}" alt="Crackle the goblin and Nestle the owl examine an egg."></section>`+
  panel('Your complete science lesson',scienceDayPicture(s.diagram)+s.lesson.map(t=>`<p>${esc(t)}</p>`).join(''))+
  (assigned.length?panel('Watch and notice',scienceObserverGuide(s.day)+assigned.map(v=>lockedVideo(v,state.videoProgress?.[v.id])).join('')):'')+
- panel('My individual strategy',strategy?`<h3>${esc(strategy.name)}</h3>${strategyDiagram(strategy.id)}<p>${esc(strategy.mechanism)}</p>${strategyRules(content.strategies.find(s=>s.id===strategy.id)||strategy)}`:'<p>Your strategy is not locked yet. Open Day 30 Science to review all five categories and confirm an available choice.</p>')+
+ (strategy?panel('My individual strategy',`<h3>${esc(strategy.name)}</h3>${strategyDiagram(strategy.id)}<p>${esc(strategy.mechanism)}</p>${strategyRules(content.strategies.find(s=>s.id===strategy.id)||strategy)}`):scienceStrategyChooser(content.strategies))+
  panel('Check the concepts',questions('science'))+
  panel(s.phase,reviewText+field('science',s.field,'My '+s.phase.toLowerCase(),s.prompt,7)+(s.extra||[]).map(([k,label,hint])=>field('science',k,label,hint,5)).join(''))+
  `<details class="panel"><summary>Earlier project notes and prediction</summary>${Object.entries(state.projectWork?.science?.data||{}).filter(([k])=>k!==s.field&&!(s.extra||[]).some(x=>x[0]===k)).map(([k,v])=>`<h3>${esc(k.replace(/([A-Z])/g,' $1'))}</h3><p style="white-space:pre-wrap">${esc(v)}</p>`).join('')}<button class="btn small" data-action="versions" data-id="science">Project version history</button><div id="version-list"></div></details>`+

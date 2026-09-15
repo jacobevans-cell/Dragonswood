@@ -12,7 +12,7 @@ async function child({teacher=false,failFirst=false,beforeSwitch=async()=>{}}={}
  const session=target=>({role:teacher?'teacher':'student',authUid:teacher?'teacher':'a',student:{uid:target||'a',grade:4},...(teacher?{roster:[{uid:'a',displayName:'A',grade:4},{uid:'b',displayName:'B',grade:5}]}:{})});
  const bridge={version:'single-auth-v2',request:async(path,init)=>{calls.push({path,init});return{status:failFirst&&calls.length===1?503:200,statusText:'',headers:[],body:JSON.stringify(path.includes('activity')?{session:{}}:session(init.teacherTarget))};}};
  const context=vm.createContext({waitForAuthOperation,AbortSignal,Response,Headers,Error,Promise,setTimeout,Date:{now:()=>now},window:{parent:{DWDragonPathParentAuth:bridge}},document:{getElementById:id=>nodes[id],addEventListener:(name,fn)=>events[name]=fn}});
- const source=fs.readFileSync(new URL('../../learning-portal/public/hosted-auth-parent-bridge.js',import.meta.url),'utf8').replace(/^import .*\n/m,'').replace('export async function','async function');vm.runInContext(source,context);
+ const source=fs.readFileSync(new URL('../../learning-portal/public/hosted-auth-parent-bridge.js',import.meta.url),'utf8').replace(/^import [^\r\n]*\r?\n/m,'').replace('export async function','async function');vm.runInContext(source,context);
  const controller=await context.startHostedAuth({config:{},onReady:async data=>ready.push(data),onClear:()=>clears++,onError:e=>errors.push(e),beforeSwitch});await controller.start();
  return{controller,nodes,events,calls,ready,errors,bridge,clears:()=>clears,advance:()=>now+=61000};
 }

@@ -79,6 +79,7 @@ export function bindLessonVideos({ root = document, grade, api, onProgress }) {
       starting = false,
       progress = null,
       chain = Promise.resolve(),
+      tickPending = false,
       adjusting = false,
       mediaController = null,
       rate = Number(speed.value);
@@ -118,6 +119,10 @@ export function bindLessonVideos({ root = document, grade, api, onProgress }) {
     ) {
       const capturedToken = token;
       if (!capturedToken) return Promise.resolve();
+      // One unacknowledged heartbeat at a time. A slow save must not queue
+      // stale positions behind itself; the next heartbeat samples the player.
+      if (event === "tick" && tickPending) return chain;
+      if (event === "tick") tickPending = true;
       chain = chain
         .then(async () => {
           if (token !== capturedToken) return;
@@ -143,6 +148,9 @@ export function bindLessonVideos({ root = document, grade, api, onProgress }) {
         .catch((e) => {
           if (e.videoProgress) display(e.videoProgress);
           showError(e.message);
+        })
+        .finally(() => {
+          if (event === "tick") tickPending = false;
         });
       return chain;
     }
@@ -324,7 +332,7 @@ export function bindLessonVideos({ root = document, grade, api, onProgress }) {
     });
     const timer = setInterval(() => {
       if (!starting && !video.paused && !busy) send("tick");
-    }, 2000);
+    }, 5000);
     const visibility = () => {
       if (document.hidden) pause();
     };

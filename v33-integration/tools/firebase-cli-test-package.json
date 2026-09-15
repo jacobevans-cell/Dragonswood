@@ -1,0 +1,6 @@
+{
+  "name": "dragonswood-firebase-release-test-tools",
+  "private": true,
+  "dependencies": { "firebase-tools": "15.28.1" },
+  "overrides": { "@types/node": "24.0.10" }
+}

@@ -1,6 +1,6 @@
 {
-  "file": "lesson-app-fca27c90ee8f69609a72.js",
-  "sha256": "fca27c90ee8f69609a7233934140d3d1031871ad1475b23eb11c8ead7b995805",
+  "file": "lesson-app-9a78b6a4bf31316242c8.js",
+  "sha256": "9a78b6a4bf31316242c87568b5d7daa4d1675d8b6b30d9f93db5dfccd402f730",
   "modules": 57,
   "inputs": [
     {
@@ -185,7 +185,7 @@
     },
     {
       "path": "daily-battle.js",
-      "sha256": "357971dbb4cbbd07a84bdbcb393851d292524c5be1924a141f24e658de97c216"
+      "sha256": "0eab2d683a653048613654b276d5d99cdee45d18588883807f876f18f79f1f01"
     },
     {
       "path": "battle-actors/portrait-fit.js",

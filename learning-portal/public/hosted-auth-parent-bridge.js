@@ -1,91 +1,60 @@
-// Embedded Dragon's Path auth adapter.
-// Authentication belongs to the outer Dragonswood portal. This iframe never
-// initializes Firebase Auth and never asks students to sign in separately.
-
+// The iframe reuses the parent account and never initializes another Firebase app.
+import {waitForAuthOperation} from './parent-auth-request.js?v=dragon-path-11';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-
-async function parentAuthBridge(){
-  if(window.parent===window)throw Object.assign(new Error('Dragon’s Path must open inside the Dragonswood portal.'),{status:409});
+async function parentAuthBridge(signal){
+  if(window.parent===window)throw Object.assign(new Error('Open Dragon’s Path inside Dragonswood.'),{status:409});
   for(let i=0;i<100;i++){
-    try{
-      const bridge=window.parent.DWDragonPathParentAuth;
-      if(bridge?.request)return bridge;
-    }catch{}
-    await sleep(100);
+    signal?.throwIfAborted();
+    try{const bridge=window.parent.DWDragonPathParentAuth;if(bridge?.version==='single-auth-v2'&&bridge.request)return bridge;}catch{}
+    await waitForAuthOperation(()=>new Promise(resolve=>setTimeout(resolve,100)),signal);
   }
-  throw Object.assign(new Error('The main Dragonswood sign-in bridge did not start. Reload Dragonswood once.'),{status:503});
+  throw Object.assign(new Error('The main Dragonswood session needs the latest update. Reload Dragonswood once.'),{status:503});
 }
-
 export async function startHostedAuth({config,onClear,onReady,beforeSwitch,onError}){
-  let session=null;
-  let teacherTarget=null;
-  let opening=false;
-
+  let session=null,teacherTarget=null,opening=false,epoch=0,lastPing=0,pinging=false;
   async function request(input,init={}){
-    const bridge=await parentAuthBridge();
-    const headers=[...new Headers(init.headers||{}).entries()];
-    const result=await bridge.request(input,{
-      method:String(init.method||'GET').toUpperCase(),
-      headers,
-      body:init.body??null,
-      timeoutMs:45000,
-      teacherTarget
-    });
-    return new Response(result.body,{status:result.status,statusText:result.statusText,headers:result.headers});
+    const generation=epoch,target=teacherTarget,expectedAuthUid=session?.authUid;
+    const signal=init.signal||AbortSignal.timeout(45000);
+    const bridge=await parentAuthBridge(signal);
+    if(generation!==epoch)throw Object.assign(new Error('Your selected student changed. Reopen the activity.'),{status:409});
+    const result=await bridge.request(input,{method:String(init.method||'GET').toUpperCase(),headers:[...new Headers(init.headers||{}).entries()],body:init.body??null,signal,teacherTarget:target,expectedAuthUid});
+    if(generation!==epoch||teacherTarget!==target)throw Object.assign(new Error('Your selected student changed. Your earlier work is kept.'),{status:409});
+    return new Response([204,205,304].includes(result.status)?null:result.body,{status:result.status,statusText:result.statusText,headers:result.headers});
   }
-
   function showProblem(message){
-    onClear?.();
-    const app=document.getElementById('app');
-    if(!app)return;
-    app.innerHTML=`<main class="loading"><img src="/Dragonswood/learning-portal/public/assets/dragonswood-mascot/assets/icons/dragonswood-mascot-64.png" width="64" height="64" alt="Dragonswood dragon"><h1>Dragonswood</h1><p id="portal-signin-help" role="status">${esc(message)}</p><button class="btn" id="portal-signin">Reload Dragonswood</button></main>`;
-    document.getElementById('portal-signin').onclick=()=>{try{window.parent.location.reload()}catch{location.reload()}};
+    const app=document.getElementById('app');if(!app)return;
+    app.innerHTML=`<main class="loading"><h1>Dragonswood</h1><p id="portal-signin-help" role="status">${esc(message)}</p><p>Your saved work and browser recovery copies are kept.</p><button class="btn" id="portal-signin">Try opening my quest again</button><button class="btn quiet" id="portal-reload">Reload Dragonswood</button></main>`;
+    document.getElementById('portal-signin').onclick=()=>openSession();
+    const reload=document.getElementById('portal-reload');if(reload)reload.onclick=()=>{try{window.parent.location.reload();}catch{window.location.reload();}};
   }
-
   async function openSession(){
-    if(opening)return;
-    opening=true;
+    if(opening)return;opening=true;const generation=epoch;
     try{
-      const response=await request('/api/session',{method:'GET'});
-      const data=await response.json().catch(()=>({}));
-      if(!response.ok)throw Object.assign(new Error(data.error||'Dragonswood could not open your learning session.'),data,{status:response.status});
-      session=data;
+      let data;
+      for(let attempt=0;attempt<2;attempt++){
+        try{const response=await request('/api/session');data=await response.json();if(!response.ok)throw Object.assign(new Error(data.error||'Your learning session could not open.'),{status:response.status});break;}
+        catch(error){if(attempt||error.status&&![408,429,502,503,504].includes(error.status))throw error;await new Promise(resolve=>setTimeout(resolve,750));}
+      }
+      if(generation!==epoch)return;
       if(!data.student){
         if(data.role!=='teacher')throw new Error('Your student profile could not be verified.');
-        const roster=Array.isArray(data.roster)?data.roster:[];
-        if(!teacherTarget&&roster.length)teacherTarget=roster[0].uid;
-        if(teacherTarget){
-          const teacherResponse=await request('/api/session',{method:'GET'});
-          const teacherData=await teacherResponse.json().catch(()=>({}));
-          if(!teacherResponse.ok)throw Object.assign(new Error(teacherData.error||'Teacher review session could not open.'),{status:teacherResponse.status});
-          session=teacherData;
-          await onReady(teacherData);
-          return;
-        }
+        if(!teacherTarget&&data.roster?.length)teacherTarget=data.roster[0].uid;
+        if(teacherTarget){const response=await request('/api/session');const selected=await response.json();if(!response.ok)throw Object.assign(new Error(selected.error||'Teacher review could not open.'),{status:response.status});data=selected;}
       }
-      await onReady(data);
-    }catch(error){
-      showProblem(error?.message||'Dragon’s Path could not open. Reload Dragonswood once.');
-      onError?.(error?.message||String(error));
-    }finally{opening=false}
+      if(generation!==epoch)return;if(data.role==='teacher'&&data.student&&!teacherTarget)teacherTarget=data.student.uid;session=data;lastPing=Date.now();await onReady(data);
+    }catch(error){if(generation===epoch){showProblem(error.message||'Your quest could not open yet.');onError?.(error.message||String(error));}}finally{opening=false;}
   }
-
+  async function activity(){
+    if(!session||opening||pinging||Date.now()-lastPing<60000)return;
+    pinging=true;lastPing=Date.now();const generation=epoch;
+    try{const response=await request('/api/session/activity',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});if(response.ok&&generation===epoch)lastPing=Date.now();else if(response.status===401)onError?.('Your sign-in needs attention. Export any unsaved work before reopening Dragonswood.');}
+    catch{/* Save requests retain their own recovery copy and report their own errors. */}finally{pinging=false;}
+  }
+  for(const event of ['pointerdown','keydown','input'])document.addEventListener(event,activity,{passive:true});
   return {
     fetch:request,
-    controls:()=>session?`<span>Grade ${session.student?.grade||''}</span>${session.role==='teacher'&&Array.isArray(session.roster)?`<select id="hosted-student" aria-label="Selected student">${session.roster.map(row=>`<option value="${esc(row.uid)}" ${row.uid===teacherTarget?'selected':''}>${esc(row.displayName)} · Grade ${row.grade}</option>`).join('')}</select>`:''}`:'',
-    bind:()=>{
-      const select=document.getElementById('hosted-student');
-      if(select)select.onchange=async event=>{
-        try{
-          await beforeSwitch?.();
-          teacherTarget=event.target.value;
-          onClear?.();
-          await openSession();
-        }catch(error){onError?.(error?.message||String(error));}
-      };
-    },
-    teacher:()=>session?.role==='teacher',
-    start:()=>{openSession();}
+    controls:()=>session?`<span>Grade ${session.student?.grade||''}</span>${session.role==='teacher'&&Array.isArray(session.roster)?`<select id="hosted-student" aria-label="Selected student">${session.roster.map(row=>`<option value="${esc(row.uid)}" ${row.uid===teacherTarget?'selected':''}>${esc(row.displayName)} · Grade ${row.grade}</option>`).join('')}</select><a href="#teacher" class="btn quiet small">Teacher view</a>`:''}`:'',
+    bind:()=>{const select=document.getElementById('hosted-student');if(select)select.onchange=async event=>{const next=event.target.value;try{if(opening)throw new Error('Wait for this student to finish opening.');await beforeSwitch?.();epoch++;teacherTarget=next;onClear?.();await openSession();}catch(error){event.target.value=teacherTarget;onError?.(error.message);}};},
+    teacher:()=>session?.role==='teacher',start:openSession
   };
 }

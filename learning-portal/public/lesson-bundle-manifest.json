@@ -1,0 +1,235 @@
+{
+  "file": "lesson-app-fca27c90ee8f69609a72.js",
+  "sha256": "fca27c90ee8f69609a7233934140d3d1031871ad1475b23eb11c8ead7b995805",
+  "modules": 57,
+  "inputs": [
+    {
+      "path": "video-delivery.js",
+      "sha256": "3702bac5e8c8a641fd0f5180ba47f56dbedb8e9daa9616f3e8419d36a9b623a3"
+    },
+    {
+      "path": "video-policy.js",
+      "sha256": "deea2c599727b38613fbd1a8249c9e66e88d211e6579f3173eee2052e7845e01"
+    },
+    {
+      "path": "lesson-video.js",
+      "sha256": "f12195e9fdef4049f5f9ade5a0f05abe296ce27a14896834f315fcfbefe1369d"
+    },
+    {
+      "path": "lesson-practice-grade4.js",
+      "sha256": "eea4076926f3c0c20267610fffe84247c848a6469c05bc1d9c3977126a75cc7a"
+    },
+    {
+      "path": "lesson-practice-grade5.js",
+      "sha256": "d4d90c3092aecb578eac8577625130408cd960a73b888c903a3697775166e439"
+    },
+    {
+      "path": "practice-models.js",
+      "sha256": "8e8fe4b03a640976be23a8074042718e3f30c855b70a0a2d2d39f81a818c0325"
+    },
+    {
+      "path": "lesson-practice.js",
+      "sha256": "2c8459bd522f67f8292808f86013993a0fbe7a1ca2e53ced4ffa0d6a29c8fd4e"
+    },
+    {
+      "path": "practice-duration-receipts.js",
+      "sha256": "212634affee07d25f28a636e94b100304aea6a8993c516fa90d0ed2a5884e24d"
+    },
+    {
+      "path": "activity-overview.js",
+      "sha256": "245961c36469622e8eded84d59bf815f27b0f95cbdea10940ea4ff355f420161"
+    },
+    {
+      "path": "egg-energy.js",
+      "sha256": "faf703ee0ce8645b692f3dd1dfa1b7b99f5ba458f7b787533f8ec88d1e3e109e"
+    },
+    {
+      "path": "diagrams.js",
+      "sha256": "99c898d4a32c77bf62efbff550785fd602691f2d429ab8146fb0d2a1b70ba984"
+    },
+    {
+      "path": "science-strategy.js",
+      "sha256": "88a96064ff2e4d54685dc184bbc0a63bf13d533f41e8e4d2b5149a7568f28642"
+    },
+    {
+      "path": "science-lab.js",
+      "sha256": "7422089243913faeba9c2d406d71f0aacf0682c12c6649b22c4f32932c1bbfd7"
+    },
+    {
+      "path": "ccf-scene-layout.js",
+      "sha256": "25da07cc0143144701a78e34c33db82b7a4da419166dbda52e0bd7def2a06980"
+    },
+    {
+      "path": "ccf-scene.js",
+      "sha256": "8248ae063923dd3dc2671838b10e7a1f259426e66d4c8d9b09df50b9304621f6"
+    },
+    {
+      "path": "ccf-documents.js",
+      "sha256": "ebf05bab401ad05f524dd05b46e1ae701090e8ca975479936bf5834bc83cc6ed"
+    },
+    {
+      "path": "ccf-desk.js",
+      "sha256": "e351cf6563d6752e0c5d3bf9d2f0a26b571b73db70bfe7bc7b41ef4b1fa0161d"
+    },
+    {
+      "path": "opinion-essay.js",
+      "sha256": "dd6006b48498fe6f38c54f4d109be2a8cf60cc2e0d1c2c761362b27da0e56365"
+    },
+    {
+      "path": "opinion-articles.js",
+      "sha256": "a7ab67497c2a1baebb1844ab3e268eca8e147fbfce15613f9a09e309ca1e7ffe"
+    },
+    {
+      "path": "writing-topics.js",
+      "sha256": "840bc29bd34f8d77774d59a94d72c4dc753100ded8d268af3271a8d9cd03e925"
+    },
+    {
+      "path": "geometry-lab.js",
+      "sha256": "f72911583d74a6796b67efe8c8a791bdf309224a11a16ceec91df2dceafe9ce3"
+    },
+    {
+      "path": "powers-lab.js",
+      "sha256": "e28061e3280c3e5b39c579c80e99b50b03050daf7c3f83cf75ad4051955422dd"
+    },
+    {
+      "path": "decimal-lab.js",
+      "sha256": "71ed01e41105eb7b29a14419ea9174f413de1f4d6c3af5ce884210f3ad4d474f"
+    },
+    {
+      "path": "visual-coach.js",
+      "sha256": "ac34435a53e48d4aa09b23fd2dff296402730a078934ae48a7ef1acf6cb1a7c2"
+    },
+    {
+      "path": "assessment-ui.js",
+      "sha256": "95a83375b6eb9726974b30d121d7ef61511b6a66a177b39ab6fc80d432714a94"
+    },
+    {
+      "path": "assessment-coach.js",
+      "sha256": "2b6c6bb5c38efc50015f5b76dd1f2f266246d2520df615b6fed1e0aa4c2492f9"
+    },
+    {
+      "path": "curriculum-days.js",
+      "sha256": "a2380dbd4cefba53b790b4bd5cccd6e792cc852c309e58a3fc9703910c4c4963"
+    },
+    {
+      "path": "project-science-coaches.js",
+      "sha256": "42048db4eb67f96281139f33882930f3dcc7141ce9ee6a7243f5d88398a54bfe"
+    },
+    {
+      "path": "project-days.js",
+      "sha256": "4a343bdf30a7331f4b618dbd515777576a5da41f8c637cdc61d5647c7fdc2b54"
+    },
+    {
+      "path": "battle-actors/actor-catalog.js",
+      "sha256": "76fd91ed19a6c060b5f79711a964fd8a0874c218774a280477c89d44e57ecfc5"
+    },
+    {
+      "path": "battle-actors/actor-selection.js",
+      "sha256": "c346c21ddf759a0f0beac6207a6057b57b7248d141141e5600bce0d48f87eba2"
+    },
+    {
+      "path": "public-resources.js",
+      "sha256": "2da67a4fe955f82894aca1d7643401287560ab8f9c80f87bca201daa51a4494a"
+    },
+    {
+      "path": "battle-actors/pet-motion.js",
+      "sha256": "95b831e4e140231064b933bf8b8406f080f8b03ac1e4c4cd9ae39cf0e8d20e9a"
+    },
+    {
+      "path": "battle-actors/motion.js",
+      "sha256": "9e4a12c67b1e866814e8c581e63b90c668b51335e50f819d72baefa689f95bf6"
+    },
+    {
+      "path": "battle-actors/battle-geometry.js",
+      "sha256": "67759da5cb3d9b1125f6411c12add31cedfb9c72c405fb1a47f0d00182c290e2"
+    },
+    {
+      "path": "battle-actors/enemy-effects.js",
+      "sha256": "4a42e48c46ef1336338a6cedfca46ca0b85c8f7c993f59e218342c325ed7b442"
+    },
+    {
+      "path": "battle-actors/pet-actor.js",
+      "sha256": "5ec044413bdf792aa89a0e155e79ed7155335937644a4881dcef6b48c0a4971a"
+    },
+    {
+      "path": "battle-actors/roster-model.js",
+      "sha256": "63a60fd069c4b7deb3f51f38feb2947cd46b41f01775ab11b5169fdd8f5ee199"
+    },
+    {
+      "path": "battle-actors/sprite-appearance.js",
+      "sha256": "563d1a813497cc40212791fede0ad125af6338f4dbd9d7d934c428e21caa9f91"
+    },
+    {
+      "path": "battle-actors/warrior-effects.js",
+      "sha256": "e50017a5f7852d6050fbae7d78f0de9e8a4b0e631b3323d2f93d6d4aa9767ce3"
+    },
+    {
+      "path": "battle-actors/mage-blast.js",
+      "sha256": "803dc8225079d532aaa03021e655a04501d3e4b2b81a267161fca675cd227bcc"
+    },
+    {
+      "path": "battle-actors/hero-actor.js",
+      "sha256": "bf0f94653e5fb15bda3902d46457996182b78a3fde1d404893922da350c236fa"
+    },
+    {
+      "path": "battle-actors/enemy-actor.js",
+      "sha256": "0ce61e1a3ff7da87d39668aaa42af7acb92f146004fba3f0dd17f8b9d7ca76bd"
+    },
+    {
+      "path": "daily-battle-scene.js",
+      "sha256": "6bfe75736d00f2526653d861739a6bdbc0d117576370d2152332b8c8746eb09c"
+    },
+    {
+      "path": "daily-battle-visuals.js",
+      "sha256": "b6895e50f09787a9ea9631d6b41ce27ef380c0719468d6df973324700c23d367"
+    },
+    {
+      "path": "daily-battle.js",
+      "sha256": "357971dbb4cbbd07a84bdbcb393851d292524c5be1924a141f24e658de97c216"
+    },
+    {
+      "path": "battle-actors/portrait-fit.js",
+      "sha256": "6472bb3a54ae359df9cb84e4e5153a6b6650b704b7c3ec318e9364a4dfa9d0cb"
+    },
+    {
+      "path": "portal-idle.js",
+      "sha256": "6d975113e3de4383e82a27e929b2aee2e7770cf9738075f39e78fc1c2dd58736"
+    },
+    {
+      "path": "adventurer-setup.js",
+      "sha256": "a903b581ea350dcd01ae27da5cd59a64ccce50d6dac2af1a86972f06040d39d7"
+    },
+    {
+      "path": "adventurer-chooser.js",
+      "sha256": "24e593d381dcf092dbfc3d0f45c0c8a38ac85298ff5d56a496be721f77d1eb67"
+    },
+    {
+      "path": "portal-identity.js",
+      "sha256": "acdd29804c9da0cd5d4d4a61076ec5fb9c34f378f1d0ab3229d81a39a40ac01c"
+    },
+    {
+      "path": "school-schedule.js",
+      "sha256": "5a661231ba6dc162280000770465c86dc161b76e87807712916caaa411862ea1"
+    },
+    {
+      "path": "science-conditions.js",
+      "sha256": "dd88296ea0e7eb436a513a5abce835b06d611f22b36f72c59dbe88a3d9de86f5"
+    },
+    {
+      "path": "dragon-path-embed.js",
+      "sha256": "af1d1871ba230842444542632811b659a4a11c871e603ce731a816bd6eb2bf45"
+    },
+    {
+      "path": "parent-auth-request.js",
+      "sha256": "8e66e51e2e0a3cb8f6c7f6eb09f655c711c8b30c5691dcc03a57cfd7869f9b8c"
+    },
+    {
+      "path": "hosted-auth-parent-bridge.js",
+      "sha256": "c087602a655d8b881cf3b854cc257d106602716a866b62913179a5145c44f696"
+    },
+    {
+      "path": "app.js",
+      "sha256": "4e6fe0ab288eb493afe6e5a24d0bd675c76a622f8d8a0624d042a12585115ed1"
+    }
+  ]
+}

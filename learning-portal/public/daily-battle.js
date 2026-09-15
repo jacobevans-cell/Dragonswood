@@ -286,6 +286,7 @@ export function bindDailyBattle({ grade, day = 30, previewId, appearance = null,
     busy = true;
     pending = { path, payload };
     put(pendingKey, pending);
+    root.querySelector('#battle-error')?.replaceChildren();
     renderBody();
     try {
       const next = await api(path, payload);
@@ -295,6 +296,7 @@ export function bindDailyBattle({ grade, day = 30, previewId, appearance = null,
       pending = null;
       forget(pendingKey);
       forget(chosenKey);
+      root.querySelector('#battle-error')?.replaceChildren();
       selectedRecord = null;
       selected = null;
       busy = false;

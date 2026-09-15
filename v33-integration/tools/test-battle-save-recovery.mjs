@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';import vm from 'node:vm';import {readFileSync} from 'node:fs';
+test('a successful retry clears an earlier connection error and keeps the original answer request',async()=>{
+ const source=readFileSync(new URL('../../learning-portal/public/daily-battle.js',import.meta.url),'utf8'),request=source.slice(source.indexOf('  async function request(path, payload)'),source.indexOf('  const onClick ='));
+ const box={innerHTML:'',replaceChildren(){this.innerHTML='';}},store=new Map(),calls=[];let attempts=0;
+ const context=vm.createContext({root:{querySelector:selector=>selector==='#battle-error'?box:null},put:(k,v)=>store.set(k,structuredClone(v)),forget:k=>store.delete(k),Date,Promise,api:async(path,payload)=>{calls.push({path,payload:structuredClone(payload)});if(++attempts===1)throw Error('Connection interrupted');return{lastResult:{id:'result'},session:{id:'fixture'}};}});
+ vm.runInContext(`let busy=false,disposed=false,pending=null,pendingKey='pending',chosenKey='choice',selectedRecord=null,selected=null,battle={lastResult:{id:'result'}},showingFeedback=false,scene=null,motion=true,presentationEpoch=0,previewId='synthetic',grade=5,daySuffix=':31';let announcement='';function renderBody(){announcement=pending?'Waiting for confirmation':'Progress saved';}function adopt(next){battle=next;}function error(text){root.querySelector('#battle-error').innerHTML=text;} ${request};globalThis.submit=request;globalThis.receipt=()=>({pending,announcement});`,context);
+ const payload={key:'unchanged-request-key',choiceId:'C',sessionId:'fixture'};
+ await context.submit('/api/battle/answer',payload);assert.match(box.innerHTML,/Connection interrupted/);assert.equal(context.receipt().announcement,'Waiting for confirmation');assert.ok(store.has('pending'));
+ await context.submit('/api/battle/answer',payload);assert.equal(box.innerHTML,'');assert.equal(context.receipt().announcement,'Progress saved');assert.equal(store.has('pending'),false);assert.deepEqual(calls[0],calls[1]);
+});

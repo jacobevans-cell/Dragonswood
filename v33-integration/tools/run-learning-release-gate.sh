@@ -7,7 +7,7 @@ node --test v33-integration/tools/test-writing-topic-student.mjs v33-integration
 node --test v33-integration/tools/test-startup-background-feeds.mjs
 node --test v33-integration/tools/test-practice-interaction.mjs
 node v33-integration/tools/test-integration-core.cjs
-node --test v33-integration/tools/test-battle-save-recovery.mjs v33-integration/tools/test-video-load-recovery.mjs v33-integration/tools/test-video-progress-backpressure.mjs
+node --test v33-integration/tools/test-battle-save-recovery.mjs v33-integration/tools/test-video-load-recovery.mjs v33-integration/tools/test-native-video-controls.mjs
 node v33-integration/tools/test-student-passes.cjs
 node v33-integration/tools/test-substitute-mode.cjs
 # Keep the CLI's transitive Node typings off a missing registry tarball.

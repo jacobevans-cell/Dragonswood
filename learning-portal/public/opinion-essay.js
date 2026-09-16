@@ -1,6 +1,6 @@
 // Shared student/grader structure for this opinion project. It is not a
 // universal scoring rubric, and does not change other writing assignments.
-export const ESSAY_STRUCTURE_VERSION = "short-opinion-essay.2";
+export const ESSAY_STRUCTURE_VERSION = "short-opinion-essay.3";
 export function opinionEssayStructure(grade) {
   if (![4, 5].includes(grade)) throw new Error("Choose grade 4 or 5.");
   return {
@@ -15,13 +15,13 @@ export function opinionEssayStructure(grade) {
     requiredEvidenceCount: 2,
     requiredSources: 0,
     teacherOverrides: [
-      "The teacher requires the grade-specific sentence range in every final essay paragraph, replacing the handoff's flexible development targets for this project.",
+      "The teacher requires at least 3 complete sentences per paragraph in Grade 4 and at least 5 in Grade 5. Writing more is welcome; the suggested 3–5 and 5–7 ranges have no upper limit.",
     ],
     sentenceTarget: {
       min: grade === 4 ? 3 : 5,
-      max: grade === 4 ? 5 : 7,
+      max: null,
       hardMinimum: true,
-      hardMaximum: true,
+      hardMaximum: false,
     },
     paragraphs: [
       {
@@ -63,7 +63,7 @@ export function opinionEssayStructure(grade) {
         ? "Keep related ideas together, use clear examples, and explain how they support your opinion. Use linking words such as because, also, and for example."
         : "Choose specific examples, explain why they matter, and connect ideas within and between paragraphs. Keep your focus clear and use precise words.",
     qualityRules: [
-      "Every final essay paragraph must contain the grade-specific required range of complete sentences: Grade 4 requires 3–5; Grade 5 requires 5–7. A paragraph outside that range needs revision even when its idea is developed. This requirement does not apply to Day 30 planning boxes.",
+      "Every final essay paragraph must contain at least 3 complete sentences in Grade 4 or at least 5 in Grade 5. More sentences are welcome. Never reject a paragraph, request shortening, or deduct points merely for exceeding 5 or 7 sentences. Judge relevance, clarity and development on their own merits. This minimum does not apply to Day 30 planning boxes.",
       "Paragraph or sentence counts alone do not demonstrate development or determine the whole grade. Identify missing writing elements instead of labeling work too short.",
       "This assignment requires three paragraphs, including one body paragraph containing both related reasons. Do not infer an extra body paragraph or a formal five-paragraph essay after submission.",
       "Digital paragraph separation is sufficient; indentation is not required. If formatting cannot be determined, flag formatting_uncertain instead of confidently penalizing paragraph count.",
@@ -84,11 +84,11 @@ const esc = (value) =>
   );
 export function essayMap(structure) {
   const target = structure.sentenceTarget;
-  return `<ol class="essay-map" aria-label="Three paragraphs in your short opinion essay">${structure.paragraphs.map((p, i) => `<li class="essay-part essay-${esc(p.id)}"><span class="essay-number" aria-hidden="true">${i + 1}</span><div class="eyebrow">PARAGRAPH ${i + 1}</div><h3>${esc(p.title)}</h3><p class="essay-sentence-rule"><strong>Required: ${target.min}–${target.max} complete sentences</strong></p><p>${esc(p.job)}</p><ul>${p.parts.map((part) => `<li>${esc(part)}</li>`).join("")}</ul><p class="essay-plan-link">${esc(p.plan)}</p></li>`).join("")}</ol>`;
+  return `<ol class="essay-map" aria-label="Three paragraphs in your short opinion essay">${structure.paragraphs.map((p, i) => `<li class="essay-part essay-${esc(p.id)}"><span class="essay-number" aria-hidden="true">${i + 1}</span><div class="eyebrow">PARAGRAPH ${i + 1}</div><h3>${esc(p.title)}</h3><p class="essay-sentence-rule"><strong>At least ${target.min} complete sentences. More is welcome.</strong></p><p>${esc(p.job)}</p><ul>${p.parts.map((part) => `<li>${esc(part)}</li>`).join("")}</ul><p class="essay-plan-link">${esc(p.plan)}</p></li>`).join("")}</ol>`;
 }
 export function essayGuide(structure) {
   const target = structure.sentenceTarget;
-  return `<section class="panel essay-guide"><div class="row"><div><div class="eyebrow">YOUR FINISHED PROJECT</div><h2>A short essay. Three connected paragraphs.</h2></div><span class="tag gold">INTRODUCTION → BODY → CONCLUSION</span></div><p>Develop one opinion across your whole essay. Each paragraph has a job, and every reason should connect to the same central idea.</p>${essayMap(structure)}<div class="notice"><strong>Grade ${structure.gradeLevel} requirement: ${target.min}–${target.max} complete sentences in each paragraph.</strong><p>${esc(structure.developmentGuidance)}</p></div></section>`;
+  return `<section class="panel essay-guide"><div class="row"><div><div class="eyebrow">YOUR FINISHED PROJECT</div><h2>A short essay. Three connected paragraphs.</h2></div><span class="tag gold">INTRODUCTION → BODY → CONCLUSION</span></div><p>Develop one opinion across your whole essay. Each paragraph has a job, and every reason should connect to the same central idea.</p>${essayMap(structure)}<div class="notice"><strong>Grade ${structure.gradeLevel} requirement: at least ${target.min} complete sentences in each paragraph. More is welcome.</strong><p>${esc(structure.developmentGuidance)}</p></div></section>`;
 }
 export function essayPreview(draft) {
   // Display the student's original paragraph breaks. No automatic restructuring,

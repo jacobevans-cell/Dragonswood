@@ -1,6 +1,6 @@
 {
-  "file": "lesson-app-13e3225a6229bd2015a9.js",
-  "sha256": "13e3225a6229bd2015a91f9e621290998bd75fa767a4faf9f1b39406ef876ca3",
+  "file": "lesson-app-48b64f37e9d3136bafe7.js",
+  "sha256": "48b64f37e9d3136bafe782fb487184d30fc25547a4b4e9ffd35259bfcc380baa",
   "modules": 57,
   "inputs": [
     {
@@ -73,7 +73,7 @@
     },
     {
       "path": "opinion-essay.js",
-      "sha256": "dd6006b48498fe6f38c54f4d109be2a8cf60cc2e0d1c2c761362b27da0e56365"
+      "sha256": "890e5374f5ca4d22ae1f69f4fc452aa599c4d4edd183ff5dab998d1838d2ff02"
     },
     {
       "path": "opinion-articles.js",
@@ -97,7 +97,7 @@
     },
     {
       "path": "visual-coach.js",
-      "sha256": "ac34435a53e48d4aa09b23fd2dff296402730a078934ae48a7ef1acf6cb1a7c2"
+      "sha256": "dd6deb94877abbb74cf30c7bd4c267f9bcb51912f045673c86335b9da078cd51"
     },
     {
       "path": "assessment-ui.js",
@@ -117,7 +117,7 @@
     },
     {
       "path": "project-days.js",
-      "sha256": "4a343bdf30a7331f4b618dbd515777576a5da41f8c637cdc61d5647c7fdc2b54"
+      "sha256": "aad9073767361d3e8a43b698438b414c004d02a7e0711c3810f7bab929838180"
     },
     {
       "path": "battle-actors/actor-catalog.js",

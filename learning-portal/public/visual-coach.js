@@ -299,9 +299,7 @@ function writingMethod(
         ]),
         "This example uses a different topic. Each supporting point in your essay needs a specific example and an explanation of how it supports your opinion.",
         "Write " +
-          target.min +
-          "–" +
-          target.max +
+          "at least " + target.min +
           " complete sentences in each paragraph.",
       ),
     );

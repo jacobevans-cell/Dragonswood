@@ -1,19 +1,23 @@
 {
-  "file": "lesson-app-48b64f37e9d3136bafe7.js",
-  "sha256": "48b64f37e9d3136bafe782fb487184d30fc25547a4b4e9ffd35259bfcc380baa",
-  "modules": 57,
+  "file": "lesson-app-70f4cda4885f69b35588.js",
+  "sha256": "70f4cda4885f69b35588897cfb932a27df1be7422d86b43f87eddc24ecb50deb",
+  "modules": 58,
   "inputs": [
     {
       "path": "video-delivery.js",
-      "sha256": "f27a0a611ce52981fa4ba6768b624ef475560946993599fe35ffe2db71db7484"
+      "sha256": "03ece85f0a37d59dc7dd168f43cc812624425c2eabe33e569b7f07604e5eb599"
     },
     {
       "path": "video-policy.js",
       "sha256": "deea2c599727b38613fbd1a8249c9e66e88d211e6579f3173eee2052e7845e01"
     },
     {
+      "path": "video-player.js",
+      "sha256": "d9380113b6501360c61b2615df96abd39f805a93d91c0885fd7947e7d06e18a8"
+    },
+    {
       "path": "lesson-video.js",
-      "sha256": "48e96f37d90b1206a7d916335711bb1b069bd0065c5cebd0611c1b8724afeb7b"
+      "sha256": "fee4ee278bdfe8253f2447cf2bfa60ad515c00a89f1b5dde05069c810f2d7b18"
     },
     {
       "path": "lesson-practice-grade4.js",
@@ -229,7 +233,7 @@
     },
     {
       "path": "app.js",
-      "sha256": "14a1156e3043b3f4e53869bc8fb0b10c2c8c08080f12ecedd2c2152cbe5dab19"
+      "sha256": "49d99132b17484f2de4ff50ae6ecc81fc44aac340a6af435a0b2047317ffa4b8"
     }
   ]
 }

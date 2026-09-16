@@ -42,8 +42,15 @@ const recoveredVideos=Object.freeze({
   "https://pub-005ee88ce4da43c5a2afcbb4b730333c.r2.dev/K%20-%205th/Morphology/NoDay%20-%20Morphology%20K%20Q1%20lesson%207.4.mp4": "https://dragonswood-9289e.web.app/curriculum-media/015d33cd644c8f37f2e1d089.mp4",
   "https://pub-005ee88ce4da43c5a2afcbb4b730333c.r2.dev/I%20-%204th/Reading/D34%20-%20-HUM%20I%20Q1%20Lesson%2034%E2%80%93%20Reading%20Comprehension%20%E2%80%94%20inferencing.mp4": "https://dragonswood-9289e.web.app/curriculum-media/bbd1fcad5db556851f5ccb2e.mp4"
 });
+const scienceCopies=Object.freeze({
+  "https://pub-005ee88ce4da43c5a2afcbb4b730333c.r2.dev/projects/egg-drop/science-v1/energy-165cfb8ac956.mp4": "https://dragonswood-9289e.web.app/science-media/165cfb8ac95641547b19fda8619cb5ce35495ab0841c4eb4e9a56e41c18a8f9c.mp4",
+  "https://pub-005ee88ce4da43c5a2afcbb4b730333c.r2.dev/projects/egg-drop/science-v1/gravity-766ae0e0bc87.mp4": "https://dragonswood-9289e.web.app/science-media/766ae0e0bc87837caa6b4d3d9714f9ebdc4edb77072923e3e57ade4c44932270.mp4",
+  "https://pub-005ee88ce4da43c5a2afcbb4b730333c.r2.dev/projects/egg-drop/science-v1/air-resistance-13f6bb64ee15.mp4": "https://dragonswood-9289e.web.app/science-media/13f6bb64ee1594a3bcb87b925917e8d54da22a629b55bf9233c955f4e8bfbb2a.mp4",
+  "https://pub-005ee88ce4da43c5a2afcbb4b730333c.r2.dev/projects/egg-drop/science-v1/collisions-1b094509ac49.mp4": "https://dragonswood-9289e.web.app/science-media/1b094509ac4932d0de6155d3126147c8e7ac06f1216b03e30fe1ad36c52f364f.mp4",
+  "https://pub-005ee88ce4da43c5a2afcbb4b730333c.r2.dev/projects/egg-drop/science-v1/materials-c32d18de4213.mp4": "https://dragonswood-9289e.web.app/science-media/c32d18de4213ece0d95cc660a7fa39b154feea53e4124a4bd75a875b98359cbb.mp4"
+});
 export function lessonVideoSources(video){
-  return [...new Set([video.fallbackUrl,recoveredVideos[video.url],video.url]
+  return [...new Set([scienceCopies[video.url],recoveredVideos[video.url],video.fallbackUrl,video.url]
     .filter(url=>typeof url==='string'&&url.length>0))];
 }
 export function lessonVideoSource(video){

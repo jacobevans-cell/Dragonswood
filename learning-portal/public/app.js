@@ -53,7 +53,7 @@ const TEACHING_DAYS=[30,31,32,33,35,36,37,38];
 const weekday=d=>["Monday","Tuesday","Wednesday","Thursday"][TEACHING_DAYS.indexOf(d)%4];
 let releasedDay=30;
 const canPreviewDays=()=>!hosted||hostedAuth?.teacher();
-const visibleTeachingDays=()=>canPreviewDays()?TEACHING_DAYS:[releasedDay];
+const visibleTeachingDays=()=>canPreviewDays()?TEACHING_DAYS:TEACHING_DAYS.filter(d=>d<=releasedDay);
 let day=Number(localStorage.getItem("dw-preview-day")||30);
 if(!TEACHING_DAYS.includes(day))day=30;
 let grade = Number(localStorage.getItem("dw-preview-grade") || 4),
@@ -160,7 +160,7 @@ function nav() {
 }
 function shell(body) {
   $("#app").innerHTML =
-    `<header class="topbar"><a class="brand" href="#home"><span class="crest"><img src="/Dragonswood/learning-portal/public/assets/dragonswood-mascot/assets/icons/dragonswood-mascot-64.png" alt="" width="32" height="32"></span> DRAGONSWOOD</a><div class="top-actions">${hosted?'<a class="btn quiet small" href="/Dragonswood/school-tools.html#passes" data-school-tool>Passes &amp; school tools</a>':''}${hosted?'':'<span class="preview-label">ROUND ONE · LOCAL PREVIEW</span>'}<select id="day" aria-label="Teaching day">${visibleTeachingDays().map(d=>`<option value="${d}" ${d===day?"selected":""}>Day ${d} · ${weekday(d)}</option>`).join("")}</select>${hosted?hostedAuth.controls():`<select id="grade" aria-label="Preview grade"><option value="4" ${grade === 4 ? "selected" : ""}>Grade 4 · Preview</option><option value="5" ${grade === 5 ? "selected" : ""}>Grade 5 · Preview</option></select><a href="#teacher" class="btn quiet small">Teacher view</a>`}</div></header><div class="shell"><aside aria-label="Quest navigation">${portalIdentityMarkup(state.adventurer)}${nav()}</aside><main id="main" tabindex="-1">${[...conflicts].map((id) => `<div class="notice error conflict"><strong>${esc(names[id] || id)} draft needs attention.</strong> Export this draft before loading its saved version. Your other work can keep saving. <button class="btn small" data-action="export-conflict" data-id="${esc(id)}">Export this draft</button> <button class="btn small" data-action="reload-saved" data-id="${esc(id)}" ${resolvingConflicts.has(id) ? 'disabled' : ''}>Export and load saved version</button></div>`).join('')}${portalGuideMarkup(route)}${route==="science"?scienceConditionsMarkup(state.scienceConditions):""}${body}</main></div>`;
+    `<header class="topbar"><a class="brand" href="#home"><span class="crest"><img src="/Dragonswood/learning-portal/public/assets/dragonswood-mascot/assets/icons/dragonswood-mascot-64.png" alt="" width="32" height="32"></span> DRAGONSWOOD</a><div class="top-actions">${hosted?'<a class="btn quiet small" href="/Dragonswood/school-tools.html#passes" data-school-tool>Passes &amp; school tools</a>':''}${hosted?'':'<span class="preview-label">ROUND ONE · LOCAL PREVIEW</span>'}<select id="day" aria-label="Teaching day">${visibleTeachingDays().map(d=>`<option value="${d}" ${d===day?"selected":""}>Day ${d} · ${weekday(d)}${!canPreviewDays()&&d<releasedDay?" · Catch up":""}</option>`).join("")}</select>${hosted?hostedAuth.controls():`<select id="grade" aria-label="Preview grade"><option value="4" ${grade === 4 ? "selected" : ""}>Grade 4 · Preview</option><option value="5" ${grade === 5 ? "selected" : ""}>Grade 5 · Preview</option></select><a href="#teacher" class="btn quiet small">Teacher view</a>`}</div></header><div class="shell"><aside aria-label="Quest navigation">${portalIdentityMarkup(state.adventurer)}${nav()}</aside><main id="main" tabindex="-1">${[...conflicts].map((id) => `<div class="notice error conflict"><strong>${esc(names[id] || id)} draft needs attention.</strong> Export this draft before loading its saved version. Your other work can keep saving. <button class="btn small" data-action="export-conflict" data-id="${esc(id)}">Export this draft</button> <button class="btn small" data-action="reload-saved" data-id="${esc(id)}" ${resolvingConflicts.has(id) ? 'disabled' : ''}>Export and load saved version</button></div>`).join('')}${portalGuideMarkup(route)}${route==="science"?scienceConditionsMarkup(state.scienceConditions):""}${body}</main></div>`;
   if(hosted)hostedAuth.bind();
   if(embeddedPath){document.querySelector('#main').insertAdjacentHTML('afterbegin',pathTabs(route));bindPathTabs(document.querySelector('#main'));}
   document.querySelectorAll('[data-school-tool]').forEach(link=>link.addEventListener('click',async event=>{
@@ -169,13 +169,13 @@ function shell(body) {
       location.assign(link.href);
     }catch(error){toast(error.message);}
   }));
-  $("#day").disabled = !canPreviewDays() || lockingTopic || loadingProfile || switchingProfile || questionChecking.size > 0;
+  $("#day").disabled = visibleTeachingDays().length<2 || lockingTopic || loadingProfile || switchingProfile || questionChecking.size > 0;
   $("#day").addEventListener("change",async(e)=>{
-    const next=Number(e.target.value);if(!TEACHING_DAYS.includes(next)||!canPreviewDays()||switchingProfile||loadingProfile||lockingTopic||questionChecking.size){e.target.value=day;return;}
+    const next=Number(e.target.value);if(!visibleTeachingDays().includes(next)||switchingProfile||loadingProfile||lockingTopic||questionChecking.size){e.target.value=day;return;}
     switchingProfile=true;e.target.disabled=true;
     try{await flush();if(conflicts.size||dirty.size||Object.keys(pendingRequests).length||Object.keys(pendingQuestions).length){e.target.value=day;toast("Save or resolve current work before switching days.");return;}
       stopVideos();stopScienceStrategy();stopCCF();stopBattle();day=next;localStorage.setItem("dw-preview-day",day);await load();
-    }finally{switchingProfile=false;if($("#day"))$("#day").disabled=!canPreviewDays()||lockingTopic||loadingProfile;if($("#grade"))$("#grade").disabled=lockingTopic||loadingProfile;}
+    }finally{switchingProfile=false;if($("#day"))$("#day").disabled=visibleTeachingDays().length<2||lockingTopic||loadingProfile;if($("#grade"))$("#grade").disabled=lockingTopic||loadingProfile;}
   });
   if($("#grade"))$("#grade").disabled = lockingTopic || loadingProfile || switchingProfile || questionChecking.size > 0;
   $("#grade")?.addEventListener("change", async (e) => {
@@ -202,7 +202,7 @@ function shell(body) {
       await load();
     } finally {
       switchingProfile = false;
-      if ($("#day")) $("#day").disabled = !canPreviewDays() || lockingTopic || loadingProfile;
+      if ($("#day")) $("#day").disabled = visibleTeachingDays().length<2 || lockingTopic || loadingProfile;
       if ($("#grade")) $("#grade").disabled = lockingTopic || loadingProfile;
     }
   });
@@ -992,6 +992,7 @@ async function resolveConflict(id) {
     if (next.submissions[id]) state.submissions[id] = structuredClone(next.submissions[id]);
     else delete state.submissions[id];
     state.assessment = next.assessment;
+    const currentAccessChanged=state.schedule?.subjects[route]?.open!==next.schedule?.subjects[route]?.open;
     const accessChanged=JSON.stringify(state.schedule?.subjects)!==JSON.stringify(next.schedule?.subjects);
     state.schedule=next.schedule;
     state.scienceConditions=next.scienceConditions;
@@ -1148,6 +1149,7 @@ function bind() {
   });
   stopVideos = bindLessonVideos({
     grade,
+    scope: `${state.previewId || "local"}:${day}`,
     api:boundApi,
     onProgress: (id, p) => {
       if (!profileCurrent(boundProfile)) return;
@@ -1575,7 +1577,7 @@ async function load() {
   } finally {
     if (generation === profileGeneration && grade === loadGrade && day === loadDay) {
       loadingProfile = false;
-      if ($("#day")) $("#day").disabled = !canPreviewDays() || lockingTopic || switchingProfile;
+      if ($("#day")) $("#day").disabled = visibleTeachingDays().length<2 || lockingTopic || switchingProfile;
       if ($("#grade")) $("#grade").disabled = lockingTopic || switchingProfile;
     }
   }
@@ -1623,7 +1625,7 @@ setInterval(() => {
     }
   }
 }, 500);
-let statePolling=false;
+let statePolling=false,backgroundLessonRefresh=false;
 setInterval(async () => {
   if (statePolling || document.hidden || !state || loadingProfile || switchingProfile || lockingTopic || questionChecking.size || dirty.size || Object.keys(pendingRequests).length) return;
   statePolling=true;
@@ -1648,6 +1650,7 @@ setInterval(async () => {
     const assessmentChanged = JSON.stringify(state.assessment?.records) !== JSON.stringify(next.assessment?.records);
     state.assessment = next.assessment;
     updateVideoLocks();
+    const currentAccessChanged=state.schedule?.subjects[route]?.open!==next.schedule?.subjects[route]?.open;
     const accessChanged=JSON.stringify(state.schedule?.subjects)!==JSON.stringify(next.schedule?.subjects);
     state.schedule=next.schedule;state.adventurer=next.adventurer;state.scienceConditions=next.scienceConditions;
     const overviewChanged = JSON.stringify(state.completion) !== JSON.stringify(next.completion) || JSON.stringify(state.submissions) !== JSON.stringify(next.submissions);
@@ -1660,8 +1663,10 @@ setInterval(async () => {
     // Home has no editing controls. Teacher polling waits until focus is outside
     // its controls and no saved-work disclosure is open, preserving interaction.
     if ((overviewChanged || assessmentChanged || accessChanged) && route === "home") render();
-    else if(accessChanged&&names[route])renderKeepingFocus();
-    else if (questionStateChanged && ['math', 'science', 'ccf'].includes(route)) renderKeepingFocus();
+    else {
+      backgroundLessonRefresh ||= !!(currentAccessChanged&&names[route]) || (questionStateChanged&&['math','science','ccf'].includes(route));
+      if(backgroundLessonRefresh&&!Array.from(document.querySelectorAll('[data-video-id] video')).some(v=>!v.paused)){backgroundLessonRefresh=false;renderKeepingFocus();}
+    }
     if (route === "teacher" && !document.activeElement?.closest("main select, main input, main textarea, main button") && !document.querySelector("main details[open]")) {
       teacher({ preserveInteraction: true }).catch(() => {});
     }

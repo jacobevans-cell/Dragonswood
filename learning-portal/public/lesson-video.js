@@ -19,10 +19,17 @@ function preferredSpeed() {
   }
 }
 // Delivery may change; the server's video ID, duration and viewing receipt do not.
+const mediaHostHealth=new Map();
+const hostOf=url=>{try{return new URL(url).origin;}catch{return null;}};
+const retryableDelivery=error=>!error.status||[408,429,500,502,503,504].includes(error.status);
 export async function loadLessonMedia(video, sources, {
-  signal, onStatus = () => {}, timeoutMs = 12000,
+  signal, onStatus = () => {}, timeoutMs = 8000,
 } = {}) {
   const candidates = [...new Set(sources.filter(Boolean))];
+  // Remember recent delivery failures only in this page. Every candidate is
+  // retained; no URL, lesson identity, or watch receipt is rewritten.
+  const score=url=>{const health=mediaHostHealth.get(hostOf(url));return health&&Date.now()-health.at<300000?health.score:0;};
+  candidates.sort((a,b)=>score(b)-score(a));
   if (signal?.aborted) throw new DOMException("Video opening cancelled.", "AbortError");
   if (!video.error && video.readyState >= 1 && candidates.includes(video.getAttribute("src"))) return;
   for (let index = 0; index < candidates.length; index++) {
@@ -52,9 +59,11 @@ export async function loadLessonMedia(video, sources, {
         video.setAttribute("src", candidates[index]);
         video.load();
       });
+      if(hostOf(candidates[index]))mediaHostHealth.set(hostOf(candidates[index]),{score:1,at:Date.now()});
       return;
     } catch (failure) {
       if (failure.name === "AbortError") throw failure;
+      if(hostOf(candidates[index]))mediaHostHealth.set(hostOf(candidates[index]),{score:-1,at:Date.now()});
     }
   }
   throw new Error("The lesson video could not load. Check the connection and try Play again.");
@@ -140,7 +149,7 @@ export function bindLessonVideos({ root = document, grade, api, onProgress }) {
             result = await api("/api/video/progress", payload);
           } catch (e) {
             // An uncertain delivery retries its identical sequence, never adds time twice.
-            if (!e.status) result = await api("/api/video/progress", payload);
+            if (retryableDelivery(e)) result = await api("/api/video/progress", payload);
             else throw e;
           }
           display(result.progress);
@@ -177,21 +186,19 @@ export function bindLessonVideos({ root = document, grade, api, onProgress }) {
         const sources = box.dataset.videoSources
           ? JSON.parse(box.dataset.videoSources)
           : [video.getAttribute("src")];
-        // Start downloading metadata during the server round trip. Playback and
-        // credit still wait for the authenticated viewing session and play receipt.
-        const mediaReady = loadLessonMedia(video, sources, {
+        // A slow media-host fallback must not consume the viewing session's
+        // receipt window before playback can even begin.
+        await loadLessonMedia(video, sources, {
           signal: controller.signal,
           onStatus: (message) => { if (active) status.textContent = message; },
         });
         // A fresh lease restores server-confirmed progress after a pause or reload.
-        const [session] = await Promise.all([
-          api("/api/video/start", {
+        if (!active) return;
+        const session = await api("/api/video/start", {
             grade,
             videoId: box.dataset.videoId,
             rate,
-          }),
-          mediaReady,
-        ]);
+          });
         if (!active) return;
         token = session.token;
         sequence = session.sequence;

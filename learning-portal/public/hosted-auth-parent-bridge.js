@@ -71,6 +71,7 @@ export async function startHostedAuth({config,onClear,onReady,beforeSwitch,onErr
     }catch(error){if(generation===epoch){showProblem(error.message||'Your quest could not open yet.',error.status===401);onError?.(error.message||String(error));}}finally{opening=false;}
   }
   async function activity(){
+    if(session?.role==='student'&&session.session?.policy==='student-school-day')return;
     if(!session||opening||pinging||Date.now()-lastPing<60000)return;
     pinging=true;lastPing=Date.now();const generation=epoch;
     try{const response=await request('/api/session/activity',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});if(response.ok&&generation===epoch)lastPing=Date.now();else if(response.status===401)onError?.('Your sign-in needs attention. Export any unsaved work before reopening Dragonswood.');}

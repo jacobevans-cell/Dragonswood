@@ -91,10 +91,11 @@ export function bindLessonVideos({root=document,grade,api,onProgress}) {
   root.querySelectorAll('[data-video-id]').forEach((box,index)=>{
     const video=box.querySelector('video'),speed=box.querySelector('[data-video-rate]'),status=box.querySelector('[data-video-status]'),error=box.querySelector('[data-video-error]'),retry=box.querySelector('[data-video-retry]');
     let active=true,token=null,sequence=0,progress=null,chain=Promise.resolve(),tickPending=false,preparing=null,mediaPromise=null;
-    let transition=false,wantPlay=false,rate=Number(speed.value),stablePosition=0,internalSeek=null,suppressPlay=0,suppressPause=0;
+    let transition=false,wantPlay=false,rate=Number(speed.value),stablePosition=0,checkpointPosition=0,internalSeek=null,suppressPlay=0,suppressPause=0;
     const controller=new AbortController(),listeners=[];
     const listen=(target,event,handler)=>{target.addEventListener(event,handler);listeners.push(()=>target.removeEventListener(event,handler));};
     const alive=()=>active&&selected===player;
+    const pausePosition=()=>video.seeking?Math.max(stablePosition,checkpointPosition):video.currentTime;
     function pauseMedia(){if(!video.paused){suppressPause++;video.pause();}}
     async function playMedia(){
       if(!alive()||!wantPlay||document.hidden)return;
@@ -119,6 +120,7 @@ export function bindLessonVideos({root=document,grade,api,onProgress}) {
       if(!captured)return {done:Promise.resolve(false),sent:Promise.resolve(false)};
       if(event==='tick'&&tickPending)return {done:chain,sent:Promise.resolve(false)};
       if(event==='tick')tickPending=true;
+      checkpointPosition=position;
       let dispatched;const sent=new Promise(resolve=>dispatched=resolve);
       const done=chain.then(async()=>{
         if(token!==captured){dispatched(false);return false;}
@@ -150,7 +152,7 @@ export function bindLessonVideos({root=document,grade,api,onProgress}) {
         const session=await api('/api/video/start',{grade,videoId:box.dataset.videoId,rate});
         if(!alive())return false;
         if(Math.abs(video.duration-session.progress.durationSeconds)>1)throw Error('The video length has changed. Its source needs verification.');
-        token=session.token;sequence=session.sequence;display(session.progress);
+        token=session.token;sequence=session.sequence;display(session.progress);checkpointPosition=progress.position;
         seekMedia(Math.min(progress.position,video.duration-.01));
         video.playbackRate=rate;error.hidden=true;retry.hidden=true;return true;
       })().catch(e=>{if(active&&e.name!=='AbortError')showError(e.message);return false;}).finally(()=>{preparing=null;});
@@ -170,15 +172,15 @@ export function bindLessonVideos({root=document,grade,api,onProgress}) {
         if(await receipt.sent)await playMedia();
       }finally{transition=false;}
     }
-    async function pauseTracked(){wantPlay=false;pauseMedia();return send('pause',video.seeking?stablePosition:video.currentTime,false).done;}
-    const player={active:()=>active,deactivate:async()=>{wantPlay=false;pauseMedia();await send('pause',video.seeking?stablePosition:video.currentTime,false).done;token=null;}};
+    async function pauseTracked(){wantPlay=false;pauseMedia();return send('pause',pausePosition(),false).done;}
+    const player={active:()=>active,deactivate:async()=>{wantPlay=false;pauseMedia();await send('pause',pausePosition(),false).done;token=null;}};
     listen(video,'play',()=>{
       if(suppressPlay){suppressPlay--;return;}
       wantPlay=true;pauseMedia();if(!transition)void resume();
     });
     listen(video,'pause',()=>{
       if(suppressPause){suppressPause--;return;}
-      wantPlay=false;if(!transition&&token)send('pause',video.seeking?stablePosition:video.currentTime,false);
+      wantPlay=false;if(!transition&&token)send('pause',pausePosition(),false);
     });
     async function changeRate(next){
       if(next===rate)return;
@@ -203,7 +205,9 @@ export function bindLessonVideos({root=document,grade,api,onProgress}) {
     listen(video,'seeked',()=>{if(internalSeek!==null&&Math.abs(video.currentTime-internalSeek)<.1)internalSeek=null;});
     listen(video,'seeking',()=>{
       if(internalSeek!==null&&Math.abs(video.currentTime-internalSeek)<.1)return;
-      const destination=video.currentTime,previous=stablePosition;
+      // Native timeupdate can lag a just-dispatched heartbeat. The pause that
+      // precedes a seek must never move backward behind that queued checkpoint.
+      const destination=video.currentTime,previous=Math.max(stablePosition,checkpointPosition);
       if(transition||!token){seekMedia(previous);if(active&&!token)status.textContent='Connecting your saved place before seeking…';return;}
       const resumeAfter=!video.paused||wantPlay,allowed=progress.complete||destination<=Math.max(progress.frontier,previous)+.05;
       transition=true;pauseMedia();seekMedia(previous);
@@ -225,7 +229,7 @@ export function bindLessonVideos({root=document,grade,api,onProgress}) {
     // Start no viewing clock until the student actually presses Play.
     void media().then(()=>{if(active&&index===0&&!selected&&!preparing)return prepare();}).catch(e=>{if(active&&e.name!=='AbortError')showError(e.message);});
     cleanups.push(()=>{
-      if(!active)return;wantPlay=false;pauseMedia();if(token)send('pause',video.seeking?stablePosition:video.currentTime,false);
+      if(!active)return;wantPlay=false;pauseMedia();if(token)send('pause',pausePosition(),false);
       active=false;controller.abort();clearInterval(timer);listeners.forEach(remove=>remove());
     });
   });

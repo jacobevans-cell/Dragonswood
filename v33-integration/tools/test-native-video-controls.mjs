@@ -62,6 +62,10 @@ test('native rewind saves a pause before a seek while unearned forward seeking i
  await h.play();await h.advance(8);await h.tick();h.video.currentTime=3;await drain();assert.deepEqual(h.packets.slice(-3).map(p=>p.event),['pause','seek','play']);assert.equal(h.video.currentTime,3);
  h.video.currentTime=80;await drain();assert.equal(h.video.currentTime,3);assert.ok(!h.packets.some(p=>p.position===80));
 }));
+test('a seek between a heartbeat and the next native timeupdate cannot send an older pause position',()=>fixture(async h=>{
+ await h.play();await h.advance(5.8);h.video.position=6;await h.tick();h.video.currentTime=2;await drain();
+ const pause=h.packets.find(p=>p.event==='pause');assert.equal(pause.position,6);assert.equal(h.video.currentTime,2);
+}));
 test('hidden tabs pause and preserve the final position behind a pending heartbeat',()=>fixture(async h=>{
  await h.play();h.hold('tick');await h.advance(5);await h.tick();await h.advance(7);h.document.hidden=true;h.document.emit('visibilitychange');await drain();assert.equal(h.video.paused,true);await h.release();assert.equal(h.packets.at(-1).event,'pause');assert.equal(h.packets.at(-1).position,7);
 }));

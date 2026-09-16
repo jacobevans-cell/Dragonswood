@@ -1,6 +1,6 @@
 {
-  "file": "lesson-app-f9b05c85576b4cad8d6d.js",
-  "sha256": "f9b05c85576b4cad8d6d3f7356fcfaf7a5c050666a683c314fa751e3f4d1ec1f",
+  "file": "lesson-app-8ee29b9fe22f0e4f0a44.js",
+  "sha256": "8ee29b9fe22f0e4f0a44bcf756c81e991e5a9335015e8d85da4a781a3ceb80f7",
   "modules": 57,
   "inputs": [
     {
@@ -13,7 +13,7 @@
     },
     {
       "path": "lesson-video.js",
-      "sha256": "ff5b001273edc83308e074623ac38bc6fc9606b6f5b468e09a0a4d31111435ff"
+      "sha256": "c33fd7778c5782918cdd6ac1385c57ed4a95c64992bb34fa5bdc4c182687a25b"
     },
     {
       "path": "lesson-practice-grade4.js",

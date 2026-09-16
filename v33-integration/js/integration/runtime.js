@@ -20,6 +20,9 @@
   const environment=declaredEnvironment==='production'?'production':(prodReadOnly?'production-readonly':'emulator');
   const readOnlyRequestBlocked=requestedEnv==='production-readonly'&&!prodReadOnly;
   const controllers=[];
+  // These feeds enrich the portal after entry. Account, access, teacher
+  // directions and pass-safety records must still be ready before admission.
+  const backgroundFeeds=new Set(['scores','rewards','loot','prizes','poll','pollVotes','events','jobs','jobWeek','classMain','secondRecess','classPet','fieldTrip','universalPoints','scribe','responses','games','reading','gradeSettings','spelling','schedule']);
   let sdkPromise=null;
 
   function emit(cb,payload){try{cb?.(Object.freeze({...payload,environment,version:VERSION}))}catch(err){console.error('[V3.3 integration callback]',err)}}
@@ -67,7 +70,7 @@
     const {S,auth,db,functions}=F;
     // Match the embedded lessons before sign-in so both views retain the same session.
     await S.auth.setPersistence(auth,S.auth.browserSessionPersistence);
-    let learningUnsub=null;
+    let learningUnsub=null,authGeneration=0;
     let profileUnsub=null,dailyUnsub=null,spellingUnsub=null,overrideUnsub=null,scribeUnsub=null,responsesUnsub=null,gamesUnsub=null,readingUnsub=null,gradeSettingsUnsub=null,scheduleUnsub=null,jobsUnsub=null,eventsUnsub=null,jobWeekUnsub=null,scoresUnsub=null,rewardsUnsub=null,lootUnsub=null,prizesUnsub=null,pollUnsub=null,pollVotesUnsub=null,attentionUnsub=null,attentionEventsUnsub=null,kingdomAccessUnsub=null,substituteUnsub=null,testerUnsub=null,testerControlsUnsub=null;
     let bathroomStatusUnsub=null,snackStatusUnsub=null,outOfSeatStatusUnsub=null,officeStatusUnsub=null,bathroomRequestUnsub=null,snackRequestUnsub=null,outOfSeatRequestUnsub=null,officeRequestUnsub=null,boySlotUnsub=null,girlSlotUnsub=null,blackoutUnsub=null,classMainUnsub=null,secondRecessUnsub=null,classPetUnsub=null,fieldTripUnsub=null,universalPointsUnsub=null;
     let lastLearning=[];
@@ -85,7 +88,7 @@
     const currentTester=()=>Tester.normalizeTester(currentUser?.uid,lastTesterAccount?.active===true?lastTesterAccount:null);
     const currentTesterControls=()=>Tester.normalizeControls(currentTester(),lastTesterControls);
     const push=()=>{
-      if(!currentUser||!Object.values(ready).every(Boolean))return;
+      if(!currentUser||!Object.entries(ready).every(([key,value])=>backgroundFeeds.has(key)||value))return;
       const tester=currentTester(),testerUnlocks=currentTesterControls(),email=Core.normalizedEmail(currentUser.email);
       if(!Core.isStudentEligibleEmail(email,tester.isTester)){emit(onUpdate,{status:'unauthorized',user:currentUser,message:'This account is not authorized for Dragonswood.'});return}
       const morningOverride=Tester.unlockEnabled(tester,testerUnlocks,'unlockMorning'),curriculumOverride=Tester.unlockEnabled(tester,testerUnlocks,'unlockCurriculum'),kingdomOverride=Tester.unlockEnabled(tester,testerUnlocks,'unlockKingdom');
@@ -109,26 +112,40 @@
         kingdomAccess:Object.freeze({...kingdom,unlocked:!substituteMode.active&&(kingdomOverride||(kingdom.active&&(kingdom.all||kingdom.studentIds.includes(currentUser.uid)))),testerOverride:kingdomOverride}),classGoals:Operations.goals(lastClassData)});
     };
     const authUnsub=S.auth.onAuthStateChanged(auth,async user=>{
+      const generation=++authGeneration;
       clear();currentUser=user||null;
       if(!user){emit(onUpdate,{status:'signed-out',message:'Sign in with your school Google account.'});return}
       emit(onUpdate,{status:'checking',user,message:'Reading your entry seal…'});
       const email=Core.normalizedEmail(user.email);
       const tester=await Tester.resolveTester(user.uid,async uid=>{const snap=await S.firestore.getDoc(S.firestore.doc(db,'testerAccounts',uid));return snap.exists()?snap.data():null});
+      if(generation!==authGeneration||auth.currentUser?.uid!==user.uid)return;
       if(!Core.isStudentEligibleEmail(email,tester.isTester)){
         emit(onUpdate,{status:'unauthorized',user,message:'This account is not authorized for Dragonswood.'});return;
       }
       lastTesterAccount=tester.exists?{active:tester.active,email:tester.email,label:tester.label,capabilities:{...tester.capabilities}}:{};
-      const watchDoc=(path,key,setter,label)=>S.firestore.onSnapshot(S.firestore.doc(db,...path),snap=>{setter(snap.exists()?{id:snap.id,...snap.data()}:{});ready[key]=true;push()},err=>emit(onUpdate,{status:'error',user,message:`${label} read failed: ${err?.code||err?.message||err}`}));
-      const watchQuery=(query,key,setter,label)=>S.firestore.onSnapshot(query,snap=>{setter(snap.docs.map(d=>({id:d.id,...d.data()})));ready[key]=true;push()},err=>emit(onUpdate,{status:'error',user,message:`${label} read failed: ${err?.code||err?.message||err}`}));
+      const current=()=>generation===authGeneration&&auth.currentUser?.uid===user.uid;
+      const readFailed=(key,label,err)=>{
+        if(!current())return;
+        if(backgroundFeeds.has(key)){
+          // An unavailable leaderboard or poll must not replace a live lesson
+          // iframe and discard its editor. Keep the last received data.
+          console.warn(`[Dragonswood] ${label} is temporarily unavailable.`);
+          push();return;
+        }
+        emit(onUpdate,{status:'error',user,message:`${label} read failed: ${err?.code||err?.message||err}`});
+      };
+      const watchDoc=(path,key,setter,label)=>S.firestore.onSnapshot(S.firestore.doc(db,...path),snap=>{if(!current())return;setter(snap.exists()?{id:snap.id,...snap.data()}:{});ready[key]=true;push()},err=>readFailed(key,label,err));
+      const watchQuery=(query,key,setter,label)=>S.firestore.onSnapshot(query,snap=>{if(!current())return;setter(snap.docs.map(d=>({id:d.id,...d.data()})));ready[key]=true;push()},err=>readFailed(key,label,err));
       const watchOptionalQuery=(query,key,setter,label)=>S.firestore.onSnapshot(
         query,
-        snap=>{setter(snap.docs.map(d=>({id:d.id,...d.data()})));ready[key]=true;push()},
+        snap=>{if(!current())return;setter(snap.docs.map(d=>({id:d.id,...d.data()})));ready[key]=true;push()},
         err=>{
+          if(!current())return;
           if(err?.code==='permission-denied'){
             console.warn(`${label} is waiting for its Firestore rule deployment.`);
             setter([]);ready[key]=true;push();return;
           }
-          emit(onUpdate,{status:'error',user,message:`${label} read failed: ${err?.code||err?.message||err}`});
+          readFailed(key,label,err);
         }
       );
       testerUnsub=watchDoc(['testerAccounts',user.uid],'tester',value=>{lastTesterAccount=value},'Tester authorization');

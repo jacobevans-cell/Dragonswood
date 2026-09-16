@@ -89,7 +89,7 @@ export function geometrySVG(model = {}, uid = 'practice') {
     return `<path d="M${a.join(' ')}L${b.join(' ')}" stroke="#674c8d" stroke-width="4" fill="none" ${s.tool === 'line' ? `marker-start="url(#${arrow})"` : ''} ${s.tool !== 'segment' ? `marker-end="url(#${arrow})"` : ''}/>${s.tool !== 'line' ? `<circle cx="${a[0]}" cy="${a[1]}" r="5" fill="#087f79"/>` : ''}${s.tool === 'segment' ? `<circle cx="${b[0]}" cy="${b[1]}" r="5" fill="#087f79"/>` : ''}`;
   }).join('');
   const pending = (model.pending || []).map(px).map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="7" fill="#c68629"/>`).join('');
-  return `<svg viewBox="0 0 360 360" role="img" aria-label="Your constructed figure: ${(model.shapes || []).length} saved shapes. Gold dots show an unfinished figure."><defs><marker id="${esc(arrow)}" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto-start-reverse"><path d="M1 1L5 3.5L1 6" fill="none" stroke="#674c8d" stroke-width="1.2"/></marker></defs>${body}${pending}</svg>`;
+  return `<svg viewBox="0 0 360 360" role="img" aria-label="Your constructed figure: ${(model.shapes || []).length} figures. Gold dots show an unfinished figure."><defs><marker id="${esc(arrow)}" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto-start-reverse"><path d="M1 1L5 3.5L1 6" fill="none" stroke="#674c8d" stroke-width="1.2"/></marker></defs>${body}${pending}</svg>`;
 }
 export function geometryExample(check, uid) {
   const line = (tool, a, b) => ({tool, points:[a,b]});

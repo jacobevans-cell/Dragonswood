@@ -1,6 +1,6 @@
 {
-  "file": "lesson-app-208d6eb674bdf8d62ff7.js",
-  "sha256": "208d6eb674bdf8d62ff7e480943adedc15fc357e5dd54e567937cc252e9069d5",
+  "file": "lesson-app-453af312eeac424cbd78.js",
+  "sha256": "453af312eeac424cbd783c29ea91479b2a4df1cf7aea6229cba00ece4149d667",
   "modules": 57,
   "inputs": [
     {
@@ -25,11 +25,11 @@
     },
     {
       "path": "practice-models.js",
-      "sha256": "8e8fe4b03a640976be23a8074042718e3f30c855b70a0a2d2d39f81a818c0325"
+      "sha256": "99ebfe2ee78b3b77140fe157965f1430e8158239e445ba93359d379b0f2444f5"
     },
     {
       "path": "lesson-practice.js",
-      "sha256": "2c8459bd522f67f8292808f86013993a0fbe7a1ca2e53ced4ffa0d6a29c8fd4e"
+      "sha256": "0c8a4daf8d02ad1e5a78b58719996360ff377ad526f6badc7bfedb4443fd749b"
     },
     {
       "path": "practice-duration-receipts.js",
@@ -229,7 +229,7 @@
     },
     {
       "path": "app.js",
-      "sha256": "4e6fe0ab288eb493afe6e5a24d0bd675c76a622f8d8a0624d042a12585115ed1"
+      "sha256": "14a1156e3043b3f4e53869bc8fb0b10c2c8c08080f12ecedd2c2152cbe5dab19"
     }
   ]
 }

@@ -15,15 +15,15 @@ class Video extends Element {
  async play(){if(!this.paused)return;this.paused=false;queueMicrotask(()=>this.emit('play'));}
 }
 const drain=async()=>{for(let i=0;i<160;i++)await Promise.resolve();};
-async function fixture(run,{stallMedia=false,count=1}={}){
+async function fixture(run,{stallMedia=false,count=1,holdStart=false}={}){
  const old={document:globalThis.document,window:globalThis.window,setInterval,clearInterval};
  const document=Object.assign(new Element(),{hidden:false});globalThis.document=document;globalThis.window=new Element();
  const timers=[];globalThis.setInterval=fn=>{timers.push(fn);return fn;};globalThis.clearInterval=()=>{};
- let startCount=0,holdEvent=null,held=null,failStatus,failOnce=false;const packets=[];
+ let startCount=0,holdEvent=null,held=null,heldStart=null,failStatus,failOnce=false;const packets=[];
  const boxes=Array.from({length:count},(_,i)=>{const video=new Video(stallMedia),elements=new Map([['video',video]]),get=s=>{if(!elements.has(s))elements.set(s,new Element());return elements.get(s);};return{dataset:{videoId:'video-'+i,videoSources:'["copy"]'},querySelector:get,video,get};});
  const progress={seconds:0,position:0,frontier:0,requiredSeconds:540,durationSeconds:600,complete:false};
  const api=async(path,payload)=>{
-  if(path.endsWith('/start')){startCount++;return{token:'session-'+startCount,sequence:0,progress:{...progress}};}
+  if(path.endsWith('/start')){startCount++;if(holdStart){holdStart=false;await new Promise(r=>heldStart=r);}return{token:'session-'+startCount,sequence:0,progress:{...progress}};}
   packets.push({...payload});if(failOnce){failOnce=false;throw Object.assign(Error('Temporary disconnect'),{status:failStatus});}
   const result={progress:{...progress,position:payload.position,frontier:Math.max(progress.frontier,payload.position),seconds:Math.max(progress.seconds,payload.position)}};
   if(payload.event===holdEvent){holdEvent=null;await new Promise(r=>held=r);held=null;}Object.assign(progress,result.progress);return result;
@@ -32,10 +32,15 @@ async function fixture(run,{stallMedia=false,count=1}={}){
  try{
   await drain();if(stallMedia){assert.equal(startCount,0);boxes[0].video.readyState=1;boxes[0].video.emit('loadedmetadata');await drain();}
   assert.equal(startCount,1);assert.equal(boxes[0].video.paused,true);
-  await run({video:boxes[0].video,get:boxes[0].get,boxes,document,packets,startCount:()=>startCount,advance:async n=>{boxes[0].video.position=n;boxes[0].video.emit('timeupdate');await drain();},tick:async()=>{timers.forEach(fn=>fn());await drain();},hold:event=>holdEvent=event,release:async()=>{held?.();await drain();},failNext:status=>{failOnce=true;failStatus=status;},play:async()=>{await boxes[0].video.play();await drain();},pause:async()=>{boxes[0].video.pause();await drain();}});
+  await run({video:boxes[0].video,get:boxes[0].get,boxes,document,packets,startCount:()=>startCount,advance:async n=>{boxes[0].video.position=n;boxes[0].video.emit('timeupdate');await drain();},tick:async()=>{timers.forEach(fn=>fn());await drain();},hold:event=>holdEvent=event,releaseStart:async()=>{heldStart?.();await drain();},release:async()=>{held?.();await drain();},failNext:status=>{failOnce=true;failStatus=status;},play:async()=>{await boxes[0].video.play();await drain();},pause:async()=>{boxes[0].video.pause();await drain();}});
  }finally{stop();await drain();Object.assign(globalThis,old);}
 }
 test('metadata and the first paused session prepare before Play without recording viewing time',()=>fixture(async h=>{assert.equal(h.packets.length,0);assert.equal(h.video.paused,true);},{stallMedia:true}));
+test('speed chosen during initial connection is verified after the session arrives',()=>fixture(async h=>{
+ h.get('[data-video-rate]').value='1.5';h.get('[data-video-rate]').emit('change');await drain();assert.equal(h.get('[data-video-rate]').disabled,true);
+ await h.releaseStart();assert.equal(h.video.playbackRate,1.5);assert.deepEqual(h.packets.map(p=>[p.event,p.rate]),[['pause',1],['rate',1.5]]);
+ await h.play();assert.equal(h.packets.at(-1).rate,1.5);assert.equal(h.video.paused,false);
+},{holdStart:true}));
 test('native playback begins before a slow play-save acknowledgment and reuses the session on resume',()=>fixture(async h=>{
  h.hold('play');await h.play();assert.equal(h.video.paused,false);assert.equal(h.packets[0].event,'play');await h.release();
  await h.advance(4);await h.pause();await h.play();assert.equal(h.startCount(),1);assert.equal(h.video.paused,false);assert.deepEqual(h.packets.map(p=>p.event),['play','pause','play']);

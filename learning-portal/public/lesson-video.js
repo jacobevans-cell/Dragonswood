@@ -182,6 +182,9 @@ export function bindLessonVideos({root=document,grade,api,onProgress}) {
     });
     async function changeRate(next){
       if(next===rate)return;
+      // A speed picked while the initial session is connecting must be applied
+      // to that session after its response, not silently disagree with its rate.
+      if(preparing&&!transition){video.playbackRate=rate;speed.disabled=true;await preparing;speed.disabled=false;if(!active)return;}
       if(!validPlaybackRate(next)||transition){video.playbackRate=rate;speed.value=String(rate);if(active&&!validPlaybackRate(next))status.textContent='Choose a speed from 0.5× to 1.5× so watched time can be verified.';return;}
       const resumeAfter=!video.paused||wantPlay,position=video.currentTime;
       transition=true;pauseMedia();video.playbackRate=rate;

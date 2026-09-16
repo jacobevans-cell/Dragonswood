@@ -1,6 +1,6 @@
 {
-  "file": "lesson-app-70f4cda4885f69b35588.js",
-  "sha256": "70f4cda4885f69b35588897cfb932a27df1be7422d86b43f87eddc24ecb50deb",
+  "file": "lesson-app-0829653dab1e52880c7d.js",
+  "sha256": "0829653dab1e52880c7da18d04855aa9680ba324c31768bcba9e89a41015be85",
   "modules": 58,
   "inputs": [
     {
@@ -213,7 +213,7 @@
     },
     {
       "path": "school-schedule.js",
-      "sha256": "5a661231ba6dc162280000770465c86dc161b76e87807712916caaa411862ea1"
+      "sha256": "41fb291c5b92a23e087df6144415f599f58a82c3639c97b2357e02009d5fb853"
     },
     {
       "path": "science-conditions.js",

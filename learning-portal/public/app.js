@@ -295,8 +295,8 @@ function updateVideoLocks() {
   const locked = required.some((v) => !state.videoProgress?.[v.id]?.complete);
   const main = document.querySelector("#main");
   if (!main) return;
-  main.querySelectorAll('[data-video-activity]').forEach((fieldset) => {
-    fieldset.disabled = locked || resolvingConflicts.has(route);
+  main.querySelectorAll('[data-video-activity], [data-practice-activity]').forEach((fieldset) => {
+    fieldset.disabled = (fieldset.hasAttribute('data-video-activity') && locked) || resolvingConflicts.has(route);
   });
   main
     .querySelectorAll(
@@ -325,7 +325,9 @@ function updateVideoLocks() {
   if (notice) {
     notice.hidden = !locked;
     notice.textContent =
-      "Watch the required video first to unlock the activity. Your existing answers and drafts stay saved.";
+      main.querySelector('[data-practice-activity]')
+        ? "Watch the required video to unlock your question checks. You can use and save the practice workshop while the video loads."
+        : "Watch the required video first to unlock the activity. Your existing answers and drafts stay saved.";
   }
 }
 function questions(id, include = null) {

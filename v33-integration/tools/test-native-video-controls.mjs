@@ -49,6 +49,14 @@ test('slow progress saves do not queue stale heartbeats',()=>fixture(async h=>{
  await h.play();h.hold('tick');await h.advance(5);await h.tick();for(const n of [7,9,11]){await h.advance(n);await h.tick();}
  assert.equal(h.packets.filter(p=>p.event==='tick').length,1);assert.equal(h.video.paused,false);await h.release();await h.advance(13);await h.tick();assert.equal(h.packets.at(-1).position,13);
 }));
+test('a slow Play receipt cannot queue a stale heartbeat before a normal pause',()=>fixture(async h=>{
+ h.hold('play');await h.play();await h.advance(2.73);await h.tick();
+ assert.deepEqual(h.packets.map(p=>p.event),['play']);
+ await h.release();await h.advance(4.9);await h.pause();await h.play();
+ assert.deepEqual(h.packets.map(p=>[p.event,p.position]),[['play',0],['pause',4.9],['play',4.9]]);
+ assert.equal(h.startCount(),1);assert.equal(h.video.paused,false);
+ await h.advance(7);await h.tick();assert.equal(h.packets.at(-1).position,7);
+}));
 test('native resume discards frames advanced before preparation so a paused session cannot report extra time',()=>fixture(async h=>{
  await h.play();await h.advance(4);await h.pause();h.video.position=4.2;await h.play();
  assert.equal(h.packets.at(-1).event,'play');assert.equal(h.packets.at(-1).position,4);assert.equal(h.video.currentTime,4);

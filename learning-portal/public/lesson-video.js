@@ -90,7 +90,7 @@ export function bindLessonVideos({root=document,grade,api,onProgress}) {
   }
   root.querySelectorAll('[data-video-id]').forEach((box,index)=>{
     const video=box.querySelector('video'),speed=box.querySelector('[data-video-rate]'),status=box.querySelector('[data-video-status]'),error=box.querySelector('[data-video-error]'),retry=box.querySelector('[data-video-retry]');
-    let active=true,token=null,sequence=0,progress=null,chain=Promise.resolve(),tickPending=false,preparing=null,mediaPromise=null;
+    let active=true,token=null,sequence=0,progress=null,chain=Promise.resolve(),pendingReceipts=0,preparing=null,mediaPromise=null;
     let transition=false,wantPlay=false,rate=Number(speed.value),stablePosition=0,checkpointPosition=0,internalSeek=null,suppressPlay=0,suppressPause=0;
     const controller=new AbortController(),listeners=[];
     const listen=(target,event,handler)=>{target.addEventListener(event,handler);listeners.push(()=>target.removeEventListener(event,handler));};
@@ -118,8 +118,11 @@ export function bindLessonVideos({root=document,grade,api,onProgress}) {
     function send(event,position=video.currentTime,playing=!video.paused,playbackRate=rate){
       const captured=token;
       if(!captured)return {done:Promise.resolve(false),sent:Promise.resolve(false)};
-      if(event==='tick'&&tickPending)return {done:chain,sent:Promise.resolve(false)};
-      if(event==='tick')tickPending=true;
+      // Never queue a sampled heartbeat behind another receipt (including Play).
+      // A delayed sample would reset the server clock at an old position and
+      // make the next normal pause appear to have advanced too quickly.
+      if(event==='tick'&&pendingReceipts)return {done:chain,sent:Promise.resolve(false)};
+      pendingReceipts++;
       checkpointPosition=position;
       let dispatched;const sent=new Promise(resolve=>dispatched=resolve);
       const done=chain.then(async()=>{
@@ -135,7 +138,7 @@ export function bindLessonVideos({root=document,grade,api,onProgress}) {
           return token===captured;
         }catch(e){if(token===captured){if(e.videoProgress)display(e.videoProgress);showError(e.message);}return false;}
         finally{dispatched(false);}
-      }).finally(()=>{if(event==='tick')tickPending=false;});
+      }).finally(()=>{pendingReceipts--;});
       chain=done;return {done,sent};
     }
     function media(){

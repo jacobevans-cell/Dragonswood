@@ -1,0 +1,42 @@
+<!doctype html><html lang="en"><head>
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://dragonswood-9289e.firebaseapp.com; style-src 'self' https://dragonswood-9289e.firebaseapp.com 'unsafe-inline'; img-src 'self' https://dragonswood-9289e.firebaseapp.com data: blob:; font-src 'self' https://dragonswood-9289e.firebaseapp.com data:; connect-src 'self' https://dragonswood-9289e.firebaseapp.com; media-src 'self' https://dragonswood-9289e.firebaseapp.com data: blob:; frame-src 'self' blob:; worker-src 'self' https://dragonswood-9289e.firebaseapp.com blob:; object-src 'none'; base-uri 'self'; form-action 'self'"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dragonswood Elemental Laboratory V5 • Visual Codex + 3D Library</title><link rel="stylesheet" href="https://dragonswood-9289e.firebaseapp.com/rebuild/github-assets/3fc7b39b5fd3b7aa/games/elemental-laboratory/game.css"></head><body><a class="dw-back" href="#" data-return-games>← DRAGONSWOOD GAMES</a>
+<header><div class="badge"><img src="https://dragonswood-9289e.firebaseapp.com/rebuild/github-assets/3fc7b39b5fd3b7aa/shell/assets/branding/dragonswood-mascot-crest.png" alt="Dragonswood crest" style="width:32px;height:32px;object-fit:contain;vertical-align:middle;margin-right:7px">ARCANE ACADEMY SCIENCE WING</div><h1>⚗️ Elemental Laboratory</h1><div class="sub">Dragonswood presentation • real atomic structure, real molecules, real conservation of matter</div></header>
+<nav><button data-dw-click="showMode('table')">🧪 Periodic Codex</button><button data-dw-click="showMode('atom')">⚛️ Atom Forge</button><button data-dw-click="showMode('mixer')">🧙 Element Mixer</button><button data-dw-click="showMode('molecule')">🧬 Molecule Observatory</button><button data-dw-click="showMode('reaction')">🔥 Reaction Chamber</button><button data-dw-click="showMode('missions')">🏆 Academy Missions</button></nav>
+<main>
+<section id="table" class="mode on">
+<div class="card"><h2>🧪 Periodic Codex</h2><p>All 118 named elements are built directly into the game, so the table no longer depends on a web service merely to exist. Select any tile to inspect it.</p><div class="legend"><span>Group = vertical column</span><span>Period = horizontal row</span><span>Atomic number = proton count</span></div><div id="ptable" class="ptable"></div></div>
+<div id="elementDetail" class="card"><h3>Select an element to open its Codex page.</h3></div>
+</section>
+
+<section id="mixer" class="mode"><div class="card"><h2>🧙 Element Mixer</h2><p>Drag two elements into the rune circles. The laboratory reports a real classroom-level chemical relationship: a familiar compound, an alloy/material connection, a reaction that needs special conditions, or no simple direct product.</p><div class="mixergrid"><div><h3>Element Bank</h3><input id="mixSearch" placeholder="Search elements..." style="width:100%;padding:10px;border-radius:9px;background:#061321;color:white;border:1px solid #37badd;margin-bottom:8px"><div id="mixBank" class="mixbank"></div></div><div><div class="mixslots"><div id="slotA" class="mixslot">Drag first element here</div><div class="mixplus">+</div><div id="slotB" class="mixslot">Drag second element here</div></div><div style="text-align:center;margin:12px"><button data-dw-click="mixElements()">⚡ MIX ELEMENTS</button> <button data-dw-click="clearMixer()">CLEAR</button> <button data-dw-click="mixerHint()">HINT</button></div><div id="mixResult" class="mixresult"><div class="resulticon">⚗️</div><h3>Choose two elements</h3><p>The forge will explain what scientists know about the pairing.</p></div><div class="dangerNote">🛡️ Dragonswood is a simulation. Some real substances and reactions are dangerous; this lab teaches concepts and does not give experimental procedures.</div><h3>📖 Discovery Codex</h3><div id="discoveries"></div></div></div></div></section>
+
+<section id="atom" class="mode">
+<div class="card"><h2>⚛️ Atom Forge</h2><p>Build matter particle by particle. The animation changes as you add or remove protons, neutrons, and electrons.</p>
+<div class="atom-layout"><canvas id="atomCanvas" width="650" height="440"></canvas><div>
+<div class="controls">
+<div class="counter">PROTONS<br><strong id="pc">1</strong><br><button data-dw-click="changeParticle('p',-1)">−</button> <button data-dw-click="changeParticle('p',1)">+</button></div>
+<div class="counter">NEUTRONS<br><strong id="nc">0</strong><br><button data-dw-click="changeParticle('n',-1)">−</button> <button data-dw-click="changeParticle('n',1)">+</button></div>
+<div class="counter">ELECTRONS<br><strong id="ec">1</strong><br><button data-dw-click="changeParticle('e',-1)">−</button> <button data-dw-click="changeParticle('e',1)">+</button></div>
+</div>
+<div id="atomRead" class="card"></div>
+<div class="tip"><b>Science rule:</b> changing protons changes the element. Changing neutrons changes the isotope. Changing electrons changes the electrical charge.</div>
+</div></div></div>
+</section>
+
+<section id="molecule" class="mode">
+<div class="card"><h2>🧬 Molecule Observatory</h2><p>Explore a curated 3D library of 30 scientifically grounded molecular structures. Search by name or formula, filter by category, and drag directly on each model to rotate it.</p>
+<div class="molecule-layout"><div><div class="moltools"><input id="molSearch" placeholder="Search 3D molecule library…"><select id="molCategory"><option value="All">All categories</option><option>Atmosphere</option><option>Everyday</option><option>Fuels</option><option>Life</option><option>Acids & bases</option><option>Industrial</option></select></div><div id="molButtons" class="mol-list"></div></div><div><canvas id="molCanvas" width="850" height="440"></canvas><div id="molInfo" class="card"></div></div></div></div>
+</section>
+
+<section id="reaction" class="mode">
+<div class="card"><h2>🔥 Reaction Chamber</h2><p>Balancing is not guessing numbers. Your job is to make the count of each kind of atom equal on both sides because chemical reactions rearrange atoms rather than creating or destroying them.</p>
+<div class="rxgrid"><div><div id="rxEquation" class="equation"></div><div id="rxInputs" class="coefrow"></div><div style="text-align:center;margin-top:12px"><button data-dw-click="checkReaction()">TEST BALANCE</button> <button data-dw-click="reactionHint()">HINT</button> <button data-dw-click="nextReaction()">NEXT</button></div><div id="rxFeedback" class="tip"></div></div><div><h3>Atom Counter</h3><div id="atomCounter" class="atomcounts"></div></div></div>
+</div></section>
+
+<section id="missions" class="mode"><div class="card"><h2>🏆 Academy Missions</h2><p>Complete these while exploring the other labs. Progress saves on this device.</p><div id="missionGrid" class="missions"></div></div></section>
+</main>
+<footer>Scientific reference: IUPAC/Royal Society of Chemistry periodic-table conventions; Wikimedia Commons is queried for element sample imagery when available. The game ships its 118 element names/positions locally for reliability. Molecular geometry is curated from standard VSEPR/basic molecular geometry and cross-checked against PubChem structure conventions. Dragonswood is the presentation layer.</footer>
+
+
+<script src="https://dragonswood-9289e.firebaseapp.com/rebuild/github-assets/3fc7b39b5fd3b7aa/games/elemental-laboratory/game.js" defer></script></body></html>

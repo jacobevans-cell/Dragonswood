@@ -1,0 +1,75 @@
+<!doctype html><html lang="en"><head>
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://dragonswood-9289e.firebaseapp.com; style-src 'self' https://dragonswood-9289e.firebaseapp.com 'unsafe-inline'; img-src 'self' https://dragonswood-9289e.firebaseapp.com data: blob:; font-src 'self' https://dragonswood-9289e.firebaseapp.com data:; connect-src 'self' https://dragonswood-9289e.firebaseapp.com; media-src 'self' https://dragonswood-9289e.firebaseapp.com data: blob:; frame-src 'self' blob:; worker-src 'self' https://dragonswood-9289e.firebaseapp.com blob:; object-src 'none'; base-uri 'self'; form-action 'self'"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dragonswood Cosmic Architect V4</title><link rel="stylesheet" href="https://dragonswood-9289e.firebaseapp.com/rebuild/github-assets/3fc7b39b5fd3b7aa/games/cosmic-architect/game.css"></head><body><a class="dw-back" href="#" data-return-games>← DRAGONSWOOD GAMES</a>
+<header>
+ <span class="badge"><img src="https://dragonswood-9289e.firebaseapp.com/rebuild/github-assets/3fc7b39b5fd3b7aa/shell/assets/branding/dragonswood-mascot-crest.png" alt="Dragonswood crest" style="width:32px;height:32px;object-fit:contain;vertical-align:middle;margin-right:7px">DRAGONSWOOD • ARCANE OBSERVATORY</span>
+ <h1>🌌 Cosmic Architect</h1>
+ <div class="sub">Real PhET orbital simulation underneath. Dragonswood missions on top.</div>
+</header>
+<main>
+ <div class="tabs">
+   <button class="active" data-tab="play">🪐 SIMULATOR</button>
+   <button data-tab="missions">🏆 MISSION BOARD</button>
+   <button data-tab="science">🔬 SCIENCE GUIDE</button>
+ </div>
+
+ <section id="play" class="panel on">
+  <div class="shell">
+   <div class="simwrap">
+    <iframe sandbox="allow-scripts allow-pointer-lock" id="phetFrame" title="PhET My Solar System"
+      src="/Dragonswood/rebuild/games/cosmic-architect/simulation/index.html"
+      allow="fullscreen"></iframe>
+   </div>
+   <aside class="side">
+    <div class="card">
+      <h2 style="margin:0 0 6px">🎮 Observatory HUD</h2>
+      <div class="score"><div>MISSIONS<b id="doneCount">0 / 8</b></div><div>XP<b id="xp">0</b></div></div>
+    </div>
+    <div class="card">
+      <h3>🎯 Current Mission</h3>
+      <div id="currentMission" class="callout">Choose a mission from the board.</div>
+      <div class="actions" style="margin-top:7px"><button id="missionDone">✓ COMPLETE</button><button id="nextMission">NEXT →</button></div>
+    </div>
+    <div class="card">
+      <h3>⚡ Quick Challenges</h3>
+      <div id="quickList"></div>
+    </div>
+    <div class="card">
+      <div class="callout"><b>Why PhET?</b><br>This is the University of Colorado's open-source My Solar System simulation. Students can manipulate masses, velocities, positions, paths, gravity-force vectors, center of mass, and preset orbital systems instead of relying on our homemade imitation.</div>
+    </div>
+    <div class="actions">
+      <a class="btn" target="_blank" rel="noopener" href="/Dragonswood/rebuild/games/cosmic-architect/simulation/index.html">↗ FULL SCREEN</a>
+      <button data-dw-click="reloadPhet()">↺ RELOAD SIM</button>
+    </div>
+   </aside>
+  </div>
+ </section>
+
+ <section id="missions" class="panel">
+  <div class="card">
+   <h2>🏆 Dragonswood Mission Board</h2>
+   <p>These missions are built around things the simulator actually lets students manipulate. Because PhET runs in a separate simulation frame, completion is a student check-off after doing the listed investigation. The mission card tells you exactly what evidence to produce.</p>
+   <div id="missionBoard"></div>
+  </div>
+ </section>
+
+ <section id="science" class="panel">
+  <div class="card">
+   <h2>🔬 Science Guide</h2>
+   <div class="knowledge">
+    <div class="fact"><b>🧲 Gravity</b><br>Every mass attracts every other mass. More mass means stronger gravitational attraction. Greater distance weakens gravity dramatically because gravitational force follows an inverse-square relationship.</div>
+    <div class="fact"><b>➡️ Velocity</b><br>An orbit happens because a body is moving sideways while gravity continually bends its path inward. Too little speed can lead to a collision. Enough speed can create an orbit. Sufficient speed can produce an escape trajectory.</div>
+    <div class="fact"><b>⚖️ Center of Mass</b><br>Two bodies both orbit their shared center of mass. A star does not sit perfectly still while a planet moves around it.</div>
+    <div class="fact"><b>☄️ Ellipse vs. Hyperbola</b><br>A closed elliptical path is a bound orbit. A hyperbolic path is unbound, meaning the object passes through the system and escapes.</div>
+    <div class="fact"><b>🪐 Multi-body Systems</b><br>Adding more objects makes gravity more complicated. Worlds can perturb one another, collide, exchange energy, or even slingshot objects onto new trajectories.</div>
+   </div>
+  </div>
+ </section>
+</main>
+<footer>
+PhET My Solar System © University of Colorado Boulder, GPL-3.0/open educational simulation. Dragonswood mission wrapper is an adapted educational presentation and does not alter PhET's physics.
+</footer>
+
+
+
+<p style="padding:12px">Simulation by PhET Interactive Simulations, University of Colorado Boulder, licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>. <a href="https://phet.colorado.edu" target="_blank" rel="noopener">PhET source</a>. Classroom offline copy; simulation positions reset on reload.</p><script src="https://dragonswood-9289e.firebaseapp.com/rebuild/github-assets/3fc7b39b5fd3b7aa/games/cosmic-architect/game.js" defer></script></body></html>

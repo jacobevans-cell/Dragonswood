@@ -1,0 +1,132 @@
+<!doctype html><html lang="en"><head>
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://dragonswood-9289e.firebaseapp.com; style-src 'self' https://dragonswood-9289e.firebaseapp.com 'unsafe-inline'; img-src 'self' https://dragonswood-9289e.firebaseapp.com data: blob:; font-src 'self' https://dragonswood-9289e.firebaseapp.com data:; connect-src 'self' https://dragonswood-9289e.firebaseapp.com; media-src 'self' https://dragonswood-9289e.firebaseapp.com data: blob:; frame-src 'self' blob:; worker-src 'self' https://dragonswood-9289e.firebaseapp.com blob:; object-src 'none'; base-uri 'self'; form-action 'self'"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Decimal Deception</title><link rel="stylesheet" href="https://dragonswood-9289e.firebaseapp.com/rebuild/github-assets/3fc7b39b5fd3b7aa/games/decimal/game.css"></head><body>
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <div class="title">🚀 Decimal Deception: Escape the Station</div>
+      <div class="sub">Decimal operations extension • Original Grade 6 practice • Game points only</div>
+    </div>
+    <div class="stats">
+      <div class="pill">Move: WASD / Arrows</div>
+      <div class="pill">Interact: E</div>
+    </div>
+  </div>
+
+  <div class="game-shell" id="shell">
+    <canvas id="game" width="1100" height="650"></canvas>
+
+    <div class="hud">
+      <div class="hudBox" id="livesHud">❤️❤️❤️❤️❤️</div>
+      <div class="hudBox" id="scoreHud">Score: 0</div>
+      <div class="hudBox" id="missionHud">💎 Crystals: 0 / 6</div>
+<div class="hudBox" id="portalHud">🚪 PORTAL LOCKED</div>
+<div class="hudBox" id="levelHud">Level 1: Theme</div>
+<button id="guideBtn" style="pointer-events:auto;background:#5c3a8a;padding:8px 12px;border-radius:12px;white-space:nowrap;flex:0 0 auto;box-shadow:none;">📘 Decimal Guide</button>
+    </div>
+
+    <div class="hint" id="hint">Restore all 6 crystals. Use the Math Scanner when you need help.</div>
+
+
+    <div class="modalBack" id="charBack" style="display:flex; z-index:20;">
+      <div class="modal">
+        <div class="missionTag">CHOOSE YOUR HERO</div>
+        <h2>Pick Your Character</h2>
+        <p>All characters play the same. Pick the one you want to send into an unreasonable amount of decimal danger.</p>
+        <div id="charGrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px;">
+          <button class="charBtn" data-char="unicorn">🦄<br>Unicorn</button>
+          <button class="charBtn" data-char="plumber">🧢<br>Red Plumber</button>
+          <button class="charBtn" data-char="dragon">🐉<br>Dragon</button>
+          <button class="charBtn" data-char="ninja">🥷<br>Ninja</button>
+          <button class="charBtn" data-char="sparkmouse">⚡<br>Spark Mouse</button>
+        </div>
+      </div>
+    </div>
+    
+<div class="modalBack" id="guideBack" style="z-index:18;">
+ <div class="modal" style="width:min(760px,96%);max-height:88vh;overflow:auto;">
+  <div class="missionTag">FREE REFERENCE</div>
+  <h2>📘 Decimal Guide</h2>
+  <p>Use this anytime. It does not cost points.</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left;">
+   <div style="background:#0c1424;border:1px solid #49658d;border-radius:14px;padding:14px;">
+    <b style="font-size:20px;color:#8fe6ff;">➕ ADDITION</b><br><br>
+    <b>1. Line up the decimal points.</b><br>
+    2. Add zeros if needed so place values match.<br>
+    3. Add from right to left.<br>
+    4. Bring the decimal <b>straight down</b> into the answer.
+    <div style="font-family:monospace;font-size:18px;margin-top:10px;background:#111d32;padding:9px;border-radius:9px;">&nbsp;7.50<br>+2.36<br>─────</div>
+   </div>
+   <div style="background:#0c1424;border:1px solid #49658d;border-radius:14px;padding:14px;">
+    <b style="font-size:20px;color:#ff9db0;">➖ SUBTRACTION</b><br><br>
+    <b>1. Line up the decimal points.</b><br>
+    2. Add zeros if needed.<br>
+    3. Subtract from right to left.<br>
+    4. Regroup when needed.<br>
+    5. Bring the decimal <b>straight down</b>.
+    <div style="font-family:monospace;font-size:18px;margin-top:10px;background:#111d32;padding:9px;border-radius:9px;">&nbsp;8.50<br>−3.27<br>─────</div>
+   </div>
+   <div style="background:#0c1424;border:1px solid #49658d;border-radius:14px;padding:14px;">
+    <b style="font-size:20px;color:#ffd86f;">✖ MULTIPLICATION</b><br><br>
+    <b>1. Ignore the decimals first.</b><br>
+    2. Multiply like whole numbers.<br>
+    3. Count the decimal places in <b>both factors</b>.<br>
+    4. Add those counts together.<br>
+    5. Move the decimal in the product that many places <b>from the right</b>.
+    <div style="margin-top:10px;background:#111d32;padding:9px;border-radius:9px;"><b>Remember:</b><br>decimal places + decimal places<br>= places in the product</div>
+   </div>
+   <div style="background:#0c1424;border:1px solid #49658d;border-radius:14px;padding:14px;">
+    <b style="font-size:20px;color:#9df5bb;">➗ DIVISION</b><br><br>
+    <b>1. Look at the divisor first.</b><br>
+    2. Move its decimal right until the divisor is a <b>whole number</b>.<br>
+    3. Move the dividend decimal the <b>same number of places</b>.<br>
+    4. Add zeros if needed.<br>
+    5. Divide normally.<br>
+    6. Bring the decimal <b>straight up</b> into the quotient.
+    <div style="margin-top:10px;background:#111d32;padding:9px;border-radius:9px;"><b>Remember:</b><br>Whatever you do to the divisor's decimal, <b>do the same to the dividend.</b></div>
+   </div>
+  </div>
+  <div style="margin-top:14px;background:#231b39;border:1px solid #7656a4;border-radius:14px;padding:14px;text-align:left;">
+   <b style="font-size:20px;">🧠 DECIMAL CHECK</b><br><br>
+   <b>Addition / Subtraction:</b> decimals line up ↕<br>
+   <b>Multiplication:</b> count decimal places 🔢<br>
+   <b>Division:</b> move both decimals the same amount ↪
+  </div>
+  <button id="guideCloseBtn" class="primary" style="width:100%;margin-top:14px;">Back to the Game</button>
+ </div>
+</div>
+<div class="modalBack" id="questionBack">
+      <div class="modal">
+        <div class="missionTag" id="missionTag">MISSION</div>
+        <h2 id="missionTitle">Console</h2>
+        <p id="missionDesc"></p>
+        <div class="question" id="questionText"></div>
+        <input aria-label="Decimal answer" maxlength="120" id="answerInput" inputmode="decimal" placeholder="Type your answer" />
+        <div class="row">
+          <button class="primary" id="submitBtn">Submit Answer</button>
+          <button id="scanBtn">🔍 Scan Problem (-10)</button>
+          <button id="closeBtn">Close</button>
+        </div>
+        <div id="scannerPanel" style="display:none;margin-top:12px;padding:12px 14px;border-radius:12px;background:#0c1424;border:1px solid #49658d;text-align:left;line-height:1.5;"></div>
+        <div class="feedback" id="feedback"></div>
+        <div class="small">Tip: You may use scratch paper. Revolutionary technology, apparently.</div>
+      </div>
+    </div>
+
+    <div class="modalBack" id="endBack">
+      <div class="modal win">
+        <div class="big" id="endIcon">🏆</div>
+        <h2 id="endTitle">Station Escaped!</h2>
+        <p id="endText"></p>
+        <button class="primary" id="restartBtn">Play Again</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" class="danger">Reset Game</button>
+    <button id="muteBtn">Sound: On</button>
+  </div>
+</div>
+
+<section class="console-list" aria-label="Station consoles"><h2>Station consoles</h2><p>Use the map with WASD / arrows and E, or choose a console here.</p><button data-console="0">Reactor Core</button><button data-console="1">Research Lab</button><button data-console="2">Shield Array</button><button data-console="3">Engine Control</button><button data-console="4">Communications</button><button data-console="5">Command Center</button></section><script src="https://dragonswood-9289e.firebaseapp.com/rebuild/github-assets/3fc7b39b5fd3b7aa/games/decimal/game.js" defer></script></body></html>

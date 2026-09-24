@@ -23,7 +23,9 @@ const rebuildAssetBase = location.pathname.includes("/rebuild/")
   ? "https://dragonswood-9289e.firebaseapp.com/rebuild/github-assets/dd1cbd9aece36e46/"
   : document.baseURI;
 const bookAssetUrl = path => new URL(path, rebuildAssetBase).href;
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL("./vendor/pdf.worker.mjs", import.meta.url).href;
+pdfjsLib.GlobalWorkerOptions.workerSrc = location.pathname.includes("/rebuild/")
+  ? new URL("class-library/vendor/pdf.worker.mjs", rebuildAssetBase).href
+  : new URL("./vendor/pdf.worker.mjs", import.meta.url).href;
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -489,7 +491,9 @@ async function openBook(book) {
     return;
   }
 
-  const base = new URL("./vendor/", import.meta.url).href;
+  const base = location.pathname.includes("/rebuild/")
+    ? new URL("class-library/vendor/", rebuildAssetBase).href
+    : new URL("./vendor/", import.meta.url).href;
   const task = pdfjsLib.getDocument({
     url: bookAssetUrl(book.file),
     cMapUrl: `${base}cmaps/`,

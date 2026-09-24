@@ -327,26 +327,8 @@ function hasPassed(testId) {
   return Boolean(state.student.passedTests?.[testId]);
 }
 
-function gateForTarget(targetPage, book = state.book) {
-  if (!book || (!state.teacherMode && state.student.lockedBookId !== book.id)) return null;
-  const map = chapterMap(book);
-  if (!map) return null;
-  const target = Math.max(1, Math.round(Number(targetPage) || 1));
-  const forcedChapter = Math.max(0, Number(state.student.chapterOverrides?.[book.id]?.chapterNumber) || 0);
-  for (let index = 1; index < map.chapters.length; index += 1) {
-    const chapter = map.chapters[index - 1];
-    const nextChapter = map.chapters[index];
-    const test = testForChapter(chapter);
-    if (target >= nextChapter.startPage && Number(nextChapter.number) > forcedChapter && test && !hasPassed(test.id)) {
-      return { test, chapter, nextChapter, gatePage: nextChapter.startPage };
-    }
-  }
-  const lastChapter = map.chapters.at(-1);
-  const finalTest = testForChapter(lastChapter);
-  const chapterEndPage = Number(lastChapter?.endPage || book.pages || state.total || map.editionPages) || 1;
-  if (target > chapterEndPage && Number(lastChapter?.number) > forcedChapter && finalTest && !hasPassed(finalTest.id)) {
-    return { test: finalTest, chapter: lastChapter, nextChapter: null, gatePage: chapterEndPage + 1, completesBook: true };
-  }
+function gateForTarget() {
+  // Chapter checks remain available, but never block reading progression.
   return null;
 }
 

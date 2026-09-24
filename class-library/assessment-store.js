@@ -235,8 +235,8 @@ export async function loadStudentPlans() {
   const response = await parentRequest("load-student-plans", {}, 10000);
   if (response?.ok && Array.isArray(response.plans)) return response.plans;
   const store = await directStore();
-  if (!store) return [];
-  try { return await store.loadStudentPlans(); } catch { return []; }
+  if (!store) throw new Error("Student roster is unavailable here. Open Story Vault directly while signed in as the teacher.");
+  return store.loadStudentPlans();
 }
 
 export async function forceStudentChapter(studentId, bookId, chapterNumber, startPage) {

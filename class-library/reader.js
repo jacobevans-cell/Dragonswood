@@ -1,7 +1,7 @@
-import * as pdfjsLib from "./vendor/pdf.mjs";
-import { BOOKS } from "./catalog.js?v=20260905-7";
-import { CLASSROOM_DICTIONARY } from "./dictionary/classroom.js?v=20260831-16";
-import { CHAPTER_MAPS } from "./assessment-data.js?v=20260905-7";
+import * as pdfjsLib from "https://dragonswood-9289e.firebaseapp.com/rebuild/github-assets/dd1cbd9aece36e46/class-library/vendor/pdf.mjs";
+import { BOOKS } from "https://dragonswood-9289e.firebaseapp.com/rebuild/github-assets/dd1cbd9aece36e46/class-library/catalog.js";
+import { CLASSROOM_DICTIONARY } from "https://dragonswood-9289e.firebaseapp.com/rebuild/github-assets/dd1cbd9aece36e46/class-library/dictionary/classroom.js";
+import { CHAPTER_MAPS } from "https://dragonswood-9289e.firebaseapp.com/rebuild/github-assets/dd1cbd9aece36e46/class-library/assessment-data.js";
 import {
   emptyStudentState,
   gradeSummary,

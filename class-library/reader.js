@@ -1686,7 +1686,10 @@ function openTestEditor() {
   loadStudentPlans().then(plans => {
     state.teacherPlans = plans;
     if (elements.testEditor.open) renderTestEditor();
-  }).catch(() => {});
+  }).catch(error => {
+    console.error("Student book assignments could not load:", error);
+    toast(error?.message || "Student book assignments could not load. Check your teacher sign-in.");
+  });
 }
 
 function collectEditorTest() {

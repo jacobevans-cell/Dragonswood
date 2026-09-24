@@ -132,6 +132,7 @@ const state = {
   activeGatePage: null,
   editorTestId: "",
   teacherPlans: [],
+  teacherPlansError: "",
   studentReady: false,
   teacherMode: false,
   saveTimer: null,
@@ -1624,10 +1625,11 @@ function renderTestEditor() {
     const map = chapterMap(option);
     return map?.chapters?.map(chapter => `<option value="${escapeHtml(option.id)}::${Number(chapter.number)}">${escapeHtml(option.title)} · Chapter ${Number(chapter.number)} — ${escapeHtml(chapter.title || "")}</option>`) || [];
   }).join("");
-  const lockManager = state.teacherPlans.length ? `
+  const lockManager = `
     <section class="teacher-lock-manager">
       <h3>Student book assignments</h3>
       <p>Assign books, force a student directly to a chapter, or unlock an unfinished book. Forced chapters bypass earlier chapter checks without changing test scores.</p>
+      ${state.teacherPlansError ? `<p role="alert">${escapeHtml(state.teacherPlansError)}</p>` : !state.teacherPlans.length ? "<p>Loading student roster…</p>" : ""}
       ${state.teacherPlans.map(plan => {
         const book = bookById(plan.state.lockedBookId);
         const nextBook = nextSeriesBook(book);
@@ -1651,7 +1653,7 @@ function renderTestEditor() {
           </div>
         </div>`;
       }).join("")}
-    </section>` : "";
+    </section>`;
   elements.testEditorFields.innerHTML = `
     ${lockManager}
     <div class="editor-test-settings">
@@ -1683,12 +1685,16 @@ function openTestEditor() {
   if (!state.teacherMode) return;
   renderTestEditor();
   if (!elements.testEditor.open) elements.testEditor.showModal();
+  state.teacherPlansError = "";
   loadStudentPlans().then(plans => {
     state.teacherPlans = plans;
+    if (!plans.length) state.teacherPlansError = "No students were returned by the roster. Check the teacher account and class enrollment.";
     if (elements.testEditor.open) renderTestEditor();
   }).catch(error => {
     console.error("Student book assignments could not load:", error);
-    toast(error?.message || "Student book assignments could not load. Check your teacher sign-in.");
+    state.teacherPlansError = error?.message || "Student book assignments could not load. Check your teacher sign-in.";
+    if (elements.testEditor.open) renderTestEditor();
+    toast(state.teacherPlansError);
   });
 }
 

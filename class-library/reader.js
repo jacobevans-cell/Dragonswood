@@ -19,6 +19,10 @@ import {
   unlockStudentBook
 } from "./assessment-store.js?v=20260924-teacher-2";
 
+const rebuildAssetBase = location.pathname.includes("/rebuild/")
+  ? "https://dragonswood-9289e.firebaseapp.com/rebuild/github-assets/dd1cbd9aece36e46/"
+  : document.baseURI;
+const bookAssetUrl = path => new URL(path, rebuildAssetBase).href;
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL("./vendor/pdf.worker.mjs", import.meta.url).href;
 
 const $ = (selector, root = document) => root.querySelector(selector);
@@ -268,7 +272,7 @@ function bookCard(book) {
   return `
     <button class="book-card ${isChoice ? "locked-choice" : ""} ${disabled ? "locked-other" : ""}" type="button" data-book-id="${book.id}" aria-label="${disabled ? "Locked. " : "Open "}${book.title} by ${book.author}" ${disabled ? "disabled" : ""}>
       <span class="cover-wrap">
-        <img src="${book.cover}" alt="Cover of ${book.title}" loading="lazy" decoding="async">
+        <img src="${bookAssetUrl(book.cover)}" alt="Cover of ${book.title}" loading="lazy" decoding="async">
         <span class="book-badge">${badge}</span>
         <span class="cover-title ${titleSize}">
           <strong>${book.title}</strong>
@@ -389,13 +393,13 @@ function legacyUrl(book) {
 
 function imageUrl(book, pageNumber) {
   const padded = String(pageNumber).padStart(3, "0");
-  return new URL(book.imagePattern.replace("{page}", padded), document.baseURI).href;
+  return bookAssetUrl(book.imagePattern.replace("{page}", padded));
 }
 
 async function loadReflowData() {
   if (!state.book?.contentFile) return null;
   if (!state.reflowDataPromise) {
-    const url = new URL(state.book.contentFile, document.baseURI).href;
+    const url = bookAssetUrl(state.book.contentFile);
     state.reflowDataPromise = fetch(url).then(response => {
       if (!response.ok) throw new Error(`Book text request failed: ${response.status}`);
       return response.json();
@@ -487,7 +491,7 @@ async function openBook(book) {
 
   const base = new URL("./vendor/", import.meta.url).href;
   const task = pdfjsLib.getDocument({
-    url: new URL(book.file, document.baseURI).href,
+    url: bookAssetUrl(book.file),
     cMapUrl: `${base}cmaps/`,
     cMapPacked: true,
     standardFontDataUrl: `${base}standard_fonts/`,
@@ -666,7 +670,7 @@ async function renderReflowPage(pageNumber, slot, token) {
     const figure = document.createElement("figure");
     figure.className = "reflow-illustration";
     illustrationImage = document.createElement("img");
-    illustrationImage.src = new URL(pageData.illustration.src, document.baseURI).href;
+    illustrationImage.src = bookAssetUrl(pageData.illustration.src);
     illustrationImage.alt = pageData.illustration.alt || "Classroom illustration";
     illustrationImage.loading = "eager";
     illustrationImage.decoding = "async";
@@ -1011,7 +1015,7 @@ function toggleLayout() {
 async function loadOcrText() {
   if (!state.book?.textFile) return {};
   if (!state.ocrTextPromise) {
-    const url = new URL(state.book.textFile, document.baseURI).href;
+    const url = bookAssetUrl(state.book.textFile);
     state.ocrTextPromise = fetch(url).then(response => {
       if (!response.ok) throw new Error(`OCR text request failed: ${response.status}`);
       return response.json();
@@ -1024,7 +1028,7 @@ async function loadOcrText() {
 async function loadOcrLayout() {
   if (!state.book?.textLayoutFile) return {};
   if (!state.ocrLayoutPromise) {
-    const url = new URL(state.book.textLayoutFile, document.baseURI).href;
+    const url = bookAssetUrl(state.book.textLayoutFile);
     state.ocrLayoutPromise = fetch(url).then(response => {
       if (!response.ok) throw new Error(`OCR layout request failed: ${response.status}`);
       return response.json();
@@ -1334,7 +1338,7 @@ function openBookInvitation(book) {
     return;
   }
   state.pendingBook = book;
-  elements.lockCover.src = book.cover;
+  elements.lockCover.src = bookAssetUrl(book.cover);
   elements.lockCover.alt = `Cover of ${book.title}`;
   elements.lockTitle.textContent = `Could ${book.title} be your book?`;
   elements.lockAuthor.textContent = `${book.author}${book.series ? ` · ${book.series}` : ""}`;

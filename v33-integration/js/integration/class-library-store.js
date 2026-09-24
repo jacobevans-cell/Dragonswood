@@ -64,9 +64,10 @@ async function connection({ allowTeacher = false, requireTeacher = false } = {})
   const student = await appConnection(sdk);
   let teacher = null;
   if (allowTeacher || requireTeacher || !student.user) teacher = await appConnection(sdk, TEACHER_APP_NAME);
-  const teacherSignedIn = String(teacher?.user?.email || "").toLowerCase() === TEACHER_EMAIL;
-  if (requireTeacher && !teacherSignedIn) throw new Error("Open this from the signed-in Dragonswood teacher account.");
-  const selected = teacherSignedIn && allowTeacher ? teacher : student.user ? student : teacher;
+  const namedTeacherSignedIn = String(teacher?.user?.email || "").toLowerCase() === TEACHER_EMAIL;
+  const defaultTeacherSignedIn = String(student?.user?.email || "").toLowerCase() === TEACHER_EMAIL;
+  if (requireTeacher && !namedTeacherSignedIn && !defaultTeacherSignedIn) throw new Error("Open this from the signed-in Dragonswood teacher account.");
+  const selected = allowTeacher && namedTeacherSignedIn ? teacher : student.user ? student : teacher;
   const { auth, db, user } = selected || {};
   if (!user) throw new Error("Sign in before opening the class library.");
   return { ...sdk, auth, db, user };

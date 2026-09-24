@@ -17,7 +17,7 @@ import {
   assignStudentBook,
   forceStudentChapter,
   unlockStudentBook
-} from "./assessment-store.js?v=20260905-7";
+} from "./assessment-store.js?v=20260924-teacher-2";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL("./vendor/pdf.worker.mjs", import.meta.url).href;
 

@@ -19,9 +19,7 @@ import {
   unlockStudentBook
 } from "./assessment-store.js?v=20260924-teacher-2";
 
-const rebuildAssetBase = location.pathname.includes("/rebuild/")
-  ? "https://dragonswood-9289e.firebaseapp.com/rebuild/github-assets/dd1cbd9aece36e46/"
-  : document.baseURI;
+const rebuildAssetBase = "https://dragonswood-9289e.firebaseapp.com/rebuild/github-assets/dd1cbd9aece36e46/";
 const bookAssetUrl = path => new URL(path, rebuildAssetBase).href;
 pdfjsLib.GlobalWorkerOptions.workerSrc = location.pathname.includes("/rebuild/")
   ? new URL("class-library/vendor/pdf.worker.mjs", rebuildAssetBase).href

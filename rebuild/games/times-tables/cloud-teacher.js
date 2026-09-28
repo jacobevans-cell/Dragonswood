@@ -1,7 +1,7 @@
 import {auth,functions,httpsCallable,onAuthStateChanged,connect,escape,localKey} from './cloud-core.js';
 const kind=document.body.dataset.factKind,status=document.getElementById('cloud-status'),button=document.getElementById('cloud-connect'),count=document.getElementById('cloud-count'),rows=document.getElementById('cloud-rows'),list=httpsCallable(functions,'listFactFluency'),submit=httpsCallable(functions,'submitFactFluency');let loading=false;
 async function uploadLocal(){let local=[];try{local=JSON.parse(localStorage.getItem(localKey(kind))||'[]')}catch{}if(!Array.isArray(local))return;
-  for(const x of local){if(!x?.id||!Array.isArray(x.responses)||![36,144].includes(x.count))continue;
+  for(const x of local){if(!x?.id||!Array.isArray(x.responses)||!(kind==='decimal'?x.count===20:[36,144].includes(x.count)))continue;
     await submit({id:x.id,student:x.student,grade:x.grade,kind,count:x.count,totalMs:x.totalMs,responses:x.responses,startedAt:x.startedAt});
   }
 }

@@ -21,10 +21,12 @@
     .note{border-left:4px solid #f5ca70;padding-left:14px}.ok{color:#b9edc8}.no{color:#ffb8ba}
   </style>
 </head>
-<body>
+<body data-fact-kind="division">
 <main>
   <div class="eyebrow">Dragonswood · Math</div><h1>Division Fluency Check</h1>
   <p>Division facts with whole-number answers from 1 through 12. Each attempt records both correctness and answer time. Work carefully; the timer is information, not a cutoff.</p>
+
+  <section class="card" aria-label="Teacher dashboard connection"><h2>Save to your teacher</h2><button id="cloud-connect" type="button">Sign in to save to teacher</button><p id="cloud-status" role="status">Checking account…</p></section>
 
   <section id="setup" class="card">
     <h2>Start an attempt</h2>
@@ -82,7 +84,7 @@
     attempts.push(record);last=record;try{localStorage.setItem(key,JSON.stringify(attempts));}catch{alert('This browser could not save the attempt locally. Download this attempt now.');}
     active=null;show('results');$('result-name').textContent=record.student+' · Grade '+record.grade+' · '+record.count+' questions';
     $('summary').innerHTML=[['Correct',record.correct+' / '+record.count],['Accuracy',record.accuracy+'%'],['Total time',duration(record.totalMs)],['Avg. correct answer',record.averageCorrectMs===null?'—':seconds(record.averageCorrectMs)],['Correct within 3s',record.fastCorrect+' / '+record.count]].map(([label,value])=>'<div class="stat">'+safe(label)+'<strong>'+safe(value)+'</strong></div>').join('');
-    $('detail').innerHTML=r.map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+(x.a*x.b)+' ÷ '+x.b+' = '+x.a+'</td><td>'+safe(x.answer===''?'Skipped':x.answer)+'</td><td class="'+(x.correct?'ok':'no')+'">'+(x.correct?'Yes':'No')+'</td><td>'+seconds(x.timeMs)+'</td></tr>').join('');}
+    window.dispatchEvent(new Event('dw-fact-finished'));$('detail').innerHTML=r.map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+(x.a*x.b)+' ÷ '+x.b+' = '+x.a+'</td><td>'+safe(x.answer===''?'Skipped':x.answer)+'</td><td class="'+(x.correct?'ok':'no')+'">'+(x.correct?'Yes':'No')+'</td><td>'+seconds(x.timeMs)+'</td></tr>').join('');}
   function csv(rows){const columns=['attempt_id','date_iso','student','grade','test_questions','correct','accuracy_percent','total_seconds','average_correct_seconds','correct_within_3_seconds','question_number','dividend','divisor','expected_quotient','student_answer','question_correct','question_seconds'];
     const quote=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const lines=[columns.map(quote).join(',')];for(const x of rows)for(const [i,r] of x.responses.entries())lines.push([x.id,x.startedAt,x.student,x.grade,x.count,x.correct,x.accuracy,(x.totalMs/1000).toFixed(1),x.averageCorrectMs===null?'':(x.averageCorrectMs/1000).toFixed(1),x.fastCorrect,i+1,r.a*r.b,r.b,r.a,r.answer,r.correct,(r.timeMs/1000).toFixed(1)].map(quote).join(','));
     const blob=new Blob(['\ufeff'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='dragonswood-division-'+new Date().toISOString().slice(0,10)+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
@@ -91,5 +93,5 @@
   $('download-one').onclick=()=>last&&csv([last]);
 })();
 </script>
-</body>
+<script type="module" src="../times-tables/cloud-student.js"></script></body>
 </html>

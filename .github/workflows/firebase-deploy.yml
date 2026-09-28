@@ -154,6 +154,7 @@ jobs:
               firebase deploy --project "$FIREBASE_PROJECT_ID" --config firebase.academic-ai.json --only functions:academic-ai:gradeAcademicAnswer --non-interactive
               ;;
             fact-fluency)
+              npm install --prefix functions-fact-fluency --omit=dev
               firebase deploy --project "$FIREBASE_PROJECT_ID" --config firebase.fact-fluency.json --only functions:fact-fluency --non-interactive
               ;;
             academic-ai-all)

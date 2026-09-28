@@ -1,0 +1,1 @@
+{"name":"dragonswood-fact-fluency","private":true,"main":"index.js","type":"commonjs","engines":{"node":"20"},"dependencies":{"firebase-admin":"^13.0.0","firebase-functions":"^6.0.0"}}

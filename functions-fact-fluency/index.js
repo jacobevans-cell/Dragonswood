@@ -41,5 +41,11 @@ exports.listFactFluency=onCall({region:'us-central1',maxInstances:5},async reque
   if(!request.auth||String(request.auth.token.email||'').toLowerCase()!==TEACHER||request.auth.token.email_verified!==true)throw new HttpsError('permission-denied','Teacher account required.');
   const kind=String(request.data?.kind||'');if(!['multiplication','division','decimal','fraction'].includes(kind))fail('Invalid test.');
   const snap=await db.collection(COLLECTION).where('kind','==',kind).limit(1000).get();
-  return {attempts:snap.docs.map(d=>{const x=d.data();return {id:d.id,studentId:x.studentId,studentEmail:x.studentEmail,studentName:x.studentName,grade:x.grade,kind:x.kind,questionCount:x.questionCount,correct:x.correct,accuracy:x.accuracy,totalMs:x.totalMs,averageCorrectMs:x.averageCorrectMs,fastCorrect:x.fastCorrect,startedAt:x.startedAt}})};
+  return {attempts:snap.docs.map(d=>{const x=d.data(),skills={};for(const r of x.responses||[]){const skill=kind==='fraction'?r.type:kind==='decimal'?r.op:kind==='division'?`÷ ${r.b}`:`× ${r.a}`;if(!skills[skill])skills[skill]={correct:0,total:0};skills[skill].total++;if(r.correct)skills[skill].correct++}return {id:d.id,studentId:x.studentId,studentEmail:x.studentEmail,studentName:x.studentName,grade:x.grade,kind:x.kind,questionCount:x.questionCount,correct:x.correct,accuracy:x.accuracy,totalMs:x.totalMs,averageCorrectMs:x.averageCorrectMs,fastCorrect:x.fastCorrect,startedAt:x.startedAt,skills}})};
+});
+exports.getFactFluencyDetails=onCall({region:'us-central1',maxInstances:5},async request=>{
+  if(!request.auth||String(request.auth.token.email||'').toLowerCase()!==TEACHER||request.auth.token.email_verified!==true)throw new HttpsError('permission-denied','Teacher account required.');
+  const id=String(request.data?.id||'');if(!/^[A-Za-z0-9_-]{8,180}$/.test(id))fail('Invalid attempt.');
+  const doc=await db.collection(COLLECTION).doc(id).get();if(!doc.exists)throw new HttpsError('not-found','Attempt not found.');
+  const x=doc.data();return {id:doc.id,kind:x.kind,studentName:x.studentName,grade:x.grade,startedAt:x.startedAt,responses:x.responses||[]};
 });

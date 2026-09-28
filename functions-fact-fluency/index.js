@@ -13,7 +13,7 @@ exports.submitFactFluency=onCall({region:'us-central1',maxInstances:10},async re
   if(!Array.isArray(x.responses)||x.responses.length!==count||!Number.isInteger(x.totalMs)||x.totalMs<0||x.totalMs>7200000)fail('Incomplete test attempt.');
   let correct=0,fastCorrect=0,correctTime=0;const responses=x.responses.map((row,i)=>{
     const a=Number(row?.a),b=Number(row?.b),timeMs=Number(row?.timeMs),answer=row?.answer;
-    if(!Number.isInteger(a)||a<1||a>12||!Number.isInteger(b)||b<1||b>12||!Number.isInteger(timeMs)||timeMs<0||timeMs>7200000||!(answer===''||Number.isInteger(answer)&&answer>=0&&answer<=144))fail('Invalid answer at question '+(i+1)+'.');
+    if(!Number.isInteger(a)||a<1||a>12||!Number.isInteger(b)||b<1||b>12||!Number.isInteger(timeMs)||timeMs<0||timeMs>7200000||!(answer===''||Number.isInteger(answer)&&answer>=0&&answer<=999))fail('Invalid answer at question '+(i+1)+'.');
     const expected=kind==='multiplication'?a*b:a,yes=answer!==''&&answer===expected;
     if(yes){correct++;correctTime+=timeMs;if(timeMs<=3000)fastCorrect++}
     return {a,b,answer,timeMs,correct:yes};

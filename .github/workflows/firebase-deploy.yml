@@ -18,6 +18,7 @@ on:
           - verify
           - firestore-rules
           - grade-academic-answer
+          - fact-fluency
           - academic-ai-all
           - firestore-and-academic-ai
       confirmation:
@@ -71,7 +72,7 @@ jobs:
           fi
 
           case "$selected_target" in
-            verify|firestore-rules|grade-academic-answer|academic-ai-all|firestore-and-academic-ai) ;;
+            verify|firestore-rules|grade-academic-answer|fact-fluency|academic-ai-all|firestore-and-academic-ai) ;;
             *)
               echo "Unsupported deployment target: $selected_target"
               exit 1
@@ -151,6 +152,9 @@ jobs:
               ;;
             grade-academic-answer)
               firebase deploy --project "$FIREBASE_PROJECT_ID" --config firebase.academic-ai.json --only functions:academic-ai:gradeAcademicAnswer --non-interactive
+              ;;
+            fact-fluency)
+              firebase deploy --project "$FIREBASE_PROJECT_ID" --config firebase.fact-fluency.json --only functions:fact-fluency --non-interactive
               ;;
             academic-ai-all)
               firebase deploy --project "$FIREBASE_PROJECT_ID" --config firebase.academic-ai.json --only functions:academic-ai --non-interactive

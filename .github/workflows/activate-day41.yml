@@ -1,0 +1,27 @@
+name: Activate Dragonswood Day 41
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/activate-day41.yml]
+permissions:
+  contents: read
+jobs:
+  activate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+      - run: npm install --prefix functions-fact-fluency --omit=dev
+      - name: Activate and verify September 29 quest
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+        run: |
+          set -euo pipefail
+          test -n "$FIREBASE_SERVICE_ACCOUNT_JSON"
+          umask 077
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/credential.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/credential.json"
+          node tools/activate-day41.cjs
+          rm -f "$RUNNER_TEMP/credential.json"

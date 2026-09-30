@@ -4,8 +4,8 @@ const submit=httpsCallable(functions,'submitFactFluency');
 function attempts(){try{const rows=JSON.parse(localStorage.getItem(localKey(kind))||'[]');return Array.isArray(rows)?rows:[]}catch{return []}}
 async function sync(){if(syncing||!auth.currentUser)return;syncing=true;button.disabled=true;const user=auth.currentUser,rows=attempts();let saved=0;
   status.textContent=`Signed in as ${user.email}. Checking ${rows.length} attempt${rows.length===1?'':'s'}…`;
-  try{for(const x of rows){if(!x?.id||!Array.isArray(x.responses)||!(kind==='decimal'?x.count===20:kind==='fraction'?x.count===12:[36,144].includes(x.count)))continue;
-      await submit({id:x.id,student:x.student,grade:x.grade,kind,count:x.count,totalMs:x.totalMs,responses:x.responses,startedAt:x.startedAt});saved++;
+  try{for(const x of rows){if(!x?.id||!Array.isArray(x.responses)||!((kind==='decimal'||kind==='pemdas')?x.count===20:kind==='fraction'?x.count===12:[36,144].includes(x.count)))continue;
+      await submit({id:x.id,student:x.student,grade:x.grade,kind,...(kind==='pemdas'?{mode:x.mode}:{}),count:x.count,totalMs:x.totalMs,responses:x.responses,startedAt:x.startedAt});saved++;
     }status.textContent=rows.length?`Saved to the teacher dashboard. ${saved} attempt${saved===1?'':'s'} confirmed; ${rows.length} on this device.`:`Connected as ${user.email}. Finish a test to save its result to the teacher dashboard.`;
   }catch(error){status.textContent=`Cloud save failed: ${error.message}. Attempts remain on this device. Download the CSV as a backup.`}
   finally{syncing=false;button.disabled=false}}

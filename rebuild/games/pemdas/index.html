@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dragonswood · PEMDAS Check</title>
+  <style>
+    :root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#f8f4e9;background:#151028}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at top,#39246b,#151028 65%)}
+    main{max-width:920px;margin:auto;padding:28px 18px 70px}.eyebrow{text-transform:uppercase;letter-spacing:.18em;color:#f7cc70;font-size:.76rem;font-weight:800}
+    h1{font-family:Georgia,serif;font-size:clamp(2rem,5vw,3.2rem);margin:.3rem 0}h2{margin:.2rem 0 1rem}p{line-height:1.5;color:#d9d0eb}
+    .card{background:#251c3c;border:1px solid #745c9a;border-radius:18px;padding:24px;margin:18px 0;box-shadow:0 12px 30px #0b071650}
+    .row{display:flex;gap:14px;flex-wrap:wrap;align-items:end}.field{flex:1;min-width:180px}label{display:block;font-weight:700;margin-bottom:7px}
+    input,select,button{font:inherit}input,select{width:100%;padding:13px;border:2px solid #a895c5;border-radius:10px;background:#130f22;color:#fff}
+    input:focus,select:focus,button:focus-visible{outline:3px solid #ffe287;outline-offset:2px}button{background:#f5ca70;color:#241437;border:0;border-radius:10px;padding:13px 18px;font-weight:800;cursor:pointer}
+    button.secondary{background:#51416d;color:#fff}button.danger{background:#562841;color:#fff}button:disabled{opacity:.45;cursor:not-allowed}
+    .muted{font-size:.9rem;color:#c7bdda}.hidden{display:none!important}.stats{display:flex;gap:10px;flex-wrap:wrap}.stat{background:#392b55;border-radius:12px;padding:10px 15px;min-width:120px}.stat strong{display:block;font-size:1.3rem;color:#ffe4a3}
+    .problem{text-align:center;font-size:clamp(2rem,7vw,4rem);font-weight:800;letter-spacing:.02em;margin:26px 0 14px}.answer{max-width:300px;margin:auto;display:block;text-align:center;font-size:2rem}
+    .center{text-align:center}.feedback{min-height:1.6em;color:#ffe4a3}.meter{height:10px;background:#493961;border-radius:10px;overflow:hidden}.meter span{display:block;height:100%;background:#f5ca70;width:0}
+    table{border-collapse:collapse;width:100%;font-size:.9rem}th,td{text-align:left;border-bottom:1px solid #695583;padding:9px 7px}th{color:#f9d98f}.scroll{overflow-x:auto;max-height:340px;overflow-y:auto}
+    .note{border-left:4px solid #f5ca70;padding-left:14px}.ok{color:#b9edc8}.no{color:#ffb8ba}
+  </style>
+</head>
+<body data-fact-kind="pemdas">
+<main>
+  <div class="eyebrow">Dragonswood · Math</div><h1>PEMDAS Check</h1>
+  <p>Simple order of operations with whole-number answers. Choose a mode below. Each 20-question attempt records accuracy and answer time; there is no time limit.</p>
+
+  <section class="card" aria-label="Teacher dashboard connection"><h2>Save to your teacher</h2><button id="cloud-connect" type="button">Sign in to save to teacher</button><p id="cloud-status" role="status">Checking account…</p></section>
+
+<section class="card" aria-label="PEMDAS guide"><h2>PEMDAS</h2><div class="stats"><div class="stat"><strong>P</strong>Parentheses</div><div class="stat"><strong>E</strong>Exponents<br><small id="exponent-note">Not used in this mode</small></div><div class="stat"><strong>M</strong>Multiplication</div><div class="stat"><strong>D</strong>Division</div><div class="stat"><strong>A</strong>Addition</div><div class="stat"><strong>S</strong>Subtraction</div></div><p>1. Parentheses → 2. Exponents (when included) → 3. Multiply or divide from left to right → 4. Add or subtract from left to right.</p><p id="power-example" class="hidden">An exponent means repeated multiplication: 3² = 3 × 3 = 9; 2³ = 2 × 2 × 2 = 8.</p></section>
+  <section id="setup" class="card">
+    <h2>Start an attempt</h2>
+    <div class="row">
+      <div class="field"><label for="student">Student name</label><input id="student" maxlength="80" autocomplete="off" placeholder="First and last name" required></div>
+      <div class="field"><label for="grade">Grade</label><select id="grade"><option value="4">4th</option><option value="5">5th</option></select></div>
+      <div class="field"><label for="mode">Mode</label><select id="mode"><option value="no-exponents">No exponents</option><option value="with-exponents">With exponents · squares and cubes</option></select></div>
+    </div>
+    <p class="muted">20 fresh questions each attempt. Small numbers, exact division, and whole-number answers. Choose a new mode before starting another attempt.</p>
+    <button id="start">Start test</button><p id="setup-error" class="feedback" role="alert"></p>
+  </section>
+
+  <section id="test" class="card hidden" aria-live="polite">
+    <div class="stats"><div class="stat">Question <strong id="progress">1 / 36</strong></div><div class="stat">Elapsed <strong id="clock">0:00</strong></div><div class="stat">Correct <strong id="correct-live">0</strong></div></div>
+    <p id="test-student" class="muted"></p><div class="meter" aria-hidden="true"><span id="bar"></span></div>
+    <div id="problem" class="problem" aria-label="Order of operations question"></div>
+    <label for="answer" class="center">Your answer</label><input id="answer" class="answer" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" maxlength="4">
+    <p class="center"><button id="submit">Submit answer ↵</button> <button id="skip" class="secondary">Skip</button></p>
+    <p id="test-message" class="feedback center" role="status"></p>
+  </section>
+
+  <section id="results" class="card hidden">
+    <h2>Attempt complete</h2><p id="result-name"></p>
+    <div class="stats" id="summary"></div>
+    <p class="note">The 3-second measure is included for consistency with other tests; these multi-step questions usually take longer. Accuracy and time are shown separately. A skipped question is incorrect; its time still counts in the total.</p>
+    <div class="row"><button id="again">New attempt / change mode</button><button id="another" class="secondary">Next student</button><button id="download-one" class="secondary">Download this attempt</button></div>
+    <h3>Question details</h3><div class="scroll"><table><thead><tr><th>#</th><th>Question and steps</th><th>Answer</th><th>Correct</th><th>Time</th></tr></thead><tbody id="detail"></tbody></table></div>
+  </section>
+
+  <p class="muted">Sign in with your school Google account and wait for “Saved to the teacher dashboard.” Completed attempts remain on this device until browser storage is cleared. Download the CSV if cloud save fails.</p>
+</main>
+<script src="questions.js"></script>
+<script>
+(()=>{
+  'use strict';
+  const $=id=>document.getElementById(id),key='dragonswood-pemdas-fluency-v1';
+  let attempts=[];try{const data=JSON.parse(localStorage.getItem(key)||'[]');if(Array.isArray(data))attempts=data;}catch{}
+  let active=null,tick=null,last=null;
+  const shuffle=items=>{for(let i=items.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[items[i],items[j]]=[items[j],items[i]];}return items;};
+  function questions(){return Pemdas.questions($('mode').value);}
+  const seconds=ms=>(ms/1000).toFixed(1)+'s';const duration=ms=>{const s=Math.floor(ms/1000);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
+  function show(id){for(const name of ['setup','test','results'])$(name).classList.toggle('hidden',name!==id);}
+  function safe(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function start(){const name=$('student').value.trim().replace(/\s+/g,' ');if(!name){$('setup-error').textContent='Enter the student’s name first.';$('student').focus();return;}
+    $('setup-error').textContent='';const count=20,mode=$('mode').value;active={id:crypto.randomUUID?.()||String(Date.now()),student:name,grade:$('grade').value,mode,count,startedAt:new Date().toISOString(),items:questions(count),responses:[]};
+    active.startTime=performance.now();$('clock').textContent='0:00';show('test');$('test-student').textContent=name+' · Grade '+active.grade+' · '+(active.mode==='with-exponents'?'With exponents':'No exponents');$('test-message').textContent='';renderQuestion();tick=setInterval(()=>{$('clock').textContent=duration(performance.now()-active.startTime);},200);
+  }
+  function renderQuestion(){const i=active.responses.length,q=active.items[i];active.questionTime=performance.now();$('progress').textContent=(i+1)+' / '+active.count;$('correct-live').textContent=active.responses.filter(r=>r.correct).length;
+    $('bar').style.width=(i/active.count*100)+'%';$('problem').innerHTML=Pemdas.describe(q,active.mode).expression.replace(/\^(\d+)/g,'<sup>$1</sup>')+' = ?';$('answer').value='';$('answer').focus();}
+  function answer(skip=false){if(!active)return;const raw=$('answer').value.trim();if(!skip&&!/^(?:0|[1-9]\d{0,3})$/.test(raw)){$('test-message').textContent='Enter a whole number, or choose Skip.';$('answer').focus();return;}
+    const timeMs=Math.round(performance.now()-active.questionTime),q=active.items[active.responses.length],correct=!skip&&Number(raw)===Pemdas.describe(q,active.mode).expected;
+    active.responses.push({...q,answer:skip?'':Number(raw),correct,timeMs});$('test-message').textContent='';if(active.responses.length===active.count)finish();else renderQuestion();}
+  function finish(){clearInterval(tick);const r=active.responses,correct=r.filter(x=>x.correct),totalMs=Math.round(performance.now()-active.startTime);
+    const record={id:active.id,student:active.student,grade:active.grade,mode:active.mode,count:active.count,startedAt:active.startedAt,correct:correct.length,accuracy:Math.round(correct.length/r.length*1000)/10,totalMs,averageCorrectMs:correct.length?Math.round(correct.reduce((sum,x)=>sum+x.timeMs,0)/correct.length):null,fastCorrect:correct.filter(x=>x.timeMs<=3000).length,responses:r};
+    attempts.push(record);last=record;try{localStorage.setItem(key,JSON.stringify(attempts));}catch{alert('This browser could not save the attempt locally. Download this attempt now.');}
+    active=null;show('results');$('result-name').textContent=record.student+' · Grade '+record.grade+' · '+record.count+' questions · '+(record.mode==='with-exponents'?'With exponents':'No exponents');
+    $('summary').innerHTML=[['Correct',record.correct+' / '+record.count],['Accuracy',record.accuracy+'%'],['Total time',duration(record.totalMs)],['Avg. correct answer',record.averageCorrectMs===null?'—':seconds(record.averageCorrectMs)],['Correct within 3s',record.fastCorrect+' / '+record.count]].map(([label,value])=>'<div class="stat">'+safe(label)+'<strong>'+safe(value)+'</strong></div>').join('');
+    window.dispatchEvent(new Event('dw-fact-finished'));$('detail').innerHTML=r.map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+safe(Pemdas.describe(x,record.mode).expression)+' = '+Pemdas.describe(x,record.mode).expected+'<br><small>'+safe(Pemdas.describe(x,record.mode).steps)+'</small>'+'</td><td>'+safe(x.answer===''?'Skipped':x.answer)+'</td><td class="'+(x.correct?'ok':'no')+'">'+(x.correct?'Yes':'No')+'</td><td>'+seconds(x.timeMs)+'</td></tr>').join('');}
+  function csv(rows){const columns=['attempt_id','date_iso','student','grade','test_questions','correct','accuracy_percent','total_seconds','average_correct_seconds','correct_within_3_seconds','question_number','mode','expression','expected_answer','student_answer','question_correct','question_seconds'];
+    const quote=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const lines=[columns.map(quote).join(',')];for(const x of rows)for(const [i,r] of x.responses.entries())lines.push([x.id,x.startedAt,x.student,x.grade,x.count,x.correct,x.accuracy,(x.totalMs/1000).toFixed(1),x.averageCorrectMs===null?'':(x.averageCorrectMs/1000).toFixed(1),x.fastCorrect,i+1,x.mode,Pemdas.describe(r,x.mode).expression,Pemdas.describe(r,x.mode).expected,r.answer,r.correct,(r.timeMs/1000).toFixed(1)].map(quote).join(','));
+    const blob=new Blob(['\ufeff'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='dragonswood-pemdas-'+new Date().toISOString().slice(0,10)+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+  $('start').onclick=start;$('submit').onclick=()=>answer();$('skip').onclick=()=>answer(true);$('answer').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();answer();}});
+  $('again').onclick=()=>{$('student').value=last.student;$('grade').value=last.grade;$('mode').value=last.mode;show('setup');$('start').focus();};$('another').onclick=()=>{$('student').value='';show('setup');$('student').focus();};
+  $('mode').onchange=()=>{$('exponent-note').textContent=$('mode').value==='with-exponents'?'Squares and cubes':'Not used in this mode';$('power-example').classList.toggle('hidden',$('mode').value!=='with-exponents');};
+  $('download-one').onclick=()=>last&&csv([last]);
+})();
+</script>
+<script type="module" src="../times-tables/cloud-student.js"></script></body>
+</html>

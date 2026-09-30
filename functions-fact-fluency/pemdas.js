@@ -16,7 +16,7 @@ function describe(q,mode){
  }
  return {expression,expected,steps,type};
 }
-function questions(mode,count=20){if(!modes.includes(mode))throw Error('Invalid mode.');const base=['priority','parentheses','division','left-to-right','subtraction'];const types=mode==='with-exponents'?[...base,...base,base[0],base[3],...Array(4).fill('power'),...Array(4).fill('group-power')]:Array.from({length:20},(_,i)=>base[i%5]);
+function questions(mode,count=40){if(!modes.includes(mode))throw Error('Invalid mode.');const base=['priority','parentheses','division','left-to-right','subtraction'];const pattern=mode==='with-exponents'?[...base,...base,base[0],base[3],...Array(4).fill('power'),...Array(4).fill('group-power')]:base;const types=Array.from({length:count},(_,i)=>pattern[i%pattern.length]);
  for(let i=types.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[types[i],types[j]]=[types[j],types[i]];}
  return types.slice(0,count).map(type=>{const exponent=type.includes('power'),rand=max=>1+Math.floor(Math.random()*max);return {type,a:rand(exponent?5:10),b:exponent?rand(2)+1:rand(10),c:rand(exponent?5:10)};});
 }

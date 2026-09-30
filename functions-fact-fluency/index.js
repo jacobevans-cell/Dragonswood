@@ -9,7 +9,7 @@ const fail=message=>{throw new HttpsError('invalid-argument',message)};
 exports.submitFactFluency=onCall({region:'us-central1',maxInstances:10},async request=>{
   if(!await authorized(request)||request.auth.token.email_verified!==true)throw new HttpsError('permission-denied','Sign in with your school account.');
   const x=request.data||{},kind=x.kind,uid=request.auth.uid,count=Number(x.count),id=String(x.id||'');
-  if(!['multiplication','division','decimal','fraction','pemdas'].includes(kind)||!((kind==='decimal'||kind==='pemdas')?count===20:kind==='fraction'?count===12:[36,144].includes(count))||!(/^[A-Za-z0-9-]{8,80}$/.test(id)))fail('Invalid test attempt.');
+  if(!['multiplication','division','decimal','fraction','pemdas'].includes(kind)||!(kind==='pemdas'?[20,40].includes(count):kind==='decimal'?count===20:kind==='fraction'?count===12:[36,144].includes(count))||!(/^[A-Za-z0-9-]{8,80}$/.test(id)))fail('Invalid test attempt.');
   if(!['4','5'].includes(String(x.grade))||typeof x.student!=='string'||!x.student.trim()||x.student.length>80)fail('Invalid student or grade.');
   if(!Array.isArray(x.responses)||x.responses.length!==count||!Number.isInteger(x.totalMs)||x.totalMs<0||x.totalMs>7200000)fail('Incomplete test attempt.');
   let correct=0,fastCorrect=0,correctTime=0;const responses=x.responses.map((row,i)=>{

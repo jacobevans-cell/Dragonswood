@@ -24,7 +24,7 @@
 <body data-fact-kind="pemdas">
 <main>
   <div class="eyebrow">Dragonswood · Math</div><h1>PEMDAS Check</h1>
-  <p>Simple order of operations with whole-number answers. Choose a mode below. Each 20-question attempt records accuracy and answer time; there is no time limit.</p>
+  <p>Simple order of operations with whole-number answers. Choose a mode below. Each 40-question attempt records accuracy and answer time; there is no time limit.</p>
 
   <section class="card" aria-label="Teacher dashboard connection"><h2>Save to your teacher</h2><button id="cloud-connect" type="button">Sign in to save to teacher</button><p id="cloud-status" role="status">Checking account…</p></section>
 
@@ -36,12 +36,12 @@
       <div class="field"><label for="grade">Grade</label><select id="grade"><option value="4">4th</option><option value="5">5th</option></select></div>
       <div class="field"><label for="mode">Mode</label><select id="mode"><option value="no-exponents">No exponents</option><option value="with-exponents">With exponents · squares and cubes</option></select></div>
     </div>
-    <p class="muted">20 fresh questions each attempt. Small numbers, exact division, and whole-number answers. Choose a new mode before starting another attempt.</p>
+    <p class="muted">40 fresh questions each attempt. Small numbers, exact division, and whole-number answers. Choose a new mode before starting another attempt.</p>
     <button id="start">Start test</button><p id="setup-error" class="feedback" role="alert"></p>
   </section>
 
   <section id="test" class="card hidden" aria-live="polite">
-    <div class="stats"><div class="stat">Question <strong id="progress">1 / 36</strong></div><div class="stat">Elapsed <strong id="clock">0:00</strong></div><div class="stat">Correct <strong id="correct-live">0</strong></div></div>
+    <div class="stats"><div class="stat">Question <strong id="progress">1 / 40</strong></div><div class="stat">Elapsed <strong id="clock">0:00</strong></div><div class="stat">Correct <strong id="correct-live">0</strong></div></div>
     <p id="test-student" class="muted"></p><div class="meter" aria-hidden="true"><span id="bar"></span></div>
     <div id="problem" class="problem" aria-label="Order of operations question"></div>
     <label for="answer" class="center">Your answer</label><input id="answer" class="answer" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" maxlength="4">
@@ -72,7 +72,7 @@
   function show(id){for(const name of ['setup','test','results'])$(name).classList.toggle('hidden',name!==id);}
   function safe(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   function start(){const name=$('student').value.trim().replace(/\s+/g,' ');if(!name){$('setup-error').textContent='Enter the student’s name first.';$('student').focus();return;}
-    $('setup-error').textContent='';const count=20,mode=$('mode').value;active={id:crypto.randomUUID?.()||String(Date.now()),student:name,grade:$('grade').value,mode,count,startedAt:new Date().toISOString(),items:questions(count),responses:[]};
+    $('setup-error').textContent='';const count=40,mode=$('mode').value;active={id:crypto.randomUUID?.()||String(Date.now()),student:name,grade:$('grade').value,mode,count,startedAt:new Date().toISOString(),items:questions(count),responses:[]};
     active.startTime=performance.now();$('clock').textContent='0:00';show('test');$('test-student').textContent=name+' · Grade '+active.grade+' · '+(active.mode==='with-exponents'?'With exponents':'No exponents');$('test-message').textContent='';renderQuestion();tick=setInterval(()=>{$('clock').textContent=duration(performance.now()-active.startTime);},200);
   }
   function renderQuestion(){const i=active.responses.length,q=active.items[i];active.questionTime=performance.now();$('progress').textContent=(i+1)+' / '+active.count;$('correct-live').textContent=active.responses.filter(r=>r.correct).length;

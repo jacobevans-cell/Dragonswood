@@ -14,8 +14,9 @@ exports.submitFactFluency=onCall({region:'us-central1',maxInstances:10},async re
   if(!Array.isArray(x.responses)||x.responses.length!==count||!Number.isInteger(x.totalMs)||x.totalMs<0||x.totalMs>7200000)fail('Incomplete test attempt.');
   let correct=0,fastCorrect=0,correctTime=0;const responses=x.responses.map((row,i)=>{
     const a=Number(row?.a),b=Number(row?.b),timeMs=Number(row?.timeMs),answer=row?.answer;
-    let expected;
+    let expected,quest;
     if(kind==='pemdas'){
+      if(row?.quest!==undefined){const q=row.quest;if(!q||!['orderErrors','calculationErrors','hints'].every(k=>Number.isInteger(q[k])&&q[k]>=0&&q[k]<=10000))fail('Invalid quest statistics.');quest={orderErrors:q.orderErrors,calculationErrors:q.calculationErrors,hints:q.hints};}
       if(!Number.isInteger(timeMs)||timeMs<0||timeMs>7200000||!(answer===''||Number.isInteger(answer)&&answer>=0&&answer<=9999))fail('Invalid PEMDAS answer.');
       try{expected=pemdas.describe(row,x.mode).expected}catch{fail('Invalid PEMDAS question.')}
     }else if(kind==='fraction'){
@@ -32,9 +33,9 @@ exports.submitFactFluency=onCall({region:'us-central1',maxInstances:10},async re
       if(!Number.isInteger(a)||a<1||a>12||!Number.isInteger(b)||b<1||b>12||!Number.isInteger(timeMs)||timeMs<0||timeMs>7200000||!(answer===''||Number.isInteger(answer)&&answer>=0&&answer<=999))fail('Invalid answer at question '+(i+1)+'.');
       expected=kind==='multiplication'?a*b:a;
     }
-    const yes=kind==='fraction'?answer!==''&&Number(answer.split('/')[0])*b===a*Number(answer.split('/')[1]):answer!==''&&answer===expected;
+    const yes=kind==='fraction'?answer!==''&&Number(answer.split('/')[0])*b===a*Number(answer.split('/')[1]):answer!==''&&answer===expected&&(!quest||Object.values(quest).every(n=>n===0));
     if(yes){correct++;correctTime+=timeMs;if(timeMs<=3000)fastCorrect++}
-    return {a,b,...(kind==='pemdas'?{c:row.c,type:row.type,...pemdas.describe(row,x.mode)}:{}),...(kind==='decimal'?{op:row.op}:{}),...(kind==='fraction'?{type:row.type}:{}),answer,timeMs,correct:yes};
+    return {a,b,...(quest?{quest}:{}),...(kind==='pemdas'?{c:row.c,type:row.type,...pemdas.describe(row,x.mode)}:{}),...(kind==='decimal'?{op:row.op}:{}),...(kind==='fraction'?{type:row.type}:{}),answer,timeMs,correct:yes};
   });
   const ref=db.collection(COLLECTION).doc(uid+'_'+id),payload={studentId:uid,studentEmail:String(request.auth.token.email||''),studentName:x.student.trim(),grade:String(x.grade),kind,...(kind==='pemdas'?{mode:x.mode}:{}),questionCount:count,correct,accuracy:Math.round(correct/count*1000)/10,totalMs:x.totalMs,averageCorrectMs:correct?Math.round(correctTime/correct):null,fastCorrect,responses,startedAt:String(x.startedAt||'').slice(0,40),savedAt:admin.firestore.FieldValue.serverTimestamp(),schemaVersion:1};
   if(!/^\d{4}-\d\d-\d\dT/.test(payload.startedAt))fail('Invalid test time.');
@@ -45,7 +46,7 @@ exports.listFactFluency=onCall({region:'us-central1',maxInstances:5},async reque
   if(!request.auth||String(request.auth.token.email||'').toLowerCase()!==TEACHER||request.auth.token.email_verified!==true)throw new HttpsError('permission-denied','Teacher account required.');
   const kind=String(request.data?.kind||'');if(!['multiplication','division','decimal','fraction','pemdas'].includes(kind))fail('Invalid test.');
   const snap=await db.collection(COLLECTION).where('kind','==',kind).limit(1000).get();
-  return {attempts:snap.docs.map(d=>{const x=d.data(),skills={};for(const r of x.responses||[]){const skill=kind==='pemdas'?r.type:kind==='fraction'?r.type:kind==='decimal'?r.op:kind==='division'?`÷ ${r.b}`:`× ${r.a}`;if(!skills[skill])skills[skill]={correct:0,total:0};skills[skill].total++;if(r.correct)skills[skill].correct++}return {id:d.id,studentId:x.studentId,studentEmail:x.studentEmail,studentName:x.studentName,grade:x.grade,kind:x.kind,...(kind==='pemdas'?{mode:x.mode}:{}),questionCount:x.questionCount,correct:x.correct,accuracy:x.accuracy,totalMs:x.totalMs,averageCorrectMs:x.averageCorrectMs,fastCorrect:x.fastCorrect,startedAt:x.startedAt,skills}})};
+  return {attempts:snap.docs.map(d=>{const x=d.data(),skills={};for(const r of x.responses||[]){const skill=kind==='pemdas'?r.type:kind==='fraction'?r.type:kind==='decimal'?r.op:kind==='division'?`÷ ${r.b}`:`× ${r.a}`;if(!skills[skill])skills[skill]={correct:0,total:0};skills[skill].total++;if(r.correct)skills[skill].correct++}return {id:d.id,studentId:x.studentId,studentEmail:x.studentEmail,studentName:x.studentName,grade:x.grade,kind:x.kind,activity:x.responses?.some(r=>r.quest)?'quest':'check',...(kind==='pemdas'?{mode:x.mode}:{}),questionCount:x.questionCount,correct:x.correct,accuracy:x.accuracy,totalMs:x.totalMs,averageCorrectMs:x.averageCorrectMs,fastCorrect:x.fastCorrect,startedAt:x.startedAt,skills}})};
 });
 exports.getFactFluencyDetails=onCall({region:'us-central1',maxInstances:5},async request=>{
   if(!request.auth||String(request.auth.token.email||'').toLowerCase()!==TEACHER||request.auth.token.email_verified!==true)throw new HttpsError('permission-denied','Teacher account required.');

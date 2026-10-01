@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "requestId": "storyvault-free-choice-20261001",
+  "requestId": "phaser-grayson-expert-20261001",
   "projectId": "dragonswood-9289e",
-  "target": "firestore-rules",
+  "target": "fact-fluency",
   "confirmation": "DEPLOY"
 }

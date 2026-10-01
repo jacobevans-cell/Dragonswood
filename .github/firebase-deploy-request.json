@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "requestId": "dragon-quest-three-levels-20261001",
+  "requestId": "storyvault-free-choice-20261001",
   "projectId": "dragonswood-9289e",
-  "target": "fact-fluency",
+  "target": "firestore-rules",
   "confirmation": "DEPLOY"
 }

@@ -168,14 +168,10 @@ export async function saveReadingState(input) {
   await firestore.runTransaction(db, async transaction => {
     const snapshot = await transaction.get(ref);
     const existing = cleanStudentState(snapshot.exists() ? snapshot.data().state || {} : {});
-    const completedExistingBook = existing.lockedBookId && existing.completedBookIds.includes(existing.lockedBookId);
     incoming.chapterOverrides = existing.chapterOverrides;
     Object.entries(existing.chapterOverrides).forEach(([bookId, override]) => {
       incoming.pages[bookId] = Math.max(Number(incoming.pages[bookId]) || 1, Number(override.startPage) || 1);
     });
-    if (existing.lockedBookId && incoming.lockedBookId !== existing.lockedBookId && !completedExistingBook) {
-      throw new Error("Only a teacher can unlock an unfinished book.");
-    }
     transaction.set(ref, {
       studentId: user.uid,
       studentEmail: user.email || "",

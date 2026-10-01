@@ -939,16 +939,7 @@ service cloud.firestore {
                       && request.resource.data.state.seriesOverrideBookIds is list
                       && request.resource.data.state.seriesOverrideBookIds == resource.data.state.get('seriesOverrideBookIds', [])
                       && request.resource.data.updatedAt == request.time
-                      && (
-                        request.resource.data.state.lockedBookId == resource.data.state.lockedBookId
-                        || resource.data.state.lockedBookId == ''
-                        || (
-                          request.resource.data.state.lockedBookId == ''
-                          && request.resource.data.state.completedBookIds.hasAny([
-                            resource.data.state.lockedBookId
-                          ])
-                        )
-                      )
+
                     );
 
       allow delete: if isTeacher();

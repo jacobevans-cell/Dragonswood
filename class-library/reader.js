@@ -168,11 +168,8 @@ function nextSeriesBook(book) {
 }
 
 function seriesLock(book) {
-  if (state.teacherMode || state.student.lockedBookId === book?.id) return null;
-  if (state.student.seriesOverrideBookIds?.includes(book?.id)) return null;
-  const prerequisite = seriesPrerequisite(book);
-  if (!prerequisite || state.student.completedBookIds.includes(prerequisite.id)) return null;
-  return prerequisite;
+  // All students may choose any book, including later series books.
+  return null;
 }
 
 function lockedBook() {
@@ -233,7 +230,7 @@ function renderReadingPlan() {
       <div class="reading-plan-icon" aria-hidden="true">◇</div>
       <div class="reading-plan-main">
         <strong>Find the book that fits you</strong>
-        <span>Choose a cover to read a quick invitation. The reader opens after you lock in. Only your teacher can release an unfinished book.</span>
+        <span>Choose any cover to start reading. You can switch books anytime; your progress is saved.</span>
       </div>
       <small>${storageLabel}</small>`;
     return;
@@ -246,7 +243,7 @@ function renderReadingPlan() {
     <div class="reading-plan-icon" aria-hidden="true">◆</div>
     <div class="reading-plan-main">
       <strong>${chosen.title}</strong>
-      <span>Locked reading quest · Continue on page ${page}</span>
+      <span>Current reading quest · Continue on page ${page}</span>
     </div>
     <small>${storageLabel}</small>
     ${teacherUnlock}`;
@@ -257,12 +254,12 @@ function bookCard(book) {
   const percent = Math.round(((page - 1) / Math.max(1, book.pages - 1)) * 100);
   const chosenId = state.student.lockedBookId;
   const isChoice = chosenId === book.id;
-  const isOther = Boolean(chosenId && !isChoice);
+  const isOther = false;
   const prerequisite = seriesLock(book);
   const isSeriesLocked = Boolean(prerequisite);
   const disabled = isOther || isSeriesLocked;
   const badge = isChoice
-    ? `◆ Locked · page ${page}`
+    ? `◆ Reading · page ${page}`
     : isOther
       ? "Locked"
       : isSeriesLocked
@@ -410,18 +407,12 @@ async function loadReflowData() {
 }
 
 async function openBook(book) {
-  if (state.student.lockedBookId && state.student.lockedBookId !== book.id) {
-    toast(`Your reading quest is locked to ${lockedBook()?.title || "another book"}.`);
-    return;
-  }
-  const prerequisite = seriesLock(book);
-  if (prerequisite) {
-    toast(`Finish ${prerequisite.title} before opening book ${book.seriesNumber}.`);
-    return;
-  }
-  if (!state.teacherMode && !state.student.lockedBookId) {
-    openBookInvitation(book);
-    return;
+  if (!book) return;
+  if (!state.teacherMode && state.student.lockedBookId !== book.id) {
+    // Keep the existing progress/checkpoint model while allowing free switching.
+    state.student.lockedBookId = book.id;
+    state.student.lockedAt = new Date().toISOString();
+    persistStudentSoon();
   }
   if (book.kind === "legacy") {
     location.href = legacyUrl(book);
@@ -2022,11 +2013,7 @@ async function start() {
   const requestedBook = new URL(location.href).searchParams.get("book");
   const initialBook = bookById(requestedBook);
   if (initialBook) {
-    if (state.student.lockedBookId && state.student.lockedBookId !== initialBook.id) {
-      toast(`Continue ${lockedBook()?.title || "your locked book"} first.`);
-    } else {
-      openBook(initialBook);
-    }
+    openBook(initialBook);
   }
 }
 

@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://dragonswood-9289e.firebaseapp.com; style-src 'self' https://dragonswood-9289e.firebaseapp.com 'unsafe-inline'; img-src 'self' https://dragonswood-9289e.firebaseapp.com data: blob:; font-src 'self' https://dragonswood-9289e.firebaseapp.com data:; connect-src 'self' https://dragonswood-9289e.firebaseapp.com; media-src 'self' https://dragonswood-9289e.firebaseapp.com data: blob:; frame-src 'self' blob:; worker-src 'self' https://dragonswood-9289e.firebaseapp.com blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://dragonswood-9289e.firebaseapp.com; style-src 'self' https://dragonswood-9289e.firebaseapp.com 'unsafe-inline'; img-src 'self' https://dragonswood-9289e.firebaseapp.com data: blob:; font-src 'self' https://dragonswood-9289e.firebaseapp.com data:; connect-src 'self' https://dragonswood-9289e.firebaseapp.com; media-src 'self' https://dragonswood-9289e.firebaseapp.com https://dragonswood-rebuild-q2-4dqmumjona-uc.a.run.app data: blob:; frame-src 'self' blob: https://gamma.app https://www.youtube-nocookie.com; worker-src 'self' https://dragonswood-9289e.firebaseapp.com blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#11182a">
   <title>Dragonswood Storyvault</title>
-  <link rel="stylesheet" href="https://dragonswood-9289e.firebaseapp.com/rebuild/github-assets/dd1cbd9aece36e46/class-library/reader.css">
+  <link rel="stylesheet" href="https://dragonswood-9289e.firebaseapp.com/rebuild/github-assets/4be55218210ddb61/class-library/reader.css">
 </head>
 <body>
   <div class="app-shell">
@@ -17,9 +17,7 @@
         <span><strong>Storyvault</strong><small>Dragonswood Reading Guild</small></span>
       </button>
       <div class="header-actions">
-        <button class="teacher-tools-button" type="button" data-review-summaries>Review summaries · teacher preview</button>
         <button class="teacher-tools-button" type="button" data-teacher-tools hidden>⚙ Teacher controls</button>
-        <a class="teacher-tools-button" href="/Dragonswood/class-library.html" target="_top" style="display:inline-flex;align-items:center;text-decoration:none">⚙ Teacher controls (direct)</a>
         <button class="icon-button" type="button" data-theme aria-label="Switch color theme" title="Switch color theme">◐</button>
         <button class="icon-button" type="button" data-fullscreen aria-label="Enter full screen" title="Full screen">⛶</button>
       </div>
@@ -57,7 +55,7 @@
             <small data-reader-author>Author</small>
           </div>
           <div class="reader-tools">
-            <button class="toolbar-button lock-book-button" type="button" data-lock-book hidden>◆ Lock in</button>
+            <button class="toolbar-button lock-book-button" type="button" data-lock-book hidden>◆ Choose book</button>
             <button class="toolbar-button dictionary-button" type="button" data-dictionary aria-label="Turn on page dictionary" title="Tap words on the page to define them" aria-pressed="false"><span aria-hidden="true">Aa</span><span class="dictionary-label"> Define</span></button>
             <button class="toolbar-button" type="button" data-speech aria-label="Read this page aloud" title="Read aloud">▶ Read</button>
             <button class="toolbar-button compact" type="button" data-zoom-out aria-label="Zoom out">−</button>
@@ -128,7 +126,7 @@
       <div class="lock-book-preview">
         <img data-lock-cover alt="">
         <div>
-          <h2 id="lockDialogTitle" data-lock-title>Lock in this book?</h2>
+          <h2 id="lockDialogTitle" data-lock-title>Choose this book?</h2>
           <p data-lock-author></p>
         </div>
       </div>
@@ -137,12 +135,12 @@
         <p data-lock-teaser></p>
       </div>
       <div class="lock-notice">
-        <strong>Choose carefully.</strong>
-        <p>Choose any book and switch anytime. Your reading progress stays saved.</p>
+        <strong>Your choice, your pace.</strong>
+        <p>Switch books anytime. Your reading place and chapter work stay saved for each book.</p>
       </div>
       <div class="dialog-actions">
         <button class="secondary-action" value="cancel">Keep looking</button>
-        <button class="primary-action" type="button" data-confirm-lock>◆ Lock in my book</button>
+        <button class="primary-action" type="button" data-confirm-lock>◆ Read this book</button>
       </div>
     </form>
   </dialog>
@@ -181,6 +179,6 @@
   </dialog>
 
   <div class="toast" data-toast role="status" aria-live="polite"></div>
-  <script type="module" src="../class-library/reader.js?v=20261001-free-book-choice-1"></script>
+  <script type="module" src="https://dragonswood-9289e.firebaseapp.com/rebuild/github-assets/4be55218210ddb61/class-library/reader.js"></script>
 </body>
 </html>

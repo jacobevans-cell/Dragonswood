@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Runoff Rumble · Dragonswood</title>
+  <style>
+    :root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#f8f5ee;background:#101b2d}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% 0%,#20566a 0%,#101b2d 42%);min-height:100vh}
+    button,input,textarea{font:inherit}button,a{touch-action:manipulation}a{color:#b9f5f0}
+    .wrap{max-width:1260px;margin:auto;padding:22px}.top{display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .eyebrow{color:#ffd27a;font-weight:800;letter-spacing:.13em;text-transform:uppercase;font-size:.76rem}h1{font-size:clamp(2.2rem,5vw,4.3rem);line-height:1;margin:.25em 0}.lead{color:#c9dce4;max-width:720px;line-height:1.5}
+    .pill,.card{border:1px solid #557486;background:#17253a;border-radius:18px}.pill{padding:12px 16px}.card{padding:20px;box-shadow:0 14px 35px #0003}
+    .layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:18px;margin-top:18px}@media(max-width:900px){.layout{grid-template-columns:1fr}}
+    .score{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}.team{padding:14px;border-radius:15px;background:#22334b;border:2px solid transparent}.team.active{border-color:#ffd27a}.team input{width:100%;color:white;background:transparent;border:0;border-bottom:1px solid #71899d;max-width:160px}.team strong{font-size:2.1rem;color:#ffd27a}
+    .rounds{display:flex;gap:8px;flex-wrap:wrap}.rounds button,.btn{border:1px solid #80a1b0;background:#263e52;color:white;border-radius:11px;padding:11px 15px;cursor:pointer;font-weight:750}.rounds button[aria-current="step"],.btn.primary{background:#ffd27a;color:#19243a;border-color:#ffd27a}.btn:disabled{opacity:.5;cursor:not-allowed}.btn:hover:not(:disabled),.rounds button:hover{filter:brightness(1.12)}
+    .challenge{background:linear-gradient(135deg,#193d50,#252d51);border:1px solid #638399;border-radius:16px;padding:18px;margin:16px 0}.challenge h2{margin:0 0 8px;font-size:1.65rem}.challenge p{line-height:1.45}.surfaces{display:grid;grid-template-columns:1fr 1fr;gap:10px}.surface{padding:15px;background:#13263c;border-radius:13px;border:1px solid #6e8b97}.surface b{display:block;color:#ffd27a;font-size:1.1rem}
+    label{display:block;font-weight:700;margin:12px 0 5px}input[type=number],textarea{width:100%;padding:11px;border:1px solid #829aa8;border-radius:10px;color:#fff;background:#0e1b2d}textarea{min-height:72px;resize:vertical}
+    .choices{display:flex;gap:9px}.choices label{flex:1;cursor:pointer;padding:12px;border:1px solid #7798a8;border-radius:12px;text-align:center;background:#183046}.choices label:has(input:checked){background:#2e6b67;border-color:#a5f0e1}.choices input{margin-right:5px}
+    .data{display:grid;grid-template-columns:1fr 1fr;gap:10px}.muted{color:#bcd0d8;font-size:.92rem}.feedback{padding:15px;border-radius:12px;background:#123d44;border:1px solid #67bba9;margin-top:14px;line-height:1.5}.feedback[hidden]{display:none}
+    .modelhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.model{width:100%;height:720px;border:1px solid #6c8c9d;border-radius:12px;background:#f1f4f2;margin-top:14px}.model[hidden]{display:none}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+    .rule{border-left:4px solid #ffd27a;padding:8px 12px;background:#283546;border-radius:5px;line-height:1.5}.tiny{font-size:.85rem;color:#b8cbd4}.finish{font-size:1.1rem;color:#ffe5a8}
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top"><div><div class="eyebrow">Dragonswood · Science game · Grades 4–5</div><h1>🌧️ Runoff Rumble</h1><p class="lead">Predict which surface sends more rainwater running off. Test it in the real watershed model, defend your answer, then take a basket shot for bonus points.</p></div><div class="pill"><a href="https://gamma.app/embed/7ytl33d76sv7753" target="_blank" rel="noopener">Review the Gamma lesson ↗</a></div></header>
+  <div class="layout">
+    <section class="card" aria-label="Runoff challenge">
+      <div class="eyebrow">Team challenge</div>
+      <div class="score">
+        <div class="team active" id="team0"><label for="name0">Team 1</label><input id="name0" value="Streamkeepers"><div><strong id="score0">0</strong> points</div></div>
+        <div class="team" id="team1"><label for="name1">Team 2</label><input id="name1" value="Rain Rangers"><div><strong id="score1">0</strong> points</div></div>
+      </div>
+      <div class="rounds" id="rounds" aria-label="Rounds"></div>
+      <section class="challenge"><div class="eyebrow" id="roundLabel"></div><h2 id="roundTitle"></h2><p id="roundSetup"></p><div class="surfaces"><div class="surface"><span>Surface A</span><b id="coverA"></b></div><div class="surface"><span>Surface B</span><b id="coverB"></b></div></div></section>
+      <p class="rule"><strong>Fair test:</strong> use the same 24-hour storm amount and soil group for A and B. Change <strong>only land cover</strong>. The model may show different numbers from your classmates if you choose different storms.</p>
+      <div id="play">
+        <label>Predict: which surface will have more runoff?</label>
+        <div class="choices"><label><input type="radio" name="prediction" value="A">Surface A</label><label><input type="radio" name="prediction" value="B">Surface B</label></div>
+        <div class="data"><div><label for="amountA">A runoff (cm)</label><input id="amountA" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Read from model"></div><div><label for="amountB">B runoff (cm)</label><input id="amountB" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Read from model"></div></div>
+        <label for="because">Why? Use runoff, soak in, infiltration, or impervious.</label><textarea id="because" placeholder="I predict … because …"></textarea>
+        <div class="actions"><button class="btn primary" id="check">Reveal result</button><button class="btn" id="next" disabled>Next team / round →</button></div>
+        <div class="feedback" id="feedback" role="status" hidden></div>
+      </div>
+      <p class="tiny">Scoring: 2 points for a prediction that matches the readings, 1 point for a clear science explanation, plus 2 points if your team makes the basket shot. The teacher checks the model readings.</p>
+      <p class="finish" id="finish" hidden>All three rounds complete. The team with the most points wins!</p>
+      <button class="btn" id="reset">Reset game</button>
+    </section>
+    <aside class="card"><div class="modelhead"><div><div class="eyebrow">Live model</div><h2>Test the rain</h2></div><a href="https://runoff.modelmywatershed.org/" target="_blank" rel="noopener">Open model full screen ↗</a></div><p class="muted">Set precipitation to any nonzero amount near the middle of the slider. Keep that exact amount for both surfaces. Select the soil group shown in each round, then read the <strong>Runoff</strong> number.</p><button class="btn primary" id="loadModel">Load runoff model</button><iframe class="model" id="model" title="Model My Watershed runoff simulation" src="about:blank" loading="lazy" referrerpolicy="no-referrer" hidden></iframe><p class="tiny">If the model does not display here, use “Open model full screen” and return to record your results. The game works either way.</p></aside>
+  </div>
+</main>
+<script>
+const rounds=[
+  {title:'Pavement vs. trees',a:'Forest',b:'Developed-High',soil:'B · Moderate infiltration',hint:'What happens when rain cannot soak through a highly developed surface?'},
+  {title:'Grass vs. neighborhood',a:'Grassland',b:'Developed-Med',soil:'C · Slow infiltration',hint:'How do plants change the path of the water?'},
+  {title:'Bare ground vs. trees',a:'Barren Land',b:'Forest',soil:'B · Moderate infiltration',hint:'What can roots and leaves do before water reaches the stream?'}
+];
+const $=id=>document.getElementById(id);let round=0,team=0,scores=[0,0],checked=false;
+function draw(){const x=rounds[round];$('rounds').innerHTML=rounds.map((r,i)=>`<button type="button" data-round="${i}" ${i===round?'aria-current="step"':''}>${i+1}. ${r.title}</button>`).join('');$('roundLabel').textContent=`Round ${round+1} of ${rounds.length} · ${$('name'+team).value||'Team '+(team+1)}`;$('roundTitle').textContent=x.title;$('roundSetup').textContent=`Soil group ${x.soil}. Use the same storm amount for both tests. ${x.hint}`;$('coverA').textContent=x.a;$('coverB').textContent=x.b;for(let i=0;i<2;i++){$('team'+i).classList.toggle('active',i===team);$('score'+i).textContent=scores[i]}$('feedback').hidden=true;$('next').disabled=true;checked=false;document.querySelectorAll('[name=prediction]').forEach(el=>el.checked=false);$('amountA').value='';$('amountB').value='';$('because').value='';$('finish').hidden=true}
+function reveal(){if(checked)return;const pick=document.querySelector('[name=prediction]:checked')?.value;const a=Number($('amountA').value),b=Number($('amountB').value),why=$('because').value.trim();if(!pick||$('amountA').value===''||$('amountB').value===''||a<0||b<0||!Number.isFinite(a)||!Number.isFinite(b)||why.length<12){$('feedback').hidden=false;$('feedback').textContent='Choose a prediction, enter both runoff readings, and write one complete explanation before revealing.';return}if(a===b){$('feedback').hidden=false;$('feedback').textContent='The readings are equal. Try a different nonzero storm amount, then record both results again.';return}const winner=a>b?'A':'B',correct=pick===winner,science=/runoff|soak|infiltrat|impervious/i.test(why);scores[team]+=(correct?2:0)+(science?1:0);$('score'+team).textContent=scores[team];$('feedback').hidden=false;$('feedback').innerHTML=`<strong>${winner==='A'?rounds[round].a:rounds[round].b} showed more runoff in your model test.</strong><br>${correct?'Prediction matched: +2 points.':'Prediction did not match: 0 prediction points.'} ${science?'Science explanation: +1 point.':'Add science vocabulary next time.'}<br>Teacher: check both model readings. If the team makes its basket shot, award +2 points.`;const shot=document.createElement('button');shot.className='btn';shot.textContent='🏀 Basket made: +2';shot.onclick=()=>{scores[team]+=2;$('score'+team).textContent=scores[team];shot.disabled=true};$('feedback').append(document.createElement('br'),shot);$('next').disabled=false;checked=true}
+$('check').onclick=reveal;$('next').onclick=()=>{if(team===0){team=1}else{team=0;round++}if(round>=rounds.length){$('play').hidden=true;$('finish').hidden=false;$('rounds').querySelectorAll('button').forEach(b=>b.disabled=true);return}draw()};$('reset').onclick=()=>{round=0;team=0;scores=[0,0];$('play').hidden=false;draw()};$('loadModel').onclick=()=>{if($('model').hidden){$('model').src='https://runoff.modelmywatershed.org/';$('model').hidden=false;$('loadModel').textContent='Hide model'}else{$('model').hidden=true;$('loadModel').textContent='Show model'}};$('rounds').addEventListener('click',e=>{const b=e.target.closest('[data-round]');if(b&&Number(b.dataset.round)<=round){round=Number(b.dataset.round);draw()}});draw();
+</script>
+</body>
+</html>

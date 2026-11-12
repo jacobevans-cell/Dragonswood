@@ -139,7 +139,7 @@ function bind() {
     if(!Number.isInteger(budgetCents)||budgetCents<100||budgetCents>10000)throw new Error('Choose a budget from $1 to $100.');
     if(!wishlistDeadline||!giftDate||wishlistDeadline>giftDate||wishlistDeadline<new Date().toLocaleDateString('sv-SE',{timeZone:'America/Phoenix'}))throw new Error('Choose a future wishlist deadline and gift day, in that order.');
     const latest=await getDoc(eventRef);
-    if(latest.exists()&&latest.data().status!=='open')throw new Error('Settings are locked after signups close.');
+    if(latest.exists()&&latest.data().status!=='open')throw new Error('Settings are locked after the roster closes.');
     await setDoc(eventRef,{title,budgetCents,wishlistDeadline,giftDate,wishlistClosesAt:phoenixEnd(wishlistDeadline),status:'open',drawVersion:0,updatedAt:serverTimestamp()},{merge:true});
   },'Exchange details saved.'));
   root.querySelector('#gift-reopen')?.addEventListener('click',()=>action(()=>updateDoc(eventRef,{status:'open',updatedAt:serverTimestamp()}),'Roster reopened.'));

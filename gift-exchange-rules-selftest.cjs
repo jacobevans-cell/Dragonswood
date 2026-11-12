@@ -50,12 +50,15 @@ function remove(path){return {delete:`${prefix}/${path}`};}
     account('jacobicusjax@gmail.com',true),account('gift-a@explore.academy'),account('gift-b@explore.academy'),account('gift-c@explore.academy'),account('gift-outsider@example.com')
   ]);
   for(const [student,name] of [[a,'Ava'],[b,'Ben'],[c,'Cleo']])await seed(`students/${student.uid}`,{firstName:name,grade:5});
-  await seed(eventPath,{title:'Gift privacy gate',budgetCents:1500,status:'open',drawVersion:0,signupDeadline:giftDay,wishlistDeadline:giftDay,giftDate:giftDay,signupClosesAt:new Date(future),wishlistClosesAt:new Date(future)});
+  await seed(eventPath,{title:'Gift privacy gate',budgetCents:1500,status:'open',drawVersion:0,wishlistDeadline:giftDay,giftDate:giftDay,wishlistClosesAt:new Date(future)});
 
   expect(await get(eventPath,a.token),200,'student reads event');
   expect(await get(eventPath,outsider.token),403,'outsider cannot read event');
-  expect(await commit(a.token,[update(`${eventPath}/participants/${a.uid}`,{joined:true},{create:true,timestamp:true})]),200,'A opts in');
-  expect(await commit(b.token,[update(`${eventPath}/participants/${b.uid}`,{joined:true},{create:true,timestamp:true})]),200,'B opts in');
+  expect(await commit(a.token,[update(`${eventPath}/participants/${a.uid}`,{joined:true},{create:true,timestamp:true})]),403,'student cannot add themself');
+  expect(await commit(teacher.token,[update(`${eventPath}/participants/${a.uid}`,{joined:true},{create:true,timestamp:true})]),200,'teacher includes A');
+  expect(await commit(teacher.token,[update(`${eventPath}/participants/${b.uid}`,{joined:true},{create:true,timestamp:true})]),200,'teacher includes B');
+  expect(await commit(teacher.token,[update(`${eventPath}/participants/${c.uid}`,{joined:true},{create:true,timestamp:true})]),200,'teacher includes C');
+  expect(await commit(teacher.token,[remove(`${eventPath}/participants/${c.uid}`)]),200,'teacher removes C before draw');
   expect(await get(`${eventPath}/participants/${a.uid}`,a.token),200,'A reads own participation');
   expect(await get(`${eventPath}/participants/${a.uid}`,b.token),403,'B cannot read A participation');
   expect(await list(`${eventPath}/participants`,a.token),403,'student cannot list roster');
@@ -63,6 +66,7 @@ function remove(path){return {delete:`${prefix}/${path}`};}
 
   expect(await commit(a.token,[update(`${eventPath}/wishlists/${a.uid}`,{text:'A sketchbook'},{create:true,timestamp:true})]),200,'A saves wishlist');
   expect(await commit(b.token,[update(`${eventPath}/wishlists/${b.uid}`,{text:'A puzzle'},{create:true,timestamp:true})]),200,'B saves wishlist');
+  expect(await commit(c.token,[update(`${eventPath}/wishlists/${c.uid}`,{text:'Color pencils'},{create:true,timestamp:true})]),200,'student can prepare wishlist before selection');
   expect(await get(`${eventPath}/wishlists/${a.uid}`,b.token),403,'wishlist stays private before draw');
   expect(await list(`${eventPath}/wishlists`,a.token),403,'student cannot list wishlists');
 
@@ -79,8 +83,8 @@ function remove(path){return {delete:`${prefix}/${path}`};}
   expect(await get(`${eventPath}/wishlists/${a.uid}`,b.token),200,'B reads assigned recipient wishlist');
   expect(await get(`${eventPath}/wishlists/${a.uid}`,c.token),403,'unassigned student cannot read wishlist');
   expect(await commit(a.token,[update(`${eventPath}/assignments/${a.uid}`,{recipientId:c.uid,recipientName:'Cleo',drawVersion:2},{timestamp:true})]),403,'student cannot change draw');
-  expect(await commit(c.token,[update(`${eventPath}/participants/${c.uid}`,{joined:true},{create:true,timestamp:true})]),403,'student cannot join after draw');
-  expect(await commit(a.token,[remove(`${eventPath}/participants/${a.uid}`)]),403,'student cannot leave after draw');
+  expect(await commit(c.token,[update(`${eventPath}/participants/${c.uid}`,{joined:true},{create:true,timestamp:true})]),403,'student cannot change locked roster');
+  expect(await commit(a.token,[remove(`${eventPath}/participants/${a.uid}`)]),403,'student cannot remove themself');
   console.log('Gift exchange Firestore privacy checks passed.');
 })().catch(error=>{console.error(error);process.exitCode=1;});
 

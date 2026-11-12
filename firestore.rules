@@ -1535,13 +1535,12 @@ service cloud.firestore {
       match /participants/{uid} {
         allow get: if isTeacher() || enrolledOwner(uid);
         allow list: if isTeacher();
-        allow create, update: if enrolledOwner(uid)
+        allow create, update: if isTeacher()
           && activeEvent().status == 'open'
-          && request.time < activeEvent().signupClosesAt
           && request.resource.data.keys().hasOnly(['joined','updatedAt'])
           && request.resource.data.joined == true
           && request.resource.data.updatedAt == request.time;
-        allow delete: if isTeacher() || (enrolledOwner(uid) && activeEvent().status != 'drawn');
+        allow delete: if isTeacher() && activeEvent().status == 'open';
       }
 
       match /wishlists/{uid} {
@@ -1553,7 +1552,6 @@ service cloud.firestore {
             && get(/databases/$(database)/documents/giftExchanges/current/assignments/$(request.auth.uid)).data.recipientId == uid);
         allow list: if isTeacher();
         allow create, update: if enrolledOwner(uid)
-          && exists(/databases/$(database)/documents/giftExchanges/current/participants/$(uid))
           && activeEvent().status in ['open','closed','drawn']
           && request.time < activeEvent().wishlistClosesAt
           && request.resource.data.keys().hasOnly(['text','updatedAt'])
@@ -1580,8 +1578,6 @@ service cloud.firestore {
         allow delete: if isTeacher();
       }
     }
-
-
 
     // Documentation-only default deny. Firestore ORs matching allow rules, so
     // this does not override any explicit block above; unmatched paths remain

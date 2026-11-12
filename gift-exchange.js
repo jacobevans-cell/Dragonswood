@@ -36,25 +36,22 @@ const status = (message,isError=false) => {notice=message;noticeError=isError;re
 
 function header(event) {
   return `<div class="gift-top"><a class="gift-back" href="${backUrl()}">← Back to Dragonswood</a><button class="gift-button secondary" id="gift-refresh" type="button">Refresh</button></div>
-    <header class="gift-hero"><div class="gift-eyebrow">🐉 Dragonswood classroom celebration</div><h1>${h(event?.title || 'Secret Gift Exchange')}</h1><p>A private classroom gift draw. Joining is optional. Your teacher controls the budget and dates, and only you can see whom you draw.</p></header>
+    <header class="gift-hero"><div class="gift-eyebrow">🐉 Dragonswood classroom celebration</div><h1>${h(event?.title || 'Secret Gift Exchange')}</h1><p>Make your wishlist here. Your teacher chooses the exchange partners, and only you can see whom you draw.</p></header>
     ${notice ? `<p class="gift-status ${noticeError?'error':''}" role="status">${h(notice)}</p>` : ''}`;
 }
 
 function eventFacts(event) {
-  return `<article class="gift-card"><h2>Exchange details</h2><p><b>Gift budget:</b> ${money(event.budgetCents)} maximum</p><p><b>Join by:</b> ${h(event.signupDeadline)}</p><p><b>Wishlist by:</b> ${h(event.wishlistDeadline)}</p><p><b>Gift exchange:</b> ${h(event.giftDate)}</p><p class="gift-muted">Share gifts at school. Do not put an address, phone number, or other contact details in your wishlist.</p></article>`;
+  return `<article class="gift-card"><h2>Exchange details</h2><p><b>Gift budget:</b> ${money(event.budgetCents)} maximum</p><p><b>Wishlist by:</b> ${h(event.wishlistDeadline)}</p><p><b>Gift exchange:</b> ${h(event.giftDate)}</p><p class="gift-muted">Share gifts at school. Do not put an address, phone number, or other contact details in your wishlist.</p></article>`;
 }
 
 function studentView(m) {
   const e=m.event;
   if (!e) return `${header(null)}<div class="gift-card gift-empty"><h2>No exchange is open yet</h2><p>Your teacher will post the details here.</p></div>`;
-  const canJoin=e.status==='open' && before(e.signupClosesAt);
-  const canWish=!!m.participant && (e.status==='open'||e.status==='closed'||e.status==='drawn') && before(e.wishlistClosesAt);
+  const canWish=before(e.wishlistClosesAt);
   const revealed=e.status==='drawn' && m.assignment?.drawVersion===e.drawVersion;
   return `${header(e)}<div class="gift-grid">${eventFacts(e)}
-    <article class="gift-card"><h2>My place in the exchange</h2><p>${m.participant?'<span class="gift-pill">You’re in</span>':'You have not joined.'}</p>
-      <p class="gift-muted">${revealed?'The draw is complete. Keep your recipient a surprise!':e.status==='drawn'?'The draw is being updated. Refresh in a moment.':canJoin?'You can opt in until the join deadline.':'Signups are closed.'}</p>
-      <div class="gift-actions">${!m.participant&&canJoin?'<button class="gift-button" id="gift-join">Join exchange</button>':''}${m.participant&&e.status!=='drawn'?'<button class="gift-button secondary" id="gift-leave">Leave exchange</button>':''}</div></article>
-    ${m.participant?`<article class="gift-card"><h2>My wishlist</h2><p class="gift-muted">Write a few ideas within the budget. Your teacher and the student who draws you can see them.</p><label for="gift-wishes">Gift ideas</label><textarea id="gift-wishes" maxlength="600" ${canWish?'':'disabled'} placeholder="Books, art supplies, colors I like…">${h(m.wishlist?.text || '')}</textarea><div class="gift-actions">${canWish?'<button class="gift-button" id="gift-save-wishes">Save wishlist</button>':''}</div></article>`:''}
+    <article class="gift-card"><h2>My wishlist</h2><p class="gift-muted">Write a few ideas within the budget. Your teacher and the student who draws you can see them.</p><label for="gift-wishes">Gift ideas</label><textarea id="gift-wishes" maxlength="600" ${canWish?'':'disabled'} placeholder="Books, art supplies, colors I like…">${h(m.wishlist?.text || '')}</textarea><div class="gift-actions">${canWish?'<button class="gift-button" id="gift-save-wishes">Save wishlist</button>':''}</div></article>
+    ${!revealed?`<article class="gift-card"><h2>Partner draw</h2><p class="gift-muted">${e.status==='drawn'?(m.participant?'Your partner is being prepared. Refresh in a moment.':'Your teacher can tell you if you are participating.'): 'Your teacher will choose participants and draw partners. Check back here afterward.'}</p></article>`:''}
     ${revealed?`<article class="gift-card"><h2>Your secret recipient</h2><p class="gift-reveal">🎁 ${h(m.assignment.recipientName)}</p><p>Keep this name private until gift day.</p><h3>Their wishlist</h3><p>${m.recipientWishlist?.text?h(m.recipientWishlist.text).replace(/\n/g,'<br>'):'No wishlist yet. Check back before gift day.'}</p></article>`:''}
     </div>`;
 }
@@ -62,20 +59,19 @@ function studentView(m) {
 function teacherView(m) {
   const e=m.event;
   const editable=!e||e.status==='open';
-  const rows=m.participants.map(p=>{
-    const label=recipientLabel(m.roster.find(s=>s.id===p.id));
-    const assignment=m.assignments.find(a=>a.id===p.id);
-    return `<li><span>${h(label)} ${m.wishlistIds.has(p.id)?'· wishlist saved':''}</span><span>${e?.status==='drawn'?`→ ${h(assignment?.recipientName||'Pending')}`:''}</span></li>`;
-  }).join('')||'<li>No students have opted in yet.</li>';
+  const chosen=new Set(m.participants.map(p=>p.id));
+  const rows=m.roster.slice().sort((a,b)=>recipientLabel(a).localeCompare(recipientLabel(b))).map(student=>{
+    const selected=chosen.has(student.id),assignment=m.assignments.find(a=>a.id===student.id);
+    return `<li><span>${h(recipientLabel(student))} ${m.wishlistIds.has(student.id)?'· wishlist saved':''}</span><span>${selected?(e?.status==='drawn'?`→ ${h(assignment?.recipientName||'Pending')}`:'Included'):'—'}</span>${e?.status==='open'?`<button class="gift-button secondary" type="button" data-roster-id="${h(student.id)}">${selected?'Remove':'Include'}</button>`:''}</li>`;
+  }).join('')||'<li>No student profiles are available.</li>';
   return `${header(e)}<div class="gift-grid"><article class="gift-card"><h2>${e?'Exchange settings':'Create an exchange'}</h2>
     <label for="gift-title">Title</label><input id="gift-title" maxlength="80" value="${h(e?.title||'Dragonswood Secret Gift Exchange')}" ${editable?'':'disabled'}>
     <label for="gift-budget">Maximum gift budget ($)</label><input id="gift-budget" type="number" min="1" max="100" step="0.01" value="${e?(e.budgetCents/100).toFixed(2):'15.00'}" ${editable?'':'disabled'}>
-    <label for="gift-signup">Join deadline</label><input id="gift-signup" type="date" value="${h(e?.signupDeadline||'')}" ${editable?'':'disabled'}>
     <label for="gift-wishlist-deadline">Wishlist deadline</label><input id="gift-wishlist-deadline" type="date" value="${h(e?.wishlistDeadline||'')}" ${editable?'':'disabled'}>
     <label for="gift-date">Gift exchange date</label><input id="gift-date" type="date" value="${h(e?.giftDate||'')}" ${editable?'':'disabled'}>
-    <div class="gift-actions">${editable?'<button class="gift-button" id="gift-save-event">Save details</button>':''}${e?.status==='closed'?'<button class="gift-button secondary" id="gift-reopen">Reopen signups</button>':''}</div>
+    <div class="gift-actions">${editable?'<button class="gift-button" id="gift-save-event">Save details</button>':''}${e?.status==='closed'?'<button class="gift-button secondary" id="gift-reopen">Reopen roster</button>':''}</div>
     <p class="gift-muted">Only the teacher sees the roster and complete draw. Settings lock after the draw.</p></article>
-    ${e?`<article class="gift-card"><h2>Opt-in roster · ${m.participants.length}</h2><ul class="gift-list">${rows}</ul><div class="gift-actions">${e.status==='open'||e.status==='closed'?'<button class="gift-button" id="gift-draw">Close signups & draw</button>':''}${e.status==='drawn'?'<button class="gift-button danger" id="gift-redraw">Redraw assignments</button>':''}</div><p class="gift-muted">${e.status==='drawn'?'Students can see only their own recipient. A redraw immediately replaces every assignment.':e.status==='closed'?'Signups are closed. Reopen them or complete the draw.':'The draw closes signups first, then assigns every opted-in student.'}</p></article>`:''}</div>`;
+    ${e?`<article class="gift-card"><h2>Choose participants · ${m.participants.length}</h2><p class="gift-muted">Include only students who are taking part. Students only write a wishlist.</p><ul class="gift-list">${rows}</ul><div class="gift-actions">${e.status==='open'||e.status==='closed'?'<button class="gift-button" id="gift-draw">Lock roster & draw partners</button>':''}${e.status==='drawn'?'<button class="gift-button danger" id="gift-redraw">Redraw partners</button>':''}</div><p class="gift-muted">${e.status==='drawn'?'Each student gives once and receives once, with no self-draws. A redraw replaces every assignment.':e.status==='closed'?'The roster is locked. Reopen it or complete the draw.':'The draw locks the roster, then gives each student one different partner.'}</p></article>`:''}</div>`;
 }
 
 function render() {
@@ -121,15 +117,15 @@ async function action(task,success) {
 function bind() {
   root.querySelector('#gift-signin')?.addEventListener('click',()=>signInWithPopup(auth,new GoogleAuthProvider()).catch(e=>status(e?.message||'Sign-in failed.',true)));
   root.querySelector('#gift-refresh')?.addEventListener('click',load);
-  root.querySelector('#gift-join')?.addEventListener('click',()=>action(async()=>{
+  root.querySelectorAll('[data-roster-id]').forEach(button=>button.addEventListener('click',()=>action(async()=>{
+    if(!teacher())throw new Error('Teacher access required.');
     const e=(await getDoc(eventRef)).data();
-    if(e?.status!=='open'||!before(e.signupClosesAt))throw new Error('Signups have closed.');
-    await setDoc(doc(participants,currentUser.uid),{joined:true,updatedAt:serverTimestamp()});
-  },'You joined the gift exchange.'));
-  root.querySelector('#gift-leave')?.addEventListener('click',()=>action(async()=>{
-    if(!confirm('Leave the gift exchange?'))return false;
-    await deleteDoc(doc(participants,currentUser.uid));
-  },'You left the exchange.'));
+    if(e?.status!=='open')throw new Error('The roster is locked.');
+    const uid=button.dataset.rosterId;
+    if(!model.roster.some(student=>student.id===uid))throw new Error('Student profile not found.');
+    if(model.participants.some(participant=>participant.id===uid))await deleteDoc(doc(participants,uid));
+    else await setDoc(doc(participants,uid),{joined:true,updatedAt:serverTimestamp()});
+  },'Participant roster updated.')));
   root.querySelector('#gift-save-wishes')?.addEventListener('click',()=>{
     const value=root.querySelector('#gift-wishes')?.value.trim()||'';
     action(()=>setDoc(doc(wishlists,currentUser.uid),{text:value,updatedAt:serverTimestamp()}),'Your wishlist was saved.');
@@ -137,19 +133,18 @@ function bind() {
   root.querySelector('#gift-save-event')?.addEventListener('click',()=>action(async()=>{
     const title=root.querySelector('#gift-title').value.trim();
     const budgetCents=Math.round(Number(root.querySelector('#gift-budget').value)*100);
-    const signupDeadline=dateOnly(root.querySelector('#gift-signup').value);
     const wishlistDeadline=dateOnly(root.querySelector('#gift-wishlist-deadline').value);
     const giftDate=dateOnly(root.querySelector('#gift-date').value);
     if(!title||title.length>80)throw new Error('Enter a title under 80 characters.');
     if(!Number.isInteger(budgetCents)||budgetCents<100||budgetCents>10000)throw new Error('Choose a budget from $1 to $100.');
-    if(!signupDeadline||!wishlistDeadline||!giftDate||signupDeadline>wishlistDeadline||wishlistDeadline>giftDate||signupDeadline<new Date().toLocaleDateString('sv-SE',{timeZone:'America/Phoenix'}))throw new Error('Choose future dates in order: join, wishlist, gift day.');
+    if(!wishlistDeadline||!giftDate||wishlistDeadline>giftDate||wishlistDeadline<new Date().toLocaleDateString('sv-SE',{timeZone:'America/Phoenix'}))throw new Error('Choose a future wishlist deadline and gift day, in that order.');
     const latest=await getDoc(eventRef);
     if(latest.exists()&&latest.data().status!=='open')throw new Error('Settings are locked after signups close.');
-    await setDoc(eventRef,{title,budgetCents,signupDeadline,wishlistDeadline,giftDate,signupClosesAt:phoenixEnd(signupDeadline),wishlistClosesAt:phoenixEnd(wishlistDeadline),status:'open',drawVersion:0,updatedAt:serverTimestamp()},{merge:true});
+    await setDoc(eventRef,{title,budgetCents,wishlistDeadline,giftDate,wishlistClosesAt:phoenixEnd(wishlistDeadline),status:'open',drawVersion:0,updatedAt:serverTimestamp()},{merge:true});
   },'Exchange details saved.'));
-  root.querySelector('#gift-reopen')?.addEventListener('click',()=>action(()=>updateDoc(eventRef,{status:'open',updatedAt:serverTimestamp()}),'Signups reopened.'));
+  root.querySelector('#gift-reopen')?.addEventListener('click',()=>action(()=>updateDoc(eventRef,{status:'open',updatedAt:serverTimestamp()}),'Roster reopened.'));
   root.querySelector('#gift-draw')?.addEventListener('click',()=>action(async()=>{
-    if(!confirm('Close signups and privately draw recipients for every student who opted in?'))return false;
+    if(!confirm('Lock the selected roster and privately draw one partner for each student?'))return false;
     const e=(await getDoc(eventRef)).data();
     if(!['open','closed'].includes(e?.status))throw new Error('The draw is unavailable.');
     if(e.status==='open')await updateDoc(eventRef,{status:'closed',updatedAt:serverTimestamp()});
@@ -163,10 +158,10 @@ function bind() {
 
 async function makeDraw() {
   const e=(await getDoc(eventRef)).data();
-  if(!['closed','drawn'].includes(e?.status))throw new Error('Close signups before drawing.');
+  if(!['closed','drawn'].includes(e?.status))throw new Error('Lock the roster before drawing.');
   const [p,r,a]=await Promise.all([getDocs(participants),getDocs(collection(db,'students')),getDocs(assignments)]);
   const ids=p.docs.filter(d=>d.data().joined===true).map(d=>d.id).sort();
-  if(ids.length<2)throw new Error('At least two students must opt in. Reopen signups to invite more.');
+  if(ids.length<2)throw new Error('Choose at least two students. Reopen the roster to add more.');
   if(ids.length>498)throw new Error('This exchange exceeds the safe draw size.');
   const roster=new Map(r.docs.map(d=>[d.id,d.data()]));
   if(ids.some(id=>!roster.has(id)))throw new Error('A participant is missing a student profile. Check the roster.');

@@ -1517,6 +1517,68 @@ service cloud.firestore {
     match /learningRuntimeV1/{document=**} { allow read, write: if false; }
     match /learningGradebookStagingV1/{document=**} { allow read, write: if false; }
 
+    // Gift exchange: no student can list the roster or assignments.
+    // The only peer data revealed is the drawn recipient's name and wishlist.
+    match /giftExchanges/{eventId} {
+      function activeEvent() {
+        return get(/databases/$(database)/documents/giftExchanges/current).data;
+      }
+      function enrolledOwner(uid) {
+        return eventId == 'current' && isExploreStudent() && isOwner(uid)
+          && exists(/databases/$(database)/documents/students/$(uid));
+      }
+      allow get: if eventId == 'current' && (isTeacher() || isExploreStudent());
+      allow list: if false;
+      allow create, update: if eventId == 'current' && isTeacher();
+      allow delete: if false;
+
+      match /participants/{uid} {
+        allow get: if isTeacher() || enrolledOwner(uid);
+        allow list: if isTeacher();
+        allow create, update: if isTeacher()
+          && activeEvent().status == 'open'
+          && request.resource.data.keys().hasOnly(['joined','updatedAt'])
+          && request.resource.data.joined == true
+          && request.resource.data.updatedAt == request.time;
+        allow delete: if isTeacher() && activeEvent().status == 'open';
+      }
+
+      match /wishlists/{uid} {
+        allow get: if isTeacher() || enrolledOwner(uid)
+          || (eventId == 'current' && isExploreStudent()
+            && activeEvent().status == 'drawn'
+            && exists(/databases/$(database)/documents/giftExchanges/current/assignments/$(request.auth.uid))
+            && get(/databases/$(database)/documents/giftExchanges/current/assignments/$(request.auth.uid)).data.drawVersion == activeEvent().drawVersion
+            && get(/databases/$(database)/documents/giftExchanges/current/assignments/$(request.auth.uid)).data.recipientId == uid);
+        allow list: if isTeacher();
+        allow create, update: if enrolledOwner(uid)
+          && activeEvent().status in ['open','closed','drawn']
+          && request.time < activeEvent().wishlistClosesAt
+          && request.resource.data.keys().hasOnly(['text','updatedAt'])
+          && request.resource.data.text is string
+          && request.resource.data.text.size() <= 600
+          && request.resource.data.updatedAt == request.time;
+        allow delete: if false;
+      }
+
+      match /assignments/{uid} {
+        allow get: if isTeacher() || (enrolledOwner(uid)
+          && activeEvent().status == 'drawn'
+          && (resource == null || resource.data.drawVersion == activeEvent().drawVersion));
+        allow list: if isTeacher();
+        allow create, update: if isTeacher()
+          && request.resource.data.keys().hasOnly(['recipientId','recipientName','drawVersion','updatedAt'])
+          && request.resource.data.recipientId is string
+          && request.resource.data.recipientId != uid
+          && request.resource.data.recipientName is string
+          && request.resource.data.recipientName.size() <= 80
+          && request.resource.data.drawVersion is int
+          && request.resource.data.drawVersion > 0
+          && request.resource.data.updatedAt == request.time;
+        allow delete: if isTeacher();
+      }
+    }
+
     // Documentation-only default deny. Firestore ORs matching allow rules, so
     // this does not override any explicit block above; unmatched paths remain
     // denied because no true allow statement exists.

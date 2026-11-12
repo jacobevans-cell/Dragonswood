@@ -14,5 +14,5 @@ node v33-integration/tools/test-substitute-mode.cjs
 TEST_TOOLS_DIR="$(mktemp -d)"
 cp v33-integration/tools/firebase-cli-test-package.json "$TEST_TOOLS_DIR/package.json"
 npm install --prefix "$TEST_TOOLS_DIR" --ignore-scripts --no-audit --no-fund
-"$TEST_TOOLS_DIR/node_modules/.bin/firebase" emulators:exec --project demo-dragonswood-v33 --config firebase.v33-production-gate.json --only auth,firestore "DW_PRODUCTION_RULES_GATE=1 node v33-integration/tools/firebase-identity-gate.cjs"
+"$TEST_TOOLS_DIR/node_modules/.bin/firebase" emulators:exec --project demo-dragonswood-v33 --config firebase.v33-production-gate.json --only auth,firestore "DW_PRODUCTION_RULES_GATE=1 node v33-integration/tools/firebase-identity-gate.cjs && node gift-exchange-rules-selftest.cjs"
 echo 'LEARNING RELEASE GATE: PASS — routes, new actors, schedule, gradebook, passes, identity and exact production rules'
